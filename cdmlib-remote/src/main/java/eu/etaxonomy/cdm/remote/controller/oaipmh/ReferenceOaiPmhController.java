@@ -38,7 +38,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
 	protected List<String> getPropertyPaths() {
 		return Arrays.asList(new String []{			
 				"$",
-				"inBook.authorTeam",
+				"inBook.authorship",
 				"inJournal",
 				"inProceedings",
 		});

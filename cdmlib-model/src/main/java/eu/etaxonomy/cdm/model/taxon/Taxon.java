@@ -82,8 +82,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     "synonymRelations",
     "relationsFromThisTaxon",
     "relationsToThisTaxon",
-    "descriptions",
-    "publish"
+    "descriptions"
 })
 @XmlRootElement(name = "Taxon")
 @Entity
@@ -95,7 +94,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
 public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
-            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, IPublishable, Cloneable{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -167,10 +166,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
-
-
-    @XmlAttribute(name = "publish")
-    private boolean publish = true;
 
 // ************************* FACTORY METHODS ********************************/
 
@@ -1659,24 +1654,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 
     public void setExcluded(boolean excluded) {
         this.excluded = excluded;
-    }
-
-
-    /**
-     * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not
-     * (<code>publish=true</code>) during any publication process to the general public.
-     * This publish flag implementation is preliminary and may be replaced by a more general
-     * implementation of READ rights in future.<BR>
-     * The default value is <code>true</code>.
-     */
-    @Override
-    public boolean isPublish() {
-        return publish;
-    }
-
-    @Override
-    public void setPublish(boolean publish) {
-        this.publish = publish;
     }
 
     /**

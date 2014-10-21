@@ -68,7 +68,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 		}
 		String result =  getTitleWithoutYearAndAuthor(ref, isAbbrev);
 		result = addYear(result, ref, false);
-		TeamOrPersonBase<?> team = ref.getAuthorTeam();
+		TeamOrPersonBase<?> team = ref.getAuthorship();
 		
 		if (team != null){
 			String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
@@ -90,7 +90,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 		
 		String nextConcat = "";
 		
-		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		TeamOrPersonBase<?> team = referenceBase.getAuthorship();
 		if (team != null &&  isNotBlank(team.getTitleCache())){
 			stringBuilder.append(team.getTitleCache() );
 			nextConcat = afterAuthor;

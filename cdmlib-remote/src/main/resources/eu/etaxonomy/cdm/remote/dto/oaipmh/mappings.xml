@@ -67,7 +67,7 @@
             <b>date</b>
         </field>
         <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="titleCache" >
-            <a>authorTeam</a>
+            <a>authorship</a>
             <b>creator</b>
         </field>
         <field>

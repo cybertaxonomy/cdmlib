@@ -140,7 +140,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			Reference<?> report = ReferenceFactory.newReport();
 			Reference<?> webPage = ReferenceFactory.newWebPage();
 			Institution school = Institution.NewInstance();
-			Team authorTeam = Team.NewInstance();		 
+			Team authorship = Team.NewInstance();		 
 			
 			logger.info("start make database ...");
 			childName = "database";
@@ -292,8 +292,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strSize = elStyle.getAttributeValue("size");
 							String author_style =  elStyle.getTextNormalize();
 
-							reference.setAuthorTeam(authorTeam);
-						    authorTeam.setNomenclaturalTitle(author_style);						  
+							reference.setAuthorship(authorship);
+						    authorship.setNomenclaturalTitle(author_style);						  
 					}
 				}
 			}	
@@ -332,8 +332,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strSize_secondary = elStyle_secondary.getAttributeValue("size");
 							String  secondary_author=  elStyle_secondary.getTextNormalize();
  					 
-							reference.setAuthorTeam(authorTeam);
-							authorTeam.setTitleCache(secondary_author, true);
+							reference.setAuthorship(authorship);
+							authorship.setTitleCache(secondary_author, true);
 						}
 					}
 				}
@@ -472,8 +472,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				
 				Contact contact =  new Contact();
 				Address address = Address.NewInstance();
-				reference.setAuthorTeam(authorTeam);
-				authorTeam.setContact(contact);		 
+				reference.setAuthorship(authorship);
+				authorship.setContact(contact);		 
 				contact.addAddress(address);
 				address.setLocality(address_style);
 			}

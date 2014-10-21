@@ -164,13 +164,13 @@ public class MarkupModsImport extends MarkupImportBase {
 					fireUnexpectedAttributeValue(parent, "type", type);  //currently we handle only "personal"
 				}else{
 					Person person = Person.NewInstance();
-					TeamOrPersonBase<?> author = modsRef.getAuthorTeam();
+					TeamOrPersonBase<?> author = modsRef.getAuthorship();
 					if (author == null){
-						modsRef.setAuthorTeam(person);
+						modsRef.setAuthorship(person);
 					}else if (author.isInstanceOf(Person.class)){
 						Team team = Team.NewInstance();
 						team.addTeamMember(person);
-						modsRef.setAuthorTeam(team);
+						modsRef.setAuthorship(team);
 					}else {
 						CdmBase.deproxy(author, Team.class).addTeamMember(person);
 					}

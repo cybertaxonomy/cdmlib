@@ -60,7 +60,7 @@ public class BookDefaultCacheStrategyTest {
 	@Test
 	public void testGetTitleCache(){
 		book1.setTitle("My book");
-		book1.setAuthorTeam(bookTeam1);
+		book1.setAuthorship(bookTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
 		
@@ -108,7 +108,7 @@ public class BookDefaultCacheStrategyTest {
 	@Test
 	public void testGetNomenclaturalCitation(){
 		book1.setTitle("My book");
-		book1.setAuthorTeam(bookTeam1);
+		book1.setAuthorship(bookTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("My book: 55. 1975", book1.getNomenclaturalCitation(detail1));
 		book1.setAbbrevTitle("Analect. Bot.");

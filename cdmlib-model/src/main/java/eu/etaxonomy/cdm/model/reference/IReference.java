@@ -52,12 +52,12 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	/**
 	 * Returns the references author(s)
 	 */
-	public TeamOrPersonBase getAuthorTeam();
+	public TeamOrPersonBase getAuthorship();
 	
 	/**
 	 * Sets the references author(s)
 	 */
-	public void setAuthorTeam(TeamOrPersonBase authorTeam);
+	public void setAuthorship(TeamOrPersonBase authorship);
 	
 	/**
 	 * Returns the references title

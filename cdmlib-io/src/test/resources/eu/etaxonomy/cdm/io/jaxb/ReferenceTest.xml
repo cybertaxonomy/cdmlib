@@ -27,7 +27,7 @@
             <common:TitleCache>Godfray, 2002</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-1a634162-4db8-4d83-84b0-079730d73c51</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-1a634162-4db8-4d83-84b0-079730d73c51</reference:Authorship>
             <reference:Title>Challenges for taxonomy</reference:Title>
             <reference:Volume>417</reference:Volume>
             <reference:Pages>17-19</reference:Pages>
@@ -52,7 +52,7 @@
             <common:TitleCache>Darwin, 1859</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-b8506159-0555-4489-a74c-eb50c2062218</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-b8506159-0555-4489-a74c-eb50c2062218</reference:Authorship>
             <reference:Title>On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life</reference:Title>
             <reference:DatePublished>
                 <common:Start>1859-11-24</common:Start>
@@ -63,7 +63,7 @@
             <common:TitleCache>Darwin, 2005</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-b8506159-0555-4489-a74c-eb50c2062218</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-b8506159-0555-4489-a74c-eb50c2062218</reference:Authorship>
             <reference:Title>From So Simple a Beginning: Darwin's Four Great Books (Voyage of the H.M.S. Beagle, The Origin of Species, The Descent of Man, The Expression of Emotions in Man and Animals)</reference:Title>
             <reference:DatePublished>
                 <common:Start>2005-11</common:Start>

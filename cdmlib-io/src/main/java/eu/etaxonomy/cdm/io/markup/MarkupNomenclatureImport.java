@@ -792,7 +792,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			
 			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
 				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
-				book.setAuthorTeam(inAuthor);
+				book.setAuthorship(inAuthor);
 				editors = null;
 			}
 		} else if (refType == RefType.Book){
@@ -848,12 +848,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (isBlank(authorStr)){
 			if (refType != RefType.LatestUsed){
 				author = state.getLatestAuthorInHomotype();
-				reference.setAuthorTeam(author);
+				reference.setAuthorship(author);
 			}
 		}else{
 			author = createAuthor(authorStr);
 			state.setLatestAuthorInHomotype(author);
-			reference.setAuthorTeam(author);
+			reference.setAuthorship(author);
 		}
 		
 
@@ -968,7 +968,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		// TODO type
 		TeamOrPersonBase<?> author = createAuthor(authorStr);
-		reference.setAuthorTeam(author);
+		reference.setAuthorship(author);
 
 		//title
 		reference.setTitle(titleStr);

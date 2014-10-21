@@ -29,7 +29,7 @@ public class TaxonPortalListController extends TaxonListController {
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "taxonNodes.classification",
             });

@@ -99,13 +99,13 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         BotanicalName storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         mediaSpecimen.setStoredUnder(storedUnder);
         PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
+        preservation.setMedium(DefinedTerm.NewDnaMarkerInstance("medium", "medium", "medium"));//dummy defined term
         mediaSpecimen.setPreservation(preservation);
 
         //DerivationEvent
         DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         event.addOriginal(fieldUnit);
         event.addDerivative(mediaSpecimen);
-
 
         //SpecOrObservationBase
         fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
@@ -120,8 +120,23 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         Reference<?> reference = getReference();
         determinationEvent.addReference(reference);
 
-        //save specimen
-        assertEquals("Incorrect number of non cascaded CDM entities", 8, occurrenceService.getNonCascadedAssociatedElements(fieldUnit).size());
+        /*NonCascaded
+         * SOOB
+         *  - sex (FEMALE)
+         *  - stage (Live stage)
+         *  - kindOfUnit (Kind of unit)
+         * GatheringEvent
+         *  - country (GERMANY)
+         *  - collectingArea (EUROPE)
+         *  DerivedUnit
+         *  - storedUnder (botanical name)
+         *  DerivedUnit-> Collection -> institiute
+         *  - type (botanical garden)
+         *
+         * */
+
+        assertEquals("Incorrect number of non cascaded CDM entities", 9, occurrenceService.getNonCascadedAssociatedElements(fieldUnit).size());
+        assertEquals("Incorrect number of non cascaded CDM entities", 9, occurrenceService.getNonCascadedAssociatedElements(mediaSpecimen).size());
 
     }
     private Reference<?> getReference() {

@@ -17,11 +17,52 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
-import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
-import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
+import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_331_34;
+import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
+ * This class launches CDM model updates.
+ * Currently it splits the update in model updates and defined term related updates by
+ * using a {@link ISchemaUpdater schema updater} and a {@link ITermUpdater}. However, this 
+ * architecture often results in problems and therefore will be replaced by only 1 schema updater.
+ * Term updates will be handled differently or also by using the schema updater.
+ * <BR>
+ * For each new schema version number there usually exists 1 {@link ISchemaUpdater} which is 
+ * represents a list of schema update steps. {@link ISchemaUpdater schema updaters} are linked
+ * to previous updaters which are called, if relevant, previous to the latest updater.
+ * So it is possible to upgrade multiple schema version steps in one call.
+ * <BR><BR>
+ * As said before each {@link ISchemaUpdater schema updater} creates a list of 
+ * {@link ISchemaUpdaterStep update steps}.
+ * <BR><BR>
+ * {@link ISchemaUpdater} support progression monitoring with each update step being one task.
+ * <BR><BR>
+ * ATTENTION: Some steps in the schema update are not transactional by nature. E.g. adding or removing a column
+ * to a table in a SQL database can not be handled in a transaction. Therefore failures in
+ * certain steps may not lead to a complete rollback of all steps covered by a {@link ISchemaUpdater}.
+ * This may lead to a situation where the database becomes inconsistent.
+ * <BR><BR>   
+ * <u>HOW TO ADD A NEW UPDATER?</u><BR>
+ * Adding a new updater currently still needs adjustment at multiple places.
+ * <BR>
+ * <BR>1.) Increment {@link CdmMetaData} schema version number and term version number.
+ * <BR>2.) Create a new class instance of {@link SchemaUpdaterBase} (e.g. by copying an old one). 
+ * <BR>3.) Update startSchemaVersion and endSchemaVersion in this new class, where startSchemaVersion
+ * is the old schema version and endSchemaVersion is the new schema version.
+ * <BR>4.) Implement {@link ISchemaUpdater#getPreviousUpdater()} and {@link ISchemaUpdater#getNextUpdater()}
+ * in a way that the former returns an instance of the previous schema updater and the later returns null (for now).
+ * <BR>5.) Go to the previous schema updater class and adjust {@link ISchemaUpdater#getNextUpdater()}
+ * in a way that it returns an instance of the newly created updater.
+ * <BR>6.) Repeat steps 2.-5. for {@link ITermUpdater}
+ * <BR>7.) Adjust {@link #getCurrentSchemaUpdater()} and {@link #getCurrentTermUpdater()} to return
+ * instances of the newly created updaters.
+ *  
+ * @see ISchemaUpdater
+ * @see ITermUpdater
+ * @see ISchemaUpdaterStep
+ * @see ITermUpdaterStep
+ * 
  * @author a.mueller
  * @date 10.09.2010
  *
@@ -172,7 +213,7 @@ public class CdmUpdater {
 
 
     private ITermUpdater getCurrentTermUpdater() {
-        return TermUpdater_31_33.NewInstance();
+        return TermUpdater_33_34.NewInstance();
     }
 
     /**
@@ -180,7 +221,7 @@ public class CdmUpdater {
      * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_33_331.NewInstance();
+        return SchemaUpdater_331_34.NewInstance();
     }
 
     /**
@@ -206,7 +247,7 @@ public class CdmUpdater {
             }
         }
 
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, 3306, username, password, null);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, port, username, password, null);
         boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
         System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
     }

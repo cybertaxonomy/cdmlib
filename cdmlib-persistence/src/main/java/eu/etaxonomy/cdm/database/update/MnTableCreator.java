@@ -35,7 +35,7 @@ public class MnTableCreator extends TableCreator {
 	
 	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String[] columnNames, String[] columnTypes,
 			List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable, boolean hasSortIndex, boolean secondTableInKey, boolean includeCdmBaseAttributes,boolean includeAnnotatableEntity, boolean includeIdentifiableEntity) {
-		super(stepName, firstTableName + "_" + secondTableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues, isNull,	new ArrayList<String>(), includeAudTable, includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity);
+		super(stepName, firstTableName + "_" + secondTableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues, isNull,	new ArrayList<String>(), includeAudTable, includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity, false);
 		this.firstTableName = firstTableName;
 		this.secondTableName = secondTableName;
 		this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;

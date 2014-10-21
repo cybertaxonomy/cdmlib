@@ -227,8 +227,8 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		DescriptionElementSource source = textData.getSources().iterator().next();
 //		Reference ref = source.getCitation();
 //		assertNotNull("Citation should not be null", ref);
-//		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
-//		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
+//		assertNotNull("Authorship should not be null", ref.getAuthorship());
+//		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());
 //		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 //		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
 //		TaxonNameBase nameUsedInSource = source.getNameUsedInSource();
@@ -251,8 +251,8 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		source = textData.getSources().iterator().next();
 //		ref = source.getCitation();
 //		assertNotNull("Citation should not be null", ref);
-//		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
-//		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorTeam().getTitleCache());
+//		assertNotNull("Authorship should not be null", ref.getAuthorship());
+//		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorship().getTitleCache());
 //		assertEquals("Publication title should be 'The ultimate book'", "The ultimate book", ref.getTitle());
 //		assertEquals("Publication year should be '2011'", "2011", ref.getYear());
 //		nameUsedInSource = source.getNameUsedInSource();

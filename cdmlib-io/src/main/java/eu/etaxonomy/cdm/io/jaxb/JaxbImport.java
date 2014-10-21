@@ -13,7 +13,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -257,10 +256,12 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		// Need to get the taxa and the synonyms here.
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
-				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
-					logger.info("Taxon bases: " + taxonBases.size());
-					Iterator <TaxonBase> taxBases = taxonBases.iterator();
-					getTaxonService().save(taxonBases);
+				if ( dataSet.getTaxonBases().size() > 0) {
+					List taxa = dataSet.getTaxonBases();
+					dataSet.getTaxonBases();
+					logger.info("Taxon bases: " + taxa.size());
+					taxa.iterator();
+					getTaxonService().save(taxa);
 					/*while (taxBases.hasNext()){
 						getTaxonService().save(taxBases.next());
 					}*/

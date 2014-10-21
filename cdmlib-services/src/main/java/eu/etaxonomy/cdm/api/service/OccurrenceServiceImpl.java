@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +31,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.SortField;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
+import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -50,6 +54,7 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -61,13 +66,19 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -75,7 +86,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -109,9 +119,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
-
-    @Autowired
-    private ITaxonDao taxonDao;
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
@@ -291,6 +298,232 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        if(!getSession().contains(associatedTaxon)){
+            associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
+        }
+
+        Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
+
+        List<SpecimenOrObservationBase> records = pageByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        for(SpecimenOrObservationBase<?> specimen:records){
+            fieldUnits.addAll(getFieldUnits(specimen.getUuid()));
+        }
+        return fieldUnits;
+    }
+
+    @Override
+    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid){
+
+        if(!getSession().contains(fieldUnit)){
+            fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
+        }
+        TaxonBase associatedTaxon = taxonService.load(associatedTaxonUuid);
+
+        DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
+        Map<UUID, TypeDesignationStatusBase> typeSpecimenUUIDtoTypeDesignationStatus = new HashMap<UUID, TypeDesignationStatusBase>();
+
+        //gather types for this taxon name
+        TaxonNameBase<?,?> name = associatedTaxon.getName();
+        Set<?> typeDesignations = name.getSpecimenTypeDesignations();
+        for (Object object : typeDesignations) {
+            if(object instanceof SpecimenTypeDesignation){
+                SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)object;
+                DerivedUnit typeSpecimen = specimenTypeDesignation.getTypeSpecimen();
+                final TypeDesignationStatusBase typeStatus = specimenTypeDesignation.getTypeStatus();
+                typeSpecimenUUIDtoTypeDesignationStatus.put(typeSpecimen.getUuid(), typeStatus);
+            }
+        }
+
+        if(fieldUnit.getGatheringEvent()!=null){
+            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+            //Country
+            final NamedArea country = gatheringEvent.getCountry();
+            dto.setCountry(country!=null?country.getDescription():"");
+            //Collection
+            final AgentBase collector = gatheringEvent.getCollector();
+            final String fieldNumber = fieldUnit.getFieldNumber();
+            dto.setCollection(((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:"")).trim());
+            //Date
+            final Partial gatheringDate = gatheringEvent.getGatheringDate();
+            dto.setDate(gatheringDate!=null?gatheringDate.toString():"");
+        }
+
+        //Taxon Name
+        dto.setTaxonName(associatedTaxon.getName().getFullTitleCache());
+
+
+        Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
+        getDerivedUnitsFor(fieldUnit, derivedUnits);
+
+        //Herbaria map
+        Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
+        //List of accession numbers for citation
+        List<String> preservedSpecimenAccessionNumbers = new ArrayList<String>();
+
+        //iterate over sub derivates
+        for (DerivedUnit derivedUnit : derivedUnits) {
+            //current accession number
+            String currentAccessionNumber = derivedUnit.getAccessionNumber()!=null?derivedUnit.getAccessionNumber():"";
+            //current herbarium
+            String currentHerbarium = "";
+            eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
+            if(collection!=null){
+                currentHerbarium = collection.getCode()!=null?collection.getCode():"";
+                //count herbaria
+                Integer count = collectionToCountMap.get(collection);
+                if(count==null){
+                    count = 1;
+                }
+                else{
+                    count++;
+                }
+                collectionToCountMap.put(collection, count);
+            }
+            //check if derived unit is a type
+            if(typeSpecimenUUIDtoTypeDesignationStatus.keySet().contains(derivedUnit.getUuid())){
+                dto.setHasType(true);
+                TypeDesignationStatusBase typeDesignationStatus = typeSpecimenUUIDtoTypeDesignationStatus.get(derivedUnit.getUuid());
+                String typeStatus = typeDesignationStatus.getLabel();
+                dto.addTypes(typeStatus, currentAccessionNumber);
+            }
+            //assemble molecular data
+            if(derivedUnit instanceof DnaSample){//.getRecordBasis()==SpecimenOrObservationType.DnaSample){
+                dto.setHasDna(true);
+
+                DnaSample dna = (DnaSample)derivedUnit;
+                for(Sequence sequence:dna.getSequences()){
+                    final URI boldUri = sequence.getBoldUri();
+                    final DefinedTerm dnaMarker = sequence.getDnaMarker();
+                    dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                }
+            }
+            //assemble media data
+            else if(derivedUnit instanceof MediaSpecimen){
+
+                MediaSpecimen media = (MediaSpecimen)derivedUnit;
+                String mediaUriString = getMediaUriString(media);
+                if(media.getKindOfUnit()!=null){
+                    if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
+                        dto.setHasSpecimenScan(true);
+                        if(mediaUriString!=null){
+                            final String imageLinkText = currentHerbarium+" "+currentAccessionNumber;
+                            dto.addSpecimenScan(mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
+                        }
+                    }
+                    else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
+                        dto.setHasDetailImage(true);
+                        if(mediaUriString!=null){
+                            String motif = "";
+                            if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle()!=null){
+                                motif = media.getMediaSpecimen().getTitle().getText();
+                            }
+                            dto.addDetailImage(mediaUriString, motif!=null?motif:"[no motif]");
+                        }
+                    }
+                }
+            }
+            //assemble preserved specimen data
+            else if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.PreservedSpecimen){
+                if(!currentAccessionNumber.isEmpty()){
+                    preservedSpecimenAccessionNumbers.add(currentAccessionNumber);
+                }
+            }
+        }
+
+        final String separator = ", ";
+        //assemble citation
+        String citation = "";
+        citation += !dto.getCountry().isEmpty()?dto.getCountry()+separator:"";
+        if(fieldUnit.getGatheringEvent()!=null){
+            if(fieldUnit.getGatheringEvent().getLocality()!=null){
+                citation += fieldUnit.getGatheringEvent().getLocality().getText();
+                citation += separator;
+            }
+            if(fieldUnit.getGatheringEvent().getExactLocation()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
+                citation += separator;
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
+                citation += separator;
+            }
+        }
+        citation += !dto.getCollection().isEmpty()?dto.getCollection()+separator:"";
+        if(!preservedSpecimenAccessionNumbers.isEmpty()){
+            citation += "(";
+            for(String accessionNumber:preservedSpecimenAccessionNumbers){
+                if(!accessionNumber.isEmpty()){
+                    citation += accessionNumber+separator;
+                }
+            }
+            citation = removeTail(citation, separator);
+            citation += ")";
+        }
+        citation = removeTail(citation, separator);
+        dto.setCitation(citation);
+
+        //assemble herbaria string
+        String herbariaString = "";
+        for(Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e:collectionToCountMap.entrySet()){
+            eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
+            if(collection.getCode()!=null){
+                herbariaString += collection.getCode();
+            }
+            if(e.getValue()>1){
+                herbariaString += "("+e.getValue()+")";
+            }
+            herbariaString += separator;
+        }
+        herbariaString = removeTail(herbariaString, separator);
+        dto.setHerbarium(herbariaString);
+
+        return dto;
+    }
+
+
+    /**
+     * @param string
+     * @param tail
+     * @return
+     */
+    private String removeTail(String string, final String tail) {
+        if(string.endsWith(tail)){
+            string = string.substring(0, string.length()-tail.length());
+        }
+        return string;
+    }
+
+    private String getMediaUriString(MediaSpecimen mediaSpecimen){
+        String mediaUri = null;
+        Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
+        if(mediaRepresentations!=null && !mediaRepresentations.isEmpty()){
+            Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
+            if(mediaRepresentationParts!=null && !mediaRepresentationParts.isEmpty()){
+                MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
+                if(part.getUri()!=null){
+                    mediaUri = part.getUri().toASCIIString();
+                }
+            }
+        }
+        return mediaUri;
+    }
+
+    private void getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen, Collection<DerivedUnit> derivedUnits){
+        for(DerivationEvent derivationEvent:specimen.getDerivationEvents()){
+            for(DerivedUnit derivative:derivationEvent.getDerivatives()){
+                derivedUnits.add(derivative);
+                getDerivedUnitsFor(derivative, derivedUnits);
+            }
+        }
+    }
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageByAssociatedTaxon(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
@@ -307,7 +540,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 //        Integer limit = PagerUtils.limitFor(pageSize);
 //        Integer start = PagerUtils.startFor(pageSize, pageNumber);
 
-        associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+        if(!getSession().contains(associatedTaxon)){
+            associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
+        }
 
         if(includeRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, null, null, propertyPaths);
@@ -336,7 +571,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         UUID uuid = UUID.fromString(taxonUUID);
-        Taxon tax = (Taxon) taxonDao.load(uuid);
+        Taxon tax = (Taxon) taxonService.load(uuid);
        //TODO REMOVE NULL STATEMENT
 type=null;
         return pageByAssociatedTaxon( type,includeRelationships,tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths );
@@ -422,10 +657,15 @@ type=null;
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
         //FIXME: use HQL queries to increase performance
+        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
+//        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
-        SpecimenOrObservationBase derivedUnit = load(derivedUnitUuid);
-        if(derivedUnit instanceof DerivedUnit){
-            getFieldUnits((DerivedUnit) derivedUnit, fieldUnits);
+
+        if(specimen instanceof FieldUnit){
+            fieldUnits.add((FieldUnit) specimen);
+        }
+        else if(specimen instanceof DerivedUnit){
+            getFieldUnits((DerivedUnit) specimen, fieldUnits);
         }
         return fieldUnits;
     }
@@ -536,6 +776,77 @@ type=null;
         */
 
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+
+        //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
+
+        //FieldUnit
+        if(specimen instanceof FieldUnit){
+            nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements((FieldUnit)specimen));
+        }
+        //DerivedUnit
+        else if(specimen instanceof DerivedUnit){
+            DerivedUnit derivedUnit = (DerivedUnit)specimen;
+            if(derivedUnit.getDerivedFrom()!=null){
+                Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
+                getFieldUnits(derivedUnit, fieldUnits);
+                for(FieldUnit fieldUnit:fieldUnits){
+                    nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
+                }
+            }
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    private Collection<ICdmBase> getFieldUnitNonCascadedAssociatedElements(FieldUnit fieldUnit){
+        //get non cascaded element on SpecimenOrObservationBase level
+        Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(fieldUnit);
+
+        //get FieldUnit specific elements
+        GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+        if(gatheringEvent!=null){
+            //country
+            if(gatheringEvent.getCountry()!=null){
+                nonCascadedCdmEntities.add(gatheringEvent.getCountry());
+            }
+            //collecting areas
+            for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
+                nonCascadedCdmEntities.add(namedArea);
+            }
+        }
+        for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
+            for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                nonCascadedCdmEntities.addAll(getDerivedUnitNonCascadedAssociatedElements(derivedUnit));
+            }
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    private Collection<ICdmBase> getDerivedUnitNonCascadedAssociatedElements(DerivedUnit derivedUnit){
+        //get non cascaded element on SpecimenOrObservationBase level
+        Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(derivedUnit);
+
+        //get DerivedUnit specific elements
+        if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+            for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
+                nonCascadedCdmEntities.add(type);
+            }
+        }
+        if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
+        }
+        if(derivedUnit.getStoredUnder()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    /**
+     * @param specimen
+     * @return
+     */
+    private Collection<ICdmBase> getSpecimenOrObservationNonCascadedAssociatedElements(
+            SpecimenOrObservationBase<?> specimen) {
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
         //scan SpecimenOrObservationBase
         for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
             //modifier
@@ -554,43 +865,6 @@ type=null;
         //sex
         if(specimen.getSex()!=null){
             nonCascadedCdmEntities.add(specimen.getSex());
-        }
-
-        //FieldUnit
-        if(specimen instanceof FieldUnit){
-            FieldUnit fieldUnit = (FieldUnit)specimen;
-            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-            if(gatheringEvent!=null){
-                //country
-                if(gatheringEvent.getCountry()!=null){
-                    nonCascadedCdmEntities.add(gatheringEvent.getCountry());
-                }
-                //collecting areas
-                for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
-                    nonCascadedCdmEntities.add(namedArea);
-                }
-            }
-            for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
-                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
-                    nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(derivedUnit));
-                }
-            }
-        }
-
-        //DerivedUnit
-        else if(specimen instanceof DerivedUnit){
-            DerivedUnit derivedUnit = (DerivedUnit)specimen;
-            if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
-                for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
-                    nonCascadedCdmEntities.add(type);
-                }
-            }
-            if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
-                nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
-            }
-            if(derivedUnit.getStoredUnder()!=null){
-                nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
-            }
         }
         return nonCascadedCdmEntities;
     }

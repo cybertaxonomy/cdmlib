@@ -51,7 +51,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             "typeSpecimen",
             "typeName",
             "citation",
-            "citation.authorTeam.$",
+            "citation.authorship.$",
     });
 
     private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{

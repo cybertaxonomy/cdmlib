@@ -199,7 +199,7 @@
             <common:TitleCache>Linnaeus, 1758</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:Authorship>
             <reference:Title>Syst. Nat. (Edn 10)</reference:Title>
             <reference:DatePublished>
                 <common:Start>1758</common:Start>
@@ -212,7 +212,7 @@
             <common:TitleCache>Linnaeus, 1753</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:Authorship>
             <reference:Title>Species Plantarum</reference:Title>
             <reference:DatePublished>
                 <common:Start>1753</common:Start>
@@ -224,7 +224,7 @@
             <common:TitleCache>Schott, 1856</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</reference:Authorship>
             <reference:Title>Synopsis aroidearum complectens enumerationem sytematicam generum et ...</reference:Title>
             <reference:DatePublished>
                 <common:Start>1856</common:Start>
@@ -236,7 +236,7 @@
             <common:TitleCache>Tutt, 1904</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb</reference:Authorship>
             <reference:Title>A Natural History of the British Lepidoptera</reference:Title>
             <reference:DatePublished>
                 <common:Start>1904</common:Start>
@@ -248,7 +248,7 @@
             <common:TitleCache>Kitching &amp; Cadiou, 2000</common:TitleCache>
             <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c</reference:Authorship>
             <reference:Title>Hawkmoths of the World: An Annotated and Illustrated Revisionary Checklist</reference:Title>
             <reference:DatePublished>
                 <common:Start>2000</common:Start>

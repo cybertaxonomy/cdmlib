@@ -115,7 +115,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		//TODO microreference
 		record.setBibliographicCitation(reference.getTitleCache());
 		record.setTitle(reference.getTitle());
-		record.setCreator(reference.getAuthorTeam());
+		record.setCreator(reference.getAuthorship());
 		record.setDate(reference.getDatePublished());
 		record.setSource(reference.getInReference()==null?null:reference.getInReference().getTitleCache());
 		

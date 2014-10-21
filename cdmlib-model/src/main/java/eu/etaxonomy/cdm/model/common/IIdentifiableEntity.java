@@ -26,7 +26,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     /**
      * Sets the title cache without changing the <code>protectCache</code> flag.<BR><BR>
-     * NOTE: Use with care. If this flag is <code>false</code> the <code>titleCache</code> may be 
+     * NOTE: Use with care. If this flag is <code>false</code> the <code>titleCache</code> may be
      * recomputed with the next call of {@link #getTitleCache()}, which is automatically the case when
      * the object is persisted.
      * @see #setTitleCache(String, boolean)
@@ -34,7 +34,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * @param titleCache
      * @deprecated this method only exists to be in line with the Java Beans Specification (JSR 220 or JSR 273) .
      * As it will set the {@link #isProtectedTitleCache() protected} flag to false the title cache value
-     * may be automatically recomputed later. There are only very rare use cases were a programmer may 
+     * may be automatically recomputed later. There are only very rare use cases were a programmer may
      * want to use this method directly.
      * Better use {@link #setTitleCache(String, boolean)} with second parameter <code>protectCache</code>
      * set to <code>true</code>.
@@ -46,7 +46,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * Sets the title cache.<BR>
      * NOTE: In most cases the <code>protectCache</code> argument should be set to <code>true</code>.
      * See comments at {@link #setTitleCache(String)}
-     * 
+     *
      * @param titleCache the new title cache
      * @param protectCache the protect flag, <b>should in most cases be set to <code>true</code></b>
      */
@@ -55,7 +55,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public boolean isProtectedTitleCache();
 
     public void setProtectedTitleCache(boolean protectedTitleCache);
-    
+
     public Set<Rights> getRights();
 
     public void addRights(Rights right);
@@ -81,6 +81,61 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public void removeExtension(Extension extension);
 
     /**
+     * Returns the list of {@link Identifier alternative identifiers}.
+     * In case the order of these identifiers is important it should be
+     * implemented such that the first item in the list is the most 
+     * important/most current identifier. <BR>
+     * E.g. if a barcode identifier
+     * is more important than the accession number for a certain 
+     * specimen, than the barcode identifier should be before the accession number.
+     * <BR>Or if a sample designation is the most recent of all sample designations
+     * than it should be the first in the list while all history designations come
+     * later.
+     * @return
+     */
+    public List<Identifier> getIdentifiers();
+
+    /**
+     * Create and add a new identifier.
+     * @see #getIdentifiers()
+     * @param identifier
+     * @param identifierType
+     * @return
+     */
+    public Identifier addIdentifier(String identifier, DefinedTerm identifierType);
+    
+    /**
+     * @see #getIdentifiers()
+     * @param identifier
+     */
+    public void addIdentifier(Identifier identifier);
+    
+    /**
+     * Adds an identifier at the given position. For use of 
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * @see #getIdentifiers()
+     * @param index the list index 
+     * @param identifier the identifier
+     */
+    public void addIdentifier(int index, Identifier identifier);
+
+    /**
+     * Removes an identifier at the given position. For use of 
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * @param index the list index 
+     */
+    public void removeIdentifier(int index);
+
+    
+    /**
+     * Removes an identifier
+     * @see #getIdentifiers()
+     * @param identifier
+     */
+    public void removeIdentifier(Identifier identifier);
+
+
+    /**
      * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
      * This returns an String that identifies the object well without beeing necessarily unique.
      * Specification: This method should never call other object' methods so it can be well used for debugging
@@ -90,6 +145,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString();
 
     public byte[] getData();

@@ -11,37 +11,54 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -52,10 +69,12 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
     "name",
+    "description",
     "rootNode",
     "reference",
-    "microReference"
-
+    "microReference",
+    "timeperiod",
+    "geoScopes"
 })
 @XmlRootElement(name = "Classification")
 @Entity
@@ -87,10 +106,32 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @Cascade({CascadeType.SAVE_UPDATE})
     private Reference<?> reference;
 
-
-
     @XmlElement(name = "microReference")
     private String microReference;
+    
+	@XmlElement(name = "TimePeriod")
+    private TimePeriod timeperiod = TimePeriod.NewInstance();
+	
+    @XmlElementWrapper( name = "GeoScopes")
+    @XmlElement( name = "GeoScope")
+    @XmlIDREF
+    @XmlSchemaType(name="IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="Classification_GeoScope")
+    @Cascade({CascadeType.SAVE_UPDATE})
+    private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+ 
+	@XmlElement(name = "Description")
+	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@MapKeyJoinColumn(name="description_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
+	@JoinTable(name = "Classification_Description")
+//	@Field(name="text", store=Store.YES)
+//    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+
+
 
 //	/**
 //	 * If this classification is an alternative classification for a subclassification in
@@ -490,6 +531,109 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     public void setMicroReference(String microReference) {
         this.microReference = microReference;
     }
+    
+
+    /**
+	 * The point in time, the time period or the season for which this description element 
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 */
+	public TimePeriod getTimeperiod() {
+		return timeperiod;
+	}
+
+	/**
+	 * @see #getTimeperiod()
+	 */
+	public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
+		this.timeperiod = timeperiod;
+	}
+	
+
+    /**
+     * Returns the set of {@link NamedArea named areas} indicating the geospatial
+     * data where <i>this</i> {@link Classification} is valid.
+     */
+    public Set<NamedArea> getGeoScopes(){
+        return this.geoScopes;
+    }
+
+    /**
+     * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
+     * delimiting the geospatial area where <i>this</i> {@link Classification} is valid.
+     *
+     * @param geoScope	the named area to be additionally assigned to <i>this</i> taxon description
+     * @see    	   		#getGeoScopes()
+     */
+    public void addGeoScope(NamedArea geoScope){
+        this.geoScopes.add(geoScope);
+    }
+
+    /**
+     * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
+     * the geospatial area where <i>this</i> {@link Classification} is valid.
+     *
+     * @param  geoScope   the named area which should be removed
+     * @see     		  #getGeoScopes()
+     * @see     		  #addGeoScope(NamedArea)
+     */
+    public void removeGeoScope(NamedArea geoScope){
+        this.geoScopes.remove(geoScope);
+    }
+    
+	
+	/** 
+	 * Returns the i18n description used to describe
+	 * <i>this</i> {@link Classification}. The different {@link LanguageString language strings}
+	 * contained in the multilanguage text should all have the same meaning.
+	 */
+	public Map<Language,LanguageString> getDescription(){
+		return this.description;
+	}
+	
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the {@link MultilanguageText description} used to describe
+	 * <i>this</i> {@link Classification}.
+	 * 
+	 * @param description	the language string describing the individuals association
+	 * 						in a particular language
+	 * @see    	   			#getDescription()
+	 * @see    	   			#putDescription(Language, String)
+	 * 
+	 */
+	public void putDescription(LanguageString description){
+		this.description.put(description.getLanguage(),description);
+	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to describe <i>this</i> {@link Classification}.
+	 * 
+	 * @param text		the string describing the individuals association
+	 * 					in a particular language
+	 * @param language	the language in which the text string is formulated
+	 * @see    	   		#getDescription()
+	 * @see    	   		#putDescription(LanguageString)
+	 */
+	public void putDescription(Language language, String text){
+		this.description.put(language, LanguageString.NewInstance(text, language));
+	}
+	/** 
+	 * Removes from the {@link MultilanguageText description} used to describe
+	 * <i>this</i>  {@link Classification} the one {@link LanguageString language string}
+	 * with the given {@link Language language}.
+	 *
+	 * @param  language	the language in which the language string to be removed
+	 * 					has been formulated
+	 * @see     		#getDescription()
+	 */
+	public void removeDescription(Language language){
+		this.description.remove(language);
+	}
+    
 
     @Override
     public String generateTitle() {
@@ -535,6 +679,12 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                 rootNodeClone.setClassification(result);
                 result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference());
                 rootNodeClone.setSynonymToBeUsed(rootNode.getSynonymToBeUsed());
+            }
+            
+            //geo-scopes
+            result.geoScopes = new HashSet<NamedArea>();
+            for (NamedArea namedArea : getGeoScopes()){
+                result.geoScopes.add(namedArea);
             }
 
             return result;

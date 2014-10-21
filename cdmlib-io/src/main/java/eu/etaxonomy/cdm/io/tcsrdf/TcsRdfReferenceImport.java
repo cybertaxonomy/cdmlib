@@ -238,9 +238,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsNamespace = publicationNamespace;
 				String strAuthorship = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				//TODO
-				TeamOrPersonBase<?> authorTeam = Team.NewInstance();
-				authorTeam.setTitleCache(strAuthorship, true);
-				ref.setAuthorTeam(authorTeam);
+				TeamOrPersonBase<?> authorship = Team.NewInstance();
+				authorship.setTitleCache(strAuthorship, true);
+				ref.setAuthorship(authorship);
 
 				tcsElementName = "year";
 				tcsNamespace = publicationNamespace;

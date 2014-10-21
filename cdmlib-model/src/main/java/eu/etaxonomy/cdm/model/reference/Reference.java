@@ -91,15 +91,14 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "abbrevTitleCache",
     "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
-    "authorTeam",
+    "authorship",
     "referenceAbstract",
     "title",
     "abbrevTitle",
     "editor",
 	"volume",
 	"pages",
-	"series",
-    "edition",
+	"edition",
     "isbn",
     "issn",
     "doi",
@@ -172,14 +171,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String editor;
-
-    @XmlElement(name = "Series")
-    @Field
-    //TODO Val #3379
-//    @NullOrNotEmpty
-	@Length(max = 255)
-    @Deprecated //series and seriesPart are duplicates #4293 
-	protected String series;
 
     @XmlElement(name = "Volume")
     @Field
@@ -327,13 +318,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Merge(MergeMode.OR)
 	private boolean nomenclaturallyRelevant;
 
-	@XmlElement(name = "AuthorTeam")
+	@XmlElement(name = "Authorship")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private TeamOrPersonBase<?> authorTeam;
+	private TeamOrPersonBase<?> authorship;
+
 
 //	@XmlElement(name = "ReferenceIdentity")
 //	@XmlIDREF
@@ -668,16 +660,16 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase
 	 */
 	@Override
-    public TeamOrPersonBase getAuthorTeam(){
-		return this.authorTeam;
+    public TeamOrPersonBase getAuthorship(){
+		return this.authorship;
 	}
 
 	/**
-	 * @see #getAuthorTeam()
+	 * @see #getAuthorship()
 	 */
 	@Override
-    public void setAuthorTeam(TeamOrPersonBase authorTeam){
-		this.authorTeam = authorTeam;
+    public void setAuthorship(TeamOrPersonBase authorship){
+		this.authorship = authorship;
 	}
 
 	/**
@@ -1318,7 +1310,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		try {
 			Reference<?> result = (Reference<?>)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
-			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
+			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

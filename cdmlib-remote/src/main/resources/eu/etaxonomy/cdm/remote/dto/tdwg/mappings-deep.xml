@@ -82,7 +82,7 @@
             <a>sec</a>
             <b>publishedInCitation</b>
         </field>
-        <field type="one-way" custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="authorTeam">
+        <field type="one-way" custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="authorship">
             <a>sec</a>
             <b>accordingTo</b>
         </field>

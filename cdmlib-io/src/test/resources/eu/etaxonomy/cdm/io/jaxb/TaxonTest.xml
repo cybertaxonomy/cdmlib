@@ -46,7 +46,7 @@
             <common:TitleCache>Laspeyres, 1809</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
-            <reference:AuthorTeam>urn-uuid-73b1c67a-b61a-4e6a-96fc-b6568c08542f</reference:AuthorTeam>
+            <reference:Authorship>urn-uuid-73b1c67a-b61a-4e6a-96fc-b6568c08542f</reference:Authorship>
             <reference:Title>Jena. allg. Lit.-Ztg</reference:Title>
             <reference:DatePublished>
                 <common:Start>1809</common:Start>

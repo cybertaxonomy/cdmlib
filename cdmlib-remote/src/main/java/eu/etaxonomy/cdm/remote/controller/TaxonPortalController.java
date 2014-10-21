@@ -143,7 +143,7 @@ public class TaxonPortalController extends TaxonController
 //            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
-            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "name.rank.representations",
             "name.status.type.representations",
@@ -164,7 +164,7 @@ public class TaxonPortalController extends TaxonController
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "taxonNodes.classification",
             });
@@ -174,7 +174,7 @@ public class TaxonPortalController extends TaxonController
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
-            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorship",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -184,7 +184,7 @@ public class TaxonPortalController extends TaxonController
 
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
             "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
@@ -194,7 +194,7 @@ public class TaxonPortalController extends TaxonController
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
-            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorship",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -202,7 +202,7 @@ public class TaxonPortalController extends TaxonController
 
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
 
             "name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -219,7 +219,7 @@ public class TaxonPortalController extends TaxonController
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
 
             "taxonNodes.$",
@@ -241,10 +241,10 @@ public class TaxonPortalController extends TaxonController
             "$",
             "type.inverseRepresentations",
             "toName.$",
-            "toName.nomenclaturalReference.authorTeam",
+            "toName.nomenclaturalReference.authorship",
             "toName.nomenclaturalReference.inReference",
             "fromName.$",
-            "fromName.nomenclaturalReference.authorTeam",
+            "fromName.nomenclaturalReference.authorship",
             "fromName.nomenclaturalReference.inReference",
 
     });
@@ -254,7 +254,7 @@ public class TaxonPortalController extends TaxonController
             "$",
             "elements.$",
             "elements.stateData.$",
-            "elements.sources.citation.authorTeam",
+            "elements.sources.citation.authorship",
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
@@ -269,7 +269,7 @@ public class TaxonPortalController extends TaxonController
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "sources.citation.authorTeam",
+            "sources.citation.authorship",
             "sources.nameUsedInSource",
             "multilanguageText",
             "media",
@@ -291,7 +291,7 @@ public class TaxonPortalController extends TaxonController
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
             "typeSpecimen.$",
-            "citation.authorTeam.$",
+            "citation.authorship.$",
             "typeName",
             "typeStatus"
     });

@@ -85,7 +85,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
-		ref1.setAuthorTeam(author);
+		ref1.setAuthorship(author);
 		name.setBasionymAuthorTeam(author);
 
 		name.setNomenclaturalReference(ref1);

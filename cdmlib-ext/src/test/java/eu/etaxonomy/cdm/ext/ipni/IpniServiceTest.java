@@ -188,7 +188,7 @@ public class IpniServiceTest {
 			refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
 			Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
 			ref = refList.get(0);
-			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorTeam().getTitleCache());
+			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorship().getTitleCache());
 			
 			
 	//		for (Reference ref : refList){

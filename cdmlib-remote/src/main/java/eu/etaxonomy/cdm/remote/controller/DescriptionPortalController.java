@@ -86,7 +86,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.$",
             "elements.multilanguageText.*",
             "elements.annotations",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource",
             "elements.area.level",
             "elements.modifyingText",
@@ -102,13 +102,13 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.$",
             "elements.annotations",
             "elements.markers",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource",
             "elements.area.level",
     });
 
     protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
-            "sources.citation.authorTeam.$",
+            "sources.citation.authorship.$",
             "sources.nameUsedInSource",
             "annotations"
     });

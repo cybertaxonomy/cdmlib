@@ -89,7 +89,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 		//author
 		TeamOrPersonBase<?> author = handleCreator(strCreator);
-		reference.setAuthorTeam(author);
+		reference.setAuthorship(author);
 		//date
 		TimePeriod publicationDate = handleDate(strDate);
 		reference.setDatePublished(publicationDate);
@@ -141,7 +141,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 				if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
 					NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 					String taxonAuthor = nvn.getAuthorshipCache();
-					String refAuthor = reference.getAuthorTeam().getNomenclaturalTitle();
+					String refAuthor = reference.getAuthorship().getNomenclaturalTitle();
 					Integer combYear = null;
 					Integer origYear = null;
 					if (nvn.isInstanceOf(ZoologicalName.class)){

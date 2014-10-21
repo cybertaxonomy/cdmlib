@@ -528,7 +528,7 @@ public class SDDDocumentBuilder {
 		ElementImpl revisionData = new ElementImpl(document, REVISION_DATA);
 
 		// authors
-		TeamOrPersonBase authors = database.getAuthorTeam();
+		TeamOrPersonBase authors = database.getAuthorship();
 		// TeamOrPersonBase editors = database.getUpdatedBy();
 
 		if ((authors != null)) { // || (editors != null)) {

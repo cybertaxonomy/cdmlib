@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -33,6 +34,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -52,7 +54,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {
     "sequences",
-    "amplifications"
+    "amplifications",
+    "dnaQuality"
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
@@ -95,6 +98,14 @@ public class DnaSample extends DerivedUnit implements Cloneable {
     @ContainedIn
     @NotNull
 	private Set<Amplification> amplifications = new HashSet<Amplification>();
+	
+    @XmlElement(name = "DnaQuality", required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    private DnaQuality dnaQuality;
 
 
 // ******************* CONSTRUCTOR *************************/
@@ -142,9 +153,19 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public void removeAmplification(Amplification amplification) {
 		this.amplifications.remove(amplification);
 	}
+	
+	public DnaQuality getDnaQuality() {
+		return dnaQuality;
+	}
+
+	public void setDnaQuality(DnaQuality dnaQuality) {
+		this.dnaQuality = dnaQuality;
+	}
+	
 
 // ************* Convenience Getter / Setter ************/
-	
+
+
 	@Transient
 	public Collection getStoredAt(){
 		return this.getCollection();

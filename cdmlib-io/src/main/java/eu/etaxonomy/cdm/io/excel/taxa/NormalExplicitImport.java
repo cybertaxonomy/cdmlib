@@ -386,7 +386,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						String value = sourceMap.get(type);
 						if (type.equals(SourceType.Author)){
 							TeamOrPersonBase<?> author = getAuthorAccordingToConfig(value, state);
-							ref.setAuthorTeam(author);
+							ref.setAuthorship(author);
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {

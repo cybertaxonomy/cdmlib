@@ -23,6 +23,7 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -81,9 +82,10 @@ import eu.etaxonomy.cdm.validation.Level2;
     "lsid",
     "titleCache",
     "protectedTitleCache",
-    "rights",
-    "extensions",
     "credits",
+    "extensions",
+    "identifiers",
+    "rights",
     "sources"
 })
 @Audited
@@ -146,6 +148,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<Extension>();
+
+    @XmlElementWrapper(name = "Identifiers", nillable = true)
+    @XmlElement(name = "Identifier")
+    @OrderColumn(name="sortIndex")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private List<Identifier> identifiers = new ArrayList<Identifier>();
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
@@ -217,7 +228,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Deprecated
     @Override
     public void setTitleCache(String titleCache){
-    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?  
+    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?
     	this.titleCache = getTruncatedCache(titleCache);
     }
 
@@ -303,6 +314,67 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void removeCredit(int index){
         getCredits().remove(index);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getIdentifiers()
+     */
+    @Override
+    public List<Identifier> getIdentifiers(){
+        if(this.identifiers == null) {
+            this.identifiers = new ArrayList<Identifier>();
+        }
+        return this.identifiers;
+    }
+    /**
+     * @param type
+     * @return a Set of extension value strings
+     */
+    public Set<String> getIdentifiers(DefinedTerm type){
+       return getIdentifiers(type.getUuid());
+    }
+    /**
+     * @param extensionTypeUuid
+     * @return a Set of extension value strings
+     */
+    public Set<String> getIdentifiers(UUID identifierTypeUuid){
+        Set<String> result = new HashSet<String>();
+        for (Identifier identifier : getIdentifiers()){
+            if (identifier.getType().getUuid().equals(identifierTypeUuid)){
+                result.add(identifier.getIdentifier());
+            }
+        }
+        return result;
+    }
+
+    public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
+    	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
+    	return result;
+    }
+
+     @Override
+    public void addIdentifier(int index, Identifier identifier){
+        if (identifier != null){
+        	identifier.setIdentifiedObj(this);
+            getIdentifiers().add(index, identifier);
+        }
+    }
+
+    @Override
+    public void addIdentifier(Identifier identifier){
+        addIdentifier(getIdentifiers().size(), identifier);
+    }
+
+    @Override
+    public void removeIdentifier(Identifier identifier){
+        if (identifier != null){
+        	identifier.setIdentifiedObj(null);
+            getIdentifiers().remove(identifier);
+        }
+    }
+    @Override
+    public void removeIdentifier(int index){
+    	getIdentifiers().remove(index);
     }
 
     @Override
@@ -410,8 +482,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         addSource(source);
         return source;
     }
-    
-    
+
+
     @Override
     public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -483,7 +555,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             		 ((BotanicalName)identifiableEntity).setNameCache(null, false);
             		 specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
             		 ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
-            		 
+
             	 }
              }
 
@@ -508,7 +580,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
-             
+
              if (this instanceof BotanicalName){
             	 if (((BotanicalName)this).isAutonym()){
             		 boolean isProtected = false;
@@ -532,8 +604,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          }
 
          // Compare name cache of taxon names
-         
-        
+
+
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
              result = thisNameCache.compareTo(specifiedNameCache);

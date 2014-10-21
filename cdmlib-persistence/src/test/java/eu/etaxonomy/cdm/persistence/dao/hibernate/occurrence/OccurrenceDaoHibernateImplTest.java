@@ -1,15 +1,23 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
-import static org.junit.Assert.*;
-
+import org.h2.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 
+	@SpringBeanByType
+	private IOccurrenceDao dao;
+	
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -83,6 +91,17 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 	@Test
 	public void testListByAnyAssociation() {
 		logger.warn("Not yet implemented");
+	}
+	
+	@Test
+	public void testSaveOriginalLabelData(){
+		DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
+		String originalLabelInfo = StringUtils.pad("my original info", 10000, "x", false);
+		Assert.assertEquals(Integer.valueOf(10000),  (Integer)originalLabelInfo.length());
+		unit.setOriginalLabelInfo(originalLabelInfo);
+		//test that lob is supported
+		dao.save(unit);
+		//assert no exception
 	}
 
 }

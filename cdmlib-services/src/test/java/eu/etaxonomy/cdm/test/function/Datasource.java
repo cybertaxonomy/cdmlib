@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -48,7 +49,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -71,8 +71,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = "cdm_test";
-//		String database = "test";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34upgrade" : "cdm34");
+//		String database = "cdm34upgrade";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -122,14 +122,18 @@ public class Datasource {
 		
 		try {
 			CdmUpdater updater = new CdmUpdater();
-			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			if (schema == DbSchemaValidation.VALIDATE){
+				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			}
 		} catch (Exception e) {
-//			xx;
+			e.printStackTrace();
 		}
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		
+		appCtr.getCommonService().createFullSampleData();
 		
 //		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		

@@ -13,12 +13,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.search.annotations.Analyze;
@@ -66,10 +67,8 @@ public class User extends CdmBase implements UserDetails {
     private static final long serialVersionUID = 6582191171369439163L;
     private static final Logger logger = Logger.getLogger(User.class);
 
-    protected User(){
-        super();
-    }
-
+ // **************************** FACTORY *****************************************/   
+    
     public static User NewInstance(String username, String pwd){
         User user = new User();
         user.setUsername(username);
@@ -98,9 +97,12 @@ public class User extends CdmBase implements UserDetails {
         return user;
     }
 
+//***************************** Fields *********************** /
+    
     @XmlElement(name = "Username")
-    @NaturalId
+    @Column(unique = true)
     @Field(analyze = Analyze.NO)
+    @NotNull
     protected String username;
 
     /**
@@ -156,6 +158,14 @@ public class User extends CdmBase implements UserDetails {
     @Transient
     private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
 
+//***************************** Constructor *********************** /
+    
+    protected User(){
+        super();
+    }
+    
+// ***************************** METHODS ******************************/
+    
     /**
      * Initializes or refreshes the collection of authorities, See
      * {@link #getAuthorities()}

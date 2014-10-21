@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_314_315;
+import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -173,7 +174,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 	
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_33_34.NewInstance();
 	}
 
 	@Override

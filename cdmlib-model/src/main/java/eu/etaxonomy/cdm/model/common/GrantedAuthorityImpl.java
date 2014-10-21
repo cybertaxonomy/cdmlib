@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -17,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -27,11 +28,11 @@ import org.springframework.security.core.GrantedAuthority;
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 
     private static final long serialVersionUID = 2651969425860655040L;
-    private static final Logger logger = Logger
-            .getLogger(GrantedAuthority.class);
+    private static final Logger logger = Logger.getLogger(GrantedAuthority.class);
 
     @XmlElement(name = "Authority")
-    @NaturalId
+    @Column(unique = true)
+    @NotNull
     private String authority;
 
     protected GrantedAuthorityImpl() {
@@ -42,9 +43,6 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         return new GrantedAuthorityImpl();
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.core.GrantedAuthority#getAuthority()
-     */
     @Override
     public String getAuthority() {
         return authority;

@@ -111,16 +111,13 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	}
 	
 // ********************** GETTER /SETTER *****************************/
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
-	 */
+
+	@Override
 	public IdentifiableEntity getSourcedObj() {
 		return sourcedObj;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setSourcedObj(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
+	@Override
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
