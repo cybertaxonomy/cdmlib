@@ -55,7 +55,7 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 	
 	private boolean createUuidConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
-			String updateQuery = getCreateQuery(datasource, caseType, tableName, "_UniqueKey", "uuid");
+			String updateQuery = getCreateQuery(datasource, caseType, tableName, tableName + "_UniqueKey", "uuid");
 			datasource.executeUpdate(updateQuery);
 			return true;
 		} catch (Exception e) {
@@ -92,7 +92,6 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 			return updateQuery;
 	}
 
-
 	private boolean removeExistingConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
@@ -119,6 +118,4 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 			return false;
 		}
 	}
-
-
 }
