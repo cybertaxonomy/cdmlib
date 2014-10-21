@@ -28,12 +28,15 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -53,6 +56,8 @@ import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -83,11 +88,16 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
@@ -108,11 +118,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.view.View;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -153,9 +165,48 @@ public class FullCoverageDataGenerator {
 		
 		createTaxon(cdmBases);
 		
+		createSupplemental(cdmBases);
+		
 		for (CdmBase cdmBase: cdmBases){
 			session.save(cdmBase);
 		}
+	}
+
+
+	private void createSupplemental(List<CdmBase> cdmBases)  {
+		
+		Reference<?> ref = ReferenceFactory.newBook();
+		
+		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
+		ref.addAnnotation(annotation);
+		handleAnnotatableEntity(annotation);
+		
+		Credit credit = Credit.NewInstance(Person.NewInstance(), "refCredit", "rc", Language.DEFAULT());
+		ref.addCredit(credit);
+		handleAnnotatableEntity(credit);
+
+		Rights rights = Rights.NewInstance("My rights", Language.GERMAN());
+		ref.addRights(rights);
+		handleAnnotatableEntity(rights);
+		
+		//Others
+		try {
+			LSIDAuthority lsidAuthority = new LSIDAuthority("My authority");
+			lsidAuthority.addNamespace("lsidNamespace", TaxonNameBase.class);
+			cdmBases.add(lsidAuthority);
+		} catch (MalformedLSIDException e) {
+			e.printStackTrace();
+		}
+		
+		View view = new View();
+		View subView = new View();
+		subView.addSuperView(view);
+		
+		cdmBases.add(view);
+		cdmBases.add(subView);
+		
+		cdmBases.add(ref);
+		
 	}
 
 
@@ -219,8 +270,20 @@ public class FullCoverageDataGenerator {
 
 	private void createDescriptions(List<CdmBase> cdmBases) {
 		
+		TermVocabulary voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
+				"myTerm voc", "mtv", URI.create("http://www.abc.de"));
+		handleIdentifiableEntity(voc);
+		cdmBases.add(voc);
+		
+		Representation rep = voc.getRepresentations().iterator().next();
+		handleAnnotatableEntity(rep);
+//		Representation engRep = Language.ENGLISH().getRepresentations().iterator().next();
+//		handleAnnotatableEntity(engRep);
+//		cdmBases.add(engRep);  //needed?
+		
 		//Categorical data
 		State state = State.NewInstance("Test state", "state", "st.");
+		state.addMedia(Media.NewInstance());
 		cdmBases.add(state);
 		CategoricalData categoricalData = CategoricalData.NewInstance(state, Feature.CONSERVATION());
 		StateData stateData = categoricalData.getStateData().get(0);
@@ -243,18 +306,33 @@ public class FullCoverageDataGenerator {
 		MeasurementUnit measurementUnit = MeasurementUnit.NewInstance("Measurement Unit", "munit", null);
 		cdmBases.add(measurementUnit);
 		quantitativeData.setUnit(measurementUnit);
-		quantitativeData.setAverage((float)22.9 , null);
+		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage((float)22.9 , null);
 		handleAnnotatableEntity(quantitativeData);
 		handleIdentifiableEntity(measurementUnit);
+		DefinedTerm valueModifier = DefinedTerm.NewModifierInstance("about", "about", null);
+		statisticalMeasurementValue.addModifier(valueModifier);
+		cdmBases.add(valueModifier);
 		
+		//Feature
+		TermVocabulary<DefinedTerm> recommendedModifierEnumeration = TermVocabulary.NewInstance(TermType.Modifier, DefinedTerm.class);
+		leaveLength.addRecommendedModifierEnumeration(recommendedModifierEnumeration);
+		cdmBases.add(recommendedModifierEnumeration);
+		TermVocabulary<State> supportedCategoricalEnumeration = TermVocabulary.NewInstance(TermType.State, State.class);
+		leaveLength.addSupportedCategoricalEnumeration(supportedCategoricalEnumeration);
+		cdmBases.add(supportedCategoricalEnumeration);
+		leaveLength.addRecommendedMeasurementUnit(measurementUnit);
+		leaveLength.addRecommendedStatisticalMeasure(StatisticalMeasure.AVERAGE());
 		
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
 		handleAnnotatableEntity(commonTaxonName);
 		
 		TextData textData = TextData.NewInstance(Feature.DIAGNOSIS());
-		textData.putModifyingText(Language.ENGLISH(), "nice diagnosis");
+		Language eng = Language.ENGLISH();
+		textData.putModifyingText(eng, "nice diagnosis");
+		LanguageString languageString = textData.getModifyingText().get(eng);
 		handleAnnotatableEntity(textData);
-				
+		handleAnnotatableEntity(languageString);		
+		
 		TextFormat format = TextFormat.NewInstance("format", "format", null);
 		textData.setFormat(format);
 		cdmBases.add(format);
@@ -270,9 +348,11 @@ public class FullCoverageDataGenerator {
 		taxonInteraction.putDescription(Language.ENGLISH(), "interaction description");
 		handleAnnotatableEntity(taxonInteraction);
 		
-		Distribution distribution = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.CULTIVATED());
+		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
+		inCountryArea.addCountry(Country.TURKEYREPUBLICOF());
+		cdmBases.add(inCountryArea);
+		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
-		
 		
 		Taxon taxon = getTaxon();
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
@@ -315,11 +395,12 @@ public class FullCoverageDataGenerator {
 		
 		//Feature Tree
 		FeatureTree featureTree = FeatureTree.NewInstance();
+//		featureTree
 		FeatureNode descriptionFeatureNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
 		FeatureNode leaveLengthNode = FeatureNode.NewInstance(leaveLength);
 		featureTree.getRootChildren().add(descriptionFeatureNode);
 		descriptionFeatureNode.addChild(leaveLengthNode);
-		handleIdentifiableEntity(featureTree);		
+		handleIdentifiableEntity(featureTree);
 		
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);
 		State applicableState = State.NewInstance("only applicable state", "only applicable state", null);
@@ -328,6 +409,7 @@ public class FullCoverageDataGenerator {
 		leaveLengthNode.addInapplicableState(inapplicableState);
 		leaveLengthNode.addApplicableState(applicableState);
 		cdmBases.add(featureTree);
+		cdmBases.add(leaveLengthNode);
 		
 		
 		WorkingSet workingSet = WorkingSet.NewInstance();
@@ -510,9 +592,10 @@ public class FullCoverageDataGenerator {
 
 		TaxonNameBase<?,?> synName = BotanicalName.NewInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec);
-		taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), 
+		SynonymRelationship synRel = taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), 
 				getReference(), "123");
 		taxon.setDoubtful(true);
+		handleAnnotatableEntity(synRel);
 		handleIdentifiableEntity(syn);
 
 		
@@ -529,7 +612,8 @@ public class FullCoverageDataGenerator {
 		Classification classification = Classification.NewInstance("My classification", sec);
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
-
+		handleAnnotatableEntity(node);
+		
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
 		
@@ -699,7 +783,10 @@ public class FullCoverageDataGenerator {
 		Person exBasionymAuthorTeam = Person.NewInstance();
 		botName.setExBasionymAuthorTeam(exBasionymAuthorTeam);
 		handleIdentifiableEntity(botName);
-
+		handleAnnotatableEntity(botName.getHomotypicalGroup());
+		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
+		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
+		handleAnnotatableEntity(hybridRel);
 		
 		ZoologicalName zooName = ZoologicalName.NewInstance(Rank.GENUS());
 		zooName.setBreed("breed");
@@ -709,16 +796,21 @@ public class FullCoverageDataGenerator {
 		zooName.addDescription(TaxonNameDescription.NewInstance());
 		zooName.setNomenclaturalMicroReference("p. 123");
 		zooName.setNomenclaturalReference(getReference());
-		zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered");
-		zooName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222"));
+		NameRelationship rel = zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered");
+		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222");
+		zooName.addStatus(status);
+		handleAnnotatableEntity(rel);
+		handleAnnotatableEntity(status);
 		handleIdentifiableEntity(zooName);
 
 		//TypeDesignation
 		ZoologicalName speciesZooName = ZoologicalName.NewInstance(Rank.SPECIES());
-		zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name", 
+		NameTypeDesignation nameDesig = zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name", 
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
-		speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(), 
+		handleAnnotatableEntity(nameDesig);
+		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(), 
 				getReference(), "p,22", "original name", false, true);
+		handleAnnotatableEntity(specimenDesig);
 		
 		ViralName viralName = ViralName.NewInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
