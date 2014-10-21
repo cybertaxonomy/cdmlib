@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -81,6 +82,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.Cloning;
+import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Primer;
@@ -578,6 +580,20 @@ public class FullCoverageDataGenerator {
 		sequence.addCitation(sequenceCitation);
 		handleAnnotatableEntity(sequence);
 
+		//DnaQuality
+		DnaQuality dnaQuality = DnaQuality.NewInstance();
+		dnaQuality.setConcentration(2.0);
+		MeasurementUnit mu = MeasurementUnit.NewInstance("mg/ml", "mg/ml","mg/ml");
+		cdmBases.add(mu);
+		dnaQuality.setConcentrationUnit(mu);
+		dnaQuality.setPurificationMethod("purification method");
+		dnaQuality.setQualityCheckDate(DateTime.now());
+		dnaQuality.setQualityTerm(null); //TODO
+		dnaQuality.setRatioOfAbsorbance260_230(22.0);
+		dnaQuality.setRatioOfAbsorbance260_280(3.9);
+		dnaSample.setDnaQuality(dnaQuality);
+		
+		
 		//Phylogenetic Tree
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
@@ -616,6 +632,11 @@ public class FullCoverageDataGenerator {
 		//Classification
 		Classification classification = Classification.NewInstance("My classification", sec);
 		classification.setMicroReference("p. 123");
+		classification.setTimeperiod(TimePeriodParser.parseString("1.1.2012-4.8.2013"));
+		classification.addGeoScope(Country.GERMANY());
+		classification.putDescription(Language.ENGLISH(), "An interesting classification");
+		
+		
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
@@ -733,6 +754,7 @@ public class FullCoverageDataGenerator {
 		PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
 		preservation.setTemperature(22.4);
 		mediaSpecimen.setPreservation(preservation);
+		mediaSpecimen.setOriginalLabelInfo("Original Label Info");
 		handleIdentifiableEntity(mediaSpecimen);
 
 		//DerivationEvent
@@ -857,6 +879,10 @@ public class FullCoverageDataGenerator {
 
 		//Extension
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
+		
+		//Identifier
+		Identifier.NewInstance(identifiableEntity, "ident23", DefinedTerm.SEX_FEMALE());
+
 
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());

@@ -38,8 +38,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 	private static final String startSchemaVersion = "3.3.1.0.201401140000";
 	private static final String endSchemaVersion = "3.4.0.0.201407010000";
 
-	// ********************** FACTORY METHOD
-	// *******************************************
+	// ********************** FACTORY METHOD *************************************
 
 	public static SchemaUpdater_331_34 NewInstance() {
 		return new SchemaUpdater_331_34();
@@ -280,7 +279,6 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		referencedTables = new String[]{null,null,null,null,null,null,"EntityValidationResult"};
 		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
 		stepList.add(creator);
-
 		
 		
 		return stepList;
