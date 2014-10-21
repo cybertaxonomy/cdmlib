@@ -188,7 +188,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		//sequenceSet
 		result.sequences = new HashSet<Sequence>();
 		for(Sequence sequence : this.sequences) {
-			result.addSequence(sequence);
+			result.addSequence((Sequence)sequence.clone());
 		}
 		//no changes to: bankNumber
 		return result;
