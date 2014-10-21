@@ -126,7 +126,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.view.View;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -199,12 +198,6 @@ public class FullCoverageDataGenerator {
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
 		}
-		
-		View view = new View();
-		View subView = new View();
-		subView.addSuperView(view);
-		cdmBases.add(view);
-		cdmBases.add(subView);
 		
 		User user = User.NewInstance("myUser", "12345");
 		Group group = Group.NewInstance("MyGroup");
