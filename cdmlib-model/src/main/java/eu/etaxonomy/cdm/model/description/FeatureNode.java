@@ -420,7 +420,6 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see    	   								#getApplicableState()
 	 */
 	public void addApplicableState(State applicableState) {
-		logger.debug("addApplicableState");
 		this.onlyApplicableIf.add(applicableState);
 	}
 
@@ -464,7 +463,6 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see    	   								#getInapplicableState()
 	 */
 	public void addInapplicableState(State inapplicableState) {
-		logger.debug("addInapplicableState");
 		this.inapplicableIf.add(inapplicableState);
 	}
 
