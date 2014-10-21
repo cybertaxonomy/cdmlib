@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.vaadin.components.TaxonTableDTO;
-import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 /**
  * 
@@ -84,10 +84,10 @@ import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
  * @author a.oppermann
  */
 
-@Component
-@Scope("prototype")
-@Theme("mytheme")
-@VaadinView(DashBoardView.NAME)
+//@Component
+//@Scope("prototype")
+//@Theme("mytheme")
+//@VaadinView(DashBoardView.NAME)
 public class DashBoardView extends CustomComponent implements View{
 
 	/**
@@ -98,7 +98,7 @@ public class DashBoardView extends CustomComponent implements View{
 	public static final String NAME = "dash";
 	Logger logger = Logger.getLogger(DashBoardView.class);
 	@Autowired
-	private AuthenticationService authenticationController;
+	private VaadinAuthenticationService authenticationService;
 	
 	@Autowired
 	private HorizontalToolbar toolbar;
@@ -140,7 +140,7 @@ public class DashBoardView extends CustomComponent implements View{
 	 */
 	@PostConstruct
 	public void PostConstruct(){
-		if(authenticationController.isAuthenticated()){
+		if(authenticationService.isAuthenticated()){
 			layout = new VerticalLayout();
 			layout.setSizeFull();
 			layout.setHeight("100%");
@@ -242,7 +242,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	
 	private FormLayout constructForm(Taxon taxon, final Window window){
-		CdmTaxonTableCollection redlistDTO = new CdmTaxonTableCollection(taxon, listDescriptions, null);
+		CdmTaxonTableCollection redlistDTO = new CdmTaxonTableCollection(taxon, listDescriptions);
 		final BeanFieldGroup<CdmTaxonTableCollection> binder = new BeanFieldGroup<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		binder.setItemDataSource(redlistDTO);
 		binder.setBuffered(true);
@@ -305,16 +305,16 @@ public class DashBoardView extends CustomComponent implements View{
 		container.addAll(listTerm);
 		
 		final ComboBox box = new ComboBox("Occurrence Status: ", container);
-		box.setValue(red.getDistributionStatus());
+	//FIXME:	box.setValue(red.getDistributionStatus());
 		box.setImmediate(true);
 		
 		box.addValueChangeListener(new ValueChangeListener() {	
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				ConversationHolder conversationHolder = authenticationController.getConversationHolder();
+				ConversationHolder conversationHolder = authenticationService.getConversationHolder();
 				conversationHolder.startTransaction();
-				red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
+	//FIXME:		red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
 				conversationHolder.commit();
 				updateTables();
 			}

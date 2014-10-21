@@ -32,7 +32,6 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
@@ -1279,8 +1278,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean containsValue(PersistentCollection col, Object element) {    	
     	return contains(col, element);
     }
-    
+
+	@Override
+	public void createFullSampleData() {
+//		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
+//		dataGenerator.fillWithData(getSession());
+	}
 
 }
-
-

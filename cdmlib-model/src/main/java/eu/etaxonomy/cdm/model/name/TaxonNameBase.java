@@ -440,11 +440,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
-    public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
+    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
         //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
-        NameRelationship rel = this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
-        
-//		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
+        return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
     }
     /**
      * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name

@@ -16,24 +16,23 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-import eu.etaxonomy.cdm.remote.vaadin.components.ClassificationSelectionForm;
+import eu.etaxonomy.cdm.remote.vaadin.components.DistributionSelectionForm;
 import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 @Component
 @Scope("prototype")
 @Theme("mytheme")
-@VaadinView(ClassificationSelectorView.NAME)
-public class ClassificationSelectorView extends CustomComponent implements View {
+@VaadinView(DistributionSelectorView.NAME)
+public class DistributionSelectorView extends CustomComponent implements View {
 
 	private static final long serialVersionUID = 1L;
-	public static final String NAME = "ClassificationSelector";
+	public static final String NAME = "DistributionSelector";
 	@Autowired
 	private VaadinAuthenticationService authenticationService;
 	@Autowired
-	private ClassificationSelectionForm classificationSelectionForm;
+	private DistributionSelectionForm distributionSelectionForm;
 	
 	@PostConstruct
 	public void PostConstruct(){
@@ -41,6 +40,7 @@ public class ClassificationSelectorView extends CustomComponent implements View 
 			VerticalLayout layout = new VerticalLayout();
 			layout.setWidth("100%");
 			layout.setHeight("100%");
+			Page page = Page.getCurrent();
 
 			HorizontalLayout hLayout = new HorizontalLayout();
 			//FIXME: Quick'n'dirty hack
@@ -50,7 +50,7 @@ public class ClassificationSelectorView extends CustomComponent implements View 
 			
 			Panel panel = new Panel();
 			panel.setSizeUndefined();
-			panel.setContent(classificationSelectionForm);
+			panel.setContent(distributionSelectionForm);
 			panel.setStyleName("login");
 			
 			layout.addComponent(hLayout);
@@ -66,10 +66,6 @@ public class ClassificationSelectorView extends CustomComponent implements View 
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
-		Boolean isAuthenticated = (Boolean)UI.getCurrent().getSession().getAttribute("isAuthenticated");
-		if(isAuthenticated == null || !isAuthenticated){
-			Page.getCurrent().setLocation("/edit/");
-		}
+		
 	}
 }

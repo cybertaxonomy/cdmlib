@@ -1,6 +1,10 @@
 package eu.etaxonomy.cdm.remote.vaadin.components;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.springframework.context.annotation.Scope;
 
@@ -17,8 +21,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
-@Scope("prototype")
-public class DetailWindow extends CustomComponent{
+@Scope("request")
+public class DetailWindow extends CustomComponent implements Serializable{
 
 	
 	private Collection<DescriptionElementBase> listDescriptions;
@@ -50,6 +54,8 @@ public class DetailWindow extends CustomComponent{
 	
 	private void initDescriptionTree(Tree tree, Collection<DescriptionElementBase>listDescriptions, Object parent) {
 		//TODO: sorting List
+//		ArrayList<DescriptionElementBase> lDesc = new ArrayList<DescriptionElementBase>(listDescriptions);
+//		sort(lDesc);
 		for (DescriptionElementBase deb : listDescriptions){
 			tree.addItem(deb.getFeature());
 			tree.setItemCaption(deb.getFeature(), deb.getFeature().getTitleCache());
@@ -88,6 +94,25 @@ public class DetailWindow extends CustomComponent{
 			tree.expandItemsRecursively(parent);
 		}
 
+	}
+
+	private void sort(ArrayList<DescriptionElementBase> lDesc) {
+		Collections.sort(lDesc, new Comparator<DescriptionElementBase>() {
+			@Override
+			public int compare(DescriptionElementBase o1,
+					DescriptionElementBase o2) {
+			    if (o1.toString() == null && o2.toString() == null) {
+			        return 0;
+			      }
+			      if (o1.toString() == null) {
+			        return 1;
+			      }
+			      if (o2.toString() == null) {
+			        return -1;
+			      }
+			      return o2.toString().compareTo(o2.toString());
+			}
+		});
 	}
 
 }

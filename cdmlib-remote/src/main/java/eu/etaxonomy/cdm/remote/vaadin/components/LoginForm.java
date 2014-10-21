@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.remote.vaadin.components;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 
-import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ClassificationSelectorView;
 
 /**
@@ -34,7 +37,7 @@ import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ClassificationSelector
 
 @Component
 @Scope("prototype")
-public class LoginForm extends FormLayout{
+public class LoginForm extends FormLayout implements Serializable{
 	
     /**
 	 * Automatically generated serial version ID
@@ -44,8 +47,11 @@ public class LoginForm extends FormLayout{
 	private static final String COMMON_FIELD_WIDTH = "12em";
     
 	@Autowired
-	private AuthenticationService authenticationController;
+	private VaadinAuthenticationService authenticationController;
 
+	
+	
+	
 	private TextField userName;
 	private PasswordField passwordField;
 
@@ -85,6 +91,7 @@ public class LoginForm extends FormLayout{
 				try{
 					boolean isAuthenticated = authenticationController.authenticate(userName.getValue(), passwordField.getValue());
 					if(isAuthenticated){
+						UI.getCurrent().getSession().setAttribute("isAuthenticated", isAuthenticated);
 						Page.getCurrent().setUriFragment("!"+ ClassificationSelectorView.NAME);//DashBoardView BfnView.NAME
 					}
 				}catch(AuthenticationException e){

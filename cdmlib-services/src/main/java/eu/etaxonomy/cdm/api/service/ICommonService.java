@@ -183,8 +183,13 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 */
 	public boolean containsValue(PersistentCollection col, Object element);
 
-	Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 	
+	/**
+	 * Preliminary, may be moved to test later
+	 */
+	@Deprecated
+	public void createFullSampleData();
 	
 	
 }

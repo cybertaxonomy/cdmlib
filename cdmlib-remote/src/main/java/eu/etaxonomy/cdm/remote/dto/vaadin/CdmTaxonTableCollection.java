@@ -6,11 +6,15 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.TaxonServiceImpl;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class acts like a data transfer object. It is intended to ease the communication
@@ -32,19 +36,20 @@ public class CdmTaxonTableCollection{
 
     private Collection<DescriptionElementBase> listTaxonDescription;
 
-    private List<PresenceAbsenceTermBase> termList;
     
 	private String fullTitleCache;
 	
 	private Rank rank;
 
     
-    public CdmTaxonTableCollection(Taxon taxon, Collection<DescriptionElementBase> listTaxonDescription, List<PresenceAbsenceTermBase> termList){
-    	this.taxon = taxon;
+    public CdmTaxonTableCollection(Taxon taxon, Collection<DescriptionElementBase> listTaxonDescription){
+    	this.taxon = CdmBase.deproxy(taxon, Taxon.class);
     	this.listTaxonDescription = listTaxonDescription;
-    	this.termList = termList;
     }
     
+    public CdmTaxonTableCollection(Taxon taxon){
+    	this.taxon = CdmBase.deproxy(taxon, Taxon.class);
+    }
     
     //----Getter - Setter - methods ----//
     /**
@@ -52,7 +57,12 @@ public class CdmTaxonTableCollection{
      * @return
      */
     public String getFullTitleCache() {
-    	return taxon.getName().getFullTitleCache();
+    	TaxonNameBase name = taxon.getName();
+    	name = CdmBase.deproxy(name, TaxonNameBase.class);
+    	if(name ==  null){
+    		return "-";
+    	}
+		return name.getFullTitleCache();
     }
     /**
      * 
@@ -83,6 +93,9 @@ public class CdmTaxonTableCollection{
      */
     public String getRank(){
     	rank = taxon.getName().getRank();
+    	if(rank == null){
+    		return "-";
+    	}
     	return rank.toString();
     }
     
@@ -100,8 +113,8 @@ public class CdmTaxonTableCollection{
      * 
      * @return
      */
-    public PresenceAbsenceTermBase<?> getDistributionStatus(){
-    	Distribution db = getDistribution();
+    public PresenceAbsenceTermBase<?> getDistributionStatus(String distribution){
+    	Distribution db = getDistribution(distribution);
     	if(db != null){
     		return db.getStatus();
     	}
@@ -142,8 +155,8 @@ public class CdmTaxonTableCollection{
      * 
      * @param status
      */
-    public void setDistributionStatus(PresenceAbsenceTermBase<?> status){
-    	Distribution db = getDistribution();
+    public void setDistributionStatus(String distribution, PresenceAbsenceTermBase<?> status){
+    	Distribution db = getDistribution(distribution);
     	if(db != null){
     		db.setStatus(status);
 //    		DescriptionServiceImpl desc = new DescriptionServiceImpl();
@@ -155,11 +168,17 @@ public class CdmTaxonTableCollection{
      * 
      * @return
      */
-    public Distribution getDistribution(){
-    	for(DescriptionElementBase deb : listTaxonDescription){
-			if(deb instanceof Distribution){
-				return (Distribution)deb;
-			}
+    public Distribution getDistribution(String distribution){
+    	if(listTaxonDescription != null){
+    		for(DescriptionElementBase deb : listTaxonDescription){
+    			if(deb instanceof Distribution){
+    				//FIXME HOW TO IMPLEMENT A FILTER ???
+    				Distribution db =  (Distribution)deb;
+    				if(db.getArea().getTitleCache().equalsIgnoreCase(distribution)){
+    					return db;
+    				}
+    			}
+    		}
     	}
     	return null;
     }

@@ -42,8 +42,8 @@ import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
  *
  */
 
-@Component
-@Scope("request")
+//@Component
+//@Scope("request")
 public class TaxonTableDTO extends Table{
 
 	/**
@@ -90,7 +90,7 @@ public class TaxonTableDTO extends Table{
 			Taxon taxon = taxonBase;
 			List<PresenceAbsenceTermBase> termList = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 			List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
-			CdmTaxonTableCollection tableCollection = new CdmTaxonTableCollection(taxon, listTaxonDescription, termList);
+			CdmTaxonTableCollection tableCollection = new CdmTaxonTableCollection(taxon, listTaxonDescription);
 			redListContainer.addBean(tableCollection);
 		}
 

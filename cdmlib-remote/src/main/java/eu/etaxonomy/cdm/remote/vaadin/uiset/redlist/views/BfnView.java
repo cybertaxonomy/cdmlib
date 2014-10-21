@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -14,9 +16,8 @@ import ru.xpoft.vaadin.VaadinView;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -27,7 +28,6 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -39,19 +39,22 @@ import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.components.DemoTaxonTable;
 import eu.etaxonomy.cdm.remote.vaadin.components.DetailWindow;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
-import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 @Component
-@Scope("prototype")
+@Scope("request")
 @Theme("mytheme")
-@VaadinView(BfnView.NAME)
+@VaadinView(value = BfnView.NAME, cached=true)
 public class BfnView extends CustomComponent implements View{
 
 	private static final long serialVersionUID = 1L;
@@ -59,7 +62,7 @@ public class BfnView extends CustomComponent implements View{
 	public static final String NAME = "bfn";
 
 	@Autowired
-	private AuthenticationService authenticationController;
+	private VaadinAuthenticationService authenticationController;
 
 	@Autowired
 	private HorizontalToolbar toolbar;
@@ -74,32 +77,45 @@ public class BfnView extends CustomComponent implements View{
 	private ITaxonService taxonService;
 	@Autowired
 	private IDescriptionService descriptionService;
+	@Autowired
+	private IVocabularyService vocabularyService;
 
 	private Taxon currentTaxon;
 
 	private final Logger logger = Logger.getLogger(BfnView.class);
+	
+	private Set<DefinedTermBase> selectedTerms;
 
 	@PostConstruct
 	public void PostConstruct(){
 		if(authenticationController.isAuthenticated()){
-//			DemoTable taxonTable = new DemoTable(taxonService, termService, descriptionService);
+			setSizeUndefined();
+			setSizeFull();
 			layout = new VerticalLayout();
 			layout.addComponent(toolbar);
 			layout.addComponent(taxonTable);
-			layout.setHeight(100, Unit.PERCENTAGE);
-			taxonTable.setWidth(100,Unit.PERCENTAGE);
-			taxonTable.setHeight(VaadinSession.getCurrent().getBrowser().getScreenHeight()-(toolbar.getHeight()+150),Unit.PIXELS);
+			layout.setSizeFull();
+			taxonTable.setSizeFull();
+			
+			selectedTerms = initializeTerms();
 
 			DefaultFieldFactory fieldFactory = createDefaulfielFactory();
 			taxonTable.setTableFieldFactory(fieldFactory);
-			layout.setExpandRatio(toolbar, 1);
-			layout.setExpandRatio(taxonTable, 2);
-			layout.setSizeFull();
+			layout.setExpandRatio(taxonTable, 1);
 
 			createEditClickListener();
 
 			setCompositionRoot(layout);
 		}
+	}
+
+
+	private Set<DefinedTermBase> initializeTerms() {
+		VaadinSession session = VaadinSession.getCurrent();
+		UUID termUUID = (UUID) session.getAttribute("selectedTerm");
+		TermVocabulary<DefinedTermBase> term = vocabularyService.load(termUUID);
+		term = CdmBase.deproxy(term, TermVocabulary.class);
+		return term.getTerms();
 	}
 
 
@@ -109,26 +125,23 @@ public class BfnView extends CustomComponent implements View{
 			@Override
 			public Field createField(Container container, Object itemId,
 					Object propertyId, com.vaadin.ui.Component uiContext) {
+				Property containerProperty = container.getContainerProperty(itemId, propertyId);
 				if("fullTitleCache".equals(propertyId)){
 					return null;
 				}
 				if("rank".equals(propertyId)){
 					return null;
 				}
-				if("UUID".equals(propertyId)){
-					return null;
-				}
-				if ("distributionStatus".equals(propertyId)) {
-					List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-					BeanItemContainer<PresenceAbsenceTermBase> termContainer = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
-					termContainer.addAll(listTerm);
-					final ComboBox box = new ComboBox("Occurrence Status: ", termContainer);
-					Item item = container.getItem(itemId);
-					box.setValue(item);
-					toolbar.getSaveButton().setCaption("Save Data *");
-					return box;
-				}
-
+//				if("Berlin".equals(propertyId)){
+//						List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+//						BeanItemContainer<PresenceAbsenceTermBase> termContainer = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
+//						termContainer.addAll(listTerm);
+//						final ComboBox box = new ComboBox("Occurrence Status: ", termContainer);
+//						Item item = container.getItem(itemId);
+//						box.setValue(item);
+//						toolbar.getSaveButton().setCaption("Save Data *");
+//						return box;
+//					}
 				return super.createField(container, itemId, propertyId, uiContext);
 			}
 		};
@@ -190,8 +203,11 @@ public class BfnView extends CustomComponent implements View{
 			public void buttonClick(ClickEvent event) {
 				if(taxonTable.isEditable() == false){
 					taxonTable.setEditable(true);
+//					taxonTable.removeGeneratedColumn("Berlin");
+//					taxonTable.refreshRowCache();
 				}else{
 					taxonTable.setEditable(false);
+					taxonTable.refreshRowCache();
 				}
 			}
 		});
@@ -211,7 +227,6 @@ public class BfnView extends CustomComponent implements View{
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
 
 	}
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{

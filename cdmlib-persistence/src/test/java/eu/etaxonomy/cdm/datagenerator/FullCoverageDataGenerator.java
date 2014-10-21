@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.AudioFile;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -110,6 +111,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -150,6 +152,10 @@ public class FullCoverageDataGenerator {
 		createReference(cdmBases);
 		
 		createTaxon(cdmBases);
+		
+		for (CdmBase cdmBase: cdmBases){
+			session.save(cdmBase);
+		}
 	}
 
 
@@ -174,7 +180,7 @@ public class FullCoverageDataGenerator {
 		contact.addEmailAddress("a@b.de");
 		contact.addFaxNumber("f:010-123456");
 		contact.addPhoneNumber("p:090-987654");
-		contact.addUrl(URI.create("http:\\\\www.abc.de"));
+		contact.addUrl(URI.create("http://www.abc.de").toString());
 		
 		//Address
 		Address address = Address.NewInstance(Country.GERMANY(), "locality", "pobox", "12345", "region", "street", locality);
@@ -183,15 +189,20 @@ public class FullCoverageDataGenerator {
 		//Team
 		Team team = Team.NewTitledInstance("Team title", "Team abbrev title");
 		team.addTeamMember(person);
+		handleIdentifiableEntity(team);
+		
 		
 		//Institution
 		Institution institution = Institution.NewInstance();
 		institution.setCode("institution code");
 		institution.setName("institution name");
+		handleIdentifiableEntity(institution);
+		
 		
 		//TODO vocabulary
 //		voc = "29ad808b-3126-4274-be81-4561e7afc76f"
 		DefinedTerm instType = DefinedTerm.NewInstitutionTypeInstance("Description forthis instition type", "institution type", "inst. t.");
+		cdmBases.add(instType);
 		institution.addType(instType);
 		person.addInstitutionalMembership(institution, TimePeriodParser.parseString("1955-1956"), "department", "role");
 		
@@ -202,6 +213,7 @@ public class FullCoverageDataGenerator {
 		
 		cdmBases.add(person);
 		cdmBases.add(team);
+		cdmBases.add(institution);
 	}
 	
 
@@ -209,43 +221,57 @@ public class FullCoverageDataGenerator {
 		
 		//Categorical data
 		State state = State.NewInstance("Test state", "state", "st.");
+		cdmBases.add(state);
 		CategoricalData categoricalData = CategoricalData.NewInstance(state, Feature.CONSERVATION());
 		StateData stateData = categoricalData.getStateData().get(0);
 		stateData.addModifier(DefinedTerm.SEX_FEMALE());
+		handleAnnotatableEntity(categoricalData);
+			
 		
-		StateData stateData2 = StateData.NewInstance(State.NewInstance());
+		State nextState = State.NewInstance();
+		cdmBases.add(nextState);
+		StateData stateData2 = StateData.NewInstance(nextState);
 		stateData2.putModifyingText(Language.ENGLISH(), "State2 modifying text");
 		categoricalData.addStateData(stateData2);
-		
-		
 		categoricalData.setOrderRelevant(true);
 		
 		//Quantitative data
 		Feature leaveLength = Feature.NewInstance("Leave length description", "leave length", "l.l.");
+		cdmBases.add(leaveLength);
 		leaveLength.setSupportsQuantitativeData(true);
 		QuantitativeData quantitativeData = QuantitativeData.NewInstance(leaveLength);
 		MeasurementUnit measurementUnit = MeasurementUnit.NewInstance("Measurement Unit", "munit", null);
+		cdmBases.add(measurementUnit);
 		quantitativeData.setUnit(measurementUnit);
 		quantitativeData.setAverage((float)22.9 , null);
+		handleAnnotatableEntity(quantitativeData);
+		handleIdentifiableEntity(measurementUnit);
 		
 		
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
+		handleAnnotatableEntity(commonTaxonName);
 		
 		TextData textData = TextData.NewInstance(Feature.DIAGNOSIS());
 		textData.putModifyingText(Language.ENGLISH(), "nice diagnosis");
-		
+		handleAnnotatableEntity(textData);
+				
 		TextFormat format = TextFormat.NewInstance("format", "format", null);
 		textData.setFormat(format);
+		cdmBases.add(format);
+		handleAnnotatableEntity(format);
 		
 		DerivedUnit specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		IndividualsAssociation indAssoc = IndividualsAssociation.NewInstance(specimen);
 		indAssoc.putDescription(Language.ENGLISH(), "description for individuals association");
+		handleAnnotatableEntity(indAssoc);
+		
 		
 		TaxonInteraction taxonInteraction = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
 		taxonInteraction.putDescription(Language.ENGLISH(), "interaction description");
-		
+		handleAnnotatableEntity(taxonInteraction);
 		
 		Distribution distribution = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.CULTIVATED());
+		handleAnnotatableEntity(distribution);
 		
 		
 		Taxon taxon = getTaxon();
@@ -258,6 +284,8 @@ public class FullCoverageDataGenerator {
 		
 		taxonDescription.addScope(DefinedTerm.SEX_FEMALE());
 		taxonDescription.addGeoScope(Country.GERMANY());
+		handleIdentifiableEntity(taxonDescription);
+		
 		
 		cdmBases.add(taxon);
 
@@ -269,18 +297,21 @@ public class FullCoverageDataGenerator {
 		Reference<?> ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(BotanicalName.NewInstance(Rank.GENUS()));
-		
+		handleAnnotatableEntity(source);
 		
 		
 		//Specimen description
 		SpecimenOrObservationBase<?> describedSpecimen = getSpecimen();
-		SpecimenDescription.NewInstance(specimen);
+		SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
 		cdmBases.add(describedSpecimen);
+		handleAnnotatableEntity(specDesc);
 		
 		//Name description
 		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
-		TaxonNameDescription.NewInstance(name);
+		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name);
 		cdmBases.add(name);
+		handleAnnotatableEntity(nameDesc);
+		
 		
 		//Feature Tree
 		FeatureTree featureTree = FeatureTree.NewInstance();
@@ -288,9 +319,12 @@ public class FullCoverageDataGenerator {
 		FeatureNode leaveLengthNode = FeatureNode.NewInstance(leaveLength);
 		featureTree.getRootChildren().add(descriptionFeatureNode);
 		descriptionFeatureNode.addChild(leaveLengthNode);
+		handleIdentifiableEntity(featureTree);		
 		
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);
 		State applicableState = State.NewInstance("only applicable state", "only applicable state", null);
+		cdmBases.add(applicableState);
+		cdmBases.add(inapplicableState);
 		leaveLengthNode.addInapplicableState(inapplicableState);
 		leaveLengthNode.addApplicableState(applicableState);
 		cdmBases.add(featureTree);
@@ -300,14 +334,15 @@ public class FullCoverageDataGenerator {
 		workingSet.addDescription(taxonDescription);
 		workingSet.setLabel("My Workingset");
 		workingSet.getDescriptiveSystem();
-
+		handleAnnotatableEntity(workingSet);
+		
 		
 		//polytomous keys
 		Taxon coveredTaxon = Taxon.NewInstance(name, null);
 		PolytomousKey key = PolytomousKey.NewTitledInstance("My Polykey");
 		handleIdentificationKey(key, taxon, coveredTaxon);
 		key.setStartNumber(10);
-		
+			
 		
 		PolytomousKeyNode firstChildNode = PolytomousKeyNode.NewInstance("Green", "What is the leave length?", coveredTaxon, leaveLength);
 		key.getRoot().addChild(firstChildNode);
@@ -345,13 +380,20 @@ public class FullCoverageDataGenerator {
 		key.addGeographicalScope(Country.GERMANY());
 		key.addScopeRestriction(DefinedTerm.SEX_FEMALE());
 		key.addTaxonomicScope(taxon);
+		if (key instanceof IdentifiableEntity<?>){
+			handleIdentifiableEntity((IdentifiableEntity<?>)key);
+		}else{
+			handleAnnotatableEntity((AnnotatableEntity)key);
+		}
+			
+
 	}
 	
 	
 	private void createMedia(List<CdmBase> cdmBases){
-		AudioFile audioFile = AudioFile.NewInstance(URI.create("http:\\a.b.de"), 22);
-		ImageFile imageFile = ImageFile.NewInstance(URI.create("http:\\b.c.de"), 44, 467, 55);
-		MovieFile movieFile = MovieFile.NewInstance(URI.create("http:\\b.c.de"), 67);
+		AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
+		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"), 44, 467, 55);
+		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"), 67);
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance("mime", "media"); 
 	
 		mediaRepresentation.addRepresentationPart(movieFile);
@@ -363,6 +405,8 @@ public class FullCoverageDataGenerator {
 		media.putTitle(Language.ENGLISH(), "Media title");
 		media.setMediaCreated(DateTime.now());
 		media.putDescription(Language.ENGLISH(), "Media description");
+		handleIdentifiableEntity(media);
+		
 		
 		Person artist = Person.NewTitledInstance("artist");
 		media.setArtist(artist);
@@ -377,28 +421,37 @@ public class FullCoverageDataGenerator {
 		//Amplification
 		Amplification amplification = Amplification.NewInstance(dnaSample);
 		DefinedTerm dnaMarker = DefinedTerm.NewDnaMarkerInstance("My dna marker", "dna marker", null);
+		cdmBases.add(dnaMarker);
 		amplification.setDnaMarker(dnaMarker);
 		amplification.setSuccessful(true);
 		amplification.setSuccessText("Very successful");
+		handleAnnotatableEntity(amplification);
 		
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
 		forwardPrimer.setPublishedIn(getReference());
-		forwardPrimer.setSequence(SequenceString.NewInstance("AGGCCAGT"));
+		forwardPrimer.setSequence(Sequence.NewInstance("my sequence"));
+		handleAnnotatableEntity(forwardPrimer);
 		
 		Primer reversePrimer = Primer.NewInstance("reverse primer");
+		handleAnnotatableEntity(reversePrimer);
 		
 		amplification.setForwardPrimer(forwardPrimer);
 		amplification.setReversePrimer(reversePrimer);
 		
 		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
+		cdmBases.add(cloningMethod);
 		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
 		amplification.setCloning(cloning);
+		handleAnnotatableEntity(cloningMethod);
+		handleAnnotatableEntity(cloning);
 		
 		DefinedTerm purificationMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "purification method", "purification method", null);
+		cdmBases.add(purificationMethod);
 		MaterialOrMethodEvent purification = MaterialOrMethodEvent.NewInstance(purificationMethod, "purification method");
 		amplification.setPurification(purification);
+		handleAnnotatableEntity(purification);
+		handleAnnotatableEntity(purificationMethod);
 		
-
 		amplification.setLadderUsed("ladder");
 		amplification.setElectrophoresisVoltage(5.5);
 		amplification.setGelConcentration(2.4);
@@ -406,12 +459,15 @@ public class FullCoverageDataGenerator {
 		Media gelPhoto = Media.NewInstance();
 		amplification.setGelPhoto(gelPhoto);
 		
+		
 		//SingleRead
 		SingleRead singleRead = SingleRead.NewInstance();
+		handleAnnotatableEntity(singleRead);
 		amplification.addSingleRead(singleRead);
-		MaterialOrMethodEvent readEvent = MaterialOrMethodEvent.NewInstance(null, "read method");
+		MaterialOrMethodEvent readMethod = MaterialOrMethodEvent.NewInstance(null, "read method");
+		singleRead.setMaterialOrMethod(readMethod);
+		handleAnnotatableEntity(readMethod);
 		
-		singleRead.setMaterialOrMethod(readEvent);
 		Media pherogram = Media.NewInstance();
 		singleRead.setPherogram(pherogram);
 		
@@ -433,11 +489,13 @@ public class FullCoverageDataGenerator {
 		sequence.setHaplotype("haplotype");
 		Reference<?> sequenceCitation = getReference();
 		sequence.addCitation(sequenceCitation);
-		
-		
+		handleAnnotatableEntity(sequence);
+			
 		//Phylogenetic Tree
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
+		handleIdentifiableEntity(phyloTree);
+		
 		
 		cdmBases.add(dnaSample);
 		cdmBases.add(phyloTree);
@@ -448,24 +506,30 @@ public class FullCoverageDataGenerator {
 		Reference<?> sec = getReference();
 		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
-		
+		handleIdentifiableEntity(taxon);
+
 		TaxonNameBase<?,?> synName = BotanicalName.NewInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec);
 		taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), 
 				getReference(), "123");
 		taxon.setDoubtful(true);
+		handleIdentifiableEntity(syn);
+
 		
 		Taxon concept = Taxon.NewInstance(name, getReference());
-		taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(), 
+		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(), 
 				sec, "444");
 		taxon.setTaxonStatusUnknown(true);
 		taxon.setUnplaced(true);
 		taxon.setExcluded(true);
+		handleAnnotatableEntity(taxRel);
+
 		
 		//Classification
 		Classification classification = Classification.NewInstance("My classification", sec);
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
-		
+		handleIdentifiableEntity(classification);
+
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
 		
@@ -483,7 +547,7 @@ public class FullCoverageDataGenerator {
 	private void createReference(List<CdmBase> cdmBases) {
 		Reference<?> reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
-		reference.setAuthorship(author);
+		reference.setAuthorTeam(author);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
 		reference.setDatePublished(TimePeriodParser.parseString("1999"));
@@ -493,7 +557,7 @@ public class FullCoverageDataGenerator {
 		reference.setInstitution(institution);
 		reference.setIsbn("1234556");
 		reference.setIssn("issn");
-		reference.setDoi(DOI.fromRegistrantCodeAndSuffix("registrantCode", "suffix"));
+		reference.setDoi(DOI.fromRegistrantCodeAndSuffix("14356", "suffix"));
 		reference.setReferenceAbstract("referenceAbstract");
 		reference.setOrganization("organization");
 		reference.setPages("123-134");
@@ -504,11 +568,13 @@ public class FullCoverageDataGenerator {
 //		reference.setSeriesPart("series");
 		reference.setSeriesPart("seriesPart");
 		reference.setVolume("vol. 3");
-		reference.setUri(URI.create("http:\\rer.abc.de"));
+		reference.setUri(URI.create("http://rer.abc.de"));
 		
 		Reference<?> journal = ReferenceFactory.newJournal();
 		reference.setInJournal(journal);
 		
+		handleIdentifiableEntity(reference);
+
 		cdmBases.add(reference);
 		
 	}
@@ -521,6 +587,9 @@ public class FullCoverageDataGenerator {
 		Collection collection = Collection.NewInstance();
 		Collection subCollection = Collection.NewInstance();
 		subCollection.setSuperCollection(collection);
+		handleIdentifiableEntity(collection);
+		handleIdentifiableEntity(subCollection);
+		
 		
 		collection.setCode("coll code");
 		collection.setCodeStandard("codeStandard");
@@ -535,7 +604,8 @@ public class FullCoverageDataGenerator {
 		fieldUnit.setFieldNotes("fieldNotes");
 		Person primaryCollector = Person.NewInstance();
 		fieldUnit.setPrimaryCollector(primaryCollector);
-		
+		handleIdentifiableEntity(fieldUnit);
+
 		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 		fieldUnit.setGatheringEvent(gatheringEvent);
 		gatheringEvent.putLocality(Language.ENGLISH(), "locality");
@@ -555,6 +625,7 @@ public class FullCoverageDataGenerator {
 		gatheringEvent.setDistanceToWaterSurface(10.4);
 		gatheringEvent.setDistanceToWaterSurfaceMax(100.3);
 		gatheringEvent.setDistanceToWaterSurfaceText("distance to water text");
+		handleAnnotatableEntity(gatheringEvent);
 
 		
 		//Derived Unit
@@ -571,27 +642,35 @@ public class FullCoverageDataGenerator {
 		PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
 		preservation.setTemperature(22.4);
 		mediaSpecimen.setPreservation(preservation);
-		
+		handleIdentifiableEntity(mediaSpecimen);
+
 		//DerivationEvent
 		DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		event.addOriginal(fieldUnit);
 		event.addDerivative(mediaSpecimen);
-		
+		handleAnnotatableEntity(event);
+
 		
 		//SpecOrObservationBase
 		fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
-		fieldUnit.setLifeStage(DefinedTerm.NewStageInstance("Live stage", "stage", null));
-		fieldUnit.setKindOfUnit(DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null));
+		DefinedTerm lifeStage = DefinedTerm.NewStageInstance("Live stage", "stage", null);
+		cdmBases.add(lifeStage);
+		fieldUnit.setLifeStage(lifeStage);
+		DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null);
+		cdmBases.add(kindOfUnit);
+		fieldUnit.setKindOfUnit(kindOfUnit);
 		fieldUnit.setIndividualCount(3);
 		fieldUnit.putDefinition(Language.ENGLISH(), "definition");
 		fieldUnit.setPublish(true);
-	
+		handleIdentifiableEntity(fieldUnit);
+
 		//Determination
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(getTaxon(), mediaSpecimen);
 		determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
 		determinationEvent.setPreferredFlag(true);
 		determinationEvent.addReference(getReference());
-		
+		handleAnnotatableEntity(determinationEvent);
+
 		cdmBases.add(fieldUnit);
 		cdmBases.add(mediaSpecimen);
 		cdmBases.add(collection);
@@ -602,6 +681,7 @@ public class FullCoverageDataGenerator {
 		BacterialName bacName = BacterialName.NewInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
+		handleIdentifiableEntity(bacName);
 		
 		CultivarPlantName botName = CultivarPlantName.NewInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
@@ -618,6 +698,8 @@ public class FullCoverageDataGenerator {
 		botName.setBasionymAuthorTeam(basionymAuthorTeam);
 		Person exBasionymAuthorTeam = Person.NewInstance();
 		botName.setExBasionymAuthorTeam(exBasionymAuthorTeam);
+		handleIdentifiableEntity(botName);
+
 		
 		ZoologicalName zooName = ZoologicalName.NewInstance(Rank.GENUS());
 		zooName.setBreed("breed");
@@ -629,7 +711,8 @@ public class FullCoverageDataGenerator {
 		zooName.setNomenclaturalReference(getReference());
 		zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered");
 		zooName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222"));
-		
+		handleIdentifiableEntity(zooName);
+
 		//TypeDesignation
 		ZoologicalName speciesZooName = ZoologicalName.NewInstance(Rank.SPECIES());
 		zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name", 
@@ -637,9 +720,10 @@ public class FullCoverageDataGenerator {
 		speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(), 
 				getReference(), "p,22", "original name", false, true);
 		
-		
 		ViralName viralName = ViralName.NewInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
+		handleIdentifiableEntity(viralName);
+
 		
 		cdmBases.add(bacName);
 		cdmBases.add(botName);
@@ -667,11 +751,17 @@ public class FullCoverageDataGenerator {
 		
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
-		rights.setUri(URI.create("http:\\rights.abc.de"));
+		rights.setUri(URI.create("http://rights.abc.de"));
 		rights.setAbbreviatedText("abbrev");
 		rights.setType(RightsType.COPYRIGHT());
 		Person owner = Person.NewTitledInstance("Owner");
 		rights.setAgent(owner);
+		identifiableEntity.addRights(rights);
+		
+		if (identifiableEntity.isInstanceOf(IdentifiableMediaEntity.class)){
+			Media media = Media.NewInstance(URI.create("http://www.identifiableMedia.de"), 22, "img/jpg", "jpg");
+			((IdentifiableMediaEntity<?>)identifiableEntity).addMedia(media);
+		}
 		
 		//source
 		IdentifiableSource source = identifiableEntity.addSource(OriginalSourceType.Import, "id", "idNamespace", 

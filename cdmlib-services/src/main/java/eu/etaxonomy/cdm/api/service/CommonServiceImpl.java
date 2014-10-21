@@ -21,10 +21,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -304,6 +302,10 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
     public boolean containsValue(PersistentCollection col, Object element) {
     	return genericDao.containsValue(col, element);
     }
-    
-   
+
+	@Override
+	@Transactional(readOnly = false)
+	public void createFullSampleData() {
+		genericDao.createFullSampleData();
+	}
 }
