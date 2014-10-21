@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -201,9 +203,16 @@ public class FullCoverageDataGenerator {
 		View view = new View();
 		View subView = new View();
 		subView.addSuperView(view);
-		
 		cdmBases.add(view);
 		cdmBases.add(subView);
+		
+		User user = User.NewInstance("myUser", "12345");
+		Group group = Group.NewInstance("MyGroup");
+		group.addMember(user);
+		
+		cdmBases.add(user);
+		cdmBases.add(group);
+		
 		
 		cdmBases.add(ref);
 		
@@ -328,8 +337,9 @@ public class FullCoverageDataGenerator {
 		
 		TextData textData = TextData.NewInstance(Feature.DIAGNOSIS());
 		Language eng = Language.ENGLISH();
+		textData.putText(eng, "My text data");
+		LanguageString languageString = textData.getLanguageText(eng);
 		textData.putModifyingText(eng, "nice diagnosis");
-		LanguageString languageString = textData.getModifyingText().get(eng);
 		handleAnnotatableEntity(textData);
 		handleAnnotatableEntity(languageString);		
 		
@@ -366,7 +376,6 @@ public class FullCoverageDataGenerator {
 		taxonDescription.addGeoScope(Country.GERMANY());
 		handleIdentifiableEntity(taxonDescription);
 		
-		
 		cdmBases.add(taxon);
 
 		//DescriptionElmenetBase  + source
@@ -378,6 +387,8 @@ public class FullCoverageDataGenerator {
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(BotanicalName.NewInstance(Rank.GENUS()));
 		handleAnnotatableEntity(source);
+		
+		taxonDescription.addDescriptionSource(ref);
 		
 		
 		//Specimen description
