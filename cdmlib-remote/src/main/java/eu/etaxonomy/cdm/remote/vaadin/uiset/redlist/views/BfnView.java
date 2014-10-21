@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 @Component
-@Scope("request")
+@Scope("prototype")
 @Theme("mytheme")
 @VaadinView(value = BfnView.NAME, cached=true)
 public class BfnView extends CustomComponent implements View{
