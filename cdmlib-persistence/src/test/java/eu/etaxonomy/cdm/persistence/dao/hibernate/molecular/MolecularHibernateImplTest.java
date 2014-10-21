@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -23,9 +22,6 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 
 	private static final String MARKER_LABEL = "ITS1";
 
-	@SpringBeanByType
-    private IDefinedTermDao termDao;
-    
 	@SpringBeanByType
     private IOccurrenceDao occurrenceDao;
 	
