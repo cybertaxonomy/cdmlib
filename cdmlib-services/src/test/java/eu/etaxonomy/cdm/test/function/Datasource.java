@@ -133,6 +133,8 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
+		appCtr.getCommonService().createFullSampleData();
+		
 //		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
 		
