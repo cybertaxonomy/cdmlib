@@ -30,9 +30,9 @@ public class DistributionSelectorView extends CustomComponent implements View {
 	private static final long serialVersionUID = 1L;
 	public static final String NAME = "DistributionSelector";
 	@Autowired
-	private VaadinAuthenticationService authenticationService;
+	private transient VaadinAuthenticationService authenticationService;
 	@Autowired
-	private DistributionSelectionForm distributionSelectionForm;
+	private transient DistributionSelectionForm distributionSelectionForm;
 	
 	@PostConstruct
 	public void PostConstruct(){

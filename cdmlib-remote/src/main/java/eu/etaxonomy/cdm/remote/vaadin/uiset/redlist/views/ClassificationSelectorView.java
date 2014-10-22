@@ -31,9 +31,9 @@ public class ClassificationSelectorView extends CustomComponent implements View 
 	private static final long serialVersionUID = 1L;
 	public static final String NAME = "ClassificationSelector";
 	@Autowired
-	private VaadinAuthenticationService authenticationService;
+	private transient VaadinAuthenticationService authenticationService;
 	@Autowired
-	private ClassificationSelectionForm classificationSelectionForm;
+	private transient ClassificationSelectionForm classificationSelectionForm;
 	
 	@PostConstruct
 	public void PostConstruct(){

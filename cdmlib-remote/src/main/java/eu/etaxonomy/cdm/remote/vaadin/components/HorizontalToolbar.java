@@ -40,7 +40,7 @@ public class HorizontalToolbar extends HorizontalLayout implements Serializable{
 	private static final long serialVersionUID = 5344340511582993289L;
 	
 	@Autowired
-	private VaadinAuthenticationService authenticationController;
+	private transient VaadinAuthenticationService authenticationController;
 	
 	private final Button editButton = new Button("Edit");
 	

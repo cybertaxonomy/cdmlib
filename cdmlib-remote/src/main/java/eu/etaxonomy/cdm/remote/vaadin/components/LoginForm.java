@@ -47,7 +47,7 @@ public class LoginForm extends FormLayout implements Serializable{
 	private static final String COMMON_FIELD_WIDTH = "12em";
     
 	@Autowired
-	private VaadinAuthenticationService authenticationController;
+	private transient VaadinAuthenticationService authenticationController;
 
 	
 	

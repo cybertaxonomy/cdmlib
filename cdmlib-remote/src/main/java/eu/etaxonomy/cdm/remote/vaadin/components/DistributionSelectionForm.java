@@ -7,13 +7,12 @@ import java.util.SortedSet;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
@@ -30,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.BfnView;
 
 /**
@@ -55,6 +55,11 @@ public class DistributionSelectionForm extends FormLayout{
 	private OptionGroup selector;
 	@Autowired
 	private IVocabularyService vocabularyService;
+	@Autowired
+	VaadinAuthenticationService authenticationService;
+	
+	private final Logger logger = Logger.getLogger(DistributionSelectionForm.class);
+
 	
     @PostConstruct
 	public void PostConstruct(){
@@ -76,39 +81,49 @@ public class DistributionSelectionForm extends FormLayout{
 
 
 		
-		selector.addValueChangeListener(new ValueChangeListener() {
-			
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				Notification.show(selector.getValue().toString(), Notification.Type.TRAY_NOTIFICATION);
-					if (selector.getValue() instanceof TermVocabulary) {
-						TermVocabulary<DefinedTermBase> term = (TermVocabulary<DefinedTermBase>) selector.getValue();
-						VaadinSession current = VaadinSession.getCurrent();
-						VaadinSession.getCurrent().setAttribute("selectedTerm", term.getUuid());
-//						term = vocabularyService.load(term.getUuid());
-//						term = CdmBase.deproxy(term, TermVocabulary.class);
-//						Set<DefinedTermBase> terms = term.getTerms();
-//						for(DefinedTermBase dt : terms){
-//							Notification.show(dt.toString(), Notification.Type.TRAY_NOTIFICATION);
+//		selector.addValueChangeListener(new ValueChangeListener() {
+//			
+//			@Override
+//			public void valueChange(ValueChangeEvent event) {
+//				Notification.show(selector.getValue().toString(), Notification.Type.TRAY_NOTIFICATION);
+//					if (selector.getValue() instanceof TermVocabulary) {
+//						TermVocabulary<DefinedTermBase> term = (TermVocabulary<DefinedTermBase>) selector.getValue();
+//						VaadinSession current = VaadinSession.getCurrent();
+//						VaadinSession.getCurrent().setAttribute("selectedTerm", term.getUuid());
+////						term = vocabularyService.load(term.getUuid());
+////						term = CdmBase.deproxy(term, TermVocabulary.class);
+////						Set<DefinedTermBase> terms = term.getTerms();
+////						for(DefinedTermBase dt : terms){
+////							Notification.show(dt.toString(), Notification.Type.TRAY_NOTIFICATION);
+////
+////						}
+//					}
+//				}
 //
-//						}
-					}
-				}
-
-		});
+//		});
 		
 		Button nextButton = new Button("Continue", new Button.ClickListener() {
-			
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if(selector.getValue() != null){
-					VaadinSession session = VaadinSession.getCurrent();
-					Object value = selector.getValue();
-					Notification.show(selector.getValue().toString(), Notification.Type.TRAY_NOTIFICATION);
-					Page.getCurrent().setUriFragment("!"+ BfnView.NAME);//BfnView.NAME //MyVaadinTest.NAME
-				}else{
-					Notification.show("Please Select a Distribution, in order to proceed!",Notification.Type.ERROR_MESSAGE);
-				}				
+				try{
+					if(selector.getValue() != null){
+						if (selector.getValue() instanceof TermVocabulary) {
+							TermVocabulary<DefinedTermBase> term = (TermVocabulary<DefinedTermBase>) selector.getValue();
+							VaadinSession.getCurrent().setAttribute("selectedTerm", term.getUuid());
+						}
+						Notification.show(selector.getValue().toString(), Notification.Type.TRAY_NOTIFICATION);
+						Page.getCurrent().setUriFragment("!"+ BfnView.NAME);//BfnView.NAME //MyVaadinTest.NAME
+					}else{
+						Notification.show("Please Select a Distribution, in order to proceed!",Notification.Type.ERROR_MESSAGE);
+					}		
+				}catch(Exception e){
+					Notification.show("Unexpected Error, \n\n Please log in again!", Notification.Type.WARNING_MESSAGE);
+					logger.info(e);
+					authenticationService.logout();
+				}
 			}
 		});
 		nextButton.setClickShortcut(KeyCode.ENTER, null);

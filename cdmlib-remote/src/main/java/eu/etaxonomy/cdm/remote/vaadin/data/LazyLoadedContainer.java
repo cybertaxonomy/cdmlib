@@ -11,6 +11,7 @@ import com.vaadin.server.VaadinSession;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -55,7 +56,10 @@ public class LazyLoadedContainer extends BeanContainer implements Serializable{
 	
 	@Override
 	public BeanItem getItem(Object itemId){
-		Taxon taxon = (Taxon)((TaxonNode) itemId).getTaxon();
+		TaxonNode taxonNode = ((TaxonNode) itemId);
+		CdmBase.deproxy(taxonNode, TaxonNode.class);
+		Taxon taxon = (Taxon)taxonNode.getTaxon();
+		CdmBase.deproxy(taxon, Taxon.class);
 		CdmTaxonTableCollection cttc = new CdmTaxonTableCollection(taxon);
 		return new BeanItem(cttc);
 	}

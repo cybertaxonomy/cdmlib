@@ -36,20 +36,20 @@ import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 public class VaadinAuthenticationService{
 	
 	@Autowired
-	private AuthenticationManager authenticationManager;
+	private transient AuthenticationManager authenticationManager;
 	@Autowired
 	private transient ApplicationContext applicationContext;
 
-	 @Autowired
-	    private HibernateTransactionManager transactionManager;
-	    
-	    @Autowired
-	    private DataSource dataSource;
-		
-	    @Autowired
-	    private SessionFactory sessionFactory;
+	@Autowired
+	private transient HibernateTransactionManager transactionManager;
 
-		private ConversationHolder conversationHolder;
+	@Autowired
+	private transient DataSource dataSource;
+
+	@Autowired
+	private transient SessionFactory sessionFactory;
+
+	private transient ConversationHolder conversationHolder;
 	
 	Logger logger = Logger.getLogger(VaadinAuthenticationService.class);
 	
@@ -71,6 +71,7 @@ public class VaadinAuthenticationService{
 			conversationHolder.startTransaction();
 			SecurityContext context = SecurityContextHolder.getContext();
 			context.setAuthentication(authentication);
+//			SecurityContextHolder.setStrategyName( SecurityContextHolder.MODE_GLOBAL );
 			setUserName(user);
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("context", context);
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("isAuthenticated", true);

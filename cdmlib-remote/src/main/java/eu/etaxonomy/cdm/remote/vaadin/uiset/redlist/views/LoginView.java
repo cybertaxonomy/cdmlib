@@ -43,7 +43,7 @@ public class LoginView extends CustomComponent implements View{
 	public static final String NAME = "";
 	
 	@Autowired
-	private LoginForm loginForm;
+	private transient LoginForm loginForm;
 	
 	
 	@PostConstruct
