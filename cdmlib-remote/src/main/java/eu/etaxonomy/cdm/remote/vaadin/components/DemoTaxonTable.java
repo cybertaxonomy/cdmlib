@@ -68,19 +68,19 @@ public class DemoTaxonTable extends Table{
 	 * automatic generated ID
 	 */
 	@Autowired
-	IVocabularyService vocabularyService;
+	transient IVocabularyService vocabularyService;
 	@Autowired
-	ITaxonService taxonService;
+	transient ITaxonService taxonService;
 	@Autowired
-	IDescriptionService descriptionService;
+	transient IDescriptionService descriptionService;
 	@Autowired
-	ITermService termService;
+	transient ITermService termService;
 	@Autowired
-	IClassificationService clService;
+	transient IClassificationService clService;
 	@Autowired
-	ITaxonNodeService taxonNodeService;
+	transient ITaxonNodeService taxonNodeService;
 	@Autowired
-	IClassificationService classificationService;
+	transient IClassificationService classificationService;
 
 	Logger logger = Logger.getLogger(DemoTaxonTable.class);
 	

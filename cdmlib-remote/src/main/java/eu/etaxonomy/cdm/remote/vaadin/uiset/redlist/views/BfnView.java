@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import ru.xpoft.vaadin.VaadinView;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -54,7 +55,8 @@ import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 @Component
 @Scope("prototype")
 @Theme("mytheme")
-@VaadinView(value = BfnView.NAME, cached=true)
+@VaadinView(BfnView.NAME)
+@PreserveOnRefresh
 public class BfnView extends CustomComponent implements View{
 
 	private static final long serialVersionUID = 1L;
@@ -62,23 +64,23 @@ public class BfnView extends CustomComponent implements View{
 	public static final String NAME = "bfn";
 
 	@Autowired
-	private VaadinAuthenticationService authenticationController;
+	private transient VaadinAuthenticationService authenticationController;
 
 	@Autowired
-	private HorizontalToolbar toolbar;
+	private transient HorizontalToolbar toolbar;
 
 	@Autowired
-	private DemoTaxonTable taxonTable;
+	private transient DemoTaxonTable taxonTable;
 
 	private VerticalLayout layout;
 	@Autowired
-	private ITermService termService;
+	private transient ITermService termService;
 	@Autowired
-	private ITaxonService taxonService;
+	private transient ITaxonService taxonService;
 	@Autowired
-	private IDescriptionService descriptionService;
+	private transient IDescriptionService descriptionService;
 	@Autowired
-	private IVocabularyService vocabularyService;
+	private transient IVocabularyService vocabularyService;
 
 	private Taxon currentTaxon;
 
@@ -156,6 +158,7 @@ public class BfnView extends CustomComponent implements View{
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				try{
 				if(currentTaxon != null){
 					List<DescriptionElementBase> listDescriptions = descriptionService.listDescriptionElementsForTaxon(currentTaxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
 					DetailWindow dw = new DetailWindow(currentTaxon, listDescriptions);
@@ -163,6 +166,11 @@ public class BfnView extends CustomComponent implements View{
 					getUI().addWindow(window);
 				}else{
 					Notification.show("Please select a Taxon.", Notification.Type.HUMANIZED_MESSAGE);
+				}
+				}catch(Exception e){
+					Notification.show("Unexpected Error, \n\n Please log in again!", Notification.Type.WARNING_MESSAGE);
+					logger.info(e);
+					authenticationController.logout();
 				}
 			}
 		});
@@ -177,16 +185,16 @@ public class BfnView extends CustomComponent implements View{
 			@Override
 			public void buttonClick(ClickEvent event) {
 				ConversationHolder conversationHolder = authenticationController.getConversationHolder();
-//				try{
+				try{
 					conversationHolder.commit();
-//				}catch(IllegalStateException stateException){
+				}catch(Exception stateException){
 					//TODO create Table without DTO
-//					Notification.show("Unexpected Error, \n\n Please log in again!", Notification.Type.WARNING_MESSAGE);
-//					logger.info(stateException);
-//					authenticationController.logout();
+					Notification.show("Unexpected Error, \n\n Please log in again!", Notification.Type.WARNING_MESSAGE);
+					logger.info(stateException);
+					authenticationController.logout();
 //					conversationHolder.startTransaction();
 //					conversationHolder.commit();
-//				}
+				}
 				Notification.show("Data saved", Notification.Type.HUMANIZED_MESSAGE);
 				taxonTable.setEditable(false);
 				toolbar.getSaveButton().setCaption("Save Data");
