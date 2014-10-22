@@ -59,9 +59,11 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		String tableName;
 		ISchemaUpdaterStep step;
 		String columnName;
+		String newColumnName;
+		String oldColumnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-
+		
 		//TODO H2 / PostGreSQL / SQL Server
 		//UserAccount unique
 		stepName = "Update User unique indexes";
@@ -126,7 +128,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		
 		stepName = "Remove series column";
 		tableName = "Reference";
-		String oldColumnName = "series";
+		oldColumnName = "series";
 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
 		stepList.add(step);
 
@@ -134,10 +136,10 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepName = "Rename Reference.authorTeam column";
 		tableName = "Reference";
 		oldColumnName = "authorTeam_id";
-		String newColumnName = "authorship_id";
+		newColumnName = "authorship_id";
 		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
-
+//
 		//remove CDM_VIEW #4316
 		stepName = "Remove CDM_VIEW_CDM_VIEW table";
 		tableName = "CDM_VIEW_CDM_VIEW";
@@ -150,14 +152,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		ifExists = true;
 		step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 		stepList.add(step);
-		
-		//change size of AgentBase_contact_urls.contact_urls_element  #3920
-		stepName = "Change length of AgentBase_contact_urls.contact_urls_element";
-		tableName = "AgentBase_contact_urls";
-		columnName = "contact_urls_element";
-		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
-				columnName, 330, INCLUDE_AUDIT);
-		stepList.add(step);
+
 		
 		//TODO not null on username, groupname and authority  #4382
 		
@@ -208,7 +203,6 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//Classification_GeoScope
-		//TODO
 		stepName = "Create Classification_GeoScope table";
 		includeCdmBaseAttributes = false;
 		tableName = "Classification_GeoScope";
@@ -220,7 +214,6 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepList.add(creator);
 
 		//Classification_Description
-		//TODO
 		stepName = "Create Classification_Description table";
 		includeCdmBaseAttributes = false;
 		tableName = "Classification_Description";
@@ -239,7 +232,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 				INCLUDE_AUDIT);
 		stepList.add(step);
 
-		//Primer.sequence length
+		//Primer.sequence length #4139
 		stepName = "Add sequence length column to primer";
 		tableName = "Primer";
 		newColumnName = "sequence_length";
@@ -247,16 +240,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		referencedTable = null;
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, notNull);
 		stepList.add(step);
-
-		//remove sequence_id column  //we do not move data as we do not expect data available yet
-		stepName = "Remove sequence_id column from primer";
-		tableName = "Primer";
-		oldColumnName = "sequence_id";
-		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
-		stepList.add(step);
 		
 		//EntityValidationResult
-		//TODO
 		stepName = "Create EntityValidationResult table";
 		includeCdmBaseAttributes = true;
 		tableName = "EntityValidationResult";
@@ -267,9 +252,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
 		stepList.add(creator);
 
-		
 		//EntityConstraintViolation
-		//TODO
 		stepName = "Create EntityConstraintViolation table";
 		includeCdmBaseAttributes = true;
 		tableName = "EntityConstraintViolation";
@@ -279,6 +262,24 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		referencedTables = new String[]{null,null,null,null,null,null,"EntityValidationResult"};
 		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
 		stepList.add(creator);
+		
+		//remove sequence_id column  //we do not move data as we do not expect data available yet #4139
+		//we put this to the end as it seems to fail with INNODB
+		stepName = "Remove sequence_id column from primer";
+		tableName = "Primer";
+		oldColumnName = "sequence_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
+		stepList.add(step);
+		
+		
+//	WE REMOVED THIS FROM THE SCRIPT BECAUSE IT FAILS WITH INNODB		
+//		//change size of AgentBase_contact_urls.contact_urls_element  #3920
+//		stepName = "Change length of AgentBase_contact_urls.contact_urls_element";
+//		tableName = "AgentBase_contact_urls";
+//		columnName = "contact_urls_element";
+//		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
+//				columnName, 330, INCLUDE_AUDIT);
+////		stepList.add(step);
 		
 		
 		return stepList;
