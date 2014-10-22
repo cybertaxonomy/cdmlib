@@ -96,26 +96,46 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 		try {
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String indexName = "_UniqueKey";
-			String updateQuery;
-			if (type.equals(DatabaseTypeEnum.MySQL)){
-				updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP INDEX @indexName";
-			}else if (type.equals(DatabaseTypeEnum.H2)){
-				updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT IF EXISTS @indexName";
-			}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
-				updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT @indexName";
-			}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-				//TODO
-				throw new RuntimeException("Remove index not yet supported for SQLServer");
-			}else{
-				throw new IllegalArgumentException("Datasource type not supported: " + type.getName());
+			String updateQuery = makeRemoveConstraintUpdateQuery(caseType, type, indexName);
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (Exception e) {
+				indexName = "uuid";
+				updateQuery = makeRemoveConstraintUpdateQuery(caseType, type, indexName);
+				datasource.executeUpdate(updateQuery);
 			}
-			updateQuery = updateQuery.replace("@indexName", indexName);
-			updateQuery = caseType.replaceTableNames(updateQuery);
-			datasource.executeUpdate(updateQuery);
 			return true;
 		} catch (Exception e) {
 			logger.warn("Old index could not be removed");
 			return false;
 		}
+	}
+
+
+	/**
+	 * @param caseType
+	 * @param type
+	 * @param indexName
+	 * @param updateQuery
+	 * @return
+	 */
+	private String makeRemoveConstraintUpdateQuery(CaseType caseType,
+			DatabaseTypeEnum type, String indexName) {
+		String updateQuery;
+		if (type.equals(DatabaseTypeEnum.MySQL)){
+			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP INDEX @indexName";
+		}else if (type.equals(DatabaseTypeEnum.H2)){
+			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT IF EXISTS @indexName";
+		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT @indexName";
+		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+			//TODO
+			throw new RuntimeException("Remove index not yet supported for SQLServer");
+		}else{
+			throw new IllegalArgumentException("Datasource type not supported: " + type.getName());
+		}
+		updateQuery = updateQuery.replace("@indexName", indexName);
+		updateQuery = caseType.replaceTableNames(updateQuery);
+		return updateQuery;
 	}
 }
