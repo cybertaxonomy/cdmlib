@@ -79,7 +79,7 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_urls_element", length=330)
+    @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key  
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> urls = new ArrayList<String>();
 
