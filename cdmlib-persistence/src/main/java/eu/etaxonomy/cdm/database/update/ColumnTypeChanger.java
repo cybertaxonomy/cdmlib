@@ -46,6 +46,10 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 		return new ColumnTypeChanger(stepName, tableName, columnName, "nvarchar("+size+")", includeAudTable, defaultValue, notNull, null);
 	}
 	
+//	public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(){
+//		
+//	}
+	
 	
 	protected ColumnTypeChanger(String stepName, String tableName, String columnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 		super(stepName);
@@ -127,6 +131,10 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 				logger.warn("NOT NULL not implementd for POSTGRES");
 			}else{
 				updateQuery += " NOT NULL";
+			}
+		} else{
+			if (! datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
+				updateQuery += " NULL ";
 			}
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);

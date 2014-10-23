@@ -263,6 +263,16 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
 		stepList.add(creator);
 		
+		//make OriginalSourceBase.sourceType allow NULL
+		stepName = "Remove NOT NULL from sourceType";
+		tableName = "OriginalSourceBase_AUD";
+		oldColumnName = "sourceType";
+//		query = "ALTER TABLE OriginalSourceBase_AUD	" +
+//				" CHANGE COLUMN sourceType sourceType VARCHAR(4) NULL ";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, oldColumnName, 4, ! INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		
 		//remove sequence_id column  //we do not move data as we do not expect data available yet #4139
 		//we put this to the end as it seems to fail with INNODB
 		stepName = "Remove sequence_id column from primer";
