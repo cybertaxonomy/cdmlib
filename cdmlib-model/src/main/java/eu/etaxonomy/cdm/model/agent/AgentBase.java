@@ -200,7 +200,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @see eu.etaxonomy.cdm.model.agent.Contact#getUrls()
 	 */
 	@Transient
-	public List<URI> getUrls() {
+	public List<String> getUrls() {
 		return getNewOrExistingContact(false).getUrls();
 	}
 	/**

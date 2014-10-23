@@ -81,7 +81,6 @@ public class Contact implements Serializable, Cloneable {
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key  
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> urls = new ArrayList<String>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
@@ -278,21 +277,29 @@ public class Contact implements Serializable, Cloneable {
 		getEmailAddresses().remove(emailAddress);
 	}
 
+//	/**
+//	 * Returns the list of {@link URI URIs} representing this contact
+//	 * included in <i>this</i> contact.
+//	 */
+//	@Transient   //TODO preliminary workaround as we get LazyInit Exception in JSON #4444
+//	public List<URI> getUrls(){
+//		List<URI> result = new ArrayList<URI>();
+//		if(this.urls != null) {
+//			for (String uri : this.urls){
+//				result.add(URI.create(uri));
+//			}
+//		}
+//		return result;
+//	}
+
 	/**
 	 * Returns the list of {@link URI URIs} representing this contact
 	 * included in <i>this</i> contact.
 	 */
-	@Transient   //TODO preliminary workaround as we get LazyInit Exception in JSON #4444
-	public List<URI> getUrls(){
-		List<URI> result = new ArrayList<URI>();
-		if(this.urls != null) {
-			for (String uri : this.urls){
-				result.add(URI.create(uri));
-			}
-		}
-		return result;
+	public List<String> getUrls(){
+		return this.urls;
 	}
-
+	
 	/**
 	 * @see  #getUrls()
 	 */
@@ -309,6 +316,7 @@ public class Contact implements Serializable, Cloneable {
 	public void removeUrl(URI url){
 		this.urls.remove(url.toString());
 	}
+
 
 	/**
 	 * Returns the list of strings representing the phone numbers
