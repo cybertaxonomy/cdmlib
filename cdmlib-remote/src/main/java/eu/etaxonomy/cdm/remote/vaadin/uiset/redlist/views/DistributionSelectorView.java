@@ -66,6 +66,6 @@ public class DistributionSelectorView extends CustomComponent implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		
+
 	}
 }

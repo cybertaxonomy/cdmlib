@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.remote.vaadin.service;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -68,12 +69,13 @@ public class VaadinAuthenticationService{
 		try{
 			Authentication authentication = authenticationManager.authenticate(token);
 			conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+			Session session = conversationHolder.getSession();
 			conversationHolder.startTransaction();
 			SecurityContext context = SecurityContextHolder.getContext();
 			context.setAuthentication(authentication);
 //			SecurityContextHolder.setStrategyName( SecurityContextHolder.MODE_GLOBAL );
 			setUserName(user);
-			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("context", context);
+//			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("context", context);
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("isAuthenticated", true);
 //			logger.info("VaadinSession: "+ VaadinSession.getCurrent().getSession().getAttribute("context"));
 			return true;
@@ -95,7 +97,7 @@ public class VaadinAuthenticationService{
 		ui.close();
 		conversationHolder.clear();
 		conversationHolder.close();
-		conversationHolder.getSessionHolder().getSession().close();
+//		conversationHolder.getSessionHolder().getSession().close();
 //		VaadinSession.getCurrent().close();
 		VaadinService.getCurrentRequest().getWrappedSession().invalidate(); 
 		ui.getSession().close();

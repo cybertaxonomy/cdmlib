@@ -60,6 +60,11 @@
         <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
       </init-param>
     </servlet>
+    <!-- Set to production Mode to true if deployment for server is needed, otherwise set to false for debugging  -->
+    <context-param>
+  	  <param-name>productionMode</param-name>
+	  <param-value>true</param-value>
+  	</context-param>
     <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/VAADIN/*</url-pattern>
@@ -68,6 +73,7 @@
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
+
 
     <filter>
       <filter-name>charsetFilter</filter-name>

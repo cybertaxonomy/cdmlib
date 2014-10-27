@@ -23,9 +23,9 @@ public class LazyLoadedContainer extends BeanContainer implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	
-	ITaxonNodeService taxonNodeService;
-	IClassificationService classificationService;
-	IDescriptionService descriptionService;
+	transient ITaxonNodeService taxonNodeService;
+	transient IClassificationService classificationService;
+	transient IDescriptionService descriptionService;
 	
 	VaadinSession session;
 	UUID uuid; 
