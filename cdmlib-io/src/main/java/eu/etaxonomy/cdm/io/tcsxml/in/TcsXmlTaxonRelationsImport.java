@@ -38,27 +38,22 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTaxonNameImport;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTransformer;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
+
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
+
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
+
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -188,6 +183,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonNameBase name = taxonNameMap.get(removeVersionOfRef(id));
+			
 			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
 			
 			String ref = elBasionym.getAttributeValue("ref");
@@ -206,8 +202,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					
 					if (!(taxonBase instanceof Synonym)){
 						logger.debug("The taxon " + basionymName.getTitleCache() + " is used in a concept and can not be a synonym " + name.getTitleCache() + "but will be added as basionym for the homotypical group");
-						basionymName.getHomotypicalGroup().setGroupBasionym(basionymName);
-						basionymName.getHomotypicalGroup().addTypifiedName(name);
+						name.addBasionym(basionymName);
+						//basionymName.getHomotypicalGroup().addTypifiedName(name);
 					} else if (taxonBase instanceof Synonym){
 						Synonym synonym = (Synonym) taxonBase;
 						((Taxon)basionym).addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
@@ -519,21 +515,13 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			boolean obligatory = true;
 			Element elToTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationship, childName, elTaxonRelationship.getNamespace(), obligatory);
 			
-		/*	<tcs:TaxonConcept id="urn:lsid:ipni.test:concepts:1670-2:1.2">
-			<tcs:Name scientific="true" ref="urn:lsid:ipni.org:names:1670-2:1.2"></tcs:Name>
-			<tcs:TaxonRelationships>
-				<tcs:TaxonRelationship type="is child taxon of">
-					<tcs:ToTaxonConcept ref="urn:lsid:ipni.test:concepts:30216889-2"></tcs:ToTaxonConcept>
-				</tcs:TaxonRelationship>
-			</tcs:TaxonRelationships>
-		</tcs:TaxonConcept>
-			*/
+		
 			String linkType = elToTaxonConcept.getAttributeValue("linkType");
 			if (linkType == null || linkType.equals("local")){
 				String ref = elToTaxonConcept.getAttributeValue("ref");
 				if (ref != null){
 					result = map.get(ref);
-					if (result == null){
+					if (result == null && state.getConfig().isDoGetMissingNames()){
 						
 						
 						String[] split= ref.split(":");

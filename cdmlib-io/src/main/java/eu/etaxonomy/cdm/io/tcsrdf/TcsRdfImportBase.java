@@ -28,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
+import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

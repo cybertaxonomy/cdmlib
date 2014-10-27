@@ -33,6 +33,8 @@ public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator,
 	
 	private List<String> missingConceptLSIDs = new ArrayList<String>();
 	
+	
+
 	public List<String> getMissingConceptLSIDs() {
 		return missingConceptLSIDs;
 	}

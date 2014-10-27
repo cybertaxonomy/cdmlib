@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTransformer;
+
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -241,7 +241,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Rank stringRank = null;
 		try {
 			boolean useUnknown = true;
-			stringRank = TcsRdfTransformer.rankString2Rank(strRankString);
+			stringRank = TcsXmlTransformer.rankString2Rank(strRankString);
 			//stringRank = Rank.getRankByNameOrIdInVoc(strRankString, useUnknown);
 		} catch (UnknownCdmTypeException e1) {
 			//does not happen because of useUnknown = true

@@ -49,9 +49,19 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //	//taxa
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
+	
+	private boolean doGetMissingNames = true;
 
 	
 	
+	public boolean isDoGetMissingNames() {
+		return doGetMissingNames;
+	}
+
+	public void setDoGetMissingNames(boolean doGetMissingNames) {
+		this.doGetMissingNames = doGetMissingNames;
+	}
+
 	private Method functionMetaDataDetailed = null; 
 	private ITcsXmlPlaceholderClass placeholderClass;
 	

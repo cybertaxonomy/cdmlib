@@ -25,33 +25,26 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.Property;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.jena.iri.IRIFactory;
+
+
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -176,6 +169,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		String idNamespace = "TaxonName";
 				
 		StmtIterator stmts = nameAbout.listProperties();
+		while(stmts.hasNext()){
+			System.out.println(stmts.next().getPredicate().toString());
+		}
 		
 		Property prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nomenclaturalCode");
 		Statement stateNomenclaturalCode = nameAbout.getProperty(prop);
@@ -267,13 +263,60 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				}
 				//AuthorTeams
 				//TODO
+				/*
+				 * <tn:authorteam>
+						<tm:Team>
+							<tm:name>(Raf.) Fernald</tm:name>
+							<tm:hasMember rdf:resource="urn:lsid:ipni.org:authors:2691-1"
+								tm:index="1"
+								tm:role="Combination Author"/>
+							<tm:hasMember rdf:resource="urn:lsid:ipni.org:authors:8096-1" 
+								tm:index="1"
+								tm:role="Basionym Author"/>
+						</tm:Team>
+					</tn:authorteam>
+				 */
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"authorship");
 				Statement stateAuthorship = nameAbout.getProperty(prop);
-				prop =  nameAbout.getModel().getProperty(config.getTeamNamespaceURIString()+"name");
+				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"authorteam");
+				Statement stateAuthorTeam = nameAbout.getProperty(prop);
 				Team authorTeam = new Team();
 				authorTeam.setTitleCache(stateAuthorship.getObject().toString(), true);
-				prop =  nameAbout.getModel().getProperty(config.getTeamNamespaceURIString()+"hasMember");
-				//String strTeamMember = nameAbout.getProperty(prop).getString();
+				Statement stateAutorTeamTeam = null;
+				Statement stateAutorTeamName = null;
+				StmtIterator stateTeamMember = null;
+				if (stateAuthorTeam != null){
+					prop =  stateAuthorTeam.getModel().getProperty(config.getTeamNamespaceURIString()+"Team");
+					try{
+						stateAutorTeamTeam = stateAuthorTeam.getProperty(prop);
+					}catch(Exception e){
+						
+					}
+					try{
+						prop =  stateAuthorTeam.getModel().getProperty(config.getTeamNamespaceURIString()+"name");
+						stateAutorTeamName = stateAuthorTeam.getProperty(prop);
+					}catch(Exception e){
+						
+					}
+					try{
+						prop =  nameAbout.getModel().getProperty(config.getTeamNamespaceURIString()+"hasMember");
+						stateTeamMember = ((Resource)stateAuthorTeam.getObject()).listProperties(prop);
+						String memberString = null;
+						Person person;
+						for (Statement statement :stateTeamMember.toList()){
+							memberString =statement.getObject().toString();
+							if (memberString != null){
+								person = Person.NewTitledInstance(memberString);
+								authorTeam.addTeamMember(person);
+							}
+						}
+					}catch(Exception e){
+						System.err.println(e.getMessage());
+					}
+				}
+				
+				
+				
 				nonViralName.setCombinationAuthorTeam(authorTeam);
 				
 				//Annotations:
@@ -644,7 +687,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	}
 
 	public TaxonNameBase handleRdfElementFromStream(InputStream is, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap, String uri){
-		Model model = ModelFactory.createDefaultModel();
+	Model model = ModelFactory.createDefaultModel();
 		try{
 			model.read(is, null);
 			
@@ -655,7 +698,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			return handleNameModel(model, config, taxonNameMap, uri);
 			
 			
-		}catch(com.hp.hpl.jena.shared.JenaException e){
+		}catch(Exception e){
 			logger.debug("The file was no valid rdf file");
 		}
 		

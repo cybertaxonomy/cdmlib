@@ -479,7 +479,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXTreatmentExtractor.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXXMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeRDFMapperBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmTextElementMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmUnclearMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportBase.java -text
@@ -491,6 +490,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTaxonNameImport.java -t
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTaxonNameRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTaxonRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/CdmSingleAttributeXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/DefaultTcsXmlPlaceholders.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/ITcsXmlPlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTransformer.java -text

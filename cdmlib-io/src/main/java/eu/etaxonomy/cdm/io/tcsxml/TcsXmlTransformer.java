@@ -129,6 +129,80 @@ public final class TcsXmlTransformer {
 		else {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
 		}
+		
+		
+	}
+	
+	public static Rank rankString2Rank (String strRank) throws UnknownCdmTypeException{
+		
+		String tcsFamily = "family";
+		String tcsSubFamily = "subfamily";
+		String tcsTribe =  "tribe";
+		String tcsSubtribe =  "subtribe";
+		String tcsGenus =  "genus";
+		String tcsSection = "section";
+		String tcsSpecies =  "species";
+		String tcsSubSpecies = "subspecies";
+		String tcsVariety = "variety";
+		String tcsSubVariety =  "subvariety";
+		String tcsForm =  "form";
+
+		
+		String tcsAbbFamily = "fam.";
+		String tcsAbbrSubFamily =  "subfam.";
+		String tcsAbbrTribe =  "trib.";
+		String tcsAbbrSubtribe =  "subtrib.";
+		String tcsAbbrGenus =  "gen.";
+		String tcsAbbrSubGenus =  "subgen.";
+		String tcsAbbrSection = "sect.";
+		String tcsAbbrSubSection = "subsect.";
+		String tcsAbbrSeries = "ser.";
+		String tcsAbbrSpecies =  "spec.";
+		String tcsAbbrSubSpecies = "subsp.";
+		String tcsAbbrVariety = "var.";
+		String tcsAbbrSubVariety ="subvar.";
+		String tcsAbbrForm = "f.";
+		String tcsAbbrForma = "forma";
+		String tcsAbbrSubForm = "subf.";
+		String tcsAbbrInfraspecUnranked ="[infrasp.unranked]";
+		String tcsAbbrInfragenUnranked ="[infragen.unranked]";
+		String tcsAbbrNothoSubSpecies = "nothosubsp.";
+		
+		if (strRank == null){return null;
+		}else{
+			strRank = strRank.toLowerCase();
+		}
+		if (tcsFamily.equals(strRank) ){return Rank.FAMILY();
+		}else if (tcsSubFamily.equals(strRank)){return Rank.SUBFAMILY();
+		}else if (tcsTribe.equals(strRank)){return Rank.TRIBE();
+		}else if (tcsSubtribe.equals(strRank)){return Rank.SUBTRIBE();
+		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
+		}else if (tcsSection.equals(strRank)){return Rank.SECTION_BOTANY();
+		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
+		}else if (tcsVariety.equals(strRank)){return Rank.VARIETY();
+		}else if (tcsSubVariety.equals(strRank)){return Rank.SUBVARIETY();
+		}else if (tcsSubSpecies.equals(strRank) ){return Rank.SUBSPECIES();
+		}else if (tcsForm.equals(strRank)){return Rank.FORM();
+		}else if (tcsAbbFamily.equals(strRank)){return Rank.FAMILY();
+		}else if (tcsAbbrSubFamily.equals(strRank)){return Rank.SUBFAMILY();
+		}else if (tcsAbbrTribe.equals(strRank)){return Rank.TRIBE();
+		}else if (tcsAbbrSubtribe.equals(strRank)){return Rank.SUBTRIBE();
+		}else if (tcsAbbrGenus.equals(strRank)){return Rank.GENUS();
+		}else if (tcsAbbrSubGenus.equals(strRank)){return Rank.SUBGENUS();
+		}else if (tcsAbbrSection.equals(strRank)){return Rank.SECTION_BOTANY();
+		}else if (tcsAbbrSubSection.equals(strRank)){return Rank.SUBSECTION_BOTANY();
+		}else if (tcsAbbrSeries.equals(strRank)){return Rank.SERIES();
+		}else if (tcsAbbrSpecies.equals(strRank)){return Rank.SPECIES();
+		}else if (tcsAbbrSubSpecies.equals(strRank) || tcsAbbrNothoSubSpecies.equals(strRank)){return Rank.SUBSPECIES();
+		}else if (tcsAbbrVariety.equals(strRank)){return Rank.VARIETY();
+		}else if (tcsAbbrSubVariety.equals(strRank)){return Rank.SUBVARIETY();
+		}else if (tcsAbbrForm.equals(strRank) ||tcsAbbrForma.equals(strRank)){return Rank.FORM();
+		}else if (tcsAbbrSubForm.equals(strRank)){return Rank.SUBFORM();
+		}else if (tcsAbbrInfraspecUnranked.equals(strRank)){return Rank.UNRANKED_INFRASPECIFIC();
+		}else if (tcsAbbrInfragenUnranked.equals(strRank)){return Rank.UNRANKED_INFRAGENERIC();
+		}else{
+			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
+		}
 	}
 	
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
