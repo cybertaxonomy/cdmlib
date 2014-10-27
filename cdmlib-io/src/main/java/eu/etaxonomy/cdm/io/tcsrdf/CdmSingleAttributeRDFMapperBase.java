@@ -9,6 +9,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.IRdfMapper;
+import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 
 
 public abstract class CdmSingleAttributeRDFMapperBase extends
