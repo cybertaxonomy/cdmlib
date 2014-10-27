@@ -44,16 +44,16 @@
          ======================================= -->
     <!-- optional vaading can also activated by the
          init-param element below (not recommendet) -->
-      <!--
-      <init-param>
-        <description>Vaaditor</description>
-        <param-name>beanName</param-name>
-        <param-value>vaaditorUI</param-value>
-      </init-param>
-      -->
+
+
     <servlet>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+      <init-param>
+        <description>Vaaditor</description>
+        <param-name>beanName</param-name>
+        <param-value>vaadinUI</param-value>
+      </init-param>
       <init-param>
         <description>Application widgetset</description>
         <param-name>widgetset</param-name>
