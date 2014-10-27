@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -198,4 +200,69 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Sequences are not equals", sequence, next);
         assertEquals("Sequences are not equals", consensusSequence, next.getSequenceString());
     }
+
+    @Ignore
+    @Test
+    public void testDeleteDerivateHierarchy(){
+        String assertMessage = "Incorrect number of specimens after deletion!";
+
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
+
+        //delete field unit
+        initDerivateHierarchy(fieldUnit);
+        occurrenceService.deleteDerivateHierarchy(fieldUnit);
+        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+
+        //delete derived unit
+        initDerivateHierarchy(fieldUnit);
+        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        occurrenceService.deleteDerivateHierarchy(derivedUnit);
+        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+
+        //delete dna sample
+        initDerivateHierarchy(fieldUnit);
+        DerivedUnit dnaSample = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
+                .getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        occurrenceService.deleteDerivateHierarchy(dnaSample);
+        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+
+        //delete sequence
+        initDerivateHierarchy(fieldUnit);
+        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
+        .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
+        occurrenceService.deleteDerivateHierarchy(consensusSequence);
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+
+
+
+    }
+
+    private FieldUnit initDerivateHierarchy(FieldUnit fieldUnit){
+        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+        DnaSample dnaSample = DnaSample.NewInstance();
+
+        //derivation events
+        DerivationEvent fieldUnitDerivation = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+        DerivationEvent derivedUnitDerivation = DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+
+        //DNA
+        Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
+        SingleRead singleRead = SingleRead.NewInstance();
+        consensusSequence.addSingleRead(singleRead);
+        dnaSample.addSequence(consensusSequence);
+        return fieldUnit;
+    }
+
 }

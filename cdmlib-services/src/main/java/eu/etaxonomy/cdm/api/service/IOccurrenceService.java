@@ -331,4 +331,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return collection of non-cascaded element associated with the specimen
      */
     public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Deletes the specified specimen and all sub derivates.
+     * @param from the specimen which should be deleted with all its sub derivates
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteDerivateHierarchy(ICdmBase from);
 }

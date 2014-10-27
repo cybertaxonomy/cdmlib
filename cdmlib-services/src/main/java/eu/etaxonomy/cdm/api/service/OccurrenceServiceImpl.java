@@ -869,4 +869,13 @@ type=null;
         return nonCascadedCdmEntities;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#deleteDerivateHierarchy(eu.etaxonomy.cdm.model.common.ICdmBase)
+     */
+    @Override
+    public DeleteResult deleteDerivateHierarchy(ICdmBase from) {
+        DeleteResult deleteResult = new DeleteResult();
+        return deleteResult;
+    }
+
 }
