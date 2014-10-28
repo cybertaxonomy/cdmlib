@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * A DNA Quality describes the quality of a {@link SpecimenOrObservationType#DnaSample}
- *  
+ *
  * @author a.mueller
  * @created 18-Oct-2014
  */
@@ -63,9 +63,9 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	private static final long serialVersionUID = -8829069331010573654L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaQuality.class);
-	
+
 // ****************** FACTORY METHOD *****************/
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -74,19 +74,19 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 		return new DnaQuality();
 	}
 
-// ************** ATTRIBUTES ****************************/	
-    
+// ************** ATTRIBUTES ****************************/
+
     //TODO
 //    @XmlTransient
 //    @Transient
 //    private MaterialOrMethodEvent purificationMethod;
     private String purificationMethod;
 
-	
+
 	private Double ratioOfAbsorbance260_230;
-	
+
 	private Double ratioOfAbsorbance260_280;
-	
+
 	private Double concentration;
 
 	@XmlElement(name = "Type")
@@ -94,14 +94,14 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private MeasurementUnit concentrationUnit;
-    
-	
+
+
 	@XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm qualityTerm;
-    
+
     @XmlElement (name = "QualityCheckDate", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Type(type="dateTimeUserType")
@@ -110,17 +110,17 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @FieldBridge(impl = DateTimeBridge.class)
     @Audited
     private DateTime qualityCheckDate;
-    
+
 
 // ******************* CONSTRUCTOR *************************/
-	
+
 	/**
 	 * Constructor
 	 */
-	private DnaQuality() {}
-	
-//************ GETTER / SETTER  **********************************/	
-	
+	protected DnaQuality() {}
+
+//************ GETTER / SETTER  **********************************/
+
 
 	public String getPurificationMethod() {
 		return purificationMethod;
@@ -145,8 +145,8 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	public void setRatioOfAbsorbance260_280(Double ratioOfAbsorbance260_280) {
 		this.ratioOfAbsorbance260_280 = ratioOfAbsorbance260_280;
 	}
-	
-	
+
+
     public Double getConcentration() {
 		return concentration;
 	}
@@ -179,16 +179,16 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 		this.qualityTerm = qualityTerm;
 	}
 
-	
 
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> dna quality. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> dna quality
 	 * by modifying only some of the attributes.<BR>
-	 * @throws CloneNotSupportedException 
-	 * 
+	 * @throws CloneNotSupportedException
+	 *
 	 * @see Specimen#clone()
 	 * @see DerivedUnit#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
@@ -198,14 +198,14 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	public DnaQuality clone() {
 		try {
 			DnaQuality result = (DnaQuality)super.clone();
-			
+
 			//purification method ??
-			
-			//no changes to: rationXXX, concentration, qualityCheckDate, qualityTerm, 
+
+			//no changes to: rationXXX, concentration, qualityCheckDate, qualityTerm,
 			return result;
-			
+
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);  //may not occur as Clonable is implemented 
+			throw new RuntimeException(e);  //may not occur as Clonable is implemented
 		}
 	}
 

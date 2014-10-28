@@ -79,10 +79,9 @@ public class Primer extends AnnotatableEntity {
 
 	// ********************* CONSTRUCTOR ********************/
 
-	//FIXME
 	//made protected to fix a java.lang.InstantiationException which occurred while loading an Amplification
 	//and its primer. see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
-	protected Primer(){};
+	protected Primer(){}
 
 // ********************* GETTER / SETTER ********************/
 
