@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -70,6 +71,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -394,14 +396,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 dto.addTypes(typeStatus, currentAccessionNumber);
             }
             //assemble molecular data
-            if(derivedUnit instanceof DnaSample){//.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                dto.setHasDna(true);
+            if(derivedUnit instanceof DnaSample){
+                if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.TissueSample){
+                    //TODO implement TissueSample assembly for web service
+                }
+                if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.DnaSample){
+                    dto.setHasDna(true);
 
-                DnaSample dna = (DnaSample)derivedUnit;
-                for(Sequence sequence:dna.getSequences()){
-                    final URI boldUri = sequence.getBoldUri();
-                    final DefinedTerm dnaMarker = sequence.getDnaMarker();
-                    dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                    DnaSample dna = (DnaSample)derivedUnit;
+                    for(Sequence sequence:dna.getSequences()){
+                        final URI boldUri = sequence.getBoldUri();
+                        final DefinedTerm dnaMarker = sequence.getDnaMarker();
+                        dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                    }
                 }
             }
             //assemble media data
@@ -410,22 +417,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 MediaSpecimen media = (MediaSpecimen)derivedUnit;
                 String mediaUriString = getMediaUriString(media);
                 if(media.getKindOfUnit()!=null){
+                    //specimen scan
                     if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
                         dto.setHasSpecimenScan(true);
-                        if(mediaUriString!=null){
                             final String imageLinkText = currentHerbarium+" "+currentAccessionNumber;
-                            dto.addSpecimenScan(mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
-                        }
+                            dto.addSpecimenScan(mediaUriString==null?"":mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
                     }
+                    //detail image
                     else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
                         dto.setHasDetailImage(true);
-                        if(mediaUriString!=null){
-                            String motif = "";
-                            if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle()!=null){
-                                motif = media.getMediaSpecimen().getTitle().getText();
-                            }
-                            dto.addDetailImage(mediaUriString, motif!=null?motif:"[no motif]");
+                        String motif = "";
+                        if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle()!=null){
+                            motif = media.getMediaSpecimen().getTitle().getText();
                         }
+                        dto.addDetailImage(mediaUriString==null?"":mediaUriString, motif!=null?motif:"[no motif]");
                     }
                 }
             }
