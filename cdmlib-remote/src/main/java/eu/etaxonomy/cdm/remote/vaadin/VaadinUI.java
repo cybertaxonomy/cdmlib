@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ErrorView;
 @Theme("mytheme")
 public class VaadinUI extends UI {
 
+	private static final String UISET = "redlist.views";
 	
     public VaadinUI(){
         super();
@@ -47,7 +48,7 @@ public class VaadinUI extends UI {
     public void init(VaadinRequest request) {
 
         setSizeFull();
-        String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + vaadinConfigurer.vaadinUiSet();
+        String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + UISET;// vaadinConfigurer.vaadinUiSet();
 
 //		DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
         CdmDiscoveryNavigator navigator = new CdmDiscoveryNavigator(this, this, packageNameScope);

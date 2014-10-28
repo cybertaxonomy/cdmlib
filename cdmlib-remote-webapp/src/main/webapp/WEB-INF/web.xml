@@ -50,7 +50,7 @@
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
       <init-param>
-        <description>Vaaditor</description>
+        <description>UISet for Vaadin</description>
         <param-name>beanName</param-name>
         <param-value>vaadinUI</param-value>
       </init-param>

@@ -342,6 +342,14 @@
           <force>true</force>
         <webappDirectory>../cdmlib-remote-webapp/src/main/webapp/VAADIN/widgetsets</webappDirectory>
         </configuration>
+    <executions>
+      <execution>
+        <goals>
+          <goal>resources</goal>
+          <goal>compile</goal>
+        </goals>
+      </execution>
+    </executions>
     </plugin>
   <plugin>
     <artifactId>maven-resources-plugin</artifactId>
