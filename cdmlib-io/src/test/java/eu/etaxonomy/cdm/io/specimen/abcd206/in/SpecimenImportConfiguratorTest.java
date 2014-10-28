@@ -111,6 +111,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertNotNull("occurence service should not be null", occurrenceService);
 		assertNotNull("term service should not be null", termService);
 		assertNotNull("common service should not be null", commonService);
+		assertNotNull("taxon node service should not be null", taxonNodeService);
+		assertNotNull("agent service should not be null", agentService);
+		assertNotNull("reference service should not be null", referenceService);
 	}
 
 	@Test
