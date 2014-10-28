@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -477,7 +478,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);

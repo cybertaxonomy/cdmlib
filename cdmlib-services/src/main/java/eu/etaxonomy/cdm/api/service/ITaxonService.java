@@ -888,7 +888,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
+    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database

@@ -48,8 +48,10 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -201,7 +203,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         }
 
         logger.debug("number of taxa: " + list.size());
-        assertEquals(8, list.size());
+        assertEquals(9, list.size());
 
         // pass 2
 //        configurator.setDoTaxaByCommonNames(false);
@@ -221,7 +223,17 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public final void testSearchTaxaByName() {
-        logger.warn("testSearchTaxaByName not yet implemented"); // TODO
+    	 IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
+         configurator.setTitleSearchString("Abies*");
+         configurator.setMatchMode(MatchMode.BEGINNING);
+         configurator.setDoTaxa(false);
+         configurator.setDoSynonyms(false);
+         configurator.setDoNamesWithoutTaxa(true);
+         configurator.setDoTaxaByCommonNames(false);
+         
+        List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
+         
+         Assert.assertEquals("Expecting one entity", 1, list.size());
     }
 
     @SuppressWarnings("rawtypes")

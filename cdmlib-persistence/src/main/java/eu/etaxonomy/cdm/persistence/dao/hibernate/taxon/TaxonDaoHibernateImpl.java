@@ -41,6 +41,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -247,23 +248,35 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
     @SuppressWarnings("unchecked")
-    public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas) {
         long zstVorher;
         long zstNachher;
-
+        
         boolean doCount = false;
+        List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+        if (doNamesWithoutTaxa){
+        	List<? extends TaxonNameBase<?,?>> nameResult = taxonNameDao.findByName(queryString,matchMode, null, null, null, null);
+        	
+        	for (TaxonNameBase name: nameResult){
+        		if (name.getTaxonBases().size() == 0){
+        			resultObjects.add(new UuidAndTitleCache<IdentifiableEntity>(name.getUuid(), name.getTitleCache()));
+        		}
+        	}
+        	if (!doSynonyms && !doTaxa){
+        		return resultObjects;
+        	}
+        }
         Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
 
 
         if (query != null){
             List<Object[]> results = query.list();
 
-            List<UuidAndTitleCache<TaxonBase>> resultObjects = new ArrayList<UuidAndTitleCache<TaxonBase>>();
             Object[] result;
             for(int i = 0; i<results.size();i++){
                 result = results.get(i);
-
+                
                 //differentiate taxa and synonyms
                 // new Boolean(result[3].toString()) is due to the fact that result[3] could be a Boolean ora String
                 // see FIXME in 'prepareQuery' for more details
@@ -284,7 +297,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return resultObjects;
 
         }
-        return new ArrayList<UuidAndTitleCache<TaxonBase>>();
+       
+        return new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
 
     }
 

@@ -698,24 +698,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator){
+    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator){
 
-        List<UuidAndTitleCache<TaxonBase>> result = new ArrayList<UuidAndTitleCache<TaxonBase>>();
-//        Class<? extends TaxonBase> clazz = null;
-//        if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
-//            clazz = TaxonBase.class;
-//            //propertyPath.addAll(configurator.getTaxonPropertyPath());
-//            //propertyPath.addAll(configurator.getSynonymPropertyPath());
-//        } else if(configurator.isDoTaxa()) {
-//            clazz = Taxon.class;
-//            //propertyPath = configurator.getTaxonPropertyPath();
-//        } else if (configurator.isDoSynonyms()) {
-//            clazz = Synonym.class;
-//            //propertyPath = configurator.getSynonymPropertyPath();
-//        }
+        List<UuidAndTitleCache<IdentifiableEntity>> result = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
 
 
-        result = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+
+        result = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
         return result;
     }
 
