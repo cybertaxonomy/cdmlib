@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,7 +71,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -405,7 +404,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
                     DnaSample dna = (DnaSample)derivedUnit;
                     for(Sequence sequence:dna.getSequences()){
-                        final URI boldUri = sequence.getBoldUri();
+                        URI boldUri = null;
+                        try {
+                            boldUri = sequence.getBoldUri();
+                        } catch (URISyntaxException e1) {
+                            logger.error("Could not create BOLD URI", e1);
+                        }
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
                         dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
                     }

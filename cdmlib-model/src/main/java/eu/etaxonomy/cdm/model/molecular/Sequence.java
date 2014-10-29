@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -183,12 +184,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		result.getConsensusSequence().setLength(length);
 		return result;
 	}
-	
+
 	public static Sequence NewInstance(DnaSample dnaSample, String consensusSequence, Integer length){
 		Sequence result = NewInstance(consensusSequence);
 		result.getConsensusSequence().setLength(length);
 		dnaSample.addSequence(result);
-		
+
 		return result;
 	}
 //*********************** CONSTRUCTOR ****************************************************/
@@ -468,43 +469,48 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	//***** Registrations ************/
 	/**
 	 * Returns the computed genBank uri.
-	 * @return
+	 * @return the uri composed of {@link #GENBANK_BASE_URI} and {@link #geneticAccessionNumber}
+	 * @throws URISyntaxException when URI could not be created with {@link #geneticAccessionNumber}
 	 */
 	@Transient
-	public URI getGenBankUri() {
+	public URI getGenBankUri() throws URISyntaxException {
 		return createExternalUri(GENBANK_BASE_URI, geneticAccessionNumber);
 	}
 
 	/**
 	 * Returns the computed EMBL uri.
-	 * @return
+	 * @return the uri composed of {@link #EMBL_BASE_URI} and {@link #geneticAccessionNumber}
+	 * @throws URISyntaxException when URI could not be created with {@link #geneticAccessionNumber}
 	 */
 	@Transient
-	public URI getEmblUri() {
+	public URI getEmblUri() throws URISyntaxException {
 		return createExternalUri(EMBL_BASE_URI, geneticAccessionNumber);
 	}
 
 	/**
 	 * Returns the computed DDBJ uri.
-	 * @return
+	 * @return the uri composed of {@link #DDBJ_BASE_URI} and {@link #geneticAccessionNumber}
+	 * @throws URISyntaxException when URI could not be created with {@link #geneticAccessionNumber}
 	 */
 	@Transient
-	public URI getDdbjUri() {
+	public URI getDdbjUri() throws URISyntaxException {
 		return createExternalUri(DDBJ_BASE_URI, geneticAccessionNumber);
 	}
 
 	/**
 	 * Returns the URI for the BOLD entry.
+	 * @return the uri composed of {@link #BOLD_BASE_URI} and {@link #boldProcessId}
+	 * @throws URISyntaxException when URI could not be created with {@link #boldProcessId}
 	 * @see #getBoldProcessId()
 	 */
 	@Transient
-	public URI getBoldUri() {
+	public URI getBoldUri() throws URISyntaxException {
 		return createExternalUri(BOLD_BASE_URI, boldProcessId);
 	}
 
-	private URI createExternalUri(String baseUri, String id){
+	private URI createExternalUri(String baseUri, String id) throws URISyntaxException{
 		if (StringUtils.isNotBlank(id)){
-			return URI.create(String.format(baseUri, id.trim()));
+			return new URI(String.format(baseUri, id.trim()));
 		}else{
 			return null;
 		}
