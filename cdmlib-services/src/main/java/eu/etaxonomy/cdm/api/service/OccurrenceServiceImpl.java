@@ -464,9 +464,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 citation += separator;
             }
         }
-        citation += !dto.getCollection().isEmpty()?dto.getCollection()+separator:"";
+        citation += !dto.getCollection().isEmpty()?dto.getCollection():"";
         if(!preservedSpecimenAccessionNumbers.isEmpty()){
-            citation += "(";
+            citation += " (";
             for(String accessionNumber:preservedSpecimenAccessionNumbers){
                 if(!accessionNumber.isEmpty()){
                     citation += accessionNumber+separator;
