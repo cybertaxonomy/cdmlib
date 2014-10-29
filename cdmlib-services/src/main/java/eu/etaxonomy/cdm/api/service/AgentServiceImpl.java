@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -129,4 +130,23 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
 		return dao.getInstitutionUuidAndTitleCache();
 	}
+	
+	@Override
+    public DeleteResult delete(AgentBase base){
+    	
+    		List<String> referencingObjects = this.isDeletable(base, null);
+    		DeleteResult result = new DeleteResult();
+    		if (referencingObjects.isEmpty()){
+    			dao.delete(base);
+    			
+    		}else{
+    			for (String referenceString: referencingObjects){
+    				result.addException(new ReferencedObjectUndeletableException(referenceString));
+    			}
+    			result.setError();
+    		}
+    		
+    		return result;
+    		
+    	}
 }

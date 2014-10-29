@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -72,7 +74,7 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
     @Override
     public List<String> isDeletable(T base, DeleteConfiguratorBase config){
     	List<String> result = new ArrayList<String>();
-    	Set<CdmBase> references = commonService.getReferencingObjects(base);
+    	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
     	Iterator<CdmBase> iterator = references.iterator();
     	CdmBase ref;
     	while (iterator.hasNext()){
@@ -82,5 +84,6 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
     	}
     	return result;
     }
-
-}
+    
+    
+    }
