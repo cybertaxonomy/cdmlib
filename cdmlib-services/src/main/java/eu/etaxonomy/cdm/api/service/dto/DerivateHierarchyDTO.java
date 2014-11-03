@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +28,32 @@ public class DerivateHierarchyDTO {
 	private String citation;
 	private Map<String, List<String>> types;
 	private List<Pair<String, String>> specimenScans;
-	private List<Pair<String, String>> molecularData;
+	private List<MolecularData> molecularDataList;
 	private List<Pair<String, String>> detailImages;
+
+	/**
+     * @return the molecularData
+     */
+    public List<MolecularData> getMolecularDataList() {
+        return molecularDataList;
+    }
+
+    public MolecularData addProviderLink(URI uri, String linkText) {
+        if(this.molecularDataList==null){
+            molecularDataList = new ArrayList<DerivateHierarchyDTO.MolecularData>();
+        }
+        MolecularData molecularData = new MolecularData(new Link(uri, linkText));
+        this.molecularDataList.add(molecularData);
+        return molecularData;
+    }
+
+    public Link addContigLinkForMolecularData(MolecularData molecularData, String linkText, URI uri){
+        return molecularData.addContigLink(linkText, uri);
+    }
+
+    public void addPrimerLinkForContigLink(MolecularData molecularData, Link contigLink, String linkText, URI uri){
+        molecularData.addPrimerLinkForContig(contigLink, linkText, uri);
+    }
     /**
      * @return the hasDna
      */
@@ -207,27 +232,6 @@ public class DerivateHierarchyDTO {
     }
 
     /**
-     * @return the molecularData
-     */
-    public List<Pair<String, String>> getMolecularData() {
-        return molecularData;
-    }
-
-    /**
-     * @param molecularData the molecularData to set
-     */
-    public void setMolecularData(List<Pair<String, String>> molecularData) {
-        this.molecularData = molecularData;
-    }
-
-    public void addMolecularData(String uri, String marker){
-        if(molecularData==null){
-            molecularData = new ArrayList<Pair<String,String>>();
-        }
-        molecularData.add(new Pair<String, String>(uri, marker));
-    }
-
-    /**
      * @return the detailImages
      */
     public List<Pair<String, String>> getDetailImages() {
@@ -247,5 +251,119 @@ public class DerivateHierarchyDTO {
         detailImages.add(new Pair<String, String>(uri, motif));
     }
 
+    public class MolecularData{
+        private final Link providerLink;
+        private Map<Link, List<Link>> contigLinkToPrimerLinks;
+
+        public MolecularData(Link providerLink) {
+            super();
+            this.providerLink = providerLink;
+        }
+
+        public Link addContigLink(String linkText, URI uri){
+            if(contigLinkToPrimerLinks==null){
+                contigLinkToPrimerLinks = new HashMap<DerivateHierarchyDTO.Link, List<Link>>();
+            }
+            Link contigLink = new Link(uri, linkText);
+            contigLinkToPrimerLinks.put(contigLink, new ArrayList<DerivateHierarchyDTO.Link>());
+            return contigLink;
+        }
+
+        public void addPrimerLinkForContig(Link contigLink, String linkText, URI uri){
+            List<Link> primerLinks = contigLinkToPrimerLinks.get(contigLink);
+            if(primerLinks==null){
+                primerLinks = new ArrayList<DerivateHierarchyDTO.Link>();
+            }
+            primerLinks.add(new Link(uri, linkText));
+        }
+
+        public synchronized Link getProviderLink() {
+            return providerLink;
+        }
+
+        /**
+         * @return the contigLinkToPrimerLinks
+         */
+        public Map<Link, List<Link>> getContigLinkToPrimerLinks() {
+            return contigLinkToPrimerLinks;
+        }
+    }
+
+    public class Link{
+        private String linkText;
+        private URI uri;
+
+        public Link(URI uri, String linkText) {
+            super();
+            this.linkText = linkText;
+            this.uri = uri;
+        }
+        /**
+         * @return the linkText
+         */
+        public synchronized String getLinkText() {
+            return linkText;
+        }
+        /**
+         * @param linkText the linkText to set
+         */
+        public synchronized void setLinkText(String linkText) {
+            this.linkText = linkText;
+        }
+        /**
+         * @return the uri
+         */
+        public synchronized URI getUri() {
+            return uri;
+        }
+        /**
+         * @param uri the uri to set
+         */
+        public synchronized void setUri(URI uri) {
+            this.uri = uri;
+        }
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((linkText == null) ? 0 : linkText.hashCode());
+            result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+            return result;
+        }
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            Link other = (Link) obj;
+            if (linkText == null) {
+                if (other.linkText != null) {
+                    return false;
+                }
+            } else if (!linkText.equals(other.linkText)) {
+                return false;
+            }
+            if (uri == null) {
+                if (other.uri != null) {
+                    return false;
+                }
+            } else if (!uri.equals(other.uri)) {
+                return false;
+            }
+            return true;
+        }
+    }
 
 }

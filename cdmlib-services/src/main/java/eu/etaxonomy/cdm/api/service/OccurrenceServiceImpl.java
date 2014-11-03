@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,6 +72,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -400,9 +402,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     //TODO implement TissueSample assembly for web service
                 }
                 if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                    dto.setHasDna(true);
 
                     DnaSample dna = (DnaSample)derivedUnit;
+                    if(!dna.getSequences().isEmpty()){
+                        dto.setHasDna(true);
+                    }
                     for(Sequence sequence:dna.getSequences()){
                         URI boldUri = null;
                         try {
@@ -411,7 +415,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             logger.error("Could not create BOLD URI", e1);
                         }
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
-                        dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                        dto.addProviderLink(boldUri!=null?boldUri:null,dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
                     }
                 }
             }
