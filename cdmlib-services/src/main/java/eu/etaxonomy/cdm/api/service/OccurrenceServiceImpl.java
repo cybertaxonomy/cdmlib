@@ -42,6 +42,8 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.ContigFile;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.MolecularData;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -70,6 +72,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -397,6 +400,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 dto.addTypes(typeStatus, currentAccessionNumber);
             }
             //assemble molecular data
+            //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
             if(derivedUnit instanceof DnaSample){
                 if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.TissueSample){
                     //TODO implement TissueSample assembly for web service
@@ -415,7 +419,24 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             logger.error("Could not create BOLD URI", e1);
                         }
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
-                        dto.addProviderLink(boldUri!=null?boldUri:null,dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                        MolecularData molecularData = dto.addProviderLink(boldUri!=null?boldUri:null,dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+
+                        //contig file FIXME show primer although contig not present?
+                        if(sequence.getContigFile()!=null){
+                            MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
+                            if(contigMediaRepresentationPart!=null){
+                                ContigFile contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
+                                //primer files
+                                if(sequence.getSingleReads()!=null){
+                                    for (SingleRead singleRead : sequence.getSingleReads()) {
+                                        MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
+                                        if(pherogramMediaRepresentationPart!=null){
+                                            contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "primer");
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

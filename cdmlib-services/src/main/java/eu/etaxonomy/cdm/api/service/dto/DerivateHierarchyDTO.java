@@ -47,13 +47,6 @@ public class DerivateHierarchyDTO {
         return molecularData;
     }
 
-    public Link addContigLinkForMolecularData(MolecularData molecularData, String linkText, URI uri){
-        return molecularData.addContigLink(linkText, uri);
-    }
-
-    public void addPrimerLinkForContigLink(MolecularData molecularData, Link contigLink, String linkText, URI uri){
-        molecularData.addPrimerLinkForContig(contigLink, linkText, uri);
-    }
     /**
      * @return the hasDna
      */
@@ -253,40 +246,55 @@ public class DerivateHierarchyDTO {
 
     public class MolecularData{
         private final Link providerLink;
-        private Map<Link, List<Link>> contigLinkToPrimerLinks;
+        private List<ContigFile> contigFiles;
 
         public MolecularData(Link providerLink) {
             super();
             this.providerLink = providerLink;
         }
 
-        public Link addContigLink(String linkText, URI uri){
-            if(contigLinkToPrimerLinks==null){
-                contigLinkToPrimerLinks = new HashMap<DerivateHierarchyDTO.Link, List<Link>>();
+        public ContigFile addContigFile(URI uri, String linkText){
+            if(contigFiles==null){
+                contigFiles = new ArrayList<DerivateHierarchyDTO.ContigFile>();
             }
-            Link contigLink = new Link(uri, linkText);
-            contigLinkToPrimerLinks.put(contigLink, new ArrayList<DerivateHierarchyDTO.Link>());
-            return contigLink;
-        }
-
-        public void addPrimerLinkForContig(Link contigLink, String linkText, URI uri){
-            List<Link> primerLinks = contigLinkToPrimerLinks.get(contigLink);
-            if(primerLinks==null){
-                primerLinks = new ArrayList<DerivateHierarchyDTO.Link>();
-            }
-            primerLinks.add(new Link(uri, linkText));
+            ContigFile contigFile = new ContigFile(new Link(uri, linkText));
+            contigFiles.add(contigFile);
+            return contigFile;
         }
 
         public synchronized Link getProviderLink() {
             return providerLink;
         }
 
-        /**
-         * @return the contigLinkToPrimerLinks
-         */
-        public Map<Link, List<Link>> getContigLinkToPrimerLinks() {
-            return contigLinkToPrimerLinks;
+        public List<ContigFile> getContigFiles() {
+            return contigFiles;
         }
+
+    }
+
+    public class ContigFile{
+        private final Link contigLink;
+        private List<Link> primerLinks;
+
+        public ContigFile(Link contigLink) {
+            this.contigLink = contigLink;
+        }
+
+        public void addPrimerLink(URI uri, String linkText){
+            if(primerLinks==null){
+                primerLinks = new ArrayList<DerivateHierarchyDTO.Link>();
+            }
+            primerLinks.add(new Link(uri, linkText));
+        }
+
+        public Link getContigLink() {
+            return contigLink;
+        }
+
+        public List<Link> getPrimerLinks() {
+            return primerLinks;
+        }
+
     }
 
     public class Link{

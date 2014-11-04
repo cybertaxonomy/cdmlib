@@ -45,13 +45,16 @@ public class MediaUtils {
     }
 
     /**
-     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
-     * if it does not already exists. Otherwise the first part found is returned.<br>
-     * @param media the media for which the representation part should be created
-     * @return the first or newly created representation part
+     * Return the first {@link MediaRepresentationPart} found for the given {@link Media}
+     * or <code>null</code> otherwise.
+     * @param media the media which is searched for the first part
+     * @return the first part found or <code>null</code>
      */
-    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media) {
-        MediaRepresentationPart mediaRepresentationPart;
+    public static MediaRepresentationPart getFirstMediaRepresentationPart(Media media){
+        if(media==null){
+            return null;
+        }
+        MediaRepresentationPart mediaRepresentationPart = null;
         Set<MediaRepresentation> representations = media.getRepresentations();
         if(representations!=null && representations.size()>0){
             MediaRepresentation mediaRepresentation = representations.iterator().next();
@@ -59,17 +62,32 @@ public class MediaUtils {
             if(parts!=null && parts.size()>0){
                 mediaRepresentationPart = parts.iterator().next();
             }
-            else{
+        }
+        return mediaRepresentationPart;
+    }
+
+    /**
+     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
+     * if it does not already exists. Otherwise the first part found is returned.<br>
+     * @param media the media for which the representation part should be created
+     * @return the first or newly created representation part
+     */
+    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media) {
+        MediaRepresentationPart mediaRepresentationPart = getFirstMediaRepresentationPart(media);
+        if(mediaRepresentationPart==null){
+            Set<MediaRepresentation> representations = media.getRepresentations();
+            if(representations!=null && representations.size()>0){
+                MediaRepresentation mediaRepresentation = representations.iterator().next();
                 mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
                 mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
             }
-        }
-        else{
-            mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+            else{
+                mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
 
-            MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
-            mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-            media.addRepresentation(mediaRepresentation);
+                MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+                media.addRepresentation(mediaRepresentation);
+            }
         }
         return mediaRepresentationPart;
     }
