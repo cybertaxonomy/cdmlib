@@ -65,7 +65,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -95,12 +95,6 @@ public class Datasource {
 //		String database = "cdm_integration_palmae";
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-//		String server = "localhost";
-//		String database = "EDITimport";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
 
 		
 //		String server = "localhost";
