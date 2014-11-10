@@ -700,12 +700,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator){
 
-        List<UuidAndTitleCache<IdentifiableEntity>> result = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+        List<UuidAndTitleCache<IdentifiableEntity>> results = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
 
 
-
-        result = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
-        return result;
+        if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa()){
+        	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(),configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+        }
+        if (configurator.isDoTaxaByCommonNames()) {
+            
+            if(configurator.getPageSize() == null ){
+                List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+                if(commonNameResults != null){
+                    results.addAll(commonNameResults);
+                }
+            }
+        }
+        return results;
     }
 
     /* (non-Javadoc)

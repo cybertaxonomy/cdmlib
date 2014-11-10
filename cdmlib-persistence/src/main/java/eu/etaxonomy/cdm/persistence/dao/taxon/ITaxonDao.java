@@ -478,7 +478,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);
@@ -487,6 +487,10 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             List<String> propertyPaths);
 
     public long countAcceptedTaxaFor(Synonym synonym, Classification classificationFilter);
+
+	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+			String titleSearchStringSqlized, Classification classification,
+			MatchMode matchMode, Set namedAreas);
 
 
 }

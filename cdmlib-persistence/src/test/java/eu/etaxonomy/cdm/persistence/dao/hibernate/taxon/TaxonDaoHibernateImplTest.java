@@ -328,34 +328,37 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Reference<?> sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,"Mand*", null, MatchMode.BEGINNING, null);
+        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false,"Mand*", null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
         assertTrue(results.size() == 5);
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, true, false, "A*",null, MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,"A*",null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(results.size(), 12);
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, false,false, "A", null,MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(true, false,false, false,"A", null,MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue(results.size() == 9);
         assertEquals(results.get(0).getType(), Taxon.class);
 
-        results = taxonDao.getTaxaByNameForEditor(false, true,false, "A", null,MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(false, true,false,false, "A", null,MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue(results.size() == 3);
         assertEquals(results.get(0).getType(), Synonym.class);
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,false,"Aus", null,MatchMode.EXACT,  null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,false,false,"Aus", null,MatchMode.EXACT,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
         
-        results = taxonDao.getTaxaByNameForEditor(true, true,true,"A*", null,MatchMode.BEGINNING,  null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,"A*", null,MatchMode.BEGINNING,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",15,results.size());
+        
+        //TODO: test the search for misapplied names
+        
     }
 
 

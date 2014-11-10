@@ -248,7 +248,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
     @SuppressWarnings("unchecked")
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas) {
         long zstVorher;
         long zstNachher;
@@ -267,7 +267,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         		return resultObjects;
         	}
         }
-        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
+        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, doCount);
 
 
         if (query != null){
@@ -331,9 +331,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      *
      *
      */
-    private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String searchField, String queryString, Classification classification,
+    private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String searchField, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount) {
-        return prepareQuery(doTaxa, doSynonyms, false, searchField, queryString,
+        return prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString,
                 classification, matchMode, namedAreas, doCount, true);
     }
 
@@ -2142,6 +2142,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
     }
+
+	@Override
+	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+			String titleSearchStringSqlized, Classification classification,
+			MatchMode matchMode, Set namedAreas) {
+		List<UuidAndTitleCache<IdentifiableEntity>> result = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+		List<TaxonBase> taxa = getTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null);
+		if (!taxa.isEmpty()){
+			for (TaxonBase taxon:taxa){
+				result.add(new UuidAndTitleCache<IdentifiableEntity>(taxon.getUuid(), taxon.getTitleCache()));
+			}
+		}
+		
+		return result;
+	}
 
 
 }

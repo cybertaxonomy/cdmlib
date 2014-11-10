@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -175,6 +177,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
 		assertEquals("Both contexts should yield the same results(at least if " +
 				"there where no write operations in between)", context1Count, context2Count);
+		
 	}
 
 	/**
@@ -215,6 +218,37 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
 
 		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
+		assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
+	}
+	
+	/**
+	 * Getting the same taxon from two different sessions using the taxon service.
+	 * However, the resulting objects should be equal but not be the same.
+	 */
+	@Test
+	@DataSet("ConcurrentSessionTest.xml")
+	public void testTwoSessionsRemoveTaxonBaseTaxonService(){
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+
+		conversationHolder1.bind();
+		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
+		TaxonNameBase name = taxonBase1.getName();
+		Synonym syn = Synonym.NewInstance(name, null);
+		taxonService.save(syn);
+		conversationHolder1.commit();
+		Set<TaxonBase> taxonBases = taxonBase1.getName().getTaxonBases();
+		name.removeTaxonBase(syn);
+		taxonService.saveOrUpdate(taxonBase1);
+		conversationHolder1.commit();
+		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
+		
+		
+		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
+		taxonBases = taxonBase2.getName().getTaxonBases();
+
+		assertEquals("There should be only one taxon left", taxonBases.size(), 1);
 		assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
 	}
 
