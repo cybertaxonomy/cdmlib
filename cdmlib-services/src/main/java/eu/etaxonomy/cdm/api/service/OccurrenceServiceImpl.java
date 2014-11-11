@@ -41,9 +41,12 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.ContigFile;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.MolecularData;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -59,6 +62,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -66,6 +70,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -76,6 +81,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -89,6 +95,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -128,6 +135,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
+
+    @Autowired
+    private ICdmGenericDao genericDao;
 
 
     public OccurrenceServiceImpl() {
@@ -903,13 +913,108 @@ type=null;
         return nonCascadedCdmEntities;
     }
 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#delete(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator)
+     */
+    @Override
+    public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
+        DeleteResult deleteResult = new DeleteResult();
+        Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+        for (DerivationEvent derivationEvent : derivationEvents) {
+            if(!derivationEvent.getDerivatives().isEmpty()){
+                deleteResult.setAbort();
+                deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
+                return deleteResult;
+            }
+        }
+        if(specimen instanceof DerivedUnit){
+            DerivationEvent derivedFromEvent = ((DerivedUnit) specimen).getDerivedFrom();
+            if(derivedFromEvent!=null){
+                derivedFromEvent.removeDerivative((DerivedUnit) specimen);
+            }
+        }
+        if(!config.isDeleteChildren()){
+            Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(specimen);
+            for (CdmBase referencingObject : referencingObjects){
+                //DerivedUnit?.storedUnder
+                if (referencingObject.isInstanceOf(DerivedUnit.class)){
+                    String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
+                }
+                //DescriptionElementSource#nameUsedInSource
+                if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+                    String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+                }
+                //NameTypeDesignation#typeName
+                if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+                    String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+                }
+            }
+            deleteResult = delete(specimen);
+        }
+        else{
+            //TODO implement deep delete
+        }
+        return deleteResult;
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#deleteDerivateHierarchy(eu.etaxonomy.cdm.model.common.ICdmBase)
      */
     @Override
-    public DeleteResult deleteDerivateHierarchy(ICdmBase from) {
+    public DeleteResult deleteDerivateHierarchy(ICdmBase from, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
+        if(from instanceof Sequence){
+            Sequence sequence = (Sequence)from;
+            sequence.getDnaSample().removeSequence(sequence);
+            deleteResult.setStatus(DeleteStatus.OK);
+        }
+        else if(from instanceof SpecimenOrObservationBase<?>)  {
+            deleteResult = delete((SpecimenOrObservationBase<?>) from, config);
+        }
         return deleteResult;
+    }
+
+    private Set<ICdmBase> collectEntitiesToDelete(ICdmBase entity){
+        Set<ICdmBase> entitiesToDelete = new LinkedHashSet<ICdmBase>();
+
+        if(entity instanceof SpecimenOrObservationBase<?>){
+            SpecimenOrObservationBase<?> specimen = (SpecimenOrObservationBase<?>) entity;
+            if(entity instanceof DerivedUnit){
+                DerivedUnit derivedUnit = (DerivedUnit)entity;
+                DerivationEvent derivedFrom = derivedUnit.getDerivedFrom();
+                Set<SpecimenOrObservationBase> originals = derivedFrom.getOriginals();
+                for (SpecimenOrObservationBase<?> original: originals) {
+                        original.removeDerivationEvent(derivedFrom);
+//                        saveOrUpdate(original);
+                }
+            }
+            if(entity instanceof DnaSample && ((DnaSample) entity).getRecordBasis()==SpecimenOrObservationType.DnaSample){
+                DnaSample dnaSample = (DnaSample)entity;
+                for (Sequence sequence : dnaSample.getSequences()) {
+                    entitiesToDelete.addAll(collectEntitiesToDelete(sequence));
+                    dnaSample.removeSequence(sequence);
+//                    saveOrUpdate(dnaSample);
+                }
+            }
+            Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+            for (DerivationEvent derivationEvent : derivationEvents) {
+                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                    entitiesToDelete.addAll(collectEntitiesToDelete(derivedUnit));
+                }
+            }
+        }
+        else if(entity instanceof Sequence){
+            Sequence sequence = (Sequence)entity;
+            for (SingleRead singleRead : sequence.getSingleReads()) {
+                entitiesToDelete.addAll(collectEntitiesToDelete(singleRead));
+                sequence.removeSingleRead(singleRead);
+            }
+//            sequenceService.saveOrUpdate(sequence);
+        }
+        entitiesToDelete.add(entity);
+        return entitiesToDelete;
     }
 
 }

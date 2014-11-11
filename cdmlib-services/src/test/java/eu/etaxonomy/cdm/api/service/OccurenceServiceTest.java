@@ -13,10 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -201,67 +201,126 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Sequences are not equals", consensusSequence, next.getSequenceString());
     }
 
-    @Ignore
+//    @Test
+//    public void testDeleteDerivateHierarchy_FieldUnit(){
+//        String assertMessage = "Incorrect number of specimens after deletion.";
+//
+//        FieldUnit fieldUnit = initDerivateHierarchy();
+//
+//        //delete field unit
+//        occurrenceService.deleteDerivateHierarchy(fieldUnit);
+//        commit();
+//        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
+//        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
+//        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+//        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+//    }
+
+//    @Test
+//    public void testDeleteDerivateHierarchy_DerivedUnit(){
+//        String assertMessage = "Incorrect number of specimens after deletion.";
+//
+//        FieldUnit fieldUnit = initDerivateHierarchy();
+//
+//        //delete derived unit
+//        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+//        occurrenceService.deleteDerivateHierarchy(derivedUnit);
+//        commit();
+//        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
+//        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+//        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+//        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+//    }
+
+
     @Test
-    public void testDeleteDerivateHierarchy(){
-        String assertMessage = "Incorrect number of specimens after deletion!";
+    public void testDeleteDerivateHierarchy_StepByStep(){
+        String assertMessage = "Incorrect number of specimens after deletion.";
+        DeleteResult deleteResult = null;
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        config.setDeleteChildren(false);
+        config.setShiftHierarchyUp(false);
+        FieldUnit fieldUnit = initDerivateHierarchy();
 
-        FieldUnit fieldUnit = FieldUnit.NewInstance();
-
-        //delete field unit
-        initDerivateHierarchy(fieldUnit);
-        occurrenceService.deleteDerivateHierarchy(fieldUnit);
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-
-        //delete derived unit
-        initDerivateHierarchy(fieldUnit);
-        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
-        occurrenceService.deleteDerivateHierarchy(derivedUnit);
-        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
+        //check initial state
+        DnaSample dnaSample = (DnaSample) fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
+                .getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+
+        //delete sequence
+        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
+                .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
+        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
+        assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
+        assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
+
 
         //delete dna sample
-        initDerivateHierarchy(fieldUnit);
-        DerivedUnit dnaSample = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
-                .getDerivationEvents().iterator().next().getDerivatives().iterator().next();
-        occurrenceService.deleteDerivateHierarchy(dnaSample);
+        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
+        assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
-        //delete sequence
-        initDerivateHierarchy(fieldUnit);
-        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
-        .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
-        occurrenceService.deleteDerivateHierarchy(consensusSequence);
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        //delete derived unit
+        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
+        assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
+        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
-
-
+        //delete field unit
+        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+        assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
+        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
     }
 
-    private FieldUnit initDerivateHierarchy(FieldUnit fieldUnit){
+//    @Test
+//    public void testDeleteDerivateHierarchy_Sequence(){
+//        String assertMessage = "Incorrect number of specimens after deletion.";
+//
+//        FieldUnit fieldUnit = initDerivateHierarchy();
+//
+//        //delete sequence
+//        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
+//        .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
+//        occurrenceService.deleteDerivateHierarchy(consensusSequence);
+//        commit();
+//        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+//        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+//        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+//        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+//    }
+
+    private FieldUnit initDerivateHierarchy(){
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
+        //sub derivates (DerivedUnit, DnaSample)
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
         DnaSample dnaSample = DnaSample.NewInstance();
 
         //derivation events
-        DerivationEvent fieldUnitDerivation = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-        DerivationEvent derivedUnitDerivation = DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
-        //DNA
+        //DNA (Sequence, SingleRead)
         Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
         SingleRead singleRead = SingleRead.NewInstance();
         consensusSequence.addSingleRead(singleRead);
         dnaSample.addSequence(consensusSequence);
+        occurrenceService.save(fieldUnit);
+        occurrenceService.save(derivedUnit);
+        occurrenceService.save(dnaSample);
+        commitAndStartNewTransaction(null);
         return fieldUnit;
     }
 

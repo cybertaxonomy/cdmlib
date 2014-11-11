@@ -2276,6 +2276,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableSe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IncludedTaxonConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/SpecimenDeleteConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/SynonymDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonBaseDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text

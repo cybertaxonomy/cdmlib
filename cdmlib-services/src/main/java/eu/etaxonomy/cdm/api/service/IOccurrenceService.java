@@ -22,6 +22,7 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -333,9 +334,19 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen);
 
     /**
-     * Deletes the specified specimen and all sub derivates.
-     * @param from the specimen which should be deleted with all its sub derivates
+     * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
+     * @param specimen the specimen which shoul be deleted
+     * @param config specifies options if and how the specimen should be deleted like e.g. including all
+     * of its children
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
-    public DeleteResult deleteDerivateHierarchy(ICdmBase from);
+    public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config);
+
+    /**
+     * Deletes the specified specimen and all sub derivates.
+     * @param from the specimen which should be deleted with all its sub derivates
+     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteDerivateHierarchy(ICdmBase from, SpecimenDeleteConfigurator config);
 }
