@@ -157,7 +157,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	
 	
 	/**
-	 * Adds a new output specimen or observation for this derviation event.
+	 * Adds a new output specimen or observation for this derivation event.
 	 * @see #getDerivatives()
 	 * @return
 	 */
