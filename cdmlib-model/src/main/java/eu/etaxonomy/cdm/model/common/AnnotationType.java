@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -40,23 +40,23 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationType.class);
 
-	protected static Map<UUID, AnnotationType> termMap = null;		
-	
+	protected static Map<UUID, AnnotationType> termMap = null;
+
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	private static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
 
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);
 	}
-	
-//********************************** Constructor *******************************************************************/	
+
+//********************************** Constructor *******************************************************************/
 
 	//for hibernate use only
 	@Deprecated
 	protected AnnotationType() {
 		super(TermType.AnnotationType);
 	}
-	
+
 	/**
 	 * Constructor
 	 * @param term
@@ -66,9 +66,9 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 		super(TermType.AnnotationType , term, label, labelAbbrev);
 	}
 
-	
+
 //************************** METHODS ********************************
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -76,15 +76,15 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	public void resetTerms(){
 		termMap = null;
 	}
-	
+
 	protected static AnnotationType getTermByUuid(UUID uuid){
 		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
+			return null;  //better return null than initialize the termMap in an unwanted way
 		}
-		return (AnnotationType)termMap.get(uuid);
+		return termMap.get(uuid);
 	}
-	
-	
+
+
 	public static final AnnotationType TECHNICAL(){
 		return getTermByUuid(uuidTechnical);
 	}
@@ -93,11 +93,12 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 		return getTermByUuid(uuidEditorial);
 	}
 
-	protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
+	@Override
+    protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
 		termMap = new HashMap<UUID, AnnotationType>();
 		for (AnnotationType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (AnnotationType)term);
-		}	
+			termMap.put(term.getUuid(), term);
+		}
 	}
 
 }
