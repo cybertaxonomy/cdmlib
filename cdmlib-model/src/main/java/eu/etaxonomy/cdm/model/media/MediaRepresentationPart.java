@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -34,14 +34,14 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * A media representation part is a resource that can be referenced by an URI.
  * It represents a part of or the entire media. <br>
  * E.g. a jpg file or a website
- * 
+ *
  * @author a.mueller
  * @created 09.06.2008
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MediaRepresentationPart", propOrder = { 
-		"uri", 
+@XmlType(name = "MediaRepresentationPart", propOrder = {
+		"uri",
         "size",
         "mediaRepresentation"
   })
@@ -72,7 +72,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 
 	/**
 	 * Factory method
-	 * 
+	 *
 	 * @return
 	 */
 	public static MediaRepresentationPart NewInstance(URI uri, Integer size) {
@@ -81,14 +81,14 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected MediaRepresentationPart() {
 		super();
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected MediaRepresentationPart(URI uri, Integer size) {
 		this();
@@ -115,7 +115,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uri
 	 *            uri
 	 */
@@ -137,7 +137,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	public void setSize(Integer size) {
 		this.size = size;
 	}
-	
+
 //************************* CLONE **************************/
 		/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
@@ -148,10 +148,10 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 
 		//media representation
 		result.setMediaRepresentation(null);
-		
-		//no changes to: size, ure
+
+		//no changes to: size, uri
 		return result;
 	}
 
-	
+
 }
