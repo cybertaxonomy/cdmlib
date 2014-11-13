@@ -322,7 +322,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			entityCacheStrategy = entity.getCacheStrategy();
 			//FIXME find out why the wrong cache strategy is loaded here, see #1876 
 			if (entity instanceof Reference){
-				entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
+				entityCacheStrategy = ReferenceFactory.newReference(((Reference<?>)entity).getType()).getCacheStrategy();
 			}
 		}
 		entity.setCacheStrategy(entityCacheStrategy);
@@ -367,19 +367,19 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		String newTitleCache= null;
 		NonViralName<?> nvn = null;//TODO find better solution
 		try{
-		if (entity instanceof NonViralName){
-			nvn = (NonViralName) entity;
-			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
-		} else{
-			 newTitleCache = entityCacheStrategy.getTitleCache(entity);
-		}
+			if (entity instanceof NonViralName){
+				nvn = (NonViralName) entity;
+				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
+			} else{
+				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
+			}
 		}catch (ClassCastException e){
 			nvn = HibernateProxyHelper.deproxy(entity, NonViralName.class);
 			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
 			//System.out.println("titleCache: " +entity.getTitleCache());
 		}
 		
-		if (oldTitleCache == null || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
+		if ( oldTitleCache == null   || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
 			if (newCache == null){
@@ -402,15 +402,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			//NonViralName<?> nvn = (NonViralName) entity;
 			String newNameCache = nvn.getNameCache();
 			String newFullTitleCache = nvn.getFullTitleCache();
-			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
+			if ((oldNameCache == null && !nvn.isProtectedNameCache()) || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
 				entitiesToUpdate.add(entity);
-			}else if (oldFullTitleCache == null || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
+			}else if ((oldFullTitleCache == null && !nvn.isProtectedFullTitleCache()) || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
 		}else if (entity instanceof Reference){
 			Reference<?> ref = (Reference<?>) entity;
 			String newAbbrevTitleCache = ref.getAbbrevTitleCache();
-			if (oldAbbrevTitleCache == null || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
+			if ( (oldAbbrevTitleCache == null && !ref.isProtectedAbbrevTitleCache() ) || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
 		}
