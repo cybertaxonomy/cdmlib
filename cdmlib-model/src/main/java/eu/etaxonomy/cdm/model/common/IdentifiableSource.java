@@ -47,10 +47,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 	
-	/**
-	 * Factory method
-	 * @return
-	 */
+//********************************* FACTORY ********************************************************/
+
 	public static IdentifiableSource NewInstance(OriginalSourceType type){
 		return new IdentifiableSource(type);
 	}
@@ -88,6 +86,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}	
+	
+// ******************************** FIELDS ************************************/	
 	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
@@ -134,10 +134,6 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableSource result = (IdentifiableSource)super.clone();

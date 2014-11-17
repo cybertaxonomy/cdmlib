@@ -99,39 +99,31 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 //**************** GETTER / SETTER *******************************/
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdInSource()
-	 */
+	@Override
 	public String getIdInSource(){
 		return this.idInSource;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setIdInSource(java.lang.String)
-	 */
+	@Override
 	public void setIdInSource(String idInSource){
 		this.idInSource = idInSource;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdNamespace()
-	 */
+	@Override
 	public String getIdNamespace() {
 		return idNamespace;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setIdNamespace(java.lang.String)
-	 */
+	@Override
 	public void setIdNamespace(String idNamespace) {
 		this.idNamespace = idNamespace;
 	}
 	
 
+	@Override
 	public OriginalSourceType getType() {
 		return type;
 	}
-
+	@Override
 	public void setType(OriginalSourceType type) {
 		Assert.notNull(type, "OriginalSourceType must not be null");
 		this.type = type;
@@ -140,9 +132,6 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	
 //********************** CLONE ************************************************/
 	 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		OriginalSourceBase<?> result = (OriginalSourceBase<?>)super.clone();
