@@ -33,7 +33,8 @@ import org.hibernate.search.annotations.Indexed;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
+//TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
+public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Comparable<DefinedTerm> {
 	private static final long serialVersionUID = -6965540410672076893L;
 
 	//Determination modifier
@@ -159,6 +160,14 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	@Override
 	protected int partOfCsvLineIndex(){
 		return 5;
+	}
+
+
+	//TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
+	@Override
+	@Deprecated
+	public int compareTo(DefinedTerm o) {
+		return this.getUuid().compareTo(o.getUuid());
 	}
 
 //	@Override
