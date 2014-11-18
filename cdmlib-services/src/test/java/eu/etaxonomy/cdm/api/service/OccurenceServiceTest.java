@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
@@ -166,7 +167,7 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         occurrenceService.saveOrUpdate(specimenB);
         occurrenceService.saveOrUpdate(dnaSample);
 
-        DerivationEvent.NewSimpleInstance(specimenA, dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent originalDerivedFromEvent = DerivationEvent.NewSimpleInstance(specimenA, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         occurrenceService.moveDerivate(specimenA, specimenB, dnaSample);
         assertTrue("DerivationEvent not removed from source!", specimenA.getDerivationEvents().isEmpty());
@@ -177,8 +178,9 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
         assertEquals("Origin of moved object not correct", specimenB, newOriginal);
         assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
-        DerivedUnit derivedUnit = derivationEvent.getDerivatives().iterator().next();
-        assertEquals("Moved derivate has wrong type", SpecimenOrObservationType.DnaSample, derivedUnit.getRecordBasis());
+        DerivedUnit movedDerivate = derivationEvent.getDerivatives().iterator().next();
+        assertEquals("Moved derivate has wrong type", SpecimenOrObservationType.DnaSample, movedDerivate.getRecordBasis());
+        assertNotEquals("DerivationEvent 'derivedFrom' has not been changed after moving", originalDerivedFromEvent, movedDerivate.getDerivedFrom());
 
     }
 
