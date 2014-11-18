@@ -44,25 +44,18 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 		getDefaultCacheManager().removalAll();
 		// Create default cache
 		getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
-		// We start first only with DefinedTermBase
-		DefinedTermBase.setCacher(this);
 
-		initDefaultTerms();
+		setup();
 	}
 
-	/**
-	 * Initialises any default terms if required.
-	 * This method should be implemented in sub-classes if any
-	 * pre-initialisation is necessary.
-	 */
-	protected void initDefaultTerms() {}
+	protected abstract void setup();
 
 	/**
 	 * Returns the singleton default cache manager.
 	 *
 	 * @return
 	 */
-	private static CacheManager getDefaultCacheManager() {
+	public static CacheManager getDefaultCacheManager() {
 		// this ensures a singleton cache manager
 		return CacheManager.create();
 	}
@@ -95,16 +88,6 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 		return getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
 	}
 
-	/**
-	 * Puts the (Key,Value) pair of ({@link java.util.UUID}, {@link eu.etaxonomy.cdm.model.common.CdmBase}),
-	 * in the cache
-	 *
-	 * @param uuid
-	 * @param cdmEntity
-	 */
-	public <T extends CdmBase> void put(UUID uuid, T cdmEntity) {
-		getDefaultCache().put(new Element(uuid, cdmEntity));
-	}
 
 	/**
 	 * Gets the cache element corresponding to the given {@link java.util.UUID}
@@ -112,24 +95,27 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @return
 	 */
-	private Element getCacheElement(UUID uuid) {
+	protected Element getCacheElement(UUID uuid) {
 		return getDefaultCache().get(uuid);
 	}
 
-	/**
-	 * Get CDM Entity for given {@link java.util.UUID} from the cache
-	 *
-	 * @param uuid
-	 * @return
-	 */
-	private T getCdmEntity(UUID uuid) {
-		return  (T)getDefaultCache().get(uuid).getObjectValue();
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#put(java.util.UUID, eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public  T put(UUID uuid, T cdmEntity) {
+        T cachedCdmEntity = getFromCache(uuid);
+        if(getFromCache(uuid) == null) {
+            getDefaultCache().put(new Element(uuid, cdmEntity));
+            return cdmEntity;
+        } else {
+            return cachedCdmEntity;
+        }
+    }
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
 	 */
-
 	@Override
     public T load(UUID uuid) {
 		Element e = getCacheElement(uuid);
@@ -138,10 +124,13 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 
 		    // nothing in the cache for "key" (or expired) ... re-load the entity
 			cdmEntity = findByUuid(uuid);
-			put(uuid, cdmEntity);
+			// default cache is a non-null cache
+			if(cdmEntity != null) {
+			    put(uuid, cdmEntity);
+			}
 		} else {
 		    // there is a valid element in the cache, however getObjectValue() may be null
-		    cdmEntity = (T)e.getObjectValue();
+		    cdmEntity = (T)e.getValue();
 		}
 		return cdmEntity;
 	}
@@ -151,9 +140,8 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
 	 */
 	@Override
-    public T getFromCache(UUID uuid) {
+    public  T getFromCache(UUID uuid) {
 		Element e = getCacheElement(uuid);
-		T cdmEntity;
 		if (e == null) {
 			return null;
 		} else {

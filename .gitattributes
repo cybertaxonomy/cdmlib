@@ -2173,7 +2173,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmCacher.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmDaoCacher.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmTermCacher.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
