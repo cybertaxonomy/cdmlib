@@ -429,7 +429,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     @XmlEnumValue("DnaMarker")
     DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "DMA", null),
     
-    
+  //34  
     /**
      * An Identifier Type which can be used as a type in {@link Identifier#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
      * But also local identifier types such Sample Designation, Catalog Number, 
@@ -438,6 +438,17 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      */
     @XmlEnumValue("IdentifierType")
     IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier", "IDE", null),
+ 
+    //34    
+    /**
+     * DNA Quality levels link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
+     * But also local identifier types such Sample Designation, Catalog Number, 
+     * Accession Number, ... are allowed.
+     * {@link DnaQu}
+     */
+    @XmlEnumValue("DnaQuality")
+    DnaQuality(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality", "DQU", null),
+ 
     ;
 
     @SuppressWarnings("unused")
