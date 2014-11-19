@@ -14,7 +14,7 @@
        <property name="omit" value="false" />
     </bean>
    <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
-   <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin/" />
+   <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin" />
 
    <!--
     <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
