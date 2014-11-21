@@ -1324,6 +1324,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/Specime
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermUpdater_31_33.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermVocabularyRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaUpdater_331_34.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaUpdater_34_341.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/TermUpdater_33_34.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/UsernameConstraintUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
