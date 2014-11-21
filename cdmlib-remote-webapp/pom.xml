@@ -185,7 +185,7 @@
    <resources>
       <!-- ${basedir}/src/test/resources -->
       <resource>
-        <!-- replace the place holders like ${basedir} in the resource files -->
+        <!-- replace the place holders like ${...} in datasources.xml -->
         <targetPath>${project.build.directory}/test-classes</targetPath>
         <filtering>true</filtering>
         <directory>${basedir}/src/test/resources</directory>
@@ -194,12 +194,17 @@
         </includes>
       </resource>
       <resource>
-       <!-- all other files without filtering -->
+       <!-- all other test resources without filtering -->
         <targetPath>${project.build.directory}/test-classes</targetPath>
         <directory>${basedir}/src/test/resources</directory>
         <excludes>
             <exclude>datasources.xml</exclude>
         </excludes>
+      </resource>
+      <resource>
+       <!-- all main resources without filtering -->
+        <targetPath>${project.build.directory}/classes</targetPath>
+        <directory>${basedir}/src/main/resources</directory>
       </resource>
      </resources>
     <plugins>
