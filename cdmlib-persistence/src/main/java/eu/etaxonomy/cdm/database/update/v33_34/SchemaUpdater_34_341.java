@@ -16,15 +16,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
-import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
-import eu.etaxonomy.cdm.database.update.ColumnRemover;
-import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
 
 /**
  * @author a.mueller
@@ -73,7 +67,23 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
+		//Institution for DerivationEvent
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add foreign key for DerivationEvent.institution";
+		tableName = "DerivationEvent";
+		newColumnName = "institution_id";
+		referencedTable = "AgentBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
 
+		//Institution for Amplication
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add foreign key for Amplification.institution";
+		tableName = "Amplification";
+		newColumnName = "institution_id";
+		referencedTable = "AgentBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
 		
 		
 		return stepList;

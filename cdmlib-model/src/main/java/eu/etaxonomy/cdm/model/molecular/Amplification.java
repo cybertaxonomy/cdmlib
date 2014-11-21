@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.molecular;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -35,6 +36,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -72,6 +74,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 	"forwardPrimer",
 	"reversePrimer",
 	"purification",
+	"institution",
 	"cloning",
 	"successful",
 	"successText",
@@ -144,9 +147,17 @@ public class Amplification extends EventBase implements Cloneable{
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
     private Cloning cloning;
+    
+	@XmlElement(name = "Institution")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
+	@Cascade(CascadeType.SAVE_UPDATE)
+	@Column(name="institution_id")
+	private Institution institution;
 
-
-    /** @see #getSuccessful() */
+	/** @see #getSuccessful() */
     @XmlAttribute(name = "successful")
     private Boolean successful;
 
@@ -358,6 +369,18 @@ public class Amplification extends EventBase implements Cloneable{
 	 */
 	public void setPurification(MaterialOrMethodEvent purification) {
 		this.purification = purification;
+	}
+	
+    /**
+     * #4498
+     * @return
+     */
+    public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 

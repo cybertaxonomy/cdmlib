@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -33,6 +34,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.EventBase;
 
 /**
@@ -44,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 @XmlType(name = "DerivationEvent", propOrder = {
     "originals",
     "derivatives",
+    "institution_id",
     "type"
 })
 @XmlRootElement(name = "DerivationEvent")
@@ -70,6 +73,15 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<DerivedUnit> derivatives = new HashSet<DerivedUnit>();
+
+	@XmlElement(name = "Institution")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
+	@Cascade(CascadeType.SAVE_UPDATE)
+	@Column(name="institution_id")
+	private Institution institution;
 	
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
@@ -179,6 +191,18 @@ public class DerivationEvent extends EventBase implements Cloneable{
 			derivative.setDerivedFrom(null);
 		}
 		derivatives.remove(derivative);
+	}
+	
+    /**
+     * #4498
+     * @return
+     */
+    public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 	/**

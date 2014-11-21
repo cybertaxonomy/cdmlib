@@ -513,6 +513,8 @@ public class FullCoverageDataGenerator {
 		amplification.setDnaMarker(dnaMarker);
 		amplification.setSuccessful(true);
 		amplification.setSuccessText("Very successful");
+		Institution inst = Institution.NewInstance();
+		amplification.setInstitution(inst);
 		handleAnnotatableEntity(amplification);
 		handleEventBase(amplification);
 		
@@ -761,6 +763,8 @@ public class FullCoverageDataGenerator {
 		DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		event.addOriginal(fieldUnit);
 		event.addDerivative(mediaSpecimen);
+		Institution inst = Institution.NewInstance();
+		event.setInstitution(inst);
 		handleAnnotatableEntity(event);
 		handleEventBase(event);
 

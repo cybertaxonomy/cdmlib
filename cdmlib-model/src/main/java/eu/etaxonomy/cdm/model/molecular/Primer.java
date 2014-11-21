@@ -130,6 +130,18 @@ public class Primer extends AnnotatableEntity {
 		}
 		this.sequence = sequence;
 	}
+	
+
+	/**
+	 * #4470
+	 */
+	public DefinedTerm getDnaMarker() {
+		return dnaMarker;
+	}
+
+	public void setDnaMarker(DefinedTerm dnaMarker) {
+		this.dnaMarker = dnaMarker;
+	}
 
 	/**
 	 * The reference in which this primer was published and described
