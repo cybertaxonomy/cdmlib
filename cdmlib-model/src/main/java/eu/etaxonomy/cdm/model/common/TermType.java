@@ -446,8 +446,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * Accession Number, ... are allowed.
      * {@link DnaQu}
      */
-    @XmlEnumValue("DnaQuality")
-    DnaQuality(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality", "DQU", null),
+    @XmlEnumValue("DnaQualityType")
+    DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
  
     ;
 

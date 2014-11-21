@@ -761,6 +761,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageTextHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/NoDefinedTermClassException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabulary.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSourceBase.java -text
@@ -1076,6 +1077,7 @@ cdmlib-model/src/main/resources/terms/DeterminationModifier.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerChloroplast.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerEukaryote.csv -text
 cdmlib-model/src/main/resources/terms/DnaQuality.csv -text
+cdmlib-model/src/main/resources/terms/DnaQualityType.csv -text
 cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/FormerCountries -text
