@@ -1076,7 +1076,6 @@ cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/DeterminationModifier.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerChloroplast.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerEukaryote.csv -text
-cdmlib-model/src/main/resources/terms/DnaQuality.csv -text
 cdmlib-model/src/main/resources/terms/DnaQualityType.csv -text
 cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
