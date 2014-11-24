@@ -26,7 +26,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListener;
 
 /**
@@ -80,9 +79,6 @@ public class ConversationHolder {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
-
-    @Autowired
-    private IService service;
 
 
     /**
@@ -305,7 +301,7 @@ public class ConversationHolder {
 
             // commit the changes
             transactionManager.commit(transactionStatus);
-
+			logger.info("Committing  Session: " + getSessionHolder());
             // propagate transaction end
             CdmPostDataChangeObservableListener.getDefault().delayedNotify();
 
