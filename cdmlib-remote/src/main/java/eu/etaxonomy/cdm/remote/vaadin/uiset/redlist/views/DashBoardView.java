@@ -312,8 +312,9 @@ public class DashBoardView extends CustomComponent implements View{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				ConversationHolder conversationHolder = authenticationService.getConversationHolder();
-				conversationHolder.startTransaction();
+//				ConversationHolder conversationHolder = authenticationService.getConversationHolder();
+				ConversationHolder conversationHolder = (ConversationHolder) VaadinSession.getCurrent().getAttribute("conversation");
+//				conversationHolder.startTransaction();
 	//FIXME:		red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
 				conversationHolder.commit();
 				updateTables();

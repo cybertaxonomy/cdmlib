@@ -1,5 +1,8 @@
 package eu.etaxonomy.cdm.remote.vaadin;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -9,9 +12,13 @@ import ru.xpoft.vaadin.CdmDiscoveryNavigator;
 
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
+import com.vaadin.server.RequestHandler;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinResponse;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ErrorView;
 
 /**
@@ -46,7 +53,21 @@ public class VaadinUI extends UI {
     
     @Override
     public void init(VaadinRequest request) {
-
+		VaadinSession.getCurrent().addRequestHandler(
+				new RequestHandler() {
+					@Override
+					public boolean handleRequest(VaadinSession session,
+							VaadinRequest request,
+							VaadinResponse response)
+									throws IOException {
+						
+						ConversationHolder conv = (ConversationHolder)VaadinSession.getCurrent().getAttribute("conversation");
+						conv.bind();
+						logger.info("UI Request Handler call - Bound Vaadin Session Conversation : " + VaadinSession.getCurrent().getAttribute("conversation"));
+						return false; // No response was written
+					}
+				});
+		
         setSizeFull();
         String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + UISET;// vaadinConfigurer.vaadinUiSet();
 

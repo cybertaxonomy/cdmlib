@@ -184,7 +184,7 @@ public class BfnView extends CustomComponent implements View{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ConversationHolder conversationHolder = authenticationController.getConversationHolder();
+				ConversationHolder conversationHolder = (ConversationHolder) VaadinSession.getCurrent().getAttribute("conversation");
 				try{
 					conversationHolder.commit();
 				}catch(Exception stateException){

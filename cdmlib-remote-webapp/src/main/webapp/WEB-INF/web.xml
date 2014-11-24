@@ -48,7 +48,7 @@
 
     <servlet>
       <servlet-name>Vaadin Application Servlet</servlet-name>
-      <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+      <servlet-class>eu.etaxonomy.cdm.remote.vaadin.service.CdmVaadinServlet</servlet-class>
       <init-param>
         <description>UISet for Vaadin</description>
         <param-name>beanName</param-name>

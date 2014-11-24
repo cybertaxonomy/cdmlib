@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
  */
 
 @Component
-public class VaadinAuthenticationService{
+public class VaadinAuthenticationService {
 	
 	@Autowired
 	private transient AuthenticationManager authenticationManager;
@@ -50,7 +50,7 @@ public class VaadinAuthenticationService{
 	@Autowired
 	private transient SessionFactory sessionFactory;
 
-	private transient ConversationHolder conversationHolder;
+	//private transient ConversationHolder conversationHolder;
 	
 	Logger logger = Logger.getLogger(VaadinAuthenticationService.class);
 	
@@ -68,9 +68,9 @@ public class VaadinAuthenticationService{
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
 		try{
 			Authentication authentication = authenticationManager.authenticate(token);
-			conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
-			Session session = conversationHolder.getSession();
-			conversationHolder.startTransaction();
+//			conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+//			Session session = conversationHolder.getSession();
+//			conversationHolder.startTransaction();
 			SecurityContext context = SecurityContextHolder.getContext();
 			context.setAuthentication(authentication);
 //			SecurityContextHolder.setStrategyName( SecurityContextHolder.MODE_GLOBAL );
@@ -95,8 +95,8 @@ public class VaadinAuthenticationService{
 		UI ui = UI.getCurrent();
 		SecurityContextHolder.clearContext();
 		ui.close();
-		conversationHolder.clear();
-		conversationHolder.close();
+		//conversationHolder.clear();
+		//conversationHolder.close();
 //		conversationHolder.getSessionHolder().getSession().close();
 //		VaadinSession.getCurrent().close();
 		VaadinService.getCurrentRequest().getWrappedSession().invalidate(); 
@@ -116,8 +116,8 @@ public class VaadinAuthenticationService{
 		}
 		return true;
 	}
-	public ConversationHolder getConversationHolder(){
-		return conversationHolder;
-	}
-	
+//	public ConversationHolder getConversationHolder(){
+//		return conversationHolder;
+//	}
+
 }
