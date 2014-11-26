@@ -314,7 +314,6 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 //    }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
     public void testListAssociatedTaxa(){
         FieldUnit fieldUnit = initDerivateHierarchy();
         Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
