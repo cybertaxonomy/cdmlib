@@ -97,7 +97,8 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ClassBridge(impl=DefinedTermBaseClassBridge.class)
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
+//TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T>, Comparable<T> {
     private static final long serialVersionUID = 2931811562248571531L;
     private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 
@@ -252,8 +253,16 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
       public void setPartOf(T partOf){
           this.partOf = partOf;
       }
+      
+      
+    //TODO Comparable implemented only for fixing failing JAXB imports, may be removed when this is fixed
+  	@Override
+  	@Deprecated //for inner use only
+  	public int compareTo(T other) {
+		return ((Integer)this.getId()).compareTo(other.getId());
+	}
 
-      @Override
+	@Override
       public Set<T> getIncludes(){
           return this.includes;
       }
