@@ -440,6 +440,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      */
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        //TODO type designation association for specimen
+
         String queryString = "SELECT description.taxon " +
         		"FROM TaxonDescription AS description, IndividualsAssociation associations " +
         		"WHERE associations.associatedSpecimenOrObservation = :specimen";
