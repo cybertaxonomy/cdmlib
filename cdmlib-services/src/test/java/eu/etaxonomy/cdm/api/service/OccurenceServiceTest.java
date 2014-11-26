@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -70,6 +69,9 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ISequenceService sequenceService;
+
+    @SpringBeanByType
+    private ITaxonService taxonService;
 
     @Test
     public void testGetNonCascadedAssociatedElements(){
@@ -311,7 +313,6 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 //        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
 //    }
 
-    @Ignore
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
     public void testListAssociatedTaxa(){
@@ -320,12 +321,13 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         TaxonDescription taxonDescription = TaxonDescription.NewInstance();
         taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
         taxon.addDescription(taxonDescription);
+        taxonService.save(taxon);
 
         java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(fieldUnit);
+
         assertEquals("Number of associated taxa is incorrect", 1, associatedTaxa.size());
         TaxonBase<?> associatedTaxon = associatedTaxa.iterator().next();
         assertEquals("Associated taxon is incorrect", taxon, associatedTaxon);
-
 
     }
 

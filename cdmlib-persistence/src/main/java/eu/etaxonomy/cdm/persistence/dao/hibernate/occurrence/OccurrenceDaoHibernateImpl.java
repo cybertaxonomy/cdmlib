@@ -441,20 +441,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
-
-        /*
-select t.* from TaxonBase as t, DescriptionBase as description, DescriptionElementBase as descElement
-where t.id = description.taxon_id
-and descElement.indescription_id = description.id
-and associatedspecimenorobservation_id = "36";
-         */
-//        String queryString =
-//                "select taxon from TaxonBase taxon, DescriptionBase description, DescriptionElementBase descElement " +
-//                        "where t.id = description.taxon_id " +
-//                        "and descElement.indescription_id = description.id " +
-//                        "and associatedspecimenorobservation_id = "+specimen.getId();
-        String queryString =
-                "from TaxonDescription";
+        String queryString = "SELECT description.taxon " +
+        		"FROM TaxonDescription AS description, IndividualsAssociation associations " +
+        		"WHERE associations.associatedSpecimenOrObservation = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
             queryString += " order by ";
@@ -469,6 +458,7 @@ and associatedspecimenorobservation_id = "36";
         }
 
         Query query = getSession().createQuery(queryString);
+        query.setParameter("specimen", specimen);
 
         if(limit != null) {
             if(start != null) {
@@ -479,8 +469,7 @@ and associatedspecimenorobservation_id = "36";
             query.setMaxResults(limit);
         }
 
-
-        List<TaxonBase<?>> results = query.list();
+        List results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

@@ -1021,9 +1021,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen) {
-        Set<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
-        dao.listAssociatedTaxa(specimen, null, null, null, null);
-        return associatedTaxa;
+        return dao.listAssociatedTaxa(specimen, null, null, null, null);
     }
 
 }
