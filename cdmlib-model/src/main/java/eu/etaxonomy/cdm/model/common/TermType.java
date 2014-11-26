@@ -512,7 +512,6 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
             case Sex:
             case Stage:
             case KindOfUnit:
-            case PresenceAbsenceTerm:
             case IdentifierType:
             case DnaMarker:
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
@@ -530,6 +529,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
                 return eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, "Untitled", null);
             case NamedAreaType:
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);
+            case PresenceAbsenceTerm:
+            	return eu.etaxonomy.cdm.model.description.PresenceTerm.NewInstance(null, "Untitled", null);
             default:
                 return null;
         }
