@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -26,6 +27,8 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -50,6 +53,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -306,6 +310,25 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 //        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
 //        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
 //    }
+
+    @Ignore
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
+    public void testListAssociatedTaxa(){
+        FieldUnit fieldUnit = initDerivateHierarchy();
+        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
+        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+        taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
+        taxon.addDescription(taxonDescription);
+
+        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(fieldUnit);
+        assertEquals("Number of associated taxa is incorrect", 1, associatedTaxa.size());
+        TaxonBase<?> associatedTaxon = associatedTaxa.iterator().next();
+        assertEquals("Associated taxon is incorrect", taxon, associatedTaxon);
+
+
+    }
+
 
     private FieldUnit initDerivateHierarchy(){
         FieldUnit fieldUnit = FieldUnit.NewInstance();

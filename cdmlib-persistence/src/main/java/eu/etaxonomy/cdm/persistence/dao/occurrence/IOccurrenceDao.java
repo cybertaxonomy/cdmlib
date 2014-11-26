@@ -6,6 +6,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.occurrence;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -156,6 +157,20 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
-
+    /**
+     * Retrieves all taxa that are associated with the given specimen.<br>
+     * Taxa can be associated in multiple ways:
+     * <ul>
+     * <li> via IndividualsAssociations from the taxon to the specimen
+     * <li> via type designation (if the specimen is a type specimen of any taxon)
+     * </ul>
+     * @param specimen the specimen for which the taxa are retrieved
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return all associated taxa that fulfill any of the above mentioned criteria
+     */
+	public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

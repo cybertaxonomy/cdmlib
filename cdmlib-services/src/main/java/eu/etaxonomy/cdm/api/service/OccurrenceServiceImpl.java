@@ -1016,4 +1016,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return entitiesToDelete;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+     */
+    @Override
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen) {
+        Set<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        dao.listAssociatedTaxa(specimen, null, null, null, null);
+        return associatedTaxa;
+    }
+
 }

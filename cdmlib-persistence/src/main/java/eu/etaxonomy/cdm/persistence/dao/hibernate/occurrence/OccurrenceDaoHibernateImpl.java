@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -430,6 +431,56 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
 
         List<T> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+     */
+    @Override
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Set<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+
+        /*
+select t.* from TaxonBase as t, DescriptionBase as description, DescriptionElementBase as descElement
+where t.id = description.taxon_id
+and descElement.indescription_id = description.id
+and associatedspecimenorobservation_id = "36";
+         */
+//        String queryString =
+//                "select taxon from TaxonBase taxon, DescriptionBase description, DescriptionElementBase descElement " +
+//                        "where t.id = description.taxon_id " +
+//                        "and descElement.indescription_id = description.id " +
+//                        "and associatedspecimenorobservation_id = "+specimen.getId();
+        String queryString =
+                "from TaxonDescription";
+
+        if(orderHints != null && orderHints.size() > 0){
+            queryString += " order by ";
+            String orderStr = "";
+            for(OrderHint orderHint : orderHints){
+                if(orderStr.length() > 0){
+                    orderStr += ", ";
+                }
+                queryString += "association." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+            }
+            queryString += orderStr;
+        }
+
+        Query query = getSession().createQuery(queryString);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+
+        List<TaxonBase<?>> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

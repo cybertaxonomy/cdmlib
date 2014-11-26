@@ -349,4 +349,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
     public DeleteResult deleteDerivateHierarchy(ICdmBase from, SpecimenDeleteConfigurator config);
+
+    /**
+     * Retrieves all taxa that are associated with the given specimen.<br>
+     * Taxa can be associated in multiple ways:
+     * <ul>
+     * <li> via IndividualsAssociations from the taxon to the specimen
+     * <li> via type designation (if the specimen is a type specimen of any taxon)
+     * </ul>
+     * @param specimen the specimen for which the taxa are retrieved
+     * @return all associated taxa that fulfill any of the above mentioned criteria
+     */
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen);
 }
