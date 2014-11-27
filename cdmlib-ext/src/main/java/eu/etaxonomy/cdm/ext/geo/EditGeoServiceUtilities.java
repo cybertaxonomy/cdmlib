@@ -291,10 +291,6 @@ public class EditGeoServiceUtilities {
                 languages.add(Language.DEFAULT());
             }
             Representation statusRepresentation = status.getPreferredRepresentation(languages);
-            String statusLabel = statusRepresentation.getLabel();
-            //statusLabel.replace('introduced: ', '');
-            statusLabel = statusLabel.replace("introduced: ", "introduced, ");
-            statusLabel = statusLabel.replace("native: ", "native,  ");
 
             //getting the area color
             Color statusColor = presenceAbsenceTermColors.get(status);
@@ -312,7 +308,7 @@ public class EditGeoServiceUtilities {
 
             areaStyles.put(styleCounter, styleValues);
 
-            String legendEntry = styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel);
+            String legendEntry = styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusRepresentation.getLabel());
             legendSortList.add(StringUtils.leftPad(String.valueOf(status.getOrderIndex()), INT_MAX_LENGTH, '0') + legendEntry );
             styleCounter++;
         }
