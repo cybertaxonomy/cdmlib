@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -314,20 +315,41 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 //    }
 
     @Test
-    public void testListAssociatedTaxa(){
-        FieldUnit fieldUnit = initDerivateHierarchy();
-        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
+    public void testListAssociatedAndTypedTaxa(){
+        FieldUnit associatedFieldUnit = initDerivateHierarchy();
+        FieldUnit typeFieldUnit = initDerivateHierarchy();
+        DerivedUnit typeSpecimen = typeFieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+
+        //create name with type specimen
+        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
+        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+        typeDesignation.setTypeSpecimen(typeSpecimen);
+
+        //create taxon with name and taxon description
+        Taxon taxon = Taxon.NewInstance(name, null);
         TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-        taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
+        taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
         taxon.addDescription(taxonDescription);
         taxonService.save(taxon);
 
-        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(fieldUnit);
-
+        //check for FieldUnit (IndividualsAssociation)
+        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(associatedFieldUnit, null, null, null,null);
         assertEquals("Number of associated taxa is incorrect", 1, associatedTaxa.size());
         TaxonBase<?> associatedTaxon = associatedTaxa.iterator().next();
         assertEquals("Associated taxon is incorrect", taxon, associatedTaxon);
+        //check for DerivedUnit (Type Designation should not exist)
+        java.util.Collection<TaxonBase<?>> typedTaxa = occurrenceService.listTypedTaxa(typeSpecimen, null, null, null,null);
+        assertEquals("Number of typed taxa is incorrect", 0, typedTaxa.size());
 
+        //add type designation to name
+        name.addTypeDesignation(typeDesignation, false);
+        taxonService.saveOrUpdate(taxon);
+
+        //check for DerivedUnit (Type Designation should exist)
+        typedTaxa = occurrenceService.listTypedTaxa(typeSpecimen, null, null, null,null);
+        assertEquals("Number of typed taxa is incorrect", 1, typedTaxa.size());
+        TaxonBase<?> typedTaxon = typedTaxa.iterator().next();
+        assertEquals("Typed taxon is incorrect", taxon, typedTaxon);
     }
 
 

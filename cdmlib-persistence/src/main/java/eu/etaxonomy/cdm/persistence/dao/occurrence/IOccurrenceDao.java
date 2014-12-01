@@ -158,19 +158,26 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Retrieves all taxa that are associated with the given specimen.<br>
-     * Taxa can be associated in multiple ways:
-     * <ul>
-     * <li> via IndividualsAssociations from the taxon to the specimen
-     * <li> via type designation (if the specimen is a type specimen of any taxon)
-     * </ul>
+     * Retrieves all taxa that are associated via {@link IndividualsAssociation} with the given specimen.<br>
      * @param specimen the specimen for which the taxa are retrieved
      * @param limit
      * @param start
      * @param orderHints
      * @param propertyPaths
-     * @return all associated taxa that fulfill any of the above mentioned criteria
+     * @return all associated taxa
      */
 	public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * Retrieves all taxa which have the given specimen designated as a type specimen.
+     * @param specimen the type specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return all taxa with for the given type specimen
+     */
+    public Collection<TaxonBase<?>> listTypedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

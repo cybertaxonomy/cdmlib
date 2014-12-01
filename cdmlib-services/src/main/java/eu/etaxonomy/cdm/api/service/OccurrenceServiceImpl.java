@@ -1020,8 +1020,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
      */
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen) {
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listAssociatedTaxa(specimen, null, null, null, null);
+    }
+
+    @Override
+    public Collection<TaxonBase<?>> listTypedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return dao.listTypedTaxa(specimen, limit, start, orderHints, propertyPaths);
     }
 
 }
