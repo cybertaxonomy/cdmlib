@@ -13,6 +13,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -55,15 +57,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author pplitzner
  * @date 31.03.2014
  *
  */
-public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(OccurenceServiceTest.class);
+public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(OccurrenceServiceTest.class);
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
@@ -165,10 +167,12 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
    }
 
     @Test
+    @DataSet(value="OccurenceServiceTest.move.xml")
     public void testMoveDerivate(){
-        DerivedUnit specimenA = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-        DerivedUnit specimenB = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-        DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
+        DerivedUnit specimenA = (DerivedUnit) occurrenceService.load(UUID.fromString("35cfb0b3-588d-4eee-9db6-ac9caa44e39a"));
+        DerivedUnit specimenB = (DerivedUnit) occurrenceService.load(UUID.fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
+        DerivedUnit dnaSample = (DnaSample) occurrenceService.load(UUID.fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
+
 
         occurrenceService.saveOrUpdate(specimenA);
         occurrenceService.saveOrUpdate(specimenB);
@@ -192,11 +196,12 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(value="OccurenceServiceTest.move.xml")
     public void testMoveSequence(){
-        DnaSample dnaSampleA = DnaSample.NewInstance();
-        DnaSample dnaSampleB = DnaSample.NewInstance();
+        DnaSample dnaSampleA = (DnaSample) occurrenceService.load(UUID.fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
+        DnaSample dnaSampleB = (DnaSample) occurrenceService.load(UUID.fromString("85fccc2f-c796-46b3-b2fc-6c9a4d68cfda"));
         String consensusSequence = "ATTCG";
-        Sequence sequence = Sequence.NewInstance(consensusSequence);
+        Sequence sequence = sequenceService.load(UUID.fromString("6da4f378-9861-4338-861b-7b8073763e7a"));
 
         occurrenceService.saveOrUpdate(dnaSampleA);
         occurrenceService.saveOrUpdate(dnaSampleB);
@@ -245,18 +250,16 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
+    @DataSet //loads OccurrenceServiceTest.xml as base DB
     public void testDeleteDerivateHierarchy_StepByStep(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         config.setDeleteChildren(false);
         config.setShiftHierarchyUp(false);
-        FieldUnit fieldUnit = initDerivateHierarchy();
 
         //check initial state
-        DnaSample dnaSample = (DnaSample) fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
-                .getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(UUID.fromString("2f0e4257-0ce5-4518-b23d-8d87bb04ff7d"));
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
@@ -264,8 +267,7 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
 
         //delete sequence
-        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
-                .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
+        Sequence consensusSequence = sequenceService.load(UUID.fromString("e3cfdf82-d6bf-4b26-b172-6a057ea3651d"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
@@ -280,7 +282,7 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete derived unit
-        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
@@ -289,6 +291,7 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete field unit
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
@@ -315,10 +318,10 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 //    }
 
     @Test
+    @DataSet //loads OccurrenceServiceTest.xml as base DB
     public void testListAssociatedAndTypedTaxa(){
-        FieldUnit associatedFieldUnit = initDerivateHierarchy();
-        FieldUnit typeFieldUnit = initDerivateHierarchy();
-        DerivedUnit typeSpecimen = typeFieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
+        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
 
         //create name with type specimen
         BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
@@ -352,7 +355,7 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Typed taxon is incorrect", taxon, typedTaxon);
     }
 
-
+    @Deprecated
     private FieldUnit initDerivateHierarchy(){
         FieldUnit fieldUnit = FieldUnit.NewInstance();
         //sub derivates (DerivedUnit, DnaSample)
@@ -371,7 +374,11 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         occurrenceService.save(fieldUnit);
         occurrenceService.save(derivedUnit);
         occurrenceService.save(dnaSample);
-        commitAndStartNewTransaction(null);
+        commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase",
+                "DerivationEvent",
+                "Sequence",
+                "Sequence_SingleRead",
+                "SingleRead"});
         return fieldUnit;
     }
 
