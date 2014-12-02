@@ -152,7 +152,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 			termMap = new HashMap<UUID, DefinedTerm>();
 		}
 		for (DefinedTerm term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), term);  //TODO casting
+			termMap.put(term.getUuid(), term);
 		}
 	}
 
