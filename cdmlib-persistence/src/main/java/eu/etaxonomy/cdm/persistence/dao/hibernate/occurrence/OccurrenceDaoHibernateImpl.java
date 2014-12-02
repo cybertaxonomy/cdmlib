@@ -475,7 +475,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      */
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "SELECT description.taxon " +
+        //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
+        String queryString = "SELECT DISTINCT description.taxon " +
         		"FROM TaxonDescription AS description, IndividualsAssociation associations " +
         		"WHERE associations.associatedSpecimenOrObservation = :specimen";
 

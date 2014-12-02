@@ -28,8 +28,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -39,7 +37,6 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -318,38 +315,68 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //    }
 
     @Test
-    @DataSet //loads OccurrenceServiceTest.xml as base DB
+    @DataSet(value="OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
     public void testListAssociatedAndTypedTaxa(){
+        //how the XML was generated
+//        FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
+//        //sub derivates (DerivedUnit, DnaSample)
+//        DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+//        DnaSample dnaSample = DnaSample.NewInstance();
+//
+//        //derivation events
+//        DerivationEvent.NewSimpleInstance(associatedFieldUnit, typeSpecimen, DerivationEventType.ACCESSIONING());
+//        DerivationEvent.NewSimpleInstance(typeSpecimen, dnaSample, DerivationEventType.DNA_EXTRACTION());
+//
+//        //DNA (Sequence, SingleRead)
+//        Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
+//        SingleRead singleRead = SingleRead.NewInstance();
+//        consensusSequence.addSingleRead(singleRead);
+//        dnaSample.addSequence(consensusSequence);
+//        occurrenceService.save(associatedFieldUnit);
+//        occurrenceService.save(typeSpecimen);
+//        occurrenceService.save(dnaSample);
+//        //create name with type specimen
+//        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
+//        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+//        typeDesignation.setTypeSpecimen(typeSpecimen);
+//
+//        //create taxon with name and taxon description
+//        Taxon taxon = Taxon.NewInstance(name, null);
+//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+//        taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
+//        taxon.addDescription(taxonDescription);
+//        //add type designation to name
+//        name.addTypeDesignation(typeDesignation, false);
+//        //add another taxon description to taxon to create which should not be taken into account
+//        taxon.addDescription(TaxonDescription.NewInstance());
+//        taxonService.saveOrUpdate(taxon);
+//
+//
+//        commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase",
+//                "DerivationEvent",
+//                "Sequence",
+//                "Sequence_SingleRead",
+//                "SingleRead",
+//                "DescriptionElementBase",
+//                "DescriptionBase",
+//                "TaxonBase",
+//                "TypeDesignationBase",
+//                "TaxonNameBase",
+//                "TaxonNameBase_TypeDesignationBase",
+//                "HomotypicalGroup"});
+
         FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
-
-        //create name with type specimen
-        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
-        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
-        typeDesignation.setTypeSpecimen(typeSpecimen);
-
-        //create taxon with name and taxon description
-        Taxon taxon = Taxon.NewInstance(name, null);
-        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-        taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
-        taxon.addDescription(taxonDescription);
-        taxonService.save(taxon);
-
+        Taxon taxon = (Taxon) taxonService.load(UUID.fromString("222ebc0a-6b7c-4aab-93c6-f32e99e94e89"));
         //check for FieldUnit (IndividualsAssociation)
         java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(associatedFieldUnit, null, null, null,null);
         assertEquals("Number of associated taxa is incorrect", 1, associatedTaxa.size());
         TaxonBase<?> associatedTaxon = associatedTaxa.iterator().next();
         assertEquals("Associated taxon is incorrect", taxon, associatedTaxon);
-        //check for DerivedUnit (Type Designation should not exist)
-        java.util.Collection<TaxonBase<?>> typedTaxa = occurrenceService.listTypedTaxa(typeSpecimen, null, null, null,null);
-        assertEquals("Number of typed taxa is incorrect", 0, typedTaxa.size());
 
-        //add type designation to name
-        name.addTypeDesignation(typeDesignation, false);
-        taxonService.saveOrUpdate(taxon);
 
         //check for DerivedUnit (Type Designation should exist)
-        typedTaxa = occurrenceService.listTypedTaxa(typeSpecimen, null, null, null,null);
+        java.util.Collection<TaxonBase<?>> typedTaxa = occurrenceService.listTypedTaxa(typeSpecimen, null, null, null,null);
         assertEquals("Number of typed taxa is incorrect", 1, typedTaxa.size());
         TaxonBase<?> typedTaxon = typedTaxa.iterator().next();
         assertEquals("Typed taxon is incorrect", taxon, typedTaxon);
