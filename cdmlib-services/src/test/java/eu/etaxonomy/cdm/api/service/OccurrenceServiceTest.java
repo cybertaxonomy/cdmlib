@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author pplitzner
@@ -164,7 +165,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
    }
 
     @Test
-    @DataSet(value="OccurenceServiceTest.move.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurenceServiceTest.move.xml")
     public void testMoveDerivate(){
         DerivedUnit specimenA = (DerivedUnit) occurrenceService.load(UUID.fromString("35cfb0b3-588d-4eee-9db6-ac9caa44e39a"));
         DerivedUnit specimenB = (DerivedUnit) occurrenceService.load(UUID.fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
@@ -193,7 +194,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="OccurenceServiceTest.move.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurenceServiceTest.move.xml")
     public void testMoveSequence(){
         DnaSample dnaSampleA = (DnaSample) occurrenceService.load(UUID.fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
         DnaSample dnaSampleB = (DnaSample) occurrenceService.load(UUID.fromString("85fccc2f-c796-46b3-b2fc-6c9a4d68cfda"));
@@ -247,7 +248,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet //loads OccurrenceServiceTest.xml as base DB
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.xml") //loads OccurrenceServiceTest.xml as base DB
     public void testDeleteDerivateHierarchy_StepByStep(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
@@ -255,8 +256,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         config.setDeleteChildren(false);
         config.setShiftHierarchyUp(false);
 
-        //check initial state
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
         DnaSample dnaSample = (DnaSample) occurrenceService.load(UUID.fromString("2f0e4257-0ce5-4518-b23d-8d87bb04ff7d"));
+        Sequence consensusSequence = sequenceService.load(UUID.fromString("e3cfdf82-d6bf-4b26-b172-6a057ea3651d"));
+
+        //check initial state
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
@@ -264,7 +269,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
 
         //delete sequence
-        Sequence consensusSequence = sequenceService.load(UUID.fromString("e3cfdf82-d6bf-4b26-b172-6a057ea3651d"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
@@ -279,7 +283,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete derived unit
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
@@ -288,7 +291,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete field unit
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
         deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
         assertEquals("Deletion status not OK.", DeleteResult.DeleteStatus.OK, deleteResult.getStatus());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
@@ -315,7 +317,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //    }
 
     @Test
-    @DataSet(value="OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
     public void testListAssociatedAndTypedTaxa(){
         //how the XML was generated
 //        FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
