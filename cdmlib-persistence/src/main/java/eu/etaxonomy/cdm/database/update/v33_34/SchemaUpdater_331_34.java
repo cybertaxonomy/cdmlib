@@ -385,10 +385,16 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         step.setPrimaryKeyParams("Media_id,identifiers_id", "REV,Media_id,identifiers_id");
         stepList.add(step);
 
-	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_34_341.NewInstance();
-	}
+        //PolytomousKey_Identifier
+        stepName = "Create PolytomousKey_Identifier table";
+        includeCdmBaseAttributes = false;
+        tableName = "PolytomousKey_Identifier";
+        columnNames = new String[]{"PolytomousKey_id","identifiers_id","sortIndex"};
+        columnTypes = new String[]{"int","int","int"};
+        referencedTables = new String[]{"PolytomousKey","Identifier",null};
+        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step.setPrimaryKeyParams("PolytomousKey_id,identifiers_id", "REV,PolytomousKey_id,identifiers_id");
+        stepList.add(step);
 
         //Reference_Identifier
         stepName = "Create Reference_Identifier table";

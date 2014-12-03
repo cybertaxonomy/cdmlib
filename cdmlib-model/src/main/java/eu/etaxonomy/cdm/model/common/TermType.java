@@ -530,7 +530,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
             case NamedAreaType:
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);
             case PresenceAbsenceTerm:
-            	return eu.etaxonomy.cdm.model.description.PresenceTerm.NewInstance(null, "Untitled", null);
+            	return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, "Untitled", null);
             default:
                 return null;
         }
