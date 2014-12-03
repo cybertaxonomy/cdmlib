@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -62,7 +62,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
 	@IndexedEmbedded(depth = 3)
 	protected Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
-	
+
 	@XmlElementWrapper(name = "Derivatives")
 	@XmlElement(name = "Derivative")
 	@XmlIDREF
@@ -70,13 +70,13 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<DerivedUnit> derivatives = new HashSet<DerivedUnit>();
-	
+
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private DerivationEventType type;
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -87,7 +87,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	public static DerivationEvent NewInstance(){
 		return new DerivationEvent();
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -97,7 +97,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		result.setType(type);
 		return result;
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -108,14 +108,14 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		result.addDerivative(derivative);
 		return result;
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	protected DerivationEvent() {
 		super();
 	}
-	
+
 
 	/**
 	 * The specimen or observations that are the input for this derviation event.
@@ -125,7 +125,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		return originals;
 	}
 
-	
+
 	/**
 	 * Adds a new input specimen or observation for this derviation event.
 	 * @see #getOriginals()
@@ -143,10 +143,13 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @return
 	 */
 	public void removeOriginal(SpecimenOrObservationBase original) {
-		this.originals.remove(original);
+	    if (this.originals.contains(original)){
+	        this.originals.remove(original);
+	        original.removeDerivationEvent(this);
+	    }
 	}
-	
-	
+
+
 	/**
 	 * The specimen or observations that are the output for this derviation event.
 	 * @return
@@ -154,8 +157,8 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	public Set<DerivedUnit> getDerivatives() {
 		return derivatives;
 	}
-	
-	
+
+
 	/**
 	 * Adds a new output specimen or observation for this derivation event.
 	 * @see #getDerivatives()
@@ -188,19 +191,19 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	public DerivationEventType getType() {
 		return type;
 	}
-	
+
 	public void setType(DerivationEventType type) {
 		this.type = type;
 	}
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> derivation event. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> derivation event
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link EventBase EventBase}.
-	 * 
+	 *
 	 * @see EventBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
