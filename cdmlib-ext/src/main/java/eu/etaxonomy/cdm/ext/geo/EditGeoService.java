@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -104,7 +104,7 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
@@ -140,7 +140,7 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
 //        if (backLayer == null) {
@@ -168,7 +168,7 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
@@ -300,7 +300,7 @@ public class EditGeoService implements IEditGeoService {
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();

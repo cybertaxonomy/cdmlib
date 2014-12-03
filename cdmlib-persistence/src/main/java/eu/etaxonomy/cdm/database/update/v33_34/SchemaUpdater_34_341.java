@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableDroper;
 
 /**
  * @author a.mueller
@@ -85,6 +86,27 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
+		//Institution for Amplification
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add foreign key for DerivationEvent.taxonName";
+		tableName = "DerivationEvent";
+		newColumnName = "taxonname_id";
+		referencedTable = "TaxonNameBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
+
+		
+		
+//		xxx update data
+//		
+		
+		
+		
+		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
+		stepName = "Remove SpecimenOrObservationBase_Sequence";
+		tableName = "SpecimenOrObservationBase_Sequence";
+		step = TableDroper.NewInstance(stepName, tableName, true, true);
+		stepList.add(step);
 		
 		return stepList;
 		

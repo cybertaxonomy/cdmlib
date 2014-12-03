@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 @XmlType(name = "DerivationEvent", propOrder = {
     "originals",
     "derivatives",
-    "institution_id",
+    "institution",
     "type"
 })
 @XmlRootElement(name = "DerivationEvent")
@@ -80,7 +80,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	@Column(name="institution_id")
+	@JoinColumn(name="institution_id")
 	private Institution institution;
 	
 	@XmlElement(name = "DerivationEventType")

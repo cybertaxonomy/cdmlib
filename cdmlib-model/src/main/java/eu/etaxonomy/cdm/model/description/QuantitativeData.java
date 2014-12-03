@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -89,6 +91,27 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 
+//see #4471
+//	@Column(precision = 20, scale = 10)
+//	private BigDecimal minimum;
+//
+//	@Column(precision = 20, scale = 10)
+//	private BigDecimal maximum;
+//	
+//	@Column(precision = 20, scale = 10)
+//	private BigDecimal average;
+//	
+//	@Column(precision = 16, scale = 8)
+//	private BigDecimal variance;
+//	
+//	@Column(precision = 16, scale = 8)
+//	private BigDecimal standardDeviation;
+//	
+//	@Column(precision = 20, scale = 10)
+//	private BigDecimal singleValue; 
+//	
+//	private Integer sampleSize;
+	
 	@XmlElement(name = "UnknownData")
 	private Boolean unknownData = false;
 	
@@ -408,6 +431,60 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		}
 		return result;
 	}
+
+	public Boolean getUnknownData() {
+		return unknownData;
+	}
+
+	public void setUnknownData(Boolean unknownData) {
+		this.unknownData = unknownData;
+	}
+	
+//	
+//	public BigDecimal getMinimum() {
+//		return minimum;
+//	}
+//
+//	public void setMinimum(BigDecimal minimum) {
+//		this.minimum = minimum;
+//	}
+//
+//	public BigDecimal getMaximum() {
+//		return maximum;
+//	}
+//
+//	public void setMaximum(BigDecimal maximum) {
+//		this.maximum = maximum;
+//	}
+//
+//	public BigDecimal getVariance() {
+//		return variance;
+//	}
+//
+//	public void setVariance(BigDecimal variance) {
+//		this.variance = variance;
+//	}
+//
+//	public BigDecimal getSingleValue() {
+//		return singleValue;
+//	}
+//
+//	public void setSingleValue(BigDecimal singleValue) {
+//		this.singleValue = singleValue;
+//	}
+
+//
+//	public void setAverage(BigDecimal average) {
+//		this.average = average;
+//	}
+//
+//	public void setStandardDeviation(BigDecimal standardDeviation) {
+//		this.standardDeviation = standardDeviation;
+//	}
+//
+//	public void setSampleSize(Integer sampleSize) {
+//		this.sampleSize = sampleSize;
+//	}
 	
 
 //*********************************** CLONE *****************************************/

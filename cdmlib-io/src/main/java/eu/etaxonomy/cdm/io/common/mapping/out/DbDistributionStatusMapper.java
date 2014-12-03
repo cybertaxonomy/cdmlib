@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * Maps distribution to a database foreign key or cache field.
@@ -51,7 +51,7 @@ public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBas
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(Distribution.class)){ 
 			Distribution distribution = CdmBase.deproxy(cdmBase, Distribution.class);
-			PresenceAbsenceTermBase<?> status = distribution.getStatus();
+			PresenceAbsenceTerm status = distribution.getStatus();
 			IExportTransformer transformer = getState().getTransformer();
 			try {
 				if (isCache){

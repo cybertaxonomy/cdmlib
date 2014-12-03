@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -1716,7 +1716,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
             Classification classification,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException {
@@ -1857,7 +1857,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
-            Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus, List<Language> languages,
+            Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus, List<Language> languages,
             boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
@@ -1873,13 +1873,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // convert sets to lists
         List<NamedArea> namedAreaList = null;
-        List<PresenceAbsenceTermBase<?>>distributionStatusList = null;
+        List<PresenceAbsenceTerm>distributionStatusList = null;
         if(namedAreas != null){
             namedAreaList = new ArrayList<NamedArea>(namedAreas.size());
             namedAreaList.addAll(namedAreas);
         }
         if(distributionStatus != null){
-            distributionStatusList = new ArrayList<PresenceAbsenceTermBase<?>>(distributionStatus.size());
+            distributionStatusList = new ArrayList<PresenceAbsenceTerm>(distributionStatus.size());
             distributionStatusList.addAll(distributionStatus);
         }
 
@@ -2128,7 +2128,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     protected Query createByDistributionJoinQuery(
             List<NamedArea> namedAreaList,
-            List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            List<PresenceAbsenceTerm> distributionStatusList,
             QueryFactory queryFactory
             ) throws IOException {
 
@@ -2149,7 +2149,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @return
      */
     private BooleanQuery createByDistributionQuery(List<NamedArea> namedAreaList,
-            List<PresenceAbsenceTermBase<?>> distributionStatusList, QueryFactory queryFactory) {
+            List<PresenceAbsenceTerm> distributionStatusList, QueryFactory queryFactory) {
         BooleanQuery areaQuery = new BooleanQuery();
         // area field from Distribution
         areaQuery.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
@@ -2175,7 +2175,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @throws IOException
      */
     protected LuceneSearch prepareByDistributionSearch(
-            List<NamedArea> namedAreaList, List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            List<NamedArea> namedAreaList, List<PresenceAbsenceTerm> distributionStatusList,
             Classification classification) throws IOException {
 
         BooleanQuery finalQuery = new BooleanQuery();

@@ -12,11 +12,10 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
@@ -67,8 +66,7 @@ public enum VocabularyEnum {
 	Feature("b187d555-f06f-4d65-9e53-da7c93f8eaa8", Feature.class),
 	NameFeature("a7ca3eef-4092-49e1-beec-ed5096193e5e", Feature.class),
 	TdwgArea("1fb40504-d1d7-44b0-9731-374fbe6cac77", NamedArea.class),
-	PresenceTerm("adbbbe15-c4d3-47b7-80a8-c7d104e53a05", PresenceTerm.class),
-	AbsenceTerm("5cd438c8-a8a1-4958-842e-169e83e2ceee", AbsenceTerm.class),
+	PresenceAbsenceTerm("adbbbe15-c4d3-47b7-80a8-c7d104e53a05", PresenceAbsenceTerm.class),
 	Sex("9718b7dd-8bc0-4cad-be57-3c54d4d432fe", DefinedTerm.class),
 	DerivationEventType("398b50bb-348e-4fe0-a7f5-a75afd846d1f", DerivationEventType.class),
 //	PreservationMethod("a7dc20c9-e6b3-459e-8f05-8d6d8fceb465", DefinedTerm.class),
@@ -118,7 +116,7 @@ public enum VocabularyEnum {
 		return clazz;
 	}
 	
-	public static VocabularyEnum getVocabularyEnum(Class clazz){
+	public static VocabularyEnum getVocabularyEnum(Class<?> clazz){
 		
 		for(VocabularyEnum vocabulary : VocabularyEnum.values()){
 			if(vocabulary.getClazz().equals(clazz)){

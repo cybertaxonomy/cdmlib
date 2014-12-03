@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -76,7 +76,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
 	private Map<UUID, DefinedTerm> modifierMap = new HashMap<UUID, DefinedTerm>();
 	
-	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
+	private Map<UUID, PresenceAbsenceTerm> presenceTermMap = new HashMap<UUID, PresenceAbsenceTerm>();
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	private Map<UUID, TaxonRelationshipType> taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
 	
@@ -126,7 +126,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
 		modifierMap = new HashMap<UUID, DefinedTerm>();
 		
-		presenceTermMap = new HashMap<UUID, PresenceTerm>();;
+		presenceTermMap = new HashMap<UUID, PresenceAbsenceTerm>();;
 		languageMap = new HashMap<UUID, Language>();
 		taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
 		
@@ -330,11 +330,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	}
 	
 	
-	public PresenceTerm getPresenceTerm(UUID uuid){
+	public PresenceAbsenceTerm getPresenceAbsenceTerm(UUID uuid){
 		return presenceTermMap.get(uuid);
 	}
 	
-	public void putPresenceTerm(PresenceTerm presenceTerm){
+	public void putPresenceAbsenceTerm(PresenceAbsenceTerm presenceTerm){
 		presenceTermMap.put(presenceTerm.getUuid(), presenceTerm);
 	}
 

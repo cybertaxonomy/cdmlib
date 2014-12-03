@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -634,7 +634,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws IOException
      * @throws ParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
             Classification classification,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException;
@@ -686,7 +686,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
-            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus,
+            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
 

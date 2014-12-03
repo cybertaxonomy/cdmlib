@@ -788,7 +788,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermNotFoundException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/AbsenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
@@ -810,8 +809,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.jav
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NaturalLanguageTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNode.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/SpecimenDescription.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/State.java -text
@@ -1067,7 +1065,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/TaxonNameCannotBeAcceptedAndSynonymValidator.java -text
 cdmlib-model/src/main/resources/ValidationMessages.properties -text
 cdmlib-model/src/main/resources/log4j.properties -text
-cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/Country.csv -text
@@ -1098,7 +1095,7 @@ cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusTypeIczn.csv -text
 cdmlib-model/src/main/resources/terms/PlantKindOfUnit.csv -text
-cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
+cdmlib-model/src/main/resources/terms/PresenceAbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/PreservationMethod.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
@@ -1150,7 +1147,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/DescriptionElement
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/FeatureTreeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/NamedAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text

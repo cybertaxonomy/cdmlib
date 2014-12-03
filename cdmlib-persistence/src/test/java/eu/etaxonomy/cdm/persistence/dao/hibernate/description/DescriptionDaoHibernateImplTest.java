@@ -33,12 +33,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -128,7 +127,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         namedAreas.add(southernAmerica);
         namedAreas.add(antarctica);
 
-        int numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, PresenceTerm.PRESENT());
+        int numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, PresenceAbsenceTerm.PRESENT());
         assertEquals("countDescriptionsByDistribution should return 20",20,numberOfDescriptions);
     }
 
@@ -175,7 +174,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         namedAreas.add(southernAmerica);
         namedAreas.add(antarctica);
 
-        List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, AbsenceTerm.ABSENT(), 10,0,null,null);
+        List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, PresenceAbsenceTerm.ABSENT(), 10,0,null,null);
         assertNotNull("searchDescriptionByDistribution should return a List",descriptions);
         assertFalse("searchDescriptionsByDistribution should not be empty",descriptions.isEmpty());
         assertEquals("searchDescriptionsByDistribution should return 3 elements",3,descriptions.size());

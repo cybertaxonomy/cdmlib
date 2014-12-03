@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.MultiAccessKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
@@ -274,7 +274,7 @@ public class FullCoverageDataGenerator {
 
 	private void createDescriptions(List<CdmBase> cdmBases) {
 
-		TermVocabulary voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
+		TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
 				"myTerm voc", "mtv", URI.create("http://www.abc.de"));
 		handleIdentifiableEntity(voc);
 		cdmBases.add(voc);
@@ -356,7 +356,7 @@ public class FullCoverageDataGenerator {
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
 		inCountryArea.addCountry(Country.TURKEYREPUBLICOF());
 		cdmBases.add(inCountryArea);
-		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceTerm.CULTIVATED());
+		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
 		
 		Taxon taxon = getTaxon();

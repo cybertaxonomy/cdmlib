@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
@@ -37,10 +37,10 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private String locality;
 	private String countryCode;
 	private DefinedTerm lifeStage;
-	private PresenceAbsenceTermBase<?> occurrenceStatus;
+	private PresenceAbsenceTerm occurrenceStatus;
 	private String threadStatus;
 	
-	private PresenceAbsenceTermBase<?> establishmentMeans;
+	private PresenceAbsenceTerm establishmentMeans;
 	private String appendixCITES;
 	private TimePeriod eventDate;
 	
@@ -175,12 +175,12 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		}
 	}
 
-	public PresenceAbsenceTermBase<?> getOccurrenceStatus() {
+	public PresenceAbsenceTerm getOccurrenceStatus() {
 		return occurrenceStatus;
 	}
 
 
-	public void setOccurrenceStatus(PresenceAbsenceTermBase<?> occurrenceStatus) {
+	public void setOccurrenceStatus(PresenceAbsenceTerm occurrenceStatus) {
 		this.occurrenceStatus = occurrenceStatus;
 	}
 
@@ -195,12 +195,12 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	}
 
 
-	public PresenceAbsenceTermBase getEstablishmentMeans() {
+	public PresenceAbsenceTerm getEstablishmentMeans() {
 		return establishmentMeans;
 	}
 
 
-	public void setEstablishmentMeans(PresenceAbsenceTermBase establishmentMeans) {
+	public void setEstablishmentMeans(PresenceAbsenceTerm establishmentMeans) {
 		this.establishmentMeans = establishmentMeans;
 	}
 

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * This Mapper creates a distribution and adds it to a taxon.
@@ -41,7 +41,7 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 	 * @return
 	 */
 	public static DbImportDistributionCreationMapper<?> NewInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace){
-		PresenceAbsenceTermBase status = null;
+		PresenceAbsenceTerm status = null;
 		return new DbImportDistributionCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
 	}
 	
@@ -55,13 +55,13 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 	 * @param status
 	 * @return
 	 */
-	public static DbImportDistributionCreationMapper<?> NewFixedStatusInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTermBase<?> status){
+	public static DbImportDistributionCreationMapper<?> NewFixedStatusInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTerm status){
 		return new DbImportDistributionCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
 
-	protected PresenceAbsenceTermBase status;
+	protected PresenceAbsenceTerm status;
 	
 //********************************* CONSTRUCTOR ****************************************/
 	/**
@@ -70,15 +70,12 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 	 * @param dbTaxonFkAttribute
 	 * @param taxonNamespace
 	 */
-	protected DbImportDistributionCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTermBase status) {
+	protected DbImportDistributionCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTerm status) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
 	}
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
-	 */
 	@Override
 	protected Distribution createObject(ResultSet rs) throws SQLException {
 		Distribution distribution = Distribution.NewInstance(null, null);

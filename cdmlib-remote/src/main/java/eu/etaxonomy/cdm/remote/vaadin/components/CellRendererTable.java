@@ -1,10 +1,7 @@
 package eu.etaxonomy.cdm.remote.vaadin.components;
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,16 +15,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.server.WrappedSession;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -41,14 +33,11 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.data.LazyLoadedContainer;
-import eu.etaxonomy.cdm.remote.vaadin.data.LazyLoadedIndexedContainer;
 
 /**
  *
@@ -151,8 +140,8 @@ public class CellRendererTable extends Table{
 									String titleCache = dt.getTitleCache();
 									if(isEditable()){
 										if(db.getArea().getTitleCache().equalsIgnoreCase(titleCache)){
-											List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-											BeanItemContainer<PresenceAbsenceTermBase> termContainer = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
+											List<PresenceAbsenceTerm> listTerm = termService.list(PresenceAbsenceTerm.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+											BeanItemContainer<PresenceAbsenceTerm> termContainer = new BeanItemContainer<PresenceAbsenceTerm>(PresenceAbsenceTerm.class);
 											termContainer.addAll(listTerm);
 											box = new ComboBox("Occurrence Status: ", termContainer);
 											Item item = container.getItem(itemId);

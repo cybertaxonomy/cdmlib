@@ -14,13 +14,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 
-public class PresenceAbsenceTermBaseTest {
-	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBaseTest.class);
+public class PresenceAbsenceTermTest {
+	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermTest.class);
 
 	@BeforeClass
     public static void setUpBeforeClass() {
@@ -44,27 +45,28 @@ public class PresenceAbsenceTermBaseTest {
 
 	@Test
 	public void testGetPresenceTermByAbbreviation() {
-//		String abbrev = "p";
-//		PresenceAbsenceTermBase paTerm = PresenceTerm.getPresenceAbsenceTermByAbbreviation(abbrev);
-//		assertEquals(PresenceTerm.PRESENT(), paTerm);
-//		PresenceAbsenceTermBase paTermNotExist = PresenceTerm.getPresenceAbsenceTermByAbbreviation("slkjlsl�");
-//		assertNull(paTermNotExist);
+		String abbrev = "p";
+		PresenceAbsenceTerm paTerm = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation(abbrev);
+		Assert.assertEquals(PresenceAbsenceTerm.PRESENT(), paTerm);
+		PresenceAbsenceTerm paTermNotExist = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation("slkjlsl�");
+		Assert.assertNull(paTermNotExist);
 	}
+	
 	@Test
     public void testCompareTo(){
-        PresenceTerm term1 = PresenceTerm.CULTIVATED();
-        PresenceTerm term2 = PresenceTerm.NATIVE();
-        AbsenceTerm term3 = AbsenceTerm.ABSENT();
-        AbsenceTerm term4 = AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
+        PresenceAbsenceTerm term1 = PresenceAbsenceTerm.CULTIVATED();
+        PresenceAbsenceTerm term2 = PresenceAbsenceTerm.NATIVE();
+        PresenceAbsenceTerm term3 = PresenceAbsenceTerm.ABSENT();
+        PresenceAbsenceTerm term4 = PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 
-        List<PresenceAbsenceTermBase> list = new ArrayList<PresenceAbsenceTermBase>();
+        List<PresenceAbsenceTerm> list = new ArrayList<PresenceAbsenceTerm>();
         list.add(term4);
         list.add(term2);
         list.add(term3);
         list.add(term1);
 
         Collections.sort(list);
-        for (PresenceAbsenceTermBase t: list){
+        for (PresenceAbsenceTerm t: list){
             System.out.println(t.getTitleCache());
         }
 

@@ -83,7 +83,6 @@
       <mapping class="eu.etaxonomy.cdm.model.common.TermVocabulary"/>
       <mapping class="eu.etaxonomy.cdm.model.common.User"/>
       <!-- Description Package -->
-      <mapping class="eu.etaxonomy.cdm.model.description.AbsenceTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.CommonTaxonName"/>
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptionBase"/>
@@ -100,8 +99,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.MultiAccessKey"/>
       <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKey"/>
       <mapping class="eu.etaxonomy.cdm.model.description.PolytomousKeyNode"/>
-      <mapping class="eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase"/>
-      <mapping class="eu.etaxonomy.cdm.model.description.PresenceTerm"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.description.QuantitativeData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.SpecimenDescription"/>
       <mapping class="eu.etaxonomy.cdm.model.description.State"/>

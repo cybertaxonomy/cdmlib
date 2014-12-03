@@ -38,9 +38,8 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
@@ -76,33 +75,32 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
-		indexedClasses = new Class[26];
+		indexedClasses = new Class[25];
 		indexedClasses[0] = Rank.class;
 		indexedClasses[1] = AnnotationType.class;
 		indexedClasses[2] = ExtensionType.class;
 		indexedClasses[3] = Language.class;
 		indexedClasses[4] = MarkerType.class;
-		indexedClasses[5] = AbsenceTerm.class;
-		indexedClasses[6] = MeasurementUnit.class;
-		indexedClasses[7] = DefinedTerm.class;
-		indexedClasses[8] = PresenceTerm.class;
-		indexedClasses[9] = State.class;
-		indexedClasses[10] = StatisticalMeasure.class;
-		indexedClasses[11] = TextFormat.class;
-		indexedClasses[12] = DerivationEventType.class;
-		indexedClasses[13] = NamedArea.class;
-		indexedClasses[14] = NamedAreaLevel.class;
-		indexedClasses[15] = NamedAreaType.class;
-		indexedClasses[16] = ReferenceSystem.class;
-		indexedClasses[17] = Country.class;
-		indexedClasses[18] = RightsType.class;
-		indexedClasses[19] = HybridRelationshipType.class;
-		indexedClasses[20] = NameRelationshipType.class;
-		indexedClasses[21] = NameTypeDesignationStatus.class;
-		indexedClasses[22] = NomenclaturalStatusType.class;
-		indexedClasses[23] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[24] = SynonymRelationshipType.class;
-		indexedClasses[25] = TaxonRelationshipType.class;
+		indexedClasses[5] = MeasurementUnit.class;
+		indexedClasses[6] = DefinedTerm.class;
+		indexedClasses[7] = PresenceAbsenceTerm.class;
+		indexedClasses[8] = State.class;
+		indexedClasses[9] = StatisticalMeasure.class;
+		indexedClasses[10] = TextFormat.class;
+		indexedClasses[11] = DerivationEventType.class;
+		indexedClasses[12] = NamedArea.class;
+		indexedClasses[13] = NamedAreaLevel.class;
+		indexedClasses[14] = NamedAreaType.class;
+		indexedClasses[15] = ReferenceSystem.class;
+		indexedClasses[16] = Country.class;
+		indexedClasses[17] = RightsType.class;
+		indexedClasses[18] = HybridRelationshipType.class;
+		indexedClasses[19] = NameRelationshipType.class;
+		indexedClasses[20] = NameTypeDesignationStatus.class;
+		indexedClasses[21] = NomenclaturalStatusType.class;
+		indexedClasses[22] = SpecimenTypeDesignationStatus.class;
+		indexedClasses[23] = SynonymRelationshipType.class;
+		indexedClasses[24] = TaxonRelationshipType.class;
 	}
 
 	/**

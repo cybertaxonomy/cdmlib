@@ -39,6 +39,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @XmlType(name = "DeterminationEvent", propOrder = {
     "identifiedUnit",
     "taxon",
+    "taxonName",
     "modifier",
     "preferredFlag",
     "setOfReferences"
@@ -70,7 +72,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private SpecimenOrObservationBase identifiedUnit;
+	private SpecimenOrObservationBase<?> identifiedUnit;
 
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
@@ -78,7 +80,16 @@ public class DeterminationEvent extends EventBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    private TaxonBase taxon;
+    private TaxonBase<?> taxon;
+	
+//	#4518
+	@XmlElement(name = "TaxonName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
+    @Cascade(CascadeType.SAVE_UPDATE)
+    private TaxonNameBase<?,?> taxonName;
 
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
@@ -138,10 +149,16 @@ public class DeterminationEvent extends EventBase {
 		return this.taxon;
 	}
 
-	/**
-	 *
-	 * @param taxon    taxon
-	 */
+	/*** @param taxon    the */
+	public void setTaxonName(TaxonNameBase taxonName){
+		this.taxonName = taxonName;
+	}
+	
+	public TaxonNameBase getTaxonName(){
+		return this.taxonName;
+	}
+
+	/*** @param taxon    the */
 	public void setTaxon(TaxonBase taxon){
 		this.taxon = taxon;
 	}

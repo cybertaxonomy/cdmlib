@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
@@ -154,7 +155,7 @@ public class Amplification extends EventBase implements Cloneable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	@Column(name="institution_id")
+	@JoinColumn(name="institution_id")
 	private Institution institution;
 
 	/** @see #getSuccessful() */
