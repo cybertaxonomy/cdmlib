@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -17,12 +17,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 
 /**
  * This class represents the result of a delete action.
- * 
+ *
  * @author a.mueller
  * @date 04.01.2012
  *
@@ -30,42 +30,42 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 public class DeleteResult {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
-	
+
 	private DeleteStatus status = DeleteStatus.OK;
-	
-	private List<Exception> exceptions = new ArrayList<Exception>();
-	
-	private Set<CdmBase> relatedObjects = new HashSet<CdmBase>();
-	
+
+	private final List<Exception> exceptions = new ArrayList<Exception>();
+
+	private final Set<CdmBase> relatedObjects = new HashSet<CdmBase>();
+
 	private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
-	
+
 	private Set<PersistPair> objectsToSave = new HashSet<DeleteResult.PersistPair>();
-	
+
 	protected class PersistPair{
 		protected CdmBase objectToPersist;
-		protected ICdmEntityDao<CdmBase> dao;	
+		protected ICdmEntityDao<CdmBase> dao;
 	}
-	
+
 	public enum DeleteStatus {
 		OK(0),
 		ABORT(1),
 		ERROR(3),
 		;
-		
+
 		protected Integer severity;
 		private DeleteStatus(int severity){
 			this.severity = severity;
 		}
-		
+
 		public int compareSeverity(DeleteStatus other){
 			return this.severity.compareTo(other.severity);
 		}
 	}
 
-//***************************** GETTER /SETTER /ADDER *************************/	
+//***************************** GETTER /SETTER /ADDER *************************/
 	/**
 	 * The resuting status of a delete action.
-	 * 
+	 *
 	 * @see DeleteStatus
 	 * @return
 	 */
@@ -89,7 +89,7 @@ public class DeleteResult {
 	public void addExceptions(List<Exception> exceptions) {
 		this.exceptions.addAll(exceptions);
 	}
-	
+
 	/**
 	 * Related objects that prevent the delete action to take place.
 	 * @return
@@ -103,8 +103,8 @@ public class DeleteResult {
 	public void addRelatedObjects(Set<? extends CdmBase> relatedObjects) {
 		this.relatedObjects.addAll(relatedObjects);
 	}
-	
-	
+
+
 	/**
 	 * @return
 	 */
@@ -114,7 +114,7 @@ public class DeleteResult {
 	public void setObjectsToDelete(Set<PersistPair> objectsToDelete) {
 		this.objectsToDelete = objectsToDelete;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -125,9 +125,9 @@ public class DeleteResult {
 		this.objectsToSave = objectsToSave;
 	}
 
-	
+
 //****************** CONVENIENCE *********************************************/
-	
+
 	/**
 	 * Sets the status to {@link DeleteStatus#ERROR} if not yet set to a more serious
 	 * status.
@@ -143,10 +143,10 @@ public class DeleteResult {
 	public void setAbort(){
 		setMaxStatus(DeleteStatus.ABORT);
 	}
-	
+
 	/**
 	 * Sets status to most severe status. If maxStatus is more severe then existing status
-	 * existing status is set to maxStatus. Otherwise nothing changes. 
+	 * existing status is set to maxStatus. Otherwise nothing changes.
 	 * If minStatus is more severe then given status minStatus will be the new status.
 	 * @param maxStatus
 	 */
@@ -155,17 +155,17 @@ public class DeleteResult {
 			this.status = maxStatus;
 		}
 	}
-	
+
 	public void includeResult(DeleteResult includedResult){
 		this.setMaxStatus(includedResult.getStatus());
 		this.addExceptions(includedResult.getExceptions());
 		this.addRelatedObjects(includedResult.getRelatedObjects());
 	}
-	
+
 	public boolean isOk(){
 		return this.status == DeleteStatus.OK;
 	}
-	
+
 	public boolean isAbort(){
 		return this.status == DeleteStatus.ABORT;
 	}
@@ -174,12 +174,35 @@ public class DeleteResult {
 		return this.status == DeleteStatus.ERROR;
 	}
 
-	
-	
+
+
 	@Override
 	public String toString(){
-		return status.toString();
+	    String separator = ", ";
+	    String exceptionString = "";
+	    for (Exception exception : exceptions) {
+            exceptionString += exception.getLocalizedMessage()+separator;
+        }
+	    if(exceptionString.endsWith(separator)){
+	        exceptionString = exceptionString.substring(0, exceptionString.length()-separator.length());
+	    }
+	    String relatedObjectString = "";
+	    for (CdmBase relatedObject: relatedObjects) {
+	        if(relatedObject instanceof IIdentifiableEntity){
+	            relatedObjectString += ((IIdentifiableEntity) relatedObject).getTitleCache()+separator;
+	        }
+	        else{
+	            relatedObjectString += relatedObject.toString()+separator;
+	        }
+	    }
+	    if(relatedObjectString.endsWith(separator)){
+	        relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
+	    }
+		return "[DeleteResult]\n" +
+				"Status: " + status.toString()+"\n" +
+						"Exceptions: " + exceptionString+"\n" +
+								"Related Objects: "+relatedObjectString;
 	}
 
-	
+
 }
