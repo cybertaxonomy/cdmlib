@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.log4j.Logger;
-import org.jdom.Content;
 import org.jdom.Element;
 
 import com.hp.hpl.jena.rdf.model.Resource;

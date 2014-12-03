@@ -33,7 +33,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -100,7 +100,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private DefinedTerm qualityTerm;
+	private OrderedTerm qualityTerm;
 
     @XmlElement (name = "QualityCheckDate", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
@@ -171,11 +171,11 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 		this.qualityCheckDate = qualityCheckDate;
 	}
 
-	public DefinedTerm getQualityTerm() {
+	public OrderedTerm getQualityTerm() {
 		return qualityTerm;
 	}
 
-	public void setQualityTerm(DefinedTerm qualityTerm) {
+	public void setQualityTerm(OrderedTerm qualityTerm) {
 		this.qualityTerm = qualityTerm;
 	}
 

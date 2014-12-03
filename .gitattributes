@@ -762,6 +762,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageTextHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/NoDefinedTermClassException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabulary.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSourceBase.java -text
@@ -1073,7 +1074,7 @@ cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/DeterminationModifier.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerChloroplast.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerEukaryote.csv -text
-cdmlib-model/src/main/resources/terms/DnaQuality.csv -text
+cdmlib-model/src/main/resources/terms/DnaQualityType.csv -text
 cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/FormerCountries -text
@@ -2088,6 +2089,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmObjectNonExisting
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/DataController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/MetadataController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/SpringContextHelper.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/VaadinConfigurer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/VaadinUI.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/CellRendererTable.java -text
@@ -2100,6 +2102,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/LoginForm.
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/TaxonTableDTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/data/LazyLoadedContainer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/data/LazyLoadedIndexedContainer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/service/CdmVaadinServlet.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/service/VaadinAuthenticationService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/disabled/DefaultView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/BfnView.java -text
@@ -2374,7 +2377,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBa
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/OccurenceServiceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.java -text
@@ -2438,6 +2441,8 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServ
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/NameServiceImplTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurenceServiceTest.move.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text

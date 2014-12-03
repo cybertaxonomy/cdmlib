@@ -19,7 +19,8 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
 
     private boolean deleteChildren;
     private boolean shiftHierarchyUp;
-    private boolean ignoreDeleteTypeDesignation;
+    private boolean deleteFromTypeDesignation;
+    private boolean deleteFromIndividualsAssociation;
 
     public boolean isDeleteChildren() {
         return deleteChildren;
@@ -37,12 +38,20 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
         this.shiftHierarchyUp = shiftHierarchyUp;
     }
 
-    public boolean isIgnoreDeleteTypeDesignation() {
-        return ignoreDeleteTypeDesignation;
+    public boolean isdeleteFromTypeDesignation() {
+        return deleteFromTypeDesignation;
     }
 
-    public void setIgnoreDeleteTypeDesignation(boolean ignoreDeleteTypeDesignation) {
-        this.ignoreDeleteTypeDesignation = ignoreDeleteTypeDesignation;
+    public void setdeleteFromTypeDesignation(boolean deleteFromTypeDesignation) {
+        this.deleteFromTypeDesignation = deleteFromTypeDesignation;
+    }
+
+    public boolean isDeleteFromIndividualsAssociation() {
+        return deleteFromIndividualsAssociation;
+    }
+
+    public void setDeleteFromIndividualsAssociation(boolean deleteFromIndividualsAssociation) {
+        this.deleteFromIndividualsAssociation = deleteFromIndividualsAssociation;
     }
 
 }

@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
 
 import sun.security.provider.PolicyParser.ParsingException;
 

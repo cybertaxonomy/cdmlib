@@ -446,8 +446,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * Accession Number, ... are allowed.
      * {@link DnaQu}
      */
-    @XmlEnumValue("DnaQuality")
-    DnaQuality(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality", "DQU", null),
+    @XmlEnumValue("DnaQualityType")
+    DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
  
     ;
 
@@ -512,7 +512,6 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
             case Sex:
             case Stage:
             case KindOfUnit:
-            case PresenceAbsenceTerm:
             case IdentifierType:
             case DnaMarker:
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
@@ -530,6 +529,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
                 return eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, "Untitled", null);
             case NamedAreaType:
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);
+            case PresenceAbsenceTerm:
+            	return eu.etaxonomy.cdm.model.description.PresenceTerm.NewInstance(null, "Untitled", null);
             default:
                 return null;
         }

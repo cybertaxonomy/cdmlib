@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * a DNA Bank and should then be handled as a collection unit.
  * DNA Sample are used to determine their {@link Sequence DNA sequences}
  * starting with a process called {@link Amplification amplification}.
- *  
+ *
  * @author m.doering
  * @created 08-Nov-2007
  */
@@ -65,9 +65,9 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
-	
+
 // ****************** FACTORY METHOD *****************/
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -75,30 +75,30 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public static DnaSample NewInstance(){
 		return new DnaSample();
 	}
-	
 
-// ************** ATTRIBUTES ****************************/	
-	
+
+// ************** ATTRIBUTES ****************************/
+
 //	@XmlElement(name = "BankNumber")
 //	private String bankNumber;
-	
+
 	@XmlElementWrapper(name = "Sequences")
 	@XmlElement(name = "sequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
     private Set<Sequence> sequences = new HashSet<Sequence>();
 
-	
+
 	@XmlElementWrapper(name = "Amplifications")
 	@XmlElement(name = "Amplification")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @ContainedIn
     @NotNull
-	private Set<Amplification> amplifications = new HashSet<Amplification>();
-	
+	private final Set<Amplification> amplifications = new HashSet<Amplification>();
+
     @XmlElement(name = "DnaQuality", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -109,7 +109,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 
 
 // ******************* CONSTRUCTOR *************************/
-	
+
 	/**
 	 * Constructor
 	 */
@@ -117,8 +117,8 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
 	}
-	
-//************ GETTER / SETTER  **********************************/	
+
+//************ GETTER / SETTER  **********************************/
 
 	//sequencings
 	public Set<Sequence> getSequences() {
@@ -137,9 +137,9 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		sequence.setDnaSample(null);
 		this.sequences.remove(sequence);
 	}
-	
-	
-	
+
+
+
 	//amplifications
 	public Set<Amplification> getAmplifications() {
 		return amplifications;
@@ -153,7 +153,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public void removeAmplification(Amplification amplification) {
 		this.amplifications.remove(amplification);
 	}
-	
+
 	public DnaQuality getDnaQuality() {
 		return dnaQuality;
 	}
@@ -161,7 +161,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public void setDnaQuality(DnaQuality dnaQuality) {
 		this.dnaQuality = dnaQuality;
 	}
-	
+
 
 // ************* Convenience Getter / Setter ************/
 
@@ -170,7 +170,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public Collection getStoredAt(){
 		return this.getCollection();
 	}
-	
+
 	public void setStoredAt(Collection storedAt){
 		this.setCollection(storedAt);
 	}
@@ -184,21 +184,21 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public String getBankNumber(){
 		return this.getCatalogNumber();
 	}
-	
+
 	public void setBankNumber(String bankNumber){
 		this.setCatalogNumber(bankNumber);
 	}
-	
 
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> dna sample. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> dna sample
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link Specimen Specimen}.
-	 * @throws CloneNotSupportedException 
-	 * 
+	 * @throws CloneNotSupportedException
+	 *
 	 * @see Specimen#clone()
 	 * @see DerivedUnit#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
