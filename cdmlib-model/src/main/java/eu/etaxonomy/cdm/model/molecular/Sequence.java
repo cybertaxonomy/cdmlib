@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
     "boldProcessId",
     "haplotype",
     "contigFile",
-    "singleReads",
+    "singleReadAlignments",
     "citations"
 })
 @XmlRootElement(name = "Sequencing")

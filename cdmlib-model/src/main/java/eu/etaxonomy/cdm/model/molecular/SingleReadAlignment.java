@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * @author a.mueller
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingleReadAlignment", propOrder = {

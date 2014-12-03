@@ -170,7 +170,6 @@ public class TestCdmDbComparator {
 //			"SpecimenOrObservationBase_Media",
 //			"SpecimenOrObservationBase_OriginalSource",
 //			"SpecimenOrObservationBase_Rights",
-//			"SpecimenOrObservationBase_Sequence",
 //			"StateData",
 //			"StateData_DefinedTermBase", 
 //			"StatisticalMeasurementValue", 
