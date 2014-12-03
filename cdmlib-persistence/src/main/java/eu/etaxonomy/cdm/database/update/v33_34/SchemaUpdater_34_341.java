@@ -101,6 +101,11 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 //		
 		
 		
+		//Rename Sequence_SingleRead
+		
+		
+		//Add fields
+		
 		
 		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
 		stepName = "Remove SpecimenOrObservationBase_Sequence";

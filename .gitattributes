@@ -666,6 +666,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DOIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/EnumUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialUserType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/ShiftUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
@@ -861,6 +862,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceDirection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceString.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleRead.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleReadAlignment.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text

@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -131,13 +133,13 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@Size(max=20)
 	private String boldProcessId;
 
-    @XmlElementWrapper(name = "SingleReads")
-    @XmlElement(name = "SingleRead")
+    @XmlElementWrapper(name = "SingleReadAlignments")
+    @XmlElement(name = "SingleReadAlignment")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="consensusSequence", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
+	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
 
 	/** @see #getDnaMarker() */
 	@XmlElement(name = "DnaMarker")
@@ -406,27 +408,77 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 * @see #getConsensusSequence()
 	 * @see #getContigFile()
 	 */
-	public Set<SingleRead> getSingleReads() {
-		return singleReads;
+	public Set<SingleReadAlignment> getSingleReadAlignments() {
+		return singleReadAlignments;
 	}
 	/**
 	 * @see #getSingleReads()
 	 */
-	public void addSingleRead(SingleRead singleRead) {
-		this.singleReads.add(singleRead);
+	public void addSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
+		this.singleReadAlignments.add(singleReadAlignment);
+		if (! this.equals(singleReadAlignment.getConsensusSequence())){
+			singleReadAlignment.setConsensusSequence(this);
+		};
 	}
 	/**
 	 * @see #getSingleReads()
 	 */
+	public void removeSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
+		this.singleReadAlignments.remove(singleReadAlignment);
+		if (this.equals(singleReadAlignment.getConsensusSequence())){
+			singleReadAlignment.setConsensusSequence(null);
+		}
+	}
+//	/**
+//	 * @see #getSingleReads()
+//	 */
+//	//TODO private as long it is unclear how bidirectionality is handled
+//	@SuppressWarnings("unused")
+//	private void setSingleReadAlignments(Set<SingleReadAlignment> singleReadAlignments) {
+//		this.singleReadAlignments = singleReadAlignments;
+//	}
+	
+// *********************** CONVENIENCE ***********************************/
+	
+	/**
+	 * Convenience method to add a single read to a consensus sequence
+	 * by creating a {@link SingleReadAlignment}.
+	 * @param singleRead the {@link SingleRead} to add
+	 * @return the created SingleReadAlignment
+	 */
+	public SingleReadAlignment addSingleRead(SingleRead singleRead) {
+		SingleReadAlignment alignment = SingleReadAlignment.NewInstance(this, singleRead);
+		return alignment;
+	}
+	
 	public void removeSingleRead(SingleRead singleRead) {
-		this.singleReads.remove(singleRead);
+		Set<SingleReadAlignment> toRemove = new HashSet<SingleReadAlignment>();
+		for (SingleReadAlignment align : this.singleReadAlignments){
+			if (align.getSingleRead() != null && align.getSingleRead().equals(singleRead)){
+				toRemove.add(align);
+			}
+		}
+		for (SingleReadAlignment align : toRemove){
+			removeSingleReadAlignment(align);
+		}
+		return;
 	}
+	
 	/**
-	 * @see #getSingleReads()
+	 * Convenience method that returns all single reads this consensus sequence
+	 * is based on via {@link SingleReadAlignment}s.
+	 * @return set of related single reads
 	 */
-	//TODO private as long it is unclear how bidirectionality is handled
-	private void setSingleReads(Set<SingleRead> singleReads) {
-		this.singleReads = singleReads;
+	@XmlTransient
+	@Transient
+	public Set<SingleRead> getSingleReads(){
+		Set<SingleRead> singleReads = new HashSet<SingleRead>();
+		for (SingleReadAlignment align : this.singleReadAlignments){
+			if (align.getSingleRead() != null){  // == null should not happen
+				singleReads.add(align.getSingleRead());
+			}
+		}
+		return singleReads;
 	}
 
 
@@ -457,9 +509,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@Transient
 	public Set<Media> getPherograms(){
 		Set<Media> result = new HashSet<Media>();
-		for (SingleRead singleSeq : singleReads){
-			if (singleSeq.getPherogram() != null){
-				result.add(singleSeq.getPherogram());
+		for (SingleReadAlignment singleReadAlign : singleReadAlignments){
+			if (singleReadAlign.getSingleRead() != null &&  singleReadAlign.getSingleRead().getPherogram() != null){
+				result.add(singleReadAlign.getSingleRead().getPherogram());
 			}
 		}
 		return result;
@@ -540,14 +592,15 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 
 		//single sequences
-		result.singleReads = new HashSet<SingleRead>();
-		for (SingleRead seq: this.singleReads){
-			result.singleReads.add(seq);
+		result.singleReadAlignments = new HashSet<SingleReadAlignment>();
+		for (SingleReadAlignment singleReadAlign: this.singleReadAlignments){
+			SingleReadAlignment newAlignment = (SingleReadAlignment)singleReadAlign.clone();
+			result.singleReadAlignments.add(newAlignment);
 		}
 
 		//citations  //TODO do we really want to copy these ??
 		result.citations = new HashSet<Reference>();
-		for (Reference ref: this.citations){
+		for (Reference<?> ref: this.citations){
 			result.citations.add(ref);
 		}
 

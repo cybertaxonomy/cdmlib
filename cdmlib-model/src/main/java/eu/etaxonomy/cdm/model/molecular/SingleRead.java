@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 	"pherogram",
 	"materialOrMethod"
 })
-@XmlRootElement(name = "Primer")
+@XmlRootElement(name = "SingleRead")
 @Entity
 @Audited
 public class SingleRead extends EventBase implements Cloneable{

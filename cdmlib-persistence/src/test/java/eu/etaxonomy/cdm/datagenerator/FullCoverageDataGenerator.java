@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -90,6 +91,8 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -565,11 +568,15 @@ public class FullCoverageDataGenerator {
 		singleRead.setPrimer(forwardPrimer);
 		singleRead.setSequence(SequenceString.NewInstance("ABTC"));
 		singleRead.setDirection(SequenceDirection.Forward);
-
+		
 		//Seuqence
 		Sequence sequence = Sequence.NewInstance("ADDT");
 		dnaSample.addSequence(sequence);
-		sequence.addSingleRead(singleRead);
+		
+		SequenceString alignedSequence = SequenceString.NewInstance("AGTC");
+		Shift[] shifts = new Shift[]{new Shift(66,1),new Shift(103,-2)};
+		SingleReadAlignment.NewInstance(sequence, singleRead, shifts, alignedSequence);
+				
 		Media contigFile = Media.NewInstance();
 		sequence.setContigFile(contigFile);
 		sequence.setIsBarcode(true);
