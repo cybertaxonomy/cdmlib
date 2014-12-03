@@ -17,8 +17,17 @@ package eu.etaxonomy.cdm.api.service.config;
  */
 public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
 
+    /**
+     * Deletes all sub derivates of the specimen
+     */
     private boolean deleteChildren;
-    private boolean shiftHierarchyUp;
+    /**
+     * TODO: is this needed? For which use case?
+     * Shifts the sub derivates of the deleted specimen to the parents of the
+     * deleted specimen i.e. adds the sub derivates to the derivation event of
+     * the parent
+     */
+//    private boolean shiftHierarchyUp;
     private boolean deleteFromTypeDesignation;
     private boolean deleteFromIndividualsAssociation;
 
@@ -30,19 +39,19 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
         this.deleteChildren = deleteChildren;
     }
 
-    public boolean isShiftHierarchyUp() {
-        return shiftHierarchyUp;
-    }
+//    public boolean isShiftHierarchyUp() {
+//        return shiftHierarchyUp;
+//    }
+//
+//    public void setShiftHierarchyUp(boolean shiftHierarchyUp) {
+//        this.shiftHierarchyUp = shiftHierarchyUp;
+//    }
 
-    public void setShiftHierarchyUp(boolean shiftHierarchyUp) {
-        this.shiftHierarchyUp = shiftHierarchyUp;
-    }
-
-    public boolean isdeleteFromTypeDesignation() {
+    public boolean isDeleteFromTypeDesignation() {
         return deleteFromTypeDesignation;
     }
 
-    public void setdeleteFromTypeDesignation(boolean deleteFromTypeDesignation) {
+    public void setDeleteFromTypeDesignation(boolean deleteFromTypeDesignation) {
         this.deleteFromTypeDesignation = deleteFromTypeDesignation;
     }
 

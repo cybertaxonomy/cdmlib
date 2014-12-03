@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.ContigFile;
@@ -914,13 +915,113 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return nonCascadedCdmEntities;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.VersionableServiceBase#isDeletable(eu.etaxonomy.cdm.model.common.VersionableEntity, eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase)
+     */
+    @Override
+    public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
+
+        DeleteResult deleteResult = new DeleteResult();
+//        //check for derivation events
+//        Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+//        for (DerivationEvent derivationEvent : derivationEvents) {
+//            if(!derivationEvent.getDerivatives().isEmpty()){
+//                deleteResult.setAbort();
+//                deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
+//                return deleteResult;
+//            }
+//        }
+//        //check for IndividualsAssociation (e.g. in TaxonDescriptions)
+////        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(specimen, null, null, null, null);
+//        Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimen, null, null, null, null);
+//        if(!associatedTaxa.isEmpty()){
+//            if(((SpecimenDeleteConfigurator) config).isDeleteFromIndividualsAssociation()){
+//                for (TaxonBase<?> taxonBase : associatedTaxa) {
+//                    if(taxonBase instanceof Taxon){
+//                        Set<TaxonDescription> descriptions = ((Taxon) taxonBase).getDescriptions();
+//                        for (TaxonDescription taxonDescription : descriptions) {
+//                            Set<DescriptionElementBase> elements = taxonDescription.getElements();
+//                            for (DescriptionElementBase descriptionElementBase : elements) {
+//                                if(descriptionElementBase instanceof IndividualsAssociation){
+//                                    IndividualsAssociation individualsAssociation = (IndividualsAssociation) descriptionElementBase;
+//                                    if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(specimen)){
+//                                        individualsAssociation.setAssociatedSpecimenOrObservation(null);
+//                                        //TODO delete IndividualsAssociation
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            else{
+////                deleteResult.addRelatedObjects(new HashSet<CdmBase>(individualsAssociations));
+//                deleteResult.setAbort();
+//                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated with taxa."));
+//                return deleteResult;
+//            }
+//        }
+//        //check for TypeDesignations
+//        Collection<TaxonBase<?>> typedTaxa = listTypedTaxa(specimen, null, null, null, null);
+//        if(!typedTaxa.isEmpty()){
+//            if(((SpecimenDeleteConfigurator) config).isDeleteFromTypeDesignation()){
+//                for (TaxonBase<?> taxonBase : typedTaxa) {
+//                    if(taxonBase.getName()!=null){
+//                        Set<TypeDesignationBase> typeDesignations = taxonBase.getName().getTypeDesignations();
+//                        for (TypeDesignationBase typeDesignationBase : typeDesignations) {
+//                            if(typeDesignationBase instanceof SpecimenTypeDesignation){
+//                                ((SpecimenTypeDesignation) typeDesignationBase).setTypeSpecimen(null);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            else{
+//                deleteResult.addRelatedObjects(new HashSet<CdmBase>(typedTaxa));
+//                deleteResult.setAbort();
+//                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+//                return deleteResult;
+//            }
+//        }
+//        //TODO check associated specimen in TaxonDescription
+//        //TODO check molecular data of DnaSample (sequence, single read, primer, amplification)
+//        //TODO check specimen descriptions
+//        if(((SpecimenDeleteConfigurator) config).isDeleteChildren()){
+//            //TODO implement delete children
+//        }
+//        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(specimen);
+//        for (CdmBase referencingObject : referencingObjects){
+//            //DerivedUnit?.storedUnder
+//            if (referencingObject.isInstanceOf(DerivedUnit.class)){
+//                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+//                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
+//            }
+//            //DescriptionElementSource#nameUsedInSource
+//            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+//                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+//            }
+//            //NameTypeDesignation#typeName
+//            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+//                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+//            }
+//        }
+//        deleteResult = delete(specimen);
+        return deleteResult;
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#delete(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator)
      */
     @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
+        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
+
         DeleteResult deleteResult = new DeleteResult();
+//        deleteResult = isDeletable(specimen, config);
+//        if(!deleteResult.isOk()){
+//            return deleteResult;
+//        }
+
         //check for derivation events
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
@@ -935,9 +1036,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             DerivationEvent derivedFromEvent = ((DerivedUnit) specimen).getDerivedFrom();
             if(derivedFromEvent!=null){
                 derivedFromEvent.removeDerivative((DerivedUnit) specimen);
+                if(derivedFromEvent.getDerivatives().isEmpty()){
+                    Set<SpecimenOrObservationBase<?>> removeList = new HashSet<SpecimenOrObservationBase<?>>();
+                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : derivedFromEvent.getOriginals()) {
+                        removeList.add(specimenOrObservationBase);
+                    }
+                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : removeList) {
+                        specimenOrObservationBase.removeDerivationEvent(derivedFromEvent);
+                    }
+                }
             }
         }
         //check for IndividualsAssociation (e.g. in TaxonDescriptions)
+//        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(specimen, null, null, null, null);
         Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimen, null, null, null, null);
         if(!associatedTaxa.isEmpty()){
             if(config.isDeleteFromIndividualsAssociation()){
@@ -951,6 +1062,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                                     IndividualsAssociation individualsAssociation = (IndividualsAssociation) descriptionElementBase;
                                     if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(specimen)){
                                         individualsAssociation.setAssociatedSpecimenOrObservation(null);
+                                        //TODO delete IndividualsAssociation
                                     }
                                 }
                             }
@@ -959,6 +1071,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             else{
+//                deleteResult.addRelatedObjects(new HashSet<CdmBase>(individualsAssociations));
                 deleteResult.addRelatedObjects(new HashSet<CdmBase>(associatedTaxa));
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated with taxa."));
@@ -968,7 +1081,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //check for TypeDesignations
         Collection<TaxonBase<?>> typedTaxa = listTypedTaxa(specimen, null, null, null, null);
         if(!typedTaxa.isEmpty()){
-            if(config.isdeleteFromTypeDesignation()){
+            if(config.isDeleteFromTypeDesignation()){
                 for (TaxonBase<?> taxonBase : typedTaxa) {
                     if(taxonBase.getName()!=null){
                         Set<TypeDesignationBase> typeDesignations = taxonBase.getName().getTypeDesignations();
@@ -987,28 +1100,29 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 return deleteResult;
             }
         }
-        if(!config.isDeleteChildren()){
-            Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(specimen);
-            for (CdmBase referencingObject : referencingObjects){
-                //DerivedUnit?.storedUnder
-                if (referencingObject.isInstanceOf(DerivedUnit.class)){
-                    String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                }
-                //DescriptionElementSource#nameUsedInSource
-                if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
-                    String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-                }
-                //NameTypeDesignation#typeName
-                if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-                    String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                }
+        //TODO check associated specimen in TaxonDescription
+        //TODO check molecular data of DnaSample (sequence, single read, primer, amplification)
+        //TODO check specimen descriptions
+        if(config.isDeleteChildren()){
+            //TODO implement delete children
+        }
+        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(specimen);
+        for (CdmBase referencingObject : referencingObjects){
+            //DerivedUnit?.storedUnder
+            if (referencingObject.isInstanceOf(DerivedUnit.class)){
+                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
             }
-            deleteResult = delete(specimen);
+            //DescriptionElementSource#nameUsedInSource
+            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+            }
+            //NameTypeDesignation#typeName
+            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+            }
         }
-        else{
-            //TODO implement deep delete
-        }
+        deleteResult = delete(specimen);
         return deleteResult;
     }
 

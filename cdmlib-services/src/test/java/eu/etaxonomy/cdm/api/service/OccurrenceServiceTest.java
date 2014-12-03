@@ -280,13 +280,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         config.setDeleteChildren(false);
-        config.setShiftHierarchyUp(false);
         //delete associated field unit from IndividualsAssociation
         config.setDeleteFromIndividualsAssociation(true);
         occurrenceService.delete(associatedFieldUnit, config);
         assertTrue(((IndividualsAssociation)descriptionElement).getAssociatedSpecimenOrObservation()==null);
         //delete type specimen from type designation
-        config.setdeleteFromTypeDesignation(true);
+        config.setDeleteFromTypeDesignation(true);
         occurrenceService.delete(typeSpecimen, config);
         assertTrue(((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen()==null);
 
@@ -295,13 +294,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //loads OccurrenceServiceTest.xml as base DB
-   
     public void testDeleteDerivateHierarchy_StepByStep(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         config.setDeleteChildren(false);
-        config.setShiftHierarchyUp(false);
 
         FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("54a44310-e00a-45d3-aaf0-c0713cc12b45"));
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("a1658d40-d407-4c44-818e-8aabeb0a84d8"));
@@ -333,7 +330,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
         //deleting type specimen should fail
         assertFalse(deleteResult.toString(), DeleteResult.DeleteStatus.OK.equals(deleteResult.getStatus()));
-        config.setdeleteFromTypeDesignation(true);
+        config.setDeleteFromTypeDesignation(true);
         deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
         //deleting type specimen should work
         assertTrue(deleteResult.toString(), DeleteResult.DeleteStatus.OK.equals(deleteResult.getStatus()));
