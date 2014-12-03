@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -84,6 +85,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -919,6 +921,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
+        //check for derivation events
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
             if(!derivationEvent.getDerivatives().isEmpty()){
@@ -927,10 +930,61 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 return deleteResult;
             }
         }
+        //check for original (parent derivate)
         if(specimen instanceof DerivedUnit){
             DerivationEvent derivedFromEvent = ((DerivedUnit) specimen).getDerivedFrom();
             if(derivedFromEvent!=null){
                 derivedFromEvent.removeDerivative((DerivedUnit) specimen);
+            }
+        }
+        //check for IndividualsAssociation (e.g. in TaxonDescriptions)
+        Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimen, null, null, null, null);
+        if(!associatedTaxa.isEmpty()){
+            if(config.isDeleteFromIndividualsAssociation()){
+                for (TaxonBase<?> taxonBase : associatedTaxa) {
+                    if(taxonBase instanceof Taxon){
+                        Set<TaxonDescription> descriptions = ((Taxon) taxonBase).getDescriptions();
+                        for (TaxonDescription taxonDescription : descriptions) {
+                            Set<DescriptionElementBase> elements = taxonDescription.getElements();
+                            for (DescriptionElementBase descriptionElementBase : elements) {
+                                if(descriptionElementBase instanceof IndividualsAssociation){
+                                    IndividualsAssociation individualsAssociation = (IndividualsAssociation) descriptionElementBase;
+                                    if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(specimen)){
+                                        individualsAssociation.setAssociatedSpecimenOrObservation(null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+                deleteResult.addRelatedObjects(new HashSet<CdmBase>(associatedTaxa));
+                deleteResult.setAbort();
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated with taxa."));
+                return deleteResult;
+            }
+        }
+        //check for TypeDesignations
+        Collection<TaxonBase<?>> typedTaxa = listTypedTaxa(specimen, null, null, null, null);
+        if(!typedTaxa.isEmpty()){
+            if(config.isdeleteFromTypeDesignation()){
+                for (TaxonBase<?> taxonBase : typedTaxa) {
+                    if(taxonBase.getName()!=null){
+                        Set<TypeDesignationBase> typeDesignations = taxonBase.getName().getTypeDesignations();
+                        for (TypeDesignationBase typeDesignationBase : typeDesignations) {
+                            if(typeDesignationBase instanceof SpecimenTypeDesignation){
+                                ((SpecimenTypeDesignation) typeDesignationBase).setTypeSpecimen(null);
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+                deleteResult.addRelatedObjects(new HashSet<CdmBase>(typedTaxa));
+                deleteResult.setAbort();
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+                return deleteResult;
             }
         }
         if(!config.isDeleteChildren()){
