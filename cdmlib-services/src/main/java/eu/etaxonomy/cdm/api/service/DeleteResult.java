@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * This class represents the result of a delete action.
@@ -37,14 +36,14 @@ public class DeleteResult {
 
 	private final Set<CdmBase> relatedObjects = new HashSet<CdmBase>();
 
-	private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
+//	private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
+//
+//	private Set<PersistPair> objectsToSave = new HashSet<DeleteResult.PersistPair>();
 
-	private Set<PersistPair> objectsToSave = new HashSet<DeleteResult.PersistPair>();
-
-	protected class PersistPair{
-		protected CdmBase objectToPersist;
-		protected ICdmEntityDao<CdmBase> dao;
-	}
+//	protected class PersistPair{
+//		protected CdmBase objectToPersist;
+//		protected ICdmEntityDao<CdmBase> dao;
+//	}
 
 	public enum DeleteStatus {
 		OK(0),
@@ -105,25 +104,25 @@ public class DeleteResult {
 	}
 
 
-	/**
-	 * @return
-	 */
-	public Set<PersistPair> getObjectsToDelete() {
-		return objectsToDelete;
-	}
-	public void setObjectsToDelete(Set<PersistPair> objectsToDelete) {
-		this.objectsToDelete = objectsToDelete;
-	}
-
-	/**
-	 * @return
-	 */
-	public Set<PersistPair> getObjectsToSave() {
-		return objectsToSave;
-	}
-	public void setObjectsToSave(Set<PersistPair> objectsToSave) {
-		this.objectsToSave = objectsToSave;
-	}
+//	/**
+//	 * @return
+//	 */
+//	public Set<PersistPair> getObjectsToDelete() {
+//		return objectsToDelete;
+//	}
+//	public void setObjectsToDelete(Set<PersistPair> objectsToDelete) {
+//		this.objectsToDelete = objectsToDelete;
+//	}
+//
+//	/**
+//	 * @return
+//	 */
+//	public Set<PersistPair> getObjectsToSave() {
+//		return objectsToSave;
+//	}
+//	public void setObjectsToSave(Set<PersistPair> objectsToSave) {
+//		this.objectsToSave = objectsToSave;
+//	}
 
 
 //****************** CONVENIENCE *********************************************/
