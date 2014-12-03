@@ -661,6 +661,7 @@ cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DOIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/EnumUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
@@ -1119,6 +1120,7 @@ cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
@@ -1205,6 +1207,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserIm
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/TimePeriodParserTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/BigDecimalTesting.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestRegExs.java -text
