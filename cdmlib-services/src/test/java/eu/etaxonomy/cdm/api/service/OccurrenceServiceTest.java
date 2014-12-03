@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -294,6 +295,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //loads OccurrenceServiceTest.xml as base DB
+   
     public void testDeleteDerivateHierarchy_StepByStep(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;

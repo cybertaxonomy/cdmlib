@@ -697,7 +697,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         synonym1 = (Synonym)service.load(uuidSynonym1);
         //the marker should not prevent the deletion
         DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
-        if (result.isError()){
+        if (!result.isOk()){
         	Assert.fail();
         }
         
@@ -1071,7 +1071,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             //commitAndStartNewTransaction(tableNames);
 
         DeleteResult result = service.deleteTaxon(child1, config, null);
-        if (!result.isError()){    
+        if (result.isOk()){    
             Assert.fail("Delete should throw an error as long as name is used in classification.");
         } 
 
@@ -1099,7 +1099,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
        // try {
 
        result = service.deleteTaxon(child1, config, null);
-       if (!result.isError()){
+       if (result.isOk()){
            	Assert.fail("Delete should throw an exception because of the determination event");
        }
             
@@ -1193,7 +1193,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         service.save(newTaxon);
         result = service.deleteTaxon(newTaxon, config, null);
-        if (result.isError()){
+        if (!result.isOk()){
         	Assert.fail();
         }
         
@@ -1340,7 +1340,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             }
   */          
             
-       if (!result.isError()){
+       if (result.isOk()){
            	Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
         }
 

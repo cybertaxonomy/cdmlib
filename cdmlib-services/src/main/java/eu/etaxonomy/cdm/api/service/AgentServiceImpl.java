@@ -134,32 +134,27 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Override
     public DeleteResult delete(AgentBase base){
     	
-    		List<String> referencingObjects = this.isDeletable(base, null);
-    		DeleteResult result = new DeleteResult();
-    		if (referencingObjects.isEmpty()){
-    			if (base instanceof Team){
-    				Team baseTeam = (Team) base;
-    				List<Person> members = baseTeam.getTeamMembers();
-    				List<Person> temp = new ArrayList<Person>();
-    				for (Person member:members){
-    					temp.add(member);
-    				}
-    				for (Person member: temp){
-    					members.remove(member);
-    				}
-    			}
-    			saveOrUpdate(base);
-    			
-    			dao.delete(base);
-    			
-    		}else{
-    			for (String referenceString: referencingObjects){
-    				result.addException(new ReferencedObjectUndeletableException(referenceString));
-    			}
-    			result.setError();
-    		}
-    		
-    		return result;
+		DeleteResult result = this.isDeletable(base, null);
+    	
+    	if (result.isOk()){
+			if (base instanceof Team){
+				Team baseTeam = (Team) base;
+				List<Person> members = baseTeam.getTeamMembers();
+				List<Person> temp = new ArrayList<Person>();
+				for (Person member:members){
+					temp.add(member);
+				}
+				for (Person member: temp){
+					members.remove(member);
+				}
+			}
+			saveOrUpdate(base);
+			
+			dao.delete(base);
+			
+		}
+		
+		return result;
     		
     	}
 }

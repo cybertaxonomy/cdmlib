@@ -1015,14 +1015,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     @Override
     public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification)  {
-    	DeleteResult result = new DeleteResult();
+    	
     	if (config == null){
             config = new TaxonDeletionConfigurator();
         }
 
-        List<String> referencedObjects = isDeletable(taxon, config);
+        DeleteResult result = isDeletable(taxon, config);
 
-        if (referencedObjects.isEmpty()){
+        if (result.isOk()){
             // --- DeleteSynonymRelations
             if (config.isDeleteSynonymRelations()){
                 boolean removeSynonymNameFromHomotypicalGroup = false;
@@ -1253,16 +1253,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	result.addException(new Exception("The Taxon can't be deleted."));
 
             }
-        }else {
-        	List<Exception> exceptions = new ArrayList<Exception>();
-        	for (String message: referencedObjects){
-        		ReferencedObjectUndeletableException exception = new ReferencedObjectUndeletableException(message);
-        		exceptions.add(exception);
-        	}
-        	result.addExceptions(exceptions);
-        	result.setError();
-
         }
+//        }else {
+//        	List<Exception> exceptions = new ArrayList<Exception>();
+//        	for (String message: referencedObjects){
+//        		ReferencedObjectUndeletableException exception = new ReferencedObjectUndeletableException(message);
+//        		exceptions.add(exception);
+//        	}
+//        	result.addExceptions(exceptions);
+//        	result.setError();
+//
+//        }
         return result;
 
     }
@@ -1346,10 +1347,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (config == null){
             config = new SynonymDeletionConfigurator();
         }
-        List<String> messages = isDeletable(synonym, config);
+        result = isDeletable(synonym, config);
 
 
-        if (messages.isEmpty()){
+        if (result.isOk()){
             synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
 
             //remove synonymRelationship
@@ -1388,16 +1389,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 return result;
             }
 
-            return result;
-        }else{
-        	List<Exception> exceptions = new ArrayList<Exception>();
-        	for (String message :messages){
-        		exceptions.add(new ReferencedObjectUndeletableException(message));
-        	}
-        	result.setError();
-        	result.addExceptions(exceptions);
-            return result;
+        
         }
+        return result;
+//        else{
+//        	List<Exception> exceptions = new ArrayList<Exception>();
+//        	for (String message :messages){
+//        		exceptions.add(new ReferencedObjectUndeletableException(message));
+//        	}
+//        	result.setError();
+//        	result.addExceptions(exceptions);
+//            return result;
+//        }
 
 
     }
@@ -1648,6 +1651,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (newRefDetail == null && keepReference){
                         newRefDetail = synRelation.getCitationMicroReference();
                     }
+                    newTaxon = HibernateProxyHelper.deproxy(newTaxon, Taxon.class);
+                    fromTaxon = HibernateProxyHelper.deproxy(fromTaxon, Taxon.class);
                     SynonymRelationship newSynRelation = newTaxon.addSynonym(syn, newSynonymRelationshipType, newReference, newRefDetail);
                     fromTaxon.removeSynonymRelation(synRelation, false);
 //
@@ -1663,6 +1668,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
 
         }
+        saveOrUpdate(fromTaxon);
         saveOrUpdate(newTaxon);
         //Assert that there is a result
         if (result == null){
@@ -3074,8 +3080,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     }
     @Override
-    public List<String> isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
-        List<String> result = new ArrayList<String>();
+    public DeleteResult isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
+        DeleteResult result = new DeleteResult();
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
@@ -3087,53 +3093,55 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return result;
     }
 
-    private List<String> isDeletableForSynonym(Set<CdmBase> references, SynonymDeletionConfigurator config){
+    private DeleteResult isDeletableForSynonym(Set<CdmBase> references, SynonymDeletionConfigurator config){
         String message;
-        List<String> result = new ArrayList<String>();
+        DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
             if (!(ref instanceof SynonymRelationship || ref instanceof Taxon || ref instanceof TaxonNameBase )){
                 message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(ref);
+                result.setAbort();
             }
         }
 
         return result;
     }
-    private List<String> isDeletableForTaxon(Set<CdmBase> references, TaxonDeletionConfigurator config){
-        String message;
-        List<String> result = new ArrayList<String>();
+    private DeleteResult isDeletableForTaxon(Set<CdmBase> references, TaxonDeletionConfigurator config){
+        String message = null;
+        DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
             if (!(ref instanceof TaxonNameBase)){
                 if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
                     message = "The Taxon can't be deleted as long as it has synonyms.";
-                    result.add(message);
+                    
                 }
                 if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
                     message = "The Taxon can't be deleted as long as it has factual data.";
-                    result.add(message);
+                   
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
                     message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-                    result.add(message);
+                    
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
                         message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
-                        result.add(message);
+                        
                     } else{
                         message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-                        result.add(message);
+                        
                     }
                 }
                 if (ref instanceof PolytomousKeyNode){
                     message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
-                    result.add(message);
+                    
                 }
 
                 if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
                    message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                   result.add(message);
+                   
 
                 }
 
@@ -3147,17 +3155,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //TaxonInteraction
                 if (ref.isInstanceOf(TaxonInteraction.class)){
                     message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
-                    result.add(message);
+                    
                 }
 
               //TaxonInteraction
                 if (ref.isInstanceOf(DeterminationEvent.class)){
                     message = "Taxon can't be deleted as it is used in a determination event";
-                    result.add(message);
+                    
                 }
 
             }
-
+            if (message != null){
+	            result.addException(new ReferencedObjectUndeletableException(message));
+	            result.addRelatedObject(ref);
+	            result.setAbort();
+            }
         }
 
         return result;

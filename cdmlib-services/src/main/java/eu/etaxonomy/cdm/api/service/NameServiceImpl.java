@@ -142,15 +142,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     		result.setAbort();
             return result;
         }
-    	List<String> messages = new ArrayList<String>();
+    	
     	try{
-    		messages = this.isDeletable(name, config);
+    		result = this.isDeletable(name, config);
         }catch(Exception e){
         	result.addException(e);
         	result.setError();
         	return result;
         }
-        if (messages.isEmpty()){
+        if (result.isOk()){
         //remove references to this name
         	removeNameRelationshipsByDeleteConfig(name, config);
             
@@ -177,10 +177,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        return result;
         } 
                
-        for (String message: messages){
-        	result.addException(new ReferencedObjectUndeletableException(message));
-        }
-        result.setError();
+        
+        
         return result;
     }
 
@@ -838,31 +836,32 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
     
     @Override
-    public List<String> isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
+    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    	DeleteResult result = new DeleteResult();
     	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;
     	}else{
-    		 result.add("The delete configurator should be of the type NameDeletionConfigurator.");
+    		 result.addException(new Exception("The delete configurator should be of the type NameDeletionConfigurator."));
+    		 result.setError();
     		 return result;
     	}
     	
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
     		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-                String message = "Name can't be deleted as it is a basionym.";
-                result.add(message);
+       		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
+       		 	result.setAbort();
             }
             if (!nameConfig.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-                String message = "Name can't be deleted as it has a basionym.";
-                result.add(message);
+            	result.addException(new Exception( "Name can't be deleted as it has a basionym."));
+            	result.setAbort();
             }
             Set<NameRelationship> relationships = name.getNameRelations();
             for (NameRelationship rel: relationships){
             	if (!rel.getType().equals(NameRelationshipType.BASIONYM())){
-            		String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-                    result.add(message);
+            		result.addException(new Exception("Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion."));
+            		result.setAbort();
             		break;
             	}
             	
@@ -872,35 +871,41 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
         //concepts
         if (! name.getTaxonBases().isEmpty()){
-            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-            result.add(message);
+        	result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
+        	result.setAbort();
         }
 
         //hybrid relationships
         if (name.isInstanceOf(NonViralName.class)){
             NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
             if (! nvn.getHybridParentRelations().isEmpty()){
-                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-                result.add(message);
+            	result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
+            	result.setAbort();
             }
         }
-     	Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+     	Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
         for (CdmBase referencingObject : referencingObjects){
             //DerivedUnit?.storedUnder
             if (referencingObject.isInstanceOf(DerivedUnit.class)){
                 String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
                 message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
             //DescriptionElementSource#nameUsedInSource
             if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
             //NameTypeDesignation#typeName
             if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
 
            
@@ -912,11 +917,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         
         if (!nameConfig.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
             String message = "Name can't be deleted as it is a replaced synonym.";
-            result.add(message);
+            result.addException(new Exception(message));
+            result.setAbort();
         }
         if (!nameConfig.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
             String message = "Name can't be deleted as it has a replaced synonym.";
-            result.add(message);
+            result.addException(new Exception(message));
+            result.setAbort();
         }
     	return result;
     	
