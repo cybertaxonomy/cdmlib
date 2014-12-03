@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,7 +20,6 @@ import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -205,7 +203,7 @@ public interface ICdmGenericDao {
 	 */
     public boolean containsValue(PersistentCollection col, Object element);
 
-	Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
 	public void createFullSampleData();
 }
