@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.Transient;
@@ -67,9 +65,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  * @created 17.11.2008
  */
 public class EditGeoServiceUtilities {
-    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
-
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
+
+    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
     private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
 
