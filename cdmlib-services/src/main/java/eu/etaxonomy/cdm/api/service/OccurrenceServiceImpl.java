@@ -918,8 +918,27 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = super.isDeletable(specimen, config);
-
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator)config;
+
+        //check elements found by super method
+        Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
+        boolean isDeletable = true;
+        for (CdmBase cdmBase : relatedObjects) {
+            if(cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
+                isDeletable = false;
+                break;
+            }
+            else if(cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
+                isDeletable = false;
+                break;
+            }
+        }
+        if(isDeletable){
+            //set to OK when config allows to delete related objects
+            deleteResult.setStatus(DeleteStatus.OK);
+        }
+        deleteResult.addRelatedObjects(genericDao.getReferencingObjects(specimen));
+
 
         //check for derivation events
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
@@ -933,29 +952,29 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
         }
 
-        //check for IndividualsAssociation (e.g. in TaxonDescriptions)
-        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(specimen, null, null, null, null);
-        if(!individualsAssociations.isEmpty()){
-            deleteResult.addRelatedObjects(new HashSet<CdmBase>(individualsAssociations));
-            if(!specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
-                deleteResult.setAbort();
-            }
-        }
-        if(!deleteResult.getRelatedObjects().isEmpty()){
-            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
-        }
-
-        //check for TypeDesignations
-        Collection<SpecimenTypeDesignation> typeDesignations = listTypeDesignations(specimen, null, null, null, null);
-        if(!typeDesignations.isEmpty()){
-            deleteResult.addRelatedObjects(new HashSet<CdmBase>(typeDesignations));
-            if(!specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
-                deleteResult.setAbort();
-            }
-        }
-        if(!deleteResult.getRelatedObjects().isEmpty()){
-            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
-        }
+//        //check for IndividualsAssociation (e.g. in TaxonDescriptions)
+//        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(specimen, null, null, null, null);
+//        if(!individualsAssociations.isEmpty()){
+//            deleteResult.addRelatedObjects(new HashSet<CdmBase>(individualsAssociations));
+//            if(!specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
+//                deleteResult.setAbort();
+//            }
+//        }
+//        if(!deleteResult.getRelatedObjects().isEmpty()){
+//            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
+//        }
+//
+//        //check for TypeDesignations
+//        Collection<SpecimenTypeDesignation> typeDesignations = listTypeDesignations(specimen, null, null, null, null);
+//        if(!typeDesignations.isEmpty()){
+//            deleteResult.addRelatedObjects(new HashSet<CdmBase>(typeDesignations));
+//            if(!specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
+//                deleteResult.setAbort();
+//            }
+//        }
+//        if(!deleteResult.getRelatedObjects().isEmpty()){
+//            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+//        }
         //check molecular data of DnaSample (sequence, amplification)
         if(specimen.isInstanceOf(DnaSample.class)){
             DnaSample dnaSample = HibernateProxyHelper.deproxy(specimen, DnaSample.class);
@@ -968,9 +987,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             deleteResult.addRelatedObjects(dnaSample.getAmplifications());
         }
-        //TODO check associated specimen in TaxonDescription
-        //TODO check specimen descriptions
-        deleteResult.addRelatedObjects(genericDao.getReferencingObjects(specimen));
+        //check associated specimen in TaxonDescription
+        if(!listDescriptionsWithDescriptionSpecimen(specimen, null, null, null, null).isEmpty()){
+            deleteResult.setAbort();
+            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is used in description"));
+        }
+        //check specimen descriptions
+        if(!specimen.getDescriptions().isEmpty()){
+            deleteResult.setAbort();
+            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen has description data"));
+        }
         return deleteResult;
     }
 
@@ -1107,9 +1133,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.listIndividualsAssociations(specimen, null, null, null, null);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listTypeDesignations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
     @Override
-    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listTypeDesignations(specimen, limit, start, orderHints, propertyPaths);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listDescriptionsWithDescriptionSpecimen(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(
+            SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return dao.listDescriptionsWithDescriptionSpecimen(specimen, limit, start, orderHints, propertyPaths);
     }
 
 }

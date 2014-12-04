@@ -368,7 +368,18 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param start
      * @param orderHints
      * @param propertyPaths
-     * @return collection of all designations with for the given type specimen
+     * @return collection of all designations with the given type specimen
      */
     public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link DescriptionBase}s that have the given specimen set as described specimen.
+     * @param specimen the described specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return collection of all descriptions with the given described specimen
+     */
+    public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }
