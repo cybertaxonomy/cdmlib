@@ -32,7 +32,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -95,7 +94,6 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
     private DnaSample dnaSample;
 
     @XmlElementWrapper(name = "SingleReads")
