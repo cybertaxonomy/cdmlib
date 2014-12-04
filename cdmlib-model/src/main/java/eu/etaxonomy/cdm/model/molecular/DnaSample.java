@@ -152,6 +152,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 
 	public void removeAmplification(Amplification amplification) {
 		this.amplifications.remove(amplification);
+		amplification.setDnaSample(null);
 	}
 
 	public DnaQuality getDnaQuality() {
