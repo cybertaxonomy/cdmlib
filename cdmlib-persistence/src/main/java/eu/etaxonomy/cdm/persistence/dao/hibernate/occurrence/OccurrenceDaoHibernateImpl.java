@@ -436,10 +436,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public Collection<TaxonBase<?>> listTypedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "SELECT names.taxonBases " +
-                "FROM TaxonNameBase AS names join names.typeDesignations as types " +
-                "WHERE types.typeSpecimen = :specimen";
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        String queryString = "FROM SpecimenTypeDesignation designations WHERE designations.typeSpecimen = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
             queryString += " order by ";
@@ -474,11 +472,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
      */
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
-        String queryString = "SELECT DISTINCT description.taxon " +
-        		"FROM TaxonDescription AS description, IndividualsAssociation associations " +
-        		"WHERE associations.associatedSpecimenOrObservation = :specimen";
+        String queryString = "FROM IndividualsAssociation associations WHERE associations.associatedSpecimenOrObservation = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
             queryString += " order by ";
