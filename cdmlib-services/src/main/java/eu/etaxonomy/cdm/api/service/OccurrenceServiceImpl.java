@@ -917,8 +917,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
+        DeleteResult deleteResult = super.isDeletable(specimen, config);
+
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator)config;
-        DeleteResult deleteResult = new DeleteResult();
 
         //check for derivation events
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
