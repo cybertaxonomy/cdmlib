@@ -101,19 +101,12 @@ private ICdmGenericDao genericDao;
 	@Override
 	public DeleteResult delete(Reference reference) {
 		//check whether the reference is used somewhere
-		List<String> messages = isDeletable(reference, null);
-		DeleteResult result = new DeleteResult();
-		if (messages.size()>0){
-			Exception ex;
-			for (String message:messages){
-				ex = new ReferencedObjectUndeletableException(message);
-				result.addException(ex);
-			}
-			
-			return result;
+		DeleteResult result = isDeletable(reference, null);
+		
+		if (result.isOk()){
+			dao.delete(reference);
 		}
-		dao.delete(reference);
-		result.isOk();
+		
 		return result;
 	}
 }

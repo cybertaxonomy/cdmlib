@@ -226,6 +226,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * implementation of READ rights in future.<BR>
      * The default value is <code>true</code>.
      */
+    @Override
     public boolean isPublish() {
         return publish;
     }
@@ -234,6 +235,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * @see #isPublish()
      * @param publish
      */
+    @Override
     public void setPublish(boolean publish) {
         this.publish = publish;
     }
@@ -342,7 +344,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     }
 
     public void removeDerivationEvent(DerivationEvent derivationEvent) {
-        this.derivationEvents.remove(derivationEvent);
+        if (this.derivationEvents.contains(derivationEvent)){
+            this.derivationEvents.remove(derivationEvent);
+            derivationEvent.removeOriginal(this);
+        }
     }
 
     public Set<DeterminationEvent> getDeterminations() {

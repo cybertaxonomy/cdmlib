@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -436,10 +437,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public Collection<TaxonBase<?>> listTypedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "SELECT names.taxonBases " +
-                "FROM TaxonNameBase AS names join names.typeDesignations as types " +
-                "WHERE types.typeSpecimen = :specimen";
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        String queryString = "FROM SpecimenTypeDesignation designations WHERE designations.typeSpecimen = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
             queryString += " order by ";
@@ -448,7 +447,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 if(orderStr.length() > 0){
                     orderStr += ", ";
                 }
-                queryString += "association." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+                queryString += "designations." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
             }
             queryString += orderStr;
         }
@@ -474,11 +473,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
      */
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
-        String queryString = "SELECT DISTINCT description.taxon " +
-        		"FROM TaxonDescription AS description, IndividualsAssociation associations " +
-        		"WHERE associations.associatedSpecimenOrObservation = :specimen";
+        String queryString = "FROM IndividualsAssociation associations WHERE associations.associatedSpecimenOrObservation = :specimen";
 
         if(orderHints != null && orderHints.size() > 0){
             queryString += " order by ";
@@ -487,7 +484,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 if(orderStr.length() > 0){
                     orderStr += ", ";
                 }
-                queryString += "association." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+                queryString += "associations." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
             }
             queryString += orderStr;
         }
@@ -508,4 +505,42 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+     */
+    @Override
+    public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
+        String queryString = "FROM DescriptionBase descriptions WHERE descriptions.describedSpecimenOrObservation = :specimen";
+
+        if(orderHints != null && orderHints.size() > 0){
+            queryString += " order by ";
+            String orderStr = "";
+            for(OrderHint orderHint : orderHints){
+                if(orderStr.length() > 0){
+                    orderStr += ", ";
+                }
+                queryString += "descriptions." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+            }
+            queryString += orderStr;
+        }
+
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("specimen", specimen);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
 }

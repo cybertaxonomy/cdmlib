@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -95,7 +94,6 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	@XmlElement(name = "AmplificationResult")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-    @ContainedIn
     @NotNull
 	private final Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();
 
@@ -152,6 +150,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 
 	public void removeAmplification(AmplificationResult amplificationResult) {
 		this.amplificationResults.remove(amplificationResult);
+		amplification.setDnaSample(null);
 	}
 
 	

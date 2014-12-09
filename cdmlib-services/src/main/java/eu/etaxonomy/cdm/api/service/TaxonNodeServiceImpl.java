@@ -221,10 +221,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         taxonService.update(newAcceptedTaxon);
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
-        List<String> deleteMessages = taxonService.isDeletable(oldTaxon, conf);
+        DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
 //        conf.setDeleteNameIfPossible(false);
-        DeleteResult result;
-        if (deleteMessages.isEmpty()){
+        
+        if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();

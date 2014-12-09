@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -25,16 +26,16 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 /**
  * This class launches CDM model updates.
  * Currently it splits the update in model updates and defined term related updates by
- * using a {@link ISchemaUpdater schema updater} and a {@link ITermUpdater}. However, this 
+ * using a {@link ISchemaUpdater schema updater} and a {@link ITermUpdater}. However, this
  * architecture often results in problems and therefore will be replaced by only 1 schema updater.
  * Term updates will be handled differently or also by using the schema updater.
  * <BR>
- * For each new schema version number there usually exists 1 {@link ISchemaUpdater} which is 
+ * For each new schema version number there usually exists 1 {@link ISchemaUpdater} which is
  * represents a list of schema update steps. {@link ISchemaUpdater schema updaters} are linked
  * to previous updaters which are called, if relevant, previous to the latest updater.
  * So it is possible to upgrade multiple schema version steps in one call.
  * <BR><BR>
- * As said before each {@link ISchemaUpdater schema updater} creates a list of 
+ * As said before each {@link ISchemaUpdater schema updater} creates a list of
  * {@link ISchemaUpdaterStep update steps}.
  * <BR><BR>
  * {@link ISchemaUpdater} support progression monitoring with each update step being one task.
@@ -43,12 +44,12 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * to a table in a SQL database can not be handled in a transaction. Therefore failures in
  * certain steps may not lead to a complete rollback of all steps covered by a {@link ISchemaUpdater}.
  * This may lead to a situation where the database becomes inconsistent.
- * <BR><BR>   
+ * <BR><BR>
  * <u>HOW TO ADD A NEW UPDATER?</u><BR>
  * Adding a new updater currently still needs adjustment at multiple places.
  * <BR>
  * <BR>1.) Increment {@link CdmMetaData} schema version number and term version number.
- * <BR>2.) Create a new class instance of {@link SchemaUpdaterBase} (e.g. by copying an old one). 
+ * <BR>2.) Create a new class instance of {@link SchemaUpdaterBase} (e.g. by copying an old one).
  * <BR>3.) Update startSchemaVersion and endSchemaVersion in this new class, where startSchemaVersion
  * is the old schema version and endSchemaVersion is the new schema version.
  * <BR>4.) Implement {@link ISchemaUpdater#getPreviousUpdater()} and {@link ISchemaUpdater#getNextUpdater()}
@@ -58,12 +59,12 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * <BR>6.) Repeat steps 2.-5. for {@link ITermUpdater}
  * <BR>7.) Adjust {@link #getCurrentSchemaUpdater()} and {@link #getCurrentTermUpdater()} to return
  * instances of the newly created updaters.
- *  
+ *
  * @see ISchemaUpdater
  * @see ITermUpdater
  * @see ISchemaUpdaterStep
  * @see ITermUpdaterStep
- * 
+ *
  * @author a.mueller
  * @date 10.09.2010
  *
@@ -131,11 +132,11 @@ public class CdmUpdater {
 
 
 
-	/**
+    /**
      * Updating terms often inserts new terms, vocabularies and representations.
      * Therefore the counter in hibernate_sequences must be increased.
      * We do this once at the end of term updating.
-	 * @param caseType
+     * @param caseType
      * @return true if update was successful, false otherwise
      */
     private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
@@ -226,7 +227,9 @@ public class CdmUpdater {
     }
 
     /**
-     * @param args
+     *
+     *
+     * @param args SERVER DB_NAME1[,DB_NAME2,...] [USER] [PASSWORD] [PORT]
      */
     public static void main(String[] args) {
 //        logger.warn("main method not yet fully implemented (only works with mysql!!!)");
@@ -235,8 +238,10 @@ public class CdmUpdater {
 //        }
         //TODO better implementation
         CdmUpdater myUpdater = new CdmUpdater();
+        System.out.println("CdmUpdater\nArguments: SERVER DB_NAME1[,DB_NAME2,...] [USER] [PASSWORD] [PORT]");
         String server = args[0];
         String database  = args[1];
+        String[] databaseNames = StringUtils.split(database, ',');
         String username = args.length > 2 ? args[2] : null;
         String password  = args.length > 3 ? args[3] : null;
         int port  = 3306;
@@ -247,10 +252,13 @@ public class CdmUpdater {
                 // ignore
             }
         }
+        System.out.println("Number of databases to update: " + databaseNames.length);
+        for(String dnName : databaseNames){
+            ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, dnName, port, username, password, null);
+            boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
+            System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
 
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, port, username, password, null);
-        boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
-        System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
+        }
     }
 
 }

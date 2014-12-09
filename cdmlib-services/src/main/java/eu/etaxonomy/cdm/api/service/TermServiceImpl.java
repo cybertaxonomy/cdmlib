@@ -366,12 +366,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 				if (true /*!config.isInternal()*/){
 					dao.delete(term);
 					dao.saveOrUpdateAll(termsToSave);
-					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
-						persistPair.dao.delete(persistPair.objectToPersist);
-					}
-					for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
-						persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
-					}
+//					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
+//						persistPair.dao.delete(persistPair.objectToPersist);
+//					}
+//					for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
+//						persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
+//					}
 
 				}
 			}

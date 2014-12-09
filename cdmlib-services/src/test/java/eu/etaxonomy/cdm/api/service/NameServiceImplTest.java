@@ -141,7 +141,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);
-        if (result.isError()){
+        if (!result.isOk()){
         	Exception e = result.getExceptions().get(0);
         	Assert.assertEquals("The Ecxeption should be a ReferencedObjectException because it is a basionym", "Name can't be deleted as it is a basionym.", e.getMessage());
         } else{
@@ -189,7 +189,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1, config);
-        if (!result.isError()){
+        if (result.isOk()){
         	Assert.fail("This should throw an error as long as name relationships exist.");
         }
             
@@ -228,7 +228,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1, config);
-       if (!result.isError()){
+       if (result.isOk()){
     	   Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
         
@@ -269,7 +269,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
        
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
        DeleteResult result = nameService.delete(name1, config);
-      if (!result.isError()){
+      if (result.isOk()){
     	  Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
            
@@ -415,7 +415,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         
         commitAndStartNewTransaction(tableNames);
         DeleteResult result = nameService.delete(name1);
-        if (!result.isError()){
+        if (result.isOk()){
     	   Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
         }
          commitAndStartNewTransaction(tableNames);
@@ -518,7 +518,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
        commitAndStartNewTransaction(tableNames);
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
        DeleteResult result = nameService.delete(name1);
-       if (!result.isError()){
+       if (result.isOk()){
     	   Assert.fail("This should throw an error because name is used in a type designation.");
         }
         

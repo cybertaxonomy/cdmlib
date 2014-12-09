@@ -201,7 +201,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         logger.debug("number of taxa: " + list.size());
         assertEquals(9, list.size());
-
+        configurator.setTitleSearchString("Balsam-Tanne");
+        pager = taxonService.findTaxaAndNames(configurator);
+        list = pager.getRecords();
+        assertEquals(1, list.size());
         // pass 2
 //        configurator.setDoTaxaByCommonNames(false);
 //        configurator.setDoMisappliedNames(true);

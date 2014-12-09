@@ -219,7 +219,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//check removeTaxonBase()
 		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon);
-		UUID t2UUId = service.update(t2);
+	
 		
 		s1 =(Synonym)service.find(s1.getUuid());
 		newTaxon = (Taxon)service.find(newTaxonUUID);

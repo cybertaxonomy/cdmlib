@@ -63,9 +63,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  * @created 17.11.2008
  */
 public class EditGeoServiceUtilities {
-    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
-
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
+
+    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
     private static PresenceAbsenceTerm defaultStatus = PresenceAbsenceTerm.PRESENT();
 

@@ -72,15 +72,19 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
      */
     
     @Override
-    public List<String> isDeletable(T base, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
+    public DeleteResult isDeletable(T base, DeleteConfiguratorBase config){
+    	DeleteResult result = new DeleteResult();
     	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
-    	Iterator<CdmBase> iterator = references.iterator();
-    	CdmBase ref;
-    	while (iterator.hasNext()){
-    		ref = iterator.next();
-    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
-    		result.add(message);
+    	if (references != null){
+	    	result.addRelatedObjects(references);
+	    	Iterator<CdmBase> iterator = references.iterator();
+	    	CdmBase ref;
+	    	while (iterator.hasNext()){
+	    		ref = iterator.next();
+	    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+	    		result.addException(new ReferencedObjectUndeletableException(message));
+	    		result.setAbort();
+	    	}
     	}
     	return result;
     }
