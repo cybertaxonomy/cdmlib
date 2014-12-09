@@ -292,6 +292,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(value="OccurrenceService.loadData.xml")
+    @Ignore
     public void testLoadData(){
         FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("afbe6682-2bd6-4f9e-ae24-b7479e0e585f"));
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("d2840e9a-02a2-449e-905f-ecde47fc6711"));
