@@ -64,15 +64,16 @@ import eu.etaxonomy.cdm.model.media.Media;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Amplification", propOrder = {
+@XmlType(name = "AmplificationResult", propOrder = {
 	"dnaSample",
+	"amplification",
 	"cloning",
 	"successful",
 	"successText",
 	"gelPhoto",
 	"singleReads"
 })
-@XmlRootElement(name = "Amplification")
+@XmlRootElement(name = "AmplificationResult")
 @Entity
 @Audited
 public class AmplificationResult extends AnnotatableEntity implements Cloneable{

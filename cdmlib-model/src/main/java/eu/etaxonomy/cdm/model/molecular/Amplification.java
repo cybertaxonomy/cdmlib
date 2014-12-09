@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 	"electrophoresisVoltage",
 	"gelRunningTime",
 	"gelConcentration",
+	"labelCache"
 })
 @XmlRootElement(name = "Amplification")
 @Entity
