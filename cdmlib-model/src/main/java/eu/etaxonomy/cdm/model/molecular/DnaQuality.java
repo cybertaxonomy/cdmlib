@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
@@ -77,9 +78,12 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 // ************** ATTRIBUTES ****************************/
 
     //TODO
-//    @XmlTransient
-//    @Transient
-//    private MaterialOrMethodEvent purificationMethod;
+//	@XmlElement(name = "PurificationMethod")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private MaterialOrMethodEvent purificationMethodTerm;
+	
     private String purificationMethod;
 
 
@@ -89,7 +93,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 
 	private Double concentration;
 
-	@XmlElement(name = "Type")
+	@XmlElement(name = "concentrationUnit")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
