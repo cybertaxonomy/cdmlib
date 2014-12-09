@@ -122,12 +122,12 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
 	@Field
 	@Size(max=255)
 	private String successText;
-
-    /** @see #getGelRunningTime() */
-	@XmlElement(name = "gelRunningTime")
-	@Field(analyze = Analyze.NO)
-	@NumericField
-	private Double gelRunningTime;
+//
+//    /** @see #getGelRunningTime() */
+//	@XmlElement(name = "gelRunningTime")
+//	@Field(analyze = Analyze.NO)
+//	@NumericField
+//	private Double gelRunningTime;
 
     @XmlElement(name = "GelPhoto")
     @XmlIDREF
@@ -284,21 +284,21 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
 	public void setCloning(Cloning cloning) {
 		this.cloning = cloning;
 	}
-
-	/**
-	 * The time for running the electrophoresis quality check.
-	 * Base unit is minutes [min].
-	 */
-	public Double getGelRunningTime() {
-		return gelRunningTime;
-	}
-
-	/**
-	 * @see #getGelRunningTime()
-	 */
-	public void setGelRunningTime(Double gelRunningTime) {
-		this.gelRunningTime = gelRunningTime;
-	}
+//
+//	/**
+//	 * The time for running the electrophoresis quality check.
+//	 * Base unit is minutes [min].
+//	 */
+//	public Double getGelRunningTime() {
+//		return gelRunningTime;
+//	}
+//
+//	/**
+//	 * @see #getGelRunningTime()
+//	 */
+//	public void setGelRunningTime(Double gelRunningTime) {
+//		this.gelRunningTime = gelRunningTime;
+//	}
 
 
 	/**

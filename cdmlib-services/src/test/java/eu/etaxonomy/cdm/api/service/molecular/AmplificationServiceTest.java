@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.molecular;
 
 import org.apache.log4j.Logger;
+import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -27,4 +28,8 @@ public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {
     private IAmplificationService amplificationService;
 
 
+    @Test
+    public void testNothingTest(){
+    	//dummy as min 1 Test is required
+    }
 }
