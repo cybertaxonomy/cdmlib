@@ -144,6 +144,9 @@ public class Amplification extends EventBase implements Cloneable{
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double gelConcentration;
+	
+	//automatically created
+	private String labelCache;
 
 
 // ********************* FACTORY METHODS ************************/
