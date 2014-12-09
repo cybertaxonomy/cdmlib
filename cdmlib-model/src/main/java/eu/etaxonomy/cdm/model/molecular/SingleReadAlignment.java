@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,10 +27,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingleReadAlignment", propOrder = {
-	"consensusSequence",
+	"consensusAlignment",
 	"singleRead",
 	"shifts",
-	"editedSequence"
+	"editedSequence",
+	"reverseComplement"
 })
 @XmlRootElement(name = "SingleReadAlignment")
 @Entity
@@ -38,12 +40,12 @@ public class SingleReadAlignment extends VersionableEntity {
 	private static final long serialVersionUID = 6141518347067279304L;
 
 	/** @see #getDnaMarker() */
-	@XmlElement(name = "ConsensusSequence")
+	@XmlElement(name = "ConsensusAlignment")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	//for now we do not cascade but expect the user to save the sequence manually
-	private Sequence consensusSequence;
+	private Sequence consensusAlignment;
 	
 	/** @see #getDnaMarker() */
 	@XmlElement(name = "SingleRead")
@@ -58,7 +60,12 @@ public class SingleReadAlignment extends VersionableEntity {
     private Shift[] shifts;
 	
 	@XmlElement(name = "EditedSequence")
-    private SequenceString editedSequence;
+    @Lob
+    private String editedSequence;
+	
+	@XmlElement(name = "ReverseComplement")
+    private boolean reverseComplement;
+	
 	
 	public static class Shift{
 		public int position;
@@ -83,20 +90,20 @@ public class SingleReadAlignment extends VersionableEntity {
 	}
 	
 	public static SingleReadAlignment NewInstance(Sequence consensusSequence, SingleRead singleRead,
-			Shift[] shifts, SequenceString alignedSequence){
-		return new SingleReadAlignment(consensusSequence, singleRead, shifts, alignedSequence);
+			Shift[] shifts, String editedSequence){
+		return new SingleReadAlignment(consensusSequence, singleRead, shifts, editedSequence);
 	}
 
 // ***************** CONSTRUCTOR *************************/	
 	
 	protected SingleReadAlignment(){};
 	
-	private SingleReadAlignment(Sequence consensusSequence, SingleRead singleRead,
-			Shift[] shifts, SequenceString alignedSequence){
-		setConsensusSequence(consensusSequence);
+	private SingleReadAlignment(Sequence consensusAlignment, SingleRead singleRead,
+			Shift[] shifts, String editedSequence){
+		setConsensusAlignment(consensusAlignment);
 		setSingleRead(singleRead);
 		this.shifts = shifts;
-		this.editedSequence = alignedSequence;
+		this.editedSequence = editedSequence;
 	}
 	
 
@@ -104,15 +111,15 @@ public class SingleReadAlignment extends VersionableEntity {
 	
 	//consensus sequence
 	public Sequence getConsensusSequence() {
-		return consensusSequence;
+		return consensusAlignment;
 	}
-	public void setConsensusSequence(Sequence consensusSequence) {
-		if (this.consensusSequence != null && this.consensusSequence.getSingleReadAlignments().contains(this)){
-			this.consensusSequence.removeSingleReadAlignment(this);
+	public void setConsensusAlignment(Sequence consensusAlignment) {
+		if (this.consensusAlignment != null && this.consensusAlignment.getSingleReadAlignments().contains(this)){
+			this.consensusAlignment.removeSingleReadAlignment(this);
 		}
-		this.consensusSequence = consensusSequence;
-		if (consensusSequence != null && ! consensusSequence.getSingleReadAlignments().contains(this)){
-			consensusSequence.addSingleReadAlignment(this);
+		this.consensusAlignment = consensusAlignment;
+		if (consensusAlignment != null && ! consensusAlignment.getSingleReadAlignments().contains(this)){
+			consensusAlignment.addSingleReadAlignment(this);
 		}	
 	}
 
@@ -138,11 +145,11 @@ public class SingleReadAlignment extends VersionableEntity {
 	}
 
 	//edited sequence
-	public SequenceString getEditedSequence() {
+	public String getEditedSequence() {
 		return editedSequence;
 	}
 
-	public void setEditedSequence(SequenceString editedSequence) {
+	public void setEditedSequence(String editedSequence) {
 		this.editedSequence = editedSequence;
 	}
 

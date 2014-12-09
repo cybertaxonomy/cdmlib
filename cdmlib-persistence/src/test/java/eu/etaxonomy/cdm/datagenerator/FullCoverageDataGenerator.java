@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.DOI;
-import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -82,6 +81,7 @@ import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.Cloning;
 import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -510,16 +510,15 @@ public class FullCoverageDataGenerator {
 		DnaSample dnaSample = DnaSample.NewInstance();
 
 		//Amplification
-		Amplification amplification = Amplification.NewInstance(dnaSample);
+		Amplification amplification = Amplification.NewInstance();
+
 		DefinedTerm dnaMarker = DefinedTerm.NewDnaMarkerInstance("My dna marker", "dna marker", null);
 		cdmBases.add(dnaMarker);
 		amplification.setDnaMarker(dnaMarker);
-		amplification.setSuccessful(true);
-		amplification.setSuccessText("Very successful");
 		Institution inst = Institution.NewInstance();
 		amplification.setInstitution(inst);
-		handleAnnotatableEntity(amplification);
 		handleEventBase(amplification);
+		handleAnnotatableEntity(amplification);
 		
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
 		forwardPrimer.setPublishedIn(getReference());
@@ -528,17 +527,10 @@ public class FullCoverageDataGenerator {
 
 		Primer reversePrimer = Primer.NewInstance("reverse primer");
 		handleAnnotatableEntity(reversePrimer);
-
+		
 		amplification.setForwardPrimer(forwardPrimer);
 		amplification.setReversePrimer(reversePrimer);
-
-		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
-		cdmBases.add(cloningMethod);
-		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
-		amplification.setCloning(cloning);
-		handleAnnotatableEntity(cloningMethod);
-		handleAnnotatableEntity(cloning);
-
+		
 		DefinedTerm purificationMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "purification method", "purification method", null);
 		cdmBases.add(purificationMethod);
 		MaterialOrMethodEvent purification = MaterialOrMethodEvent.NewInstance(purificationMethod, "purification method");
@@ -550,14 +542,27 @@ public class FullCoverageDataGenerator {
 		amplification.setElectrophoresisVoltage(5.5);
 		amplification.setGelConcentration(2.4);
 		amplification.setGelRunningTime(3.6);
-		Media gelPhoto = Media.NewInstance();
-		amplification.setGelPhoto(gelPhoto);
+		
+		//Amplification result
+		AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample, amplification);
+		amplificationResult.setSuccessful(true);
+		amplificationResult.setSuccessText("Very successful");
+		handleAnnotatableEntity(amplificationResult);
+		
+		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
+		cdmBases.add(cloningMethod);
+		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
+		amplificationResult.setCloning(cloning);
+		handleAnnotatableEntity(cloningMethod);
+		handleAnnotatableEntity(cloning);
 
+		Media gelPhoto = Media.NewInstance();
+		amplificationResult.setGelPhoto(gelPhoto);
 
 		//SingleRead
 		SingleRead singleRead = SingleRead.NewInstance();
 		handleAnnotatableEntity(singleRead);
-		amplification.addSingleRead(singleRead);
+		amplificationResult.addSingleRead(singleRead);
 		MaterialOrMethodEvent readMethod = MaterialOrMethodEvent.NewInstance(null, "read method");
 		singleRead.setMaterialOrMethod(readMethod);
 		handleAnnotatableEntity(readMethod);
@@ -569,13 +574,13 @@ public class FullCoverageDataGenerator {
 		singleRead.setSequence(SequenceString.NewInstance("ABTC"));
 		singleRead.setDirection(SequenceDirection.Forward);
 		
-		//Seuqence
+		//Sequence
 		Sequence sequence = Sequence.NewInstance("ADDT");
 		dnaSample.addSequence(sequence);
 		
-		SequenceString alignedSequence = SequenceString.NewInstance("AGTC");
+//		SequenceString alignedSequence = SequenceString.NewInstance("AGTC");
 		Shift[] shifts = new Shift[]{new Shift(66,1),new Shift(103,-2)};
-		SingleReadAlignment.NewInstance(sequence, singleRead, shifts, alignedSequence);
+		SingleReadAlignment.NewInstance(sequence, singleRead, shifts, "AGTC");
 				
 		Media contigFile = Media.NewInstance();
 		sequence.setContigFile(contigFile);

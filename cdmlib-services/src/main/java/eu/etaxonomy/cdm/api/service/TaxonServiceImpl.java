@@ -92,6 +92,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -934,7 +935,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     for (Sequence sequence : sequences) {
                         Set<Media> dnaRelatedMedia = new HashSet<Media>();
                         for (SingleRead singleRead : sequence.getSingleReads()){
-                            Amplification amplification = singleRead.getAmplification();
+                            AmplificationResult amplification = singleRead.getAmplificationResult();
                             dnaRelatedMedia.add(amplification.getGelPhoto());
                             dnaRelatedMedia.add(singleRead.getPherogram());
                             dnaRelatedMedia.remove(null);

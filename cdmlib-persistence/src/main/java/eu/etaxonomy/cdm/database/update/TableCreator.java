@@ -124,6 +124,9 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 					Integer length = Integer.valueOf(columnTypes.get(i).substring("string_".length()));
 					ColumnAdder adder = ColumnAdder.NewStringInstance(this.getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
 					this.columnAdders.add(adder);
+				}else if (columnTypes.get(i).startsWith("clob")){
+					ColumnAdder adder = ColumnAdder.NewClobInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable);
+					this.columnAdders.add(adder);
 				}else if ("tinyint".equals(columnTypes.get(i)) ){
 					ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 					this.columnAdders.add(adder);

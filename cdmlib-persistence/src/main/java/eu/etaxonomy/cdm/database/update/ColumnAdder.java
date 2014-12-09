@@ -95,7 +95,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 				String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : getBoolean((Boolean) defaultValue, datasource));
 				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
 				defaultValueQuery = defaultValueQuery.replace("@columnName", newColumnName);
-				datasource.executeUpdate(updateQuery);
+				datasource.executeUpdate(defaultValueQuery);
 			}else if (defaultValue instanceof Integer){
 				String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : defaultValue);
 				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);

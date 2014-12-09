@@ -137,7 +137,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlElement(name = "SingleReadAlignment")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="consensusSequence", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
 
@@ -417,7 +417,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public void addSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
 		this.singleReadAlignments.add(singleReadAlignment);
 		if (! this.equals(singleReadAlignment.getConsensusSequence())){
-			singleReadAlignment.setConsensusSequence(this);
+			singleReadAlignment.setConsensusAlignment(this);
 		};
 	}
 	/**
@@ -426,7 +426,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public void removeSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
 		this.singleReadAlignments.remove(singleReadAlignment);
 		if (this.equals(singleReadAlignment.getConsensusSequence())){
-			singleReadAlignment.setConsensusSequence(null);
+			singleReadAlignment.setConsensusAlignment(null);
 		}
 	}
 //	/**

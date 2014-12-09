@@ -137,6 +137,7 @@
       <mapping class="eu.etaxonomy.cdm.model.molecular.DnaQuality"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.DnaSample"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Amplification"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.AmplificationResult"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Primer"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Sequence"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.SequenceString"/>

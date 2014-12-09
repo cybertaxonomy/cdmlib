@@ -35,14 +35,14 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
  * Instances of this the {@link SingleRead} class describe the process and the result of a single
- * sequence generation (read). It has as an input the PCR result ({@link Amplification}). A primer
+ * sequence generation (read). It has as an input the PCR result ({@link AmplificationResult}). A primer
  * is used for expressing the DNA in either {@link SequenceDirection#Forward forward} or
  * {@link SequenceDirection#Reverse reverse} direction.
  * The result of the process is a {@link #getPherogram() pherogram} which by interpretation results
  * in the most probable {@link #getSequence() sequence}.
  * The event dates like the sequencing date and the sequencing agent(person) are inherited by {@link EventBase}.
  *
- * @see Amplification
+ * @see AmplificationResult
  * @see SequenceString
  * @see Sequence
  *
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingleRead", propOrder = {
-	"amplification",
+	"amplificationResult",
 	"sequence",
 	"primer",
 	"direction",
@@ -65,12 +65,12 @@ public class SingleRead extends EventBase implements Cloneable{
 	private static final long serialVersionUID = 1735535003073536132L;
 	private static final Logger logger = Logger.getLogger(SingleRead.class);
 
-	/** @see #getAmplification()  */
-	@XmlElement(name = "Amplification")
+	/** @see #getAmplificationResult()  */
+	@XmlElement(name = "AmplificationResult")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private Amplification amplification;
+	private AmplificationResult amplificationResult;
 
 	/** @see #getPrimer()*/
 	@XmlElement(name = "Primer")
@@ -122,24 +122,24 @@ public class SingleRead extends EventBase implements Cloneable{
 
 
 	/**
-	 * Returns the {@link Amplification amplification} that was the input for this
+	 * Returns the {@link AmplificationResult amplification product} that was the input for this
 	 * {@link SingleRead single sequence}.
 	 */
-	public Amplification getAmplification() {
-		return amplification;
+	public AmplificationResult getAmplificationResult() {
+		return amplificationResult;
 	}
 
 	/**
 	 * TODO this method is protected as long as bidirectionality is not clear.
-	 * @see #getAmplification()
+	 * @see #getAmplificationResult()
 	 */
-	protected void setAmplification(Amplification amplification) {
-		this.amplification = amplification;
+	protected void setAmplificationResult(AmplificationResult amplificationResult) {
+		this.amplificationResult = amplificationResult;
 	}
 
 	/**
 	 * The {@link Primer primer} used for processing this single sequence.
-	 * Often this primer already has been used in the according amplification.
+	 * Often this primer already has been used in the according {@link Amplification amplification}.
 	 * However, there are exceptions from this rule.
 	 */
 	public Primer getPrimer() {
@@ -172,8 +172,8 @@ public class SingleRead extends EventBase implements Cloneable{
 
 	/**
 	 * The {@link SequenceDirection direction} in which this single sequence has been created.
-	 * Usually an {@link Amplification amplification} leads to 2 single sequences a
-	 * {@link SequenceDirection#Forward forward} and a {@link SequenceDirection#Reverse reverse} one.
+	 * Usually an {@link Amplification amplification} leads to 2 single sequences per {@link DnaSample},
+	 * a {@link SequenceDirection#Forward forward} and a {@link SequenceDirection#Reverse reverse} one.
 	 * These 2 result then in a {@link Sequence consensus sequence}.
 	 * But there are exceptions from this rule.
 	 */

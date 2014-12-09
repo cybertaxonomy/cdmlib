@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {
     "sequences",
-    "amplifications",
+    "amplificationResults",
     "dnaQuality"
 })
 @XmlRootElement(name = "DnaSample")
@@ -91,13 +91,13 @@ public class DnaSample extends DerivedUnit implements Cloneable {
     private Set<Sequence> sequences = new HashSet<Sequence>();
 
 
-	@XmlElementWrapper(name = "Amplifications")
-	@XmlElement(name = "Amplification")
+	@XmlElementWrapper(name = "AmplificationResults")
+	@XmlElement(name = "AmplificationResult")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @ContainedIn
     @NotNull
-	private final Set<Amplification> amplifications = new HashSet<Amplification>();
+	private final Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();
 
     @XmlElement(name = "DnaQuality", required = true)
     @XmlIDREF
@@ -141,23 +141,23 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 
 
 	//amplifications
-	public Set<Amplification> getAmplifications() {
-		return amplifications;
+	public Set<AmplificationResult> getAmplificationResults() {
+		return amplificationResults;
 	}
 
-	public void addAmplification(Amplification amplification) {
-		this.amplifications.add(amplification);
-		amplification.setDnaSample(this);
+	public void addAmplificationResult(AmplificationResult amplificationResult) {
+		this.amplificationResults.add(amplificationResult);
+		amplificationResult.setDnaSample(this);
 	}
 
-	public void removeAmplification(Amplification amplification) {
-		this.amplifications.remove(amplification);
+	public void removeAmplification(AmplificationResult amplificationResult) {
+		this.amplificationResults.remove(amplificationResult);
 	}
 
+	
 	public DnaQuality getDnaQuality() {
 		return dnaQuality;
 	}
-
 	public void setDnaQuality(DnaQuality dnaQuality) {
 		this.dnaQuality = dnaQuality;
 	}
