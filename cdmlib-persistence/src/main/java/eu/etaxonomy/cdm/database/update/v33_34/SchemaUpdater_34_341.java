@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
@@ -97,6 +96,16 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
+		//TaxonName for DeterminationEvent
+		stepName = "Add foreign key for DeterminationEvent.taxonName";
+		tableName = "DnaQuality";
+		newColumnName = "typedPurificationMethod_id";
+		referencedTable = "MaterialOrMethodEvent";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
+		
+		
+		
 		//FIXME H2, SQL Server, PostGres
 		//update DerivationEvent.taxonname_id
 		stepName = "Update taxon name in derivation event";
@@ -107,6 +116,8 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
 		stepList.add(step);
  		
+		
+		
 
 		mergePresenceAbsenceVocs(stepList);
 	
@@ -175,7 +186,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
 		stepList.add(step);
 		
-		//remove successful, successText
+		//remove successful, successText, ...
 		stepName = "Remove successful ... from Amplification";
  		tableName = "Amplification";
  		oldColumnName = "successful";

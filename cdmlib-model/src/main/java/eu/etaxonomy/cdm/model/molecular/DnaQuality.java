@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -81,8 +82,10 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 //	@XmlElement(name = "PurificationMethod")
 //    @XmlIDREF
 //    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private MaterialOrMethodEvent purificationMethodTerm;
+	@XmlTransient
+    @ManyToOne(fetch = FetchType.LAZY)
+	//FIXME preliminary as it is not yet decided if we will use a string or a MoME
+    private MaterialOrMethodEvent typedPurificationMethod;
 	
     private String purificationMethod;
 

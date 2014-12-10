@@ -100,8 +100,8 @@ public class Datasource {
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		
 		//H2
-//		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
+		username = "sa";
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
  		try {
