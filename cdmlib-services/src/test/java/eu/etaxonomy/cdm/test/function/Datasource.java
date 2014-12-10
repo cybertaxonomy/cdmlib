@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -61,7 +62,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -69,8 +70,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34upgrade" : "cdm34");
-		database = "test";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
+//		database = "test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -86,13 +87,6 @@ public class Datasource {
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		String server = "160.45.63.201";
-////	String database = "cdm_test";
-//		String database = "cdm_integration_palmae";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-		
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
@@ -107,11 +101,10 @@ public class Datasource {
 //		
 		//H2
 //		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
-    	
-		try {
+ 		try {
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
 				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
@@ -124,7 +117,7 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
-//		appCtr.getCommonService().createFullSampleData();
+		appCtr.getCommonService().createFullSampleData();
 
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		

@@ -11,15 +11,15 @@
 package eu.etaxonomy.cdm.database.update.v33_34;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.loader.custom.ColumnCollectionAliases;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
@@ -58,7 +58,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		ISchemaUpdaterStep step;
 //		String columnName;
 		String newColumnName;
-//		String oldColumnName;
+		String oldColumnName;
 		String query;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
@@ -108,6 +108,116 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		stepList.add(step);
  		
 
+		mergePresenceAbsenceVocs(stepList);
+	
+		
+		//SingleReadAlignment #4529
+		stepName = "Remove Sequence_SingleRead";  //we assume that this field is not yet used
+		tableName = "Sequence_SingleRead";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
+ 		stepList.add(step);
+ 		
+ 		//Add SingleReadAlignment #4529
+ 		stepName = "Add SingleReadAlignment";
+ 		tableName = "SingleReadAlignment";
+ 		String[] columnNames = new String[]{"shifts","editedsequence","reversecomplement",
+ 				"consensusalignment_id","singleread_id"};
+ 		String[] columnTypes = new String[]{"clob","clob","bit","int","int"};
+ 		String[] referencedTables = new String[]{null, null,null,"Sequence","SingleRead"};
+ 		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, 
+ 				referencedTables, INCLUDE_AUDIT, true);
+ 		stepList.add(step);
+ 		
+ 		//Add labelCache to amplification #4542
+ 		stepName = "Add column 'labelCache'";
+		tableName = "Amplification";
+		newColumnName = "labelcache";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+ 		
+ 		//SPLIT Amplification and Amplification result
+ 		
+ 		// Amplification #4541
+		stepName = "Create table 'AmplificationResult'";
+		tableName = "AmplificationResult";
+		step = TableCreator.NewAnnotatableInstance(stepName, tableName,
+				new String[] { "successful", "successText", "dnaSample_id", "amplification_id",
+						"cloning_id", "gelPhoto_id",
+						}, // colNames
+				new String[] {"bit", "string_255", "int", "int", "int", "int"}, // columnTypes
+				new String[] { null, null, "SpecimenOrObservationBase", "Amplification", "MaterialOrMethodEvent",
+						"DefinedTermBase", "Media" }, // referencedTables
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+//		// amplification result - single reads #4541
+//		stepName = "Add single reads to amplification result";
+//		String firstTable = "AmplificationResult";
+//		String secondTable = "SingleRead";
+//		step = MnTableCreator
+//				.NewMnInstance(stepName, firstTable, null, secondTable, null,
+//						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+//		stepList.add(step);
+		
+		//Institution for Amplication
+		stepName = "Add foreign key for SingleRead.amplificationresult";
+		tableName = "SingleRead";
+		newColumnName = "amplificationresult_id";
+		referencedTable = "AmplificationResult";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
+
+
+		//drop Amplification_SingleRead #4541
+		stepName = "Drop Amplification_SingleRead";
+		tableName = "Amplification_SingleRead";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
+		stepList.add(step);
+		
+		//remove successful, successText
+		stepName = "Remove successful ... from Amplification";
+ 		tableName = "Amplification";
+ 		oldColumnName = "successful";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 		oldColumnName = "successText";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 		oldColumnName = "dnaSample_id";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 		oldColumnName = "cloning_id";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 		oldColumnName = "gelPhoto_id";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 		
+ 		stepName = "Remove amplification_id from SingleRead";
+ 		tableName = "SingleRead";
+		oldColumnName = "amplification_id";
+ 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+ 		stepList.add(step);
+ 
+ 	
+ 		
+		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
+		stepName = "Remove SpecimenOrObservationBase_Sequence";
+		tableName = "SpecimenOrObservationBase_Sequence";
+		step = TableDroper.NewInstance(stepName, tableName, true, true);
+		stepList.add(step);
+		
+		return stepList;
+		
+	}
+
+	private void mergePresenceAbsenceVocs(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String newColumnName;
+		String query;
 		//PAT
 		//ad absence term
 		stepName = "Create absenceterm column";
@@ -192,34 +302,6 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
  				+ " WHERE uuid = 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05' ";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
  		stepList.add(step);
-	
-		
-		//SingleReadAlignment
-		stepName = "Remove Sequence_SingleRead";  //we assume that this field is not yet used
-		tableName = "Sequence_SingleRead";
-		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
- 		stepList.add(step);
- 		
- 		//Add SingleReadAlignment
- 		stepName = "Add SingleReadAlignment";
- 		tableName = "SingleReadAlignment";
- 		String[] columnNames = new String[]{"shifts","editedsequence",
- 				"consensusalignment_id","singleread_id"};
- 		String[] columnTypes = new String[]{"clob","clob","int","int"};
- 		String[] referencedTables = new String[]{null, null,"Sequence","SingleRead"};
- 		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, 
- 				referencedTables, INCLUDE_AUDIT, true);
- 		stepList.add(step);
-
- 		
-		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
-		stepName = "Remove SpecimenOrObservationBase_Sequence";
-		tableName = "SpecimenOrObservationBase_Sequence";
-		step = TableDroper.NewInstance(stepName, tableName, true, true);
-		stepList.add(step);
-		
-		return stepList;
-		
 	}
 
 
