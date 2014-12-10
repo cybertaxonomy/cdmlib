@@ -654,9 +654,11 @@ public class DerivedUnitFacade {
 				// Set<DerivationEvent> derivationEvents =
 				// original.getDerivationEvents();
 				// for (DerivationEvent originalDerivation : derivationEvents){
-				Set<FieldUnit> fieldUnits = getFieldUnitOriginals(
-						originalDerivation, recursionAvoidSet);
-				result.addAll(fieldUnits);
+				if(originalDerivation!=null){
+				    Set<FieldUnit> fieldUnits = getFieldUnitOriginals(
+				            originalDerivation, recursionAvoidSet);
+				    result.addAll(fieldUnits);
+				}
 				// }
 			} else {
 				throw new DerivedUnitFacadeNotSupportedException(
