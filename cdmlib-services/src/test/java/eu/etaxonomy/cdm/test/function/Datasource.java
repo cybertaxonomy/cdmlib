@@ -62,7 +62,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -102,8 +102,8 @@ public class Datasource {
 		//H2
 		username = "sa";
     	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
-//    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
-		
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+
  		try {
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
