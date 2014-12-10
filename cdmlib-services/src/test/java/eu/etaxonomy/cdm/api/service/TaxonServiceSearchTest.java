@@ -51,15 +51,13 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -899,7 +897,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testPrepareByAreaSearch() throws IOException, ParseException {
 
-        List<PresenceAbsenceTermBase<?>> statusFilter = new ArrayList<PresenceAbsenceTermBase<?>>();
+        List<PresenceAbsenceTerm> statusFilter = new ArrayList<PresenceAbsenceTerm>();
         List<NamedArea> areaFilter = new ArrayList<NamedArea>();
         areaFilter.add(germany);
         areaFilter.add(canada);
@@ -1034,15 +1032,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<NamedArea> a_russia = new HashSet<NamedArea>();
         a_russia.add(russia);
 
-        Set<PresenceAbsenceTermBase<?>> present = new HashSet<PresenceAbsenceTermBase<?>>();
-        present.add(PresenceTerm.PRESENT());
+        Set<PresenceAbsenceTerm> present = new HashSet<PresenceAbsenceTerm>();
+        present.add(PresenceAbsenceTerm.PRESENT());
 
-        Set<PresenceAbsenceTermBase<?>> present_native = new HashSet<PresenceAbsenceTermBase<?>>();
-        present_native.add(PresenceTerm.PRESENT());
-        present_native.add(PresenceTerm.NATIVE());
+        Set<PresenceAbsenceTerm> present_native = new HashSet<PresenceAbsenceTerm>();
+        present_native.add(PresenceAbsenceTerm.PRESENT());
+        present_native.add(PresenceAbsenceTerm.NATIVE());
 
-        Set<PresenceAbsenceTermBase<?>> absent = new HashSet<PresenceAbsenceTermBase<?>>();
-        absent.add(AbsenceTerm.ABSENT());
+        Set<PresenceAbsenceTerm> absent = new HashSet<PresenceAbsenceTerm>();
+        absent.add(PresenceAbsenceTerm.ABSENT());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
@@ -1344,11 +1342,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         d_abies_alba.addElement(Distribution
                 .NewInstance(
                         germany,
-                        PresenceTerm.NATIVE()));
+                        PresenceAbsenceTerm.NATIVE()));
         d_abies_alba.addElement(Distribution
                 .NewInstance(
                         russia,
-                        AbsenceTerm.ABSENT()));
+                        PresenceAbsenceTerm.ABSENT()));
 
         // TextData
         d_abies_balsamea
@@ -1366,13 +1364,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         .addElement(Distribution
                 .NewInstance(
                         canada,
-                        PresenceTerm.PRESENT()));
+                        PresenceAbsenceTerm.PRESENT()));
 
         d_abies_balsamea
         .addElement(Distribution
                 .NewInstance(
                         germany,
-                        PresenceTerm.NATIVE()));
+                        PresenceAbsenceTerm.NATIVE()));
 
         d_abies_balsamea
                 .addElement(TextData

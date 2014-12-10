@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -146,7 +146,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         NamedArea namedArea = NamedArea.NewInstance("Africa", "Africa", "Africa");
         namedArea.setTitleCache("Africa", true);
         distribution.setArea(namedArea);
-        distribution.setStatus(PresenceTerm.NATIVE());
+        distribution.setStatus(PresenceAbsenceTerm.NATIVE());
 
         taxonDescription.addElement(distribution);
 

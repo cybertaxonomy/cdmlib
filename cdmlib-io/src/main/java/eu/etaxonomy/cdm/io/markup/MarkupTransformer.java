@@ -20,10 +20,8 @@ import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
@@ -1416,11 +1414,11 @@ public class MarkupTransformer extends InputTransformerBase {
 	}
 
 	@Override
-	public PresenceAbsenceTermBase getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+	public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
-		}else if (key.equalsIgnoreCase("endemic")){return PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
-		}else if (key.equalsIgnoreCase("cultivated")){return PresenceTerm.CULTIVATED();
-		}else if (key.equalsIgnoreCase("absent")){return AbsenceTerm.ABSENT();
+		}else if (key.equalsIgnoreCase("endemic")){return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
+		}else if (key.equalsIgnoreCase("cultivated")){return PresenceAbsenceTerm.CULTIVATED();
+		}else if (key.equalsIgnoreCase("absent")){return PresenceAbsenceTerm.ABSENT();
 		}else{
 			return null;
 		}

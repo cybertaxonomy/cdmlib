@@ -26,6 +26,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "Primer", propOrder = {
 	"label",
 	"sequence",
+	"dnaMarker",
 	"publishedIn"
 })
 @XmlRootElement(name = "Primer")
@@ -61,6 +63,14 @@ public class Primer extends AnnotatableEntity {
 	@XmlElement(name = "Sequence")
  	private SequenceString sequence = SequenceString.NewInstance();
 
+
+    /** @see #getDnaMarker()*/
+    @XmlElement(name = "DnaMarker")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    private DefinedTerm dnaMarker;
+	
 	/** @see #getPublishedIn() */
 	@XmlElement(name = "PublishedIn")
     @XmlIDREF
@@ -68,6 +78,8 @@ public class Primer extends AnnotatableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Reference<?> publishedIn;
+	
+	
 
 	// ******************** FACTORY METHOD ******************/
 
@@ -117,6 +129,18 @@ public class Primer extends AnnotatableEntity {
 			sequence = SequenceString.NewInstance();
 		}
 		this.sequence = sequence;
+	}
+	
+
+	/**
+	 * #4470
+	 */
+	public DefinedTerm getDnaMarker() {
+		return dnaMarker;
+	}
+
+	public void setDnaMarker(DefinedTerm dnaMarker) {
+		this.dnaMarker = dnaMarker;
 	}
 
 	/**

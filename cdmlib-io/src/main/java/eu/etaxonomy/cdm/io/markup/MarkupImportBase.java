@@ -65,8 +65,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -1907,7 +1906,7 @@ public abstract class MarkupImportBase  {
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
 					
 					//status
-					PresenceAbsenceTermBase<?> status = null;
+					PresenceAbsenceTerm status = null;
 					if (isNotBlank(statusValue)){
 						try {
 							status = state.getTransformer().getPresenceTermByKey(statusValue);
@@ -1920,7 +1919,7 @@ public abstract class MarkupImportBase  {
 							throw new RuntimeException(e);
 						}
 					}else{
-						status = PresenceTerm.PRESENT();
+						status = PresenceAbsenceTerm.PRESENT();
 					}
 					//frequency
 					if (isNotBlank(frequencyValue)){

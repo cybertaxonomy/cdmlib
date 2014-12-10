@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -985,7 +986,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample has sequences attached to it"));
                 }
             }
-            deleteResult.addRelatedObjects(dnaSample.getAmplifications());
+            deleteResult.addRelatedObjects(dnaSample.getAmplificationResults());
         }
         //check associated specimen in TaxonDescription
         if(!listDescriptionsWithDescriptionSpecimen(specimen, null, null, null, null).isEmpty()){
@@ -1000,10 +1001,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return deleteResult;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#delete(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator)
-     */
-    @Override
+   @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
 
@@ -1053,8 +1051,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if(specimen.isInstanceOf(DnaSample.class)){
             DnaSample dnaSample = HibernateProxyHelper.deproxy(specimen, DnaSample.class);
             if(dnaSample.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                for (Amplification amplification : dnaSample.getAmplifications()) {
-                    dnaSample.removeAmplification(amplification);
+                for (AmplificationResult amplificationResult : dnaSample.getAmplificationResults()) {
+                    dnaSample.removeAmplificationResult(amplificationResult);
                 }
             }
         }

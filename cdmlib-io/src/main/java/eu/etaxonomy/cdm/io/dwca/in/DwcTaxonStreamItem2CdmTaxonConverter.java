@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -290,7 +290,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 					}
 					if (area != null){
-						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+						Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
 						td.addElement(distribution);
 					}
 				}
@@ -305,7 +305,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 			}
 			if (area != null){
-				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+				Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
 				td.addElement(distribution);
 			}
 		}

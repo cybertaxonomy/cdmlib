@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
-import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -38,13 +36,12 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
-import eu.etaxonomy.cdm.datagenerator.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -73,8 +70,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34upgrade" : "cdm34");
-//		String database = "cdm34upgrade";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
+//		database = "test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -90,13 +87,6 @@ public class Datasource {
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		String server = "160.45.63.201";
-////	String database = "cdm_test";
-//		String database = "cdm_integration_palmae";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-		
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
@@ -111,11 +101,10 @@ public class Datasource {
 //		
 		//H2
 		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
-    	
-		try {
+ 		try {
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
 				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
@@ -128,7 +117,7 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
-//		appCtr.getCommonService().createFullSampleData();
+		appCtr.getCommonService().createFullSampleData();
 
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
@@ -309,7 +298,7 @@ public class Datasource {
 			TaxonDescription description = TaxonDescription.NewInstance();
 			taxon.addDescription(description);
 			NamedArea area1 = appCtr.getTermService().getAreaByTdwgAbbreviation("GER");
-			Distribution distribution = Distribution.NewInstance(area1, PresenceTerm.PRESENT());
+			Distribution distribution = Distribution.NewInstance(area1, PresenceAbsenceTerm.PRESENT());
 			description.addElement(distribution);
 			
 			List<Distribution> distrList = new ArrayList<Distribution>();

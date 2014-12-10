@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -139,8 +139,8 @@ public class DemoTaxonTable extends Table{
 							taxon =(Taxon) taxonService.load(taxon.getUuid());
 							HashMap<DescriptionElementBase, Distribution> map = getDistribution(taxon);
 							
-							List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-							BeanItemContainer<PresenceAbsenceTermBase> termContainer = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
+							List<PresenceAbsenceTerm> listTerm = termService.list(PresenceAbsenceTerm.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+							BeanItemContainer<PresenceAbsenceTerm> termContainer = new BeanItemContainer<PresenceAbsenceTerm>(PresenceAbsenceTerm.class);
 							termContainer.addAll(listTerm);
 							box = new ComboBox("Occurrence Status: ", termContainer);
 							box.setImmediate(true);
@@ -184,14 +184,14 @@ public class DemoTaxonTable extends Table{
 
 					private ComboBox createDistributionField(
 							final Taxon taxon,
-							BeanItemContainer<PresenceAbsenceTermBase> termContainer,ComboBox box) {
+							BeanItemContainer<PresenceAbsenceTerm> termContainer,ComboBox box) {
 						final ComboBox box2 = box;
 						box.addValueChangeListener(new ValueChangeListener() {
 
 							@Override
 							public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 								NamedArea area = (NamedArea) dt;
-								Distribution db = Distribution.NewInstance(area, (PresenceAbsenceTermBase<?>) box2.getValue());
+								Distribution db = Distribution.NewInstance(area, (PresenceAbsenceTerm) box2.getValue());
 					               Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				                    if (descriptions != null) {
 				                        for (TaxonDescription desc : descriptions) {
@@ -231,7 +231,7 @@ public class DemoTaxonTable extends Table{
 						return null;
 					}
 					
-					private ComboBox updateDistributionField(DescriptionElementBase deb, Distribution db, BeanItemContainer<PresenceAbsenceTermBase> termContainer, ComboBox box, Taxon taxon) {
+					private ComboBox updateDistributionField(DescriptionElementBase deb, Distribution db, BeanItemContainer<PresenceAbsenceTerm> termContainer, ComboBox box, Taxon taxon) {
 						final Distribution db2 = db;
 						final DescriptionElementBase deb2 = deb;
 						box.setValue(db.getStatus());
@@ -248,7 +248,7 @@ public class DemoTaxonTable extends Table{
 									taxonService.saveOrUpdate(taxon2);
 									Notification.show("Delete Status", Notification.Type.TRAY_NOTIFICATION);
 								}else{
-									db2.setStatus((PresenceAbsenceTermBase)box2.getValue());
+									db2.setStatus((PresenceAbsenceTerm)box2.getValue());
 									descriptionService.saveDescriptionElement(deb2);
 									Notification.show("DescriptionService wrote", Notification.Type.TRAY_NOTIFICATION);
 								}

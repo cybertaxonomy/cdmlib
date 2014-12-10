@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -787,23 +787,23 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected PresenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		if (uuid == null){
 			return null;
 		}
-		PresenceTerm presenceTerm = state.getPresenceTerm(uuid);
+		PresenceAbsenceTerm presenceTerm = state.getPresenceAbsenceTerm(uuid);
 		if (presenceTerm == null){
-			presenceTerm = (PresenceTerm)getTermService().find(uuid);
+			presenceTerm = (PresenceAbsenceTerm)getTermService().find(uuid);
 			if (presenceTerm == null){
-				presenceTerm = PresenceTerm.NewInstance(text, label, labelAbbrev);
+				presenceTerm = PresenceAbsenceTerm.NewPresenceInstance(text, label, labelAbbrev);
 				presenceTerm.setUuid(uuid);
 				//set vocabulary ; FIXME use another user-defined vocabulary
 				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05"); 
-				TermVocabulary<PresenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
+				TermVocabulary<PresenceAbsenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
 				voc.addTerm(presenceTerm);
 				getTermService().save(presenceTerm);
 			}
-			state.putPresenceTerm(presenceTerm);
+			state.putPresenceAbsenceTerm(presenceTerm);
 		}
 		return presenceTerm;
 	}

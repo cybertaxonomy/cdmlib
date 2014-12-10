@@ -1,20 +1,17 @@
 package eu.etaxonomy.cdm.remote.dto.vaadin;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.TaxonServiceImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class acts like a data transfer object. It is intended to ease the communication
@@ -113,7 +110,7 @@ public class CdmTaxonTableCollection{
      * 
      * @return
      */
-    public PresenceAbsenceTermBase<?> getDistributionStatus(String distribution){
+    public PresenceAbsenceTerm getDistributionStatus(String distribution){
     	Distribution db = getDistribution(distribution);
     	if(db != null){
     		return db.getStatus();
@@ -155,7 +152,7 @@ public class CdmTaxonTableCollection{
      * 
      * @param status
      */
-    public void setDistributionStatus(String distribution, PresenceAbsenceTermBase<?> status){
+    public void setDistributionStatus(String distribution, PresenceAbsenceTerm status){
     	Distribution db = getDistribution(distribution);
     	if(db != null){
     		db.setStatus(status);

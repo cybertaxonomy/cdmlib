@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -150,7 +150,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         // get the descriptions for the taxon
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
-        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 

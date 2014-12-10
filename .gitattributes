@@ -661,10 +661,12 @@ cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DOIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/EnumUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialUserType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/ShiftUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
@@ -789,7 +791,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermNotFoundException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/AbsenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
@@ -811,8 +812,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.jav
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NaturalLanguageTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNode.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/SpecimenDescription.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/State.java -text
@@ -853,6 +853,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/metadata/CdmPreference.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/metadata/PreferencePredicate.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/metadata/PreferenceSubject.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Amplification.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/AmplificationResult.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Cloning.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaQuality.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
@@ -862,6 +863,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceDirection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceString.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleRead.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleReadAlignment.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
@@ -1068,7 +1070,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/TaxonNameCannotBeAcceptedAndSynonymValidator.java -text
 cdmlib-model/src/main/resources/ValidationMessages.properties -text
 cdmlib-model/src/main/resources/log4j.properties -text
-cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/Country.csv -text
@@ -1099,7 +1100,7 @@ cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusTypeIczn.csv -text
 cdmlib-model/src/main/resources/terms/PlantKindOfUnit.csv -text
-cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
+cdmlib-model/src/main/resources/terms/PresenceAbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/PreservationMethod.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
@@ -1123,6 +1124,7 @@ cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
@@ -1151,7 +1153,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/DescriptionElement
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/FeatureTreeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/NamedAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
@@ -1209,6 +1211,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserIm
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/TimePeriodParserTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/BigDecimalTesting.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestRegExs.java -text
@@ -1325,6 +1328,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/Specime
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermUpdater_31_33.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermVocabularyRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaUpdater_331_34.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaUpdater_34_341.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/TermUpdater_33_34.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/UsernameConstraintUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text

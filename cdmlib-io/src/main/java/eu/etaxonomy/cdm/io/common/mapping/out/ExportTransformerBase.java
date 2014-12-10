@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
@@ -29,26 +29,18 @@ public class ExportTransformerBase implements IExportTransformer {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportTransformerBase.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByFeature(eu.etaxonomy.cdm.model.description.Feature)
-	 */
 	@Override
 	public Object getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByFeature is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getCacheByFeature(eu.etaxonomy.cdm.model.description.Feature)
-	 */
+
 	@Override
 	public String getCacheByFeature(Feature feature) throws UndefinedTransformerMethodException {
 		String warning = "getCacheByFeature is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByLanguage(eu.etaxonomy.cdm.model.common.Language)
-	 */
 	@Override
 	public Object getKeyByLanguage(Language language) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByLanguage is not implemented in implementing transformer class";
@@ -77,37 +69,24 @@ public class ExportTransformerBase implements IExportTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByPresenceAbsenceTerm(eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase)
-	 */
 	@Override
-	public Object getKeyByPresenceAbsenceTerm(PresenceAbsenceTermBase term) throws UndefinedTransformerMethodException {
-		String warning = "getKeyByPresenceAbsenceTerm is not implemented in implementing transformer class";
-		throw new UndefinedTransformerMethodException(warning);
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getCacheByPresenceAbsenceTerm(eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase)
-	 */
-	@Override
-	public String getCacheByPresenceAbsenceTerm(PresenceAbsenceTermBase term) throws UndefinedTransformerMethodException {
+	public Object getKeyByPresenceAbsenceTerm(PresenceAbsenceTerm term) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByPresenceAbsenceTerm is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
+	@Override
+	public String getCacheByPresenceAbsenceTerm(PresenceAbsenceTerm term) throws UndefinedTransformerMethodException {
+		String warning = "getKeyByPresenceAbsenceTerm is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByNamedArea(eu.etaxonomy.cdm.model.location.NamedArea)
-	 */
 	@Override
 	public Object getKeyByNamedArea(NamedArea area) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByNamedArea is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getCacheByNamedArea(eu.etaxonomy.cdm.model.location.NamedArea)
-	 */
 	@Override
 	public String getCacheByNamedArea(NamedArea area) throws UndefinedTransformerMethodException{
 		String warning = "getCacheByNamedArea is not implemented in implementing transformer class";

@@ -11,12 +11,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-import ru.xpoft.vaadin.VaadinView;
-
-import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -56,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -300,8 +295,8 @@ public class DashBoardView extends CustomComponent implements View{
 
 	@SuppressWarnings("rawtypes")
 	private ComboBox initComboBox(final CdmTaxonTableCollection red) {
-		List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-		BeanItemContainer<PresenceAbsenceTermBase> container = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
+		List<PresenceAbsenceTerm> listTerm = termService.list(PresenceAbsenceTerm.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		BeanItemContainer<PresenceAbsenceTerm> container = new BeanItemContainer<PresenceAbsenceTerm>(PresenceAbsenceTerm.class);
 		container.addAll(listTerm);
 		
 		final ComboBox box = new ComboBox("Occurrence Status: ", container);
@@ -467,7 +462,7 @@ public class DashBoardView extends CustomComponent implements View{
 			TaxonDescription td = getTaxonDescription(taxon, false, true);
 			NamedArea na = NamedArea.NewInstance();//0a9727d2-8d1f-4a88-ad4c-d6ef4ebc112a
 			na = (NamedArea) termService.load(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
-			PresenceAbsenceTermBase<?> absenceTermBase = (PresenceAbsenceTermBase<?>) termService.load(UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2"));
+			PresenceAbsenceTerm absenceTermBase = (PresenceAbsenceTerm) termService.load(UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2"));
 			Distribution db = Distribution.NewInstance(na, absenceTermBase);
 			descriptionService.saveDescriptionElement(db);
 			td.addElement(db);

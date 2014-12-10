@@ -1202,7 +1202,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
     	

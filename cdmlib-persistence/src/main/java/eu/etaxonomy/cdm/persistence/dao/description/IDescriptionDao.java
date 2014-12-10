@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -220,7 +220,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonDescription instances
      */
-    List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a list of CommonTaxonName instances that match a search string
@@ -247,7 +247,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
      * @return a count of TaxonDescription instances
      */
-    int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence);
+    int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence);
 
     /**
      * @param taxon

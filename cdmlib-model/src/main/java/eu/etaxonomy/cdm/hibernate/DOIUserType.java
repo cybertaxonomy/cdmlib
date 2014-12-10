@@ -91,10 +91,6 @@ public class DOIUserType  extends AbstractUserType implements UserType {
         }
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType#returnedClass()
-	 */
 	@Override
 	public Class returnedClass() {
 		return DOI.class;

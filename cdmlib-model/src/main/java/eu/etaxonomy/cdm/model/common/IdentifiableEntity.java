@@ -328,14 +328,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
     /**
      * @param type
-     * @return a Set of extension value strings
+     * @return a set of identifier value strings
      */
     public Set<String> getIdentifiers(DefinedTerm type){
        return getIdentifiers(type.getUuid());
     }
     /**
-     * @param extensionTypeUuid
-     * @return a Set of extension value strings
+     * @param identifierTypeUuid
+     * @return a set of identifier value strings
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<String>();
@@ -355,6 +355,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      @Override
     public void addIdentifier(int index, Identifier identifier){
         if (identifier != null){
+        	if (identifier.getIdentifiedObj() != null && ! identifier.getIdentifiedObj().equals(this)){
+        		identifier.getIdentifiedObj().removeIdentifier(identifier);
+        	}
         	identifier.setIdentifiedObj(this);
             getIdentifiers().add(index, identifier);
         }

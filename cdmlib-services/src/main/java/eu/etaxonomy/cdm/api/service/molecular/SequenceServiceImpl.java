@@ -33,20 +33,15 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
 @Service
 @Transactional(readOnly = true)
 public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISequenceDao> implements ISequenceService{
-    private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     @Autowired
     protected void setDao(ISequenceDao dao) {
         this.dao = dao;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ISequenceService#moveSingleRead(eu.etaxonomy.cdm.model.molecular.Sequence, eu.etaxonomy.cdm.model.molecular.Sequence, eu.etaxonomy.cdm.model.molecular.SingleRead)
-     */
     @Override
     public boolean moveSingleRead(Sequence from, Sequence to, SingleRead singleRead) {
         from.removeSingleRead(singleRead);
@@ -56,9 +51,6 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.molecular.ISequenceService#getSingleReadSequenceMap()
-     */
     @Override
     public Map<SingleRead, Collection<Sequence>> getSingleReadSequencesMap() {
         Map<SingleRead, Collection<Sequence>> singleReadToSequences = new HashMap<SingleRead, Collection<Sequence>>();

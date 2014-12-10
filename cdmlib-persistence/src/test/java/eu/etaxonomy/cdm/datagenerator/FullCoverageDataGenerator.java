@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.MultiAccessKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.Cloning;
 import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -90,6 +91,8 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -274,7 +277,7 @@ public class FullCoverageDataGenerator {
 
 	private void createDescriptions(List<CdmBase> cdmBases) {
 
-		TermVocabulary voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
+		TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
 				"myTerm voc", "mtv", URI.create("http://www.abc.de"));
 		handleIdentifiableEntity(voc);
 		cdmBases.add(voc);
@@ -356,7 +359,7 @@ public class FullCoverageDataGenerator {
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
 		inCountryArea.addCountry(Country.TURKEYREPUBLICOF());
 		cdmBases.add(inCountryArea);
-		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceTerm.CULTIVATED());
+		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
 		
 		Taxon taxon = getTaxon();
@@ -507,14 +510,15 @@ public class FullCoverageDataGenerator {
 		DnaSample dnaSample = DnaSample.NewInstance();
 
 		//Amplification
-		Amplification amplification = Amplification.NewInstance(dnaSample);
+		Amplification amplification = Amplification.NewInstance();
+
 		DefinedTerm dnaMarker = DefinedTerm.NewDnaMarkerInstance("My dna marker", "dna marker", null);
 		cdmBases.add(dnaMarker);
 		amplification.setDnaMarker(dnaMarker);
-		amplification.setSuccessful(true);
-		amplification.setSuccessText("Very successful");
-		handleAnnotatableEntity(amplification);
+		Institution inst = Institution.NewInstance();
+		amplification.setInstitution(inst);
 		handleEventBase(amplification);
+		handleAnnotatableEntity(amplification);
 		
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
 		forwardPrimer.setPublishedIn(getReference());
@@ -523,17 +527,10 @@ public class FullCoverageDataGenerator {
 
 		Primer reversePrimer = Primer.NewInstance("reverse primer");
 		handleAnnotatableEntity(reversePrimer);
-
+		
 		amplification.setForwardPrimer(forwardPrimer);
 		amplification.setReversePrimer(reversePrimer);
-
-		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
-		cdmBases.add(cloningMethod);
-		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
-		amplification.setCloning(cloning);
-		handleAnnotatableEntity(cloningMethod);
-		handleAnnotatableEntity(cloning);
-
+		
 		DefinedTerm purificationMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "purification method", "purification method", null);
 		cdmBases.add(purificationMethod);
 		MaterialOrMethodEvent purification = MaterialOrMethodEvent.NewInstance(purificationMethod, "purification method");
@@ -545,14 +542,27 @@ public class FullCoverageDataGenerator {
 		amplification.setElectrophoresisVoltage(5.5);
 		amplification.setGelConcentration(2.4);
 		amplification.setGelRunningTime(3.6);
-		Media gelPhoto = Media.NewInstance();
-		amplification.setGelPhoto(gelPhoto);
+		
+		//Amplification result
+		AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample, amplification);
+		amplificationResult.setSuccessful(true);
+		amplificationResult.setSuccessText("Very successful");
+		handleAnnotatableEntity(amplificationResult);
+		
+		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
+		cdmBases.add(cloningMethod);
+		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
+		amplificationResult.setCloning(cloning);
+		handleAnnotatableEntity(cloningMethod);
+		handleAnnotatableEntity(cloning);
 
+		Media gelPhoto = Media.NewInstance();
+		amplificationResult.setGelPhoto(gelPhoto);
 
 		//SingleRead
 		SingleRead singleRead = SingleRead.NewInstance();
 		handleAnnotatableEntity(singleRead);
-		amplification.addSingleRead(singleRead);
+		amplificationResult.addSingleRead(singleRead);
 		MaterialOrMethodEvent readMethod = MaterialOrMethodEvent.NewInstance(null, "read method");
 		singleRead.setMaterialOrMethod(readMethod);
 		handleAnnotatableEntity(readMethod);
@@ -563,11 +573,15 @@ public class FullCoverageDataGenerator {
 		singleRead.setPrimer(forwardPrimer);
 		singleRead.setSequence(SequenceString.NewInstance("ABTC"));
 		singleRead.setDirection(SequenceDirection.Forward);
-
-		//Seuqence
+		
+		//Sequence
 		Sequence sequence = Sequence.NewInstance("ADDT");
 		dnaSample.addSequence(sequence);
-		sequence.addSingleRead(singleRead);
+		
+//		SequenceString alignedSequence = SequenceString.NewInstance("AGTC");
+		Shift[] shifts = new Shift[]{new Shift(66,1),new Shift(103,-2)};
+		SingleReadAlignment.NewInstance(sequence, singleRead, shifts, "AGTC");
+				
 		Media contigFile = Media.NewInstance();
 		sequence.setContigFile(contigFile);
 		sequence.setIsBarcode(true);
@@ -761,6 +775,8 @@ public class FullCoverageDataGenerator {
 		DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		event.addOriginal(fieldUnit);
 		event.addDerivative(mediaSpecimen);
+		Institution inst = Institution.NewInstance();
+		event.setInstitution(inst);
 		handleAnnotatableEntity(event);
 		handleEventBase(event);
 

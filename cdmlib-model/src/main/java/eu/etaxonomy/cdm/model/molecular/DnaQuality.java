@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
@@ -77,9 +79,14 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 // ************** ATTRIBUTES ****************************/
 
     //TODO
-//    @XmlTransient
-//    @Transient
-//    private MaterialOrMethodEvent purificationMethod;
+//	@XmlElement(name = "PurificationMethod")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+	@XmlTransient
+    @ManyToOne(fetch = FetchType.LAZY)
+	//FIXME preliminary as it is not yet decided if we will use a string or a MoME #4552
+    private MaterialOrMethodEvent typedPurificationMethod;
+	
     private String purificationMethod;
 
 
@@ -89,7 +96,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 
 	private Double concentration;
 
-	@XmlElement(name = "Type")
+	@XmlElement(name = "concentrationUnit")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)

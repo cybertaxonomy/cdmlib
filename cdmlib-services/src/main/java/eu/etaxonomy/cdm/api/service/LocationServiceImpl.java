@@ -24,8 +24,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -67,20 +66,6 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         this.dao = dao;
     }
 
-    /**
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ILocationService#getAbsenceTerms()
-     * FIXME Candidate for harmonization
-     * is this method a duplicate of termService.getVocabulary(VocabularyEnum.AbsenceTerm)?
-     */
-    public OrderedTermVocabulary<AbsenceTerm> getAbsenceTermVocabulary() {
-        String uuidString = "5cd438c8-a8a1-4958-842e-169e83e2ceee";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<AbsenceTerm> absenceTermVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return absenceTermVocabulary;
-    }
-
 
     /**
      * (non-Javadoc)
@@ -88,10 +73,10 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
      * FIXME Candidate for harmonization
      * is this method a duplicate of termService.getVocabulary(VocabularyEnum.PresenceTerm)
      */
-    public OrderedTermVocabulary<PresenceTerm> getPresenceTermVocabulary() {
+    public OrderedTermVocabulary<PresenceAbsenceTerm> getPresenceAbsenceTermVocabulary() {
         String uuidString = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
         UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<PresenceTerm> presenceTermVocabulary =
+        OrderedTermVocabulary<PresenceAbsenceTerm> presenceTermVocabulary =
             (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
         return presenceTermVocabulary;
     }

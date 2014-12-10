@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @XmlSeeAlso({
     RelationshipTermBase.class,
-    PresenceAbsenceTermBase.class,
+    PresenceAbsenceTerm.class,
     State.class,
     NamedArea.class,
     NamedAreaLevel.class,

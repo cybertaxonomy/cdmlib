@@ -106,9 +106,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 
     @XmlAttribute(required = true)
     @XmlJavaTypeAdapter(UUIDAdapter.class)
+    @XmlID
     @Type(type="uuidUserType")
     @NaturalId // This has the effect of placing a "unique" constraint on the database column
-    @XmlID
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)
     @NotNull

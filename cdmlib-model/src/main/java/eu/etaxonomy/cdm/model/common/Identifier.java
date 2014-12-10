@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
 public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEntity {
 	private static final long serialVersionUID = -798893563577142030L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 
 	@XmlElement(name ="Identifier" )
@@ -87,8 +88,9 @@ public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEnti
     public Identifier (T entity, String identifier, DefinedTerm type){
     	this.identifier = identifier;
     	this.type = type;
-    	logger.warn("Identified object not yet implemented");
-//    	this.identifiedObj = entity;
+//    	logger.warn("Identified object not yet implemented");
+    	this.identifiedObj = entity;
+    	identifiedObj.addIdentifier(this);
     }
 
     

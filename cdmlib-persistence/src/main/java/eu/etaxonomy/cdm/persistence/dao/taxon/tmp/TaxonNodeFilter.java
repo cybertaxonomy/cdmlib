@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.taxon.tmp.LogicFilter.Op;
@@ -30,8 +30,7 @@ public class TaxonNodeFilter {
 	
 	List<LogicFilter<NamedArea>> areaFilter = new ArrayList<LogicFilter<NamedArea>>();
 
-	@SuppressWarnings("rawtypes")
-	List<LogicFilter<PresenceAbsenceTermBase>> distributionStatusFilter = new ArrayList<LogicFilter<PresenceAbsenceTermBase>>();
+	List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<LogicFilter<PresenceAbsenceTerm>>();
 	
 
 	public void reset(){
@@ -42,9 +41,8 @@ public class TaxonNodeFilter {
 		resetDistributionStatus();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void resetDistributionStatus() {
-		distributionStatusFilter = new ArrayList<LogicFilter<PresenceAbsenceTermBase>>();
+		distributionStatusFilter = new ArrayList<LogicFilter<PresenceAbsenceTerm>>();
 	}
 
 	private void resetArea() {
@@ -65,8 +63,7 @@ public class TaxonNodeFilter {
 		return Collections.unmodifiableList(areaFilter);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public List<LogicFilter<PresenceAbsenceTermBase>>getDistributionStatusFilter(){
+	public List<LogicFilter<PresenceAbsenceTerm>>getDistributionStatusFilter(){
 		return Collections.unmodifiableList(distributionStatusFilter);
 	}
 	
@@ -85,6 +82,5 @@ public class TaxonNodeFilter {
 		areaFilter.add( new LogicFilter<NamedArea>(area, Op.AND));
 		return this;
 	}
-
 	
 }

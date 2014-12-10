@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
@@ -40,8 +40,8 @@ public interface IExportTransformer {
 	public String getCacheByExtensionType(ExtensionType language) throws UndefinedTransformerMethodException;
 	
 	//Presence Term
-	public Object getKeyByPresenceAbsenceTerm(PresenceAbsenceTermBase term) throws UndefinedTransformerMethodException;
-	public String getCacheByPresenceAbsenceTerm(PresenceAbsenceTermBase term) throws UndefinedTransformerMethodException;
+	public Object getKeyByPresenceAbsenceTerm(PresenceAbsenceTerm term) throws UndefinedTransformerMethodException;
+	public String getCacheByPresenceAbsenceTerm(PresenceAbsenceTerm term) throws UndefinedTransformerMethodException;
 
 	//NamedArea
 	public Object getKeyByNamedArea(NamedArea area) throws UndefinedTransformerMethodException;	

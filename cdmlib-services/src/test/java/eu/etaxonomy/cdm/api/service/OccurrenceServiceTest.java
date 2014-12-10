@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -442,8 +443,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       SingleRead singleRead = SingleRead.NewInstance();
       consensusSequence.addSingleRead(singleRead);
       dnaSample.addSequence(consensusSequence);
-      Amplification amplification = Amplification.NewInstance(dnaSample);
-      amplification.addSingleRead(singleRead);
+      AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample);
+      amplificationResult.addSingleRead(singleRead);
       occurrenceService.save(associatedFieldUnit);
       occurrenceService.save(typeSpecimen);
       occurrenceService.save(dnaSample);
