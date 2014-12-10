@@ -13,6 +13,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,4 +65,13 @@ public class LSIDRegistryTest extends CdmIntegrationTest {
 	public void testLookupDaoWithUnknownLsid() {
 		assertNull("lookupDao shoud return null for an lsid it does not recognise",lsidRegistry.lookupDAO(unknownAuthorityLsid));
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

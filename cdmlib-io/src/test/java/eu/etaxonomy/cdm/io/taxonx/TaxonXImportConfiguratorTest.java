@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -66,5 +67,14 @@ public class TaxonXImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	//	assertTrue("Return value for import.invoke() should be true", result);
 	//	assertEquals("Number of TaxonNames should be 5", 5, nameService.count());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

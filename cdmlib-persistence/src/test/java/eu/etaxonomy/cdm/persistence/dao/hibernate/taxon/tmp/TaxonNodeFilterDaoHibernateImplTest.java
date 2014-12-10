@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.tmp;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -108,5 +109,14 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		
 		
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

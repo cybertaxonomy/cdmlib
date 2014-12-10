@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -149,6 +150,15 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		titles.add(coveredTaxa.get(1).getName().getTitleCache());
 		return titles;
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 }

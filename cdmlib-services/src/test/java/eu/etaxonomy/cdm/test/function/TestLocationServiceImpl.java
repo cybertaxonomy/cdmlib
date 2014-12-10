@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.test.function;
 
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -84,4 +86,13 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
 		Taxon taxon = Taxon.NewInstance(null, null);
 
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

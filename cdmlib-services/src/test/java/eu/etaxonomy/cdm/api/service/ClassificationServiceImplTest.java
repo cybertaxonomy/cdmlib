@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -315,5 +316,14 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 //    @Test
     public final void testGenerateTitleCache() {
 //		fail("Not yet implemented");
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

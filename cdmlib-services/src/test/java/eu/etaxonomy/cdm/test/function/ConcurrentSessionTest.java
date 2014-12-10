@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -898,6 +899,15 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         TaxonBase taxonBase2updated = taxonService.find(taxonUuid2);
         logger.info("Title Cache 2 New Session: " + taxonBase2updated.getTitleCache());
 
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 

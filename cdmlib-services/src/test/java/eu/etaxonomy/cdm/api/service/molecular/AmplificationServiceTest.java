@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -47,5 +49,15 @@ public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {
         assertEquals("SingleRead was not correctly moved to target", 1, amplificationB.getSingleReads().size());
         assertEquals("Moved SingleRead is not equal to origin SingleRead", singleRead, amplificationB.getSingleReads().iterator().next());
 
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

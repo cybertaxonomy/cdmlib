@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -95,4 +96,13 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 	public void testNothing(){
 		//maybe deleted once testSavePolytomousKey() works correctly
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

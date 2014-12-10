@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -61,5 +62,14 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 		assertTrue("Return value for import.invoke should be true", result);
 		//assertEquals("Number of TaxonNames should be 16", 16, nameService.count(null));
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

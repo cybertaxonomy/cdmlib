@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -77,5 +78,14 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 //                "HomotypicalGroup"};
 //		commitAndStartNewTransaction(tableNames);
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

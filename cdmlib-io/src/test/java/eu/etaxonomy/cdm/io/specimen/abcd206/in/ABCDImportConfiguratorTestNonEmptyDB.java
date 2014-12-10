@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -85,5 +86,14 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));
 
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -24,14 +24,14 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 
 	@SpringBeanByType
     private IOccurrenceDao occurrenceDao;
-	
+
 	@SpringBeanByType
     private IMediaDao mediaDao;
-	
+
 	private UUID phyloTreeUuid;
 	private UUID sequenceUuid;
 	private UUID uuidSample1;// = UUID.fromString("4b451275-655f-40d6-8d4b-0203574bef15");
-		
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -40,61 +40,62 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 	public void setUp() throws Exception {
 	}
 
-//**************** TESTS ************************************************	
-	
-	//Test if DnaSample can be loaded and if Sequence and Marker data can 
+//**************** TESTS ************************************************
+
+	//Test if DnaSample can be loaded and if Sequence and Marker data can
 	//be lazy loaded from database
 	//#3340
 	@Test
 	@DataSet
 	public void testLazyLoadSequenceMarker() {
-		createTestData();
+		createTestDataSet();
 		DnaSample sample1 = (DnaSample)occurrenceDao.findByUuid(uuidSample1);
 		Set<Sequence> sequences = sample1.getSequences();
-		
+
 		Sequence sequence = sequences.iterator().next();
 		DefinedTerm marker = sequence.getDnaMarker();
 		Assert.assertNotNull("Marker should not be null", marker);
 		Assert.assertEquals("Markers label should be 'Marker'",MARKER_LABEL, marker.getLabel());
-		
-		commit();
-	}
-	
-	@Test
-	@DataSet
-	public void testLoadUsedSequences() {
-		createTestData();
-		PhylogeneticTree phyloTree = (PhylogeneticTree)mediaDao.findByUuid(phyloTreeUuid);
-		Assert.assertNotNull("Phylogenetic Tree should be found", phyloTree);
-		Set<Sequence> sequences = phyloTree.getUsedSequences();
-		
-		Assert.assertEquals(1, sequences.size());
-		Sequence sequence = sequences.iterator().next();
-		Assert.assertEquals(sequenceUuid, sequence.getUuid());
-		
+
 		commit();
 	}
 
-	private void createTestData(){
+	@Test
+	@DataSet
+	public void testLoadUsedSequences() {
+		createTestDataSet();
+		PhylogeneticTree phyloTree = (PhylogeneticTree)mediaDao.findByUuid(phyloTreeUuid);
+		Assert.assertNotNull("Phylogenetic Tree should be found", phyloTree);
+		Set<Sequence> sequences = phyloTree.getUsedSequences();
+
+		Assert.assertEquals(1, sequences.size());
+		Sequence sequence = sequences.iterator().next();
+		Assert.assertEquals(sequenceUuid, sequence.getUuid());
+
+		commit();
+	}
+
+	@Override
+    protected void createTestDataSet(){
 		DnaSample sample = DnaSample.NewInstance();
 		Sequence sequence = Sequence.NewInstance("Meine Sequence");
 		sequenceUuid = sequence.getUuid();
 		sample.addSequence(sequence);
 		uuidSample1 = sample.getUuid();
-		
+
 		DefinedTerm marker = DefinedTerm.ITS1_MARKER();
 		Assert.assertNotNull("ITS1 marker must not be null", marker);
 		sequence.setDnaMarker(marker);
-		
+
 		occurrenceDao.save(sample);
-		
+
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
 		mediaDao.saveOrUpdate(phyloTree);
 		phyloTreeUuid = phyloTree.getUuid();
-		
+
 		commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase"});
 	}
-	
+
 
 }

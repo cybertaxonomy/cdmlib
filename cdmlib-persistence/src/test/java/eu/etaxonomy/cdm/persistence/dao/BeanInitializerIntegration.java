@@ -13,6 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -152,4 +153,13 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		LanguageString languageString = textData.getMultilanguageText().values().iterator().next();
 		assertTrue("LanguageString.language should be initialized",Hibernate.isInitialized(languageString.getLanguage()));
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

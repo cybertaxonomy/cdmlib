@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -367,5 +368,14 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         assertNotNull(cdmBase);
         cdmEntityDaoBase.delete(cdmBase);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

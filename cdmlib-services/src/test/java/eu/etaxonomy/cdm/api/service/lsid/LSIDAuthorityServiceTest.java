@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.lsid;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
@@ -89,4 +90,13 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 	public void testGetAvailableServicesWithUnknownLSID() throws Exception {
 		lsidAuthorityService.getAvailableServices(unknownLsid);
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

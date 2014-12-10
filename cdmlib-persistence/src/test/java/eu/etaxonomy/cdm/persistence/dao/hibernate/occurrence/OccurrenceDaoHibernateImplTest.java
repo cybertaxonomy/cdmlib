@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
+import java.io.FileNotFoundException;
+
 import org.h2.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -103,5 +105,14 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 		dao.save(unit);
 		//assert no exception
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

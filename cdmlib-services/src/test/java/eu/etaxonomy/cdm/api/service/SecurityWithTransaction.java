@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
@@ -172,6 +173,15 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
 
 
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 

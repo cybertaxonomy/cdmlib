@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,5 +182,14 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     	String suggestion = taxonDao.suggestQuery("Aram AND italocum");
     	assertNotNull("suggestQuery should return a String",suggestion);
     	assertEquals("The spelling suggestion for \"Aram AND italocum\" should be \"+arum +italicum\"","+arum +italicum",suggestion);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -350,5 +351,15 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
 
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

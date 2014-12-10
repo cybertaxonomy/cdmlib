@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,13 +35,16 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -386,69 +390,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testListAssociatedAndTypedTaxa(){
-//        //how the XML was generated
-//        FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
-//        //sub derivates (DerivedUnit, DnaSample)
-//        DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        DerivedUnit voucherSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.HumanObservation);
-//        DnaSample dnaSample = DnaSample.NewInstance();
-//        //description for voucher specimen (with InidividualsAssociation to type specimen just to make it complex ;) )
-//        SpecimenDescription voucherSpecimenDescription = SpecimenDescription.NewInstance(voucherSpecimen);
-//        voucherSpecimenDescription.addElement(IndividualsAssociation.NewInstance(typeSpecimen));
-//
-//        //derivation events
-//        DerivationEvent.NewSimpleInstance(associatedFieldUnit, typeSpecimen, DerivationEventType.ACCESSIONING());
-//        DerivationEvent.NewSimpleInstance(associatedFieldUnit, voucherSpecimen, DerivationEventType.ACCESSIONING());
-//        DerivationEvent.NewSimpleInstance(typeSpecimen, dnaSample, DerivationEventType.DNA_EXTRACTION());
-//
-//        //DNA (Sequence, SingleRead, Amplification)
-//        Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-//        SingleRead singleRead = SingleRead.NewInstance();
-//        consensusSequence.addSingleRead(singleRead);
-//        dnaSample.addSequence(consensusSequence);
-//        Amplification amplification = Amplification.NewInstance(dnaSample);
-//        amplification.addSingleRead(singleRead);
-//        occurrenceService.save(associatedFieldUnit);
-//        occurrenceService.save(typeSpecimen);
-//        occurrenceService.save(dnaSample);
-//
-//        //create name with type specimen
-//        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
-//        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
-//        typeDesignation.setTypeSpecimen(typeSpecimen);
-//
-//        // create taxon with name and two taxon descriptions (one with
-//        // IndividualsAssociations and a "described" voucher specimen, and an
-//        // empty one)
-//        Taxon taxon = Taxon.NewInstance(name, null);
-//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-//        //add voucher
-//        taxonDescription.setDescribedSpecimenOrObservation(voucherSpecimen);
-//        taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
-//        taxon.addDescription(taxonDescription);
-//        //add type designation to name
-//        name.addTypeDesignation(typeDesignation, false);
-//        //add another taxon description to taxon which is not associated with a specimen thus should not be taken into account
-//        taxon.addDescription(TaxonDescription.NewInstance());
-//        taxonService.saveOrUpdate(taxon);
-//
-//
-//        commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase",
-//                "SpecimenOrObservationBase_DerivationEvent",
-//                "DerivationEvent",
-//                "Sequence",
-//                "Sequence_SingleRead",
-//                "SingleRead",
-//                "Amplification",
-//                "Amplification_SingleRead",
-//                "DescriptionElementBase",
-//                "DescriptionBase",
-//                "TaxonBase",
-//                "TypeDesignationBase",
-//                "TaxonNameBase",
-//                "TaxonNameBase_TypeDesignationBase",
-//                "HomotypicalGroup"});
-
         FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("afbe6682-2bd6-4f9e-ae24-b7479e0e585f"));
         DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(UUID.fromString("3699806e-8d2b-4ae6-b96e-d065525b654a"));
         Taxon taxon = (Taxon) taxonService.load(UUID.fromString("d3668127-be97-47df-bb0b-f03bc1089bc5"));
@@ -475,6 +416,74 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         Object next = taxonBases.iterator().next();
         assertTrue(next instanceof CdmBase && ((CdmBase)next).isInstanceOf(Taxon.class));
         assertEquals("Typed taxon is incorrect", taxon, next);
+    }
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        //how the XML was generated
+      FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
+      //sub derivates (DerivedUnit, DnaSample)
+      DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+      DerivedUnit voucherSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.HumanObservation);
+      DnaSample dnaSample = DnaSample.NewInstance();
+      //description for voucher specimen (with InidividualsAssociation to type specimen just to make it complex ;) )
+      SpecimenDescription voucherSpecimenDescription = SpecimenDescription.NewInstance(voucherSpecimen);
+      voucherSpecimenDescription.addElement(IndividualsAssociation.NewInstance(typeSpecimen));
+
+      //derivation events
+      DerivationEvent.NewSimpleInstance(associatedFieldUnit, typeSpecimen, DerivationEventType.ACCESSIONING());
+      DerivationEvent.NewSimpleInstance(associatedFieldUnit, voucherSpecimen, DerivationEventType.ACCESSIONING());
+      DerivationEvent.NewSimpleInstance(typeSpecimen, dnaSample, DerivationEventType.DNA_EXTRACTION());
+
+      //DNA (Sequence, SingleRead, Amplification)
+      Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
+      SingleRead singleRead = SingleRead.NewInstance();
+      consensusSequence.addSingleRead(singleRead);
+      dnaSample.addSequence(consensusSequence);
+      Amplification amplification = Amplification.NewInstance(dnaSample);
+      amplification.addSingleRead(singleRead);
+      occurrenceService.save(associatedFieldUnit);
+      occurrenceService.save(typeSpecimen);
+      occurrenceService.save(dnaSample);
+
+      //create name with type specimen
+      BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
+      SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+      typeDesignation.setTypeSpecimen(typeSpecimen);
+
+      // create taxon with name and two taxon descriptions (one with
+      // IndividualsAssociations and a "described" voucher specimen, and an
+      // empty one)
+      Taxon taxon = Taxon.NewInstance(name, null);
+      TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+      //add voucher
+      taxonDescription.setDescribedSpecimenOrObservation(voucherSpecimen);
+      taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
+      taxon.addDescription(taxonDescription);
+      //add type designation to name
+      name.addTypeDesignation(typeDesignation, false);
+      //add another taxon description to taxon which is not associated with a specimen thus should not be taken into account
+      taxon.addDescription(TaxonDescription.NewInstance());
+      taxonService.saveOrUpdate(taxon);
+
+
+      commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase",
+              "SpecimenOrObservationBase_DerivationEvent",
+              "DerivationEvent",
+              "Sequence",
+              "Sequence_SingleRead",
+              "SingleRead",
+              "Amplification",
+              "Amplification_SingleRead",
+              "DescriptionElementBase",
+              "DescriptionBase",
+              "TaxonBase",
+              "TypeDesignationBase",
+              "TaxonNameBase",
+              "TaxonNameBase_TypeDesignationBase",
+              "HomotypicalGroup"});
     }
 
 }

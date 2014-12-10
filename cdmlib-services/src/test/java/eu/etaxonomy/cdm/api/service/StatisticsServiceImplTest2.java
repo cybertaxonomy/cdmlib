@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -169,7 +170,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 		return configuratorList;
 	}
 
-	public void createTestData(int noOfClassifications, int noOfAcceptedTaxa,
+	public void createTestDataSet(int noOfClassifications, int noOfAcceptedTaxa,
 			int noOfSynonyms, int noOfDescrSrcReferences, int sharedTaxa)
 			throws Exception {
 
@@ -313,11 +314,11 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					}
 					descriptionService.save(taxonDescription);
 					taxon.addDescription(taxonDescription);
-					
+
 					//TODO create Sspecimen connected to taxon via TaxonDescription->DescriptionElement=IndividualAssoziation->setAssociatedSpecimenOrObservation(SpecimenOrObservationBase)
 					// TODO and NameBase->SpecimenTypeDesignation->
 					// DerrivedUnit???
-					
+
 					// create a Specimen for taxon with description, descr.
 					// element and referece
 					//
@@ -327,8 +328,8 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 //					 DescriptionElementBase descrElement = new TextData();
 //					 Reference specimenRef = ReferenceFactory.newArticle();
 ////					 descrElement.add;
-//					
-//					
+//
+//
 //					 descriptionService.save(specimenDescription);
 //					 taxon.addSource(
 //								OriginalSourceType.PrimaryTaxonomicSource,
@@ -466,7 +467,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 
 	/**
 	 * create and count a new sec Reference
-	 * 
+	 *
 	 * @param classiCounter
 	 * @param taxonCounter
 	 * @return
@@ -478,5 +479,14 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 		referenceService.save(sec);
 		return sec;
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
 
 }

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -61,5 +62,14 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 		assertNull(node);
 		
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 }

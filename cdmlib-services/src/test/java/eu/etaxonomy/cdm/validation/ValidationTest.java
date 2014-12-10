@@ -13,6 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -166,4 +167,14 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
         assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level",constraintViolations.isEmpty());
 
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

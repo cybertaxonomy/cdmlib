@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.After;
@@ -135,6 +136,15 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         taxonDao.delete(taxonAcherontia);
         setComplete();
         endTransaction();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +65,15 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 		List<PolytomousKey> list3 = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, null, null, null);
 		Assert.assertEquals(list3.size(), 0);
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	
 
