@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -207,6 +208,15 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	classification.addChildTaxon(newTaxon, 0, null, null);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

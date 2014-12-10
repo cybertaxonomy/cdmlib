@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -616,6 +617,16 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void testListNamedAreasInUse(){
         List<NamedArea> list = descriptionDao.listNamedAreasInUse(null, null, null);
         Assert.assertEquals(3, list.size());
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 

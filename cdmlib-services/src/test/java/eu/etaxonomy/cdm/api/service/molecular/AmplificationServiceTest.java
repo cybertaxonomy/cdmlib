@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -31,5 +33,15 @@ public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {
     @Test
     public void testNothingTest(){
     	//dummy as min 1 Test is required
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

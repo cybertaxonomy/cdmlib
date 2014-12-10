@@ -538,4 +538,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         }
         transactionManager.commit(txStatus);
     }
+
+    protected abstract void createTestDataSet() throws FileNotFoundException;
 }

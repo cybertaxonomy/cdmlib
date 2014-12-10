@@ -147,9 +147,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         france = Country.FRANCEFRENCHREPUBLIC();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
-        
+
 		// Have to add a mock cdm cacher since the disabling of transactions
-		// results in the default CdmCacher object not working due to the fact that 
+		// results in the default CdmCacher object not working due to the fact that
 		// the current session for the CdmGenericDaoImpl.findByUuidWithoutFlush in
 		// the autowired CdmDaoCacher is null
 		// Comment out the line below to see the error.
@@ -230,9 +230,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
          configurator.setDoSynonyms(false);
          configurator.setDoNamesWithoutTaxa(true);
          configurator.setDoTaxaByCommonNames(false);
-         
+
         List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
-         
+
          Assert.assertEquals("Expecting one entity", 1, list.size());
     }
 
@@ -356,7 +356,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      */
     @SuppressWarnings("rawtypes")
     @Test
-    @DataSet    
+    @DataSet
     public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
         Reference sec = ReferenceFactory.newDatabase();
@@ -815,9 +815,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
         DefinedTermBase term = termService.find(termUUID);
-        
+
         termService.delete(term);
-        
+
     }
 
     @SuppressWarnings("rawtypes")
@@ -1255,9 +1255,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     /**
      * uncomment @Test annotation to create the dataset for this test
      */
-//    @Test
+    @Override
+    //    @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
-    public final void createDataSet() throws FileNotFoundException {
+    public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
         europeanAbiesClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));

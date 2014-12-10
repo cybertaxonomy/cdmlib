@@ -2236,7 +2236,7 @@ public class DerivedUnitFacade {
 	public Set<Rights> getRights() {
 		return baseUnit().getRights();
 	}
-	
+
 	/**
 	 * @return the collection
 	 */
@@ -2433,5 +2433,21 @@ public class DerivedUnitFacade {
 			}
 			return result;
 		}
+	}
+
+	/**
+	 * First checks the inner field unit for the publish flag. If set to <code>true</code>
+	 * then <code>true</code> is returned. If the field unit is <code>null</code> the inner derived unit
+	 * is checked.
+	 * @return <code>true</code> if this facade can be published
+	 */
+	public boolean isPublish(){
+	    if(fieldUnit!=null){
+	        return fieldUnit.isPublish();
+	    }
+	    if(derivedUnit!=null){
+	        return derivedUnit.isPublish();
+	    }
+	    return false;
 	}
 }

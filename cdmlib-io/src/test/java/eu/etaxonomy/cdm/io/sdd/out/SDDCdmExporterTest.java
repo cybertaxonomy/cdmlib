@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.sdd.out;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -58,5 +59,14 @@ public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 		//sddCdmExporter.doInvoke(exportConfigurator, null);
 		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

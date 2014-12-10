@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.api.cache;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,5 +55,14 @@ public class CdmCacherTest extends CdmIntegrationTest {
         String nameCache = nvn.getNameCache();
         logger.warn("name cache : " + nameCache);
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

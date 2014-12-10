@@ -66,7 +66,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Ignore
     @Test
     @Transactional(TransactionMode.DISABLED)
-    public final void createTestData() {
+    public final void createTestDataSet() {
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
         combAuthor.addTeamMember(Person.NewTitledInstance("Iron Man"));
         BotanicalName name = BotanicalName.NewInstance(null, "Abies alba", null, null, null, null, null, null, null);

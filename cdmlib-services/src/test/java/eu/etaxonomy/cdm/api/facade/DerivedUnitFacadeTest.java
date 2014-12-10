@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.facade;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.text.ParseException;
@@ -1660,6 +1661,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         facade = DerivedUnitFacade.NewInstance(specimen);
         facade.getFieldUnit(true);
         assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

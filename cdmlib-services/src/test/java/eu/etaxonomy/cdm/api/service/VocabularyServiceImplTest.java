@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Before;
@@ -86,6 +87,16 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
         assertEquals(SpecimenTypeDesignationStatus.LECTOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
 //      assertSame(SpecimenTypeDesignationStatus.EPITYPE(), highestType);   //as we do not use second level cache this is not required
 //      assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));   //as we do not use second level cache this is not required
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

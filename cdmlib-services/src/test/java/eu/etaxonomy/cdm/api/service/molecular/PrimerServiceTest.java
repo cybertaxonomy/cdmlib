@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.molecular;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,15 @@ public class PrimerServiceTest extends CdmTransactionalIntegrationTest {
         UuidAndTitleCache<Primer> uuidAndTitleCache = primerUuidAndTitleCache.iterator().next();
         assertEquals("UUID is incorrect.", uuid, uuidAndTitleCache.getUuid());
         assertEquals("Label is incorrect.", primerLabel, uuidAndTitleCache.getTitleCache());
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

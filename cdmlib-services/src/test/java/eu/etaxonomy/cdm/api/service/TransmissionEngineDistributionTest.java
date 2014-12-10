@@ -270,7 +270,8 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
 
 //    @Test //  uncomment to create test data file//
-    public void createTestData() throws FileNotFoundException {
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
 
         // --- References --- //
         Reference sec = ReferenceFactory.newDatabase();

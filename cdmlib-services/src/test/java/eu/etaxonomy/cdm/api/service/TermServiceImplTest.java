@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
@@ -222,6 +223,15 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	termBase =  (DefinedTerm)termService.load(termUUID);
     	assertNull(termBase);
     	
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 	
 }

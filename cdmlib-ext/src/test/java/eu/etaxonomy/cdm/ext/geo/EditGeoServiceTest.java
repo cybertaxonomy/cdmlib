@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.ext.geo;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -361,6 +362,16 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         // request map image from webservice
         subTestWithEditMapService(result);
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+
     }
 
 

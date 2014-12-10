@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -184,5 +186,13 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

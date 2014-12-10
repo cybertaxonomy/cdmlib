@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -75,6 +77,15 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
         
 	   	count = dao.count();
 	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
+        
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
         
     }
 }

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -251,5 +252,14 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         List<Person> result = agentDao.list(Person.class,null, null);
         Assert.assertNotNull("list() should return a list",result);
         Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    protected void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }
