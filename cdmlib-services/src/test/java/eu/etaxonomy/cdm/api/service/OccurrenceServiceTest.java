@@ -292,10 +292,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(value="OccurrenceService.loadData.xml")
-    @Ignore  //FIXME why is the DerivedUnit-DerivationEvent relation not loaded from XML, no obvious reason
-    public void testLoadData(){
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString("afbe6682-2bd6-4f9e-ae24-b7479e0e585f"));
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString("d2840e9a-02a2-449e-905f-ecde47fc6711"));
+    public void testLoadData() {
+        String fieldUnitUuid = "5a31df5a-2e4d-40b1-8d4e-5754736ae7ef";
+        String derivedUnitUuid = "18f70977-5d9c-400a-96c4-0cb7a2cd287e";
+
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(UUID.fromString(fieldUnitUuid));
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(UUID.fromString(derivedUnitUuid));
 
         assertFalse(fieldUnit.getDerivationEvents().iterator().next().getDerivatives().isEmpty());
         assertTrue(derivedUnit.getDerivedFrom()!=null);
