@@ -94,7 +94,8 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
+	@Cascade({CascadeType.SAVE_UPDATE})
+	@IndexedEmbedded
     private Amplification amplification;
 
     @XmlElementWrapper(name = "SingleReads")

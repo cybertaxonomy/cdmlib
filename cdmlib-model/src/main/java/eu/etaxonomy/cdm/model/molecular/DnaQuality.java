@@ -84,7 +84,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 //    @XmlSchemaType(name = "IDREF")
 	@XmlTransient
     @ManyToOne(fetch = FetchType.LAZY)
-	//FIXME preliminary as it is not yet decided if we will use a string or a MoME
+	//FIXME preliminary as it is not yet decided if we will use a string or a MoME #4552
     private MaterialOrMethodEvent typedPurificationMethod;
 	
     private String purificationMethod;
