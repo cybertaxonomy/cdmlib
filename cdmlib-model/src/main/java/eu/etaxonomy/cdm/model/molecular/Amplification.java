@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -30,10 +31,13 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
@@ -307,6 +311,53 @@ public class Amplification extends EventBase implements Cloneable{
 	public void setLadderUsed(String ladderUsed) {
 		this.ladderUsed = ladderUsed;
 	}
+	
+	
+	
+	/**
+	 * Returns the labelCache
+	 * @return
+	 */
+	public String getLabelCache() {
+		return labelCache;
+	}
+
+
+	public void updateCache(){
+        //retrieve data
+		 String institutionName = getInstitution() == null ? "" :getInstitution().getTitleCache();
+         String staffName = getActor() == null ? "" :getActor().getTitleCache();
+         String dnaMarkerString = getDnaMarker() == null ? "" :getDnaMarker().getTitleCache();
+         String dateString = getTimeperiod() == null ? "" :getTimeperiod().toString();
+
+
+         //assemble string
+         String designation = CdmUtils.concat("_", new String[]{institutionName, staffName, dnaMarkerString, dateString});
+//         if( StringUtils.isNotBlank(institutionName)){
+//             designation += institutionName;
+//         }
+//         if(!staffName.equals("")){
+//             if(!designation.equals("")){
+//                 designation += "_";
+//             }
+//             designation += staffName;
+//         }
+//         if(!dnaMarkerString.equals("")){
+//             if(!designation.equals("")){
+//                 designation += "_";
+//             }
+//             designation += dnaMarkerString;
+//         }
+//         if(!dateString.equals("")){
+//             if(!designation.equals("")){
+//                 designation += "_";
+//             }
+//             designation += dateString;
+//         }
+         
+         this.labelCache = designation;
+	}
+	
 
 
 	// ********************** CLONE ***********************************/
