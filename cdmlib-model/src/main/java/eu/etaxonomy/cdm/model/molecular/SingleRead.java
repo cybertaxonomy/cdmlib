@@ -70,6 +70,7 @@ public class SingleRead extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private AmplificationResult amplificationResult;
 
 	/** @see #getPrimer()*/
@@ -116,7 +117,8 @@ public class SingleRead extends EventBase implements Cloneable{
 
 	// ********************* CONSTRUCTOR ********************/
 
-	private SingleRead(){};
+	//protected for Javassist, otherwise private
+	protected SingleRead(){};
 
 	// ********************* GETTER / SETTER ********************/
 
