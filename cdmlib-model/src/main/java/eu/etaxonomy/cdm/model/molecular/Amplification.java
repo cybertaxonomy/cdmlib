@@ -323,6 +323,10 @@ public class Amplification extends EventBase implements Cloneable{
 	}
 
 
+	/**
+	 * This method pushes the {@link Amplification#labelCache label cache} update.
+	 * The cache is otherwise updated during persist in CacheStrategyUpdater. 
+	 */
 	public void updateCache(){
         //retrieve data
 		 String institutionName = getInstitution() == null ? "" :getInstitution().getTitleCache();
@@ -330,32 +334,10 @@ public class Amplification extends EventBase implements Cloneable{
          String dnaMarkerString = getDnaMarker() == null ? "" :getDnaMarker().getTitleCache();
          String dateString = getTimeperiod() == null ? "" :getTimeperiod().toString();
 
-
          //assemble string
          String designation = CdmUtils.concat("_", new String[]{institutionName, staffName, dnaMarkerString, dateString});
-//         if( StringUtils.isNotBlank(institutionName)){
-//             designation += institutionName;
-//         }
-//         if(!staffName.equals("")){
-//             if(!designation.equals("")){
-//                 designation += "_";
-//             }
-//             designation += staffName;
-//         }
-//         if(!dnaMarkerString.equals("")){
-//             if(!designation.equals("")){
-//                 designation += "_";
-//             }
-//             designation += dnaMarkerString;
-//         }
-//         if(!dateString.equals("")){
-//             if(!designation.equals("")){
-//                 designation += "_";
-//             }
-//             designation += dateString;
-//         }
          
-         this.labelCache = designation;
+         this.labelCache = StringUtils.isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
 	}
 	
 

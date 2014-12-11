@@ -1163,6 +1163,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaUtilsTest.java -tex
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/metadata/CdmMetaDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/metadata/CdmPreferenceTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/metadata/PreferenceSubjectTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/molecular/AmplificationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/molecular/MolecularTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BacterialNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
