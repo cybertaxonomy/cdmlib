@@ -24,10 +24,10 @@ import eu.etaxonomy.cdm.model.molecular.Amplification;
 public interface IAmplificationService extends IAnnotatableService<Amplification>{
 
     /**
-     * Retrieves the {@link UUID} and the string representation (title cache) of all
+     * Retrieves the {@link UUID} and the string label of all
      * {@link Amplification}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndDescription();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache();
 
 }
