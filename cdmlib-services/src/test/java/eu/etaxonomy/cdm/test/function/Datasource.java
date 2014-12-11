@@ -62,7 +62,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -71,7 +71,7 @@ public class Datasource {
 		
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
-//		database = "test";
+		database = "cdmTest";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -100,10 +100,12 @@ public class Datasource {
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		
 		//H2
+//		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+    	String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
 		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34",   NomenclaturalCode.ICNAFP);
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
-
+    	
  		try {
 			CdmUpdater updater = new CdmUpdater();
 			if (schema == DbSchemaValidation.VALIDATE){
