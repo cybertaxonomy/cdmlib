@@ -285,7 +285,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
-    protected void createTestDataSet() throws FileNotFoundException {
+    public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
         
     }

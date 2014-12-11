@@ -142,7 +142,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
-    protected void createTestDataSet() throws FileNotFoundException {
+    public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
         
     }

@@ -478,8 +478,27 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @throws FileNotFoundException
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
+        writeDbUnitDataSetFile(includeTableNames, null);
+    }
 
-        File file = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator) + ".xml");
+    /**
+     *
+     * Extension of method mentioned in "see also" where you can specify an appendix for the
+     * generated DbUnit data set file.
+     *
+     * @param includeTableNames
+     * @param fileAppendix the appendix of the generated DbUnit dataset file
+     * @throws FileNotFoundException
+     * @see #writeDbUnitDataSetFile(String[])
+     */
+    public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
+
+        String pathname = "src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator);
+        if(fileAppendix!=null){
+            pathname += "."+fileAppendix;
+        }
+        pathname += ".xml";
+        File file = new File(pathname);
 
         if (file.exists()){
             logger.warn("** OVERWRITING DbUnit dataset file " + file.getAbsolutePath());
@@ -539,5 +558,5 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         transactionManager.commit(txStatus);
     }
 
-    protected abstract void createTestDataSet() throws FileNotFoundException;
+    public abstract void createTestDataSet() throws FileNotFoundException;
 }

@@ -76,7 +76,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 	}
 
 	@Override
-    protected void createTestDataSet(){
+    public void createTestDataSet(){
 		DnaSample sample = DnaSample.NewInstance();
 		Sequence sequence = Sequence.NewInstance("Meine Sequence");
 		sequenceUuid = sequence.getUuid();
