@@ -359,7 +359,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         		identifier.getIdentifiedObj().removeIdentifier(identifier);
         	}
         	identifier.setIdentifiedObj(this);
-            getIdentifiers().add(index, identifier);
+        	int oldIndex = getIdentifiers().indexOf(identifier);
+        	if(oldIndex > -1){
+        		getIdentifiers().remove(identifier);
+        		if (oldIndex < index){
+        			index--;
+        		}
+        	}
+        	getIdentifiers().add(index, identifier);
         }
     }
 
