@@ -421,7 +421,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
-    protected void createTestDataSet() throws FileNotFoundException {
+    public void createTestDataSet() throws FileNotFoundException {
         //how the XML was generated
       FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
       //sub derivates (DerivedUnit, DnaSample)
