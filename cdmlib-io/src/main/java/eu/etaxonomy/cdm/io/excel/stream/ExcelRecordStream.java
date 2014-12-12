@@ -15,9 +15,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -35,7 +35,7 @@ public class ExcelRecordStream  implements IItemStream{
 	
 	private ExcelStreamImportState state;
 	
-	private HSSFSheet sheet;
+	private Sheet sheet;
 //	private ArchiveEntryBase archiveEntry;
 	private TermUri term;
 	private int line = 0;
@@ -51,7 +51,7 @@ public class ExcelRecordStream  implements IItemStream{
 	 * Constructor. 
 	 * @param term 
 	 */
-	public ExcelRecordStream(ExcelStreamImportState state, HSSFSheet sheet, TermUri term) {
+	public ExcelRecordStream(ExcelStreamImportState state, Sheet sheet, TermUri term) {
 		this.state = state;
 		this.sheet = sheet;
 		this.term = term;
@@ -92,7 +92,7 @@ public class ExcelRecordStream  implements IItemStream{
 				mapping = getHeaderMapping(sheet.getRow(line++));
 			}
 	//		int rows = sheet.getPhysicalNumberOfRows();
-			HSSFRow row = sheet.getRow(line++);
+			Row row = sheet.getRow(line++);
 			int i = 0;
 			while (row == null && i++ < 10){
 				row = sheet.getRow(line++);
@@ -106,7 +106,7 @@ public class ExcelRecordStream  implements IItemStream{
 				Map<String, String> map = new HashMap<String, String>();
 				
 				for (int c :mapping.keySet()){
-					HSSFCell cell = row.getCell(c);
+					Cell cell = row.getCell(c);
 					String value = ExcelUtils.getCellValue(cell);
 					map.put(mapping.get(c), value);
 					logger.info("CELL col=" + cell.getColumnIndex() + " VALUE=" + value);
@@ -123,13 +123,13 @@ public class ExcelRecordStream  implements IItemStream{
 	 * @param row
 	 * @return
 	 */
-	private Map<Integer,String> getHeaderMapping(HSSFRow row) {
+	private Map<Integer,String> getHeaderMapping(Row row) {
 		Map<Integer,String> result = new HashMap<Integer, String>();
 		
 		int cells = row.getPhysicalNumberOfCells();
 		logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
 		for (int c = 0; c < cells; c++) {
-			HSSFCell cell = row.getCell(c);
+			Cell cell = row.getCell(c);
 			String value = ExcelUtils.getCellValue(cell);
 			String termUri = convert2semanticKey(value);
 			if (termUri != null){

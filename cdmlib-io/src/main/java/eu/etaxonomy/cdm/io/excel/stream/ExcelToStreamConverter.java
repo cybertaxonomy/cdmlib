@@ -20,8 +20,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -65,10 +67,12 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 	 * @return
 	 * @throws HttpException 
 	 * @throws IOException 
+	 * @throws InvalidFormatException 
 	 */
-	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException{
-		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(source));
-		HSSFWorkbook wb = new HSSFWorkbook(fs);
+	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException, InvalidFormatException{
+//		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(source));
+//		HSSFWorkbook wb = new HSSFWorkbook(fs);
+		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(source));
 		
 		Map<TermUri, Integer> map = new HashMap<TermUri, Integer>();
 		for (int i = 0 ; i < wb.getNumberOfSheets(); i++){
@@ -87,7 +91,7 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 		TermUri term= TermUri.DWC_TAXON;
 		Integer i = map.get(term);
 		if (i != null){
-			HSSFSheet ws = wb.getSheetAt(i);
+			Sheet ws = wb.getSheetAt(i);
 			ExcelRecordStream excelRecordStream = new ExcelRecordStream(state, ws, term);
 			streamList.add(excelRecordStream); //for taxa and names
 		}else{
@@ -99,7 +103,7 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 		//core relationships
 		i = map.get(term);
 		if (i != null){
-			HSSFSheet ws = wb.getSheetAt(i);
+			Sheet ws = wb.getSheetAt(i);
 			ExcelRecordStream excelRecordStream = new ExcelRecordStream(state, ws, term);
 			streamList.add(excelRecordStream); //for relationships
 		}else{

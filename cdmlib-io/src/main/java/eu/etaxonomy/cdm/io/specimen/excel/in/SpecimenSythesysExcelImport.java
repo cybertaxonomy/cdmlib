@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -121,9 +121,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
     boolean DEBUG =false;
 
-    protected HSSFWorkbook hssfworkbook = null;
-
-    public SpecimenSythesysExcelImport() {
+     public SpecimenSythesysExcelImport() {
         super();
     }
 

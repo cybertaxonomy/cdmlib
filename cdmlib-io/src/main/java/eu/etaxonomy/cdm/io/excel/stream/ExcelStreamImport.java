@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
@@ -30,10 +31,7 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 
 	private ArrayList<HashMap<String, String>> recordList = null;
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+
 	@Override
 	protected void doInvoke(ExcelStreamImportState state) {
 		
@@ -61,6 +59,9 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 		} catch (HttpException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return;
