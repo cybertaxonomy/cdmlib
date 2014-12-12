@@ -357,17 +357,20 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance()}.
      */
     @Test
-    public void testNewInstance() {
+    public void testNewInstanceGatheringEventCreated() {
         Assert.assertNotNull("The specimen should have been created",
                 specimenFacade.innerDerivedUnit());
         // ???
-        // Assert.assertNotNull("The derivation event should have been created",
-        // specimenFacade.getSpecimen().getDerivedFrom());
-        // Assert.assertNotNull("The field unit should have been created",
-        // specimenFacade.getFieldUnit());
-        // Assert.assertNotNull("The gathering event should have been created",
-        // specimenFacade.getGatheringEvent());
+         Assert.assertNotNull("The derivation event should have been created",
+        		 specimenFacade.innerDerivedUnit().getDerivedFrom());
+         Assert.assertNotNull("The field unit should have been created",
+        		 specimenFacade.innerFieldUnit());
+         Assert.assertNotNull("The gathering event should have been created",
+        		 specimenFacade.innerGatheringEvent());
     }
+    
+
+    
 
     /**
      * Test method for
@@ -384,7 +387,26 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.innerFieldUnit());
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
-
+    }
+    
+    @Test
+    public void testNewInstanceSpecimenWithoutFieldUnit() {
+        DerivedUnit parent = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivedUnit child = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivationEvent.NewSimpleInstance(parent, child, DerivationEventType.ACCESSIONING());
+        
+        DerivedUnitFacade facade;
+		try {
+			facade = DerivedUnitFacade.NewInstance(child);
+		       	Assert.assertTrue(facade.innerDerivedUnit().getDerivedFrom().getOriginals().size() == 1);
+		       	Assert.assertNull(facade.getFieldUnit(false));
+		       	DerivationEvent.NewSimpleInstance(FieldUnit.NewInstance(), parent, DerivationEventType.ACCESSIONING());
+		        
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+        
     }
 
     @Test
