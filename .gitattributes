@@ -2447,6 +2447,12 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/NameServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurenceServiceTest.move.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceService.loadData.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithChildren.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithSpecimenDescription.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithTypeDesignation.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text

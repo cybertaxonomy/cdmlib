@@ -72,6 +72,8 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -924,12 +926,50 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
         boolean isDeletable = true;
         for (CdmBase cdmBase : relatedObjects) {
+            //check for type designation
             if(cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
                 isDeletable = false;
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
                 break;
             }
+            //check for IndividualsAssociations
             else if(cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
                 isDeletable = false;
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
+                break;
+            }
+            //check for specimen/taxon description
+            else if((cdmBase.isInstanceOf(SpecimenDescription.class) || cdmBase.isInstanceOf(TaxonDescription.class))
+                    && !specimenDeleteConfigurator.isDeleteFromDescription()){
+                isDeletable = false;
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used in a Description."));
+                break;
+            }
+            //check for children and parents (derivation events)
+            else if(cdmBase.isInstanceOf(DerivationEvent.class)){
+                DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(cdmBase, DerivationEvent.class);
+                //check if derivation event is derivedFrom event (parent -> child)
+                if(derivationEvent.getDerivatives().contains(specimen)){
+                    //if it is then the specimen is still deletable
+                    continue;
+                }
+                else if(!specimenDeleteConfigurator.isDeleteChildren()){
+                    //if not and children should not be deleted then it is undeletable
+                    isDeletable = false;
+                    deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
+                    break;
+                }
+            }
+            //check for amplification
+            else if(cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
+                isDeletable = false;
+                deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in amplification results."));
+                break;
+            }
+            //check for sequence
+            else if(cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
+                isDeletable = false;
+                deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in sequences."));
                 break;
             }
         }
@@ -937,70 +977,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             //set to OK when config allows to delete related objects
             deleteResult.setStatus(DeleteStatus.OK);
         }
-        deleteResult.addRelatedObjects(genericDao.getReferencingObjects(specimen));
 
-
-        //check for derivation events
-        Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
-        for (DerivationEvent derivationEvent : derivationEvents) {
-            if(!derivationEvent.getDerivatives().isEmpty()){
-                deleteResult.setAbort();
-                deleteResult.addRelatedObject(derivationEvent);
-            }
-        }
-        if(!deleteResult.getRelatedObjects().isEmpty()){
-            deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
-        }
-
-//        //check for IndividualsAssociation (e.g. in TaxonDescriptions)
-//        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(specimen, null, null, null, null);
-//        if(!individualsAssociations.isEmpty()){
-//            deleteResult.addRelatedObjects(new HashSet<CdmBase>(individualsAssociations));
-//            if(!specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
-//                deleteResult.setAbort();
-//            }
-//        }
-//        if(!deleteResult.getRelatedObjects().isEmpty()){
-//            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
-//        }
-//
-//        //check for TypeDesignations
-//        Collection<SpecimenTypeDesignation> typeDesignations = listTypeDesignations(specimen, null, null, null, null);
-//        if(!typeDesignations.isEmpty()){
-//            deleteResult.addRelatedObjects(new HashSet<CdmBase>(typeDesignations));
-//            if(!specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
-//                deleteResult.setAbort();
-//            }
-//        }
-//        if(!deleteResult.getRelatedObjects().isEmpty()){
-//            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
-//        }
-        //check molecular data of DnaSample (sequence, amplification)
-        if(specimen.isInstanceOf(DnaSample.class)){
-            DnaSample dnaSample = HibernateProxyHelper.deproxy(specimen, DnaSample.class);
-            if(dnaSample.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                if(!dnaSample.getSequences().isEmpty()){
-                    deleteResult.addRelatedObjects(dnaSample.getSequences());
-                    deleteResult.setAbort();
-                    deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample has sequences attached to it"));
-                }
-            }
-            deleteResult.addRelatedObjects(dnaSample.getAmplificationResults());
-        }
-        //check associated specimen in TaxonDescription
-        if(!listDescriptionsWithDescriptionSpecimen(specimen, null, null, null, null).isEmpty()){
-            deleteResult.setAbort();
-            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is used in description"));
-        }
-        //check specimen descriptions
-        if(!specimen.getDescriptions().isEmpty()){
-            deleteResult.setAbort();
-            deleteResult.addException(new ReferencedObjectUndeletableException("Specimen has description data"));
-        }
         return deleteResult;
     }
 
-   @Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#delete(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator)
+     */
+    @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
 
@@ -1009,32 +993,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             return deleteResult;
         }
 
-        //delete original (parent derivate)
-        if(specimen instanceof DerivedUnit){
-            DerivationEvent derivedFromEvent = ((DerivedUnit) specimen).getDerivedFrom();
-            if(derivedFromEvent!=null){
-                derivedFromEvent.removeDerivative((DerivedUnit) specimen);
-                if(derivedFromEvent.getDerivatives().isEmpty()){
-                    Set<SpecimenOrObservationBase<?>> removeList = new HashSet<SpecimenOrObservationBase<?>>();
-                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : derivedFromEvent.getOriginals()) {
-                        removeList.add(specimenOrObservationBase);
-                    }
-                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : removeList) {
-                        specimenOrObservationBase.removeDerivationEvent(derivedFromEvent);
-                    }
-                }
-            }
-        }
-
         //check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
         for (CdmBase relatedObject : relatedObjects) {
-            //delete IndividualsAssociation
-            if(relatedObject.isInstanceOf(IndividualsAssociation.class)){
-                IndividualsAssociation assciation = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
-                assciation.setAssociatedSpecimenOrObservation(null);
-                assciation.getInDescription().removeElement(assciation);
-            }
             //check for TypeDesignations
             if(relatedObject.isInstanceOf(SpecimenTypeDesignation.class)){
                 SpecimenTypeDesignation designation = HibernateProxyHelper.deproxy(relatedObject, SpecimenTypeDesignation.class);
@@ -1044,22 +1005,62 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxonNameBase.removeTypeDesignation(designation);
                 }
             }
-        }
-
-        //check molecular data of DnaSample (sequence, amplification)
-        if(specimen.isInstanceOf(DnaSample.class)){
-            DnaSample dnaSample = HibernateProxyHelper.deproxy(specimen, DnaSample.class);
-            if(dnaSample.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                for (AmplificationResult amplificationResult : dnaSample.getAmplificationResults()) {
-                    dnaSample.removeAmplificationResult(amplificationResult);
+            //delete IndividualsAssociation
+            if(relatedObject.isInstanceOf(IndividualsAssociation.class)){
+                IndividualsAssociation assciation = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
+                assciation.setAssociatedSpecimenOrObservation(null);
+                assciation.getInDescription().removeElement(assciation);
+            }
+            //check for taxon description
+            if(relatedObject.isInstanceOf(TaxonDescription.class)){
+                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(relatedObject, TaxonDescription.class);
+                taxonDescription.setDescribedSpecimenOrObservation(null);
+            }
+            //check for specimen description
+            if(relatedObject.isInstanceOf(SpecimenDescription.class)){
+                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(relatedObject, SpecimenDescription.class);
+                //check if specimen is "described" specimen
+                if(specimenDescription.getDescribedSpecimenOrObservation().equals(specimen)){
+                    specimenDescription.setDescribedSpecimenOrObservation(null);
+                }
+                //check if description is a description of the given specimen
+                if(specimen.getDescriptions().contains(specimenDescription)){
+                    specimen.removeDescription(specimenDescription);
+                }
+            }
+            //check for amplification
+            if(relatedObject.isInstanceOf(AmplificationResult.class)){
+                AmplificationResult amplificationResult = HibernateProxyHelper.deproxy(relatedObject, AmplificationResult.class);
+                amplificationResult.getDnaSample().removeAmplificationResult(amplificationResult);
+            }
+            //check for sequence
+            if(relatedObject.isInstanceOf(Sequence.class)){
+                Sequence sequence = HibernateProxyHelper.deproxy(relatedObject, Sequence.class);
+                sequence.getDnaSample().removeSequence(sequence);
+            }
+            //check for children and parents (derivation events)
+            if(relatedObject.isInstanceOf(DerivationEvent.class)){
+                DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(relatedObject, DerivationEvent.class);
+                //parent derivation event (derivedFrom)
+                if(derivationEvent.getDerivatives().contains(specimen) && specimen.isInstanceOf(DerivedUnit.class)){
+                    derivationEvent.removeDerivative(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
+                    if(derivationEvent.getDerivatives().isEmpty()){
+                        Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
+                        for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
+                            specimenOrObservationBase.removeDerivationEvent(derivationEvent);
+                        }
+                    }
+                }
+                //child derivation events
+                else{
+                    deleteResult.setAbort();
+                    deleteResult.addException(new ReferencedObjectUndeletableException("Deleting specimen with children currently not supported."));
+                    return deleteResult;
+                    //TODO implement delete children
                 }
             }
         }
-        //TODO check associated specimen in TaxonDescription
-        //TODO check specimen descriptions
-        if(config.isDeleteChildren()){
-            //TODO implement delete children
-        }
+
         deleteResult = delete(specimen);
         return deleteResult;
     }
