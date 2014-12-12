@@ -648,8 +648,7 @@ public class DerivedUnitFacade {
 				if (recursionAvoidSet.contains(original)) {
 					continue;
 				}
-				DerivedUnit derivedUnit = CdmBase.deproxy(original,
-						DerivedUnit.class);
+				DerivedUnit derivedUnit = CdmBase.deproxy(original,	DerivedUnit.class);
 				DerivationEvent originalDerivation = derivedUnit.getDerivedFrom();
 				// Set<DerivationEvent> derivationEvents =
 				// original.getDerivationEvents();
