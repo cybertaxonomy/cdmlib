@@ -59,7 +59,7 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 	
 	private boolean removeDuplicates(ICdmDataSource datasource, CaseType caseType) {
 		try {
-			Set<String> existing = new HashSet<>();
+			Set<String> existing = new HashSet<String>();
 			String sql = " SELECT id, columnName as uniquecol FROM tableName ";
 			sql = sql.replace("columnName", columnName).replace("tableName", caseType.transformTo(tableName));
 			ResultSet rs = datasource.executeQuery(sql);
