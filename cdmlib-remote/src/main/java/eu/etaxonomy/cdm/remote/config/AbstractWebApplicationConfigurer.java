@@ -99,7 +99,7 @@ public abstract class AbstractWebApplicationConfigurer {
         }
         if(value == null && required){
             logger.error("property {" + property + "} not found.");
-            logger.error("--> This property can be set in two ways:");
+            logger.error("--> This property can be set in three optional ways:");
             logger.error("--> 		1. as attribute to the ServletContext");
             logger.error("--> 		2. as system property e.g. -D" + property);
             logger.error("--> 		3. in ~/.cdmLibrary/cdmlib-remote.properties");
