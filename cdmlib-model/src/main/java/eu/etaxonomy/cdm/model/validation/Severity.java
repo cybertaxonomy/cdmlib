@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
 
-package eu.etaxonomy.cdm.validation;
+package eu.etaxonomy.cdm.model.validation;
 
 import java.util.Set;
 

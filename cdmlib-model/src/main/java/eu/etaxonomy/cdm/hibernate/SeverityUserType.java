@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */ 
-package eu.etaxonomy.cdm.model.validation;
+package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -17,7 +17,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
+import eu.etaxonomy.cdm.model.validation.Severity;
+
 
 /**
  * A hibernate {@code UserType} for persisting {@link Severity} instances.
@@ -27,7 +29,7 @@ import eu.etaxonomy.cdm.validation.Severity;
  * @author ayco_holleman
  * 
  */
-public class SeverityType implements UserType {
+public class SeverityUserType implements UserType {
 
 	@Override
 	public int[] sqlTypes(){

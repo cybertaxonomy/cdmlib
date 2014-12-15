@@ -24,7 +24,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.validation.Severity;
 
 /**
  * An {@code EntityConstraintViolation} represents a single error resulting from the
@@ -70,7 +69,7 @@ public class EntityConstraintViolation extends CdmBase {
 	private String invalidValue;
 
 	@XmlElement(name = "Severity")
-	@Type(type = "eu.etaxonomy.cdm.model.validation.SeverityType")
+	@Type(type = "eu.etaxonomy.cdm.hibernate.SeverityUserType")
 	private Severity severity;
 
 	@XmlElement(name = "Message")
