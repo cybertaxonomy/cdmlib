@@ -241,37 +241,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Sequences are not equals", consensusSequence, next.getSequenceString());
     }
 
-//    @Test
-//    public void testDeleteDerivateHierarchy_FieldUnit(){
-//        String assertMessage = "Incorrect number of specimens after deletion.";
-//
-//        FieldUnit fieldUnit = initDerivateHierarchy();
-//
-//        //delete field unit
-//        occurrenceService.deleteDerivateHierarchy(fieldUnit);
-//        commit();
-//        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-//        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-//        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-//        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-//    }
-
-//    @Test
-//    public void testDeleteDerivateHierarchy_DerivedUnit(){
-//        String assertMessage = "Incorrect number of specimens after deletion.";
-//
-//        FieldUnit fieldUnit = initDerivateHierarchy();
-//
-//        //delete derived unit
-//        DerivedUnit derivedUnit = fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next();
-//        occurrenceService.deleteDerivateHierarchy(derivedUnit);
-//        commit();
-//        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
-//        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-//        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-//        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-//    }
-
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml")
     public void testDeleteIndividualAssociatedAndTypeSpecimen(){
@@ -335,7 +304,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "HomotypicalGroup"
 //            }, "testDeleteIndividualAssociatedAndTypeSpecimen");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
@@ -378,6 +346,96 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertFalse(fieldUnit.getDerivationEvents().iterator().next().getDerivatives().isEmpty());
         assertTrue(derivedUnit.getDerivedFrom()!=null);
     }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    public void testDeepDelete_FieldUnit(){
+        String assertMessage = "Incorrect number of specimens after deletion.";
+        DeleteResult deleteResult = null;
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        config.setDeleteMolecularData(true);
+        config.setDeleteChildren(true);
+
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
+
+        //check initial state
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
+        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+
+        //delete field unit
+        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    public void testDeepDelete_DerivedUnit(){
+        String assertMessage = "Incorrect number of specimens after deletion.";
+        DeleteResult deleteResult = null;
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        config.setDeleteMolecularData(true);
+        config.setDeleteChildren(true);
+
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
+
+        //check initial state
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
+        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+
+        //delete derived unit
+        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    public void testDeepDelete_DnaSample(){
+        String assertMessage = "Incorrect number of specimens after deletion.";
+        DeleteResult deleteResult = null;
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        config.setDeleteMolecularData(true);
+        config.setDeleteChildren(true);
+
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
+
+        //check initial state
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
+        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+
+        //delete dna sample
+        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+    }
+
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
@@ -424,7 +482,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "AmplificationResult"
 //            }, "testDeleteDerivateHierarchyStepByStep");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
@@ -432,7 +489,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
-        config.setDeleteChildren(false);
 
         FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
@@ -444,20 +500,32 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
+        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
 
-        //delete sequence
+        //delete single read -> should fail
+        SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
+        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
+        assertFalse(deleteResult.toString(), deleteResult.isOk());
+        //delete sequence -> should fail
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
-        assertTrue(deleteResult.toString(), DeleteResult.DeleteStatus.OK.equals(deleteResult.getStatus()));
+        assertFalse(deleteResult.toString(), deleteResult.isOk());
+
+        //allow deletion of molecular data
+        config.setDeleteMolecularData(true);
+
+        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(consensusSequence.getSingleReads().isEmpty());
+
+        //delete sequence -> should fail
+        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
 
 
         //delete dna sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
-        //should fail because of amplification result and sequence
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        config.setDeleteMolecularData(true);
-        //should work now
         deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
@@ -482,23 +550,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
     }
-
-//    @Test
-//    public void testDeleteDerivateHierarchy_Sequence(){
-//        String assertMessage = "Incorrect number of specimens after deletion.";
-//
-//        FieldUnit fieldUnit = initDerivateHierarchy();
-//
-//        //delete sequence
-//        Sequence consensusSequence = ((DnaSample)fieldUnit.getDerivationEvents().iterator().next().getDerivatives().iterator().next()
-//        .getDerivationEvents().iterator().next().getDerivatives().iterator().next()).getSequences().iterator().next();
-//        occurrenceService.deleteDerivateHierarchy(consensusSequence);
-//        commit();
-//        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-//        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-//        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-//        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-//    }
 
     @Test
     @DataSet
@@ -632,7 +683,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "HomotypicalGroup"
 //            }, "testIsDeletableWithSpecimenDescription");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
@@ -654,20 +704,86 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml")
+    public void testIsDeletableWithDescribedSpecimenInTaxonDescription(){
+//        //how the XML was generated
+//        FieldUnit fieldUnit = FieldUnit.NewInstance();
+//        fieldUnit.setUuid(FIELD_UNIT_UUID);
+//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+//
+//        //derivation events
+//        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+//
+//        occurrenceService.save(fieldUnit);
+//        occurrenceService.save(derivedUnit);
+//
+//        // create taxon with name and two taxon descriptions
+//        //(one with a "described" voucher specimen, and an empty one)
+//        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
+//        taxon.setUuid(TAXON_UUID);
+//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+//        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
+//        //add voucher
+//        taxonDescription.setDescribedSpecimenOrObservation(derivedUnit);
+//        taxon.addDescription(taxonDescription);
+//        //add another taxon description to taxon which is not associated with a specimen thus should not be taken into account
+//        taxon.addDescription(TaxonDescription.NewInstance());
+//        taxonService.saveOrUpdate(taxon);
+//
+//
+//        commitAndStartNewTransaction(null);
+//
+//        setComplete();
+//        endTransaction();
+//
+//
+//        try {
+//            writeDbUnitDataSetFile(new String[] {
+//                    "SpecimenOrObservationBase",
+//                    "SpecimenOrObservationBase_DerivationEvent",
+//                    "DerivationEvent",
+//                    "Sequence",
+//                    "Sequence_SingleRead",
+//                    "SingleRead",
+//                    "AmplificationResult",
+//                    "DescriptionElementBase",
+//                    "DescriptionBase",
+//                    "TaxonBase",
+//                    "TypeDesignationBase",
+//                    "TaxonNameBase",
+//                    "TaxonNameBase_TypeDesignationBase",
+//                    "HomotypicalGroup"
+//            }, "testIsDeletableWithDescribedSpecimenInTaxonDescription");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
+
+        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
+
+        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+        DeleteResult deleteResult = null;
+        //check deletion of field unit -> should fail because of voucher specimen (describedSpecimen) in TaxonDescription
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        assertFalse(deleteResult.toString(), deleteResult.isOk());
+
+        //allow deletion from TaxonDescription and deletion of child derivates
+        config.setDeleteFromDescription(true);
+        config.setDeleteChildren(true);
+        deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+    }
+
+    @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml")
     public void testIsDeletableWithIndividualsAssociationTaxonDescription(){
 //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
 //        fieldUnit.setUuid(FIELD_UNIT_UUID);
-//        //sub derivates (DerivedUnit, DnaSample)
-//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
-//
-//        //derivation events
-//        DerivationEvent derivationEventFUtoDU = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
 //
 //        occurrenceService.save(fieldUnit);
-//        occurrenceService.save(derivedUnit);
 //
 //        // create taxon with name and two taxon descriptions (one with
 //        // IndividualsAssociations and a "described" voucher specimen, and an
@@ -678,7 +794,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
 //        //add voucher
 //        taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
-//        taxonDescription.setDescribedSpecimenOrObservation(derivedUnit);
 //        taxon.addDescription(taxonDescription);
 //        //add another taxon description to taxon which is not associated with a specimen thus should not be taken into account
 //        taxon.addDescription(TaxonDescription.NewInstance());
@@ -709,18 +824,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "HomotypicalGroup"
 //            }, "testIsDeletableWithIndividualsAssociationTaxonDescription");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
         FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DerivedUnit voucherSpecimen = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        DerivationEvent derivationEventFUtoDU = associatedFieldUnit.getDerivationEvents().iterator().next();
-
-        // create taxon with name and two taxon descriptions (one with
-        // IndividualsAssociations and a "described" voucher specimen, and an
-        // empty one)
-        Taxon taxon = (Taxon) taxonService.load(TAXON_UUID);
         TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
         IndividualsAssociation individualsAssociation = (IndividualsAssociation) taxonDescription.getElements().iterator().next();
 
@@ -730,20 +837,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(individualsAssociation));
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivationEventFUtoDU));
 
         //allow deletion of individuals association
         config.setDeleteFromIndividualsAssociation(true);
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
-        //should still fail because the field unit has children
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(individualsAssociation));
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivationEventFUtoDU));
-
-        //check deletion of voucher specimen -> should fail because of TaxonDescription
-        deleteResult = occurrenceService.isDeletable(voucherSpecimen, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(taxonDescription));
 
     }
 
@@ -789,7 +888,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "HomotypicalGroup"
 //            }, "testIsDeletableWithTypeDesignation");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
@@ -864,7 +962,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //                    "HomotypicalGroup"
 //            }, "testIsDeletableWithChildren");
 //        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
 
@@ -881,6 +978,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
         //check deletion of DnaSample
         deleteResult = occurrenceService.isDeletable(dnaSample, config);
+        assertFalse(deleteResult.toString(), deleteResult.isOk());
+        //allow deletion of molecular data
+        config.setDeleteMolecularData(true);
+        deleteResult = occurrenceService.isDeletable(dnaSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
 
@@ -890,16 +991,23 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
 
-        //allow deletion of children
-        config.setDeleteChildren(true);
+        //delete DnaSample
+        occurrenceService.deleteDerivateHierarchy(dnaSample, config);
 
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
-        assertTrue(deleteResult.isOk());
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
 
         //check deletion of fieldUnit
         deleteResult = occurrenceService.isDeletable(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
+
+        //delete DerivedUnit
+        occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
+
+        deleteResult = occurrenceService.isDeletable(fieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
     }
 
     /* (non-Javadoc)

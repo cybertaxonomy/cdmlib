@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -956,8 +955,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 else if(!specimenDeleteConfigurator.isDeleteChildren()){
                     //if not and children should not be deleted then it is undeletable
                     isDeletable = false;
-                    deleteResult.addException(new ReferencedObjectUndeletableException("Derivate with children cannot be deleted."));
+                    deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
                     break;
+                }
+                else{
+                    //check all children if they can be deleted
+                    Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+                    DeleteResult childResult = new DeleteResult();
+                    for (DerivedUnit derivedUnit : derivatives) {
+                        childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
+                    }
+                    if(!childResult.isOk()){
+                        isDeletable = false;
+                        deleteResult.includeResult(childResult);
+                        break;
+                    }
                 }
             }
             //check for amplification
@@ -1053,15 +1065,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
                 //child derivation events
                 else{
-                    deleteResult.setAbort();
-                    deleteResult.addException(new ReferencedObjectUndeletableException("Deleting specimen with children currently not supported."));
-                    return deleteResult;
-                    //TODO implement delete children
+                    deleteResult.includeResult(deepDelete(specimen, config));
                 }
             }
         }
 
-        deleteResult = delete(specimen);
+        deleteResult.includeResult(delete(specimen));
         return deleteResult;
     }
 
@@ -1069,58 +1078,48 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#deleteDerivateHierarchy(eu.etaxonomy.cdm.model.common.ICdmBase)
      */
     @Override
-    public DeleteResult deleteDerivateHierarchy(ICdmBase from, SpecimenDeleteConfigurator config) {
+    public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
-        if(from instanceof Sequence){
-            Sequence sequence = (Sequence)from;
+        if(from.isInstanceOf(Sequence.class)){
+            if(!config.isDeleteMolecularData()){
+                deleteResult.setAbort();
+                deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
+                return deleteResult;
+            }
+            Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
             sequence.getDnaSample().removeSequence(sequence);
+            deleteResult = sequenceService.delete(sequence);
+        }
+        else if(from.isInstanceOf(SingleRead.class))  {
+            if(!config.isDeleteMolecularData()){
+                deleteResult.setAbort();
+                deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
+                return deleteResult;
+            }
+            SingleRead singleRead = HibernateProxyHelper.deproxy(from, SingleRead.class);
+            singleRead.getAmplificationResult().removeSingleRead(singleRead);
             deleteResult.setStatus(DeleteStatus.OK);
         }
-        else if(from instanceof SpecimenOrObservationBase<?>)  {
-            deleteResult = delete((SpecimenOrObservationBase<?>) from, config);
+        else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
+            deleteResult = deepDelete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
         }
         return deleteResult;
     }
 
-    private Set<ICdmBase> collectEntitiesToDelete(ICdmBase entity){
-        Set<ICdmBase> entitiesToDelete = new LinkedHashSet<ICdmBase>();
-
-        if(entity instanceof SpecimenOrObservationBase<?>){
-            SpecimenOrObservationBase<?> specimen = (SpecimenOrObservationBase<?>) entity;
-            if(entity instanceof DerivedUnit){
-                DerivedUnit derivedUnit = (DerivedUnit)entity;
-                DerivationEvent derivedFrom = derivedUnit.getDerivedFrom();
-                Set<SpecimenOrObservationBase> originals = derivedFrom.getOriginals();
-                for (SpecimenOrObservationBase<?> original: originals) {
-                        original.removeDerivationEvent(derivedFrom);
-//                        saveOrUpdate(original);
-                }
-            }
-            if(entity instanceof DnaSample && ((DnaSample) entity).getRecordBasis()==SpecimenOrObservationType.DnaSample){
-                DnaSample dnaSample = (DnaSample)entity;
-                for (Sequence sequence : dnaSample.getSequences()) {
-                    entitiesToDelete.addAll(collectEntitiesToDelete(sequence));
-                    dnaSample.removeSequence(sequence);
-//                    saveOrUpdate(dnaSample);
-                }
-            }
-            Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
-            for (DerivationEvent derivationEvent : derivationEvents) {
-                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
-                    entitiesToDelete.addAll(collectEntitiesToDelete(derivedUnit));
-                }
+    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
+        DeleteResult deleteResult = isDeletable(entity, config);
+        if(!deleteResult.isOk()){
+            return deleteResult;
+        }
+        Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
+        for (DerivationEvent derivationEvent : derivationEvents) {
+            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+            for (DerivedUnit derivedUnit : derivatives) {
+                deleteResult.includeResult(deepDelete(derivedUnit, config));
             }
         }
-        else if(entity instanceof Sequence){
-            Sequence sequence = (Sequence)entity;
-            for (SingleRead singleRead : sequence.getSingleReads()) {
-                entitiesToDelete.addAll(collectEntitiesToDelete(singleRead));
-                sequence.removeSingleRead(singleRead);
-            }
-//            sequenceService.saveOrUpdate(sequence);
-        }
-        entitiesToDelete.add(entity);
-        return entitiesToDelete;
+        deleteResult.includeResult(delete(entity, config));
+        return deleteResult;
     }
 
     /* (non-Javadoc)

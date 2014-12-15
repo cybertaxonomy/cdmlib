@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -343,12 +344,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config);
 
     /**
-     * Deletes the specified specimen and all sub derivates.
+     * Deletes the specified specimen and all sub derivates.<br>
+     * <b>Note:</b> Be sure to allow child deletion in the config.
      * @param from the specimen which should be deleted with all its sub derivates
      * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
-    public DeleteResult deleteDerivateHierarchy(ICdmBase from, SpecimenDeleteConfigurator config);
+    public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
