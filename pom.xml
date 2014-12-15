@@ -538,10 +538,21 @@
                     </executions>
                 -->
             </plugin>
-            <!--
+            <!--  -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <configuration>
+                  <!-- 
+                    when the dependencyLocations option is enabled maven will determine if 
+                    resources are located within a given repository. If that repository doesn’t 
+                    exist anyomore or is just terribly slow and will produce tons of line in the log 
+                    starting with: '[ERROR] Unable to determine if resource ...'
+                    This will slow down site build drastically, therefore we disable this option here.
+                  -->
+                  <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+                <!-- just the deafault
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -555,7 +566,8 @@
                         </reports>
                     </reportSet>
                 </reportSets>
-            </plugin>   -->
+                -->
+            </plugin> 
             <!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
