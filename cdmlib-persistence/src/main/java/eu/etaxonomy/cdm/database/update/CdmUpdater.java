@@ -254,9 +254,11 @@ public class CdmUpdater {
         }
         System.out.println("Number of databases to update: " + databaseNames.length);
         for(String dnName : databaseNames){
+            System.out.println(dnName + " UPDATE ...");
             ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, dnName, port, username, password, null);
             boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
-            System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
+            System.out.println(dnName + " DONE " + (success ? "successfully" : "with ERRORS"));
+            System.out.println("====================================================================");
 
         }
     }
