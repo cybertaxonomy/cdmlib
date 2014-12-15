@@ -2202,6 +2202,20 @@ public class DerivedUnitFacade {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the original label information of the derived unit.
+	 * @return
+	 */
+	@Transient
+	public String getOriginalLabelInfo() {
+		testDerivedUnit();
+		return derivedUnit.getOriginalLabelInfo();
+	}
+	public void setOriginalLabelInfo(String originalLabelInfo) {
+		testDerivedUnit();
+		derivedUnit.setOriginalLabelInfo(originalLabelInfo);
+	}
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {

@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -63,7 +62,6 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -79,6 +77,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
+	
     @SpringBeanByType
     private IOccurrenceService service;
 
@@ -122,6 +121,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
     PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
+    String originalLabelInfo = "original label info";
+
 
     DerivedUnitFacade specimenFacade;
 
@@ -177,6 +178,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimen.setStoredUnder(taxonName);
         specimen.setCollection(collection);
         specimen.setPreservation(preservationMethod);
+        specimen.setOriginalLabelInfo(originalLabelInfo);
 
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
@@ -1368,7 +1370,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
-
+    
+    
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
@@ -1417,6 +1420,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    @Test
+    public void testGetSetOriginalLabelInfo() {
+        Assert.assertEquals("Original label info must be same", originalLabelInfo,
+                specimenFacade.getOriginalLabelInfo());
+        specimenFacade.setOriginalLabelInfo("OrigLabel Info xxx");
+        Assert.assertEquals("New accession number must be 'OrigLabel Info xxx'",
+                "OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo());
+    }
+    
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
