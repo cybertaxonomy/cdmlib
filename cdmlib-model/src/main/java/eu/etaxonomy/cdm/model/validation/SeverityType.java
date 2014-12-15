@@ -20,7 +20,7 @@ import org.hibernate.usertype.UserType;
 import eu.etaxonomy.cdm.validation.Severity;
 
 /**
- * A Hibernate {@code UserType} for persisting {@link Severity} instances.
+ * A hibernate {@code UserType} for persisting {@link Severity} instances.
  * 
  * @see EntityConstraintViolation
  * 
