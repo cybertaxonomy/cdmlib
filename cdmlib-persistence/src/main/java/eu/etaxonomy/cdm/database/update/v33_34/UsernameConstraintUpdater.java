@@ -9,7 +9,10 @@
 */
 package eu.etaxonomy.cdm.database.update.v33_34;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -47,12 +50,38 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		//remove 2-fold constraint
-		boolean result = removeExistingConstraint(datasource, caseType);
+		boolean result = removeDuplicates(datasource, caseType);
+		result &= removeExistingConstraint(datasource, caseType);
 		result &= createColumnConstraint(datasource, caseType);
 		result &= createUuidConstraint(datasource, caseType);
 		return result ? 1 : null;
 	}
 	
+	private boolean removeDuplicates(ICdmDataSource datasource, CaseType caseType) {
+		try {
+			Set<String> existing = new HashSet<>();
+			String sql = " SELECT id, columnName as uniquecol FROM tableName ";
+			sql = sql.replace("columnName", columnName).replace("tableName", caseType.transformTo(tableName));
+			ResultSet rs = datasource.executeQuery(sql);
+			while (rs.next()){
+				int id = rs.getInt("id");
+				String key = rs.getString("uniquecol");
+				while (key == null || existing.contains(key.toLowerCase())){
+					key = key == null ? "_" : key + "_"; 
+					String sqlUpdate = "UPDATE tableName SET columnName = '" + key + "' WHERE id = " + id;
+					sqlUpdate = sqlUpdate.replace("columnName", columnName).replace("tableName", caseType.transformTo(tableName));
+					datasource.executeUpdate(sqlUpdate);
+				}
+				existing.add(key.toLowerCase());
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
 	private boolean createUuidConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
 			String updateQuery = getCreateQuery(datasource, caseType, tableName, tableName + "_UniqueKey", "uuid");
