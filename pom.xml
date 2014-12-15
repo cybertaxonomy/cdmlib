@@ -323,7 +323,9 @@
                 <version>3.0</version>
                 <configuration>
                     <locales>en</locales>
-		    <outputEncoding>UTF-8</outputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <!-- chmod: not not use chmod, rather adapt the umask of the user at the server to which the site is deployed -->
+                    <chmod>false</chmod>
                 </configuration>
             </plugin>
             <plugin>
