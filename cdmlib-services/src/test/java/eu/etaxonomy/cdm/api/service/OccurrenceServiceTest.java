@@ -74,14 +74,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
-    private static final UUID FIELD_UNIT_UUID = UUID.fromString("b5f58da5-4442-4001-9d13-33f41518b72a");
-    private static final UUID DERIVED_UNIT_UUID = UUID.fromString("448be6e7-f19c-4a10-9a0a-97aa005f817d");
-    private static final UUID DNA_SAMPLE_UUID = UUID.fromString("bee4212b-aff1-484e-845f-065c7d6216af");
-    private static final UUID SEQUENCE_UUID = UUID.fromString("0b867369-de8c-4837-a708-5b7d9f6091be");
-    private static final UUID TAXON_UUID = UUID.fromString("e93b3840-326c-446e-89f1-a7611f17c0e8");
-    private static final UUID TAXON_DESCRIPTION_UUID = UUID.fromString("a87a893e-2ea8-427d-a26b-dbd2515d6b8a");
-    private static final UUID BOTANICAL_NAME_UUID = UUID.fromString("a604774e-d66a-4d47-b9d1-d0e38a8c787a");
-
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OccurrenceServiceTest.class);
 
@@ -244,15 +236,20 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml")
     public void testDeleteIndividualAssociatedAndTypeSpecimen(){
-//        //how the XML was generated
+        final UUID taxonDEscriptionUuid = UUID.fromString("a87a893e-2ea8-427d-a26b-dbd2515d6b8a");
+        final UUID botanicalNameUuid = UUID.fromString("a604774e-d66a-4d47-b9d1-d0e38a8c787a");
+        final UUID fieldUnitUuid = UUID.fromString("67e81ca8-ff91-4df6-bf48-e4600c7f15a2");
+        final UUID derivedUnitUuid = UUID.fromString("d229713b-0123-4f15-bffc-76ae45c37564");
+
+        //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
+//        fieldUnit.setUuid(fieldUnitUuid);
 //        //sub derivates (DerivedUnit, DnaSample)
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+//        derivedUnit.setUuid(derivedUnitUuid);
 //
 //        //derivation events
-//        DerivationEvent derivationEventFUtoDU = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+//        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
 //
 //        occurrenceService.save(fieldUnit);
 //        occurrenceService.save(derivedUnit);
@@ -269,7 +266,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        // IndividualsAssociations and a "described" voucher specimen, and an
 //        // empty one)
 //        Taxon taxon = Taxon.NewInstance(name, null);
-//        taxon.setUuid(TAXON_UUID);
+//        taxon.setUuid(taxonUuid);
 //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 //        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
 //        //add voucher
@@ -307,17 +304,17 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //            e.printStackTrace();
 //        }
 
-        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        BotanicalName name = (BotanicalName) nameService.load(BOTANICAL_NAME_UUID);
-        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
+        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
+        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
+        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDEscriptionUuid);
         //check initial state (IndividualsAssociation)
         DescriptionElementBase descriptionElement = taxonDescription.getElements().iterator().next();
         assertTrue("wrong type of description element", descriptionElement.isInstanceOf(IndividualsAssociation.class));
         assertEquals("associated specimen is incorrect", associatedFieldUnit, ((IndividualsAssociation)descriptionElement).getAssociatedSpecimenOrObservation());
         //check initial state (Type Designation)
         Set<TypeDesignationBase> typeDesignations = name.getTypeDesignations();
-        TypeDesignationBase typeDesignation = typeDesignations.iterator().next();
+        TypeDesignationBase<?> typeDesignation = typeDesignations.iterator().next();
         assertTrue("wrong type of type designation", typeDesignation.isInstanceOf(SpecimenTypeDesignation.class));
         assertEquals("type specimen is incorrect", typeSpecimen, ((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen());
 
@@ -348,237 +345,24 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
-    public void testDeepDelete_FieldUnit(){
-        String assertMessage = "Incorrect number of specimens after deletion.";
-        DeleteResult deleteResult = null;
-        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
-        config.setDeleteMolecularData(true);
-        config.setDeleteChildren(true);
-
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
-
-        //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-
-        //delete field unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-    }
-
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
-    public void testDeepDelete_DerivedUnit(){
-        String assertMessage = "Incorrect number of specimens after deletion.";
-        DeleteResult deleteResult = null;
-        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
-        config.setDeleteMolecularData(true);
-        config.setDeleteChildren(true);
-
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
-
-        //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-
-        //delete derived unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-    }
-
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
-    public void testDeepDelete_DnaSample(){
-        String assertMessage = "Incorrect number of specimens after deletion.";
-        DeleteResult deleteResult = null;
-        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
-        config.setDeleteMolecularData(true);
-        config.setDeleteChildren(true);
-
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
-
-        //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-
-        //delete dna sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-    }
-
-
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
-    public void testDeleteDerivateHierarchyStepByStep(){
-//        //how the XML was generated
-//        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
-//        //sub derivates (DerivedUnit, DnaSample)
-//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
-//        DnaSample dnaSample = DnaSample.NewInstance();
-//        dnaSample.setUuid(DNA_SAMPLE_UUID);
-//
-//        //derivation events
-//        DerivationEvent derivationEventFUtoDU = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-//        DerivationEvent derivationEventDUtoDNA = DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
-//
-//        //DNA (Sequence, SingleRead, Amplification)
-//        Sequence sequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-//        sequence.setUuid(SEQUENCE_UUID);
-//        SingleRead singleRead = SingleRead.NewInstance();
-//        sequence.addSingleRead(singleRead);
-//        dnaSample.addSequence(sequence);
-//        AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample);
-//        amplificationResult.addSingleRead(singleRead);
-//        occurrenceService.save(fieldUnit);
-//        occurrenceService.save(derivedUnit);
-//        occurrenceService.save(dnaSample);
-//
-//        commitAndStartNewTransaction(null);
-//
-//        setComplete();
-//        endTransaction();
-//
-//
-//        try {
-//            writeDbUnitDataSetFile(new String[] {
-//                    "SpecimenOrObservationBase",
-//                    "SpecimenOrObservationBase_DerivationEvent",
-//                    "DerivationEvent",
-//                    "Sequence",
-//                    "Sequence_SingleRead",
-//                    "SingleRead",
-//                    "AmplificationResult"
-//            }, "testDeleteDerivateHierarchyStepByStep");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
-
-        String assertMessage = "Incorrect number of specimens after deletion.";
-        DeleteResult deleteResult = null;
-        SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
-
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
-        Sequence consensusSequence = sequenceService.load(SEQUENCE_UUID);
-
-        //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-
-        //delete single read -> should fail
-        SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
-        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        //delete sequence -> should fail
-        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-
-        //allow deletion of molecular data
-        config.setDeleteMolecularData(true);
-
-        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(consensusSequence.getSingleReads().isEmpty());
-
-        //delete sequence -> should fail
-        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
-
-
-        //delete dna sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-
-        //delete derived unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-
-        //delete field unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
-    }
-
-    @Test
-    @DataSet
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
     public void testListAssociatedAndTypedTaxa(){
+        UUID fieldUnitUuid = UUID.fromString("b359ff20-98de-46bf-aa43-3e10bb072cd4");
+        UUID typeSpecimenUuid = UUID.fromString("0f8608c7-ffe7-40e6-828c-cb3382580878");
+        UUID taxonDescriptionUuid = UUID.fromString("d77db2d4-45a1-4aa1-ab34-f33395f54965");
+        UUID taxonUuid = UUID.fromString("b0de794c-8cb7-4369-8f83-870ca37abbe0");
 //        //how the XML was generated
 //        FieldUnit associatedFieldUnit = FieldUnit.NewInstance();
+//        associatedFieldUnit.setUuid(fieldUnitUuid);
 //        //sub derivates (DerivedUnit, DnaSample)
 //        DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        DerivedUnit voucherSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.HumanObservation);
-//        DnaSample dnaSample = DnaSample.NewInstance();
-//        //description for voucher specimen (with InidividualsAssociation to type specimen just to make it complex ;) )
-//        SpecimenDescription voucherSpecimenDescription = SpecimenDescription.NewInstance(voucherSpecimen);
-//        voucherSpecimenDescription.addElement(IndividualsAssociation.NewInstance(typeSpecimen));
+//        typeSpecimen.setUuid(typeSpecimenUuid);
 //
 //        //derivation events
 //        DerivationEvent.NewSimpleInstance(associatedFieldUnit, typeSpecimen, DerivationEventType.ACCESSIONING());
-//        DerivationEvent.NewSimpleInstance(associatedFieldUnit, voucherSpecimen, DerivationEventType.ACCESSIONING());
-//        DerivationEvent.NewSimpleInstance(typeSpecimen, dnaSample, DerivationEventType.DNA_EXTRACTION());
 //
-//        //DNA (Sequence, SingleRead, Amplification)
-//        Sequence consensusSequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-//        SingleRead singleRead = SingleRead.NewInstance();
-//        consensusSequence.addSingleRead(singleRead);
-//        dnaSample.addSequence(consensusSequence);
-//        Amplification amplification = Amplification.NewInstance(dnaSample);
-//        amplification.addSingleRead(singleRead);
 //        occurrenceService.save(associatedFieldUnit);
 //        occurrenceService.save(typeSpecimen);
-//        occurrenceService.save(dnaSample);
 //
 //        //create name with type specimen
 //        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
@@ -589,9 +373,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        // IndividualsAssociations and a "described" voucher specimen, and an
 //        // empty one)
 //        Taxon taxon = Taxon.NewInstance(name, null);
+//        taxon.setUuid(taxonUuid);
 //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+//        taxonDescription.setUuid(taxonDescriptionUuid);
 //        //add voucher
-//        taxonDescription.setDescribedSpecimenOrObservation(voucherSpecimen);
 //        taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedFieldUnit));
 //        taxon.addDescription(taxonDescription);
 //        //add type designation to name
@@ -600,33 +385,42 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        taxon.addDescription(TaxonDescription.NewInstance());
 //        taxonService.saveOrUpdate(taxon);
 //
+//        commitAndStartNewTransaction(null);
 //
-//        commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase",
-//                "SpecimenOrObservationBase_DerivationEvent",
-//                "DerivationEvent",
-//                "Sequence",
-//                "Sequence_SingleRead",
-//                "SingleRead",
-//                "Amplification",
-//                "Amplification_SingleRead",
-//                "DescriptionElementBase",
-//                "DescriptionBase",
-//                "TaxonBase",
-//                "TypeDesignationBase",
-//                "TaxonNameBase",
-//                "TaxonNameBase_TypeDesignationBase",
-//                "HomotypicalGroup"});
+//        setComplete();
+//        endTransaction();
+//
+//        try {
+//            writeDbUnitDataSetFile(new String[]{
+//                                   "SpecimenOrObservationBase",
+//                    "SpecimenOrObservationBase_DerivationEvent",
+//                    "DerivationEvent",
+//                    "Sequence",
+//                    "Sequence_SingleRead",
+//                    "SingleRead",
+//                    "AmplificationResult",
+//                    "DescriptionElementBase",
+//                    "DescriptionBase",
+//                    "TaxonBase",
+//                    "TypeDesignationBase",
+//                    "TaxonNameBase",
+//                    "TaxonNameBase_TypeDesignationBase",
+//                    "HomotypicalGroup"}, "testListAssociatedAndTypedTaxa");
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 //
 //        System.out.println("associatedFieldUnit.getUuid() " + associatedFieldUnit.getUuid());
 //        System.out.println("typeSpecimen.getUuid() "+typeSpecimen.getUuid());
-//        System.out.println("voucherSpecimen.getUuid() "+voucherSpecimen.getUuid());
 //        System.out.println("taxonDescription.getUuid() "+taxonDescription.getUuid());
+//        System.out.println("taxon.getUuid() "+taxon.getUuid());
 
 
-        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        Taxon taxon = (Taxon) taxonService.load(TAXON_UUID);
-        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
+        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(typeSpecimenUuid);
+        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
         //check for FieldUnit (IndividualsAssociation)
         java.util.Collection<IndividualsAssociation> individualsAssociations = occurrenceService.listIndividualsAssociations(associatedFieldUnit, null, null, null,null);
         assertEquals("Number of individuals associations is incorrect", 1, individualsAssociations.size());
@@ -643,7 +437,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenTypeDesignation specimenTypeDesignation = typeDesignations.iterator().next();
         Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
         assertEquals("number of typified names is incorrect", 1, typifiedNames.size());
-        Set taxonBases = typifiedNames.iterator().next().getTaxonBases();
+        Set<?> taxonBases = typifiedNames.iterator().next().getTaxonBases();
         assertEquals("number of taxa incorrect", 1, taxonBases.size());
         Object next = taxonBases.iterator().next();
         assertTrue(next instanceof CdmBase && ((CdmBase)next).isInstanceOf(Taxon.class));
@@ -653,10 +447,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithSpecimenDescription.xml")
     public void testIsDeletableWithSpecimenDescription(){
+        UUID derivedUnitUuid = UUID.fromString("68095c8e-025d-49f0-8bb2-ed36378b75c3");
+        UUID specimenDescriptionUuid = UUID.fromString("4094f947-ce84-47b1-bad5-e57e33239d3c");
 //        //how the XML was generated
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+//        derivedUnit.setUuid(derivedUnitUuid);
 //        SpecimenDescription specimenDescription = SpecimenDescription.NewInstance();
+//        specimenDescription.setUuid(specimenDescriptionUuid);
 //        derivedUnit.addDescription(specimenDescription);
 //        occurrenceService.save(derivedUnit);
 //
@@ -687,8 +484,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        }
 
 
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        SpecimenDescription specimenDescription = (SpecimenDescription) derivedUnit.getDescriptions().iterator().next();
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
+        SpecimenDescription specimenDescription = (SpecimenDescription) descriptionService.load(specimenDescriptionUuid);
 
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         DeleteResult deleteResult = null;
@@ -706,11 +503,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml")
     public void testIsDeletableWithDescribedSpecimenInTaxonDescription(){
+        UUID fieldUnitUuid = UUID.fromString("d656a004-38ee-404c-810a-87ffb0ab16c2");
 //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
+//        fieldUnit.setUuid(fieldUnitUuid);
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
 //
 //        //derivation events
 //        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
@@ -721,9 +518,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        // create taxon with name and two taxon descriptions
 //        //(one with a "described" voucher specimen, and an empty one)
 //        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
-//        taxon.setUuid(TAXON_UUID);
-//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-//        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
+//        taxonDescription.setUuid(taxonDescriptionUuid);
 //        //add voucher
 //        taxonDescription.setDescribedSpecimenOrObservation(derivedUnit);
 //        taxon.addDescription(taxonDescription);
@@ -759,9 +554,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //            e.printStackTrace();
 //        }
 
-        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-
-        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
 
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         DeleteResult deleteResult = null;
@@ -779,9 +572,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml")
     public void testIsDeletableWithIndividualsAssociationTaxonDescription(){
+        UUID fieldUnitUuid = UUID.fromString("7978b978-5100-4c7a-82ef-3a23e0f3c723");
+        UUID taxonDescriptionUuid = UUID.fromString("d4b0d561-6e7e-4fd8-bf3c-925530f949eb");
 //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
+//        fieldUnit.setUuid(fieldUnitUuid);
 //
 //        occurrenceService.save(fieldUnit);
 //
@@ -789,9 +584,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        // IndividualsAssociations and a "described" voucher specimen, and an
 //        // empty one)
 //        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual sec L."), null);
-//        taxon.setUuid(TAXON_UUID);
 //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-//        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
+//        taxonDescription.setUuid(taxonDescriptionUuid);
 //        //add voucher
 //        taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
 //        taxon.addDescription(taxonDescription);
@@ -827,8 +621,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //            e.printStackTrace();
 //        }
 
-        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(TAXON_DESCRIPTION_UUID);
+        FieldUnit associatedFieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
+        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
         IndividualsAssociation individualsAssociation = (IndividualsAssociation) taxonDescription.getElements().iterator().next();
 
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
@@ -849,14 +643,16 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithTypeDesignation.xml")
     public void testIsDeletableWithTypeDesignation(){
+        UUID derivedUnitUuid = UUID.fromString("f7fd1dc1-3c93-42a7-8279-cde5bfe37ea0");
+        UUID botanicalNameUuid = UUID.fromString("7396430c-c932-4dd3-a45a-40c2808b132e");
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+////        derivedUnit.setUuid(derivedUnitUuid);
 //
 //        occurrenceService.save(derivedUnit);
 //
 //        //create name with type specimen
 //        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
-//        name.setUuid(BOTANICAL_NAME_UUID);
+////        name.setUuid(botanicalNameUuid);
 //        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
 //        typeDesignation.setTypeSpecimen(derivedUnit);
 //        //add type designation to name
@@ -893,10 +689,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
 
 
-        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
+        DerivedUnit typeSpecimen = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
 
         //create name with type specimen
-        BotanicalName name = (BotanicalName) nameService.load(BOTANICAL_NAME_UUID);
+        BotanicalName name = (BotanicalName) nameService.load(botanicalNameUuid);
         SpecimenTypeDesignation typeDesignation = (SpecimenTypeDesignation) name.getTypeDesignations().iterator().next();
 
         //add type designation to name
@@ -921,18 +717,21 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithChildren.xml")
     public void testIsDeletableWithChildren(){
+        UUID fieldUnitUuid = UUID.fromString("92ada058-4c14-4131-8ecd-b82dc1dd2882");
+        UUID derivedUnitUuid = UUID.fromString("896dffdc-6809-4914-8950-5501fee1c0fd");
+        UUID dnaSampleUuid = UUID.fromString("7efd1d66-ac7f-4202-acdf-a72cbb9c3a21");
 //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
+////        fieldUnit.setUuid(fieldUnitUuid);
 //        //sub derivates (DerivedUnit, DnaSample)
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+////        derivedUnit.setUuid(derivedUnitUuid);
 //        DnaSample dnaSample = DnaSample.NewInstance();
-//        dnaSample.setUuid(DNA_SAMPLE_UUID);
+////        dnaSample.setUuid(dnaSampleUuid);
 //
 //        //derivation events
-//        DerivationEvent derivationEventFUtoDU = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-//        DerivationEvent derivationEventDUtoDNA = DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+//        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+//        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 //
 //        occurrenceService.save(fieldUnit);
 //        occurrenceService.save(derivedUnit);
@@ -964,11 +763,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
-
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
         //sub derivates (DerivedUnit, DnaSample)
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(dnaSampleUuid);
+//        Sequence sequence = dnaSample.getSequences().iterator().next();
+
         //derivation events
         DerivationEvent fieldUnitToDerivedUnitEvent = fieldUnit.getDerivationEvents().iterator().next();
         DerivationEvent derivedUnitToDnaSampleEvent = derivedUnit.getDerivationEvents().iterator().next();
@@ -978,25 +778,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
         //check deletion of DnaSample
         deleteResult = occurrenceService.isDeletable(dnaSample, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        //allow deletion of molecular data
-        config.setDeleteMolecularData(true);
-        deleteResult = occurrenceService.isDeletable(dnaSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
 
         //check deletion of Specimen
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
 
         //delete DnaSample
         occurrenceService.deleteDerivateHierarchy(dnaSample, config);
 
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
 
         //check deletion of fieldUnit
         deleteResult = occurrenceService.isDeletable(fieldUnit, config);
@@ -1017,20 +810,20 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     public void createTestDataSet() throws FileNotFoundException {
         //how the XML was generated
         FieldUnit fieldUnit = FieldUnit.NewInstance();
-        fieldUnit.setUuid(FIELD_UNIT_UUID);
+//        fieldUnit.setUuid(FIELD_UNIT_UUID);
         //sub derivates (DerivedUnit, DnaSample)
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-        derivedUnit.setUuid(DERIVED_UNIT_UUID);
+//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
         DnaSample dnaSample = DnaSample.NewInstance();
-        dnaSample.setUuid(DNA_SAMPLE_UUID);
+//        dnaSample.setUuid(DNA_SAMPLE_UUID);
 
         //derivation events
-        DerivationEvent derivationEventFUtoDU = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-        DerivationEvent derivationEventDUtoDNA = DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         //DNA (Sequence, SingleRead, Amplification)
         Sequence sequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-        sequence.setUuid(SEQUENCE_UUID);
+//        sequence.setUuid(SEQUENCE_UUID);
         SingleRead singleRead = SingleRead.NewInstance();
         sequence.addSingleRead(singleRead);
         dnaSample.addSequence(sequence);
@@ -1042,7 +835,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         //create name with type specimen
         BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
-        name.setUuid(BOTANICAL_NAME_UUID);
+//        name.setUuid(BOTANICAL_NAME_UUID);
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
         typeDesignation.setTypeSpecimen(derivedUnit);
         //add type designation to name
@@ -1052,9 +845,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // IndividualsAssociations and a "described" voucher specimen, and an
         // empty one)
         Taxon taxon = Taxon.NewInstance(name, null);
-        taxon.setUuid(TAXON_UUID);
+//        taxon.setUuid(TAXON_UUID);
         TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
+//        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
         //add voucher
         taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
         taxon.addDescription(taxonDescription);

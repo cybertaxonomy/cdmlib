@@ -918,29 +918,29 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
-        DeleteResult deleteResult = super.isDeletable(specimen, config);
+        DeleteResult deleteResult = new DeleteResult();
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator)config;
 
         //check elements found by super method
-        Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
-        boolean isDeletable = true;
+        Set<CdmBase> relatedObjects = super.isDeletable(specimen, config).getRelatedObjects();
         for (CdmBase cdmBase : relatedObjects) {
+            deleteResult.addRelatedObject(cdmBase);
             //check for type designation
             if(cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
-                isDeletable = false;
+                deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
                 break;
             }
             //check for IndividualsAssociations
             else if(cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
-                isDeletable = false;
+                deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
                 break;
             }
             //check for specimen/taxon description
             else if((cdmBase.isInstanceOf(SpecimenDescription.class) || cdmBase.isInstanceOf(TaxonDescription.class))
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
-                isDeletable = false;
+                deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used in a Description."));
                 break;
             }
@@ -954,7 +954,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
                 else if(!specimenDeleteConfigurator.isDeleteChildren()){
                     //if not and children should not be deleted then it is undeletable
-                    isDeletable = false;
+                    deleteResult.setAbort();
                     deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
                     break;
                 }
@@ -966,7 +966,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
                     }
                     if(!childResult.isOk()){
-                        isDeletable = false;
+                        deleteResult.setAbort();
                         deleteResult.includeResult(childResult);
                         break;
                     }
@@ -974,22 +974,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             //check for amplification
             else if(cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
-                isDeletable = false;
+                deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in amplification results."));
                 break;
             }
             //check for sequence
             else if(cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
-                isDeletable = false;
+                deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in sequences."));
                 break;
             }
         }
-        if(isDeletable){
-            //set to OK when config allows to delete related objects
-            deleteResult.setStatus(DeleteStatus.OK);
-        }
-
         return deleteResult;
     }
 
