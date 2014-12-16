@@ -48,7 +48,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private final UUID DERIVED_UNIT_UUID = UUID.fromString("448be6e7-f19c-4a10-9a0a-97aa005f817d");
     private final UUID DNA_SAMPLE_UUID = UUID.fromString("bee4212b-aff1-484e-845f-065c7d6216af");
     private final UUID SEQUENCE_UUID = UUID.fromString("0b867369-de8c-4837-a708-5b7d9f6091be");
-    private final UUID TAXON_UUID = UUID.fromString("e93b3840-326c-446e-89f1-a7611f17c0e8");
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OccurrenceServiceDeepDeleteTest.class);

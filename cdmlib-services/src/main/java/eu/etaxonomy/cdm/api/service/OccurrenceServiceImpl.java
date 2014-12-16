@@ -947,28 +947,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             //check for children and parents (derivation events)
             else if(cdmBase.isInstanceOf(DerivationEvent.class)){
                 DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(cdmBase, DerivationEvent.class);
-                //check if derivation event is derivedFrom event (parent -> child)
-                if(derivationEvent.getDerivatives().contains(specimen)){
-                    //if it is then the specimen is still deletable
-                    continue;
-                }
-                else if(!specimenDeleteConfigurator.isDeleteChildren()){
-                    //if not and children should not be deleted then it is undeletable
-                    deleteResult.setAbort();
-                    deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
-                    break;
-                }
-                else{
-                    //check all children if they can be deleted
-                    Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-                    DeleteResult childResult = new DeleteResult();
-                    for (DerivedUnit derivedUnit : derivatives) {
-                        childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
+                //check if derivation event is empty
+                if(!derivationEvent.getDerivatives().isEmpty()){
+                    if(derivationEvent.getDerivatives().size()==1 && derivationEvent.getDerivatives().contains(specimen)){
+                        //if it is the parent event with only one derivate then the specimen is still deletable
+                        continue;
                     }
-                    if(!childResult.isOk()){
+                    else if(!specimenDeleteConfigurator.isDeleteChildren()){
+                        //if not and children should not be deleted then it is undeletable
                         deleteResult.setAbort();
-                        deleteResult.includeResult(childResult);
+                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
                         break;
+                    }
+                    else{
+                        //check all children if they can be deleted
+                        Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+                        DeleteResult childResult = new DeleteResult();
+                        for (DerivedUnit derivedUnit : derivatives) {
+                            childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
+                        }
+                        if(!childResult.isOk()){
+                            deleteResult.setAbort();
+                            deleteResult.includeResult(childResult);
+                            break;
+                        }
                     }
                 }
             }
@@ -995,6 +997,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
 
+        if(config.isDeleteChildren()){
+            Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+            for (DerivationEvent derivationEvent : derivationEvents) {
+                Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+                for (DerivedUnit derivedUnit : derivatives) {
+                    delete(derivedUnit, config);
+                }
+            }
+        }
+
         DeleteResult deleteResult = isDeletable(specimen, config);
         if(!deleteResult.isOk()){
             return deleteResult;
@@ -1002,6 +1014,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         //check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
+
         for (CdmBase relatedObject : relatedObjects) {
             //check for TypeDesignations
             if(relatedObject.isInstanceOf(SpecimenTypeDesignation.class)){
@@ -1058,9 +1071,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         }
                     }
                 }
-                //child derivation events
                 else{
-                    deleteResult.includeResult(deepDelete(specimen, config));
+                    //child derivation events should not occur since we delete the hierarchy from bottom to top
                 }
             }
         }
@@ -1096,26 +1108,24 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             deleteResult.setStatus(DeleteStatus.OK);
         }
         else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
-            deleteResult = deepDelete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
+            deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
         }
         return deleteResult;
     }
 
-    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
-        DeleteResult deleteResult = isDeletable(entity, config);
-        if(!deleteResult.isOk()){
-            return deleteResult;
-        }
-        Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
-        for (DerivationEvent derivationEvent : derivationEvents) {
-            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-            for (DerivedUnit derivedUnit : derivatives) {
-                deleteResult.includeResult(deepDelete(derivedUnit, config));
-            }
-        }
-        deleteResult.includeResult(delete(entity, config));
-        return deleteResult;
-    }
+//    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
+//        Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
+//        for (DerivationEvent derivationEvent : derivationEvents) {
+//            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+//            for (DerivedUnit derivedUnit : derivatives) {
+//                DeleteResult deleteResult = deepDelete(derivedUnit, config);
+//                if(!deleteResult.isOk()){
+//                    return deleteResult;
+//                }
+//            }
+//        }
+//        return delete(entity, config);
+//    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
