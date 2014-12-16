@@ -720,6 +720,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID fieldUnitUuid = UUID.fromString("92ada058-4c14-4131-8ecd-b82dc1dd2882");
         UUID derivedUnitUuid = UUID.fromString("896dffdc-6809-4914-8950-5501fee1c0fd");
         UUID dnaSampleUuid = UUID.fromString("7efd1d66-ac7f-4202-acdf-a72cbb9c3a21");
+        //if this test fails be sure to check if there are left-over elements in the DB
+        //e.g. clear by adding "<AMPLIFICATIONRESULT/>" to the data set XML
+
 //        //how the XML was generated
 //        FieldUnit fieldUnit = FieldUnit.NewInstance();
 //        fieldUnit.setUuid(fieldUnitUuid);
