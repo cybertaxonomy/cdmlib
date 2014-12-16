@@ -52,21 +52,40 @@ public class ExcelSpecimenImportExampleTest extends
 	IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
+	private IImportConfigurator configuratorXslx;
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls";
-		URL url = this.getClass().getResource(inputFile);
-		assertNotNull("URL for the test file '" + inputFile
-				+ "' does not exist", url);
+		//xsl
 		try {
+			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls";
+			URL url = this.getClass().getResource(inputFile);
+			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
 			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
+			assertNotNull("Configurator could not be created", configurator);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail();
+			Assert.fail("xsl configurator could not be created");
 		}
-		assertNotNull("Configurator could not be created", configurator);
+		
+		//xslx
+		try {
+			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx";
+			URL url = this.getClass().getResource(inputFile);
+			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
+			configuratorXslx.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
+			assertNotNull("Configurator could not be created", configurator);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail("Xslx configurator could not be created");
+		}
+		
+		
+		
+		
+
 	}
 
 	@Test
@@ -78,7 +97,7 @@ public class ExcelSpecimenImportExampleTest extends
 
 
 	 @Test
-	 @Ignore
+	 @Ignore  //does not run together with testResultSet or others
 	 public void testDoInvoke() {
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -87,8 +106,21 @@ public class ExcelSpecimenImportExampleTest extends
 		 assertEquals("Number of field units should be 3", 3,
 		 occurrenceService.count(FieldUnit.class));
 
-		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
-
+//		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+	 }
+	 
+	 @Test
+	 @Ignore //does not run together with testResultSet or others 
+	 public void testDoInvokeXslx() {
+		 boolean result = defaultImport.invoke(configurator);
+		 assertTrue("Return value for import.invoke should be true", result);
+		 assertEquals("Number of specimen should be 3", 3,
+		 occurrenceService.count(DerivedUnit.class));
+		 assertEquals("Number of field units should be 3", 3,
+		 occurrenceService.count(FieldUnit.class));
+		 this.rollback();
+		 
+//		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 	 }
 
 	@Test
@@ -122,9 +154,6 @@ public class ExcelSpecimenImportExampleTest extends
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
