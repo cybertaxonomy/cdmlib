@@ -439,7 +439,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     @XmlEnumValue("IdentifierType")
     IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier", "IDE", null),
  
-    //34    
+    //35    
     /**
      * DNA Quality levels link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
      * But also local identifier types such Sample Designation, Catalog Number, 
