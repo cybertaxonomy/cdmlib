@@ -450,6 +450,9 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
  
     ;
+    
+    
+// **************** END ENUM **********************/
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermType.class);
