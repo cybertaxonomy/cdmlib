@@ -152,6 +152,15 @@ public class SingleReadAlignment extends VersionableEntity {
 	public void setEditedSequence(String editedSequence) {
 		this.editedSequence = editedSequence;
 	}
+	
+
+	public boolean isReverseComplement() {
+		return reverseComplement;
+	}
+
+	public void setReverseComplement(boolean reverseComplement) {
+		this.reverseComplement = reverseComplement;
+	}
 
 // ******************* CLONE *********************/
 
@@ -162,4 +171,5 @@ public class SingleReadAlignment extends VersionableEntity {
 		//all objects can be reused
 		return super.clone();
 	}
+
 }
