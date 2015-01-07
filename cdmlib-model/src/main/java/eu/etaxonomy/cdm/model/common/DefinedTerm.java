@@ -99,6 +99,11 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm NewKindOfUnitInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
 	}
+	
+	public static DefinedTerm NewIdentifierTypeInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
+	}
+	
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only
