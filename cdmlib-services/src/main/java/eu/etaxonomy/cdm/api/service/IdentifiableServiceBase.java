@@ -55,14 +55,12 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
-	
-//    @Autowired
-//    protected ICommonService commonService;
 
 	
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
 	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
+	@Override
 	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
@@ -75,6 +73,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
@@ -89,6 +88,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 
 	
 	@Transactional(readOnly = false)
+	@Override
 	public T replace(T x, T y) {
 		return dao.replace(x, y);
 	}
@@ -121,6 +121,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
 	@Transactional(readOnly = true)
+	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
 
@@ -131,15 +132,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#getUuidAndTitleCache()
-	 */
 	@Transactional(readOnly = true)
+	@Override
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -152,11 +152,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -168,6 +170,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
 			
@@ -182,6 +185,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	@Transactional(readOnly = true)
+	@Override
 	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 			
@@ -193,11 +197,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public T find(LSID lsid) {
 		return dao.find(lsid);
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(clazz,queryString);
 		
@@ -209,10 +215,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
-	 */
 	@Override
 	@Transactional(readOnly = false)
 	public void updateTitleCache() {
@@ -439,9 +441,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		int result; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
@@ -551,13 +550,16 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return result;
 	}	
 	
-	 public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
+	@Transactional(readOnly = true)
+	@Override
+	public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 		 
 		 return numberOfResults;
-	 }
+	}
 	 
 	@Transactional(readOnly = true)
+	@Override
 	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
 				config.getMatchMode(), config.getCriteria());
