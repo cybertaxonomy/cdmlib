@@ -127,7 +127,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Extension
      */
     @XmlEnumValue("ExtensionType")
-    ExtensionType(UUID.fromString("12f5c03b-528a-4909-b81b-e525feabc97c"), "Extension type", "EXT", null),
+    ExtensionType(UUID.fromString("12f5c03b-528a-4909-b81b-e525feabc97c"), "Extension Type", "EXT", null),
 
     //8
     /**
@@ -437,7 +437,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * {@link Identifier#type}
      */
     @XmlEnumValue("IdentifierType")
-    IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier", "IDE", null),
+    IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier Type", "IDE", null),
  
     //35    
     /**
