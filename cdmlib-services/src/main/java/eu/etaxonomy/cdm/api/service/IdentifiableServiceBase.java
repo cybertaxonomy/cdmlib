@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -565,8 +566,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				config.getMatchMode(), config.getCriteria());
 		
 	}
-	
-	
+
+	@Override
+	public <S extends IdentifiableEntity> List<S> listByIdentifier(
+			S clazz, String identifier, DefinedTerm identifierType,
+			MatchMode matchmode, Integer pageSize,
+			Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		return dao.findByIdentifier(clazz, identifier, identifierType,
+				matchmode, pageSize, pageNumber, orderHints,
+				propertyPaths);
+	}
 
 
 }

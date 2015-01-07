@@ -32,6 +32,7 @@ import org.hibernate.search.SearchFactory;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -56,16 +57,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         super(type);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
-     */
+
+    @Override
     public List<T> findByTitle(String queryString) {
         return findByTitle(queryString, null);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
-     */
+    @Override
     public List<T> findByTitle(String queryString, CdmBase sessionObject) {
         /**
          *  FIXME why do we need to call update in a find* method? I don't know for sure
@@ -84,6 +82,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
     }
 
+    @Override
     public List<T> findByTitleAndClass(String queryString, Class<T> clazz) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitleAndClass(String queryString, Class<T> clazz)");
         Criteria crit = getSession().createCriteria(clazz);
@@ -92,6 +91,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
     }
 
+    @Override
     public List<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
@@ -143,17 +143,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     }
 
 
+    @Override
     public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
+    @Override
     public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, boolean, int, int, java.util.List)
-     */
+    @Override
     public List<T> findByTitle(String queryString, MatchMode matchmode, int page, int pagesize, List<Criterion> criteria) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
         Criteria crit = getSession().createCriteria(type);
@@ -180,6 +180,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
     }
 
+    @Override
     public int countRights(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countRights(T identifiableEntity)");
         Query query = getSession().createQuery("select count(rights) from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
@@ -187,6 +188,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return ((Long)query.uniqueResult()).intValue();
     }
 
+    @Override
     public int countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
         Query query = getSession().createQuery("select count(source) from OriginalSourceBase source where source.sourcedObj = :identifiableEntity");
@@ -194,6 +196,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return ((Long)query.uniqueResult()).intValue();
     }
 
+    @Override
     public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
         Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
@@ -204,6 +207,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
     }
 
+//    @Override  //TODO add to interface, maybe add property path
     public List<Credit> getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber) {
         checkNotInPriorView("IdentifiableDaoBase.getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber)");
         Query query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity");
@@ -212,6 +216,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return (List<Credit>)query.list();
     }
 
+    @Override
     public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
         Query query = getSession().createQuery("select source from OriginalSourceBase source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
@@ -223,6 +228,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return results;
     }
 
+    @Override
     public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
         checkNotInPriorView("IdentifiableDaoBase.findOriginalSourceByIdInSource(String idInSource, String idNamespace)");
         Query query = getSession().createQuery(
@@ -237,6 +243,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return (List<T>)query.list();
     }
 
+    @Override
     public T find(LSID lsid) {
         checkNotInPriorView("IdentifiableDaoBase.find(LSID lsid)");
         Criteria criteria = getSession().createCriteria(type);
@@ -273,6 +280,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         }
     }
 
+    @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
         Session session = getSession();
         Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
@@ -292,14 +300,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     }
 
 
+    @Override
     public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
     }
 
+    @Override
     public int countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "title",queryString,matchmode,criterion);
     }
 
+    @Override
     public int count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
        QueryParser queryParser = new QueryParser(version, defaultField , new StandardAnalyzer(version));
@@ -324,6 +335,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         }
     }
 
+    @Override
     public void optimizeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         SearchFactory searchFactory = fullTextSession.getSearchFactory();
@@ -333,6 +345,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         fullTextSession.flushToIndexes();
     }
 
+    @Override
     public void purgeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         for(Class clazz : indexedClasses) {
@@ -341,6 +354,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         fullTextSession.flushToIndexes();
     }
 
+    @Override
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -350,6 +364,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         fullTextSession.flushToIndexes();
     }
 
+    @Override
     public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
         QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
@@ -387,6 +402,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         }
     }
 
+    @Override
     public String suggestQuery(String string) {
         throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
     }
@@ -430,8 +446,26 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         Integer result = ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         return result;
     }
-
-
-
+    
+	@Override
+	public <T extends IdentifiableEntity> List<T> findByIdentifier(
+			T clazz, String identifier, DefinedTerm identifierType,
+			MatchMode matchmode, Integer pageSize,
+			Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+        
+		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        Query query = getSession().createQuery(
+                "Select c from " + type.getSimpleName() + " as c " +
+                "inner join c.identifier as identifier " +
+                "where identifier.identifier = :identifier " +
+                    " AND identifier.identifierType = :type"
+            );
+        query.setString("identifier", identifier);
+        query.setEntity("type", identifierType);
+        //TODO matchmode, pageSize, pageNumber, orderHints, propertyPaths
+        return (List<T>)query.list();
+		
+	}
 
 }

@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -65,7 +67,8 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @return a count of Rights instances
 	 */
     public int countRights(T identifiableEntity);
-	
+    
+    
 	/**
 	 * Return a List of the rights for this identifiable entity
 	 * 
@@ -171,5 +174,21 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @return a count of instances of type T matching the queryString
 	 */
 	public abstract Long countTitleCache(Class<? extends T> clazz, String queryString, MatchMode matchMode);
+
+	
+    /**
+     * Returns all {@link IdentifiableEntity identifiable entities} which have the according
+     * identifier attached  
+     * @param clazz the identiable entity subclass, may be null
+     * @param identifier the identifer as {@link String}
+     * @param identifierType the identifier type, maybe null
+     * @param matchmode 
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <T extends IdentifiableEntity> List<T> findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }
