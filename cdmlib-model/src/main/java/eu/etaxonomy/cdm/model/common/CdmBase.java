@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "createdBy"
 })
 @MappedSuperclass
-public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
+public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CdmBase.class);
@@ -366,6 +366,22 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
             //TODO handle exceptioin;
         }
     }
+    
+
+	@Override
+	public String getUserFriendlyTypeName(){
+		return getClass().getSimpleName();
+	}
+
+	@Override
+	public String getUserFriendlyDescription(){
+		return toString();
+	}
+
+	@Override
+	public String getUserFriendlyFieldName(String field){
+		return field;
+	}
 
 //********************** CLONE *****************************************/
 
