@@ -74,10 +74,10 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 
 	private void cleanup(Runnable runnable)
 	{
-		EntityValidationTask newTask = (EntityValidationTask) runnable;
+		EntityValidationTaskBase newTask = (EntityValidationTaskBase) runnable;
 		Iterator<Runnable> iterator = this.iterator();
 		while (iterator.hasNext()) {
-			EntityValidationTask oldTask = (EntityValidationTask) iterator.next();
+			EntityValidationTaskBase oldTask = (EntityValidationTaskBase) iterator.next();
 			if (oldTask.getEntity().equals(newTask.getEntity())) {
 				iterator.remove();
 			}

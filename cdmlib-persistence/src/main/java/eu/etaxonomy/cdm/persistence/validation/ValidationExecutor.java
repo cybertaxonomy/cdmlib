@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 /**
  * A {@code ThreadPoolExecutor} specialized in dealing with {@link EntityValidationThread}s and
- * validation tasks (see {@link EntityValidationTask}). This implementation creates a thread
+ * validation tasks (see {@link EntityValidationTaskBase}). This implementation creates a thread
  * pool containing just one thread, meaning all validation tasks are run one after another on
  * that one thread. Especially for Level-3 validation tasks this is probably exactly what you
  * want. These tasks are run upon CRUD events, and you don't want the database to be crawled to
@@ -126,7 +126,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 */
 	@Override
 	public void rejectedExecution(Runnable r, ThreadPoolExecutor executor){
-		EntityValidationTask task = (EntityValidationTask) r;
+		EntityValidationTaskBase task = (EntityValidationTaskBase) r;
 		logger.error(String.format("Validation of %s cancelled. Too many validation tasks waiting to be executed.", task.getEntity().toString()));
 	}
 
@@ -146,7 +146,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	@Override
 	protected void beforeExecute(Thread thread, Runnable runnable){
 		EntityValidationThread validationThread = (EntityValidationThread) thread;
-		EntityValidationTask task = (EntityValidationTask) runnable;
+		EntityValidationTaskBase task = (EntityValidationTaskBase) runnable;
 		validationThread.setTerminationRequested(false);
 		task.setValidator(validationThread.getValidator());
 		checkPool(validationThread, task);
@@ -166,7 +166,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * only allow one thread in the thread pool. However, we want to be prepared for a future
 	 * with truely concurrent validation.
 	 */
-	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask){
+	private void checkPool(EntityValidationThread pendingThread, EntityValidationTaskBase pendingTask){
 		boolean found = false;
 		Iterator<WeakReference<EntityValidationThread>> iterator = threads.iterator();
 		while (iterator.hasNext()) {

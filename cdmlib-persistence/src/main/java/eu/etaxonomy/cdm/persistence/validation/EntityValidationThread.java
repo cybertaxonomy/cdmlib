@@ -28,7 +28,7 @@ public final class EntityValidationThread extends Thread {
 	private final Validator validator;
 
 	private boolean terminationRequested;
-	private EntityValidationTask currentTask;
+	private EntityValidationTaskBase currentTask;
 
 
 	EntityValidationThread(ThreadGroup group, Runnable runnable, String name, Validator validator)
@@ -73,13 +73,13 @@ public final class EntityValidationThread extends Thread {
 	}
 
 
-	EntityValidationTask getCurrentTask()
+	EntityValidationTaskBase getCurrentTask()
 	{
 		return currentTask;
 	}
 
 
-	void setCurrentTask(EntityValidationTask currentTask)
+	void setCurrentTask(EntityValidationTaskBase currentTask)
 	{
 		this.currentTask = currentTask;
 	}

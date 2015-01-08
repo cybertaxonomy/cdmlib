@@ -31,9 +31,9 @@ import eu.etaxonomy.cdm.model.validation.CRUDEventType;
  * @author ayco_holleman
  * 
  */
-public abstract class EntityValidationTask implements Runnable {
+public abstract class EntityValidationTaskBase implements Runnable {
 
-	private static final Logger logger = Logger.getLogger(EntityValidationTask.class);
+	private static final Logger logger = Logger.getLogger(EntityValidationTaskBase.class);
 
 	private final CdmBase entity;
 	private final CRUDEventType crudEventType;
@@ -53,7 +53,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups){
+	public EntityValidationTaskBase(CdmBase entity, Class<?>... validationGroups){
 		this(entity, CRUDEventType.NONE, validationGroups);
 	}
 
@@ -69,7 +69,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups){
+	public EntityValidationTaskBase(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups){
 		this.entity = entity;
 		this.crudEventType = crudEventType;
 		this.validationGroups = validationGroups;
@@ -162,10 +162,10 @@ public abstract class EntityValidationTask implements Runnable {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null || !(obj instanceof EntityValidationTask)) {
+		if (obj == null || !(obj instanceof EntityValidationTaskBase)) {
 			return false;
 		}
-		EntityValidationTask other = (EntityValidationTask) obj;
+		EntityValidationTaskBase other = (EntityValidationTaskBase) obj;
 		if (!Arrays.deepEquals(validationGroups, other.validationGroups)) {
 			return false;
 		}
@@ -184,7 +184,7 @@ public abstract class EntityValidationTask implements Runnable {
 
 	@Override
 	public String toString(){
-		return EntityValidationTask.class.getName() + ':' + entity.toString() + Arrays.deepToString(validationGroups);
+		return EntityValidationTaskBase.class.getName() + ':' + entity.toString() + Arrays.deepToString(validationGroups);
 	}
 
 }

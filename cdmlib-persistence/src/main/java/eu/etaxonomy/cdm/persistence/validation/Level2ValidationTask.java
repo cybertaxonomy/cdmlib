@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * @author ayco holleman
  * 
  */
-public class Level2ValidationTask extends EntityValidationTask {
+public class Level2ValidationTask extends EntityValidationTaskBase {
 
 	public Level2ValidationTask(CdmBase entity){
 		super(entity, Level2.class);
