@@ -27,7 +27,7 @@ public class ReferencePortalController extends ReferenceController {
     public ReferencePortalController(){
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
-                "authorTeam.*"
+                "authorship.*"
              }));
     }
 

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.application;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -100,6 +101,15 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     	
     	
     	
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

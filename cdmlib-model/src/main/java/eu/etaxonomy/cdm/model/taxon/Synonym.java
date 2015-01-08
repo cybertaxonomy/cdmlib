@@ -300,10 +300,9 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
 			Synonym syn = rel.getSynonym();
-			//remove old
+			
 			oldAcceptedTaxon.removeSynonym(rel.getSynonym(), false);
-			
-			
+						
 			SynonymRelationship newRel = (SynonymRelationship)rel.clone();
 			newRel.setAcceptedTaxon(newAcceptedTaxon);
 			newAcceptedTaxon.getSynonymRelations().add(newRel);
@@ -330,4 +329,6 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 			return result;
 		
 	}
+
+	
 }

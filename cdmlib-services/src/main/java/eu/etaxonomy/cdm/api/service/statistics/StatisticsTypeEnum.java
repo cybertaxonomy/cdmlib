@@ -24,7 +24,7 @@ public enum StatisticsTypeEnum {
 	SYNONYMS("Synonyms", "All synonyms"),
 	TAXON_NAMES("Taxon_names", "All taxon names (not"),
 	ALL_REFERENCES("References", "References"),
-	NOMECLATURAL_REFERENCES("Nomeclatural_references", "Nomenclatural references"),
+	NOMENCLATURAL_REFERENCES("Nomenclatural_references", "Nomenclatural references"),
 	DESCRIPTIONS("Descriptions", "Descriptions"),
 	DESCRIPTIVE_SOURCE_REFERENCES("Descriptive_source_references", "Descriptive source references")
 	;

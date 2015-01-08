@@ -12,11 +12,13 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,6 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -42,9 +43,6 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private ITaxonNameDao taxonNameDao;
-
-	@SpringBeanByType
-	private ITaxonDao taxonDao;
 
 	private UUID uuid;
 	
@@ -67,7 +65,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */
-		taxonNameDao.refresh(name, LockMode.READ, null);
+		taxonNameDao.refresh(name, new LockOptions(LockMode.READ), null);
 		assertNotNull(name);
 //		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing 
 //		Assert.assertEquals("There should be 2 relationships", 2, nRels);
@@ -88,4 +86,13 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 //		Assert.assertEquals("There should be 1 relationship now", 1, nRels);
 		
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

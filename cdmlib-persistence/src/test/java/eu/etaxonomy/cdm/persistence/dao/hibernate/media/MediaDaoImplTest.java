@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -121,5 +122,14 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
-	}	
+	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }	
 }

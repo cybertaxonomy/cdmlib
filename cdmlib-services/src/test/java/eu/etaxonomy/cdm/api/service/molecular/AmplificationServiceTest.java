@@ -9,16 +9,12 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -27,25 +23,25 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  *
  */
 public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(AmplificationServiceTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(AmplificationServiceTest.class);
 
     @SpringBeanByType
     private IAmplificationService amplificationService;
 
 
     @Test
-    public void testMoveSingleRead(){
-        DnaSample dnaSample = DnaSample.NewInstance();
-        Amplification amplificationA = Amplification.NewInstance(dnaSample);
-        Amplification amplificationB = Amplification.NewInstance(dnaSample);
-        SingleRead singleRead = SingleRead.NewInstance();
+    public void testNothingTest(){
+    	//dummy as min 1 Test is required
+    }
 
-        amplificationA.addSingleRead(singleRead);
-        amplificationService.moveSingleRead(amplificationA, amplificationB, singleRead);
 
-        assertTrue("SingleRead was not correctly removed from origin", amplificationA.getSingleReads().isEmpty());
-        assertEquals("SingleRead was not correctly moved to target", 1, amplificationB.getSingleReads().size());
-        assertEquals("Moved SingleRead is not equal to origin SingleRead", singleRead, amplificationB.getSingleReads().iterator().next());
-
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

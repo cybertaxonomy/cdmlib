@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 /**
  * A service that provides several retrieval methods for entity validation outcomes. The

@@ -334,9 +334,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      */
     @Override
     public Object clone()  {
-        DescriptionBase result;
+        DescriptionBase<?> result;
         try{
-            result = (DescriptionBase)super.clone();
+            result = (DescriptionBase<?>)super.clone();
 
             //working set
             result.workingSets = new HashSet<WorkingSet>();

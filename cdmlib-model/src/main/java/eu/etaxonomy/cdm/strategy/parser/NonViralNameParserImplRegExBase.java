@@ -40,7 +40,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String oWs = "\\s+"; //obligatory whitespaces
     protected static String fWs = "\\s*"; //facultative whitespcace
     
-    protected static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
+    public static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
     protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
@@ -78,16 +78,16 @@ public abstract class NonViralNameParserImplRegExBase  {
     //marker
     protected static String InfraGenusMarker = "(subgen.|subg.|sect.|subsect.|ser.|subser.|t.infgen.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr.|agg.|group)";
-    protected static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f.spec.|\\[unranked\\]|tax." + fWs + "infrasp.)";
+    protected static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f. sp.|f.spec.|f.sp.|\\[unranked\\]|tax." + fWs + "infrasp.)";
     protected static String oldInfraSpeciesMarker = "(prol.|proles|race|taxon|sublusus)";
     
     
     //AuthorString
-    protected static String authorPart = "(" + "(d'|D'|L'|'t|ten\\s||le\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|v[ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
-    protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
+	protected static String authorPart = "(" + "(d'|D'|L'|'t|ten\\s||le\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
+    protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?" ;
     protected static String finalTeamSplitter = fWs + "(&)" + fWs;
     protected static String notFinalTeamSplitter = "(" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
-    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?"  + author + "(" + finalTeamSplitter + "al.)?" + fWs;
+    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?"  + author + "(" + finalTeamSplitter + "al.)?" +  fWs;
     protected static String exString = "(ex.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
@@ -98,7 +98,7 @@ public abstract class NonViralNameParserImplRegExBase  {
         
     //Zoo. Author
     //TODO does zoo author have ex-Author?
-    protected static String zooAuthorYearSeperator = ",";
+    protected static String zooAuthorYearSeperator = "(,|\\s)";
     protected static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
     protected static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
     protected static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;

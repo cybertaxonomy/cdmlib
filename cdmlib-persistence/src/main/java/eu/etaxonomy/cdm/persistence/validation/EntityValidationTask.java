@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
-import eu.etaxonomy.cdm.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 
 /**
  * Abstract base class for JPA entity validation tasks. Note that in the future non-entity

@@ -119,11 +119,11 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidPathoVariety = UUID.fromString("2f4f4303-a099-47e3-9048-d749d735423b");
     private static final UUID uuidSubvariety = UUID.fromString("9a83862a-7aee-480c-a98d-4bceaf8712ca");
     private static final UUID uuidSubsubvariety = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
-    
+
     private static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
     private static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
     private static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
-    
+
     private static final UUID uuidConvar = UUID.fromString("2cc740c9-cebb-43c8-9b06-1bef79e6a56a");
     private static final UUID uuidForm = UUID.fromString("0461281e-458a-47b9-8d41-19a3d39356d5");
     private static final UUID uuidSpecialForm = UUID.fromString("bed20aee-2f5a-4635-9c02-eff06246d067");
@@ -168,26 +168,26 @@ public class Rank extends OrderedTermBase<Rank> {
     public static Rank NewInstance(RankClass rankClass, String term, String label, String labelAbbrev){
         return new Rank(rankClass, term, label, labelAbbrev);
     }
-    
-	/**
-	 * The {@link RankClass rank class} of a rank. It is usually needed for correct formatting of a
-	 * rank by using e.g. isSupraGeneric(). Prior to v3.3 this was computed by comparison of ranks.
-	 */
-	@XmlAttribute(name ="RankClass")
-	@NotNull
-	@Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-		parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
-	)
-	private RankClass rankClass;
+
+    /**
+     * The {@link RankClass rank class} of a rank. It is usually needed for correct formatting of a
+     * rank by using e.g. isSupraGeneric(). Prior to v3.3 this was computed by comparison of ranks.
+     */
+    @XmlAttribute(name ="RankClass")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
+    )
+    private RankClass rankClass;
 
 
-//********************************** Constructor *********************************/	
+//********************************** Constructor *********************************/
 
-  	//for hibernate use only
-  	@Deprecated
-  	protected Rank() {
-		super(TermType.Rank);
-	}
+      //for hibernate use only
+      @Deprecated
+      protected Rank() {
+        super(TermType.Rank);
+    }
 
     /**
      * Class constructor: creates an additional rank instance with a description
@@ -222,7 +222,7 @@ public class Rank extends OrderedTermBase<Rank> {
         if (termMap == null){
             return null;  //better return null then initialize the termMap in an unwanted way
         }
-        return (Rank)termMap.get(uuid);
+        return termMap.get(uuid);
     }
 
     public static final Rank EMPIRE(){
@@ -394,7 +394,7 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank SUBLUSUS(){
         return getTermByUuid(uuidSublusus);
     }
-    
+
     public static final Rank CONVAR(){
         return getTermByUuid(uuidConvar);
     }
@@ -453,19 +453,19 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank UNRANKED_INFRAGENERIC(){
         return getTermByUuid(uuidInfragenericTaxon);
     }
-    
+
 // ************************ GETTER / SETTER **********************************/
 
     public RankClass getRankClass() {
-		return rankClass;
-	}
+        return rankClass;
+    }
 
-	public void setRankClass(RankClass rankClass) {
-		this.rankClass = rankClass;
-	}
-    
+    public void setRankClass(RankClass rankClass) {
+        this.rankClass = rankClass;
+    }
+
 // ******************************** METHODS ***************************************/
-	
+
     /**
      * Returns the boolean value indicating whether <i>this</i> rank is higher than
      * the genus rank (true) or not (false). Returns false if <i>this</i> rank is null.
@@ -671,6 +671,7 @@ public class Rank extends OrderedTermBase<Rank> {
             return null;
         }
         idInVoc = normalizeSectionAndSubsection(idInVoc);
+        idInVoc = normalizeSpecialForm(idInVoc);
         UUID uuid = idInVocMap.get(idInVoc);
         if (uuid != null ){
             result = getTermByUuid(uuid);
@@ -691,15 +692,22 @@ public class Rank extends OrderedTermBase<Rank> {
     }
 
     private static String normalizeSectionAndSubsection(String idInVoc) {
-		if (idInVoc.equals("sect.")){
-			return "sect.(bot.)";
-		}else if (idInVoc.equals("subsect.")){
-			return "subsect.(bot.)";
-		}
-    	return idInVoc;
-	}
+        if (idInVoc.equals("sect.")){
+            return "sect.(bot.)";
+        }else if (idInVoc.equals("subsect.")){
+            return "subsect.(bot.)";
+        }
+        return idInVoc;
+    }
 
-	// TODO
+    private static String normalizeSpecialForm(String idInVoc) {
+        if (idInVoc.equals("f.sp.") || idInVoc.equals("f. sp.")){
+            return "f.spec.";
+        }
+        return idInVoc;
+    }
+
+    // TODO
     // Preliminary implementation to cover Botany and Zoology.
     /**
      * Returns the rank identified through an abbreviated name for a given nomenclatural code.
@@ -804,12 +812,12 @@ public class Rank extends OrderedTermBase<Rank> {
         }else if (rankName.equalsIgnoreCase("tax.infragen.")){ return Rank.INFRAGENERICTAXON();
         }else if (rankName.equalsIgnoreCase("tax.infrasp.")){ return Rank.INFRASPECIFICTAXON();
         // old ranks
-        }else if (rankName.equalsIgnoreCase("proles")){ return Rank.PROLES(); 
-        }else if (rankName.equalsIgnoreCase("race")){ return Rank.RACE(); 
-        }else if (rankName.equalsIgnoreCase("sublusus")){ return Rank.SUBLUSUS(); 
+        }else if (rankName.equalsIgnoreCase("proles")){ return Rank.PROLES();
+        }else if (rankName.equalsIgnoreCase("race")){ return Rank.RACE();
+        }else if (rankName.equalsIgnoreCase("sublusus")){ return Rank.SUBLUSUS();
 
         }else if (rankName.equalsIgnoreCase("taxon")){ return Rank.INFRASPECIFICTAXON(); //to create the name put 'taxon' and the infraspeciesepi to the field unnamed namephrase
-  
+
         }else{
             if (rankName == null){
                 rankName = "(null)";  //see NPE above
@@ -900,7 +908,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * @return	the abbreviation string for <i>this</i> rank
      */
     public String getAbbreviation(){
-        Language language = Language.ENGLISH();
+        Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
         String result = this.getRepresentation(language).getAbbreviatedLabel();
         if (result== null) {
             logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
@@ -938,7 +946,7 @@ public class Rank extends OrderedTermBase<Rank> {
     protected void setDefaultTerms(TermVocabulary<Rank> termVocabulary) {
         termMap = new HashMap<UUID, Rank>();
         for (Rank term : termVocabulary.getTerms()){
-            termMap.put(term.getUuid(), (Rank)term);
+            termMap.put(term.getUuid(), term);
             addRank(term);
         }
     }
@@ -959,7 +967,7 @@ public class Rank extends OrderedTermBase<Rank> {
         Representation representation = rank.getRepresentation(lang);
         String abbrevLabel = representation.getAbbreviatedLabel();
         String label = representation.getLabel();
-       
+
         //initialize maps
         if (idInVocMap == null){
             idInVocMap = new HashMap<String, UUID>();
@@ -972,7 +980,7 @@ public class Rank extends OrderedTermBase<Rank> {
         if (StringUtils.isBlank(abbrevLabel)){
             logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));
         }else{
-        	idInVocMap.put(abbrevLabel, rank.getUuid());
+            idInVocMap.put(abbrevLabel, rank.getUuid());
         }
     }
 

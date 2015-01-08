@@ -102,8 +102,8 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 " (tn.taxon.name.rank = :rank" +
                 "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
                 "   OR (tn.taxon.name.rank.orderIndex < :rankOrderIndex AND tnc.taxon.name.rank.orderIndex > :rankOrderIndex)" +
-                " )" +
-                whereClassification;
+                " )"
+                + whereClassification ;
             query = getSession().createQuery(hql);
             query.setParameter("rank", rank);
             query.setParameter("rankOrderIndex", rank.getOrderIndex());
@@ -117,19 +117,21 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     @Override
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-        Query query = prepareListChildrenOf(taxon, classification, false);
+    	 Query query = prepareListChildrenOf(taxon, classification, false);
 
-        setPagingParameter(query, pageSize, pageIndex);
+         setPagingParameter(query, pageSize, pageIndex);
 
-        @SuppressWarnings("unchecked")
-        List<TaxonNode> result = query.list();
-        //check if array is "empty" (not containing null objects)
-        if(!result.isEmpty() && result.iterator().next()==null){
-        	return java.util.Collections.emptyList();
-        }
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+         @SuppressWarnings("unchecked")
+         List<TaxonNode> result = query.list();
+         //check if array is "empty" (not containing null objects)
+         if(!result.isEmpty() && result.iterator().next()==null){
+         	return java.util.Collections.emptyList();
+         }
+         defaultBeanInitializer.initializeAll(result, propertyPaths);
+         return result;
     }
+    
+   
 
     @Override
     public Long countChildrenOf(Taxon taxon, Classification classification){
@@ -140,17 +142,16 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
 
-        String selectWhat = doCount ? "count(cn)" : "cn";
-
-        String hql = "select " + selectWhat + " from TaxonNode as tn left join tn.classification as c left join tn.taxon as t  left join tn.childNodes as cn "
-                + "where t = :taxon and c = :classification";
-
-        Query query = getSession().createQuery(hql);
-        query.setParameter("taxon", taxon);
-        query.setParameter("classification", classification);
-
-        return query;
+    	String selectWhat = doCount ? "count(cn)" : "cn";
+         
+         String hql = "select " + selectWhat + " from TaxonNode as tn left join tn.classification as c left join tn.taxon as t  left join tn.childNodes as cn "
+                 + "where t = :taxon and c = :classification";
+         Query query = getSession().createQuery(hql);
+         query.setParameter("taxon", taxon);
+         query.setParameter("classification", classification);
+         return query;
     }
+    
 
     @Override
     public UUID delete(Classification persistentObject){
@@ -158,15 +159,11 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         List<TaxonNode> nodes = persistentObject.getChildNodes();
         List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
+        
 //        Iterator<TaxonNode> nodesIterator = nodes.iterator();
-
-
         for(TaxonNode node : nodesTmp){
-
             persistentObject.deleteChildNode(node, true);
             taxonNodeDao.delete(node, true);
-
-
         }
 
         TaxonNode rootNode = persistentObject.getRootNode();
@@ -177,6 +174,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return persistentObject.getUuid();
     }
 
+	
 
 
 }

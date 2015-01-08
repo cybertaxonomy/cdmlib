@@ -24,7 +24,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 /**
  * An {@code EntityConstraintViolation} represents a single error resulting from the

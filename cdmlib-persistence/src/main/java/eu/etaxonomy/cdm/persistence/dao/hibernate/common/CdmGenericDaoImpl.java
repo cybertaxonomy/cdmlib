@@ -32,7 +32,6 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
@@ -69,6 +68,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
+//import eu.etaxonomy.cdm.datagenerator.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -125,6 +125,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
 		Session session = super.getSession();
+	
 		Criteria criteria = session.createCriteria(clazz);
 		criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
 		return criteria.list();
@@ -186,6 +187,28 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				handleReferenceHolder(referencedCdmBase, result, refHolder);
 			}
 			return result;	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+	}
+	@Override
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
+		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
+		Set<ReferenceHolder> holderSet = referenceMap.get(IdentifiableEntity.class);
+		try {
+			if (holderSet == null){
+				holderSet = makeHolderSet(IdentifiableEntity.class);
+				referenceMap.put(IdentifiableEntity.class, holderSet);
+			}
+			Set<CdmBase> resultIdentifiableEntity = new HashSet<CdmBase>();
+			for (ReferenceHolder refHolder: holderSet){
+				handleReferenceHolder(referencedCdmBase, resultIdentifiableEntity, refHolder);
+			}
+			result.removeAll(resultIdentifiableEntity);
+			
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -1256,8 +1279,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean containsValue(PersistentCollection col, Object element) {    	
     	return contains(col, element);
     }
-    
+
+	@Override
+	public void createFullSampleData() {
+//		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
+//		dataGenerator.fillWithData(getSession());
+	}
 
 }
-
-

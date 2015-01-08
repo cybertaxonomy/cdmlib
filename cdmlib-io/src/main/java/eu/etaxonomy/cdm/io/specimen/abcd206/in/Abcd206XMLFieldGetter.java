@@ -84,7 +84,6 @@ public class Abcd206XMLFieldGetter {
     protected void getScientificNames(NodeList group) {
         NodeList identifications, results;
         String tmpName = null;
-        boolean nameFound = false;
 
         for (int j = 0; j < group.getLength(); j++) {
             if (group.item(j).getNodeName().equals(prefix + "Identification")) {
@@ -103,19 +102,14 @@ public class Abcd206XMLFieldGetter {
                         if (dataHolder.nomenclatureCode != null&& dataHolder.nomenclatureCode != "") {
                             // logger.info("TMP NAME P" + tmpName);
 
-                            dataHolder.identificationList.add(tmpName+ "_preferred_"+ identifications.item(m).getTextContent()+ "_code_" + dataHolder.nomenclatureCode);
+                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.nomenclatureCode));
                         } else {
-                            dataHolder.identificationList.add(tmpName+ "_preferred_"+ identifications.item(m).getTextContent());
+                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent()));
                         }
                         path = identifications.item(m).getNodeName();
                         // getHierarchie(identifications.item(m));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
-                        try {
-                            dataHolder.identificationList.remove(tmpName);
-                        } catch (Exception e) {
-                            logger.info("ohooooooooooo:" + e);
-                        }
                     } else if (identifications.item(m).getNodeName().equals(prefix + "References")) {
                         this.getReferences(identifications.item(m));
                     }
@@ -144,14 +138,9 @@ public class Abcd206XMLFieldGetter {
                 if (!hasPref && tmpName != null) {
                     if (dataHolder.nomenclatureCode != null
                             && dataHolder.nomenclatureCode != "") {
-                        dataHolder.identificationList.add(tmpName+ "_preferred_" + "0" + "_code_"+ dataHolder.nomenclatureCode);
+                        dataHolder.identificationList.add(new Identification(tmpName, "0", dataHolder.nomenclatureCode));
                     } else {
-                        dataHolder.identificationList.add(tmpName+ "_preferred_" + "0");
-                    }
-                    try {
-                        dataHolder.identificationList.remove(tmpName);
-                    } catch (Exception e) {
-                        logger.info("ohooooooooooo:" + e);
+                        dataHolder.identificationList.add(new Identification(tmpName, "0"));
                     }
                 }
             }
@@ -184,9 +173,14 @@ public class Abcd206XMLFieldGetter {
                     }
                     if (scnames.item(n).getNodeName().equals(prefix + "NameAtomised")) {
                         try {
-                            if (scnames.item(n).hasChildNodes()) {String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
-                                dataHolder.nomenclatureCode = tmp.split(prefix)[1];
-                            } else {dataHolder.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();}
+                            if (scnames.item(n).hasChildNodes()) {
+                                String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
+                                if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
+                                    dataHolder.nomenclatureCode = tmp.split(prefix)[1];
+                                }
+                                else {
+                                    dataHolder.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
+                                }
                             }
                         } catch (Exception e) {
                             if(DEBUG) {
@@ -607,23 +601,23 @@ public class Abcd206XMLFieldGetter {
      * @param root
      */
     protected void getGatheringPeople(Element root) {
-        NodeList group, childs, person;
         try {
-            group = root.getElementsByTagName(prefix + "GatheringAgent");
             dataHolder.gatheringAgentList = new ArrayList<String>();
+
+            NodeList group = root.getElementsByTagName(prefix + "GatheringAgent");
             for (int i = 0; i < group.getLength(); i++) {
-                childs = group.item(i).getChildNodes();
-                for (int j = 0; j < childs.getLength(); j++) {
-                    if (childs.item(j).getNodeName().equals(prefix + "Person")) {
-                        person = childs.item(j).getChildNodes();
-                        for (int k = 0; k < person.getLength(); k++) {
-                            if (person.item(k).getNodeName().equals(prefix + "FullName")) {
-                                path = person.item(k).getNodeName();
-                                getHierarchie(person.item(k));
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Person")) {
+                        NodeList persons = children.item(j).getChildNodes();
+                        for (int k = 0; k < persons.getLength(); k++) {
+                            if (persons.item(k).getNodeName().equals(prefix + "FullName")) {
+                                path = persons.item(k).getNodeName();
+                                getHierarchie(persons.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
-                                if (!person.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
-                                    dataHolder.gatheringAgentList.add(person.item(k).getTextContent());
+                                if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
+                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
                                 }
                             }
                         }
@@ -631,6 +625,29 @@ public class Abcd206XMLFieldGetter {
 
                 }
             }
+
+            group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Agents")) {
+                        NodeList persons = children.item(j).getChildNodes();
+                        for (int k = 0; k < persons.getLength(); k++) {
+                            if (persons.item(k).getNodeName().equals(prefix + "GatheringAgentsText")) {
+                                path = persons.item(k).getNodeName();
+                                getHierarchie(persons.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
+                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
         } catch (NullPointerException e) {
             dataHolder.gatheringAgentList = new ArrayList<String>();
         }

@@ -147,7 +147,7 @@ public class CsvDemoExport extends CsvDemoBase {
             NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
             config.setClassificationTitleCache(classification.getTitleCache());
             if (! this.recordExists(taxon)){
-                handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
+                handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
                 recordList.add(record);
                 this.addExistingRecord(taxon);
             }
@@ -171,73 +171,75 @@ public class CsvDemoExport extends CsvDemoBase {
 	    //obtain chuncks of taxonNodes
 	    int totalWork = 0;
 	    int work = 0;
-	    int limit = 1000;
-	    int end = 1000;
+	    int limit = 500;
+	    int end = 500;
 	    int start = 0;
 
 	    //TODO: Questionable if this information is really necessary, with respect to memory usage
 	    Classification classification = null;
 	    for(Classification c : classificationSet){
-	        classification = c;
-	        totalWork = getTaxonNodeService().countAllNodesForClassification(c);
-	    }
-	    if(progressMonitor != null) {
-	        progressMonitor.beginTask("", totalWork);
-	    }
-	    List<TaxonNode> result = new ArrayList<TaxonNode>();
-	    int totalNodes = getTaxonNodeService().count(TaxonNode.class);
-
-	    for(int i = 0 ; i < totalNodes; i++){
-
-	        //geographical Filter
-	        //	     List<TaxonNode> taxonNodes =  handleGeographicalFilter(state, classificationSet, config, limit, start);
-
-	        result = getTaxonNodeService().listAllNodesForClassification(classification, start, limit);
-
-	        logger.info(result.size());
+	    	classification = c;
+	    	totalWork = getTaxonNodeService().countAllNodesForClassification(c);
 
 
-	        for (TaxonNode node : result){
-	            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-	            CsvDemoRecord record = assembleRecord(state);
-	            NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-	            //	                Classification classification = node.getClassification();
-	            config.setClassificationTitleCache(classification.getTitleCache());
-	            if (! this.recordExists(taxon)){
+	    	if(progressMonitor != null) {
+	    		progressMonitor.beginTask("", totalWork);
+	    	}
+	    	List<TaxonNode> result = new ArrayList<TaxonNode>();
+	    	int totalNodes = getTaxonNodeService().count(TaxonNode.class);
 
-	                handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
-	                if(config.getDestination() != null){
-	                    record.write(writer);
-	                }
-	                this.addExistingRecord(taxon);
-	            }
-	            //misapplied names
-	            //handleMisapplication(taxon, writer, classification, record, config, node);
+	    	for(int i = 0 ; i < totalNodes; i++){
 
-	            if(progressMonitor !=null) {
-	                if(work < totalWork-1) {
-	                    progressMonitor.worked(1);
-	                }
-	                work++;
-	            }
-	        }
-	        if(writer != null){
-	            writer.flush();
-	            commitTransaction(txStatus);
-	            txStatus = startTransaction(true);
-	        }
-	        //get next 1000 results
-	        if(result.size()%limit == 0){
-	            //increase only once to avoid same row
-	            if(i==0){
-	                start++;
-	            }
-	            start = start + limit;
-	            end = end + limit;
-	            result = null;
-	        }else{
-	            return;
-	        }
+	    		//geographical Filter
+	    		//	     List<TaxonNode> taxonNodes =  handleGeographicalFilter(state, classificationSet, config, limit, start);
+
+	    		result = getTaxonNodeService().listAllNodesForClassification(classification, start, limit);
+
+	    		logger.info(result.size());
+
+
+	    		for (TaxonNode node : result){
+	    			Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+	    			CsvDemoRecord record = assembleRecord(state);
+	    			NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+	    			//	                Classification classification = node.getClassification();
+	    			config.setClassificationTitleCache(classification.getTitleCache());
+	    			if (! this.recordExists(taxon)){
+
+	    				handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
+	    				if(config.getDestination() != null){
+	    					record.write(writer);
+	    				}
+	    				this.addExistingRecord(taxon);
+	    			}
+	    			//misapplied names
+	    			//handleMisapplication(taxon, writer, classification, record, config, node);
+
+	    			if(progressMonitor !=null) {
+	    				if(work < totalWork-1) {
+	    					progressMonitor.worked(1);
+	    				}
+	    				work++;
+	    			}
+	    		}
+	    		if(writer != null){
+	    			writer.flush();
+	    			commitTransaction(txStatus);
+	    			txStatus = startTransaction(true);
+	    		}
+	    		//get next 1000 results
+	    		if(result.size()%limit == 0){
+	    			//increase only once to avoid same row
+	    			if(i==0){
+	    				start++;
+	    			}
+	    			start = start + limit;
+	    			end = end + limit;
+	    			result = null;
+	    		}else{
+	    			break;
+	    		}
+	    	}
 	    }
 	}
 
@@ -353,22 +355,22 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param config
 	 * @param node
 	 */
-	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvDemoRecord record, CsvDemoExportConfigurator config, TaxonNode node) {
-		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
-		for (Taxon misappliedName : misappliedNames ){
-//			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
-			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
-
-			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
-				if(writer != null){
-				    record.write(writer);
-				}
-				this.addExistingRecord(misappliedName);
-			}
-		}
-	}
+//	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvDemoRecord record, CsvDemoExportConfigurator config, TaxonNode node) {
+//		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
+//		for (Taxon misappliedName : misappliedNames ){
+////			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
+//			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
+//			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
+//
+//			if (! this.recordExists(misappliedName)){
+//				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
+//				if(writer != null){
+//				    record.write(writer);
+//				}
+//				this.addExistingRecord(misappliedName);
+//			}
+//		}
+//	}
 
 	/**
 	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,
@@ -387,7 +389,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvDemoRecord record,TaxonBase<?> taxonBase,
-			NonViralName<?> name, Taxon acceptedTaxon, Classification classification,
+			NonViralName<?> name, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 

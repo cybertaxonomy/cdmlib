@@ -729,6 +729,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
+      
         super.delete(persistentObject);
 
         for (TaxonBase taxonBase: taxonBases){
@@ -737,20 +738,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         return persistentObject.getUuid();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getZoologicalNames(java.lang.Integer, java.lang.Integer)
-     */
-    //TODO candidate for harmonization
-    @Override
-    public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
-        List <TaxonNameBase> names = new ArrayList<TaxonNameBase>();
-        List <ZoologicalName> zooNames = new ArrayList<ZoologicalName>();
-        names = super.list(ZoologicalName.class, limit, start);
-        for (TaxonNameBase name: names){
-            zooNames.add((ZoologicalName)name);
-        }
-        return zooNames;
-    }
 
     @Override
     public ZoologicalName findZoologicalNameByUUID(UUID uuid){

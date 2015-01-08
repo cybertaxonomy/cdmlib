@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -104,6 +104,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
 	
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
+	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
 	
 	
 	
@@ -618,6 +619,28 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 	
+	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+		if (uuid == null){
+			return null;
+		}
+		DefinedTerm unit = state.getKindOfUnit(uuid);
+		if (unit == null){
+			unit = (DefinedTerm)getTermService().find(uuid);
+			if (unit == null && ! hasNoLabel(label, description, labelAbbrev)){
+				unit = DefinedTerm.NewKindOfUnitInstance(description, label, labelAbbrev);
+				unit.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary, "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null, null, isOrdered, unit);
+				}
+				voc.addTerm(unit);
+				getTermService().save(unit);
+			}
+			state.putKindOfUnit(unit);
+		}
+		return unit;
+	}
+	
 	/**
 	 * Returns a {@link MeasurementUnit} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the {@link MeasurementUnit} exists in the database, if not creating it anew (with vocabulary etc.).
@@ -764,23 +787,23 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected PresenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		if (uuid == null){
 			return null;
 		}
-		PresenceTerm presenceTerm = state.getPresenceTerm(uuid);
+		PresenceAbsenceTerm presenceTerm = state.getPresenceAbsenceTerm(uuid);
 		if (presenceTerm == null){
-			presenceTerm = (PresenceTerm)getTermService().find(uuid);
+			presenceTerm = (PresenceAbsenceTerm)getTermService().find(uuid);
 			if (presenceTerm == null){
-				presenceTerm = PresenceTerm.NewInstance(text, label, labelAbbrev);
+				presenceTerm = PresenceAbsenceTerm.NewPresenceInstance(text, label, labelAbbrev);
 				presenceTerm.setUuid(uuid);
 				//set vocabulary ; FIXME use another user-defined vocabulary
 				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05"); 
-				TermVocabulary<PresenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
+				TermVocabulary<PresenceAbsenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
 				voc.addTerm(presenceTerm);
 				getTermService().save(presenceTerm);
 			}
-			state.putPresenceTerm(presenceTerm);
+			state.putPresenceAbsenceTerm(presenceTerm);
 		}
 		return presenceTerm;
 	}
@@ -1197,7 +1220,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				uri = new URI(uriString);
 				try {
 					if (readMediaData){
-						logger.warn(uri);
+						logger.info("Read media data from: " + uri);
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {

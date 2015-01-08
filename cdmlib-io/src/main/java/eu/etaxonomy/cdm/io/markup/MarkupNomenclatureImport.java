@@ -21,7 +21,6 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -506,12 +505,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrAut, event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrAut, event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut,event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrParAut,event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
@@ -525,12 +524,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				}
 			}
 			if (StringUtils.isNotBlank(authorStr)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr,	event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(authorStr,	event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(paraut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(paraut, event);
+				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(paraut, event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
@@ -793,7 +792,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			
 			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
 				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
-				book.setAuthorTeam(inAuthor);
+				book.setAuthorship(inAuthor);
 				editors = null;
 			}
 		} else if (refType == RefType.Book){
@@ -849,12 +848,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (isBlank(authorStr)){
 			if (refType != RefType.LatestUsed){
 				author = state.getLatestAuthorInHomotype();
-				reference.setAuthorTeam(author);
+				reference.setAuthorship(author);
 			}
 		}else{
 			author = createAuthor(authorStr);
 			state.setLatestAuthorInHomotype(author);
-			reference.setAuthorTeam(author);
+			reference.setAuthorship(author);
 		}
 		
 
@@ -969,7 +968,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		// TODO type
 		TeamOrPersonBase<?> author = createAuthor(authorStr);
-		reference.setAuthorTeam(author);
+		reference.setAuthorship(author);
 
 		//title
 		reference.setTitle(titleStr);

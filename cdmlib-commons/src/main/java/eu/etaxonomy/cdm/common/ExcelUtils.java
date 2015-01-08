@@ -22,10 +22,11 @@ import java.util.Locale;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
  * @author n.hoffmann
@@ -47,9 +48,12 @@ public class ExcelUtils {
     	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
 
     	try {
-    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
-    		HSSFWorkbook wb = new HSSFWorkbook(fs);
-    		HSSFSheet sheet;
+//    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
+//    		HSSFWorkbook wb = new HSSFWorkbook(fs);
+
+    		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(uri));
+
+    		Sheet sheet;
     		if (worksheetName == null){
     			sheet = wb.getSheetAt(0);	
     		}else{
@@ -61,8 +65,8 @@ public class ExcelUtils {
     				logger.debug(worksheetName + " not provided!");
     			}
     		}else{
-	    		HSSFRow row;
-	    		HSSFCell cell;
+	    		Row row;
+	    		Cell cell;
 	
 	    		int rows; // Number of rows
 	    		rows = sheet.getPhysicalNumberOfRows();
@@ -131,7 +135,7 @@ public class ExcelUtils {
     }
 
 
-	public static String getCellValue(HSSFCell cell) {
+	public static String getCellValue(Cell cell) {
 		try {
 			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING ){
 				return cell.getStringCellValue();
@@ -168,7 +172,7 @@ public class ExcelUtils {
 		}
 	}
 
-	public static String getExcelCellString(HSSFCell cell){
+	public static String getExcelCellString(Cell cell){
 		String result = "%s%s";
 		result = String.format(result, getExcelColString(cell.getColumnIndex()), cell.getRowIndex());
 		return result;
@@ -190,7 +194,7 @@ public class ExcelUtils {
 	 * @param cell
 	 * @return
 	 */
-	private static String getNumericCellValue(HSSFCell cell) {
+	private static String getNumericCellValue(Cell cell) {
 		Double number = cell.getNumericCellValue();
 //		HSSFCellStyle style = cell.getCellStyle();
 //		String dataFormatString = style.getDataFormatString();
@@ -226,7 +230,7 @@ public class ExcelUtils {
 	 * @param notEmpty
 	 * @return
 	 */
-	private static boolean checkIsEmptyRow(HSSFRow row) {
+	private static boolean checkIsEmptyRow(Row row) {
 		if (row == null){
 			return false;
 		}

@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 /**
  * A DAO for accessing the error tables populated as a consequence of entity validation

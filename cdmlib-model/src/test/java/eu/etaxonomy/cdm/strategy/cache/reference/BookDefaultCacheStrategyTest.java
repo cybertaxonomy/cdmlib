@@ -60,7 +60,7 @@ public class BookDefaultCacheStrategyTest {
 	@Test
 	public void testGetTitleCache(){
 		book1.setTitle("My book");
-		book1.setAuthorTeam(bookTeam1);
+		book1.setAuthorship(bookTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
 		
@@ -73,8 +73,34 @@ public class BookDefaultCacheStrategyTest {
 		book1.setTitleCache(null, false);
 		//TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
 		Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3", book1.getTitleCache());
-		
-		
+
+	}
+	
+	
+	@Test
+	public void testGetBookTitleCache(){
+		//series
+		IBook book1 = ReferenceFactory.newBook();
+		book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
+		book1.setSeriesPart("1");
+		book1.setVolume("Fasc. 11");
+		book1.setDatePublished(TimePeriodParser.parseString("1955"));
+		Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11. 1955", book1.getTitleCache());
+		Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
+	}
+	
+	
+	@Test
+	public void testGetBookTitleCache2(){
+		//series
+		IBook book1 = ReferenceFactory.newBook();
+		book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
+		book1.setVolume("Fasc. 11");
+		book1.setDatePublished(TimePeriodParser.parseString("1955"));
+		Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. 1955", book1.getTitleCache());
+		Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
+		book1.setSeriesPart("1");
+		Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
 	}
 	
 
@@ -82,9 +108,11 @@ public class BookDefaultCacheStrategyTest {
 	@Test
 	public void testGetNomenclaturalCitation(){
 		book1.setTitle("My book");
-		book1.setAuthorTeam(bookTeam1);
+		book1.setAuthorship(bookTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("My book: 55. 1975", book1.getNomenclaturalCitation(detail1));
+		book1.setAbbrevTitle("Analect. Bot.");
+		Assert.assertEquals("Analect. Bot. 1975", book1.getNomenclaturalCitation(null));
 	}
 	
 }

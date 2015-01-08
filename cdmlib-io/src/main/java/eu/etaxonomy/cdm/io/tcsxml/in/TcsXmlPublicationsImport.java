@@ -9,6 +9,7 @@
  
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
+
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -36,8 +38,10 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 	private static int modCount = 1000;
 	
+	
 	public TcsXmlPublicationsImport(){
 		super();
+		
 	}
 	
 	@Override
@@ -89,7 +93,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		
 		String tcsElementName = "Publication";
 		String idNamespace = "Publication";
-		List<Element> elPublicationList = elPublications.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elPublicationList = elPublications == null ? new ArrayList<Element>() : elPublications.getChildren(tcsElementName, tcsNamespace);
 		
 		int i = 0;
 		//for each taxonName

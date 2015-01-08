@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
-		ref1.setAuthorTeam(author);
+		ref1.setAuthorship(author);
 		name.setBasionymAuthorTeam(author);
 
 		name.setNomenclaturalReference(ref1);
@@ -160,4 +161,13 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		referenceService.update(ref);
 		referenceService.updateTitleCache();
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

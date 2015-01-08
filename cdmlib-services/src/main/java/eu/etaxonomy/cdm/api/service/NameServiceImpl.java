@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -53,11 +53,9 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -67,7 +65,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -125,9 +122,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public String delete(TaxonNameBase name){
+    public DeleteResult delete(TaxonNameBase name){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-        String result = delete(name, config);
+        DeleteResult result = delete(name, config);
        
       
         return result;
@@ -138,58 +135,31 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
      */
     @Override
-    public String delete(TaxonNameBase name, NameDeletionConfigurator config) {
-        if (name == null){
-            return null;
+    public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
+    	DeleteResult result = new DeleteResult();
+    	
+    	if (name == null){
+    		result.setAbort();
+            return result;
         }
-        
-        List<String> messages = this.isDeletable(name, config);
-       
-        if (messages.isEmpty()){
+    	
+    	try{
+    		result = this.isDeletable(name, config);
+        }catch(Exception e){
+        	result.addException(e);
+        	result.setError();
+        	return result;
+        }
+        if (result.isOk()){
         //remove references to this name
-        	// if (config.isRemoveAllNameRelationships()){
-             	removeNameRelationshipsByDeleteConfig(name, config);
-             //}
+        	removeNameRelationshipsByDeleteConfig(name, config);
+            
            //remove name from homotypical group
-             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
-             if (homotypicalGroup != null){
-                 homotypicalGroup.removeTypifiedName(name);
-             }
-             
-             
-             
-	        
-	
-	
-	        /*check if this name is still used somewhere
-	
-	        //name relationships
-	        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
-	            String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-	            throw new ReferencedObjectUndeletableException(message);
-	//			return null;
-	        }
-	
-	        //concepts
-	        if (! name.getTaxonBases().isEmpty()){
-	            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	
-	        //hybrid relationships
-	        if (name.isInstanceOf(NonViralName.class)){
-	            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-	//			if (! nvn.getHybridChildRelations().isEmpty()){
-	//				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-	//				throw new RuntimeException(message);
-	//			}
-	            if (! nvn.getHybridParentRelations().isEmpty()){
-	                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	        }
-	         */
-	        //all type designation relationships are removed as they belong to the name
+            HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
+            if (homotypicalGroup != null){
+                homotypicalGroup.removeTypifiedName(name);
+            }
+             //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
 	//		//type designations
 	//		if (! name.getTypeDesignations().isEmpty()){
@@ -197,64 +167,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	//			throw new ReferrencedObjectUndeletableException(message);
 	//		}
 	
-	        /*check references with only reverse mapping
-	        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
-	        for (CdmBase referencingObject : referencingObjects){
-	            //DerivedUnit?.storedUnder
-	            if (referencingObject.isInstanceOf(DerivedUnit.class)){
-	                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-	                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	            //DescriptionElementSource#nameUsedInSource
-	            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
-	                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	            //NameTypeDesignation#typeName
-	            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-	                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	
-	            //TaxonNameDescriptions#taxonName
-	            //deleted via cascade?
-	
-	            //NomenclaturalStatus
-	            //deleted via cascade?
-	
-	        }
-	
-	        //TODO inline references
-	
-	        if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-	            String message = "Name can't be deleted as it is a basionym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-	            String message = "Name can't be deleted as it has a basionym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
-	            String message = "Name can't be deleted as it is a replaced synonym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
-	            String message = "Name can't be deleted as it has a replaced synonym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	
-	         */
-	        
+	       
+	        try{
 	        UUID nameUuid = dao.delete(name);
-	        return name.getUuid().toString();
+	        }catch(Exception e){
+	        	result.addException(e);
+	        	result.setError();
+	        }
+	        return result;
         } 
-        StringBuffer result = new StringBuffer();
-        for (String message: messages){
-        	result.append(message);
-        	result.append("/n");
-        }
-        return result.toString();
+               
+        
+        
+        return result;
     }
 
     /* (non-Javadoc)
@@ -503,83 +428,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return dao.getAllRelationships(limit, start);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * is this not the same as termService.getVocabulary(VocabularyEnum.Rank)
-     * since this returns OrderedTermVocabulary
-     *
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
-     */
-    @Override
-    public OrderedTermVocabulary<Rank> getRankVocabulary() {
-        String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<Rank> rankVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return rankVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.NameRelationshipType)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
-     */
-    @Override
-    public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
-        String uuidString = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<NameRelationshipType> nameRelTypeVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return nameRelTypeVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.StatusType)
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
-     */
-    @Override
-    public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
-        String uuidString = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return nomStatusTypeVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
-     */
-    @Override
-    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
-        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return typeDesigStatusVocabulary;
-    }
-
-    /**
-       * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-     * and also seems to duplicate the above method, differing only in the DAO used and the return type
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
-     */
-    @Override
-    public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
-        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return typeDesignationVocabulary;
-    }
 
 
     @Override
@@ -600,9 +448,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#listNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -870,9 +715,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return searchResults;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#pageNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name, Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -938,9 +780,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getUuidAndTitleCacheOfNames()
-     */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
         return dao.getUuidAndTitleCacheOfNames();
@@ -963,10 +802,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return homotypicalGroupDao.findByUuid(uuid);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-     */
     @Override
     @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends TaxonNameBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonNameBase> cacheStrategy, IProgressMonitor monitor) {
@@ -993,42 +828,40 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTaggedName(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
     @Override
     public List<TaggedText> getTaggedName(UUID uuid) {
-        TaxonNameBase taxonNameBase = dao.load(uuid);
-        List taggedName = taxonNameBase.getTaggedName();
+        TaxonNameBase<?,?> taxonNameBase = dao.load(uuid);
+        List<TaggedText> taggedName = taxonNameBase.getTaggedName();
         return taggedName;
     }
     
     @Override
-    public List<String> isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
+    public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    	DeleteResult result = new DeleteResult();
     	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;
     	}else{
-    		 result.add("The delete configurator should be of the type NameDeletionConfigurator.");
+    		 result.addException(new Exception("The delete configurator should be of the type NameDeletionConfigurator."));
+    		 result.setError();
     		 return result;
     	}
     	
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
     		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-                String message = "Name can't be deleted as it is a basionym.";
-                result.add(message);
+       		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
+       		 	result.setAbort();
             }
             if (!nameConfig.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-                String message = "Name can't be deleted as it has a basionym.";
-                result.add(message);
+            	result.addException(new Exception( "Name can't be deleted as it has a basionym."));
+            	result.setAbort();
             }
             Set<NameRelationship> relationships = name.getNameRelations();
             for (NameRelationship rel: relationships){
             	if (!rel.getType().equals(NameRelationshipType.BASIONYM())){
-            		String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-                    result.add(message);
+            		result.addException(new Exception("Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion."));
+            		result.setAbort();
             		break;
             	}
             	
@@ -1038,35 +871,41 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
         //concepts
         if (! name.getTaxonBases().isEmpty()){
-            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-            result.add(message);
+        	result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
+        	result.setAbort();
         }
 
         //hybrid relationships
         if (name.isInstanceOf(NonViralName.class)){
             NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
             if (! nvn.getHybridParentRelations().isEmpty()){
-                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-                result.add(message);
+            	result.addException(new Exception("Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion."));
+            	result.setAbort();
             }
         }
-        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+     	Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
         for (CdmBase referencingObject : referencingObjects){
             //DerivedUnit?.storedUnder
             if (referencingObject.isInstanceOf(DerivedUnit.class)){
                 String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
                 message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
             //DescriptionElementSource#nameUsedInSource
             if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
             //NameTypeDesignation#typeName
             if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                result.add(message);
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
             }
 
            
@@ -1078,11 +917,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         
         if (!nameConfig.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
             String message = "Name can't be deleted as it is a replaced synonym.";
-            result.add(message);
+            result.addException(new Exception(message));
+            result.setAbort();
         }
         if (!nameConfig.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
             String message = "Name can't be deleted as it has a replaced synonym.";
-            result.add(message);
+            result.addException(new Exception(message));
+            result.setAbort();
         }
     	return result;
     	

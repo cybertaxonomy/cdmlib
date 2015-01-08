@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 @Service
 @Transactional(readOnly = true)

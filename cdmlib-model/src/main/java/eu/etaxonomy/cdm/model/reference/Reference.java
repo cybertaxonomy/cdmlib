@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
@@ -89,15 +91,14 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "abbrevTitleCache",
     "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
-    "authorTeam",
+    "authorship",
     "referenceAbstract",
     "title",
     "abbrevTitle",
     "editor",
 	"volume",
 	"pages",
-	"series",
-    "edition",
+	"edition",
     "isbn",
     "issn",
     "doi",
@@ -170,13 +171,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String editor;
-
-    @XmlElement(name = "Series")
-    @Field
-    //TODO Val #3379
-//    @NullOrNotEmpty
-	@Length(max = 255)
-	protected String series;
 
     @XmlElement(name = "Volume")
     @Field
@@ -324,13 +318,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Merge(MergeMode.OR)
 	private boolean nomenclaturallyRelevant;
 
-	@XmlElement(name = "AuthorTeam")
+	@XmlElement(name = "Authorship")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private TeamOrPersonBase<?> authorTeam;
+	private TeamOrPersonBase<?> authorship;
+
 
 //	@XmlElement(name = "ReferenceIdentity")
 //	@XmlIDREF
@@ -365,6 +360,24 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	protected Reference(ReferenceType type) {
 		this.type = type;
 	}
+	
+	@Override
+    protected void initListener(){
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent ev) {
+            	if (!ev.getPropertyName().equals("titleCache") && !ev.getPropertyName().equals("abbrevTitleCache") && !ev.getPropertyName().equals("cacheStrategy")){
+            		if (! isProtectedTitleCache()){
+            			titleCache = null;	
+            		}
+            		if (! isProtectedAbbrevTitleCache()){
+            			abbrevTitleCache = null;	
+            		}
+            	}
+            }
+        };
+        addPropertyChangeListener(listener);
+    }
 
 
 //*************************** GETTER / SETTER ******************************************/
@@ -427,15 +440,15 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.editor = editor;
 	}
 
-	@Override
-    public String getSeries() {
-		return series;
-	}
-
-	@Override
-    public void setSeries(String series) {
-		this.series = series;
-	}
+//	@Override
+//    public String getSeries() {
+//		return series;
+//	}
+//
+//	@Override
+//    public void setSeries(String series) {
+//		this.series = series;
+//	}
 
 	@Override
     public String getVolume() {
@@ -647,16 +660,16 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase
 	 */
 	@Override
-    public TeamOrPersonBase getAuthorTeam(){
-		return this.authorTeam;
+    public TeamOrPersonBase getAuthorship(){
+		return this.authorship;
 	}
 
 	/**
-	 * @see #getAuthorTeam()
+	 * @see #getAuthorship()
 	 */
 	@Override
-    public void setAuthorTeam(TeamOrPersonBase authorTeam){
-		this.authorTeam = authorTeam;
+    public void setAuthorship(TeamOrPersonBase authorship){
+		this.authorship = authorship;
 	}
 
 	/**
@@ -872,9 +885,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 */
+
 	@Override
     public String generateTitle() {
 		rectifyCacheStrategy();
@@ -882,7 +893,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 	
     public String generateAbbrevTitle() {
-		rectifyCacheStrategy();
+		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
 		return getCacheStrategy().getAbbrevTitleCache(this);
 	}
 
@@ -922,91 +933,56 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
-	 */
 	@Override
     public int getParsingProblem(){
 		return this.parsingProblem;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
-	 */
 	@Override
     public void setParsingProblem(int parsingProblem){
 		this.parsingProblem = parsingProblem;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
-	 */
 	@Override
     public boolean hasProblem(){
 		return parsingProblem != 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-	 */
 	@Override
     public boolean hasProblem(ParserProblem problem) {
 		return getParsingProblems().contains(problem);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
-	 */
 	@Override
     public int getProblemStarts(){
 		return this.problemStarts;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
-	 */
 	@Override
     public void setProblemStarts(int start) {
 		this.problemStarts = start;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
-	 */
 	@Override
     public int getProblemEnds(){
 		return this.problemEnds;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
-	 */
 	@Override
     public void setProblemEnds(int end) {
 		this.problemEnds = end;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
-	 */
 	@Override
     public void addParsingProblem(ParserProblem warning){
 		parsingProblem = ParserProblem.addProblem(parsingProblem, warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-	 */
 	@Override
     public void removeParsingProblem(ParserProblem problem) {
 		parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#getParsingProblems()
-	 */
 	@Override
     @Transient
 	public List<ParserProblem> getParsingProblems() {
@@ -1024,7 +1000,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}else{
 			if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
-				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
+				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this, microReference);
 			}else {
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
 				return null;
@@ -1334,7 +1310,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		try {
 			Reference<?> result = (Reference<?>)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
-			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
+			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

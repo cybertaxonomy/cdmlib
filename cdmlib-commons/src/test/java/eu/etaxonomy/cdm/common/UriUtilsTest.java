@@ -64,6 +64,50 @@ public class UriUtilsTest {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }
     }
+    
+    @Test
+    public void testGetResourceLengthNull2() throws ClientProtocolException, IOException, HttpException{
+        if(UriUtils.isInternetAvailable(null)){
+        	URI uri;
+			try {
+				uri = new URI("http:/www.abc.de:8080/xyz");
+				System.out.println("  sdf");
+//				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+        } else {
+            logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
+        }
+    }
+    
+    @Test
+    public void testGetResourceLengthMissingProtocol() throws ClientProtocolException, HttpException{
+    	URI uri;
+		try {
+			uri = URI.create("www.abc.de");
+			UriUtils.getResourceLength(uri, null);
+			Assert.fail("getResourceLength works only on absolute URIs providing a protocol/scheme");
+		} catch (Exception e) {
+			Assert.assertEquals(IOException.class, e.getClass());
+			Assert.assertNotNull(e.getMessage().equals(UriUtils.URI_IS_NOT_ABSOLUTE));
+		}
+    }
+    
+    @Test
+    public void testGetResourceLengthUnknownProtocol() throws ClientProtocolException, HttpException{
+    	URI uri;
+		try {
+			uri = URI.create("xxx://www.abc.de");
+			UriUtils.getResourceLength(uri, null);
+			Assert.fail("getResourceLength works only on absolute URIs with supported protocols 'http(s):' and 'file:'");
+		} catch (Exception e) {
+			Assert.assertEquals(RuntimeException.class, e.getClass());
+			Assert.assertNotNull(e.getMessage().startsWith("Protocol not handled yet"));
+		}
+    }
 
     @Test
     public void testIsInternetAvailable() {

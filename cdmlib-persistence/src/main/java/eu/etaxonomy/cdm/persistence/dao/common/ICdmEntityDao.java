@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
@@ -52,10 +52,10 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * Obtains the specified LockMode on the supplied object
      *
      * @param t
-     * @param lockMode
+     * @param lockOptions
      * @throws DataAccessException
      */
-    public void lock(T t, LockMode lockMode) throws DataAccessException;
+    public void lock(T t, LockOptions lockOptions) throws DataAccessException;
 
     /**
      * Globally replace all references to instance t1 with t2 (including
@@ -89,7 +89,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param propertyPaths
      * @throws DataAccessException
      */
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) throws DataAccessException;
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) throws DataAccessException;
 
     public void clear() throws DataAccessException;
 
@@ -164,7 +164,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a sublist of CdmBase instances stored in the database. A maximum
@@ -198,7 +198,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start) throws DataAccessException;
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) throws DataAccessException;
 
     /**
      * Returns a sublist of objects matching the grouping projections supplied using the groups parameter
@@ -256,6 +256,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @throws DataAccessException
      */
     public T findByUuid(UUID Uuid) throws DataAccessException;
+    
+    /**
+     * Method to find CDM Entity by Uuid, by making sure that the underlying
+     * hibernate session is not flushed (Session.FLUSH_MODE set to MANUAL temporarily)
+     * when performing the read query.
+     * 
+     * @param Uuid
+     * @return
+     * @throws DataAccessException
+     */
+    public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException;
 
 
     /**

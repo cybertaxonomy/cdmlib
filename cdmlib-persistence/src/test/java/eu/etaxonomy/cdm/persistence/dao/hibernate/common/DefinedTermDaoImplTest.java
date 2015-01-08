@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -204,7 +205,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		 List<String> propertyPaths = new ArrayList<String>();
 		 propertyPaths.add("representations");
 		 propertyPaths.add("representations.language");
-		 List<DefinedTermBase> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
+		 List<ExtensionType> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
 
 
 		 assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));
@@ -216,4 +217,13 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 			 assertTrue(Hibernate.isInitialized(representation.getLanguage()));
 		 }
 	 }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

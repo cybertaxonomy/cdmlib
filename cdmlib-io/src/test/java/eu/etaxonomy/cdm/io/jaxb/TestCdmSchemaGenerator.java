@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.jaxb;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,5 +25,14 @@ public class TestCdmSchemaGenerator extends CdmTransactionalIntegrationTest {
 		CdmSchemaGenerator cdmSchemaGenerator = new CdmSchemaGenerator();
 		cdmSchemaGenerator.writeSchema();
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

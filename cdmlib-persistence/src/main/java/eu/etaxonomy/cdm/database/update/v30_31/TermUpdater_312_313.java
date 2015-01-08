@@ -11,17 +11,12 @@ package eu.etaxonomy.cdm.database.update.v30_31;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
-import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 
 /**
  * @author a.mueller
@@ -57,15 +52,15 @@ public class TermUpdater_312_313 extends TermUpdaterBase implements ITermUpdater
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
 		
-		String description;
-		String label;
-		String abbrev;
-		String dtype;
-		boolean isOrdered;
-		UUID uuidVocabulary;
-		UUID uuidAfterTerm;
-		UUID uuidLang;
-		String stepName;
+//		String description;
+//		String label;
+//		String abbrev;
+//		String dtype;
+//		boolean isOrdered;
+//		UUID uuidVocabulary;
+//		UUID uuidAfterTerm;
+//		UUID uuidLang;
+//		String stepName;
 
 //		// reported in error
 //		UUID uuidTerm = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");

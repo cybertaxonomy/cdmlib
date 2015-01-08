@@ -503,7 +503,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "elements.media.representations.parts"
 ----
 
-*** /portal/taxontree
+*** /portal/classification
 
 	Lists all available TaxonomicTrees. 
 
@@ -515,7 +515,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "reference.authorTeam.titleCache"
 ----
 
-*** /portal/taxontree/\{tree-uuid\},\{rank-uuid\}
+*** /portal/classification/\{classification-uuid\},\{rank-uuid\}
 
 	Lists all TaxonNodes of the specified TaxonomicTree for a given Rank. If a branch does not contain a TaxonNode with a TaxonName at the given Rank the node associated with the next lower Rank is taken as root node. If the rank is null the absolute root nodes will be returned. 
 
@@ -536,7 +536,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "taxon.name.taggedName"
 ----
 
-***  /portal/taxontree/\{tree-uuid\},\{rank- uuid\}/\{taxon-uuid\}
+***  /portal/classification/\{classification-uuid\},\{rank-uuid\}/\{taxon-uuid\}
 
 	Lists all child-TaxonNodes of the specified Taxon in the TaxonomicTree. The a given Rank is ignored in this method but for consistency reasons it has been allowed to included it into the URI. 
 
@@ -559,7 +559,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "taxon.name.taggedName"
 ----
 
-***  /portal/taxontree/\{tree-uuid\},\{rank-uuid\}/\{taxon-uuid\}/path
+***  /portal/classification/\{classification-uuid\},\{rank-uuid\}/\{taxon-uuid\}/path
 
 	Provides path of TaxonNodes from the base node to the node of the specified taxon. 
 

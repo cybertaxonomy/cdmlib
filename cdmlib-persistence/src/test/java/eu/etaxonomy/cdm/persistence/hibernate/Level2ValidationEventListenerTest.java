@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -127,6 +128,12 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
+	}
+
+
+	@Override
+	public void createTestDataSet() throws FileNotFoundException {
+		// TODO Auto-generated method stub	
 	}
 
 }

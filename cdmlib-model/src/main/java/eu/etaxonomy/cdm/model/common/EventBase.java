@@ -59,8 +59,8 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@Field(index=Index.YES)
 	private String description;
 
-//******************** GETTER / SETTER *******************/	
-	
+//******************** GETTER / SETTER *******************/
+
 	@Override
     public TimePeriod getTimeperiod() {
 		return timeperiod;
@@ -116,7 +116,9 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 		//Actor  //is this needed??
 		result.setActor(this.getActor());
 		//time period
-		result.setTimeperiod((TimePeriod)this.getTimeperiod().clone());
+		if(this.getTimeperiod()!=null){
+		    result.setTimeperiod((TimePeriod)this.getTimeperiod().clone());
+		}
 		//no changes to: description
 		return result;
 	}

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -39,6 +39,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @XmlType(name = "DeterminationEvent", propOrder = {
     "identifiedUnit",
     "taxon",
+    "taxonName",
     "modifier",
     "preferredFlag",
     "setOfReferences"
@@ -61,6 +63,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Indexed
 @Audited
 public class DeterminationEvent extends EventBase {
+	private static final long serialVersionUID = 5065341354427569773L;
+
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
 
 	@XmlElement(name = "IdentifiedUnit")
@@ -68,34 +72,44 @@ public class DeterminationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private SpecimenOrObservationBase identifiedUnit;
-	
+	private SpecimenOrObservationBase<?> identifiedUnit;
+
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    private TaxonBase taxon;
+    private TaxonBase<?> taxon;
 	
+//	#4518
+	@XmlElement(name = "TaxonName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
+    @Cascade(CascadeType.SAVE_UPDATE)
+    private TaxonNameBase<?,?> taxonName;
+
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm modifier;
-	
+
 	@XmlElement(name = "PreferredFlag")
 	private boolean preferredFlag;
-	
+
 	@XmlElementWrapper(name = "SetOfReferences")
 	@XmlElement(name = "Reference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<Reference> setOfReferences = new HashSet<Reference>();
 
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -103,7 +117,7 @@ public class DeterminationEvent extends EventBase {
 	public static DeterminationEvent NewInstance(){
 		return new DeterminationEvent();
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -115,14 +129,14 @@ public class DeterminationEvent extends EventBase {
 		identifiedUnit.addDetermination(result);
 		return result;
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	protected DeterminationEvent() {
 		super();
 	}
-	
+
 	public DefinedTerm getModifier() {
 		return modifier;
 	}
@@ -135,10 +149,16 @@ public class DeterminationEvent extends EventBase {
 		return this.taxon;
 	}
 
-	/**
-	 * 
-	 * @param taxon    taxon
-	 */
+	/*** @param taxon    the */
+	public void setTaxonName(TaxonNameBase taxonName){
+		this.taxonName = taxonName;
+	}
+	
+	public TaxonNameBase getTaxonName(){
+		return this.taxonName;
+	}
+
+	/*** @param taxon    the */
 	public void setTaxon(TaxonBase taxon){
 		this.taxon = taxon;
 	}
@@ -149,7 +169,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param identificationDate    identificationDate
 	 */
 	public void setIdentificationDate(Partial identificationDate){
@@ -160,7 +180,7 @@ public class DeterminationEvent extends EventBase {
 	public AgentBase getDeterminer() {
 		return this.getActor();
 	}
-	
+
 	public void setDeterminer(AgentBase determiner) {
 		this.setActor(determiner);
 	}
@@ -172,7 +192,7 @@ public class DeterminationEvent extends EventBase {
 	public void setIdentifiedUnit(SpecimenOrObservationBase identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
-	
+
 	public boolean getPreferredFlag() {
 		return preferredFlag;
 	}
@@ -180,7 +200,7 @@ public class DeterminationEvent extends EventBase {
 	public void setPreferredFlag(boolean preferredFlag) {
 		this.preferredFlag = preferredFlag;
 	}
-	
+
 	public Set<Reference> getReferences() {
 		return setOfReferences;
 	}
@@ -188,19 +208,19 @@ public class DeterminationEvent extends EventBase {
 	public void setReferences(Set<Reference> references) {
 		this.setOfReferences = references;
 	}
-	
+
 	public void addReference(Reference reference) {
 		this.setOfReferences.add(reference);
 	}
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> determination event. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> determination event
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link EventBase EventBase}.
-	 * 
+	 *
 	 * @see EventBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -222,7 +242,7 @@ public class DeterminationEvent extends EventBase {
 			return null;
 		}
 	}
-	
-	
+
+
 
 }

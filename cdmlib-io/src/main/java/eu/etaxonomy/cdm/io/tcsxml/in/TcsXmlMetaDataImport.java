@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -75,6 +75,9 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<Tcs
 		success &= doubleResult.getSecondResult();
 		Element elSimple = doubleResult.getFirstResult();
 		//TODO do simple MetaData
+		if (elSimple != null && (elSimple.getChildren().size() > 0 || elSimple.getAttributes().size() > 0 )){
+			logger.warn("Simple Metadata not handled yet");
+		}
 		
 		childName = "MetaDataDetailed";
 		obligatory = false;

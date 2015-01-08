@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 /**
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
 public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbExtensionMapper.class);
@@ -45,11 +44,6 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		this.extensionType  = extensionType;
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (extensionType == null){
@@ -57,7 +51,7 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		}
 		String result = null;
 		if (cdmBase.isInstanceOf(IdentifiableEntity.class)){ 
-			IdentifiableEntity identifiableEntity = (IdentifiableEntity)cdmBase;
+			IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)cdmBase;
 			for (Object obj : identifiableEntity.getExtensions()){
 				Extension extension = (Extension)obj;
 				if (extensionType == null){
@@ -75,18 +69,11 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;

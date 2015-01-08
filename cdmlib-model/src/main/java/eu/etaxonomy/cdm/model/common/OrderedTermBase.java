@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,7 +21,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @XmlSeeAlso({
     RelationshipTermBase.class,
-    PresenceAbsenceTermBase.class,
+    PresenceAbsenceTerm.class,
     State.class,
     NamedArea.class,
     NamedAreaLevel.class,
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
+public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends DefinedTermBase<T> implements Comparable<T> {
     private static final long serialVersionUID = 8000797926720467399L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
@@ -84,13 +85,15 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 
     /**
      * Compares this OrderedTermBase with the specified OrderedTermBase for
-     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
+     * order. Returns a -1, 0, or +1 if the orderIndex of this object is greater
      * than, equal to, or less than the specified object. In case the parameter
      * is <code>null</code> the
      * <p>
-     * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
-     * of the the one implemented in
-     * {@link java.lang.Comparable#compareTo(java.lang.Object)}
+     * <b>Note:</b> The compare logic of this method might appear to be <b>inverse</b>
+     * to the one mentioned in
+     * {@link java.lang.Comparable#compareTo(java.lang.Object)}. This is, because the logic here
+     * is that the lower the orderIndex the higher the term. E.g. the very high {@link Rank}
+     * Kingdom may have an orderIndex close to 1.
      *
      * @param orderedTerm
      *            the OrderedTermBase to be compared
@@ -121,20 +124,20 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
      */
     protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
 
-        orderedTerm = (T) CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
+    	OrderedTermBase<?> orderedTermLocal = CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
         if(!skipVocabularyCheck){
-            if (this.vocabulary == null || orderedTerm.vocabulary == null){
-                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTerm.toString() + ") of class " + this.getClass() + " or " + orderedTerm.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+            if (this.vocabulary == null || orderedTermLocal.vocabulary == null){
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTermLocal.toString() + ") of class " + this.getClass() + " or " + orderedTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
-            if (! this.getVocabulary().getUuid().equals(orderedTerm.vocabulary.getUuid())){
-                throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
+            if (! this.getVocabulary().getUuid().equals(orderedTermLocal.vocabulary.getUuid())){
+               throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared: " + this.getTitleCache() + " and " + orderedTermLocal.getTitleCache());
             }
         }
 
         int orderThat;
         int orderThis;
         try {
-            orderThat = orderedTerm.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
+            orderThat = orderedTermLocal.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
             orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
         } catch (RuntimeException e) {
             throw e;
@@ -212,12 +215,34 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
         if((object == null) || (!OrderedTermBase.class.isAssignableFrom(object.getClass()))) {
             return false;
         }else{
-            OrderedTermBase orderedTermBase = (OrderedTermBase)object;
+            OrderedTermBase<?> orderedTermBase = (OrderedTermBase<?>)object;
             if (orderedTermBase.getUuid().equals(this.getUuid())){
                 return true;
             }else{
                 return false;
             }
+        }
+    }
+
+    @Transient
+    public T getNextHigherTerm(){  //#3327
+        if (getVocabulary() == null){
+            return null;
+        }else{
+            @SuppressWarnings("unchecked")
+            OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextHigherTerm(this);
+            return (T)result;
+        }
+    }
+
+    @Transient
+    public T getNextLowerTerm(){ //#3327
+        if (getVocabulary() == null){
+            return null;
+        }else{
+            @SuppressWarnings("unchecked")
+            OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextLowerTerm(this);
+            return (T)result;
         }
     }
 
@@ -232,7 +257,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
      */
     @Override
     public Object clone() {
-        OrderedTermBase result = (OrderedTermBase) super.clone();
+        OrderedTermBase<?> result = (OrderedTermBase<?>) super.clone();
         //no changes to orderIndex
         return result;
     }

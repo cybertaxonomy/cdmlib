@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -334,7 +334,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						area = TdwgAreaProvider.getAreaByTdwgLabel(tdwg);
 					}
 					if (area != null){
-						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+						Distribution distribution = Distribution.NewInstance(area, PresenceAbsenceTerm.PRESENT());
 						td.addElement(distribution);
 					}else{
 						String message = "TDWG area could not be recognized: " + tdwg;
@@ -386,7 +386,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						String value = sourceMap.get(type);
 						if (type.equals(SourceType.Author)){
 							TeamOrPersonBase<?> author = getAuthorAccordingToConfig(value, state);
-							ref.setAuthorTeam(author);
+							ref.setAuthorship(author);
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {

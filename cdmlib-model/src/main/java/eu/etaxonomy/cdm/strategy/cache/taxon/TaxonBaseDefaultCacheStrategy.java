@@ -57,8 +57,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 		Reference<?> sec = taxonBase.getSec();
 		if (sec != null){
 			if (sec.getCacheStrategy() != null && 
-					sec.getAuthorTeam() != null && 
-					isNotBlank(sec.getAuthorTeam().getTitleCache()) && 
+					sec.getAuthorship() != null && 
+					isNotBlank(sec.getAuthorship().getTitleCache()) && 
 					isNotBlank(sec.getYear())){
 				result = sec.getCacheStrategy().getCitation(sec);
 //				 sec.getAuthorTeam().getTitleCache() + sec.getYear();

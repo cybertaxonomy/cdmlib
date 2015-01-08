@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.ext.ipni;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -187,7 +188,7 @@ public class IpniServiceTest {
 			refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
 			Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
 			ref = refList.get(0);
-			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorTeam().getTitleCache());
+			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorship().getTitleCache());
 			
 			
 	//		for (Reference ref : refList){
@@ -196,6 +197,18 @@ public class IpniServiceTest {
 		}
 
 	}	
+	
+	@Test
+	//@Ignore
+	public void testNameID(){
+		ICdmApplicationConfiguration services = null;
+		IpniServiceNamesConfigurator config = null;
+		InputStream content = service1.getNamesById("416415-1");
+		
+		
+		Assert.assertNotNull(content);
+	}
+	
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.ext.ipni.IpniService#getServiceUrl()}.

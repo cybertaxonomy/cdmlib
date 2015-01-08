@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,9 +31,9 @@ import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 @DataSet
 public class EntityValidationResultDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
@@ -215,6 +216,12 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
 		assertEquals("Unexpected number of validation results", 2, results.size());
 		results = dao.getValidationResults(Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 4, results.size());
+	}
+
+
+	@Override
+	public void createTestDataSet() throws FileNotFoundException {
+		// TODO Auto-generated method stub
 	}
 
 }

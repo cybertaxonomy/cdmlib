@@ -28,5 +28,5 @@ public interface IAmplificationDao extends IAnnotatableDao<Amplification>{
      * {@link Amplification}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndDescription();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache();
 }

@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -313,7 +313,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected String getOccurrenceStatus(PresenceAbsenceTermBase<?> status) {
+	protected String getOccurrenceStatus(PresenceAbsenceTerm status) {
 		String result = DwcaTaxExportTransformer.transformToGbifOccStatus(status);
 		if (result == null){
 			if (status == null){
@@ -326,7 +326,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 	
-	protected String getEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
+	protected String getEstablishmentMeans(PresenceAbsenceTerm status) {
 		String result = DwcaTaxExportTransformer.transformToGbifEstablishmentMeans(status);
 		if (result == null){
 			if (status == null){

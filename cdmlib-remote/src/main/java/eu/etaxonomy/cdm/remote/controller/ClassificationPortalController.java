@@ -45,7 +45,7 @@ public class ClassificationPortalController extends BaseController<Classificatio
 
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
-            "reference.authorTeam",
+            "reference.authorship",
             "childNodes"
     });
 

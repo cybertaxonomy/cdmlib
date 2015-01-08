@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -102,7 +104,7 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
@@ -138,7 +140,7 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
 //        if (backLayer == null) {
@@ -166,7 +168,7 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
@@ -277,6 +279,9 @@ public class EditGeoService implements IEditGeoService {
 
         if(areaVocabularyUuid != null){
             TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
+            if(areaVocabulary == null){
+                throw new EntityNotFoundException("No Vocabulary found for uuid " + areaVocabularyUuid);
+            }
             areas.addAll(areaVocabulary.getTerms());
         }
         if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
@@ -295,7 +300,7 @@ public class EditGeoService implements IEditGeoService {
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Set<NamedAreaLevel> omitLevels,
+            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
@@ -313,7 +318,6 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                     subAreaPreference,
                     statusOrderPreference,

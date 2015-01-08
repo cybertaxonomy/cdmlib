@@ -33,7 +33,7 @@ import org.hibernate.search.annotations.Indexed;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
+public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Comparable<DefinedTerm> {
 	private static final long serialVersionUID = -6965540410672076893L;
 
 	//Determination modifier
@@ -49,6 +49,12 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	//Marker
 	private static final UUID uuidIts1 = UUID.fromString("3f2de4f6-d1a2-4c3a-be70-3c997ef92543");
 
+	//kindOfUnit
+	public static final UUID uuidSpecimenScan = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
+	public static final UUID uuidDetailImage = UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34");
+	//...
+	
+	
 	protected static Map<UUID, DefinedTerm> termMap = null;
 
 
@@ -93,13 +99,16 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	public static DefinedTerm NewKindOfUnitInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
 	}
+	
+	public static DefinedTerm NewIdentifierTypeInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
+	}
+	
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only
 	@Deprecated
-	protected DefinedTerm(){
-		super(TermType.Unknown);
-	}
+	protected DefinedTerm(){super(TermType.Unknown);}
 
 	public DefinedTerm(TermType type, String description, String label, String labelAbbrev) {
 		super(type, description, label, labelAbbrev);
@@ -148,7 +157,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 			termMap = new HashMap<UUID, DefinedTerm>();
 		}
 		for (DefinedTerm term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), term);  //TODO casting
+			termMap.put(term.getUuid(), term);
 		}
 	}
 

@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
-import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 
 /**
@@ -31,34 +29,18 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 @Service
 @Transactional(readOnly = true)
 public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplification, IAmplificationDao> implements IAmplificationService{
-    private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(AmplificationServiceImpl.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     @Autowired
     protected void setDao(IAmplificationDao dao) {
         this.dao = dao;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPrimerService#getPrimerUuidAndTitleCache()
-     */
     @Override
-    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndDescription() {
-        return dao.getAmplificationUuidAndDescription();
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache() {
+        return dao.getAmplificationUuidAndLabelCache();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IAmplificationService#moveSingleRead(eu.etaxonomy.cdm.model.molecular.Amplification, eu.etaxonomy.cdm.model.molecular.Amplification, eu.etaxonomy.cdm.model.molecular.SingleRead)
-     */
-    @Override
-    public boolean moveSingleRead(Amplification from, Amplification to, SingleRead singleRead) {
-        from.removeSingleRead(singleRead);
-        saveOrUpdate(from);
-        to.addSingleRead(singleRead);
-        saveOrUpdate(to);
-        return true;
-    }
 }

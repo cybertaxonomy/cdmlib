@@ -182,7 +182,14 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @return true if the value object exists in the collection, false o/w
 	 */
 	public boolean containsValue(PersistentCollection col, Object element);
+
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 	
+	/**
+	 * Preliminary, may be moved to test later
+	 */
+	@Deprecated
+	public void createFullSampleData();
 	
 	
 }

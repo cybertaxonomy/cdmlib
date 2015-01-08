@@ -12,10 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.security.core.GrantedAuthority;
@@ -50,9 +51,24 @@ public class Group extends CdmBase {
     public final static UUID groupEditorUuid = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
     public final static UUID groupProjectManagerUuid = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
 
+//*********************** FACTORY *********************/
+
+    public static Group NewInstance(){
+        return new Group();
+    }
+
+    public static Group NewInstance(String name){
+        Group group = Group.NewInstance();
+        group.setName(name);
+        return group;
+    }
+    
+//**************** FIELDS ******************************/    
+    
     @XmlElement(name = "Name")
-    @NaturalId
+    @Column(unique = true)
     @Field
+    @NotNull
     protected String name;
 
     @XmlElementWrapper(name = "Members")
@@ -71,19 +87,13 @@ public class Group extends CdmBase {
     @Cascade({CascadeType.SAVE_UPDATE})
     protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
+// ********************* CONSTRUCTOR ************************/    
+    
     protected Group(){
         super();
     }
 
-    public static Group NewInstance(){
-        return new Group();
-    }
-
-    public static Group NewInstance(String name){
-        Group group = Group.NewInstance();
-        group.setName(name);
-        return group;
-    }
+// *************** METHODS ***********************************/    
 
     public Set<GrantedAuthority> getGrantedAuthorities() {
         return grantedAuthorities;

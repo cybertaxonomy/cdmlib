@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.api.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,16 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
     	user1 = userService.find(UserUUID);
     	assertNotNull(user1);
     	
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

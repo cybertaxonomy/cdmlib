@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -59,6 +61,14 @@ private ICdmGenericDao genericDao;
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+	
+
+    @Override
+    protected void setOtherCachesNull(Reference ref) {
+        if (! ref.isProtectedAbbrevTitleCache()){
+            ref.setAbbrevTitleCache(null, false);
+        }
+    }
 
 
 	@Autowired
@@ -89,19 +99,14 @@ private ICdmGenericDao genericDao;
 	}
 	
 	@Override
-	public String delete(Reference reference) {
+	public DeleteResult delete(Reference reference) {
 		//check whether the reference is used somewhere
-		List<String> messages = isDeletable(reference, null);
-		StringBuffer result = new StringBuffer();
-		if (messages.size()>0){
-			for (String message:messages){
-				result.append(message);
-				result.append(" - ");
-			}
-			
-			return result.toString();
+		DeleteResult result = isDeletable(reference, null);
+		
+		if (result.isOk()){
+			dao.delete(reference);
 		}
 		
-		return dao.delete(reference).toString();
+		return result;
 	}
 }

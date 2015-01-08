@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -59,9 +61,6 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     private IOccurrenceService occurrenceService;
     @Autowired
     private INameService nameService;
-    @Autowired
-    private ITaxonService taxonService;
-
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes"
@@ -69,7 +68,11 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 
     public TaxonController(){
         super();
-        setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
+        setInitializationStrategy(Arrays.asList(new String[]{
+                "$",
+                "name.nomenclaturalReference"
+                }
+        ));
     }
 
 
@@ -154,7 +157,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetClassifications(): " + request.getRequestURI());
-        TaxonBase taxonBase = service.load(uuid);
+        TaxonBase<?> taxonBase = service.load(uuid);
 
         if (taxonBase == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
@@ -168,7 +171,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        TaxonBase<?> tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
         if(tb instanceof Taxon){
             return ((Taxon)tb).getTaxonNodes();
         } else {
@@ -187,14 +190,39 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 
         ModelAndView mv = new ModelAndView();
 
-        TaxonBase tb = service.load(uuid);
+        TaxonBase<?> tb = service.load(uuid);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){
-            List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-            mv.addObject(specimensOrObersvations);
+            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+            mv.addObject(specimensOrObservations);
+        } else {
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            return null;
+        }
+
+        return mv;
+    }
+
+    @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
+    public ModelAndView doGetFieldUnits(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetFieldUnits() - " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+
+        TaxonBase<?> tb = service.load(uuid);
+
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
+        if(tb instanceof Taxon){
+            Collection<FieldUnit> associatedFieldUnits = occurrenceService.listFieldUnitsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, null);
+            mv.addObject(associatedFieldUnits);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
@@ -206,13 +234,12 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
     public ModelAndView doGetTaggedName(
             @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletRequest request) {
         logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
-        TaxonBase tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
+        TaxonBase<?> tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }

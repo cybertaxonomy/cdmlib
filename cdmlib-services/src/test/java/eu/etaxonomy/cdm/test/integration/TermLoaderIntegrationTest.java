@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.test.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -60,4 +61,13 @@ public class TermLoaderIntegrationTest extends CdmIntegrationTest {
 			assertNotNull("NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist",NomenclaturalStatusType.OPUS_UTIQUE_OPPR());
 			assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

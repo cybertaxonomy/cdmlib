@@ -40,21 +40,20 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -124,7 +123,6 @@ public class DataSet {
 	
 	@XmlElementWrapper(name = "Terms")
     @XmlElements({
-    	@XmlElement(name = "AbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = AbsenceTerm.class),
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = NamedArea.class),
     	@XmlElement(name = "DerivationEventType", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEventType.class),
@@ -144,7 +142,7 @@ public class DataSet {
     	@XmlElement(name = "NameTypeDesignationStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignationStatus.class),
     	@XmlElement(name = "NomenclaturalCode", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalCode.class),
     	@XmlElement(name = "NomenclaturalStatusType", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalStatusType.class),
-    	@XmlElement(name = "PresenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PresenceTerm.class),
+    	@XmlElement(name = "PresenceAbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PresenceAbsenceTerm.class),
     	@XmlElement(name = "PreservationMethod", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = PreservationMethod.class),
         @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class),
     	@XmlElement(name = "ReferenceSystem", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = ReferenceSystem.class),
@@ -254,7 +252,7 @@ public class DataSet {
       @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Taxon.class),
       @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Synonym.class)
     })
-    protected List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
+    protected List<TaxonBase<?>> taxonBases = new ArrayList<TaxonBase<?>>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElements({
@@ -603,7 +601,7 @@ public class DataSet {
      *     {@link Collection<TaxonBase> }
      *     
      */
-    public void addTaxonBases(Collection<TaxonBase> value) {
+    public void addTaxonBases(Collection<TaxonBase<?>> value) {
     	this.taxonBases.addAll(value);
     }
 
@@ -615,7 +613,7 @@ public class DataSet {
      *     {@link List<TaxonBase> }
      *     
      */
-    public List<TaxonBase> getTaxonBases() {
+    public List<TaxonBase<?>> getTaxonBases() {
     	return taxonBases;
     }
 
@@ -627,7 +625,7 @@ public class DataSet {
      *     {@link List<TaxonBase> }
      *     
      */
-    public void setTaxonBases(List<TaxonBase> value) {
+    public void setTaxonBases(List<TaxonBase<?>> value) {
         this.taxonBases = value;
     }
 

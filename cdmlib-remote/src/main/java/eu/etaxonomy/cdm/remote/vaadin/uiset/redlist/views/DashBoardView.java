@@ -11,12 +11,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-import ru.xpoft.vaadin.VaadinView;
-
-import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -56,17 +51,16 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
+import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.vaadin.components.TaxonTableDTO;
-import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 /**
  * 
@@ -85,10 +79,10 @@ import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
  * @author a.oppermann
  */
 
-@Component
-@Scope("prototype")
-@Theme("mytheme")
-@VaadinView(DashBoardView.NAME)
+//@Component
+//@Scope("prototype")
+//@Theme("mytheme")
+//@VaadinView(DashBoardView.NAME)
 public class DashBoardView extends CustomComponent implements View{
 
 	/**
@@ -99,7 +93,7 @@ public class DashBoardView extends CustomComponent implements View{
 	public static final String NAME = "dash";
 	Logger logger = Logger.getLogger(DashBoardView.class);
 	@Autowired
-	private AuthenticationService authenticationController;
+	private VaadinAuthenticationService authenticationService;
 	
 	@Autowired
 	private HorizontalToolbar toolbar;
@@ -128,7 +122,7 @@ public class DashBoardView extends CustomComponent implements View{
 	
 	private Taxon currentTaxon;
 
-	private BeanItemContainer<RedlistDTO> taxonBaseContainer;
+	private BeanItemContainer<CdmTaxonTableCollection> taxonBaseContainer;
 
 	private VerticalLayout layout;
 
@@ -141,7 +135,7 @@ public class DashBoardView extends CustomComponent implements View{
 	 */
 	@PostConstruct
 	public void PostConstruct(){
-		if(authenticationController.isAuthenticated()){
+		if(authenticationService.isAuthenticated()){
 			layout = new VerticalLayout();
 			layout.setSizeFull();
 			layout.setHeight("100%");
@@ -217,17 +211,17 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 	
 	private void clickHandler(Object taxonbean, final VerticalLayout detailViewLayout, final VerticalLayout descriptionViewLayout){
-		if(taxonbean instanceof RedlistDTO){
+		if(taxonbean instanceof CdmTaxonTableCollection){
 			detailViewLayout.removeAllComponents();
 			descriptionViewLayout.removeAllComponents();
-			RedlistDTO red = (RedlistDTO) taxonbean;
+			CdmTaxonTableCollection red = (CdmTaxonTableCollection) taxonbean;
 			currentTaxon = red.getTaxon();
 			detailViewLayout.addComponent(constructFormLayout(red));
 			descriptionViewLayout.addComponent(constructDetailPanel(red));
 		}
 	}
 	
-	private TabSheet constructFormLayout(RedlistDTO dto){
+	private TabSheet constructFormLayout(CdmTaxonTableCollection dto){
 		TabSheet tabsheet = new TabSheet();
 		VerticalLayout tab1 = new VerticalLayout();
 		Taxon taxon = dto.getTaxon();
@@ -243,8 +237,8 @@ public class DashBoardView extends CustomComponent implements View{
 
 	
 	private FormLayout constructForm(Taxon taxon, final Window window){
-		RedlistDTO redlistDTO = new RedlistDTO(taxon, listDescriptions, null);
-		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
+		CdmTaxonTableCollection redlistDTO = new CdmTaxonTableCollection(taxon, listDescriptions);
+		final BeanFieldGroup<CdmTaxonTableCollection> binder = new BeanFieldGroup<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		binder.setItemDataSource(redlistDTO);
 		binder.setBuffered(true);
 		
@@ -267,8 +261,8 @@ public class DashBoardView extends CustomComponent implements View{
 		return form;
 	}
 	
-	private FormLayout constructTaxonDetailForm(final RedlistDTO red){
-		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
+	private FormLayout constructTaxonDetailForm(final CdmTaxonTableCollection red){
+		final BeanFieldGroup<CdmTaxonTableCollection> binder = new BeanFieldGroup<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		binder.setItemDataSource(red);
 		binder.setBuffered(true);
 		
@@ -300,22 +294,23 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 
 	@SuppressWarnings("rawtypes")
-	private ComboBox initComboBox(final RedlistDTO red) {
-		List<PresenceAbsenceTermBase> listTerm = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-		BeanItemContainer<PresenceAbsenceTermBase> container = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
+	private ComboBox initComboBox(final CdmTaxonTableCollection red) {
+		List<PresenceAbsenceTerm> listTerm = termService.list(PresenceAbsenceTerm.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		BeanItemContainer<PresenceAbsenceTerm> container = new BeanItemContainer<PresenceAbsenceTerm>(PresenceAbsenceTerm.class);
 		container.addAll(listTerm);
 		
 		final ComboBox box = new ComboBox("Occurrence Status: ", container);
-		box.setValue(red.getDistributionStatus());
+	//FIXME:	box.setValue(red.getDistributionStatus());
 		box.setImmediate(true);
 		
 		box.addValueChangeListener(new ValueChangeListener() {	
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				ConversationHolder conversationHolder = authenticationController.getConversationHolder();
-				conversationHolder.startTransaction();
-				red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
+//				ConversationHolder conversationHolder = authenticationService.getConversationHolder();
+				ConversationHolder conversationHolder = (ConversationHolder) VaadinSession.getCurrent().getAttribute("conversation");
+//				conversationHolder.startTransaction();
+	//FIXME:		red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
 				conversationHolder.commit();
 				updateTables();
 			}
@@ -323,7 +318,7 @@ public class DashBoardView extends CustomComponent implements View{
 		return box;
 	}
 	
-	private TabSheet constructDetailPanel(RedlistDTO dto){
+	private TabSheet constructDetailPanel(CdmTaxonTableCollection dto){
 		Taxon taxon = dto.getTaxon();
 		TabSheet tabsheet = new TabSheet();
 		
@@ -398,7 +393,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	}
 	
-	private Button constructSaveButton(final Window window, final BeanFieldGroup<RedlistDTO> binder) {
+	private Button constructSaveButton(final Window window, final BeanFieldGroup<CdmTaxonTableCollection> binder) {
 		Button okButton = new Button("Save");
 		okButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -406,9 +401,9 @@ public class DashBoardView extends CustomComponent implements View{
 			public void buttonClick(ClickEvent event) {
 				try {
 					binder.commit();
-					BeanItem<RedlistDTO> beanItem = (BeanItem<RedlistDTO>) binder.getItemDataSource();
+					BeanItem<CdmTaxonTableCollection> beanItem = (BeanItem<CdmTaxonTableCollection>) binder.getItemDataSource();
 					binder.commit();
-					RedlistDTO redlist = beanItem.getBean();
+					CdmTaxonTableCollection redlist = beanItem.getBean();
 					logger.info("check das Taxon: "+ redlist.getTaxon());
 //					Taxon tnb = redlist.getTaxon();
 //					taxonService.saveOrUpdate(tnb);
@@ -462,13 +457,12 @@ public class DashBoardView extends CustomComponent implements View{
 	 //------------------------------------Example Data Creation------------------------------------------//
 	//---------------------------------------------------------------------------------------------------//
 	private void createExampleData(){
-		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
-		for(TaxonBase taxonBase : listTaxa){
-			Taxon taxon = (Taxon) taxonBase;
+		List<Taxon> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
+		for(Taxon taxon : listTaxa){
 			TaxonDescription td = getTaxonDescription(taxon, false, true);
 			NamedArea na = NamedArea.NewInstance();//0a9727d2-8d1f-4a88-ad4c-d6ef4ebc112a
 			na = (NamedArea) termService.load(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
-			PresenceAbsenceTermBase<?> absenceTermBase = (PresenceAbsenceTermBase<?>) termService.load(UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2"));
+			PresenceAbsenceTerm absenceTermBase = (PresenceAbsenceTerm) termService.load(UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2"));
 			Distribution db = Distribution.NewInstance(na, absenceTermBase);
 			descriptionService.saveDescriptionElement(db);
 			td.addElement(db);
@@ -478,11 +472,10 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 	
 	private void deleteExampleData(){
-		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-		Iterator<TaxonBase> taxonIterator = listTaxa.iterator();
+		List<Taxon> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		Iterator<Taxon> taxonIterator = listTaxa.iterator();
 		while(taxonIterator.hasNext()){
-			TaxonBase taxonBase = taxonIterator.next();
-			Taxon taxon = (Taxon) taxonBase;
+			Taxon taxon =  taxonIterator.next();
 			TaxonDescription td = getTaxonDescription(taxon, false, false);
 			Iterator<DescriptionElementBase> descriptionIterator = td.getElements().iterator();
 			while(descriptionIterator.hasNext()){
@@ -564,7 +557,7 @@ public class DashBoardView extends CustomComponent implements View{
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.*",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",
@@ -616,7 +609,7 @@ public class DashBoardView extends CustomComponent implements View{
             "elements.$",
             "elements.states.*",
             "elements.inDescription",
-            "elements.sources.citation.authorTeam",
+            "elements.sources.citation.authorship",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",

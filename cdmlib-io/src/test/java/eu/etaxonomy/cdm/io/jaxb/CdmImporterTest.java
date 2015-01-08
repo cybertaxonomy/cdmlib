@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -120,4 +121,14 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 
 		return filteredDataSet;
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

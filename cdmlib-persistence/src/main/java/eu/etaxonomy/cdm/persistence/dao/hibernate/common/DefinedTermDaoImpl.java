@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -36,17 +37,17 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -56,7 +57,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -75,33 +75,32 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
-		indexedClasses = new Class[26];
+		indexedClasses = new Class[25];
 		indexedClasses[0] = Rank.class;
 		indexedClasses[1] = AnnotationType.class;
 		indexedClasses[2] = ExtensionType.class;
 		indexedClasses[3] = Language.class;
 		indexedClasses[4] = MarkerType.class;
-		indexedClasses[5] = AbsenceTerm.class;
-		indexedClasses[6] = MeasurementUnit.class;
-		indexedClasses[7] = DefinedTerm.class;
-		indexedClasses[8] = PresenceTerm.class;
-		indexedClasses[9] = State.class;
-		indexedClasses[10] = StatisticalMeasure.class;
-		indexedClasses[11] = TextFormat.class;
-		indexedClasses[12] = DerivationEventType.class;
-		indexedClasses[13] = NamedArea.class;
-		indexedClasses[14] = NamedAreaLevel.class;
-		indexedClasses[15] = NamedAreaType.class;
-		indexedClasses[16] = ReferenceSystem.class;
-		indexedClasses[17] = Country.class;
-		indexedClasses[18] = RightsType.class;
-		indexedClasses[19] = HybridRelationshipType.class;
-		indexedClasses[20] = NameRelationshipType.class;
-		indexedClasses[21] = NameTypeDesignationStatus.class;
-		indexedClasses[22] = NomenclaturalStatusType.class;
-		indexedClasses[23] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[24] = SynonymRelationshipType.class;
-		indexedClasses[25] = TaxonRelationshipType.class;
+		indexedClasses[5] = MeasurementUnit.class;
+		indexedClasses[6] = DefinedTerm.class;
+		indexedClasses[7] = PresenceAbsenceTerm.class;
+		indexedClasses[8] = State.class;
+		indexedClasses[9] = StatisticalMeasure.class;
+		indexedClasses[10] = TextFormat.class;
+		indexedClasses[11] = DerivationEventType.class;
+		indexedClasses[12] = NamedArea.class;
+		indexedClasses[13] = NamedAreaLevel.class;
+		indexedClasses[14] = NamedAreaType.class;
+		indexedClasses[15] = ReferenceSystem.class;
+		indexedClasses[16] = Country.class;
+		indexedClasses[17] = RightsType.class;
+		indexedClasses[18] = HybridRelationshipType.class;
+		indexedClasses[19] = NameRelationshipType.class;
+		indexedClasses[20] = NameTypeDesignationStatus.class;
+		indexedClasses[21] = NomenclaturalStatusType.class;
+		indexedClasses[22] = SpecimenTypeDesignationStatus.class;
+		indexedClasses[23] = SynonymRelationshipType.class;
+		indexedClasses[24] = TaxonRelationshipType.class;
 	}
 
 	/**
@@ -122,7 +121,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, CdmBase sessionObject)");
 		Session session = getSession();
-		if ( sessionObject != null ) {// FIXME is this needed?
+		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
 			session.update(sessionObject);
 		}
 		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
@@ -289,7 +288,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			return null;
 		}
 		boolean isIso639_1 = iso639.length() == 2;
-		
+
 		String queryStr;
 		if (isIso639_1){
 			queryStr = "from Language where iso639_1 = :isoCode";
@@ -312,7 +311,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 				query.add(AuditEntity.property("iso639_2").eq(iso639));
 				query.add(AuditEntity.property("vocabulary.uuid").eq(Language.uuidLanguageVocabulary));
 			}
-			
+
 			return (Language)query.getSingleResult();
 		}
 	}
@@ -501,7 +500,10 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	}
 
 	@Override
-    public <T extends DefinedTermBase> int countIncludes(Set<T> partOf) {
+    public <T extends DefinedTermBase> int countIncludes(Collection<T> partOf) {
+		if (partOf == null || partOf.isEmpty()){
+			return 0;
+		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
     		Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.partOf in (:partOf)");
@@ -550,11 +552,14 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> getIncludes(Set<T> partOf,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DefinedTermBase> List<T> getIncludes(Collection<T> partOf,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		if (partOf == null || partOf.isEmpty()){
+			return new ArrayList<T>();
+		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
     		Query query = getSession().createQuery("select term from DefinedTermBase term where term.partOf in (:partOf)");
-	    	query.setParameterList("partOf", partOf);
+    		query.setParameterList("partOf", partOf);
 
 		    if(pageSize != null) {
 			    query.setMaxResults(pageSize);
@@ -637,6 +642,22 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			query.add(AuditEntity.property("uri").eq(uri));
 		    return (DefinedTermBase)query.getSingleResult();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start,
+	        List<OrderHint> orderHints, List<String> propertyPaths) {
+	    Query query = getSession().createQuery("select term from DefinedTermBase term where term.termType = :termType");
+	    query.setParameter("termType", termType);
+
+	    List result = query.list();
+
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+
+        return result;
 	}
 
 	@Override

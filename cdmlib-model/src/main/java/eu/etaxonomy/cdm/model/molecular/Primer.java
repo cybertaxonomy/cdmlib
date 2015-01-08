@@ -26,6 +26,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "Primer", propOrder = {
 	"label",
 	"sequence",
+	"dnaMarker",
 	"publishedIn"
 })
 @XmlRootElement(name = "Primer")
@@ -57,15 +59,18 @@ public class Primer extends AnnotatableEntity {
 	private String label;
 
 	/** @see #getSequence() */
+	//(see #4139)
 	@XmlElement(name = "Sequence")
+ 	private SequenceString sequence = SequenceString.NewInstance();
+
+
+    /** @see #getDnaMarker()*/
+    @XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
-	//TODO the use of Sequence in this case is a bit of a overhead since you would expect
-	// just having a SequenceString. This may change in future (see #4139)
-	private Sequence sequence;
-
+    private DefinedTerm dnaMarker;
+	
 	/** @see #getPublishedIn() */
 	@XmlElement(name = "PublishedIn")
     @XmlIDREF
@@ -73,6 +78,8 @@ public class Primer extends AnnotatableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Reference<?> publishedIn;
+	
+	
 
 	// ******************** FACTORY METHOD ******************/
 
@@ -84,10 +91,9 @@ public class Primer extends AnnotatableEntity {
 
 	// ********************* CONSTRUCTOR ********************/
 
-	//FIXME
 	//made protected to fix a java.lang.InstantiationException which occurred while loading an Amplification
 	//and its primer. see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
-	protected Primer(){};
+	protected Primer(){}
 
 // ********************* GETTER / SETTER ********************/
 
@@ -111,15 +117,30 @@ public class Primer extends AnnotatableEntity {
 	 * The DNA {@link Sequence} of this primer. A primer is usually a
 	 * small piece of DNA and therefore can be expressed as a sequence.
 	 */
-	public Sequence getSequence() {
+	public SequenceString getSequence() {
 		return sequence;
 	}
 
 	/**
 	 * @see Primer#getSequence()
 	 */
-	public void setSequence(Sequence sequence) {
+	public void setSequence(SequenceString sequence) {
+		if (sequence == null){
+			sequence = SequenceString.NewInstance();
+		}
 		this.sequence = sequence;
+	}
+	
+
+	/**
+	 * #4470
+	 */
+	public DefinedTerm getDnaMarker() {
+		return dnaMarker;
+	}
+
+	public void setDnaMarker(DefinedTerm dnaMarker) {
+		this.dnaMarker = dnaMarker;
 	}
 
 	/**
@@ -142,8 +163,8 @@ public class Primer extends AnnotatableEntity {
 
 	// ********************* CLONE ********************/
 	/**
-	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> sequencing by
+	 * Clones <i>this</i> primer. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> primer by
 	 * modifying only some of the attributes.<BR><BR>
 	 *
 	 *
@@ -153,9 +174,10 @@ public class Primer extends AnnotatableEntity {
 	@Override
 	public Object clone()  {
 		try{
-		Sequence result = (Sequence)super.clone();
+		Primer result = (Primer)super.clone();
 
 //		don't change label, sequence
+		result.publishedIn = this.publishedIn;
 
 		return result;
 		}catch (CloneNotSupportedException e) {

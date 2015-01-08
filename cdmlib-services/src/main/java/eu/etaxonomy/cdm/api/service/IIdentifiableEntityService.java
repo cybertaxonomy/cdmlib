@@ -17,6 +17,7 @@ import org.hibernate.criterion.Criterion;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -94,8 +95,6 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return a Pager of Rights entities
      */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
     /**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
@@ -239,4 +238,32 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return
      */
     public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+    
+
+    /**
+     * Returns an Sourceable object according the 
+     * @param clazz
+     * @param idInSource
+     * @param idNamespace
+     * @return
+     */
+    //TODO shouldn't we move this to CommonService or to a new SourceService ?
+    //TODO should this return a List ?
+    public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
+
+    /**
+     * Returns all {@link IdentifiableEntity identifiable entities} which have the according
+     * identifier attached  
+     * @param clazz the identiable entity subclass, may be null
+     * @param identifier the identifer as {@link String}
+     * @param identifierType the identifier type, maybe null
+     * @param matchmode 
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends T> List<S> listByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
 }

@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -84,7 +85,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 public class TaxonXExtractor {
 
     protected TaxonXImport importer;
-    protected TaxonXImportState configState;
+    protected TaxonXImportState state2;
     private final Map<String,String> namesAsked = new HashMap<String, String>();
     private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
 
@@ -121,7 +122,6 @@ public class TaxonXExtractor {
          * @param ref
          * @param refMods
          */
-        @SuppressWarnings({ "unused" })
         public void builReference(String mref, String treatmentMainName, NomenclaturalCode nomenclaturalCode,
                 Taxon acceptedTaxon, Reference<?> refMods) {
             // System.out.println("builReference "+mref);
@@ -141,7 +141,7 @@ public class TaxonXExtractor {
 
             //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
             Reference<?> reference = ReferenceFactory.newGeneric();
-            reference.setTitleCache(ref);
+            reference.setTitleCache(ref, true);
 
             //only add the first one if there is no nomenclatural reference yet
             if (nbRef==0){
@@ -197,9 +197,9 @@ public class TaxonXExtractor {
      * @param item
      * @return
      */
-    @SuppressWarnings({ "unused", "null", "rawtypes" })
+    @SuppressWarnings({ "unused", "rawtypes" })
     protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
-            SpecimenOrObservationType defaultAssociation) {
+            SpecimenOrObservationType defaultAssociation, TaxonNameBase<?,?> typifiableName) {
         String country=null;
         String locality=null;
         String stateprov=null;
@@ -268,6 +268,8 @@ public class TaxonXExtractor {
                         try{latitude=Double.valueOf(tmp);}catch(Exception e){logger.warn("latitude is not a number");}
                     }else if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:TypeStatus")){
                         type = eventContent.item(j).getTextContent().trim();
+                    }else if(eventContent.item(j).getNodeName().equalsIgnoreCase("#text") && StringUtils.isBlank(eventContent.item(j).getTextContent())){
+                        //do nothing
                     }
                     else {
                         logger.info("UNEXTRACTED FIELD FOR SPECIMEN "+eventContent.item(j).getNodeName()+", "+eventContent.item(j).getTextContent()) ;
@@ -314,6 +316,12 @@ public class TaxonXExtractor {
             }
             derivedUnitFacade = getFacade(type.replaceAll(";",""), defaultAssociation);
             SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+            
+            if (typifiableName != null){
+            	typifiableName.addTypeDesignation(designation, true);
+            }else{
+            	logger.warn("No typifiable name available");
+            }
             SpecimenTypeDesignationStatus stds= getSpecimenTypeDesignationStatusByKey(type);
             if (stds !=null) {
                 stds = (SpecimenTypeDesignationStatus) importer.getTermService().find(stds.getUuid());
@@ -338,7 +346,7 @@ public class TaxonXExtractor {
         }
 
         unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
-                configState.getConfig(),importer.getAgentService());
+                state2.getConfig(),importer.getAgentService());
 
         if(tp!=null) {
             unitsGatheringEvent.setGatheringDate(tp);
@@ -346,8 +354,14 @@ public class TaxonXExtractor {
 
         // country
         unitsGatheringArea = new UnitsGatheringArea();
-        unitsGatheringArea.setParams(null, country, configState.getConfig(), importer.getTermService(), importer.getOccurrenceService());
-
+        unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService());
+        //TODO other areas
+        if (StringUtils.isNotBlank(stateprov)){
+        	ArrayList<String> namedAreas = new ArrayList<String>();
+        	namedAreas.add(stateprov);
+            unitsGatheringArea.setAreaNames(namedAreas, state2.getConfig(), importer.getTermService());
+        }
+        
         areaCountry =  unitsGatheringArea.getCountry();
 
         //                         // other areas
@@ -359,18 +373,16 @@ public class TaxonXExtractor {
 
         // copy gathering event to facade
         GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+        derivedUnitFacade.setGatheringEvent(gatheringEvent);
         derivedUnitFacade.setLocality(gatheringEvent.getLocality());
         derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
         derivedUnitFacade.setCollector(gatheringEvent.getCollector());
         derivedUnitFacade.setCountry((NamedArea)areaCountry);
-        derivedUnitFacade.setGatheringEvent(gatheringEvent);
-
+        
         for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
             derivedUnitFacade.addCollectingArea((NamedArea) area);
         }
         //                         derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
-
-        // TODO exsiccatum
 
         // add fieldNumber
         if (fieldNumber != null) {
@@ -505,7 +517,7 @@ public class TaxonXExtractor {
      * @param reftype
      * @return
      */
-    protected Reference<?> getReferenceType(int reftype) {
+    protected Reference<?> getReferenceWithType(int reftype) {
         Reference<?> ref = null;
         switch (reftype) {
         case 1:
@@ -922,7 +934,7 @@ public class TaxonXExtractor {
                 scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
                 List<Rank> rankList = new ArrayList<Rank>();
-                rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
+                rankList = importer.getTermService().list(Rank.class, null, null, null, null);
 
                 List<String> rankListStr = new ArrayList<String>();
                 for (Rank r:rankList) {
@@ -1062,53 +1074,56 @@ public class TaxonXExtractor {
         if (r.equalsIgnoreCase("Superfamily")) {
             rank=Rank.SUPERFAMILY();
         }
-        if (r.equalsIgnoreCase("Family")) {
+        else if (r.equalsIgnoreCase("Family")) {
             rank=Rank.FAMILY();
         }
-        if (r.equalsIgnoreCase("Subfamily")) {
+        else if (r.equalsIgnoreCase("Subfamily")) {
             rank=Rank.SUBFAMILY();
         }
-        if (r.equalsIgnoreCase("Tribe")) {
+        else if (r.equalsIgnoreCase("Tribe")) {
             rank=Rank.TRIBE();
         }
-        if (r.equalsIgnoreCase("Subtribe")) {
+        else if (r.equalsIgnoreCase("Subtribe")) {
             rank=Rank.SUBTRIBE();
         }
-        if (r.equalsIgnoreCase("Genus")) {
+        else if (r.equalsIgnoreCase("Genus")) {
             rank=Rank.GENUS();
         }
-        if (r.equalsIgnoreCase("Subgenus")) {
+        else if (r.equalsIgnoreCase("Subgenus")) {
             rank=Rank.SUBGENUS();
         }
-        if (r.equalsIgnoreCase("Section")) {
+        else if (r.equalsIgnoreCase("Section")) {
             rank=Rank.SECTION_BOTANY();
         }
-        if (r.equalsIgnoreCase("Subsection")) {
+        else if (r.equalsIgnoreCase("Subsection")) {
             rank=Rank.SUBSECTION_BOTANY();
         }
-        if (r.equalsIgnoreCase("Series")) {
+        else if (r.equalsIgnoreCase("Series")) {
             rank=Rank.SERIES();
         }
-        if (r.equalsIgnoreCase("Subseries")) {
+        else if (r.equalsIgnoreCase("Subseries")) {
             rank=Rank.SUBSERIES();
         }
-        if (r.equalsIgnoreCase("Species")) {
+        else if (r.equalsIgnoreCase("Species")) {
             rank=Rank.SPECIES();
         }
-        if (r.equalsIgnoreCase("Subspecies")) {
+        else if (r.equalsIgnoreCase("Subspecies")) {
             rank=Rank.SUBSPECIES();
         }
-        if (r.equalsIgnoreCase("Variety") || r.equalsIgnoreCase("varietyEpithet")) {
+        else if (r.equalsIgnoreCase("Variety") || r.equalsIgnoreCase("varietyEpithet")) {
             rank=Rank.VARIETY();
         }
-        if (r.equalsIgnoreCase("Subvariety")) {
+        else if (r.equalsIgnoreCase("Subvariety")) {
             rank=Rank.SUBVARIETY();
         }
-        if (r.equalsIgnoreCase("Form")) {
+        else if (r.equalsIgnoreCase("Form")) {
             rank=Rank.FORM();
         }
-        if (r.equalsIgnoreCase("Subform")) {
+        else if (r.equalsIgnoreCase("Subform")) {
             rank=Rank.SUBFORM();
+        }else if (r.equalsIgnoreCase("higher")) {
+//            rank=Rank.SUPRAGENERICTAXON();
+        	logger.warn("handling of 'higher' rank still unclear");
         }
 
         return rank;
@@ -1178,6 +1193,28 @@ public class TaxonXExtractor {
             return false;
         }
     }
+    
+    /**
+     * Tries to match the status string against any new name status
+     * and returns the status if it matches. Returns <code>null</code> otherwise.
+     * @param status
+     * @return
+     */
+    protected String newNameStatus(String status){
+    	String pattern = "(" + "((sp|spec|gen|comb|)\\.\\s*nov.)" +
+    				"|(new\\s*(species|combination))" + 
+    				"|(n\\.\\s*sp\\.)" +
+    				"|(sp\\.\\s*n\\.)" +
+    				")";
+    	if (status.trim().matches(pattern)){
+    		//FIXME 
+    		return null; 
+//    		return status;
+    	}else{
+    		return null;
+    	}
+    }
+    
 
     /** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
      */

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -42,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -71,8 +70,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = "cdm_test";
-//		String database = "test";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
+		database = "cdm_test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -88,19 +87,6 @@ public class Datasource {
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		String server = "160.45.63.201";
-////	String database = "cdm_test";
-//		String database = "cdm_integration_palmae";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-//		String server = "localhost";
-//		String database = "EDITimport";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-
-		
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
@@ -113,25 +99,29 @@ public class Datasource {
 //		username = "pesiexport";
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		
-////		H2
-//		String username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2",   NomenclaturalCode.ICNAFP);
-////    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
-		
+		//H2
+//		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+    	String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
+		username = "sa";
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
     	
-		
-		try {
+ 		try {
 			CdmUpdater updater = new CdmUpdater();
-			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			if (schema == DbSchemaValidation.VALIDATE){
+				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			}
 		} catch (Exception e) {
-//			xx;
+			e.printStackTrace();
 		}
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
-//		insertSomeData(appCtr);
+//		appCtr.getCommonService().createFullSampleData();
+
+		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
 		
 		appCtr.close();
@@ -273,7 +263,7 @@ public class Datasource {
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 			appCtr = CdmApplicationController.NewInstance(ds);
-			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
+			List l = appCtr.getNameService().list(null,5, 1,null,null);
 			System.out.println(l);
 			//Agent agent = new Agent();
 			//appCtr.getAgentService().saveAgent(agent);
@@ -310,7 +300,7 @@ public class Datasource {
 			TaxonDescription description = TaxonDescription.NewInstance();
 			taxon.addDescription(description);
 			NamedArea area1 = appCtr.getTermService().getAreaByTdwgAbbreviation("GER");
-			Distribution distribution = Distribution.NewInstance(area1, PresenceTerm.PRESENT());
+			Distribution distribution = Distribution.NewInstance(area1, PresenceAbsenceTerm.PRESENT());
 			description.addElement(distribution);
 			
 			List<Distribution> distrList = new ArrayList<Distribution>();

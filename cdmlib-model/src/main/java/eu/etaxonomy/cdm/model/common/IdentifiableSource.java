@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
+
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -46,10 +47,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 	
-	/**
-	 * Factory method
-	 * @return
-	 */
+//********************************* FACTORY ********************************************************/
+
 	public static IdentifiableSource NewInstance(OriginalSourceType type){
 		return new IdentifiableSource(type);
 	}
@@ -88,6 +87,8 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}	
 	
+// ******************************** FIELDS ************************************/	
+	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -110,16 +111,13 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	}
 	
 // ********************** GETTER /SETTER *****************************/
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
-	 */
+
+	@Override
 	public IdentifiableEntity getSourcedObj() {
 		return sourcedObj;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setSourcedObj(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
+	@Override
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
@@ -136,10 +134,6 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableSource result = (IdentifiableSource)super.clone();

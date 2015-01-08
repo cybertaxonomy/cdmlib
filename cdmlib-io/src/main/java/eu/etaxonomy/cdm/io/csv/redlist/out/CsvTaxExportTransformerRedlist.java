@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.dwca.out.TermMapping;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -197,7 +197,7 @@ public class CsvTaxExportTransformerRedlist extends InputTransformerBase {
 		}
 	}
 
-	public static String transformToGbifOccStatus(PresenceAbsenceTermBase<?> status) {
+	public static String transformToGbifOccStatus(PresenceAbsenceTerm status) {
 		if ( status == null){
 			return null;
 		}else{
@@ -216,7 +216,7 @@ public class CsvTaxExportTransformerRedlist extends InputTransformerBase {
 		}
 	}
 
-	public static String transformToGbifEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
+	public static String transformToGbifEstablishmentMeans(PresenceAbsenceTerm status) {
 		if ( status == null){
 			return null;
 		}else{

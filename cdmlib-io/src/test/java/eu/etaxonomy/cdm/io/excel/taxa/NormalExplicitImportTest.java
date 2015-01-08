@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
+	private IImportConfigurator configuratorXslx;
 	
 	@Before
 	public void setUp() throws URISyntaxException {
@@ -97,6 +99,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could be created", configurator);
 		
+		String inputFileXslx = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xlsx";
+		url = this.getClass().getResource(inputFileXslx);
+	 	assertNotNull("URL for the test file '" + inputFileXslx + "' does not exist", url);
+		configuratorXslx = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		assertNotNull("Configurator could not be created", configuratorXslx);
+		
+		
 	}
 	
 	@Test
@@ -110,6 +119,63 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
+		assertTrue("Return value for import.invoke should be true", result);
+		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
+		List<Classification> treeList = classificationService.list(null, null,null,null,null);
+		assertEquals("Number of classifications should be 1", 1, treeList.size());
+		Classification tree = treeList.get(0);
+		List<TaxonNode> rootNodes = tree.getChildNodes();
+		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
+		TaxonNode rootNode = rootNodes.iterator().next();
+		assertEquals("Root taxon name should be Animalia", "Animalia", rootNode.getTaxon().getName().getTitleCache());
+		TaxonNode arthropodaNode = rootNode.getChildNodes().iterator().next();
+		assertEquals("Arthropoda node taxon name should be Arthropoda", "Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache());
+		TaxonNode insectaNode = arthropodaNode.getChildNodes().iterator().next();
+		TaxonNode lepidopteraNode = insectaNode.getChildNodes().iterator().next();
+		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
+		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
+		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
+		
+		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
+		TaxonNode childNode1 = it.next();
+		TaxonNode childNode2 = it.next();
+		
+		TaxonNode noctuaPronubaNode;
+		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
+			noctuaPronubaNode = childNode1;
+		}else{
+			noctuaPronubaNode = childNode2;
+		}
+		
+		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
+		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
+		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
+		assertEquals("Number of synonyms should be 1", 1, synonyms.size());
+		Synonym synonym = synonyms.iterator().next();
+		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName<?>)synonym.getName()).getNameCache());
+		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
+		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
+		TaxonDescription taxonDescription = descriptions.iterator().next();
+		Set<DescriptionElementBase> elements = taxonDescription.getElements();
+		List<CommonTaxonName> commonNames = new ArrayList<CommonTaxonName>();
+		for (DescriptionElementBase element : elements){
+			if (element.isInstanceOf(CommonTaxonName.class)){
+				commonNames.add((CommonTaxonName)element);
+			}
+		}
+		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
+		Set<String> commonNameStrings = new HashSet<String>();
+		commonNameStrings.add(commonNames.get(0).getName());
+		commonNameStrings.add(commonNames.get(1).getName());
+		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
+		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
+	}
+	
+	@Test
+	@DataSet
+	public void testDoInvokeXslx() {
+		//printDataSet(System.out);
+		boolean result = defaultImport.invoke(configuratorXslx);
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
@@ -203,8 +269,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		DescriptionElementSource source = textData.getSources().iterator().next();
 		Reference<?> ref = source.getCitation();
 		assertNotNull("Citation should not be null", ref);
-		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
-		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
+		assertNotNull("Authorship should not be null", ref.getAuthorship());
+		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());
 		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
 		TaxonNameBase<?,?> nameUsedInSource = source.getNameUsedInSource();
@@ -227,8 +293,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		source = textData.getSources().iterator().next();
 		ref = source.getCitation();
 		assertNotNull("Citation should not be null", ref);
-		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
-		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorTeam().getTitleCache());
+		assertNotNull("Authorship should not be null", ref.getAuthorship());
+		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorship().getTitleCache());
 		assertEquals("Publication title should be 'The ultimate book'", "The ultimate book", ref.getTitle());
 		assertEquals("Publication year should be '2011'", "2011", ref.getYear());
 		nameUsedInSource = source.getNameUsedInSource();
@@ -255,5 +321,14 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		}
 		return null;
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

@@ -13,6 +13,14 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
+ * Class which represents a CDM term version step. See {@link CdmUpdater}
+ * for further documentation or implementing classes for examples.
+ * 
+ * @see CdmUpdater
+ * @see ITermUpdaterStep
+ * @see ISchemaUpdaterStep
+ * @see ISchemaUpdater
+ * 
  * @author a.mueller
  * @date 09.2010
  *

@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -158,40 +159,36 @@ public class TestService {
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
 		UUID uuid = null;
-		//try {
-		String uuidString = taxonService.deleteTaxon(taxon1, null, null);
-		/*} catch (DataChangeNoRollbackException e) {
-			logger.info(e.getMessage());
-		}*/
-		 try{
-	        	uuid = UUID.fromString(uuidString);
-	     }catch(IllegalArgumentException e){
-	        	Assert.fail();
-	     }
+		
+		DeleteResult result = taxonService.deleteTaxon(taxon1, null, null);
+		
+		if(!result.isOk()){ 
+         	Assert.fail();
+       	}
 		logger.info("  UUID: " + uuid);
 	}
 
 
-	public void testVocabularyLists(){
-		TermVocabulary<NomenclaturalStatusType> voc = appCtr.getNameService().getStatusTypeVocabulary();
-		Set<NomenclaturalStatusType> set = voc.getTermsOrderedByLabels(Language.DEFAULT());
-		for (Object obj : set.toArray()){
-			NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)obj;
-			System.out.println(nomStatusType.getLabel());
-		}
-		TermVocabulary<NameRelationshipType> nameRelVoc = appCtr.getNameService().getNameRelationshipTypeVocabulary();
-		Set<NameRelationshipType> nameRelSet = nameRelVoc.getTermsOrderedByLabels(Language.DEFAULT());
-		for (Object obj : nameRelSet.toArray()){
-			NameRelationshipType naemRelType = (NameRelationshipType)obj;
-			System.out.println(naemRelType.getLabel());
-		}
-		System.out.println("=========== NAME LIST =================");
-		List<TaxonNameBase> nameList = appCtr.getNameService().getNamesByName("Abies%");
-		System.out.println("Size" + nameList.size());
-		for (TaxonNameBase name : nameList){
-			System.out.println("ABEIS: " + name.getTitleCache());
-		}
-	}
+//	public void testVocabularyLists(){
+//		TermVocabulary<NomenclaturalStatusType> voc = appCtr.getNameService().getStatusTypeVocabulary();
+//		Set<NomenclaturalStatusType> set = voc.getTermsOrderedByLabels(Language.DEFAULT());
+//		for (Object obj : set.toArray()){
+//			NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)obj;
+//			System.out.println(nomStatusType.getLabel());
+//		}
+//		TermVocabulary<NameRelationshipType> nameRelVoc = appCtr.getNameService().getNameRelationshipTypeVocabulary();
+//		Set<NameRelationshipType> nameRelSet = nameRelVoc.getTermsOrderedByLabels(Language.DEFAULT());
+//		for (Object obj : nameRelSet.toArray()){
+//			NameRelationshipType naemRelType = (NameRelationshipType)obj;
+//			System.out.println(naemRelType.getLabel());
+//		}
+//		System.out.println("=========== NAME LIST =================");
+//		List<TaxonNameBase> nameList = appCtr.getNameService().getNamesByName("Abies%");
+//		System.out.println("Size" + nameList.size());
+//		for (TaxonNameBase name : nameList){
+//			System.out.println("ABEIS: " + name.getTitleCache());
+//		}
+//	}
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();

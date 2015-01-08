@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.view;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,4 +50,14 @@ public class AuditEventDaoTest extends CdmTransactionalIntegrationTest {
 		AuditEvent auditEvent = auditEventDao.findByDate(dateTime);
 		assertNotNull(auditEvent);
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -97,7 +97,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	//6
 	/**
 	 * Primary Media Source describes the original source for any media file. 
-	 * E.g. a taxonomist may have used three books/articles/other references to gather information
+	 * E.g. a media may be copy of figure in book. The book itself will then be the primary media source. 
      *
 	 * This is a specialization of PROV-O Primary Source 
 	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})

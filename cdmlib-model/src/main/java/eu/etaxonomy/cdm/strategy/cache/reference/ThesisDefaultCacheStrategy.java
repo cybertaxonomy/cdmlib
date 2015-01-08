@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements  INomenclaturalReferenceCacheStrategy {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ThesisDefaultCacheStrategy.class);
 	
 

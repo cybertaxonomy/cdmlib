@@ -39,6 +39,7 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -327,30 +328,37 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Reference<?> sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<UuidAndTitleCache<TaxonBase>> results = taxonDao.getTaxaByNameForEditor(true, true, "Mand*", null, MatchMode.BEGINNING, null);
+        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false,"Mand*", null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
         assertTrue(results.size() == 5);
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,"A*",null, MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,"A*",null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(results.size(), 12);
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, false,"A", null,MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(true, false,false, false,"A", null,MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue(results.size() == 9);
         assertEquals(results.get(0).getType(), Taxon.class);
 
-        results = taxonDao.getTaxaByNameForEditor(false, true,"A", null,MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(false, true,false,false, "A", null,MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue(results.size() == 3);
         assertEquals(results.get(0).getType(), Synonym.class);
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,"Aus", null,MatchMode.EXACT,  null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,false,false,"Aus", null,MatchMode.EXACT,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
+        
+        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,"A*", null,MatchMode.BEGINNING,  null);
+        assertNotNull("getTaxaByName should return a List", results);
+        assertEquals("Results list should contain one entity",15,results.size());
+        
+        //TODO: test the search for misapplied names
+        
     }
 
 
@@ -740,7 +748,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testListAllTaxa() {
-        List<TaxonBase> taxa = taxonDao.list(Taxon.class,100, 0);
+        List<Taxon> taxa = taxonDao.list(Taxon.class,100, 0);
         assertNotNull("list should return a List",taxa);
         assertEquals("list should return 33 taxa",33, taxa.size());
     }
@@ -1094,14 +1102,23 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testGetCommonName(){
 
 
-        List<Object[]> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
+        List<Taxon> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
                 MatchMode.BEGINNING, null, null, null, null);
 
         assertNotNull("getTaxaByCommonName should return a list", commonNameResults);
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
         assertEquals("There should be one Taxon with common name", 1,commonNameResults.size());
-        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)[0]).getTitleCache());
+        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
 
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 

@@ -601,8 +601,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					team.addTeamMember(edit);
 				}
 			}
-			sec.setAuthorTeam(team);
-			sourceReference.setAuthorTeam(team);
+			sec.setAuthorship(team);
+			sourceReference.setAuthorship(team);
 		}
 
 		if (copyright != null) {

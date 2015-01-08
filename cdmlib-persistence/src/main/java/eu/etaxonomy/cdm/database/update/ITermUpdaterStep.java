@@ -10,7 +10,14 @@
 package eu.etaxonomy.cdm.database.update;
 
 /**
- * Interface for classes that represent a step in a term update.
+ * Interface which represents a CDM terms update step. See {@link CdmUpdater}
+ * for further documentation or implementing classes for examples.
+ * 
+ * @see CdmUpdater
+ * @see ITermUpdater
+ * @see ISchemaUpdaterStep
+ * @see ISchemaUpdater
+ * 
  * @author a.mueller
  * @date 24.11.2010
  *

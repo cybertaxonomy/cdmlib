@@ -14,16 +14,15 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -45,7 +44,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
-    private NonViralNameDefaultCacheStrategy strategy;
+    private NonViralNameDefaultCacheStrategy<NonViralName> strategy;
 
     private static final String familyNameString = "Familia";
     private static final String genusNameString = "Genus";
@@ -65,10 +64,10 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     private BotanicalName subGenusName;
     private BotanicalName speciesName;
     private BotanicalName subSpeciesName;
-    private INomenclaturalAuthor author;
-    private INomenclaturalAuthor exAuthor;
-    private INomenclaturalAuthor basAuthor;
-    private INomenclaturalAuthor exBasAuthor;
+    private TeamOrPersonBase<?> author;
+    private TeamOrPersonBase<?> exAuthor;
+    private TeamOrPersonBase<?> basAuthor;
+    private TeamOrPersonBase<?> exBasAuthor;
     private Reference<?> citationRef;
 
     @BeforeClass
@@ -127,7 +126,20 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
         //TODO not yet completed
     }
-
+    
+    @Test
+    public void testGattungsAutonyme() {
+    	BotanicalName botName = BotanicalName.NewInstance(Rank.SECTION_BOTANY());
+		String strTaraxacum = "Traxacum";
+		botName.setGenusOrUninomial(strTaraxacum);
+		botName.setInfraGenericEpithet(strTaraxacum);
+		botName.setAuthorshipCache("Author");
+		Assert.assertFalse(botName.getFullTitleCache().contains("bot."));
+		//TODO #4288 
+		System.out.println(botName.getFullTitleCache());
+    }
+        
+    
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
@@ -169,7 +181,22 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         unrankedCache = strategy.getNameCache(unrankedName);
         Assert.assertEquals("Correct unranked cache expected", "Genus [infragen.] Infrageneric", unrankedCache);
 
-
+        //bot. specific ranks
+        botName = BotanicalName.NewInstance(Rank.SECTION_BOTANY());
+        botName.setGenusOrUninomial("Genus");
+        botName.setInfraGenericEpithet("Infragenus");
+        Assert.assertEquals("", "Genus sect. Infragenus", botName.getNameCache());
+        botName.setRank(Rank.SUBSECTION_BOTANY());
+        Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
+        
+        //zool. specific ranks (we don't have markers here therefore no problem should exist
+        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SECTION_ZOOLOGY());
+        zooName.setGenusOrUninomial("Genus");
+        zooName.setInfraGenericEpithet("Infragenus");
+        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        zooName.setRank(Rank.SUBSECTION_ZOOLOGY());
+        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        
     }
 
     /**
@@ -485,7 +512,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testGetInfraGenericNames(){
         String author = "Anyauthor";
-        NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
+        NonViralName nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
         nonViralName.setGenusOrUninomial("Genus");
         nonViralName.setInfraGenericEpithet("subgenus");
         nonViralName.setAuthorshipCache(author);
@@ -501,6 +528,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         nonViralName.setRank(Rank.SPECIESAGGREGATE());
         nonViralName.setSpecificEpithet("myspecies");
         nonViralName.setInfraGenericEpithet(null);
+        nonViralName.setAuthorshipCache(null);
 
         List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
 
@@ -532,7 +560,16 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         groupNameTitle = strategy.getTitleCache(nonViralName);
         assertEquals("Species group name should be 'Genus (Infragenus) myspecies species group'.", "Genus (Infragenus) myspecies species group", groupNameTitle);
 
-
+        //aggregates with author and nom.ref. information #4288
+        nonViralName.setRank(Rank.SPECIESAGGREGATE());
+        nonViralName.setSpecificEpithet("myspecies");
+        nonViralName.setInfraGenericEpithet(null);
+        nonViralName.setAuthorshipCache("L.");
+        
+        aggrNameCacheTagged = strategy.getTaggedTitle(nonViralName);
+        aggrNameCache = strategy.createString(aggrNameCacheTagged);
+        assertEquals("Species aggregate name should be 'Genus myspecies L.'.", "Genus myspecies L.", aggrNameCache);
+        
     }
 
     /**

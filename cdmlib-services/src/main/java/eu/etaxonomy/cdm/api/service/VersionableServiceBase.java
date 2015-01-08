@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -70,17 +72,22 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
      */
     
     @Override
-    public List<String> isDeletable(T base, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
-    	Set<CdmBase> references = commonService.getReferencingObjects(base);
-    	Iterator<CdmBase> iterator = references.iterator();
-    	CdmBase ref;
-    	while (iterator.hasNext()){
-    		ref = iterator.next();
-    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
-    		result.add(message);
+    public DeleteResult isDeletable(T base, DeleteConfiguratorBase config){
+    	DeleteResult result = new DeleteResult();
+    	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
+    	if (references != null){
+	    	result.addRelatedObjects(references);
+	    	Iterator<CdmBase> iterator = references.iterator();
+	    	CdmBase ref;
+	    	while (iterator.hasNext()){
+	    		ref = iterator.next();
+	    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+	    		result.addException(new ReferencedObjectUndeletableException(message));
+	    		result.setAbort();
+	    	}
     	}
     	return result;
     }
-
-}
+    
+    
+    }

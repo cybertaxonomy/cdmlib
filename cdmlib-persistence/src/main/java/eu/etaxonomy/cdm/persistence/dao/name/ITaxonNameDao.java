@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -317,7 +316,5 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
-	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start);
-	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
 }

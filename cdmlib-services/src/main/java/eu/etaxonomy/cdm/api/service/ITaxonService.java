@@ -20,12 +20,13 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -60,26 +61,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
-
-    /**
-     * Computes all taxon bases.
-     * @param limit
-     * @param start
-     * @return
-     *
-     * FIXME could substitute with list(Synonym.class, limit, start)
-     */
-    public List<Synonym> getAllSynonyms(int limit, int start);
-
-    /**
-     * Computes all taxon bases.
-     * @param limit
-     * @param start
-     * @return
-     *
-     * FIXME could substitute with list(Taxon.class, limit,start)
-     */
-    public List<Taxon> getAllTaxa(int limit, int start);
 
     /**
      * Computes all Taxon instances that do not have a taxonomic parent.
@@ -252,9 +233,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
      * @param taxon
      * @param config
-     * 
+     *
      */
-    public String deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
+    public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -653,7 +634,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws IOException
      * @throws ParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
             Classification classification,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException;
@@ -705,7 +686,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
-            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus,
+            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
 
@@ -828,16 +809,31 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+
     public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
+
     public String getPhylumName(TaxonNameBase name);
 
     public long deleteSynonymRelationships(Synonym syn);
 
-
-
-
-
     /**
+     * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or
+     * {@link TaxonRelationshipType#INCLUDES() included} in the taxon represented by the given taxon uuid.
+     * The result also returns the path to these taxa represented by the uuids of
+     * the {@link TaxonRelationshipType taxon relationships types} and doubtful information.
+     * If classificationUuids is set only taxa of classifications are returned which are included
+     * in the given {@link Classification classifications}. ALso the path to these taxa may not include
+     * taxa from other classifications.
+     * @param taxonUuid uuid of the original taxon
+     * @param classificationUuids List of uuids of classifications used as a filter
+     * @param includeDoubtful set to <code>true</code> if also doubtfully included taxa should be included in the result
+     * @return a DTO which includes a list of taxa with the pathes from the original taxon to the given taxon as well
+     * as doubtful and date information. The original taxon is included in the result.
+     */
+    public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration configuration);
+
+
+   /**
      * Removes a synonym.<BR><BR>
      *
      * In detail it removes
@@ -855,9 +851,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param removeNameIfPossible
-     * 
+     * @return deleteResult
+     *
      */
-    public String deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
+    public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
 
     /**
@@ -891,7 +888,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
+    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
@@ -931,9 +928,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param config
-     * 
+     * @return deleteResult
      */
-    String deleteSynonym(Synonym synonym, Taxon taxon,
+    DeleteResult deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
 
     public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
@@ -941,8 +938,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
-
-
+    
+    public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
 
 

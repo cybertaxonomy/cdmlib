@@ -49,6 +49,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
     private boolean allowReuseOtherClassifications =true;
+    private boolean addMediaAsMediaSpecimen = false;
+    private boolean determinationOnFieldUnitLevel = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -59,6 +61,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static IInputTransformer defaultTransformer = null;
 
     private URI sourceUri;
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -310,6 +313,24 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return namedAreaDecisions.get(areaStr);
     }
 
+    /**
+     * @return the doAddMediaAsMediaSpecimen
+     */
+    public boolean isAddMediaAsMediaSpecimen() {
+        return addMediaAsMediaSpecimen;
+    }
+
+    public void setAddMediaAsMediaSpecimen(boolean addMediaAsMediaSpecimen) {
+        this.addMediaAsMediaSpecimen = addMediaAsMediaSpecimen;
+    }
+
+    public boolean isDeterminationOnFieldUnitLevel() {
+        return determinationOnFieldUnitLevel;
+    }
+
+    public void setDeterminationOnFieldUnitLevel(boolean determinationOnFieldUnitLevel) {
+        this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
+    }
 
     /**
      * @return the allowReuseOtherClassifications

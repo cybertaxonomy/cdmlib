@@ -17,13 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -47,8 +44,10 @@ public interface IService<T extends ICdmBase>{
 
     /**
      * Obtain the specified lock mode on the given object t
+     * <BR>
+     * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
      */
-    public void lock(T t, LockMode lockMode);
+    public void lock(T t, LockOptions lockOptions);
 
     /**
      * Refreshes a given object t using the specified lockmode
@@ -61,11 +60,13 @@ public interface IService<T extends ICdmBase>{
      * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
      * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
      * were initialized prior to the refresh).
+     * 
+     * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
      *
      * @param t
-     * @param lockMode
+     * @param lockOptions
      */
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths);
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths);
 
     /**
      * Returns a count of all entities of type <T>  optionally restricted
@@ -81,9 +82,9 @@ public interface IService<T extends ICdmBase>{
      *
      * @param persistentObject the object to be deleted
      * @return the unique identifier of the deleted entity
-     * 
+     * @return deleteResult
      */
-    public String delete(T persistentObject) ;
+    public DeleteResult delete(T persistentObject) ;
 
 	
     
@@ -113,6 +114,34 @@ public interface IService<T extends ICdmBase>{
      * @return an entity of type <T>, or null if the entity does not exist
      */
     public T find(UUID uuid);
+    
+
+    
+	/**
+	 * Return a persisted entity that matches the unique identifier
+     * supplied as an argument, or null if the entity does not exist.
+     * <p>
+     * The difference between this method and {@link #find(UUID) find} is
+     * that this method makes the hibernate read query with the 
+     * {@link org.hibernate.FlushMode FlushMode} for the session set to 'MANUAL'
+     * <p>
+     * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely 
+     * necessary and safe to ensure that the hibernate session is not flushed before a read
+     * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacher CdmCacher},
+     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load} 
+     * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion 
+     * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session 
+     * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
+	 * which in turn (in the event that name cache is null) eventually calls the 
+	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again. 
+	 * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
+	 * method should always be used to ensure that the persistence layer is always in sync with the 
+	 * underlying database.
+	 * 
+	 * @param uuid
+	 * @return an entity of type <T>, or null if the entity does not exist
+	 */
+	public T findWithoutFlush(UUID uuid);
 
     /**
      * Return a persisted entity that matches the database identifier
@@ -167,7 +196,7 @@ public interface IService<T extends ICdmBase>{
      * @return
      */
     //TODO refactor to public <S extends T> List<T> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T>  List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
@@ -214,7 +243,7 @@ public interface IService<T extends ICdmBase>{
      * @param propertyPaths properties to be initialized
      * @return a pager of objects of type <T>
      */
-    public Pager<T> page(Class<? extends T> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Re-read the state of the given instance from the underlying database.
@@ -298,5 +327,6 @@ public interface IService<T extends ICdmBase>{
      * @return a list of matching objects
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

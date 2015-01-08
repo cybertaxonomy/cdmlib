@@ -37,7 +37,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 
 /**
  * An {@code EntityValidationResult} models the result of validating one entity, that is,

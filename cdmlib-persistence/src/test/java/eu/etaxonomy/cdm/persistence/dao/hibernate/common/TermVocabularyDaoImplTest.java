@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -115,5 +116,14 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		assertEquals(Integer.valueOf(1), Integer.valueOf(missingLanguageTerms.size()));
 		assertEquals(uuidNotExisting, missingLanguageTerms.iterator().next());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 }

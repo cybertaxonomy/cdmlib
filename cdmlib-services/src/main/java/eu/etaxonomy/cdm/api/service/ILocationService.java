@@ -15,8 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -57,7 +56,6 @@ public interface ILocationService extends IService<DefinedTermBase> {
     public TermVocabulary<NamedAreaType> getNamedAreaTypeVocabulary();
     
     /**
-     * 
      * @return
      * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
@@ -68,15 +66,8 @@ public interface ILocationService extends IService<DefinedTermBase> {
      * @return
      * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
-    public OrderedTermVocabulary<PresenceTerm> getPresenceTermVocabulary();
-    
-    /**
-     * 
-     * @return
-     * @deprecated use TermService#getVocabulary(VocabularyType) instead
-     */
-    public OrderedTermVocabulary<AbsenceTerm> getAbsenceTermVocabulary(); 
-    
+    public OrderedTermVocabulary<PresenceAbsenceTerm> getPresenceAbsenceTermVocabulary();
+   
     /**
      * 
      */

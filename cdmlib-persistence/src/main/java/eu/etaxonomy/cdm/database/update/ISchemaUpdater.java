@@ -13,9 +13,16 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
+ * Class which represents a CDM schema version step. See {@link CdmUpdater}
+ * for further documentation or implementing classes for examples.
+ *
+ * @see CdmUpdater
+ * @see ISchemaUpdaterStep
+ * @see ISchemaUpdater
+ * @see ITermUpdaterStep
+ * 
  * @author a.mueller
  * @date 09.2010
- *
  */
 public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 

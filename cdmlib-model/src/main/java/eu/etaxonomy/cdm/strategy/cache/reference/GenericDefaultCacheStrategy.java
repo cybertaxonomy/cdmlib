@@ -32,10 +32,10 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
-	private String prefixVolume = "vol.";
+//	private String prefixVolume = "vol.";
 	private String blank = " ";
 	private String comma = ",";
-	private String dot =".";
+//	private String dot =".";
 	
 	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
 	
@@ -62,7 +62,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	
 
 	@Override
-	protected String getTitleWithoutYearAndAuthor(Reference genericReference, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference<?> genericReference, boolean isAbbrev){
 		if (genericReference == null){
 			return null;
 		}
@@ -70,10 +70,10 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 		String titel = CdmUtils.getPreferredNonEmptyString(genericReference.getTitle(), genericReference.getAbbrevTitle(), isAbbrev, true);
 		String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
-		String series = CdmUtils.Nz(genericReference.getSeries()).trim(); //nomenclaturalReference.getSeries();
+		String series = CdmUtils.Nz(genericReference.getSeriesPart()).trim(); //nomenclaturalReference.getSeries();
 		String volume = CdmUtils.Nz(genericReference.getVolume()).trim();
 
-		String nomRefCache = "";
+		String result = "";
 		boolean lastCharIsDouble;
 		Integer len;
 		String lastChar ="";
@@ -92,7 +92,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 		//titelAbbrev
 		if (titel.length() > 0 ){
 			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
-			nomRefCache = titel + postfix; 
+			result = titel + postfix; 
 		}
 		//edition
 		String editionPart = "";
@@ -103,7 +103,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			}
 			needsComma = true;
 		}
-		nomRefCache = CdmUtils.concat(", ", nomRefCache, editionPart);
+		result = CdmUtils.concat(", ", result, editionPart);
 		
 		//inSeries
 		String seriesPart = "";
@@ -117,7 +117,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			}
 			needsComma = true;
 		}
-		nomRefCache += seriesPart;
+		result += seriesPart;
 		
 		
 		//volume Part
@@ -129,11 +129,11 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			}
 			//needsComma = false;
 		}
-		nomRefCache += volumePart;
+		result += volumePart;
 		
 		//delete .
-		while (nomRefCache.endsWith(".")){
-			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
+		while (result.endsWith(".")){
+			result = result.substring(0, result.length()-1);
 		}
 		
 
@@ -213,7 +213,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 //
 //		Return @NomRefCache
 
-		return nomRefCache.trim();
+		return result.trim();
 	}
 	
 	private boolean isNumeric(String string){

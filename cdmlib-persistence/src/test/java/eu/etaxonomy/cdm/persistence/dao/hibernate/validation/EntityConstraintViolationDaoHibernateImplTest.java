@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 @DataSet(value="EntityValidationResultDaoHibernateImplTest.xml")
 public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegrationTest {
@@ -79,6 +80,12 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 
 		results = dao.getConstraintViolations("foo.bar", Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 0, results.size());
+	}
+
+
+	@Override
+	public void createTestDataSet() throws FileNotFoundException {
+		// TODO Auto-generated method stub
 	}
 
 }

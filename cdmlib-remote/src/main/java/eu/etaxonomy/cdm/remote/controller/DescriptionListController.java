@@ -174,7 +174,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
+   @RequestMapping(value = "//descriptionElement/find", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
    public Pager<DescriptionElementBase> doFindDescriptionElements(
            @RequestParam(value = "query", required = true) String queryString,
            @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
@@ -209,7 +209,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/descriptionElement/byFeature", method = RequestMethod.GET)
+    @RequestMapping(value = "//descriptionElement/byFeature", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<DescriptionElementBase> doPageDescriptionElementsByFeature(
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
             @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
@@ -222,6 +222,10 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
+
+        if(features == null){
+            features = new DefinedTermBaseList<Feature>();
+        }
 
         Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
                 type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
@@ -242,7 +246,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "//descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST}) // mapped as absolute path, see CdmAntPathMatcher
     public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
             @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,

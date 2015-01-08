@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -72,7 +72,7 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
 
@@ -96,7 +96,7 @@ public interface IEditGeoService {
     public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
     /**
@@ -128,7 +128,7 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm,Color> presenceAbsenceTermColors,
             List<Language> langs);
 
 
@@ -194,13 +194,14 @@ public interface IEditGeoService {
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
+    * @param presenceAbsenceTermColors
     * @param languages
      * @param propertyPaths
     * @return
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Set<NamedAreaLevel> omitLevels,
+            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths);
 
 }

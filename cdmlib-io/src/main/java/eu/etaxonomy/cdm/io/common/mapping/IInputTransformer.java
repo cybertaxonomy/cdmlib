@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -67,7 +67,7 @@ public interface IInputTransformer {
 		
 	
 	//Presence Term
-	public PresenceAbsenceTermBase getPresenceTermByKey(String key) throws UndefinedTransformerMethodException;
+	public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException;
 
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException;
 

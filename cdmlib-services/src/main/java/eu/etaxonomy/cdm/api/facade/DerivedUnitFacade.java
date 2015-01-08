@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -173,7 +174,7 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	private DerivedUnit getNewDerivedUnitInstance( SpecimenOrObservationType type) {
+	private DerivedUnit getNewDerivedUnitInstance(SpecimenOrObservationType type) {
 		if (type.isFieldUnit()){
 			return null;
 		}else if(type.isAnyDerivedUnit()){
@@ -647,15 +648,16 @@ public class DerivedUnitFacade {
 				if (recursionAvoidSet.contains(original)) {
 					continue;
 				}
-				DerivedUnit derivedUnit = CdmBase.deproxy(original,
-						DerivedUnit.class);
+				DerivedUnit derivedUnit = CdmBase.deproxy(original,	DerivedUnit.class);
 				DerivationEvent originalDerivation = derivedUnit.getDerivedFrom();
 				// Set<DerivationEvent> derivationEvents =
 				// original.getDerivationEvents();
 				// for (DerivationEvent originalDerivation : derivationEvents){
-				Set<FieldUnit> fieldUnits = getFieldUnitOriginals(
-						originalDerivation, recursionAvoidSet);
-				result.addAll(fieldUnits);
+				if(originalDerivation!=null){
+				    Set<FieldUnit> fieldUnits = getFieldUnitOriginals(
+				            originalDerivation, recursionAvoidSet);
+				    result.addAll(fieldUnits);
+				}
 				// }
 			} else {
 				throw new DerivedUnitFacadeNotSupportedException(
@@ -2200,6 +2202,20 @@ public class DerivedUnitFacade {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the original label information of the derived unit.
+	 * @return
+	 */
+	@Transient
+	public String getOriginalLabelInfo() {
+		testDerivedUnit();
+		return derivedUnit.getOriginalLabelInfo();
+	}
+	public void setOriginalLabelInfo(String originalLabelInfo) {
+		testDerivedUnit();
+		derivedUnit.setOriginalLabelInfo(originalLabelInfo);
+	}
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {
@@ -2229,6 +2245,11 @@ public class DerivedUnitFacade {
 
 	public void removeSource(IdentifiableSource source) {
 		this.baseUnit().removeSource(source);
+	}
+
+	@Transient
+	public Set<Rights> getRights() {
+		return baseUnit().getRights();
 	}
 
 	/**
@@ -2427,5 +2448,21 @@ public class DerivedUnitFacade {
 			}
 			return result;
 		}
+	}
+
+	/**
+	 * First checks the inner field unit for the publish flag. If set to <code>true</code>
+	 * then <code>true</code> is returned. If the field unit is <code>null</code> the inner derived unit
+	 * is checked.
+	 * @return <code>true</code> if this facade can be published
+	 */
+	public boolean isPublish(){
+	    if(fieldUnit!=null){
+	        return fieldUnit.isPublish();
+	    }
+	    if(derivedUnit!=null){
+	        return derivedUnit.isPublish();
+	    }
+	    return false;
 	}
 }

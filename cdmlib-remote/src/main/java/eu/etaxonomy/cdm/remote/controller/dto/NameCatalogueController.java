@@ -1,36 +1,31 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.remote.controller.dto;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Hashtable;
-
-import org.apache.log4j.Level;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.joda.time.DateTime;
@@ -50,28 +45,12 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
-import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.DocUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
-
-import eu.etaxonomy.cdm.remote.controller.BaseController;
-import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
-import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.AcceptedNameSearch;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
-import eu.etaxonomy.cdm.remote.view.HtmlView;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -85,6 +64,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import eu.etaxonomy.cdm.remote.controller.AbstractController;
+import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
+import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.AcceptedNameSearch;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
+import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace
@@ -98,7 +85,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 @Controller
 @RequestMapping(value = { "/name_catalogue" })
-public class NameCatalogueController extends BaseController<TaxonNameBase, INameService> implements ResourceLoaderAware {
+public class NameCatalogueController extends AbstractController<TaxonNameBase, INameService> implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
@@ -119,7 +106,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Default name search type */
     public static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
-    
+
     /** Default max number of hits for the exact name search  */
     public static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
 
@@ -128,27 +115,30 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
-    
+
+    /** Classification to include uuids key */
+    public static final String INCLUDE_CLUUIDS = "cluuids";
+
     /** Fuzzy Name Cache search */
     public static final String FUZZY_NAME_CACHE = "name";
-    
+
     /** Fuzzy Atomised Name search */
     public static final String FUZZY_ATOMISED = "atomised";
-    
+
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
     private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
-    
+
     @Autowired
     private ITaxonService taxonService;
-    
-    
+
+
     @Autowired
     private IClassificationService classificationService;
-    
+
     @Autowired
     private ICommonService commonService;
-    
+
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
             "combinationAuthorTeam.$",
@@ -158,7 +148,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "nameCache",
             "taxonBases",
             "taxonBases.synonymRelations.type.$"});
-    
+
     /** Hibernate accepted name search initialisation strategy */
     private static final List<String> ACC_NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
             "nameCache",
@@ -188,38 +178,38 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /** Hibernate taxon information initialisation strategy */
     private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "name.titleCache",
-            "name.rank.titleCache",    
-            
+            "name.rank.titleCache",
+
             "sec.updated",
             "sec.titleCache",
             "sources.citation.sources.idNamespace",
             "sources.citation.sources.idInSource",
-            
+
             "synonymRelations.synonym.name.rank.titleCache",
             "synonymRelations.synonym.sec.updated",
-            "synonymRelations.synonym.sec.titleCache",            
+            "synonymRelations.synonym.sec.titleCache",
             "synonymRelations.synonym.sources.citation.sources.idNamespace",
-            "synonymRelations.synonym.sources.citation.sources.idInSource",   
+            "synonymRelations.synonym.sources.citation.sources.idInSource",
             "synonymRelations.acceptedTaxon.name.rank.titleCache",
             "synonymRelations.acceptedTaxon.sec.titleCache",
             "synonymRelations.acceptedTaxon.sources.citation.sources.idNamespace",
-            "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",    
+            "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",
             "synonymRelations.type.inverseRepresentations",
-            
+
             "relationsFromThisTaxon.type.inverseRepresentations",
             "relationsFromThisTaxon.toTaxon.name.rank.titleCache",
             "relationsFromThisTaxon.toTaxon.sec.updated",
             "relationsFromThisTaxon.toTaxon.sec.titleCache",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idNamespace",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idInSource",
-            
+
             "relationsToThisTaxon.type.inverseRepresentations",
             "relationsToThisTaxon.fromTaxon.name.rank.titleCache",
             "relationsToThisTaxon.fromTaxon.sec.updated",
             "relationsToThisTaxon.fromTaxon.sec.titleCache",
             "relationsToThisTaxon.fromTaxon.sources.citation.sources.idNamespace",
             "relationsToThisTaxon.fromTaxon.sources.citation.sources.idInSource",
-            
+
             "taxonNodes",
             "taxonNodes.classification" });
 
@@ -229,17 +219,17 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "taxon.name",
             "classification",
             "classification.reference.$",
-            "classification.reference.authorTeam.$" });
+            "classification.reference.authorship.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "classification",
             "classification.reference.$",
-            "classification.reference.authorTeam.$" });
-    
+            "classification.reference.authorship.$" });
+
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> COMMON_INIT_STRATEGY = Arrays.asList(new String[] {});
-    
+
     public NameCatalogueController() {
         super();
         setInitializationStrategy(Arrays.asList(new String[] { "$" }));
@@ -335,8 +325,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *              The type of name to query. This be either
      *              "name" : scientific name corresponding to 'name cache' in CDM or
      *              "title" : complete name corresponding to 'title cache' in CDM
-     * @param hits               
-     *            	Maximum number of responses to be returned.    
+     * @param hits
+     *            	Maximum number of responses to be returned.
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
@@ -353,54 +343,54 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
 
         int h = 100;
-        try {        	
-        	h = Integer.parseInt(hits);
+        try {
+            h = Integer.parseInt(hits);
         } catch(NumberFormatException nfe) {
-        	ErrorResponse er = new ErrorResponse();
-        	er.setErrorMessage("hits parameter is not a number");
-        	mv.addObject(er);
+            ErrorResponse er = new ErrorResponse();
+            er.setErrorMessage("hits parameter is not a number");
+            mv.addObject(er);
             return mv;
         }
-        
+
         // search through each query
         for (String query : queries) {
-        	if(query.equals("")) {
-				ErrorResponse er = new ErrorResponse();
+            if(query.equals("")) {
+                ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Empty query field");
                 nsList.add(er);
                 continue;
-        	}
-        	// remove wildcards if any
+            }
+            // remove wildcards if any
             String queryWOWildcards = getQueryWithoutWildCards(query);
             // convert first char to upper case
             char[] stringArray = queryWOWildcards.toCharArray();
             stringArray[0] = Character.toUpperCase(stringArray[0]);
             queryWOWildcards = new String(stringArray);
-            
+
             boolean wc = false;
-            
+
             if(getMatchModeFromQuery(query) == MatchMode.BEGINNING) {
-            	wc = true;
+                wc = true;
             }
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query);
-            
+
             List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
-            try {            	            
-				nameSearchList = service.findByNameExactSearch(
-				        queryWOWildcards,
-				        wc,
-				        null,
-				        false, 
-				        h);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				ErrorResponse er = new ErrorResponse();
+            try {
+                nameSearchList = service.findByNameExactSearch(
+                        queryWOWildcards,
+                        wc,
+                        null,
+                        false,
+                        h);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Could not parse name : " + query);
                 nsList.add(er);
                 continue;
-			} 
-     
+            }
+
 
             // if search is successful then get related information , else return error
             if (nameSearchList == null || !nameSearchList.isEmpty()) {
@@ -408,8 +398,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 ns.setRequest(query);
 
                 for (DocumentSearchResult searchResult : nameSearchList) {
-                	for(Document doc : searchResult.getDocs()) {
-                	
+                    for(Document doc : searchResult.getDocs()) {
+
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
@@ -419,18 +409,18 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
                     String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
                     for(int i=0;i<tbUuids.length;i++) {
-                    	if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
-                    		accTbUuidList.add(tbUuids[i]);
-                    	}
+                        if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
+                            accTbUuidList.add(tbUuids[i]);
+                        }
                     }
                     // update name search object
-                    ns.addToResponseList(doc.getValues("titleCache")[0], 
-                    		doc.getValues("nameCache")[0], 
-                    		searchResult.getMaxScore(), 
-                    		doc.getValues("uuid")[0].toString(), 
-                    		doc.getValues("taxonBases.uuid"),
-                    		mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
-                	}
+                    ns.addToResponseList(doc.getValues("titleCache")[0],
+                            doc.getValues("nameCache")[0],
+                            searchResult.getMaxScore(),
+                            doc.getValues("uuid")[0].toString(),
+                            doc.getValues("taxonBases.uuid"),
+                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                    }
                 }
                 nsList.add(ns);
 
@@ -439,7 +429,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 er.setErrorMessage("No Taxon Name matches : " + query);
                 nsList.add(er);
             }
-        }        
+        }
 
         mv.addObject(nsList);
         return mv;
@@ -479,8 +469,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Returns a list of scientific names similar to the <code>{query}</code>
      * string pattern. Each of these scientific names is accompanied by a list of
      * name uuids, a list of taxon uuids and a list of accepted taxon uuids.
-     * The underlying (Lucene FuzzyQuery) string distance metric used is based on a 
-     * fail-fast Levenshtein distance algorithm (is aborted if it is discovered that 
+     * The underlying (Lucene FuzzyQuery) string distance metric used is based on a
+     * fail-fast Levenshtein distance algorithm (is aborted if it is discovered that
      * the mimimum distance between the words is greater than some threshold)
      * <p>
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-fuzzy.html">here</a>
@@ -492,14 +482,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *                query are removed.
      * @param accuracy
      *                Similarity measure (between 0 and 1) to impose on the matching algorithm.
-     *                Briefly described, this is equivalent to the edit distance between the two words, divided by 
+     *                Briefly described, this is equivalent to the edit distance between the two words, divided by
      *                the length of the shorter of the compared terms.
-     * @param hits               
+     * @param hits
      *            Maximum number of responses to be returned.
-     * @param type               
+     * @param type
      *            The type of fuzzy search to call. This can be either
      *              "name" : fuzzy searches scientific names corresponding to 'name cache' in CDM or
-     *              "atomised" : parses the query into atomised elements and fuzzy searches the individual elements in the CDM      
+     *              "atomised" : parses the query into atomised elements and fuzzy searches the individual elements in the CDM
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
@@ -509,39 +499,39 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      */
     @RequestMapping(value = { "fuzzy" }, method = RequestMethod.GET, params = {"query"})
     public ModelAndView doGetNameFuzzySearch(@RequestParam(value = "query", required = true) String[] queries,
-    		@RequestParam(value = "accuracy", required = false, defaultValue = "0.6") String accuracy,
-    		@RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
-    		@RequestParam(value = "type", required = false, defaultValue = FUZZY_NAME_CACHE) String type,
+            @RequestParam(value = "accuracy", required = false, defaultValue = "0.6") String accuracy,
+            @RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
+            @RequestParam(value = "type", required = false, defaultValue = FUZZY_NAME_CACHE) String type,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
         float acc = 0.5f;
         int h = 10;
         try {
-        	acc = Float.parseFloat(accuracy);
-        	h = Integer.parseInt(hits);
+            acc = Float.parseFloat(accuracy);
+            h = Integer.parseInt(hits);
         } catch(NumberFormatException nfe) {
-        	ErrorResponse er = new ErrorResponse();
-        	er.setErrorMessage("accuracy or hits parameter is not a number");
-        	mv.addObject(er);
+            ErrorResponse er = new ErrorResponse();
+            er.setErrorMessage("accuracy or hits parameter is not a number");
+            mv.addObject(er);
             return mv;
         }
-        
+
         if(acc < 0.0 || acc >= 1.0) {
-        	ErrorResponse er = new ErrorResponse();
-        	er.setErrorMessage("accuracy should be >= 0.0 and < 1.0");
-        	mv.addObject(er);
+            ErrorResponse er = new ErrorResponse();
+            er.setErrorMessage("accuracy should be >= 0.0 and < 1.0");
+            mv.addObject(er);
             return mv;
         }
         // search through each query
         for (String query : queries) {
-        	if(query.equals("")) {
-				ErrorResponse er = new ErrorResponse();
+            if(query.equals("")) {
+                ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Empty query field");
                 nsList.add(er);
                 continue;
-        	}
-        	// remove wildcards if any
+            }
+            // remove wildcards if any
             String queryWOWildcards = getQueryWithoutWildCards(query);
             // convert first char to upper case
             char[] stringArray = queryWOWildcards.toCharArray();
@@ -550,31 +540,31 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
             //List<NonViralName> nameList = new ArrayList<NonViralName>();
             List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
-            try {       
-            	if(type.equals(FUZZY_ATOMISED)) {
-            		nameSearchList = service.findByNameFuzzySearch(
-            				queryWOWildcards,
-            				acc,
-            				null,
-            				false, 
-            				h);
-            	} else {
-            		nameSearchList = service.findByFuzzyNameCacheSearch(
-            				queryWOWildcards,
-            				acc,
-            				null,
-            				false, 
-            				h);
-            	}
+            try {
+                if(type.equals(FUZZY_ATOMISED)) {
+                    nameSearchList = service.findByNameFuzzySearch(
+                            queryWOWildcards,
+                            acc,
+                            null,
+                            false,
+                            h);
+                } else {
+                    nameSearchList = service.findByFuzzyNameCacheSearch(
+                            queryWOWildcards,
+                            acc,
+                            null,
+                            false,
+                            h);
+                }
             } catch (ParseException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				ErrorResponse er = new ErrorResponse();
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Could not parse name : " + queryWOWildcards);
                 nsList.add(er);
                 continue;
-			} 
-     
+            }
+
 
             // if search is successful then get related information , else return error
             if (nameSearchList == null || !nameSearchList.isEmpty()) {
@@ -582,8 +572,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 ns.setRequest(query);
 
                 for (DocumentSearchResult searchResult : nameSearchList) {
-                	for(Document doc : searchResult.getDocs()) {
-                	
+                    for(Document doc : searchResult.getDocs()) {
+
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
@@ -593,18 +583,18 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
                     String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
                     for(int i=0;i<tbUuids.length;i++) {
-                    	if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
-                    		accTbUuidList.add(tbUuids[i]);
-                    	}
+                        if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
+                            accTbUuidList.add(tbUuids[i]);
+                        }
                     }
                     // update name search object
-                    ns.addToResponseList(doc.getValues("titleCache")[0], 
-                    		doc.getValues("nameCache")[0], 
-                    		searchResult.getMaxScore(), 
-                    		doc.getValues("uuid")[0].toString(), 
-                    		doc.getValues("taxonBases.uuid"),
-                    		mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
-                	}
+                    ns.addToResponseList(doc.getValues("titleCache")[0],
+                            doc.getValues("nameCache")[0],
+                            searchResult.getMaxScore(),
+                            doc.getValues("uuid")[0].toString(),
+                            doc.getValues("taxonBases.uuid"),
+                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                    }
                 }
                 nsList.add(ns);
 
@@ -613,21 +603,21 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 er.setErrorMessage("No Taxon Name matches : " + query + ", for given accuracy");
                 nsList.add(er);
             }
-        }        
+        }
 
         mv.addObject(nsList);
         return mv;
     }
-    
+
     private String[] mergeSynAccTaxonUuids(String[] accTaxonUuids) {
-    	List<String> accTaxonUuidList = new ArrayList<String>();
-    	for(String accTaxonUuid : accTaxonUuids) {
-    		for(String uuidListAsString : accTaxonUuid.split(AcceptedTaxonBridge.ACCEPTED_TAXON_UUID_LIST_SEP)) {
-    			accTaxonUuidList.add(uuidListAsString);
-    		}
-    	}
-    	return accTaxonUuidList.toArray(new String[0]);
-    	
+        List<String> accTaxonUuidList = new ArrayList<String>();
+        for(String accTaxonUuid : accTaxonUuids) {
+            for(String uuidListAsString : accTaxonUuid.split(AcceptedTaxonBridge.ACCEPTED_TAXON_UUID_LIST_SEP)) {
+                accTaxonUuidList.add(uuidListAsString);
+            }
+        }
+        return accTaxonUuidList.toArray(new String[0]);
+
     }
     /**
      * Returns a documentation page for the Name Information API.
@@ -687,7 +677,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
-            NonViralName nvn = (NonViralName) service.findNameByUuid(UUID.fromString(nameUuid),
+            NonViralName nvn = service.findNameByUuid(UUID.fromString(nameUuid),
                         NAME_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
@@ -772,12 +762,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET,params = {"taxonUuid"})
-    public ModelAndView doGetTaxonInformation(
-            @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, request, response);
-    }
+//    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET,params = {"taxonUuid"})
+//    public ModelAndView doGetTaxonInformation(
+//            @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
+//            HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, new String[]{},request, response);
+//    }
 
     /**
      * Returns information related to the taxon matching the given
@@ -794,6 +784,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *                 [Optional] String representing the taxonomic classification to use for
      *                 building the classification tree. Defaults to the first in the alphabetically
      *                 sorted list of classifications currently available in the database.
+     * @param include
+     *                 Array of data types to be included in addition to the normal response
      *
      * @param request Http servlet request.
      * @param response Http servlet response.
@@ -802,10 +794,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid", "classification"})
+    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid"})
     public ModelAndView doGetTaxonInformation(
             @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
             @RequestParam(value = "classification", required = false, defaultValue = CLASSIFICATION_DEFAULT) String classificationType,
+            @RequestParam(value = "include", required = false, defaultValue = "") String[] includes,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> tiList = new ArrayList<RemoteResponse>();
@@ -816,7 +809,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             // find name by uuid
             TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
-            
+
             // if search is successful then get related information, else return error
             if (tb != null) {
                 TaxonInformation ti = new TaxonInformation();
@@ -825,7 +818,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 if (tb.isInstanceOf(Taxon.class)) {
                     Taxon taxon = (Taxon) tb;
                     // build classification map
-                    Map classificationMap = getClassification(taxon, classificationType);
+                    boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
+                    Map classificationMap = getClassification(taxon, classificationType, includeUuids);
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
@@ -834,13 +828,13 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     String secTitle = "" ;
                     String modified = "";
                     if(taxon.getSec() != null) {
-                    	secTitle = taxon.getSec().getTitleCache();
-                    	DateTime dt = taxon.getUpdated();                               
+                        secTitle = taxon.getSec().getTitleCache();
+                        DateTime dt = taxon.getUpdated();
                         modified = fmt.print(dt);
                     }
-                    
+
                     Set<IdentifiableSource> sources = taxon.getSources();
-                    String[] didname = getDatasetIdName(sources);                    
+                    String[] didname = getDatasetIdName(sources);
 
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
@@ -853,52 +847,52 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             didname[1],
                             secTitle,
                             modified);
-                    
-                    
+
+
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
                     // add synonyms (if exists) to taxon information object
                     for (SynonymRelationship sr : synRelationships) {
                         Synonym syn = sr.getSynonym();
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
-                        TaxonNameBase synnvn = (TaxonNameBase) syn.getName();
+                        TaxonNameBase synnvn = syn.getName();
                         String name = synnvn.getTitleCache();
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
                         String relLabel = sr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        
+
                         secTitle = "" ;
                         modified = "";
                         if(syn.getSec() != null) {
-                        	secTitle = syn.getSec().getTitleCache();
-                        	DateTime dt = syn.getUpdated();                               
+                            secTitle = syn.getSec().getTitleCache();
+                            DateTime dt = syn.getUpdated();
                             modified = fmt.print(dt);
                         }
-                        
+
                         sources = syn.getSources();
                         didname = getDatasetIdName(sources);
-                                                
-                        ti.addToResponseRelatedTaxa(uuid, 
-                        		title, 
-                        		name, 
-                        		rank, 
-                        		status, 
-                        		relLabel,
-                        		"",
+
+                        ti.addToResponseRelatedTaxa(uuid,
+                                title,
+                                name,
+                                rank,
+                                status,
+                                relLabel,
+                                "",
                                 didname[0],
                                 didname[1],
-                        		secTitle,
+                                secTitle,
                                 modified);
                     }
 
                     // build relationship information as,
                     // - relationships from the requested taxon
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
-                    for (TaxonRelationship tr : trFromSet) {                        
+                    for (TaxonRelationship tr : trFromSet) {
                         String titleTo = tr.getToTaxon().getTitleCache();
-                        TaxonNameBase tonvn = (TaxonNameBase) tr.getToTaxon().getName();
+                        TaxonNameBase tonvn = tr.getToTaxon().getName();
                         String name = tonvn.getTitleCache();
                         String rank = tonvn.getRank().getTitleCache();
                         String uuid = tr.getToTaxon().getUuid().toString();
@@ -909,24 +903,24 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         secTitle = "" ;
                         modified = "";
                         if(tr.getToTaxon().getSec() != null) {
-                        	secTitle = tr.getToTaxon().getSec().getTitleCache();
-                        	DateTime dt = tr.getToTaxon().getUpdated();                               
+                            secTitle = tr.getToTaxon().getSec().getTitleCache();
+                            DateTime dt = tr.getToTaxon().getUpdated();
                             modified = fmt.print(dt);
                         }
-                        
+
                         sources = tr.getToTaxon().getSources();
                         didname = getDatasetIdName(sources);
-                                                
-                        ti.addToResponseRelatedTaxa(uuid, 
-                        		titleTo, 
-                        		name, 
-                        		rank, 
-                        		status, 
-                        		relLabel,
-                        		"",
+
+                        ti.addToResponseRelatedTaxa(uuid,
+                                titleTo,
+                                name,
+                                rank,
+                                status,
+                                relLabel,
+                                "",
                                 didname[0],
                                 didname[1],
-                        		secTitle,
+                                secTitle,
                                 modified);
                         //logger.info("titleTo : " + titleTo + " , name : " + name);
                     }
@@ -935,7 +929,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getFromTaxon().getTitleCache();
-                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getFromTaxon().getName();
+                        TaxonNameBase fromnvn = tr.getFromTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getFromTaxon().getUuid().toString();
@@ -945,38 +939,38 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                                 .getLabel();
 
                         if(tr.getFromTaxon().getSec() != null) {
-                        	secTitle = tr.getFromTaxon().getSec().getTitleCache();
-                        	DateTime dt = tr.getFromTaxon().getSec().getUpdated();                               
+                            secTitle = tr.getFromTaxon().getSec().getTitleCache();
+                            DateTime dt = tr.getFromTaxon().getSec().getUpdated();
                             modified = fmt.print(dt);
                         }
-                        
+
                         sources = tr.getFromTaxon().getSources();
                         didname = getDatasetIdName(sources);
-                        
+
                         secTitle = (tr.getFromTaxon().getSec() == null) ? "" : tr.getFromTaxon().getSec().getTitleCache();
-                        ti.addToResponseRelatedTaxa(uuid, 
-                        		titleFrom, 
-                        		name, 
-                        		rank, 
-                        		status,
-                        		relLabel,
-                        		"",
+                        ti.addToResponseRelatedTaxa(uuid,
+                                titleFrom,
+                                name,
+                                rank,
+                                status,
+                                relLabel,
+                                "",
                                 didname[0],
                                 didname[1],
-                        		secTitle,
+                                secTitle,
                                 modified);
                         //logger.info("titleFrom : " + titleFrom + " , name : " + name);
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
-                    TaxonNameBase nvn = (TaxonNameBase) synonym.getName();
+                    TaxonNameBase nvn = synonym.getName();
                  // update taxon information object with synonym related data
-                    DateTime dt = synonym.getUpdated();                    
+                    DateTime dt = synonym.getUpdated();
                     String modified = fmt.print(dt);
-                    
+
                     Set<IdentifiableSource> sources = synonym.getSources();
                     String[] didname = getDatasetIdName(sources);
-                    
+
                     String secTitle = (synonym.getSec() == null) ? "" : synonym.getSec().getTitleCache();
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
@@ -987,41 +981,41 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             "",
                             didname[0],
                             didname[1],
-                    		secTitle,
+                            secTitle,
                             modified);
                     // add accepted taxa (if exists) to taxon information object
-                    
+
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                     for (SynonymRelationship sr : synRelationships) {
-                        Taxon accTaxon = sr.getAcceptedTaxon();                        
+                        Taxon accTaxon = sr.getAcceptedTaxon();
                         String uuid = accTaxon.getUuid().toString();
                         logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
                         logger.info("taxon title cache : " + accTaxon.getTitleCache());
-                                           
-                        TaxonNameBase accnvn = (TaxonNameBase)accTaxon.getName();
+
+                        TaxonNameBase accnvn = accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        dt = accTaxon.getUpdated();                    
+                        dt = accTaxon.getUpdated();
                         modified = fmt.print(dt);
-                        
+
                         sources = accTaxon.getSources();
                         didname = getDatasetIdName(sources);
-                        
+
                         secTitle = (accTaxon.getSec() == null) ? "" : accTaxon.getSec().getTitleCache();
-                        ti.addToResponseRelatedTaxa(uuid, 
-                        		title, 
-                        		name, 
-                        		rank, 
-                        		status, 
-                        		relLabel,
-                        		"",
+                        ti.addToResponseRelatedTaxa(uuid,
+                                title,
+                                name,
+                                rank,
+                                status,
+                                relLabel,
+                                "",
                                 didname[0],
                                 didname[1],
-                        		secTitle,
+                                secTitle,
                                 modified);
                     }
 
@@ -1040,7 +1034,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         mv.addObject(tiList);
         return mv;
     }
-    
+
     /**
      * Returns a documentation page for the Accepted Name Search API.
      * <p>
@@ -1071,7 +1065,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         mv.setView(hv);
         return mv;
     }
-    
+
     /**
      * Returns a list of accepted names of input scientific names matching the <code>{query}</code>
      * string pattern. Each of these scientific names is accompanied by a list of
@@ -1099,8 +1093,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      */
     @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query"})
     public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
-    		HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	return doGetAcceptedNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return doGetAcceptedNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
     }
     /**
      * Returns a list of accepted names of input scientific names matching the <code>{query}</code>
@@ -1134,7 +1128,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> ansList = new ArrayList<RemoteResponse>();
         logger.info("doGetAcceptedNameSearch()");
-        
+
         // if search type is not known then return error
         if (!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
             ErrorResponse er = new ErrorResponse();
@@ -1154,13 +1148,13 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
             // if "name" search then find by name cache
             if (searchType.equals(NAME_SEARCH)) {
-                nameList = (List<NonViralName>) service.findNamesByNameCache(query, MatchMode.EXACT,
+                nameList = service.findNamesByNameCache(query, MatchMode.EXACT,
                         ACC_NAME_SEARCH_INIT_STRATEGY);
             }
 
             //if "title" search then find by title cache
             if (searchType.equals(TITLE_SEARCH)) {
-                nameList = (List<NonViralName>) service.findNamesByTitleCache(query, MatchMode.EXACT,
+                nameList = service.findNamesByTitleCache(query, MatchMode.EXACT,
                         ACC_NAME_SEARCH_INIT_STRATEGY);
             }
 
@@ -1168,7 +1162,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             if (nameList == null || !nameList.isEmpty()) {
                 AcceptedNameSearch ans = new AcceptedNameSearch();
                 ans.setRequest(query);
-                
+
                 for (NonViralName nvn : nameList) {
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
@@ -1184,32 +1178,32 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             for (SynonymRelationship sr : synRelationships) {
                                 Taxon accTaxon = sr.getAcceptedTaxon();
                                 NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
-                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT);
+                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
                             }
                         } else {
-                        	Taxon taxon = (Taxon)tb;
-                        	Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
-                        	boolean isConceptRelationship = true;
-                        	if(trFromSet.size() == 1) {
-                        		for (TaxonRelationship tr : trFromSet) {  
-                        			if(!tr.getType().isConceptRelationship()) {
-                        				// this is not a concept relationship, so it does not have an
-                        				// accepted name
-                        				isConceptRelationship = false;
+                            Taxon taxon = (Taxon)tb;
+                            Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
+                            boolean isConceptRelationship = true;
+                            if(trFromSet.size() == 1) {
+                                for (TaxonRelationship tr : trFromSet) {
+                                    if(!tr.getType().isConceptRelationship()) {
+                                        // this is not a concept relationship, so it does not have an
+                                        // accepted name
+                                        isConceptRelationship = false;
 
-                        			}
-                        		}
-                        	}
-                            if(isConceptRelationship) {
-                            	Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT);
-                            	ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
+                                    }
+                                }
                             }
-                        	
+                            if(isConceptRelationship) {
+                                Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false);
+                                ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
+                            }
+
                         }
                     }
                     // update name search object
-                    
+
                 }
                 ansList.add(ans);
 
@@ -1218,7 +1212,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 er.setErrorMessage("No Taxon Name for given query : " + query);
                 ansList.add(er);
             }
-        }        
+        }
 
         mv.addObject(ansList);
         return mv;
@@ -1277,35 +1271,35 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Returns the Dataset ID / Name of the given original source.
      * FIXME: Very hacky and needs to be revisited. Mainly for deciding on which objects to use during import.
      * FIXME: dataset id is mapped to a DWC term - is that right?
-     * 
+     *
      * @param sources Set of sources attached to a taxa / synonym
-     *             
+     *
      *
      * @return String array where [0] is the datsetID and [1] is the datsetName
      */
     private String[] getDatasetIdName(Set<IdentifiableSource> sources) {
-    	String didname[] = {"",""};
+        String didname[] = {"",""};
         Iterator<IdentifiableSource> itr = sources.iterator();
         while(itr.hasNext()) {
-        	IdentifiableSource source = itr.next();        	
-        	Reference ref = source.getCitation();        	   
+            IdentifiableSource source = itr.next();
+            Reference ref = source.getCitation();
             Set<IdentifiableSource> ref_sources = ref.getSources();
             Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
             while(ref_itr.hasNext()) {
-            	IdentifiableSource ref_source = ref_itr.next();            	
-            	if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
-            		didname[0] = ref_source.getIdInSource();
-            		break;
-            	}
+                IdentifiableSource ref_source = ref_itr.next();
+                if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
+                    didname[0] = ref_source.getIdInSource();
+                    break;
+                }
             }
             if(!didname[0].isEmpty()) {
-            	didname[1] = ref.getTitleCache();
-            	break;
+                didname[1] = ref.getTitleCache();
+                break;
             }
         }
-    	return didname;
+        return didname;
     }
-    
+
     /**
      * Returns the match mode by parsing the input string of wildcards.
      *
@@ -1361,10 +1355,10 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private Map<String, Map> getClassification(Taxon taxon, String classificationType) {
+    private Map<String, Map> getClassification(Taxon taxon, String classificationType, boolean includeUuids) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon);
+        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, includeUuids);
 
         // if classification key is 'default' then return the default element of the map
         if(classificationType.equals(CLASSIFICATION_DEFAULT) && !sourceClassificationMap.isEmpty()) {
@@ -1385,19 +1379,27 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private TreeMap<String, Map> buildClassificationMap(Taxon taxon) {
+    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, boolean includeUuid) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
         TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
         Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
         //loop through taxon nodes and build classification map for each classification key
         for (TaxonNode tn : taxonNodes) {
-            Map<String, String> classificationMap = new LinkedHashMap<String, String>();
+            Map<String, Object> classificationMap = new LinkedHashMap<String, Object>();
             List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
                     tn.getClassification(), null, TAXON_NODE_INIT_STRATEGY);
             for (TaxonNode classificationtn : tnList) {
-                classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
-                        classificationtn.getTaxon().getName().getTitleCache());
+                if(includeUuid) {
+                    // creating map object with <name, uuid> elements
+                    Map<String, String> clMap = new HashMap<String, String>();
+                    clMap.put("name",classificationtn.getTaxon().getName().getTitleCache());
+                    clMap.put("uuid",classificationtn.getTaxon().getUuid().toString());
+                    classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), clMap);
+                } else {
+                    classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
+                            classificationtn.getTaxon().getName().getTitleCache());
+                }
             }
             String cname = removeInternalWhitespace(tn.getClassification().getTitleCache());
             logger.info("Building classification map " + cname);
@@ -1425,7 +1427,9 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     }
 
     private boolean isValid(String uuid){
-        if( uuid == null) return false;
+        if( uuid == null) {
+            return false;
+        }
         try {
             // we have to convert to object and back to string because the built in fromString does not have
             // good validation logic.

@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -86,6 +85,12 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		return this.genericDao.getReferencingObjects(referencedCdmBase);
 	}	
+	
+	
+	@Override
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
+		return this.genericDao.getReferencingObjectsForDeletion(referencedCdmBase);
+	}
 //		try {
 //			Set<Class<? extends CdmBase>> allCdmClasses = genericDao.getAllCdmClasses(false); //findAllCdmClasses();
 //			
@@ -298,4 +303,9 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
     	return genericDao.containsValue(col, element);
     }
 
+	@Override
+	@Transactional(readOnly = false)
+	public void createFullSampleData() {
+		genericDao.createFullSampleData();
+	}
 }

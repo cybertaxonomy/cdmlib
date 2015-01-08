@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.text.ParseException;
@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -78,6 +77,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
+	
     @SpringBeanByType
     private IOccurrenceService service;
 
@@ -121,6 +121,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
     PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
+    String originalLabelInfo = "original label info";
+
 
     DerivedUnitFacade specimenFacade;
 
@@ -176,6 +178,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimen.setStoredUnder(taxonName);
         specimen.setCollection(collection);
         specimen.setPreservation(preservationMethod);
+        specimen.setOriginalLabelInfo(originalLabelInfo);
 
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
@@ -356,17 +359,20 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance()}.
      */
     @Test
-    public void testNewInstance() {
+    public void testNewInstanceGatheringEventCreated() {
         Assert.assertNotNull("The specimen should have been created",
                 specimenFacade.innerDerivedUnit());
         // ???
-        // Assert.assertNotNull("The derivation event should have been created",
-        // specimenFacade.getSpecimen().getDerivedFrom());
-        // Assert.assertNotNull("The field unit should have been created",
-        // specimenFacade.getFieldUnit());
-        // Assert.assertNotNull("The gathering event should have been created",
-        // specimenFacade.getGatheringEvent());
+         Assert.assertNotNull("The derivation event should have been created",
+        		 specimenFacade.innerDerivedUnit().getDerivedFrom());
+         Assert.assertNotNull("The field unit should have been created",
+        		 specimenFacade.innerFieldUnit());
+         Assert.assertNotNull("The gathering event should have been created",
+        		 specimenFacade.innerGatheringEvent());
     }
+    
+
+    
 
     /**
      * Test method for
@@ -383,7 +389,26 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.innerFieldUnit());
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
-
+    }
+    
+    @Test
+    public void testNewInstanceSpecimenWithoutFieldUnit() {
+        DerivedUnit parent = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivedUnit child = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivationEvent.NewSimpleInstance(parent, child, DerivationEventType.ACCESSIONING());
+        
+        DerivedUnitFacade facade;
+		try {
+			facade = DerivedUnitFacade.NewInstance(child);
+		       	Assert.assertTrue(facade.innerDerivedUnit().getDerivedFrom().getOriginals().size() == 1);
+		       	Assert.assertNull(facade.getFieldUnit(false));
+		       	DerivationEvent.NewSimpleInstance(FieldUnit.NewInstance(), parent, DerivationEventType.ACCESSIONING());
+		        
+		} catch (DerivedUnitFacadeNotSupportedException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+        
     }
 
     @Test
@@ -1345,7 +1370,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
-
+    
+    
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
@@ -1394,6 +1420,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    @Test
+    public void testGetSetOriginalLabelInfo() {
+        Assert.assertEquals("Original label info must be same", originalLabelInfo,
+                specimenFacade.getOriginalLabelInfo());
+        specimenFacade.setOriginalLabelInfo("OrigLabel Info xxx");
+        Assert.assertEquals("New accession number must be 'OrigLabel Info xxx'",
+                "OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo());
+    }
+    
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
@@ -1660,6 +1695,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         facade = DerivedUnitFacade.NewInstance(specimen);
         facade.getFieldUnit(true);
         assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

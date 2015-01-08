@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service.lsid;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -58,4 +60,13 @@ public class LSIDDataServiceTest extends CdmTransactionalIntegrationTest {
 	public void testGetDataUnknownLSID() throws Exception {
 		lsidDataService.getData(unknownLsid);	
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

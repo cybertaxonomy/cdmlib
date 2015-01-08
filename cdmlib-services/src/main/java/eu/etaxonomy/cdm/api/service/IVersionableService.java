@@ -80,6 +80,6 @@ public interface IVersionableService<T extends VersionableEntity> extends IServi
 	 * checks whether the object is deletable concerning the configurator or not
 	 */
 	
-	public List<String> isDeletable(T object, DeleteConfiguratorBase config);
+	public DeleteResult isDeletable(T object, DeleteConfiguratorBase config);
 	
 }

@@ -383,7 +383,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    
 	    Reference<?> nomRef;
 		if ( (nomRef = (Reference<?>)nameToBeFilled.getNomenclaturalReference()) != null ){
-			nomRef.setAuthorTeam((TeamOrPersonBase<?>)nameToBeFilled.getCombinationAuthorTeam());
+			nomRef.setAuthorship((TeamOrPersonBase<?>)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
 	
@@ -491,7 +491,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		//parse title and author
 		ref = parseReferenceTitle(strReference, yearPart, isInReference);
 		if (ref.hasProblem()){
-			ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference,true);
+			ref.setTitleCache( (isInReference ? "in ":"") +  originalStrReference, true);
+			ref.setAbbrevTitleCache( (isInReference ? "in ":"") +  originalStrReference, true);
 		}
 		nameToBeFilled.setNomenclaturalReference((Reference<?>)ref);
 		int end = Math.min(strReference.length(), ref.getProblemEnds());
@@ -570,6 +571,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 	private void makeUnparsableRefTitle(INomenclaturalReference result, String reference){
 		result.setTitleCache(reference,true);
+		result.setAbbrevTitleCache(reference,true);
 		result.addParsingProblem(ParserProblem.UnparsableReferenceTitle);
 	}
 	
@@ -694,7 +696,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
-			inBook.setAuthorTeam(authorTeam);
+			inBook.setAuthorship(authorTeam);
 			result.setInBook(inBook);
 		}
 		return result;

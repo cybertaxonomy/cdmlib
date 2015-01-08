@@ -32,8 +32,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -210,11 +209,11 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     				}
 
     				// Status
-    				PresenceAbsenceTermBase<?> presenceAbsenceStatus = PresenceTerm.NewInstance();
+    				PresenceAbsenceTerm presenceAbsenceStatus = PresenceAbsenceTerm.NewInstance();
     				if (status.equals("")) {
-    					presenceAbsenceStatus = PresenceTerm.NATIVE();
+    					presenceAbsenceStatus = PresenceAbsenceTerm.NATIVE();
     				} else {
-    					presenceAbsenceStatus = PresenceTerm.getPresenceTermByAbbreviation(status);
+    					presenceAbsenceStatus = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation(status);
     				}
     				// TODO: Handle absence case. 
     				// This case has not yet occurred in the excel input file, though.

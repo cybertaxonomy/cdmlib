@@ -37,12 +37,18 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     private boolean doMods = true;
     private boolean doFacts = true;
     private boolean doTypes = true;
+    private boolean alwaysUseDefaultClassification = false;
 
 
     //TODO
     private static IInputTransformer defaultTransformer = null;
 
-
+    //the original TaxonXImport extracted Synonyms by creating acc Taxa with partial names
+    //I (AM) do not understand this but don't want to destroy code which maybe works in some cases) there
+    //I created this switch for old
+    //for Spiders the new version is preferred
+    private boolean isUseOldUnparsedSynonymExtraction = true;
+    
     //if false references in this rdf file are not published in the bibliography list
     private boolean isPublishReferences = true;
 
@@ -51,6 +57,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
     private Map<String, Person> titleCachePerson;
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+    
 
 
     private static Reference<?> sourceRef = null;
@@ -100,20 +107,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         setDestination(destination);
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-     */
     @SuppressWarnings("unchecked")
     @Override
     public TaxonXImportState getNewState() {
         return new TaxonXImportState(this);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-     */
     @SuppressWarnings("rawtypes")
     @Override
     public Reference getSourceReference() {
@@ -130,10 +129,6 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         return sourceReference;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-     */
     @Override
     public String getSourceNameString() {
         if (this.getSource() == null){
@@ -341,5 +336,25 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     public boolean getLastImport(){
         return  lastImport;
     }
+
+	public boolean isAlwaysUseDefaultClassification() {
+		return alwaysUseDefaultClassification;
+	}
+
+	public void setAlwaysUseDefaultClassification(
+			boolean alwaysUseDefaultClassification) {
+		this.alwaysUseDefaultClassification = alwaysUseDefaultClassification;
+	}
+
+
+	public boolean isUseOldUnparsedSynonymExtraction() {
+		return isUseOldUnparsedSynonymExtraction;
+	}
+
+	public void setUseOldUnparsedSynonymExtraction(boolean isUseOldUnparsedSynonymExtraction) {
+		this.isUseOldUnparsedSynonymExtraction = isUseOldUnparsedSynonymExtraction;
+	}
+	
+	
 
 }

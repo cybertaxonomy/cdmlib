@@ -24,8 +24,10 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -95,13 +97,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public void lock(T t, LockMode lockMode) {
-        getSession().lock(t, lockMode);
+    public void lock(T t, LockOptions lockOptions) {
+        getSession().buildLockRequest(lockOptions).lock(t);
     }
 
     @Override
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
-        getSession().refresh(t, lockMode);
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
+        getSession().refresh(t, lockOptions);
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 
@@ -199,7 +201,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return y;
         }
 
-        Class commonClass = x.getClass();
+        Class<?> commonClass = x.getClass();
         if(y != null) {
             while(!commonClass.isAssignableFrom(y.getClass())) {
                 if(commonClass.equals(type)) {
@@ -247,14 +249,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     @Override
     public T merge(T transientObject) throws DataAccessException {
         Session session = getSession();
-        T persistentObject = (T)session.merge(transientObject);
+        @SuppressWarnings("unchecked")
+		T persistentObject = (T)session.merge(transientObject);
         if (logger.isDebugEnabled()){logger.debug("dao merge end");}
         return persistentObject;
     }
 
     @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
-        try {
+        if (transientObject == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	try {
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
             if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
             Session session = getSession();
@@ -287,13 +294,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public UUID save(T newInstance) throws DataAccessException {
-        getSession().save(newInstance);
+        if (newInstance == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	getSession().save(newInstance);
         return newInstance.getUuid();
     }
 
     @Override
     public UUID update(T transientObject) throws DataAccessException {
-        getSession().update(transientObject);
+        if (transientObject == null){
+        	logger.warn("Object to update should not be null. NOP");
+        	return null;
+        }
+    	getSession().update(transientObject);
         return transientObject.getUuid();
     }
 
@@ -315,12 +330,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        getSession().merge(persistentObject);
+        persistentObject = (T) getSession().merge(persistentObject);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public T findById(int id) throws DataAccessException {
         return (T) getSession().get(type, id);
     }
@@ -332,7 +348,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.eq("uuid", uuid));
         crit.addOrder(Order.desc("created"));
-        List<T> results = crit.list();
+        @SuppressWarnings("unchecked")
+		List<T> results = crit.list();
         if (results.isEmpty()){
             return null;
         }else{
@@ -341,6 +358,35 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             }
             return results.get(0);
         }
+    }
+    
+    @Override
+    public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException{
+    	Session session = getSession();    	
+    	FlushMode currentFlushMode = session.getFlushMode();
+    	try {    		
+    		// set flush mode to manual so that the session does not flush
+    		// when before performing the query
+    		session.setFlushMode(FlushMode.MANUAL);
+    		Criteria crit = session.createCriteria(type);
+    		crit.add(Restrictions.eq("uuid", uuid));
+    		crit.addOrder(Order.desc("created"));
+    		@SuppressWarnings("unchecked")
+			List<T> results = crit.list();
+    		if (results.isEmpty()){
+    			return null;
+    		}else{
+    			if(results.size() > 1){
+    				logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+    			}
+    			return results.get(0);
+    		}
+    	} finally {
+    		// set back the session flush mode 
+    		if(currentFlushMode != null) {
+    			session.setFlushMode(currentFlushMode);
+    		}
+    	}
     }
 
     @Override
@@ -352,9 +398,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
 
-        logger.debug(criteria.toString());
+        if (logger.isDebugEnabled()){logger.debug(criteria.toString());};
 
-         List<T> result = criteria.list();
+         @SuppressWarnings("unchecked")
+		List<T> result = criteria.list();
          defaultBeanInitializer.initializeAll(result, propertyPaths);
          return result;
      }
@@ -365,7 +412,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
        Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
 
-        List<T> result = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -435,7 +483,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria, orderHints);
 
-        List<T> result = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -524,7 +573,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria.setMaxResults(limit);
         }
 
-        List<Object[]> result = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<Object[]> result = criteria.list();
 
         if(propertyPaths != null && !propertyPaths.isEmpty()) {
           for(Object[] objects : result) {
@@ -640,14 +690,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
 
         addOrder(criteria,orderHints);
-        List<T> results = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<T> results = criteria.list();
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
     @Override
-    public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
         if(clazz == null) {
             criteria = getSession().createCriteria(type);
@@ -666,17 +717,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<S> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);
     }
 
     @Override
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
         return list(type,limit,start,null,null);
     }
 
@@ -685,7 +737,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         Query query = getSession().createQuery("from " + tableName + " order by uuid");
         query.setFirstResult(start);
         query.setMaxResults(limit);
-        List<T> result = query.list();
+        @SuppressWarnings("unchecked")
+		List<T> result = query.list();
         return result;
     }
 
@@ -786,7 +839,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         criteria.setProjection(Projections.rowCount());
 
-        List<T> result = criteria.list();
+//        List<T> result = criteria.list();
         return ((Number)criteria.uniqueResult()).intValue();
     }
 
@@ -807,7 +860,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = criteria.list();
+        @SuppressWarnings("unchecked")
+		List<T> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

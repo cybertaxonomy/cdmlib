@@ -89,4 +89,13 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
             assertNotNull("NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist",NomenclaturalStatusType.OPUS_UTIQUE_OPPR());
             assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

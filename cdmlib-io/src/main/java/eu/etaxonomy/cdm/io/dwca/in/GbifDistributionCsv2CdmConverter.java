@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -77,7 +77,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 				TaxonDescription desc = getTaxonDescription(taxon, false);
 				
 				//TODO
-				PresenceAbsenceTermBase<?> status = null;
+				PresenceAbsenceTerm status = null;
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);
 				

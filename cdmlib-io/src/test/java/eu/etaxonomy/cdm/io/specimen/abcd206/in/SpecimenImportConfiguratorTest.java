@@ -24,15 +24,24 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -41,19 +50,29 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
+	private IOccurrenceService occurrenceService;
 
 	@SpringBeanByType
-	ITermService termService;
+	private ITermService termService;
 
 	@SpringBeanByType
-    ICommonService commonService;
+	private ICommonService commonService;
+
+	@SpringBeanByType
+	private ITaxonNodeService taxonNodeService;
+
+	@SpringBeanByType
+	private IAgentService agentService;
+
+	@SpringBeanByType
+	private IReferenceService referenceService;
+
 
 
 	private IImportConfigurator configurator;
@@ -61,39 +80,28 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
-		URL url = this.getClass().getResource(inputFile);
-		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		try {
-			configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
-		assertNotNull("Configurator could not be created", configurator);
-
-		inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml";
-        url = this.getClass().getResource(inputFile);
+		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml";
+        URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
         try {
-            configurator2 = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
         }
-        assertNotNull("Configurator2 could not be created", configurator2);
+        assertNotNull("Configurator2 could not be created", configurator);
 
-//        inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml";
-//        url = this.getClass().getResource(inputFile);
-//        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-//        try {
-//            configurator3 = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//            Assert.fail();
-//        }
-//        assertNotNull("Configurator3 could not be created", configurator3);
-
+        //test2
+        String inputFile2 = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
+		URL url2 = this.getClass().getResource(inputFile2);
+		assertNotNull("URL for the test file '" + inputFile2 + "' does not exist", url2);
+		try {
+			configurator2 = Abcd206ImportConfigurator.NewInstance(url2.toURI(), null,false);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+		assertNotNull("Configurator could not be created", configurator2);
 	}
 
 	@Test
@@ -104,71 +112,61 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertNotNull("occurence service should not be null", occurrenceService);
 		assertNotNull("term service should not be null", termService);
 		assertNotNull("common service should not be null", commonService);
+		assertNotNull("taxon node service should not be null", taxonNodeService);
+		assertNotNull("agent service should not be null", agentService);
+		assertNotNull("reference service should not be null", referenceService);
 	}
 
-//	@Test
-//	@DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
-//	public void testDoInvoke() {
-//		boolean result = defaultImport.invoke(configurator);
-//		assertTrue("Return value for import.invoke should be true", result);
-//		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-//		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
-//	}
-
 	@Test
-    @DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
-    public void testDoInvoke2() {
-        boolean result = defaultImport.invoke(configurator2);
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testDoInvoke() {
+        boolean result = defaultImport.invoke(configurator);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-/*<<<<<<< .courant
-        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
-        try {
-            writeDbUnitDataSetFile(new String[] {
-                    "TAXONBASE", "TAXONNAMEBASE",
-                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
-                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
-                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
-                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT","GATHERINGEVENT",
-                    "HIBERNATE_SEQUENCES",
-             });
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-=======*/
+        /*
+         * Classification
+         * - Cichorium
+         *   - Cichorium calvum
+         */
+        assertEquals("Number of TaxonNodes is incorrect", 3, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
-//        try {
-//            writeDbUnitDataSetFile(new String[] {
-//                    "TAXONBASE", "TAXONNAMEBASE",
-//                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-//                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
-//                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
-//                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
-//                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT",
-//                    "HIBERNATE_SEQUENCES",
-//             });
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//                File file = new File("./ABCDPart1Dataset.xml");
-//        FileOutputStream fos;
-//        try {
-//            fos = new FileOutputStream(file);
-//            printDataSet(fos);
-//            fos.close();
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        //Asch. + Mitarbeiter der Floristischen Kartierung Deutschlands
+        assertEquals("Number of persons is incorrect", 2, agentService.count(Person.class));
+        //BfN
+        assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
+    }
 
-		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnit.class));
 
+	@Test
+	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testDoInvoke2() {
+		boolean result = defaultImport.invoke(configurator2);
+		assertTrue("Return value for import.invoke should be true", result);
+		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonNameBase.class));
+		/*
+		 * 5 taxon nodes:
+		 *
+         * Classification
+         * - Campanula
+         *   - Campanula patula
+         *   - Campanula tridentata
+         *   - Campanula lactiflora
+         */
+        assertEquals("Number of TaxonNodes is incorrect", 5, taxonNodeService.count(TaxonNode.class));
+		assertEquals("Number of derived units is incorrect", 11, occurrenceService.count(DerivedUnit.class));
+		assertEquals("Number of field units is incorrect", 11, occurrenceService.count(FieldUnit.class));
+		assertEquals("Number of gathering agents is incorrect", 4, agentService.count(Person.class));
+		//BGBM
+		assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
+		assertEquals("Number of references is incorrect", 1, referenceService.count(Reference.class));
+	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

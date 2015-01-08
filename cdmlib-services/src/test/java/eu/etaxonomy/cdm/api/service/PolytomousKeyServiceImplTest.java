@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -134,5 +135,14 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 	public void testExists() {
 		logger.warn("testExists not yet implemented");
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

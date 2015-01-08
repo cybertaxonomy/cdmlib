@@ -11,8 +11,8 @@ import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTask;
-import eu.etaxonomy.cdm.validation.CRUDEventType;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 /**
  * A DAO for accessing the error tables populated as a consequence of entity validation

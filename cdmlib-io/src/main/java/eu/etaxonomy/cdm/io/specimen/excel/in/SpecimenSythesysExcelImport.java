@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -121,9 +121,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
     boolean DEBUG =false;
 
-    protected HSSFWorkbook hssfworkbook = null;
-
-    public SpecimenSythesysExcelImport() {
+     public SpecimenSythesysExcelImport() {
         super();
     }
 
@@ -874,7 +872,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         if (ref == null){
             ref = state.getConfig().getSourceReference();
         }
-        AgentBase<?> agent= ref.getAuthorTeam();
+        AgentBase<?> agent= ref.getAuthorship();
         if (agent != null){
             if (agent.getClass().equals(Team.class)){
                 for (Person p : ((Team) agent).getTeamMembers()){

@@ -2,7 +2,8 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -30,18 +31,77 @@ public class MediaUtils {
     public static MediaRepresentation findBestMatchingRepresentation(Media media, Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
         // find best matching representations of each media
         SortedMap<Integer, MediaRepresentation> prefRepresentations
-            = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
-            try {
-                // take first one and remove all other representations
-                MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+        = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
+        try {
+            // take first one and remove all other representations
+            MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
 
-                return prefOne;
+            return prefOne;
 
-            } catch (NoSuchElementException nse) {
-                /* IGNORE */
-            }
+        } catch (NoSuchElementException nse) {
+            /* IGNORE */
+        }
+        return null;
+    }
+
+    /**
+     * Return the first {@link MediaRepresentationPart} found for the given {@link Media}
+     * or <code>null</code> otherwise.
+     * @param media the media which is searched for the first part
+     * @return the first part found or <code>null</code>
+     */
+    public static MediaRepresentationPart getFirstMediaRepresentationPart(Media media){
+        if(media==null){
             return null;
         }
+        MediaRepresentationPart mediaRepresentationPart = null;
+        Set<MediaRepresentation> representations = media.getRepresentations();
+        if(representations!=null && representations.size()>0){
+            MediaRepresentation mediaRepresentation = representations.iterator().next();
+            List<MediaRepresentationPart> parts = mediaRepresentation.getParts();
+            if(parts!=null && parts.size()>0){
+                mediaRepresentationPart = parts.iterator().next();
+            }
+        }
+        return mediaRepresentationPart;
+    }
+
+    /**
+     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
+     * if it does not already exists. Otherwise the first part found is returned.<br>
+     * @param media the media for which the representation part should be created
+     * @return the first or newly created representation part
+     */
+    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media, boolean isImage) {
+        MediaRepresentationPart mediaRepresentationPart = getFirstMediaRepresentationPart(media);
+        if(mediaRepresentationPart==null){
+            Set<MediaRepresentation> representations = media.getRepresentations();
+            if(representations!=null && representations.size()>0){
+                MediaRepresentation mediaRepresentation = representations.iterator().next();
+                if(isImage){
+                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
+                }
+                else{
+                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+                }
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+            }
+            else{
+                if(isImage){
+                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
+                }
+                else{
+                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+                }
+
+                MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+                media.addRepresentation(mediaRepresentation);
+            }
+        }
+        return mediaRepresentationPart;
+    }
+
 
     /**
      * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
@@ -96,11 +156,12 @@ public class MediaUtils {
             }
         }
 
-        Map<Media, MediaRepresentation> returnMediaList = new HashMap<Media, MediaRepresentation>(mediaList.size());
+        Map<Media, MediaRepresentation> returnMediaList;
         if(mediaList != null){
+            returnMediaList = new LinkedHashMap<Media, MediaRepresentation>(mediaList.size());
             for(Media media : mediaList){
 
-                Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
+                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<MediaRepresentation>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
@@ -118,6 +179,9 @@ public class MediaUtils {
                 }
 
             }
+        }
+        else{
+            returnMediaList = new HashMap<Media, MediaRepresentation>();
         }
         return returnMediaList;
     }

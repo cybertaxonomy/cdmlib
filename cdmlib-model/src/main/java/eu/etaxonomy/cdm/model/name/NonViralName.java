@@ -39,7 +39,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Target;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
@@ -182,41 +181,41 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Target(TeamOrPersonBase.class)
+//    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private INomenclaturalAuthor combinationAuthorTeam;
+    private TeamOrPersonBase<?> combinationAuthorTeam;
 
     @XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Target(TeamOrPersonBase.class)
+//    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private INomenclaturalAuthor exCombinationAuthorTeam;
+    private TeamOrPersonBase<?> exCombinationAuthorTeam;
 
     @XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Target(TeamOrPersonBase.class)
+//    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private INomenclaturalAuthor basionymAuthorTeam;
+    private TeamOrPersonBase<?> basionymAuthorTeam;
 
     @XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Target(TeamOrPersonBase.class)
+//    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private INomenclaturalAuthor exBasionymAuthorTeam;
+    private TeamOrPersonBase<?> exBasionymAuthorTeam;
 
     @XmlElement(name = "AuthorshipCache")
     @Fields({
@@ -515,14 +514,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public INomenclaturalAuthor getCombinationAuthorTeam(){
+    public TeamOrPersonBase<?> getCombinationAuthorTeam(){
         return this.combinationAuthorTeam;
     }
 
     /**
      * @see  #getCombinationAuthorTeam()
      */
-    public void setCombinationAuthorTeam(INomenclaturalAuthor combinationAuthorTeam){
+    public void setCombinationAuthorTeam(TeamOrPersonBase<?> combinationAuthorTeam){
         this.combinationAuthorTeam = combinationAuthorTeam;
     }
 
@@ -549,14 +548,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public INomenclaturalAuthor getExCombinationAuthorTeam(){
+    public TeamOrPersonBase<?> getExCombinationAuthorTeam(){
         return this.exCombinationAuthorTeam;
     }
 
     /**
      * @see  #getExCombinationAuthorTeam()
      */
-    public void setExCombinationAuthorTeam(INomenclaturalAuthor exCombinationAuthorTeam){
+    public void setExCombinationAuthorTeam(TeamOrPersonBase<?> exCombinationAuthorTeam){
         this.exCombinationAuthorTeam = exCombinationAuthorTeam;
     }
 
@@ -571,14 +570,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public INomenclaturalAuthor getBasionymAuthorTeam(){
+    public TeamOrPersonBase<?> getBasionymAuthorTeam(){
         return basionymAuthorTeam;
     }
 
     /**
      * @see  #getBasionymAuthorTeam()
      */
-    public void setBasionymAuthorTeam(INomenclaturalAuthor basionymAuthorTeam) {
+    public void setBasionymAuthorTeam(TeamOrPersonBase<?> basionymAuthorTeam) {
         this.basionymAuthorTeam = basionymAuthorTeam;
     }
 
@@ -598,14 +597,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public INomenclaturalAuthor getExBasionymAuthorTeam(){
+    public TeamOrPersonBase<?> getExBasionymAuthorTeam(){
         return exBasionymAuthorTeam;
     }
 
     /**
      * @see  #getExBasionymAuthorTeam()
      */
-    public void setExBasionymAuthorTeam(INomenclaturalAuthor exBasionymAuthorTeam) {
+    public void setExBasionymAuthorTeam(TeamOrPersonBase<?> exBasionymAuthorTeam) {
         this.exBasionymAuthorTeam = exBasionymAuthorTeam;
     }
     /**
@@ -936,9 +935,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()
-     */
+
     /**
      * Returns null as {@link NomenclaturalCode nomenclatural code} that governs
      * the construction of <i>this</i> non viral taxon name since there is no specific
@@ -946,7 +943,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * subclasses {@link BacterialName BacterialName},
      * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
      * {@link ZoologicalName ZoologicalName}.
-     * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
+     * This method overrides the {@link TaxonNameBase#getNomenclaturalCode()} method from {@link TaxonNameBase TaxonNameBase}.
      *
      * @return  null
      * @see  	#isCodeCompliant()
@@ -1269,8 +1266,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
             return;
         }
 
-        NonViralName parent = hybridRelation.getParentName();
-        NonViralName child = hybridRelation.getHybridName();
+        NonViralName<?> parent = hybridRelation.getParentName();
+        NonViralName<?> child = hybridRelation.getHybridName();
 
         hybridRelation.setHybridName(null);
         hybridRelation.setParentName(null);
@@ -1412,7 +1409,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      */
     @Override
     public Object clone() {
-        NonViralName result = (NonViralName)super.clone();
+        NonViralName<?> result = (NonViralName<?>)super.clone();
 
         //HybridChildRelations
         result.hybridChildRelations = new HashSet<HybridRelationship>();

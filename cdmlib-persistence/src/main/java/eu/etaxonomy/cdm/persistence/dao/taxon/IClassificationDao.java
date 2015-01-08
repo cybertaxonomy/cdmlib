@@ -42,8 +42,9 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
     public long countRankSpecificRootNodes(Classification classification, Rank rank);
 
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
-
+   
+ 
     public abstract Long countChildrenOf(Taxon taxon, Classification classification);
-
+  
 
 }

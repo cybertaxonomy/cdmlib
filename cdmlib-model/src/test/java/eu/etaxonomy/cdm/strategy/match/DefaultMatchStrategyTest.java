@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -107,7 +109,7 @@ public class DefaultMatchStrategyTest {
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
 		book1 = ReferenceFactory.newBook();
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
 		book1.setVolume(volumeString1);
@@ -120,7 +122,7 @@ public class DefaultMatchStrategyTest {
 		((Reference<?>) book1).setNomenclaturallyRelevant(false);
 		
 		book2 = ReferenceFactory.newBook();
-		book2.setAuthorTeam(team2);
+		book2.setAuthorship(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
 		book2.setVolume(volumeString2);
@@ -323,11 +325,11 @@ public class DefaultMatchStrategyTest {
 		
 		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2));
 		
-		book1.setAuthorTeam(person1);
-		book2.setAuthorTeam(person1);
+		book1.setAuthorship(person1);
+		book2.setAuthorship(person1);
 		Assert.assertTrue("Books with same author should match", matchStrategy.invoke(book1, book2));
 		
-		book2.setAuthorTeam(person2);
+		book2.setAuthorship(person2);
 		Assert.assertFalse("Books with different authors should not match", matchStrategy.invoke(book1, book2));
 		
 		person2.setPrefix("pre1");
@@ -402,7 +404,7 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team3));
 		
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		Assert.assertTrue("Contacts should be ignoredin default match strategy", matchStrategy.invoke(team1, team2));
 		

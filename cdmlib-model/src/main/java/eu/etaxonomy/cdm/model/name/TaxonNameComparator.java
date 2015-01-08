@@ -6,12 +6,23 @@ import java.util.Comparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class TaxonNameComparator implements Comparator<TaxonNameBase>, Serializable {
+	private static final long serialVersionUID = -1007495803322700031L;
 
 	public int compare(TaxonNameBase arg0, TaxonNameBase arg1) {
+		if (arg0.equals(arg1)){
+			return 0;
+		}
+		
 		String nameCacheOfArg0 = arg0.getTitleCache();
 		String nameCacheOfArg1 = arg1.getTitleCache();
 			
-		return nameCacheOfArg0.compareToIgnoreCase(nameCacheOfArg1);
+		int result = nameCacheOfArg0.compareToIgnoreCase(nameCacheOfArg1);
+		if (result != 0){
+			return result;
+		}else{
+			return arg0.getUuid().compareTo(arg1.getUuid());
+		}
+		
 	}
 
 }

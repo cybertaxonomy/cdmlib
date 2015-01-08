@@ -108,7 +108,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	/**
 	 * Class constructor.
 	 */
-	public Institution() {
+	protected Institution() {
 		super();
 		this.cacheStrategy = new InstitutionDefaultCacheStrategy();
 	}

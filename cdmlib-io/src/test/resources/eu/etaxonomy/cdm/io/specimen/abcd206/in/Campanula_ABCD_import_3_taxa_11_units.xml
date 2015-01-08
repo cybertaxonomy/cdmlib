@@ -1,0 +1,685 @@
+<?xml version="1.0"?>
+<abcd:DataSets xmlns:abcd="http://www.tdwg.org/schemas/abcd/2.06"
+  xmlns:biocase="http://www.biocase.org/schemas/protocol/1.3" xmlns:ns1="http://www.dnabank-network.org/test"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.biocase.org/schemas/protocol/1.3 http://www.bgbm.org/biodivinf/schema/protocol_1_31.xsd">
+  <abcd:DataSet>
+    <abcd:Units>
+      <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03800010</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03800 -01 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/80/B_-W_03800%20-01%200.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=108216</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03800010</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03800020</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03800 -02 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/80/B_-W_03800%20-02%200.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=108217</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03800020</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03800000</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03800 -00 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>cover</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/80/B_-W_03800%20-00%200__3.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=120723</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:LocalityText>Habitat in Angliae, Sueciae, Germaniae arvis.</abcd:LocalityText>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en">Pentandria Monogynia</abcd:Notes>
+            </abcd:Gathering>
+            <abcd:Notes>Pentandria Monogynia</abcd:Notes>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03800000</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100005456</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0005456</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/00/05/45/B_10_0005456.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=5703</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>V. / 50</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Baschant</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:Country>
+                <abcd:Name>Austria</abcd:Name>
+                <abcd:ISO3166Code>AT</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100005456</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100005457</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0005457</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/00/05/45/B_10_0005457.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=5704</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>20.6.1973</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Biste</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:Country>
+                <abcd:Name>Hungary</abcd:Name>
+                <abcd:ISO3166Code>HU</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100005457</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100005458</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0005458</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/00/05/45/B_10_0005458.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=5705</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>15.7.1970</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Eckardt</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>Oberwallis.</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name>Switzerland</abcd:Name>
+                <abcd:ISO3166Code>CH</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:CollectorsFieldNumber>1532</abcd:CollectorsFieldNumber>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100005458</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100005459</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0005459</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/00/05/45/B_10_0005459.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=5706</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1.8.1964</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>M. Bässler</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:Country>
+                <abcd:Name>Poland</abcd:Name>
+                <abcd:ISO3166Code>PL</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100005459</abcd:RecordURI>
+          </abcd:Unit>
+<abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03860010</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03860 -01 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula tridentata</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>tridentata</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/86/B_-W_03860%20-01%200.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=108590</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en" />
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03860010</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03860000</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03860 -00 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula tridentata</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>tridentata</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>cover</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/86/B_-W_03860%20-00%200__3.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=120779</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:LocalityText>Habitat in Oriente.</abcd:LocalityText>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Asia</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en">Pentandria Monogynia</abcd:Notes>
+            </abcd:Gathering>
+            <abcd:Notes>Pentandria Monogynia</abcd:Notes>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03860000</abcd:RecordURI>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03860001</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03860 -00 1</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula tridentata</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>tridentata</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>back cover</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/86/B_-W_03860%20-00%201__3.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=134537</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:LocalityText>Habitat in Oriente.</abcd:LocalityText>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Asia</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en">Roestel; Campanula tridentata Schreb.; Campanula tridentata gilan, Gmelin jun.</abcd:Notes>
+            </abcd:Gathering>
+            <abcd:Notes>Roestel; Campanula tridentata Schreb.; Campanula tridentata gilan, Gmelin jun.</abcd:Notes>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03860001</abcd:RecordURI>
+          </abcd:Unit>
+<abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/BW03827000</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B -W 03827 -00 0</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula lactiflora</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>lactiflora</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>cover</abcd:KindOfUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/-W/03/82/B_-W_03827%20-00%200__3.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=120749</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Image parts provided by this server with the given resolution have been released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a different format or resolution which is not provided by this image server, please contact [BGBM, d.roepert[at]bgbm.org] for additional information.</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en" />
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Notes language="en" />
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/BW03827000</abcd:RecordURI>
+          </abcd:Unit>
+    </abcd:Units>
+  </abcd:DataSet>
+</abcd:DataSets>

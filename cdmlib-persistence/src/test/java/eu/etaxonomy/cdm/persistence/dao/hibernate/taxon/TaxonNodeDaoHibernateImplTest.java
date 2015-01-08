@@ -12,14 +12,19 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javassist.util.proxy.Proxy;
+
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -37,7 +42,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
-    @SpringBeanByType
+    private static final UUID ClassificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+
+	@SpringBeanByType
     private ITaxonNodeDao taxonNodeDao;
 
     @SpringBeanByType
@@ -94,7 +101,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @DataSet
     public void testClassification() {
 
-        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"), CLASSIFICATION_INIT_STRATEGY);
+        Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
 
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
@@ -114,7 +121,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
         rootNode.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
         taxonNodeDao.delete(taxNode3, true);
-        classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+        classification = classificationDao.findByUuid(ClassificationUuid);
 
         taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be 7 taxa left", 7, taxa.size());
@@ -123,7 +130,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         classification = null;
 
         classificationDao.flush();
-        classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+        classification = classificationDao.findByUuid(ClassificationUuid);
         assertEquals("The tree should be null", null, classification);
 
     }
@@ -133,17 +140,20 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     public void testlistChildren(){
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
 
-        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+        Classification classification =  classificationDao.load(ClassificationUuid);
         List<TaxonNode> children = classificationDao.listChildrenOf(t_acherontia, classification, null, null, null);
         assertNotNull(children);
         assertEquals(2, children.size());
-
+        TaxonNode t_acherontia_node = taxonNodeDao.load(NODE_ACHERONTIA_UUID);
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, null, true);
+        assertNotNull(children);
+        assertEquals(3, children.size());
     }
 
     @Test
     @DataSet
     public void testGetAllTaxaByClassification(){
-        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"), CLASSIFICATION_INIT_STRATEGY);
+        Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
 
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
@@ -160,17 +170,53 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxNode3.addChildTaxon(taxon2, null, null);
 
         List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
-        assertEquals("there should be 6 taxa left", 6, taxas.size());
+        assertEquals("there should be 7 taxa left", 7, taxas.size());
 
 
         taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
         logger.info(taxas.size());
-        assertEquals("there should be 6 taxa left", 6, taxas.size());
+        assertEquals("there should be 7 taxa left", 7, taxas.size());
 
         int countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
         logger.info(countTaxa);
-        assertEquals("there should be 6 taxa left", 6, countTaxa);
-
-
+        assertEquals("there should be 7 taxa left", 7, countTaxa);
     }
+    
+    @Test
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
+    //test if TaxonNode.remove(index) works correctly with proxies
+    public void testSortindexForJavassist(){
+    	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+    	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
+    	Classification classification = classificationDao.findByUuid(ClassificationUuid);
+    	classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
+    	commitAndStartNewTransaction( new String[]{"TaxonNode"});
+    }
+    
+    @Test
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml")
+    //test if TaxonNode.addNode(node) works correctly with proxies
+    public void testSortindexForJavassist2(){
+    	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+    	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Taxon newTaxon = Taxon.NewInstance(null, null);
+    	Classification classification = classificationDao.findByUuid(ClassificationUuid);
+    	classification.addChildTaxon(newTaxon, 0, null, null);
+    	commitAndStartNewTransaction( new String[]{"TaxonNode"});
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

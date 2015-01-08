@@ -48,6 +48,7 @@ import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -96,7 +97,8 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ClassBridge(impl=DefinedTermBaseClassBridge.class)
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
+//TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T>, Comparable<T> {
     private static final long serialVersionUID = 2931811562248571531L;
     private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 
@@ -158,16 +160,20 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @Cascade(CascadeType.SAVE_UPDATE)
     protected TermVocabulary<T> vocabulary;
 
-  //the unique tabel this term uses in its given vocabulary #3479
+  //the unique iedentifier/name this term uses in its given vocabulary #3479
    //open issues: is null allowed? If not, implement unique constraint
 
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
-    private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
+    private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
+    
+
 
 //***************************** CONSTRUCTOR *******************************************/
 
-    //for javassit only
+
+
+	//for javassit only
     @Deprecated
     protected DefinedTermBase(){};
 
@@ -181,27 +187,18 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 //********************** GETTER /SETTER *************************************
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIdInVocabulary()
-       */
       @Override
       public String getIdInVocabulary() {
           return idInVocabulary;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIdInVocabulary(java.lang.String)
-       */
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
           this.idInVocabulary = idInVocabulary;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
-       */
       @Override
-    public T getKindOf(){
+      public T getKindOf(){
 
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
@@ -231,9 +228,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           this.generalizationOf.add(generalization);
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeGeneralization(T)
-       */
+
       public void removeGeneralization(T generalization) {
           if(generalizationOf.contains(generalization)){
               generalization.setKindOf(null);
@@ -258,8 +253,16 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
       public void setPartOf(T partOf){
           this.partOf = partOf;
       }
+      
+      
+    //TODO Comparable implemented only for fixing failing JAXB imports, may be removed when this is fixed
+  	@Override
+  	@Deprecated //for inner use only
+  	public int compareTo(T other) {
+		return ((Integer)this.getId()).compareTo(other.getId());
+	}
 
-      @Override
+	@Override
       public Set<T> getIncludes(){
           return this.includes;
       }
@@ -472,4 +475,24 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         return result;
     }
 
+    // Currently the CDM Caching mechanism is only used for caching terms
+    private static ICdmCacher cacher;
+    
+    /**
+     * Gets the CDM cacher object
+     *      
+     * @return the CDM cacher object
+     */
+    public static ICdmCacher getCacher() {
+		return cacher;
+	}
+
+	/**
+	 * Sets the CDM cacher object
+	 * 
+	 * @param cacher the CDM cacher object
+	 */
+	public static void setCacher(ICdmCacher cacher) {
+		DefinedTermBase.cacher = cacher;
+	}
 }

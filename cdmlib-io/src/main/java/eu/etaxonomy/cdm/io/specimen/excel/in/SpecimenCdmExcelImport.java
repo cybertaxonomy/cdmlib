@@ -544,7 +544,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			} catch (StringNotParsableException e) {
 				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
 			}
-			sec.setAuthorTeam(determinedBy);
+			sec.setAuthorship(determinedBy);
 		}
 		
 		//taxon
@@ -718,7 +718,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			authors.add(determination.determinedBy);
 		}
 		TeamOrPersonBase<?> actor = getOrMakeAgent(state, authors);
-		TeamOrPersonBase<?> secAuthor = taxon.getSec() == null ? null : taxon.getSec().getAuthorTeam();
+		TeamOrPersonBase<?> secAuthor = taxon.getSec() == null ? null : taxon.getSec().getAuthorship();
 		if (actor != null && secAuthor != null && secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
 			actor = secAuthor;
 		}

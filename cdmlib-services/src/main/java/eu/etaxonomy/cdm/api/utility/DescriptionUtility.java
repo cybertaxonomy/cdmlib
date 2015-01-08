@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
@@ -229,7 +229,7 @@ public class DescriptionUtility {
     private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
 
         Set<Distribution> preferred = new HashSet<Distribution>();
-        PresenceAbsenceTermBase highestStatus = null;
+        PresenceAbsenceTerm highestStatus = null;  //we need to leave generics here as for some reason highestStatus.compareTo later jumps into the wrong class for calling compareTo
         int compareResult;
         for (Distribution distribution : distributions) {
             if(highestStatus == null){
@@ -237,9 +237,7 @@ public class DescriptionUtility {
                 preferred.add(distribution);
             } else {
                 if(distribution.getStatus() == null){
-                    // highestStatus is considered higher if
-                    // highestStatus != null && distribution.getStatus() == null
-                    compareResult = highestStatus != null ? -1 : 0;
+                    continue;
                 } else {
                     compareResult = highestStatus.compareTo(distribution.getStatus());
                 }

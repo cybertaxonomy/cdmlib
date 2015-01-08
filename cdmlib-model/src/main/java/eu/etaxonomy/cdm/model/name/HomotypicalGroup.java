@@ -72,6 +72,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 @Entity
 @Audited
 public class HomotypicalGroup extends AnnotatableEntity {
+	private static final long serialVersionUID = -2308347613205551766L;
+
 	private static final Logger logger = Logger.getLogger(HomotypicalGroup.class);
 
 	@XmlElementWrapper(name = "TypifiedNames")

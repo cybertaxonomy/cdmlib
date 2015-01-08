@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
@@ -86,6 +87,9 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
         		identifiableEntity.getTitleCache();
+            }else if(Amplification.class.isAssignableFrom(entityClazz)) {
+            	Amplification amplification = (Amplification)entity;
+            	amplification.updateCache();
             }
         	
         }

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -78,13 +80,14 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_urls_element")
-	private List<String> urls;
+    @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key  
+	private List<String> urls = new ArrayList<String>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> phoneNumbers;
 
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
@@ -121,7 +124,7 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public static Contact NewInstance(String street, String postcode, String locality,
 			Country country, String pobox, String region,
-			String email, String faxNumber, String phoneNumber, String url, Point location) {
+			String email, String faxNumber, String phoneNumber, URI url, Point location) {
 		Contact result = new Contact();
 		if (country != null || StringUtils.isNotBlank(locality) || StringUtils.isNotBlank(pobox) || StringUtils.isNotBlank(postcode) ||
 				StringUtils.isNotBlank(region) || StringUtils.isNotBlank(street) ){
@@ -145,7 +148,7 @@ public class Contact implements Serializable, Cloneable {
 
 
 	public static Contact NewInstance(Set<Address> addresses, List<String> emailAdresses,
-			List<String> faxNumbers, List<String> phoneNumbers, List<String> urls) {
+			List<String> faxNumbers, List<String> phoneNumbers, List<URI> urls) {
 		Contact result = new Contact();
 		if (addresses != null){
 			result.addresses = addresses;
@@ -160,7 +163,9 @@ public class Contact implements Serializable, Cloneable {
 			result.phoneNumbers = phoneNumbers;
 		}
 		if (urls != null){
-			result.urls = urls;
+			for (URI uri : urls){
+				result.urls.add(uri.toString());
+			}
 		}
 		return result;
 	}
@@ -226,10 +231,11 @@ public class Contact implements Serializable, Cloneable {
 		}
 	}
 
-	public void addAddress(String street, String postcode, String locality,
+	public Address addAddress(String street, String postcode, String locality,
 			Country country, String pobox, String region, Point location){
 		Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
 		getAddresses().add(newAddress);
+		return newAddress;
 	}
 
 	/**
@@ -271,22 +277,34 @@ public class Contact implements Serializable, Cloneable {
 		getEmailAddresses().remove(emailAddress);
 	}
 
+//	/**
+//	 * Returns the list of {@link URI URIs} representing this contact
+//	 * included in <i>this</i> contact.
+//	 */
+//	@Transient   //TODO preliminary workaround as we get LazyInit Exception in JSON #4444
+//	public List<URI> getUrls(){
+//		List<URI> result = new ArrayList<URI>();
+//		if(this.urls != null) {
+//			for (String uri : this.urls){
+//				result.add(URI.create(uri));
+//			}
+//		}
+//		return result;
+//	}
+
 	/**
-	 * Returns the list of strings representing the "Uniform Resource Locators" (urls)
+	 * Returns the list of {@link URI URIs} representing this contact
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getUrls(){
-		if(this.urls == null) {
-			this.urls = new ArrayList<String>();
-		}
 		return this.urls;
 	}
-
+	
 	/**
 	 * @see  #getUrls()
 	 */
-	public void addUrl(String url){
-		getUrls().add(url);
+	public void addUrl(URI url){
+		this.urls.add(url.toString());
 	}
 
 	/**
@@ -295,9 +313,10 @@ public class Contact implements Serializable, Cloneable {
 	 * @param  url  the url of <i>this</i> contact which should be deleted
 	 * @see     		#getUrls()
 	 */
-	public void removeUrl(String url){
-		getUrls().remove(url);
+	public void removeUrl(URI url){
+		this.urls.remove(url.toString());
 	}
+
 
 	/**
 	 * Returns the list of strings representing the phone numbers

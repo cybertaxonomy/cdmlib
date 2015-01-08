@@ -161,7 +161,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
          }
 
          if(queryString == null && boundingBox == null) {
-             HttpStatusMessage.fromString("Either query or bbox must be given").send(response);
+             HttpStatusMessage.create("Either query or bbox must be given", 400).send(response);
              return null;
          }
 

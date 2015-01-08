@@ -31,6 +31,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 	private String blank = " ";
 	
 	
+	
 	protected abstract String getInRefType();
 	
 	protected String afterInRefAuthor = ", ";
@@ -58,6 +59,14 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
 			GenericDefaultCacheStrategy inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getTitleWithoutYearAndAuthor(inRef, true);
+			//added //TODO unify with non-inRef references formatting
+			
+			if (isNotBlank(thisRef.getVolume())){
+				result = result + " " + thisRef.getVolume();
+			}
+			//TODO series / edition
+			
+			//end added
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, thisRef, true);
 		}else{
@@ -74,12 +83,14 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		return result;
 	}
 	
+
+	
 	protected String getInRefAuthorPart(Reference book, String seperator){
 		if (book == null){
 			return "";
 		}
-		TeamOrPersonBase<?> team = book.getAuthorTeam();
-		String result = CdmUtils.Nz( team == null ? "" : team.getTitleCache());
+		TeamOrPersonBase<?> team = book.getAuthorship();
+		String result = Nz( team == null ? "" : team.getNomenclaturalTitle());
 		if (! result.trim().equals("")){
 			result = result + seperator;	
 		}
@@ -105,7 +116,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		boolean hasInRef = (inRef != null);
 		// get inRef part
 		if (hasInRef){
-			result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(), inRef.getAbbrevTitle(), isAbbrev, true)  ;
+			result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(), inRef.getAbbrevTitleCache(), isAbbrev, true)  ;
 		}else{
 			if ( ! inRefIsObligatory){
 				return super.getTitleCache(thisRef);
@@ -125,7 +136,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		}
 		
 		//section author
-		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorTeam();
+		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorship();
 		String thisRefAuthor = "";
 		if (thisRefTeam != null){
 			thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(), thisRefTeam.getNomenclaturalTitle(), isAbbrev, true);
@@ -146,7 +157,9 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 						logger.warn("InRefDateString (" + inRefDateString + ") could not be found in result (" + result +")");
 					}
 				}else{
-					result = result + beforeYear + thisRefDate + afterYear;
+					//avoid duplicate dots ('..')
+					String bYearSeparator = result.substring(result.length() -1).equals(beforeYear.substring(0, 1)) ? beforeYear.substring(1) : beforeYear;
+					result = result + bYearSeparator + thisRefDate + afterYear;
 				}
 			}else{
 				result = result + beforeYear + thisRefDate + afterYear;

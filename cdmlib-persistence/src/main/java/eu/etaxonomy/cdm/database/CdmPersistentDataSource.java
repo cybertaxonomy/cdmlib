@@ -55,7 +55,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 
 		
 	private String beanName;
-	private String dbUrl;
 	
 	private String database;
 	
@@ -164,9 +163,26 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public void setDatabase(String database) {
 		this.database = database;
+		//update url string
+		cdmSourceProperties.put(CdmSourceProperties.URL.toString(), getDatabaseType().getConnectionString(this));
 		
 	}
+	
+	@Override
+	public void setServer(String server) {
+		super.setServer(server);
+		//update url string
+		cdmSourceProperties.put(CdmSourceProperties.URL.toString(), getDatabaseType().getConnectionString(this));
+	}
 		
+	@Override
+	public void setPort(int port) {
+		super.setPort(port);
+		if(port != NULL_PORT) {			
+			//update url string
+			cdmSourceProperties.put(CdmSourceProperties.URL.toString(), getDatabaseType().getConnectionString(this));
+		}
+	}
 	@Override
 	public String getFilePath() {		
 		return getCdmSourceProperty(CdmSourceProperties.FILEPATH);
@@ -258,7 +274,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			}
 			//Attribute attribute = iterator.next();
 			//bd.setAttribute(attribute.getName(), attribute.getValue());
-		}
+		}		
 		
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
@@ -275,6 +291,8 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			}
 		}
 
+		
+		
 		bd.setPropertyValues(props);
 		return bd;
 	}

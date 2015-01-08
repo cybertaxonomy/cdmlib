@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -275,5 +276,14 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 
 //		commitAndStartNewTransaction(new String[]{"Hibernate_sequences","DescriptionElementBase","DescriptionElementBase_StateData","StateData_DefinedTermBase", "StateData", "StateData_LanguageString", "LanguageString"});
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

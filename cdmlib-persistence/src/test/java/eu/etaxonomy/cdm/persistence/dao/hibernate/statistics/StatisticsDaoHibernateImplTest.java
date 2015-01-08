@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +89,7 @@ public class StatisticsDaoHibernateImplTest extends
 	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
 
 	// must not be more than NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS
-	private static final int NO_OF_NOMECLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA
+	private static final int NO_OF_NOMENCLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA
 			+ NO_OF_SYNONYMS - 4;
 
 	// --------------------variables for all ------------------
@@ -133,7 +134,7 @@ public class StatisticsDaoHibernateImplTest extends
 			put("DESCRIPTIVE_SOURCE_REFERENCES",
 					no_of_descriptive_source_references_c);
 			put("ALL_REFERENCES", no_of_all_references_c);
-			put("NOMECLATURAL_REFERENCES", no_of_nomenclatural_references_c);
+			put("NOMENCLATURAL_REFERENCES", no_of_nomenclatural_references_c);
 		}
 	};
 
@@ -247,7 +248,7 @@ public class StatisticsDaoHibernateImplTest extends
 				name.setNameCache(randomName, true);
 
 				// create nomenclatural reference for taxon name (if left)
-				if (nomRefCounter < NO_OF_NOMECLATURAL_REFERENCES) {
+				if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 					// we remember this taxon has a nomenclatural reference:
 					tNomRefFlag = true;
 					Reference nomRef = ReferenceFactory.newBook();
@@ -340,7 +341,7 @@ public class StatisticsDaoHibernateImplTest extends
 					name.setNameCache(randomName, true);
 
 					// create nomenclatural reference for synonym name (if left)
-					if (nomRefCounter < NO_OF_NOMECLATURAL_REFERENCES) {
+					if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 						sNomRefFlag = true;
 						Reference nomRef = ReferenceFactory.newBook();
 						name.setNomenclaturalReference(nomRef);
@@ -570,4 +571,13 @@ public class StatisticsDaoHibernateImplTest extends
 		System.out.println("end!");
 
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

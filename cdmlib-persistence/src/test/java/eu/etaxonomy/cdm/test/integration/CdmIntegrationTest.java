@@ -76,6 +76,8 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * In order to create DbUnit datasets  for integration tests it is highly recommended method to use the
  * {@link #writeDbUnitDataSetFile(String[])} method.
  *
+ * From {@link http://www.unitils.org/tutorial-database.html}, by default every test is executed in a transaction,
+ * which is committed at the end of the test. This can be disabled using @Transactional(TransactionMode.DISABLED)
  *
  * @see <a href="http://www.unitils.org">unitils home page</a>
  *
@@ -476,8 +478,27 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @throws FileNotFoundException
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
+        writeDbUnitDataSetFile(includeTableNames, null);
+    }
 
-        File file = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator) + ".xml");
+    /**
+     *
+     * Extension of method mentioned in "see also" where you can specify an appendix for the
+     * generated DbUnit data set file.
+     *
+     * @param includeTableNames
+     * @param fileAppendix the appendix of the generated DbUnit dataset file
+     * @throws FileNotFoundException
+     * @see #writeDbUnitDataSetFile(String[])
+     */
+    public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
+
+        String pathname = "src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator);
+        if(fileAppendix!=null){
+            pathname += "."+fileAppendix;
+        }
+        pathname += ".xml";
+        File file = new File(pathname);
 
         if (file.exists()){
             logger.warn("** OVERWRITING DbUnit dataset file " + file.getAbsolutePath());
@@ -536,4 +557,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         }
         transactionManager.commit(txStatus);
     }
+
+    public abstract void createTestDataSet() throws FileNotFoundException;
 }

@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "barcode",
 	"preservation",
 	"exsiccatum",
+	"originalLabelInfo",
     "specimenTypeDesignations"
 })
 @XmlRootElement(name = "DerivedUnit")
@@ -131,6 +133,10 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
+	
+	@XmlElement(name = "OriginalLabelInfo")
+	@Lob
+    private String originalLabelInfo;
 
 	@XmlElementWrapper(name = "SpecimenTypeDesignations")
 	@XmlElement(name = "SpecimenTypeDesignation")
@@ -160,7 +166,13 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public static DerivedUnit NewInstance(SpecimenOrObservationType type) {
-		return new DerivedUnit(type);
+		if (type.isMedia()){
+			return MediaSpecimen.NewInstance(type);
+		}else if (type.isKindOf(SpecimenOrObservationType.DnaSample)){
+			return DnaSample.NewInstance();
+		}else{
+			return new DerivedUnit(type);
+		}
 	}
 
 	/**
@@ -244,7 +256,6 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		this.collection = collection;
 	}
 
-
 	public String getCatalogNumber() {
 		return catalogNumber;
 	}
@@ -271,6 +282,23 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 	public void setAccessionNumber(String accessionNumber) {
 		this.accessionNumber = accessionNumber;
+	}
+	
+
+	/**
+	 * Original label information may present the exact original text
+	 * or any other text which fully or partly represents the text available
+	 * on the specimens label. This information may differ from the information
+	 * available in the derived unit itself.
+	 * @return the original label information
+	 */
+	//#4218
+	public String getOriginalLabelInfo() {
+		return originalLabelInfo;
+	}
+
+	public void setOriginalLabelInfo(String originalLabelInfo) {
+		this.originalLabelInfo = originalLabelInfo;
 	}
 
 	/**
@@ -375,6 +403,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 			return null;
 		}
 	}
+
 
 
 }

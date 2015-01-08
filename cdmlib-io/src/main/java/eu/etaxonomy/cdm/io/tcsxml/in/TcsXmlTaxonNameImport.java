@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,13 +23,16 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -82,13 +87,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 		
 		String tcsElementName = "TaxonName";
-		List<Element> elTaxonNameList = (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
 				
 		int i = 0;
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNameList){
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			List<String> elementList = new ArrayList<String>();
+			String strId = elTaxonName.getAttributeValue("id");
+			/*List<String> elementList = new ArrayList<String>();
 			
 			//create TaxonName element
 			String strId = elTaxonName.getAttributeValue("id");
@@ -97,7 +103,13 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			childName = "Rank";
 			obligatory = false;
 			Element elRank = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
-			Rank rank = makeRank(elRank);
+			Rank rank = null;
+			if (elRank != null){
+				rank = makeRank(elRank);
+				if (rank == null){
+					logger.warn("Unknown rank for" + strId);
+				}
+			}
 			elementList.add(childName.toString());
 			
 			
@@ -172,13 +184,19 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				
 			
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
-				
+				if (strId != null){
+					if (strId.matches("urn:lsid:ipni.org:.*:.*:.*")){
+						strId = strId.substring(0,strId.lastIndexOf(":"));
+					}
+				}
 				taxonNameMap.put(strId, nameBase);
 				
 			} catch (UnknownCdmTypeException e) {
 				logger.warn("Name with id " + strId + " has unknown nomenclatural code.");
 				success.setValue(false); 
-			}
+			}*/
+			
+			taxonNameMap.put(removeVersionOfRef(strId), handleTaxonNameElement(elTaxonName, success, state));
 		}
 		logger.info(i + " names handled");
 		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
@@ -223,7 +241,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Rank stringRank = null;
 		try {
 			boolean useUnknown = true;
-			stringRank = Rank.getRankByNameOrIdInVoc(strRankString, useUnknown);
+			stringRank = TcsXmlTransformer.rankString2Rank(strRankString);
+			//stringRank = Rank.getRankByNameOrIdInVoc(strRankString, useUnknown);
 		} catch (UnknownCdmTypeException e1) {
 			//does not happen because of useUnknown = true
 		}
@@ -238,11 +257,172 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		//codeRank does not exist
 		else{
 			result = stringRank;
-			logger.warn("string rank used, because code rank does not exist or was not recognized: " + stringRank.getLabel());
+			logger.warn("string rank used, because code rank does not exist or was not recognized: " + strRankString );
 		}
 		return result;
 	}
 
+	public TaxonNameBase handleTaxonNameElement(Element elTaxonName,  ResultWrapper<Boolean> success, TcsXmlImportState state){
+		Namespace tcsNamespace = state.getConfig().getTcsXmlNamespace();
+		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+
+		
+		
+		List<String> elementList = new ArrayList<String>();
+		String idNamespace = "TaxonName";
+		//create TaxonName element
+		String strId = elTaxonName.getAttributeValue("id");
+		String strNomenclaturalCode = elTaxonName.getAttributeValue("nomenclaturalCode");
+		//Content elTaxName = elTaxonName.getChild(name, ns);
+		String childName = "Rank";
+		boolean obligatory = false;
+		Element elRank = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+		Rank rank = null;
+		if (elRank != null){
+			rank = TcsXmlTaxonNameImport.makeRank(elRank);
+			if (rank == null){
+				logger.warn("Unknown rank for" + strId);
+			}
+		}
+		elementList.add(childName.toString());
+		
+		
+		try {
+			TaxonNameBase<?,?> nameBase;
+			NomenclaturalCode nomCode = TcsXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
+			if (nomCode != null){
+				nameBase = nomCode.getNewTaxonNameInstance(rank);
+			}else{
+				nameBase = NonViralName.NewInstance(rank);
+			}
+			childName = "Simple";
+			obligatory = true;
+			Element elSimple = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
+			nameBase.setTitleCache(simple, false);
+			elementList.add(childName.toString());
+			
+			childName = "CanonicalName";
+			obligatory = false;
+			Element elCanonicalName = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeCanonicalName(nameBase, elCanonicalName, taxonNameMap, success);
+			elementList.add(childName.toString());
+			
+			childName = "CanonicalAuthorship";
+			obligatory = false;
+			Element elCanonicalAuthorship = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeCanonicalAuthorship(nameBase, elCanonicalAuthorship, authorMap, success);
+			elementList.add(childName.toString());
+			
+			childName = "PublishedIn";
+			obligatory = false;
+			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makePublishedIn(nameBase, elPublishedIn, referenceMap, success);
+			elementList.add(childName.toString());
+			
+			childName = "Year";
+			obligatory = false;
+			Element elYear = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeYear(nameBase, elYear, success);
+			elementList.add(childName.toString());
+			
+			childName = "MicroReference";
+			obligatory = false;
+			Element elMicroReference = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeMicroReference(nameBase, elMicroReference, success);
+			elementList.add(childName.toString());
+			
+			childName = "Typification";
+			obligatory = false;
+			Element elTypification = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeTypification(nameBase, elTypification, success);
+			elementList.add(childName.toString());
+			
+			childName = "PublicationStatus";
+			obligatory = false;
+			Element elPublicationStatus = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makePublicationStatus(nameBase, elPublicationStatus, success);
+			elementList.add(childName.toString());
+			
+			childName = "ProviderLink";
+			obligatory = false;
+			Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeProviderLink(nameBase, elProviderLink, success);
+			elementList.add(childName.toString());
+			
+			childName = "ProviderSpecificData";
+			obligatory = false;
+			Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+			makeProviderSpecificData(nameBase, elProviderSpecificData, success);
+			elementList.add(childName.toString());
+			
+			return nameBase;
+			
+		} catch (UnknownCdmTypeException e) {
+			logger.warn("Name with id " + strId + " has unknown nomenclatural code.");
+			success.setValue(false); 
+		}
+		return null;
+	}
+	
+	
+
+	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+		if (elCanonicalAuthorship != null){
+			Namespace ns = elCanonicalAuthorship.getNamespace();
+			
+			if (name instanceof NonViralName){
+				NonViralName nonViralName = (NonViralName)name;
+				
+				String childName = "Simple";
+				boolean obligatory = true;
+				Element elSimple = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
+				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
+				//TODO
+				//logger.warn("authorship cache cache protected not yet implemented");
+				//nonViralName.setAuthorshipCache(simple, cacheProtected);
+
+				childName = "Authorship";
+				obligatory = false;
+				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
+				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success); 
+				nonViralName.setCombinationAuthorTeam(author);
+				//setCombinationAuthorTeam(author);
+				testNoMoreElements();
+				
+				childName = "BasionymAuthorship";
+				obligatory = false;
+				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
+				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
+				nonViralName.setBasionymAuthorTeam(basionymAuthor);
+				testNoMoreElements();
+				
+				childName = "CombinationAuthorship";
+				obligatory = false;
+				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
+				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
+				if (combinationAuthor != null){
+					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+				}
+				testNoMoreElements();
+				
+				if (elAuthorship != null && (elBasionymAuthorship != null || elCombinationAuthorship != null) ){
+					logger.warn("Authorship and (BasionymAuthorship or CombinationAuthorship) must not exist at the same time in CanonicalAuthorship");
+					success.setValue(false);
+				}
+			}	
+		}
+	}
+	
+	private void makeMicroReference(TaxonNameBase name, Element elMicroReference, ResultWrapper<Boolean> success){
+		if (elMicroReference != null){
+			String microReference = elMicroReference.getTextNormalize();
+			name.setNomenclaturalMicroReference(microReference);
+		}
+	}
+	
 	private void makeCanonicalName(TaxonNameBase name, Element elCanonicalName, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
 		boolean cacheProtected = false;
 		
@@ -342,11 +522,6 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return;
 	}
 	
-	protected void testNoMoreElements(){
-		//TODO
-		//logger.info("testNoMoreElements Not yet implemented");
-	}
-	
 	private void makeCultivarName(){
 		//TODO
 		//logger.warn("'makeCultivarName' Not yet implemented");
@@ -374,111 +549,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	private INomenclaturalAuthor makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		INomenclaturalAuthor result = null; 
-		String childName;
-		boolean obligatory;
-		if (elNameCitation != null){
-			Namespace ns = elNameCitation.getNamespace();
-			
-			childName = "Authors";
-			obligatory = false;
-			Element elAuthors = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
-			testNoMoreElements();
-
-			if (elAuthors != null){
-				childName = "AgentName";
-				List<Element> elAgentList = elAuthors.getChildren(childName, ns);
-				Team team = Team.NewInstance();
-				result = team;
-				if (elAgentList.size() > 1){
-					for(Element elAgent : elAgentList){
-						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
-						team.addTeamMember(teamMember);
-					}
-				}else if(elAgentList.size() == 1){
-					result = makeAgent(elAgentList.get(0), ns, authorMap, success);
-				}
-			}else{
-				childName = "Simple";
-				obligatory = true;
-				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
-				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				result = Team.NewInstance();
-				result.setNomenclaturalTitle(simple);
-			}
-		}
-		return result;
-	}
-
-	private Person makeAgent(Element elAgentName, Namespace ns, MapWrapper<Person> agentMap, ResultWrapper<Boolean> success){
-		Person result = null;
-		if (elAgentName != null){
-			String authorTitle = elAgentName.getTextNormalize();
-			result = Person.NewTitledInstance(authorTitle);
-			Class<? extends Person> clazz = Person.class;
-			result = makeReferenceType(elAgentName, clazz, agentMap, success);
-			return result;
-		}else{
-			return null;
-		}
-	}
-	
-	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		if (elCanonicalAuthorship != null){
-			Namespace ns = elCanonicalAuthorship.getNamespace();
-			
-			if (name instanceof NonViralName){
-				NonViralName nonViralName = (NonViralName)name;
-				
-				String childName = "Simple";
-				boolean obligatory = true;
-				Element elSimple = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				//TODO
-				//logger.warn("authorship cache cache protected not yet implemented");
-				//nonViralName.setAuthorshipCache(simple, cacheProtected);
-
-				childName = "Authorship";
-				obligatory = false;
-				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor author = makeNameCitation(elAuthorship, authorMap, success); 
-				nonViralName.setCombinationAuthorTeam(author);
-				testNoMoreElements();
-				
-				childName = "BasionymAuthorship";
-				obligatory = false;
-				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
-				nonViralName.setBasionymAuthorTeam(basionymAuthor);
-				testNoMoreElements();
-				
-				childName = "CombinationAuthorship";
-				obligatory = false;
-				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
-				if (combinationAuthor != null){
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
-				}
-				testNoMoreElements();
-				
-				if (elAuthorship != null && (elBasionymAuthorship != null || elCombinationAuthorship != null) ){
-					logger.warn("Authorship and (BasionymAuthorship or CombinationAuthorship) must not exist at the same time in CanonicalAuthorship");
-					success.setValue(false);
-				}
-			}	
-		}
-	}
-
-	
 	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
-			Class<? extends Reference> clazz = Reference.class;
+			Class<Reference> clazz = Reference.class;
 			Reference<?> ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
-			if (ref instanceof INomenclaturalReference){
-				name.setNomenclaturalReference(ref);
+			if (ref instanceof Reference){
+				name.setNomenclaturalReference((INomenclaturalReference)ref);
+			}else if (ref == null){
+				logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
 			}else{
 				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
 			}
@@ -487,7 +565,6 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			success.setValue(false);
 		}
 	}
-
 	
 	private void makeYear(TaxonNameBase name, Element elYear, ResultWrapper<Boolean> success){
 		if (elYear != null){
@@ -495,68 +572,9 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			if (name instanceof ZoologicalName){
 				((ZoologicalName)name).setPublicationYear(getIntegerYear(year));
 			}else{
-				logger.warn("Year can be set only for a zoological name");
+				logger.debug("Year can be set only for a zoological name");
 			}
 		}
-	}
-	
-	private Integer getIntegerYear(String year){
-		try {
-			Integer result = Integer.valueOf(year);
-			return result;
-		} catch (NumberFormatException e) {
-			logger.warn("Year string could not be parsed. Set = 9999 instead");
-			return 9999;
-		}
-	}
-
-	
-	private void makeMicroReference(TaxonNameBase name, Element elMicroReference, ResultWrapper<Boolean> success){
-		if (elMicroReference != null){
-			String microReference = elMicroReference.getTextNormalize();
-			name.setNomenclaturalMicroReference(microReference);
-		}
-	}
-
-	
-	private void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
-		if (elTypifiacation != null){
-			//logger.warn("makeTypification not yet implemented");
-			//success.setValue(false);
-		}
-	}
-
-	
-	private void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
-		//Status
-			
-		if (elPublicationStatus != null){
-			//logger.warn("makePublicationStatus not yet implemented");
-			//success.setValue(false);
-		}
-	}
-	
-	private void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
-		if (elProviderLink != null){
-			//logger.warn("makeProviderLink not yet implemented");
-			//success.setValue(false);
-		}
-	}
-	
-
-	private void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
-		if (elProviderSpecificData != null){
-			//logger.warn("makeProviderSpecificData not yet implemented");
-			//success.setValue(false);
-		}
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	protected boolean isIgnore(TcsXmlImportState state){
-		return ! state.getConfig().isDoTaxonNames();
 	}
 
 }

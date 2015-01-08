@@ -6,6 +6,19 @@ import java.util.List;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
+/**
+ * Interface which represents a CDM model update step. See {@link CdmUpdater}
+ * for further documentation or implementing classes for examples.
+ * 
+ * @see CdmUpdater
+ * @see ISchemaUpdater
+ * @see ISchemaUpdater
+ * @see ITermUpdaterStep
+ * 
+ * @see CdmUpdater
+ * @author a.mueller
+ *
+ */
 public interface ISchemaUpdaterStep {
 
 	/**

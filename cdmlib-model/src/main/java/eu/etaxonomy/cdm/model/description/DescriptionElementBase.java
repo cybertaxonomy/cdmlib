@@ -143,7 +143,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     private DescriptionBase inDescription;
     
 	@XmlElement(name = "TimePeriod")
-    private TimePeriod timeperiod = TimePeriod.NewInstance();;
+    private TimePeriod timeperiod = TimePeriod.NewInstance();
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
@@ -409,6 +409,12 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace, citation, microCitation);
         addSource(source);
         return source;
+    }
+    @Override
+    public void addSources(Set<DescriptionElementSource> sources){
+    	for (DescriptionElementSource source:sources){
+    		addSource(source);
+    	}
     }
     
     

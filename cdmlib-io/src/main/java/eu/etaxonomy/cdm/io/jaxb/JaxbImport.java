@@ -13,13 +13,13 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -58,22 +58,17 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
      * @param config
      * @param stores (not used)
      */
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-		@Override
-		protected void doInvoke(JaxbImportState state) {
+
+	@Override
+	protected void doInvoke(JaxbImportState state) {
 			
-		state.getConfig();
-		URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
     	
+		URI uri;
     	String urlFileName = jaxbImpConfig.getSource().toString();
-		logger.debug("urlFileName: " + urlFileName);
-    	try {
+		try {
     		uri = new URI(urlFileName);
-			logger.debug("uri: " + uri.toString());
-    	} catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			logger.error("File not found");
 			state.setUnsuccessfull();
 			return;
@@ -126,32 +121,40 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 
-		// Get an app controller that omits term loading
-		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
-		//CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
 		TransactionStatus txStatus = startTransaction();
 		//TransactionStatus txStatus = null;
 
 		// Have single transactions per service save call. Otherwise, getting
 		// H2 HYT00 error (timeout locking table DEFINEDTERMBASE) when running from editor.
 
-		// If data of a certain type, such as terms, are not saved here explicitly, 
-		// then only those data of this type that are referenced by other objects are saved implicitly.
-		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
-		// are automatically saved as well.
-
-	
-		
 		try {
 			if (jaxbImpConfig.isDoUser() == true) {
-				if ((users = dataSet.getUsers()).size() > 0) {
-					logger.info("Users: " + users.size());
-					getUserService().save(users);
+				/* 
+				 * this is a crucial call, otherwise the password will not be set correctly
+				 * and the whole authentication will not work
+				 * 
+				 *  a bit preliminary, should be used only if the complete database is replaced
+				 */
+				authenticate(Configuration.adminLogin, Configuration.adminPassword);
+				
+				logger.info("Users: " + (users = dataSet.getUsers()).size());
+				for (User user : users) {
 					
+					List<User> usersList = getUserService().listByUsername(user.getUsername(),null, null, null, null, null, null);
+					if (usersList.isEmpty()){
+						getUserService().save(user);
+					}else{
+//						User existingUser = usersList.get(0);
+//						user.setId(existingUser.getId());
+//						getUserService().merge(user);
+						//merging does not yet work because of #4102
+						
+					}
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving users");
+			ex.printStackTrace();
 			success = false;
 		}
 		
@@ -168,7 +171,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			success &= saveTermVocabularies(termVocabularies);
 			
 		}
-		
+	
 		// TODO: Have separate data save methods
 
 //		txStatus = startTransaction();
@@ -191,7 +194,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
 					logger.info("Agents: " + agents.size());
-					getAgentService().save((Collection)agents);
+					getAgentService().saveOrUpdate((Collection)agents);
 				}
 			}
 		} catch (Exception ex) {
@@ -206,7 +209,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
 					logger.info("References: " + references.size());
-					getReferenceService().save(references);
+					getReferenceService().saveOrUpdate(references);
 					logger.info("ready...");
 				}
 			}
@@ -223,7 +226,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 					logger.info("Taxonomic names: " + taxonomicNames.size());
-					getNameService().save(taxonomicNames);
+					getNameService().saveOrUpdate(taxonomicNames);
 				}
 			}
 		} catch (Exception ex) {
@@ -253,10 +256,12 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		// Need to get the taxa and the synonyms here.
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
-				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
-					logger.info("Taxon bases: " + taxonBases.size());
-					Iterator <TaxonBase> taxBases = taxonBases.iterator();
-					getTaxonService().save(taxonBases);
+				if ( dataSet.getTaxonBases().size() > 0) {
+					List taxa = dataSet.getTaxonBases();
+					dataSet.getTaxonBases();
+					logger.info("Taxon bases: " + taxa.size());
+					taxa.iterator();
+					getTaxonService().saveOrUpdate(taxa);
 					/*while (taxBases.hasNext()){
 						getTaxonService().save(taxBases.next());
 					}*/
@@ -298,7 +303,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
 					logger.info("Occurrences: " + occurrences.size());
-					getOccurrenceService().save(occurrences);
+					getOccurrenceService().saveOrUpdate(occurrences);
 				}
 			}
 		} catch (Exception ex) {
@@ -313,7 +318,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
-					getFeatureTreeService().save(featureTrees);
+					getFeatureTreeService().saveOrUpdate(featureTrees);
 				}
 			}
 		} catch (Exception ex) {
@@ -328,7 +333,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
 					logger.info("Media: " + media.size());
-					getMediaService().save(media);
+					getMediaService().saveOrUpdate(media);
 				}
 			}
 		} catch (Exception ex) {
@@ -365,7 +370,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());
 		try {
-			getVocabularyService().save((List)termVocabularies);
+			getVocabularyService().saveOrUpdate((List)termVocabularies);
 		} catch (Exception ex) {
 			logger.error("Error saving term vocabularies");
 			success = false;

@@ -18,6 +18,7 @@ import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
@@ -27,6 +28,22 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNameBase> {
 
     public static final Logger logger = Logger.getLogger(TaxonNameBaseBeanProcessor.class);
+
+    private boolean skipTaggedName = false;
+
+    /**
+     * @return the skipTaggedName
+     */
+    public boolean isSkipTaggedName() {
+        return skipTaggedName;
+    }
+
+    /**
+     * @param skipTaggedName the skipTaggedName to set
+     */
+    public void setSkipTaggedName(boolean skipTaggedName) {
+        this.skipTaggedName = skipTaggedName;
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
@@ -54,10 +71,13 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
         if(logger.isDebugEnabled()){
             logger.debug("processing second step" + bean);
         }
-        json.element("taggedName", bean.getTaggedName(), jsonConfig);
+        if(!skipTaggedName){
+            json.element("taggedName", bean.getTaggedName(), jsonConfig);
+        }
+        if(bean instanceof NonViralName){
+            json.element("nameCache", ((NonViralName) bean).getNameCache(), jsonConfig);
+        }
         return json;
     }
-
-
 
 }

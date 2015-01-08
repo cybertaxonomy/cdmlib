@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -35,5 +37,14 @@ public class DaoBaseTest  extends CdmIntegrationTest {
     @Test
     public void testGetSession() {
         assertNotNull(daoBaseTester.getSession());
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 }

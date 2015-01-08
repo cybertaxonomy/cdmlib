@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.remote.vaadin.components;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.vaadin.haijian.ExcelExporter;
 
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -18,7 +19,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 
-import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
+import eu.etaxonomy.cdm.remote.vaadin.service.VaadinAuthenticationService;
 
 /**
  * 
@@ -29,8 +30,8 @@ import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
  */
 
 @Component
-@Scope("prototype")
-public class HorizontalToolbar extends HorizontalLayout{
+@Scope("request")
+public class HorizontalToolbar extends HorizontalLayout implements Serializable{
 
 
 	/**
@@ -39,7 +40,7 @@ public class HorizontalToolbar extends HorizontalLayout{
 	private static final long serialVersionUID = 5344340511582993289L;
 	
 	@Autowired
-	private AuthenticationService authenticationController;
+	private transient VaadinAuthenticationService authenticationController;
 	
 	private final Button editButton = new Button("Edit");
 	
@@ -49,59 +50,60 @@ public class HorizontalToolbar extends HorizontalLayout{
 	
 	private final Button logoutButton= new Button("Logout");
 
-	private ExcelExporter exporter = new ExcelExporter();
+//	private ExcelExporter exporter = new ExcelExporter();
 
 	
 	@PostConstruct
     public void PostConstruct() {
-		
-        setMargin(true);
-        setSpacing(true);
-        setStyleName("toolbar");
-        setWidth("100%");
-        setHeight("75px");
-        
-        addComponent(editButton);
-        addComponent(saveButton);
-        addComponent(detailButton);
-        addComponent(exporter);
-    	
-        exporter.setCaption("Export");
-    	exporter.setIcon(new ThemeResource("icons/32/document-xsl.png"));
+		if(authenticationController.isAuthenticated()){
+			setMargin(true);
+			setSpacing(true);
+			setStyleName("toolbar");
+			setWidth("100%");
+			setHeight("75px");
 
-    	saveButton.setIcon(new ThemeResource("icons/32/document-save.png"));
-    	editButton.setIcon(new ThemeResource("icons/32/document-edit.png"));
-    	detailButton.setIcon(new ThemeResource("icons/32/document-txt.png"));
-        logoutButton.setIcon(new ThemeResource("icons/32/cancel.png"));
+			addComponent(editButton);
+			addComponent(saveButton);
+			addComponent(detailButton);
+//			addComponent(exporter);
 
-//		SecurityContext context = (SecurityContext)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("context"); 
-        SecurityContext context = SecurityContextHolder.getContext();
-    	Label loginName = new Label(context.getAuthentication().getName());
-        loginName.setIcon(new ThemeResource("icons/32/user.png"));
-        
-        HorizontalLayout rightLayout = new HorizontalLayout(); 
-        Image image = new Image(null, new ThemeResource("icons/32/vseparator1.png"));
-        rightLayout.addComponent(logoutButton);
-        rightLayout.addComponent(image);
-        rightLayout.addComponent(loginName);
-        
-        addComponent(rightLayout);
-        setComponentAlignment(rightLayout, Alignment.MIDDLE_RIGHT);
-        setExpandRatio(rightLayout, 1);
-        
-        logoutButton.addClickListener(new ClickListener() {
-			
-			/**
-			 *  automatically generated ID
-			 */
-			private static final long serialVersionUID = 8380401487511285303L;
+//			exporter.setCaption("Export");
+//			exporter.setIcon(new ThemeResource("icons/32/document-xsl.png"));
 
-			public void buttonClick(ClickEvent event) {
-				
-				authenticationController.logout();
-				
-			}
-		});
+			saveButton.setIcon(new ThemeResource("icons/32/document-save.png"));
+			editButton.setIcon(new ThemeResource("icons/32/document-edit.png"));
+			detailButton.setIcon(new ThemeResource("icons/32/document-txt.png"));
+			logoutButton.setIcon(new ThemeResource("icons/32/cancel.png"));
+
+			//		SecurityContext context = (SecurityContext)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("context"); 
+			SecurityContext context = SecurityContextHolder.getContext();
+			Label loginName = new Label(authenticationController.getUserName());
+			loginName.setIcon(new ThemeResource("icons/32/user.png"));
+
+			HorizontalLayout rightLayout = new HorizontalLayout(); 
+			Image image = new Image(null, new ThemeResource("icons/32/vseparator1.png"));
+			rightLayout.addComponent(logoutButton);
+			rightLayout.addComponent(image);
+			rightLayout.addComponent(loginName);
+
+			addComponent(rightLayout);
+			setComponentAlignment(rightLayout, Alignment.MIDDLE_RIGHT);
+			setExpandRatio(rightLayout, 1);
+
+			logoutButton.addClickListener(new ClickListener() {
+
+				/**
+				 *  automatically generated ID
+				 */
+				private static final long serialVersionUID = 8380401487511285303L;
+
+				public void buttonClick(ClickEvent event) {
+
+					authenticationController.logout();
+
+				}
+			});
+		}
     }
 	
 	public Button getEditButton() {

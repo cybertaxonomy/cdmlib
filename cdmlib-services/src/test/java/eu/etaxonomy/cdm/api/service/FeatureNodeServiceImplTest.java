@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @created 2013-09-28
  */
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+//@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	private static final String sep = ITreeNode.separator;
@@ -153,6 +154,15 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //		node3 = taxonNodeService.load(node3Uuid);
 //		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node3.getTreeIndex());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	
 	

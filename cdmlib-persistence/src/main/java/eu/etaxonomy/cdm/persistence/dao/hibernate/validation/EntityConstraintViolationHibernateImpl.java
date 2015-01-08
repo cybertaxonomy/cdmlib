@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
-import eu.etaxonomy.cdm.validation.Severity;
+import eu.etaxonomy.cdm.model.validation.Severity;
 
 @Repository
 @Qualifier("entityConstraintViolationHibernateImpl")

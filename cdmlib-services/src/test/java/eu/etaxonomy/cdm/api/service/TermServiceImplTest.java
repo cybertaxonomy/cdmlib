@@ -12,20 +12,18 @@ package eu.etaxonomy.cdm.api.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -37,7 +35,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -204,8 +201,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
     	if (term.getCount() != 0){
     		
-    		String result = termService.delete(term.getRecords().get(0));
-    		assertNotNull(result);
+    		DeleteResult result = termService.delete(term.getRecords().get(0));
+    		assertTrue(result.isOk());
     		commitAndStartNewTransaction(tableNames);
        	}
     	TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
@@ -221,6 +218,15 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	termBase =  (DefinedTerm)termService.load(termUUID);
     	assertNull(termBase);
     	
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 	
 }

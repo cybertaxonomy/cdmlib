@@ -127,7 +127,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Extension
      */
     @XmlEnumValue("ExtensionType")
-    ExtensionType(UUID.fromString("12f5c03b-528a-4909-b81b-e525feabc97c"), "Extension type", "EXT", null),
+    ExtensionType(UUID.fromString("12f5c03b-528a-4909-b81b-e525feabc97c"), "Extension Type", "EXT", null),
 
     //8
     /**
@@ -428,7 +428,31 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      */
     @XmlEnumValue("DnaMarker")
     DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "DMA", null),
+    
+  //34  
+    /**
+     * An Identifier Type which can be used as a type in {@link Identifier#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
+     * But also local identifier types such Sample Designation, Catalog Number, 
+     * Accession Number, ... are allowed.
+     * {@link Identifier#type}
+     */
+    @XmlEnumValue("IdentifierType")
+    IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier Type", "IDE", null),
+ 
+    //35    
+    /**
+     * DNA Quality levels link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
+     * But also local identifier types such Sample Designation, Catalog Number, 
+     * Accession Number, ... are allowed.
+     * {@link DnaQu}
+     */
+    @XmlEnumValue("DnaQualityType")
+    DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
+ 
     ;
+    
+    
+// **************** END ENUM **********************/
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermType.class);
@@ -491,7 +515,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
             case Sex:
             case Stage:
             case KindOfUnit:
-            case PresenceAbsenceTerm:
+            case IdentifierType:
             case DnaMarker:
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
             case Feature:
@@ -508,6 +532,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
                 return eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, "Untitled", null);
             case NamedAreaType:
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);
+            case PresenceAbsenceTerm:
+            	return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, "Untitled", null);
             default:
                 return null;
         }

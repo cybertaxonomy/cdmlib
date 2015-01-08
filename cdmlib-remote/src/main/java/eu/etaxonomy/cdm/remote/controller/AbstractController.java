@@ -21,6 +21,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
+ * Abstract controller class for CDM Rest service controllers which return entities or DTOs
+ * from the underlying data base. Implementations of this class are primarily bound to a
+ * specific cdm service class and thus are operating primarily on a specific cdm base type.
+ *
+ * This class guarantees consistent use of init-strategies and harmonizes the logging of full
+ * request urls with query parameters.
+ *
  * @author a.kohlbecker
  * @date 23.06.2009
  *
@@ -29,7 +36,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 

@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -83,24 +82,23 @@ public class FixMultipleTextDataInImageGalleries {
 		IDescriptionService service = applicationController.getDescriptionService();
 		
 		// get all taxon descriptions
-		List<DescriptionBase> result = service.list(TaxonDescription.class, null, null, null, null);
+		List<TaxonDescription> result = service.list(TaxonDescription.class, null, null, null, null);
 		
 		int countTaxonDescriptions = 0;
 		
-		for (DescriptionBase description : result){
+		for (TaxonDescription description : result){
 			// filter image galleries with more than one element
 			if(description.isImageGallery() && description.getElements().size() > 1){
 				countTaxonDescriptions++;
 				
 				logger.warn("Found image gallery with mulitple TextData: " + description.getElements().size());
-				TaxonDescription taxonDescription = (TaxonDescription) description;
 				
 				TextData newDescriptionElement = TextData.NewInstance(Feature.IMAGE());
 				
 				Set<DescriptionElementBase> elementsToRemove = new HashSet<DescriptionElementBase>();
 				
 				// consolidate media from all elements into a new element
-				for(DescriptionElementBase element : taxonDescription.getElements()){
+				for(DescriptionElementBase element : description.getElements()){
 					List<Media> medias = element.getMedia();
 					
 					for(Media media : medias){
@@ -112,11 +110,11 @@ public class FixMultipleTextDataInImageGalleries {
 				
 				// remove old elements
 				for(DescriptionElementBase element : elementsToRemove){
-					taxonDescription.removeElement(element);
+					description.removeElement(element);
 				}				
 				
 				// add the new element
-				taxonDescription.addElement(newDescriptionElement);
+				description.addElement(newDescriptionElement);
 				
 			}
 		}	

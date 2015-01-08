@@ -178,7 +178,7 @@ public class BacterialName extends NonViralName<BacterialName> implements Clonea
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> bacterial taxon name, that is the
 	 * International Code of Nomenclature of Bacteria. This method overrides
-	 * the getNomeclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for bacteria
 	 * @see  	NonViralName#isCodeCompliant()

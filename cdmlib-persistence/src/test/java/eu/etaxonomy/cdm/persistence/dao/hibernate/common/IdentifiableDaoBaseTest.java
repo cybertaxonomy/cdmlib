@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -157,6 +158,15 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         LSID lsid = new LSID("urn:lsid:example.org:namespace:1:1");
         TaxonBase<?> result = identifiableDao.find(lsid);
         assertNotNull(result);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

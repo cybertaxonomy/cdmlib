@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,7 +76,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					// Service
 					StatisticsTypeEnum.SYNONYMS,
 					StatisticsTypeEnum.TAXON_NAMES,
-					StatisticsTypeEnum.NOMECLATURAL_REFERENCES,
+					StatisticsTypeEnum.NOMENCLATURAL_REFERENCES,
 					StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES });
 
 	// private static final String[] TYPES = { "CLASSIFICATION",
@@ -122,7 +123,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
 
 	// must not be more than NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS
-	private static final int NO_OF_NOMECLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA
+	private static final int NO_OF_NOMENCLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA
 			+ NO_OF_SYNONYMS - 4;
 
 	// --------------------variables for all ------------------
@@ -169,7 +170,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					no_of_descriptive_source_references_c);
 			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
 					no_of_all_references_c);
-			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
+			put(StatisticsTypeEnum.NOMENCLATURAL_REFERENCES.getLabel(),
 					no_of_nomenclatural_references_c);
 		}
 	};
@@ -285,7 +286,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				name.setNameCache(randomName, true);
 
 				// create nomenclatural reference for taxon name (if left)
-				if (nomRefCounter < NO_OF_NOMECLATURAL_REFERENCES) {
+				if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 					// we remember this taxon has a nomenclatural reference:
 					tNomRefFlag = true;
 					Reference nomRef = ReferenceFactory.newBook();
@@ -393,7 +394,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					name.setNameCache(randomName, true);
 
 					// create nomenclatural reference for synonym name (if left)
-					if (nomRefCounter < NO_OF_NOMECLATURAL_REFERENCES) {
+					if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 						sNomRefFlag = true;
 						Reference nomRef = ReferenceFactory.newBook();
 						name.setNomenclaturalReference(nomRef);
@@ -737,8 +738,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				// Long.valueOf(NO_OF_ALL_REFERENCES));
 				put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
 						no_of_all_references);
-				put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
-						Long.valueOf(NO_OF_NOMECLATURAL_REFERENCES));
+				put(StatisticsTypeEnum.NOMENCLATURAL_REFERENCES.getLabel(),
+						Long.valueOf(NO_OF_NOMENCLATURAL_REFERENCES));
 			}
 		};
 	}
@@ -836,12 +837,21 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		public String toString() {
 			return "{Taxon_names=" + taxonNames + ", Synonyms=" + synonyms
 					+ ", Accepted_taxa=" + aceptedTaxa
-					+ ", Nomeclatural_references=" + nomenclRef
+					+ ", Nomenclatural_references=" + nomenclRef
 					+ ", Classifications=" + classifications
 					+ ", Descriptive_source_references=" + descrSourceRef
 					+ ", References=" + allReferences + ", All_taxa=" + allTaxa
 					+ "}\n";
 		}
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

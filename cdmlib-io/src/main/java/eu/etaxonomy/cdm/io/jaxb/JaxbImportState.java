@@ -24,16 +24,7 @@ public class JaxbImportState extends ImportStateBase<JaxbImportConfigurator, Cdm
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbImportState.class);
 	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(JaxbExportConfigurator config) {
-//				
-//	}
 
-	
 	public JaxbImportState(JaxbImportConfigurator config) {
 		super(config);
 	}

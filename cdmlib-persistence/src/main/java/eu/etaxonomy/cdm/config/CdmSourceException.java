@@ -18,6 +18,8 @@ package eu.etaxonomy.cdm.config;
  */
 public class CdmSourceException extends Exception {
 	
+	private static final long serialVersionUID = -4665522033493039582L;
+
 	/**
 	 * Constructor which simply uses the error message
 	 * 

@@ -20,7 +20,7 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
-import eu.etaxonomy.cdm.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 
 @SuppressWarnings("serial")
 public class Level2ValidationEventListener implements PostInsertEventListener, PostUpdateEventListener {

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -21,6 +22,7 @@ import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -148,6 +150,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet
+	@Ignore
 	public final void testLevel3ValidationWithInValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("alba");
@@ -164,4 +167,14 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
         assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level",constraintViolations.isEmpty());
 
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

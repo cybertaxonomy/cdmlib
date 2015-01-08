@@ -74,7 +74,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(groups = Level2.class)
     @IndexedEmbedded(depth=1)
-    private PresenceAbsenceTermBase<?> status;
+    private PresenceAbsenceTerm status;
 
 
     /**
@@ -106,7 +106,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
      * @param	status	the presence or absence term for the new distribution
      * @see				#NewInstance()
      */
-    public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase<?> status){
+    public static Distribution NewInstance(NamedArea area, PresenceAbsenceTerm status){
         Distribution result = NewInstance();
         result.setArea(area);
         result.setStatus(status);
@@ -140,15 +140,15 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     }
 
     /**
-     * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
+     * Returns the {@link PresenceAbsenceTerm presence or absence term} for <i>this</i> distribution.
      */
-    public PresenceAbsenceTermBase<?> getStatus(){
+    public PresenceAbsenceTerm getStatus(){
         return this.status;
     }
     /**
      * @see	#getStatus()
      */
-    public void setStatus(PresenceAbsenceTermBase<?> status){
+    public void setStatus(PresenceAbsenceTerm status){
         this.status = status;
     }
 

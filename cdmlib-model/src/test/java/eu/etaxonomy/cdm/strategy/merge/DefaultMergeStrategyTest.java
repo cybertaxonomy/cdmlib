@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.strategy.merge;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -118,7 +119,7 @@ public class DefaultMergeStrategyTest {
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
 		book1 = ReferenceFactory.newBook();
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
 		book1.setVolume(volumeString1);
@@ -131,7 +132,7 @@ public class DefaultMergeStrategyTest {
 		book1.setNomenclaturallyRelevant(false);
 		
 		book2 = ReferenceFactory.newBook();
-		book2.setAuthorTeam(team2);
+		book2.setAuthorship(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
 		book2.setVolume(volumeString2);
@@ -229,7 +230,7 @@ public class DefaultMergeStrategyTest {
 		try {
 			bookMergeStrategy.setMergeMode("edition", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("volume", MergeMode.NULL);
-			bookMergeStrategy.setMergeMode("authorTeam", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("authorship", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("created", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("updated",MergeMode.NULL);
 			bookMergeStrategy.setMergeMode("datePublished", MergeMode.SECOND);
@@ -252,7 +253,7 @@ public class DefaultMergeStrategyTest {
 		
 		
 		//CdmBase
-		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorTeam());
+		Assert.assertSame("Authorship must be the one of book2", team2, book1.getAuthorship());
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 		
 		//Transient
@@ -411,7 +412,7 @@ public class DefaultMergeStrategyTest {
 		team1.setTitleCache("Team1", true);
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		String street3 = "Street3";
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));

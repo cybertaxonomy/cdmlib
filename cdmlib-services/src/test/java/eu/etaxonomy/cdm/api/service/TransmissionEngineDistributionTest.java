@@ -27,10 +27,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -128,7 +127,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSet
     public void testPriorities() throws FileNotFoundException {
 
-        Set extensions = termService.load(PresenceTerm.CULTIVATED().getUuid()).getExtensions();
+        Set extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
         assertEquals(TransmissionEngineDistribution.EXTENSION_VALUE_PREFIX + "45", ((Extension)extensions.iterator().next()).getValue());
     }
 
@@ -142,10 +141,10 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                         // should succeed during area aggregation be ignored by rank aggregation
                         // => yug will get status ENDEMIC_FOR_THE_RELEVANT_AREA
                         //    but only for LAPSANA_COMMUNIS_ALPINA
-                        Distribution.NewInstance(yug_mn, PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()),
+                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()),
                         // should be ignored by area aggregation
                         // => LAPSANA_COMMUNIS will wave distribution with yug_ko and INTRODUCED_FORMERLY_INTRODUCED
-                        Distribution.NewInstance(yug_ko, AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED()),
+                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED()),
                }
             );
 
@@ -164,7 +163,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
             Distribution distribution = (Distribution)element;
             if(distribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED().getLabel(), distribution.getStatus().getLabel());
             }
         }
         assertEquals("All three expected areas should have been found before", numExpectedFound, 1);
@@ -177,9 +176,9 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
                 new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceTerm.CULTIVATED()),
-                        Distribution.NewInstance(yug_ko, PresenceTerm.NATIVE()), // should succeed
-                        Distribution.NewInstance(yug_bh, PresenceTerm.INTRODUCED())
+                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED()),
+                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()), // should succeed
+                        Distribution.NewInstance(yug_bh, PresenceAbsenceTerm.INTRODUCED())
                }
             );
 
@@ -196,7 +195,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
             Distribution distribution = (Distribution) description.getElements().iterator().next(); // only one aggregated area expected
             if(distribution.getArea().equals(yug)) {
                 expectedAreaFound = true;
-                assertEquals("aggregated status of area YUG is wrong", PresenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
             }
         }
         assertTrue("The areae YUG should have been found", expectedAreaFound);
@@ -209,15 +208,15 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
                 new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceTerm.CULTIVATED()),
-                        Distribution.NewInstance(yug_ko, PresenceTerm.NATIVE()), // should succeed
+                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED()),
+                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()), // should succeed
                }
             );
         addDistributions(
                 T_LAPSANA_COMMUNIS_UUID,
                 new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION()),
-                        Distribution.NewInstance(yug_ko, PresenceTerm.CULTIVATED()),
+                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION()),
+                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.CULTIVATED()),
                }
             );
 
@@ -235,15 +234,15 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
             Distribution distribution = (Distribution)element;
             if(distribution.getArea().equals(yug)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG is wrong", PresenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
             }
             if(distribution.getArea().equals(yug_mn)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-MN is wrong", PresenceTerm.CULTIVATED().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.CULTIVATED().getLabel(), distribution.getStatus().getLabel());
             }
             if(distribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
             }
         }
         assertEquals("All three expected areas should have been found before", numExpectedFound, 3);
@@ -271,7 +270,8 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
 
 //    @Test //  uncomment to create test data file//
-    public void createTestData() throws FileNotFoundException {
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
 
         // --- References --- //
         Reference sec = ReferenceFactory.newDatabase();

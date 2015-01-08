@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +23,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -65,21 +66,21 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * available, the computed data has to be given preference over other
          * data.
          */
-        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
 
-        Distribution computedDistribution = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.INTRODUCED());
+        Distribution computedDistribution = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED());
         computedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         distributions.add(computedDistribution);
 
         statusOrderPreference= true;
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
+        Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
        /* distributions for parent areas are only
         * removed if direct sub areas have the same status and if subAreaPreference=TRUE which is not the case here
         */
-        Distribution parentComputedDistribution = Distribution.NewInstance(berlin, PresenceTerm.INTRODUCED());
+        Distribution parentComputedDistribution = Distribution.NewInstance(berlin, PresenceAbsenceTerm.INTRODUCED());
         parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         distributions.add(parentComputedDistribution);
 
@@ -98,11 +99,11 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * highest order is preferred, see
          * OrderedTermBase.compareTo(OrderedTermBase)
          */
-        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE()));
-        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.INTRODUCED()));
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(PresenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
+        Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
 
 
@@ -116,8 +117,8 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * the sub area should be reported, whereas the super area should be
          * ignored.
          */
-        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE());
-        Distribution distBerlin = Distribution.NewInstance(berlin, PresenceTerm.NATIVE());
+        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
+        Distribution distBerlin = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());
 
         distributions.add(distGermany);
         distributions.add(distBerlin);
@@ -144,9 +145,9 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * Marked area filter: Skip distributions where the area has a Marker
          * with one of the specified MarkerTypes
          */
-        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE());
-        Distribution distFrance = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), PresenceTerm.NATIVE());
-        Distribution distBelgium = Distribution.NewInstance(Country.BELGIUMKINGDOMOF(), PresenceTerm.NATIVE());
+        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
+        Distribution distFrance = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), PresenceAbsenceTerm.NATIVE());
+        Distribution distBelgium = Distribution.NewInstance(Country.BELGIUMKINGDOMOF(), PresenceAbsenceTerm.NATIVE());
         distributions.add(distGermany);
         distributions.add(distFrance);
         distributions.add(distBelgium);
@@ -162,6 +163,15 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
 
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

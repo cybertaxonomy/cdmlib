@@ -10,9 +10,7 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
@@ -23,28 +21,27 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
+import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 
 /**
- * 
- * This class is a Vaadin Component. It starts a long running session at the moment. 
+ *
+ * This class is a Vaadin Component. It starts a long running session at the moment.
  * This might change in the future, but for now it beautifully works for this prototype.<p>
- * This class takes advantage of the dto and fills a container with data from the DB. Lazyloading or 
+ * This class takes advantage of the dto and fills a container with data from the DB. Lazyloading or
  * Paging needs to be used!!!!
  * <p>
  * Further clarification is needed about the exact process when marking this component as dirty.
  * What will happen to the bound session? Why are changed Object saved without calling services explicitly.
- * 
- * 
+ *
+ *
  * @author a.oppermann
  *
  */
 
-@Component
-@Scope("request")
+//@Component
+//@Scope("request")
 public class TaxonTableDTO extends Table{
 
 	/**
@@ -58,13 +55,13 @@ public class TaxonTableDTO extends Table{
 	IDescriptionService descriptionService;
 	@Autowired
 	ITermService termService;
-	
+
     @Autowired
     private HibernateTransactionManager transactionManager;
-    
+
     @Autowired
     private DataSource dataSource;
-	
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -72,32 +69,30 @@ public class TaxonTableDTO extends Table{
 
 
 	Logger logger = Logger.getLogger(TaxonTableDTO.class);
-	
+
 	private static final long serialVersionUID = -8449485694571526437L;
-	
+
 	@PostConstruct
 	@SuppressWarnings("rawtypes")
 	void PostConstruct(){
 		setSizeFull();
-		
+
 //		conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
 //		conversationHolder.bind();
-		final BeanItemContainer<RedlistDTO> redListContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
+		final BeanItemContainer<CdmTaxonTableCollection> redListContainer = new BeanItemContainer<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		//TODO: Make use of paging
-		Collection<TaxonBase> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
-		
-		for(TaxonBase taxonBase:listTaxon){
-			
-			if(taxonBase instanceof Taxon){
-				Taxon taxon = (Taxon) taxonBase;
-				List<PresenceAbsenceTermBase> termList = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-				List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
-				RedlistDTO redlistDTO = new RedlistDTO(taxon, listTaxonDescription, termList);
-				redListContainer.addBean(redlistDTO);
-			}
+		Collection<Taxon> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
+
+		for(Taxon taxonBase:listTaxon){
+
+			Taxon taxon = taxonBase;
+			List<PresenceAbsenceTerm> termList = termService.list(PresenceAbsenceTerm.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+			List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+			CdmTaxonTableCollection tableCollection = new CdmTaxonTableCollection(taxon, listTaxonDescription);
+			redListContainer.addBean(tableCollection);
 		}
-		
-		
+
+
 		setContainerDataSource(redListContainer);
 		setColumnReorderingAllowed(true);
 
@@ -110,12 +105,12 @@ public class TaxonTableDTO extends Table{
 		setSizeFull();
 		setPageLength(10);
 	}
-	
+
 	public ConversationHolder getConversationHolder() {
 		return conversationHolder;
 	}
-	
-	
+
+
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
     		"descriptions",
     		"descriptions.*",
@@ -140,11 +135,11 @@ public class TaxonTableDTO extends Table{
             "sources.$",
             "stateData.$"
     });
- 
+
 	protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.*",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",

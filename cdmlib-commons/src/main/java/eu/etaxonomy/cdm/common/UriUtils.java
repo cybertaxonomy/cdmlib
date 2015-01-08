@@ -54,6 +54,9 @@ import org.apache.log4j.Logger;
 public class UriUtils {
     private static final Logger logger = Logger.getLogger(UriUtils.class);
 
+    protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
+	
+    
     public enum HttpMethod{
         GET,
         POST
@@ -117,7 +120,9 @@ public class UriUtils {
             requestHeaders = new HashMap<String, String>();
         }
 
-        if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){
+        if(! uri.isAbsolute()){
+        	throw new IOException(URI_IS_NOT_ABSOLUTE);
+        }else if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())){
             HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
             if(UriUtils.isOk(response)){
                 Header[] contentLengths = response.getHeaders("Content-Length");
@@ -138,7 +143,7 @@ public class UriUtils {
             } else {
                 throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
-        }else if (uri.getScheme().equals("file")){
+        }else if ("file".equals(uri.getScheme())){
             File file = new File(uri);
             return file.length();
         }else{

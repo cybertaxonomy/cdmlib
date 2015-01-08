@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +64,6 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -74,8 +75,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
@@ -87,12 +87,12 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -347,7 +347,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				User.class, 
 				DefinedTerm.class,
 				
-				AbsenceTerm.class, 
 				CategoricalData.class, 
 				CommonTaxonName.class, 
 				DescriptionBase.class, 
@@ -359,8 +358,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				MediaKey.class, 
 				IndividualsAssociation.class, 
 				MeasurementUnit.class, 
-				PresenceAbsenceTermBase.class, 
-				PresenceTerm.class, 
+				PresenceAbsenceTerm.class, 
 				QuantitativeData.class, 
 				SpecimenDescription.class, 
 				State.class, 
@@ -474,7 +472,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
-		ref1.setAuthorTeam(author);
+		ref1.setAuthorship(author);
 		name.setBasionymAuthorTeam(author);
 		
 		name.setNomenclaturalReference(ref1);
@@ -612,7 +610,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article1.addMedia(media1);
 		article2.addMedia(media2);
 		
-//		ref1.setAuthorTeam(author);
+//		ref1.setAuthorship(author);
 //		name1.setBasionymAuthorTeam(author);
 		
 		name1.setNomenclaturalReference(article1);
@@ -734,7 +732,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		String street3 = "Street3";
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
@@ -749,8 +747,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		team3.addTeamMember(person3);
 		team3.addEmailAddress("emailAddress3");
 		
-		book1.setAuthorTeam(team2);
-		book2.setAuthorTeam(team3);
+		book1.setAuthorship(team2);
+		book2.setAuthorship(team3);
 		
 		Credit credit1 = Credit.NewInstance(team3, "credit1");
 		book2.addCredit(credit1);
@@ -763,8 +761,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				
 		cdmGenericDao.merge(team2, team3, null);
 		
-		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorTeam());
-		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorTeam());
+		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorship());
+		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorship());
 		Assert.assertSame("Agent of credit1 must be team2.", team2, credit1.getAgent());
 
 		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
@@ -930,9 +928,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 //			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			
-			book1.setAuthorTeam(person1);
-			book2.setAuthorTeam(person1);
-			book3.setAuthorTeam(person1);
+			book1.setAuthorship(person1);
+			book2.setAuthorship(person1);
+			book3.setAuthorship(person1);
 			
 			boolean m = matchStrategy.invoke(book1, book3);
 			boolean m2 = matchStrategy.invoke(book2, book3);
@@ -940,8 +938,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			
-			book2.setAuthorTeam(person2);
-			book3.setAuthorTeam(person3);
+			book2.setAuthorship(person2);
+			book3.setAuthorship(person3);
 			matchResult = cdmGenericDao.findMatching(book3, null);
 			Assert.assertEquals("Resultlist must have no entries", 0, matchResult.size());
 			
@@ -968,7 +966,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		book1.setTitle("Title1");
 		book1.setEdition("Edition1");
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		
 		
 		IBook book2 = (IBook) ((Reference)book1).clone();
@@ -1027,12 +1025,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			boolean teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
 			
-			book3.setAuthorTeam(team2);
+			book3.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 
-			book3.setAuthorTeam(null);
+			book3.setAuthorship(null);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
@@ -1047,8 +1045,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
 			
-			book3.setAuthorTeam(team1);
-			book2.setAuthorTeam(team2);
+			book3.setAuthorship(team1);
+			book2.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
@@ -1068,4 +1066,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	public void testGetHqlResult() {
 		logger.warn("Not yet implemented");
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -84,7 +84,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private IBook sec;
     private IBook book;
     private Reference<?> bookSection;
-    private TeamOrPersonBase<?> authorTeam;
+    private TeamOrPersonBase<?> authorship;
     private NonViralName<?> name;
     private LSID lsid;
     private TaxonDescription taxonDescription;
@@ -99,9 +99,9 @@ public class AssemblerTest extends UnitilsJUnit4 {
     public void setUp() throws Exception {
         lsid = new LSID("urn:lsid:example.org:taxonconcepts:1");
 
-        authorTeam = Person.NewInstance();
-        authorTeam.setTitleCache("authorTeam.titleCache", true);
-        authorTeam.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
+        authorship = Person.NewInstance();
+        authorship.setTitleCache("authorship.titleCache", true);
+        authorship.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 
         name = BotanicalName.NewInstance(null);
         name.setNameCache("nameCache");
@@ -113,7 +113,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         name.setRank(Rank.SPECIES());
 
         sec = ReferenceFactory.newBook();
-        sec.setAuthorTeam(authorTeam);
+        sec.setAuthorship(authorship);
         sec.setTitleCache("sec.titleCache", true);
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 
@@ -146,7 +146,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         NamedArea namedArea = NamedArea.NewInstance("Africa", "Africa", "Africa");
         namedArea.setTitleCache("Africa", true);
         distribution.setArea(namedArea);
-        distribution.setStatus(PresenceTerm.NATIVE());
+        distribution.setStatus(PresenceAbsenceTerm.NATIVE());
 
         taxonDescription.addElement(distribution);
 
@@ -154,7 +154,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
-        book.setAuthorTeam(authorTeam);
+        book.setAuthorship(authorship);
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
         book.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
         book.setEdition("1st Edition");
@@ -172,13 +172,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setInReference((Reference<?>)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
-        bookSection.setAuthorTeam(authorTeam);
+        bookSection.setAuthorship(authorship);
         bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
         bookSection.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
-        bookSection.addCredit(Credit.NewInstance(authorTeam, "Credits to the authorTeam"));
+        bookSection.addCredit(Credit.NewInstance(authorship, "Credits to the authorship"));
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
@@ -206,8 +206,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals("CdmBase.created should be copied into BaseThing.created",new DateTime(2004, 12, 25, 12, 0, 0, 0),taxonConcept.getCreated());
         assertNotNull("TaxonBase.sec should be mapped into BaseThing.publishedInCitation",taxonConcept.getPublishedInCitation());
         assertEquals("TaxonBase.sec.titleCache should be mapped into BaseThing.publishedInCitation.title",sec.getTitleCache(),taxonConcept.getPublishedInCitation().getTitle());
-        assertNotNull("TaxonBase.sec.authorTeam should be mapped into TaxonConcept.accordingTo",taxonConcept.getAccordingTo());
-        assertEquals("TaxonBase.sec.authorTeam.titleCache should be mapped into TaxonConcept.accordingTo.title",authorTeam.getTitleCache(),taxonConcept.getAccordingTo().getTitle());
+        assertNotNull("TaxonBase.sec.authorship should be mapped into TaxonConcept.accordingTo",taxonConcept.getAccordingTo());
+        assertEquals("TaxonBase.sec.authorship.titleCache should be mapped into TaxonConcept.accordingTo.title",authorship.getTitleCache(),taxonConcept.getAccordingTo().getTitle());
         assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
         assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
         assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());

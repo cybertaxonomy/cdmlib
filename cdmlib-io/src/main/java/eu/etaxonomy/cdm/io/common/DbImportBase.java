@@ -115,7 +115,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	 * @return
 	 */
 	protected boolean doId(STATE state, ISourceable sourceable, long id, String namespace) {
-		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference() , id, namespace);
+		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	 * @return
 	 */
 	protected boolean doId(STATE state, ISourceable sourceable, String id, String namespace) {
-		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference() , id, namespace);
+		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
 
 	

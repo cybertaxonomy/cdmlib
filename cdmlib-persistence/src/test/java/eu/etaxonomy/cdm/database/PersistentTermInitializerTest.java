@@ -14,9 +14,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,7 +25,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -80,6 +80,16 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertEquals("Rank.SPECIES().getLabel() should return \"Species\"","Species",Rank.SPECIES().getLabel());
 
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 

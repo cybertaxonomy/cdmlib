@@ -58,7 +58,7 @@ public class StatisticsController {
 	 * example query:
 	 * 
 	 * <pre>
-	 *        part=ALL&part=CLASSIFICATION&type=DESCRIPTIVE_SOURCE_REFERENCES&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMECLATURAL_REFERENCES
+	 *        part=ALL&part=CLASSIFICATION&type=DESCRIPTIVE_SOURCE_REFERENCES&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMENCLATURAL_REFERENCES
 	 * </pre>
 	 * 
 	 * @param part

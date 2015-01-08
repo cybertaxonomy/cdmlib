@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.hibernate.criterion.Criterion;
@@ -59,4 +60,13 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 		assertNotNull("A list should be returned", list);
 		assertEquals("2 users should be returned", 2, list.size());	
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 }

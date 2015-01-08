@@ -14,6 +14,9 @@ import org.hibernate.criterion.Projections;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
+/**
+ * @author ben.clark
+ */
 public class GroupByCount extends Grouping {
 
 	public GroupByCount(String name, SortOrder order) {

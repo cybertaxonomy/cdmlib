@@ -14,23 +14,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -57,14 +56,12 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
-	
-//    @Autowired
-//    protected ICommonService commonService;
 
 	
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
 	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
+	@Override
 	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
@@ -77,6 +74,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
@@ -91,6 +89,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 
 	
 	@Transactional(readOnly = false)
+	@Override
 	public T replace(T x, T y) {
 		return dao.replace(x, y);
 	}
@@ -123,6 +122,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
 	@Transactional(readOnly = true)
+	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
 
@@ -133,15 +133,14 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#getUuidAndTitleCache()
-	 */
 	@Transactional(readOnly = true)
+	@Override
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -154,11 +153,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -170,6 +171,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
 			
@@ -184,6 +186,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	@Transactional(readOnly = true)
+	@Override
 	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 			
@@ -195,11 +198,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public T find(LSID lsid) {
 		return dao.find(lsid);
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(clazz,queryString);
 		
@@ -211,10 +216,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
-	 */
 	@Override
 	@Transactional(readOnly = false)
 	public void updateTitleCache() {
@@ -222,7 +223,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = false)  //TODO check transactional behaviour, e.g. what happens with the session if count is very large 
-	protected void updateTitleCacheImpl(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > void updateTitleCacheImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
@@ -240,11 +241,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			
 			
 			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
-			List<T> list = this.list(clazz, stepSize, i, orderHints, null);
+			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
 			switchOnOldAutoInitializer(oldAutoInit);
 			
 			List<T> entitiesToUpdate = new ArrayList<T>();
 			for (T entity : list){
+				HibernateProxyHelper.deproxy(entity, clazz);
 				if (entity.isProtectedTitleCache() == false){
 					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
@@ -323,7 +325,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			entityCacheStrategy = entity.getCacheStrategy();
 			//FIXME find out why the wrong cache strategy is loaded here, see #1876 
 			if (entity instanceof Reference){
-				entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
+				entityCacheStrategy = ReferenceFactory.newReference(((Reference<?>)entity).getType()).getCacheStrategy();
 			}
 		}
 		entity.setCacheStrategy(entityCacheStrategy);
@@ -334,26 +336,53 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		String oldTitleCache = entity.getTitleCache();
 		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
 		
-		//NonViralNames have more caches //TODO handle in NameService
+		//NonViralNames and Reference have more caches //TODO handle in NameService
 		String oldNameCache = null;
 		String oldFullTitleCache = null;
+		String oldAbbrevTitleCache = null;
 		if (entity instanceof NonViralName ){
-			NonViralName<?> nvn = (NonViralName) entity;
-			if (!nvn.isProtectedNameCache()){
-				nvn.setProtectedNameCache(true);
-				oldNameCache = nvn.getNameCache();
-				nvn.setProtectedNameCache(false);
+			
+			try{
+				NonViralName<?> nvn = (NonViralName) entity;
+				if (!nvn.isProtectedNameCache()){
+					nvn.setProtectedNameCache(true);
+					oldNameCache = nvn.getNameCache();
+					nvn.setProtectedNameCache(false);
+				}
+				if (!nvn.isProtectedFullTitleCache()){
+					nvn.setProtectedFullTitleCache(true);
+					oldFullTitleCache = nvn.getFullTitleCache();
+					nvn.setProtectedFullTitleCache(false);
+				}
+			}catch(ClassCastException e){
+				System.out.println("entity: " + entity.getTitleCache());
 			}
-			if (!nvn.isProtectedFullTitleCache()){
-				nvn.setProtectedFullTitleCache(true);
-				oldFullTitleCache = nvn.getFullTitleCache();
-				nvn.setProtectedFullTitleCache(false);
+			
+		}else if (entity instanceof Reference){
+			Reference<?> ref = (Reference<?>) entity;
+			if (!ref.isProtectedAbbrevTitleCache()){
+				ref.setProtectedAbbrevTitleCache(true);
+				oldAbbrevTitleCache = ref.getAbbrevTitleCache();
+				ref.setProtectedAbbrevTitleCache(false);
 			}
 		}
-		setOtherCachesNull(entity); //TODO find better solution
+		setOtherCachesNull(entity);
+		String newTitleCache= null;
+		NonViralName<?> nvn = null;//TODO find better solution
+		try{
+			if (entity instanceof NonViralName){
+				nvn = (NonViralName) entity;
+				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
+			} else{
+				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
+			}
+		}catch (ClassCastException e){
+			nvn = HibernateProxyHelper.deproxy(entity, NonViralName.class);
+			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
+			//System.out.println("titleCache: " +entity.getTitleCache());
+		}
 		
-		String newTitleCache = entityCacheStrategy.getTitleCache(entity);
-		if (oldTitleCache == null || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
+		if ( oldTitleCache == null   || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
 			if (newCache == null){
@@ -362,22 +391,34 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			if (oldTitleCache == null){
 				logger.info("oldTitleCache should never be null");
 			}
-			if (entity instanceof NonViralName){
-				NonViralName<?> nvn = (NonViralName) entity;
+			if (nvn != null){
+				//NonViralName<?> nvn = (NonViralName) entity;
 				nvn.getNameCache();
 				nvn.getFullTitleCache();
 			}
+			if (entity instanceof Reference){
+				Reference<?> ref = (Reference<?>) entity;
+				ref.getAbbrevTitleCache();
+			}
 			entitiesToUpdate.add(entity);
-		}else if (entity instanceof NonViralName){
-			NonViralName<?> nvn = (NonViralName) entity;
-			String newnameCache = nvn.getNameCache();
+		}else if (nvn != null){
+			//NonViralName<?> nvn = (NonViralName) entity;
+			String newNameCache = nvn.getNameCache();
 			String newFullTitleCache = nvn.getFullTitleCache();
-			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newnameCache))){
+			if ((oldNameCache == null && !nvn.isProtectedNameCache()) || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
 				entitiesToUpdate.add(entity);
-			}else if (oldFullTitleCache == null || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
+			}else if ((oldFullTitleCache == null && !nvn.isProtectedFullTitleCache()) || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
-		};
+		}else if (entity instanceof Reference){
+			Reference<?> ref = (Reference<?>) entity;
+			String newAbbrevTitleCache = ref.getAbbrevTitleCache();
+			if ( (oldAbbrevTitleCache == null && !ref.isProtectedAbbrevTitleCache() ) || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
+				entitiesToUpdate.add(entity);
+			}
+		}
+		
+		
 	}
 	
 	
@@ -401,9 +442,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		int result; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
@@ -513,20 +551,32 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return result;
 	}	
 	
-	 public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
+	@Transactional(readOnly = true)
+	@Override
+	public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 		 
 		 return numberOfResults;
-	 }
+	}
 	 
 	@Transactional(readOnly = true)
+	@Override
 	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
 				config.getMatchMode(), config.getCriteria());
 		
 	}
-	
-	
+
+	@Override
+	public <S extends T> List<S> listByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType,
+			MatchMode matchmode, Integer pageSize,
+			Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		return dao.findByIdentifier(clazz, identifier, identifierType,
+				matchmode, pageSize, pageNumber, orderHints,
+				propertyPaths);
+	}
 
 
 }

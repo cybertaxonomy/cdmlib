@@ -23,6 +23,10 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
@@ -31,7 +35,9 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.IRdfMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
+import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -83,7 +89,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 	}
 
 
-	protected static IXmlMapper[] standardMappers = new IXmlMapper[]{
+	protected static IRdfMapper[] standardMappers = new IRdfMapper[]{
 		//new CdmTextElementMapper("edition", "edition"),
 		new CdmTextElementMapper("volume", "volume"),
 		new CdmTextElementMapper("placePublished", "placePublished"),
@@ -95,7 +101,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		//new CdmTextElementMapper("url", "uri")
 	};
 
-	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] operationalMappers = new CdmSingleAttributeRDFMapperBase[]{
 		new CdmUnclearMapper("year")
 		, new CdmUnclearMapper("title")
 		, new CdmUnclearMapper("shortTitle")
@@ -115,16 +121,16 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
 
 
-	private boolean makeStandardMapper(Element parentElement, Reference ref, Set<String> omitAttributes){
+	private boolean makeStandardMapper(Statement resource, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;
-		for (IXmlMapper mapper : standardMappers){
+		for (IRdfMapper mapper : standardMappers){
 			if (mapper instanceof CdmSingleAttributeMapperBase){
-				makeSingleAttributeMapper((CdmSingleAttributeXmlMapperBase)mapper, parentElement, ref, omitAttributes);
+				makeSingleAttributeMapper((CdmSingleAttributeRDFMapperBase)mapper, resource, ref, omitAttributes);
 			}else if (mapper instanceof CdmOneToManyMapper){
-				makeMultipleAttributeMapper((CdmOneToManyMapper)mapper, parentElement, ref, omitAttributes);
+				makeMultipleAttributeMapper((CdmOneToManyMapper)mapper, resource, ref, omitAttributes);
 			}else{
 				logger.error("Unrecognized mapper type");
 				return false;
@@ -135,9 +141,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return true;
 	}
 
-	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, Reference ref, Set<String> omitAttributes){
+	private boolean makeSingleAttributeMapper(CdmSingleAttributeRDFMapperBase mapper, Statement resource, Reference ref, Set<String> omitAttributes){
 		boolean result = true;
-		Object value = getValue(mapper, parentElement);
+		Object value = getValue(mapper, resource);
 		//write to destination
 		if (value != null){
 			String destinationAttribute = mapper.getDestinationAttribute();
@@ -148,7 +154,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return result;
 	}
 
-	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, Reference ref, Set<String> omitAttributes){
+	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Statement parentElement, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -169,19 +175,19 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return result;
 	}
 
-	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){
-		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
-		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
-		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
-		if (child == null){
-			return null;
-		}
-		if (child.getContentSize() > 1){
-			logger.warn("Element is not String");
-		}
-		Object value = child.getTextTrim();
-		return value;
-	}
+//	private Object getValue(CdmSingleAttributeRDFMapperBase mapper, Element parentElement){
+//		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
+//		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
+//		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
+//		if (child == null){
+//			return null;
+//		}
+//		if (child.getContentSize() > 1){
+//			logger.warn("Element is not String");
+//		}
+//		Object value = child.getTextTrim();
+//		return value;
+//	}
 
 	@Override
     protected void doInvoke(TcsRdfImportState state){
@@ -189,19 +195,19 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		MapWrapper<Reference> nomRefMap = (MapWrapper<Reference>)state.getStore(ICdmIO.NOMREF_STORE);
 
 		TcsRdfImportConfigurator config = state.getConfig();
-		Element root = config.getSourceRoot();
+		Model root = config.getSourceRoot();
 		logger.info("start makeReferences ...");
 
 		String tcsElementName;
 		Namespace tcsNamespace;
 
-		Namespace rdfNamespace = config.getRdfNamespace();
-		Namespace publicationNamespace = config.getPublicationNamespace();
+		String rdfNamespace = config.getRdfNamespaceURIString();
+		String publicationNamespace = config.getPublicationNamespaceURI();
 
 		String idNamespace = "PublicationCitation";
 		tcsElementName = "PublicationCitation";
-		tcsNamespace = publicationNamespace;
-		List<Element> elPublicationCitations = root.getChildren(tcsElementName, tcsNamespace);
+		
+		/*List<Element> elPublicationCitations = root.l
 
 		int nomRefCount = 0;
 		int biblioRefsCount = 0;
@@ -233,9 +239,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsNamespace = publicationNamespace;
 				String strAuthorship = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				//TODO
-				TeamOrPersonBase<?> authorTeam = Team.NewInstance();
-				authorTeam.setTitleCache(strAuthorship, true);
-				ref.setAuthorTeam(authorTeam);
+				TeamOrPersonBase<?> authorship = Team.NewInstance();
+				authorship.setTitleCache(strAuthorship, true);
+				ref.setAuthorship(authorship);
 
 				tcsElementName = "year";
 				tcsNamespace = publicationNamespace;
@@ -321,7 +327,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		getReferenceService().save(referenceMap.objects());
 
 		//referenceService.saveReferenceAll(referenceMap.objects());
-		logger.info("end makeReferences ...");
+		logger.info("end makeReferences ...");*/
 		return;
 
 	}

@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.3.4-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version>
   <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -239,5 +239,9 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
+    <dependency>
+	  <groupId>net.sf.ehcache</groupId>
+	  <artifactId>ehcache-core</artifactId>	  
+	</dependency>
   </dependencies>
 </project>

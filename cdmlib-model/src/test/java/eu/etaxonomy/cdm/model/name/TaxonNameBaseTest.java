@@ -795,10 +795,10 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomenclaturalCode()}.
 	 */
 	@Test
-	public void testGetNomeclaturalCode() {
+	public void testGetNomenclaturalCode() {
 		//is abstract
 	}
 	

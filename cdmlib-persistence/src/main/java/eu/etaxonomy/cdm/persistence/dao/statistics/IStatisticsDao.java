@@ -67,7 +67,7 @@ public interface IStatisticsDao {
 
 	/**
 	 * count all Reference items attached to the given classification
-	 * but not nomeclatural referencesy
+	 * but not nomenclatural references
 	 * 
 	 * @param sourceRef - Boolean, tells if to count the descriptions 
 	 * 		directly or count the descriptive source references

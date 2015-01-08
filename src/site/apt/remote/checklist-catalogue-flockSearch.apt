@@ -1,0 +1,81 @@
+                                    --------------------------
+                                    Checklist Flock Search API
+                                    --------------------------
+
+{CDM Taxonomic Checklist Flock Search API}
+
+	This web service endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid. 
+	The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
+	If classificationUuids is set only taxa of classifications are returned which are included in the given classifications. 
+	Also the path to these taxa may not include taxa from other classifications.
+
+	
+*	The request parameters are :	
+	
+	* '<<taxonUUID>>' [mandatory] : this string has to be a uuid of the original taxon.
+	
+	* '<<classificationFilter>>' [optional] :  List of uuids of classifications used as a filter.
+
+	* '<<includeDoubtful>>' [optional] : this string can be set to true, if also doubtfully included taxa should be included in the result.
+
+	* '<<onlyCongruent>>' [optional] : this string can be set to true, if only congruent taxa should be included in the result.
+
+			
+						
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<taxonUUID>>> : taxon uuid provided as input.
+			
+		* <<<response>>>
+
+			* <<<date>>> : Date and time of request.
+			
+			* <<<includedTaxa>>>: List of included taxa of the flock search
+		
+				* <<<doubtful>>> : boolean value if taxon is doubtful.
+				
+				* <<<pathToTaxon>>> : List of path to taxa.
+				
+				* <<<taxonUuid>>> : taxon uuid of included taxon
+	
+
+			* <<<size>>> : lenghth of the includedTaxa list.	
+			
+	
+	Example Requests :
+		
+		* Base checklist request : 	
+				
+			* {{{taxonUUID} checklist/flockSearch.json?taxonUUID=3bbf4477-58e3-4956-ad39-6d6b725b6a43}}
+			
+		
+			
+	Example Responses :
+		
+		* Base checklist : {taxonUUID=3bbf4477-58e3-4956-ad39-6d6b725b6a43} [{{{CDM Taxonomic Checklist API}back}}]
+										
+---
+
+[
+     {
+  	"class": "IncludedTaxaDTO",
+	"date": "2014-05-22T10:52:46.745+02:00",
+	"includedTaxa": [
+    		{
+			"class": "IncludedTaxon",
+			"doubtful": false,
+			"pathToTaxon": [ ],
+			"taxonUuid": "3bbf4477-58e3-4956-ad39-6d6b725b6a43"
+    		},
+	"size": 1
+      }
+]
+
+---		
+

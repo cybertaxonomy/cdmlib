@@ -136,7 +136,7 @@ public class ReferenceFactory {
 	public static Reference newBookSection(Reference book, Person partAuthor,
 			String sectionTitle, String pages) {
 		Reference<?> bookSection = newBookSection();
-		bookSection.setAuthorTeam(partAuthor);
+		bookSection.setAuthorship(partAuthor);
 		bookSection.setTitle(sectionTitle);
 		bookSection.setPages(pages);
 		return bookSection;
@@ -146,7 +146,7 @@ public class ReferenceFactory {
 			String title, String pages, String series, String volume, TimePeriod datePublished) {
 		Reference<?> article = newArticle();
 		article.setInReference(inJournal);
-		article.setAuthorTeam(partAuthor);
+		article.setAuthorship(partAuthor);
 		article.setTitle(title);
 		article.setPages(pages);
 		article.setVolume(volume);
@@ -160,7 +160,7 @@ public class ReferenceFactory {
 	 * @param referenceType
 	 * @return
 	 */
-	public static Reference newReference(ReferenceType referenceType) {
+	public static Reference<?> newReference(ReferenceType referenceType) {
 		if (referenceType == null){
 			return null;
 		}
@@ -197,6 +197,8 @@ public class ReferenceFactory {
 				return newBook();
 			case Generic:
 				return newGeneric();
+			case Section:
+				return newSection();
 			default:
 				logger.warn("Unknown reference type " + referenceType.getMessage() + ". Created generic reference instead.");
 				return newGeneric();	

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.lsid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Before;
@@ -61,5 +62,14 @@ public class LSIDMetadataServiceTest extends CdmTransactionalIntegrationTest {
 		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getNamespace(),identifiableEntity.getLsid().getNamespace());
 		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getObject(),identifiableEntity.getLsid().getObject());
 	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+     */
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

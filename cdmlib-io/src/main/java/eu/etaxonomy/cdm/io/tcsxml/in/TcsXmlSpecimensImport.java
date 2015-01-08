@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -85,7 +86,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Element elSpecimens = doubleResult.getFirstResult();
 		
 		String tcsElementName = "Specimen";
-		List<Element> elSpecimenList = elSpecimens.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<Element>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
 
 		
 		int i = 0;

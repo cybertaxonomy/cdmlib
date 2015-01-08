@@ -95,7 +95,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	@IndexedEmbedded
 	private NamedArea country;
 
@@ -124,21 +123,21 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Field
 	@NumericField
 	private Integer absoluteElevation;
-	
+
 	// meter above/below sea level of the surface, maximum value
 	@XmlElement(name = "AbsoluteElevationMax")
 	@Field
 	@NumericField
 	private Integer absoluteElevationMax;
-	
+
 
 	/**
 	 * Maximum value of meter above/below sea level of the surface as text.
 	 * If min/max value exists together with absoluteElevationText
 	 * the later will be preferred for formatting where as the former
 	 * will be used for computations. If the absoluteElevation
-	 * does not require any additional information such as 
-	 * "ca." it is suggested to use min/max value instead. 
+	 * does not require any additional information such as
+	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "AbsoluteElevationText")
 	@Field
@@ -150,21 +149,21 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double distanceToGround;
-	
+
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "distanceToGroundMax")
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double distanceToGroundMax;
-	
-	
+
+
 	/**
 	 * Distance to ground (e.g. when sample is taken from a tree) as text.
 	 * If min/max value exists together with distanceToGroundText
 	 * the later will be preferred for formatting whereas the former
 	 * will be used for computations. If the distanceToGround
-	 * does not require any additional information such as 
-	 * "ca." it is suggested to use min/max value instead. 
+	 * does not require any additional information such as
+	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "distanceToGroundText")
 	@Field
@@ -176,7 +175,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double distanceToWaterSurface;
-	
+
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
 	@Field(analyze = Analyze.NO)
@@ -188,15 +187,15 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 * If min/max value exists together with distanceToWaterSurfaceText
 	 * the later will be preferred for formatting whereas the former
 	 * will be used for computations. If the distanceToWaterSurface
-	 * does not require any additional information such as 
-	 * "ca." it is suggested to use min/max value instead. 
+	 * does not require any additional information such as
+	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "distanceToGroundText")
 	@Field
 	@Size(max=30)
 	private String distanceToWaterSurfaceText;
 
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -268,7 +267,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void putLocality(Language language, String locality){
 		this.setLocality(LanguageString.NewInstance(locality, language));
 	}
-	
+
 
 	/**
 	 * EventBase managed attributes
@@ -277,7 +276,10 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 	@Transient
 	public Partial getGatheringDate(){
-		return this.getTimeperiod().getStart();
+	    if(this.getTimeperiod()!=null){
+	        return this.getTimeperiod().getStart();
+	    }
+	    return null;
 	}
 
 	public void setGatheringDate(Partial gatheringDate){
@@ -312,7 +314,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setAbsoluteElevation(Integer absoluteElevation) {
 		this.absoluteElevation = absoluteElevation;
 	}
-	
+
 
 	public Integer getAbsoluteElevationMax() {
 		return absoluteElevationMax;
@@ -321,7 +323,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setAbsoluteElevationMax(Integer absoluteElevationMax) {
 		this.absoluteElevationMax = absoluteElevationMax;
 	}
-	
+
 
 	public String getAbsoluteElevationText() {
 		return absoluteElevationText;
@@ -346,7 +348,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setDistanceToWaterSurface(Double distanceToWaterSurface) {
 		this.distanceToWaterSurface = distanceToWaterSurface;
 	}
-	
+
 
 	public Double getDistanceToGroundMax() {
 		return distanceToGroundMax;

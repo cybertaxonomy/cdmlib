@@ -51,9 +51,9 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 
     private boolean deleteMisappliedNamesAndInvalidDesignations = true;
 
-    private boolean deleteNameIfPossible = true;
+   // private boolean deleteNameIfPossible = true;
 
-    private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
+    //private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
 
 
     private TaxonNodeDeletionConfigurator taxonNodeConfig = new TaxonNodeDeletionConfigurator();
@@ -79,41 +79,7 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
         this.deleteInAllClassifications = deleteInAllClassifications;
     }
 
-    /**
-     * If true the taxons name will be deleted if this is possible.
-     * It is possible if the name is not linked in a way that it can not be deleted.
-     * This depends also on the {@link NameDeletionConfigurator}
-     * @see #getNameDeletionConfig()
-     * @return
-     */
-    @Override
-    public boolean isDeleteNameIfPossible() {
-        return deleteNameIfPossible;
-    }
 
-    @Override
-    public void setDeleteNameIfPossible(boolean deleteNameIfPossible) {
-        this.deleteNameIfPossible = deleteNameIfPossible;
-    }
-
-
-    /**
-     * The configurator for name deletion. Only evaluated if {@link #isDeleteNameIfPossible()}
-     * is <code>true</code>.
-     * @see NameDeletionConfigurator
-     * @see #isDeleteNameIfPossible()
-     * @see #isDeleteSynonymsIfPossible()
-     * @return
-     */
-    @Override
-    public NameDeletionConfigurator getNameDeletionConfig() {
-        return nameDeletionConfig;
-    }
-
-    @Override
-    public void setNameDeletionConfig(NameDeletionConfigurator nameDeletionConfig) {
-        this.nameDeletionConfig = nameDeletionConfig;
-    }
 
 
     /**

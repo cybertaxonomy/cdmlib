@@ -135,7 +135,8 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
 	private Set<State> inapplicableIf = new HashSet<State>();
 
-
+// ***************************** FACTORY *********************************/
+	
 	/** 
 	 * Creates a new empty feature node instance.
 	 * 
@@ -157,6 +158,8 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		result.setFeature(feature);
 		return result;
 	}
+	
+// ******************** CONSTRUCTOR ***************************************/
 
 	
 	/** 
@@ -177,7 +180,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		this.featureTree = featureTree;
 	}
 	
-	//** ********************** FEATURE ******************************/
+//** ********************** FEATURE ******************************/
 
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
@@ -214,7 +217,16 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		this.parent = parent;
 	}
 	
-	//** ********************** CHILDREN ******************************/
+//** ********************** CHILDREN ******************************/
+
+	
+	/**
+	 * @deprecated for internal use only.
+	 */
+	//see #4278 , #4200
+	protected void setSortIndex(Integer sortIndex) {
+		this.sortIndex = sortIndex;
+	}
 
 	/** 
 	 * Returns the (ordered) list of feature nodes which are children nodes of
@@ -267,9 +279,9 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		children.add(index, child);
 		//TODO workaround (see sortIndex doc)
 		for(int i = 0; i < children.size(); i++){
-			children.get(i).sortIndex = i;
+			children.get(i).setSortIndex(i);
 		}
-		child.sortIndex = index;
+		child.setSortIndex(index);
 	}
 	/** 
 	 * Removes the given feature node from the list of {@link #getChildNodes() children}
@@ -307,9 +319,9 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
 				FeatureNode childAt = children.get(i);
-				childAt.sortIndex = i;
-		}
-			child.sortIndex = null;
+				childAt.setSortIndex(i);
+			}
+			child.setSortIndex(null);
 		}
 	}
 
@@ -408,7 +420,6 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see    	   								#getApplicableState()
 	 */
 	public void addApplicableState(State applicableState) {
-		logger.debug("addApplicableState");
 		this.onlyApplicableIf.add(applicableState);
 	}
 
@@ -452,7 +463,6 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see    	   								#getInapplicableState()
 	 */
 	public void addInapplicableState(State inapplicableState) {
-		logger.debug("addInapplicableState");
 		this.inapplicableIf.add(inapplicableState);
 	}
 
@@ -588,24 +598,5 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		}
 	}
 
-	
-//	//** ********************** TAXON ******************************/
-//	
-//	/** 
-//	 * Returns the {@link Taxon taxon} <i>this</i> terminal node is
-//	 * associated with.
-//	 */
-//	public Taxon getTaxon() {
-//		return taxon;
-//	}
-//
-//	/**
-//	 * Assigns the given taxon to <i>this</i> feature node.
-//	 * 
-//	 * @param	taxon	the taxon to be set 
-//	 * @see				#getTaxon() 
-//	 */
-//	public void setTaxon(Taxon taxon) {
-//		this.taxon = taxon;
-//	}
+
 }

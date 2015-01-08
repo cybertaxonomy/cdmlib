@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.SectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.WebPageDefaultCacheStrategy;
 
 
 /**
@@ -152,6 +153,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 			return ThesisDefaultCacheStrategy.NewInstance();
 		case Section:
 			return SectionDefaultCacheStrategy.NewInstance();
+		case WebPage:
+			return WebPageDefaultCacheStrategy.NewInstance();
         default:
             return ReferenceDefaultCacheStrategy.NewInstance();
 		}

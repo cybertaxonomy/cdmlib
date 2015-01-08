@@ -34,7 +34,7 @@ public class TestBookDefaultCacheStrategies {
 
 		book.setDatePublished(TimePeriod.NewInstance(cal));
 		Person bookAuthor = Person.NewTitledInstance("BuchAuthorTitle");
-		book.setAuthorTeam(bookAuthor);
+		book.setAuthorship(bookAuthor);
 		book.setVolume("v 22");
 		book.setEdition("55");
 		System.out.println("FULL" + book.getNomenclaturalCitation("344"));
@@ -53,7 +53,7 @@ public class TestBookDefaultCacheStrategies {
 		System.out.println("*********** ARTICLE **************");
 		Reference<?> inJournal = ReferenceFactory.newJournal();
 		Person journalAuthor = Person.NewTitledInstance("JournalAuthorTitle");
-		inJournal.setAuthorTeam(journalAuthor);
+		inJournal.setAuthorship(journalAuthor);
 		inJournal.setTitle("JournalTitle");
 		inJournal.setIssn("issn");
 		Reference<?> article = ReferenceFactory.newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", TimePeriod.NewInstance(cal));
@@ -65,13 +65,13 @@ public class TestBookDefaultCacheStrategies {
 		System.out.println("*********** GENERIC **************");
 		Reference<?> generic = ReferenceFactory.newGeneric();
 		Person genericAuthor = Person.NewTitledInstance("GenericAuthorTitle");
-		generic.setAuthorTeam(genericAuthor);
+		generic.setAuthorship(genericAuthor);
 		generic.setTitle("GenericTitle");
 		generic.setDatePublished(TimePeriod.NewInstance(cal));
 		generic.setEditor("EditorString");
 		
 		generic.setPages("p.124-754");
-		generic.setSeries("ser2");
+		generic.setSeriesPart("ser2");
 		generic.setVolume("33");
 		System.out.println("FULL: " + generic.getNomenclaturalCitation("4444"));
 		System.out.println("Citation: " + generic.getCitation());

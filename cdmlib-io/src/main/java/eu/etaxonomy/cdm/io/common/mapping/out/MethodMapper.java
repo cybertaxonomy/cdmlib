@@ -75,18 +75,11 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return method.getReturnType();
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		try{	
@@ -108,11 +101,6 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		}
 	}
 	
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		Class<?> returnType = method.getReturnType();

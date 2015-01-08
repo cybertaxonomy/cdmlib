@@ -454,7 +454,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			Reference<?> sec = ReferenceFactory.newBookSection();
 			sec.setTitle(taxonTitle);
 			TeamOrPersonBase<?> author = createAuthor(writer.writer);
-			sec.setAuthorTeam(author);
+			sec.setAuthorship(author);
 			sec.setInReference(state.getConfig().getSourceReference());
 			taxon.setSec(sec);
 			registerFootnotes(state, sec, writer.footnotes);

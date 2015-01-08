@@ -23,6 +23,7 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -81,9 +82,10 @@ import eu.etaxonomy.cdm.validation.Level2;
     "lsid",
     "titleCache",
     "protectedTitleCache",
-    "rights",
-    "extensions",
     "credits",
+    "extensions",
+    "identifiers",
+    "rights",
     "sources"
 })
 @Audited
@@ -105,7 +107,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElement(name = "TitleCache", required = true)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
-    @Column(length=255, name="titleCache")
+    @Column(name="titleCache")
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
     @Size(max = 800)  //see #1592
@@ -147,6 +149,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @NotNull
     private Set<Extension> extensions = new HashSet<Extension>();
 
+    @XmlElementWrapper(name = "Identifiers", nillable = true)
+    @XmlElement(name = "Identifier")
+    @OrderColumn(name="sortIndex")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private List<Identifier> identifiers = new ArrayList<Identifier>();
+
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
@@ -166,8 +177,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                if (!e.getPropertyName().equals("titleCache") && !e.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
+            public void propertyChange(PropertyChangeEvent ev) {
+                if (!ev.getPropertyName().equals("titleCache") && !ev.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
                     titleCache = null;
                 }
             }
@@ -188,10 +199,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //******************************** CACHE *****************************************************/
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
-     */
     // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
     @Override
     public String getTitleCache(){
@@ -221,7 +228,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Deprecated
     @Override
     public void setTitleCache(String titleCache){
-    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?  
+    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?
     	this.titleCache = getTruncatedCache(titleCache);
     }
 
@@ -309,6 +316,78 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         getCredits().remove(index);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getIdentifiers()
+     */
+    @Override
+    public List<Identifier> getIdentifiers(){
+        if(this.identifiers == null) {
+            this.identifiers = new ArrayList<Identifier>();
+        }
+        return this.identifiers;
+    }
+    /**
+     * @param type
+     * @return a set of identifier value strings
+     */
+    public Set<String> getIdentifiers(DefinedTerm type){
+       return getIdentifiers(type.getUuid());
+    }
+    /**
+     * @param identifierTypeUuid
+     * @return a set of identifier value strings
+     */
+    public Set<String> getIdentifiers(UUID identifierTypeUuid){
+        Set<String> result = new HashSet<String>();
+        for (Identifier identifier : getIdentifiers()){
+            if (identifier.getType().getUuid().equals(identifierTypeUuid)){
+                result.add(identifier.getIdentifier());
+            }
+        }
+        return result;
+    }
+
+    public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
+    	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
+    	return result;
+    }
+
+     @Override
+    public void addIdentifier(int index, Identifier identifier){
+        if (identifier != null){
+        	if (identifier.getIdentifiedObj() != null && ! identifier.getIdentifiedObj().equals(this)){
+        		identifier.getIdentifiedObj().removeIdentifier(identifier);
+        	}
+        	identifier.setIdentifiedObj(this);
+        	//deduplication
+        	int oldIndex = getIdentifiers().indexOf(identifier);
+        	if(oldIndex > -1){
+        		getIdentifiers().remove(identifier);
+        		if (oldIndex < index){
+        			index--;
+        		}
+        	}
+        	getIdentifiers().add(index, identifier);
+        }
+    }
+
+    @Override
+    public void addIdentifier(Identifier identifier){
+        addIdentifier(getIdentifiers().size(), identifier);
+    }
+
+    @Override
+    public void removeIdentifier(Identifier identifier){
+        if (identifier != null){
+        	identifier.setIdentifiedObj(null);
+            getIdentifiers().remove(identifier);
+        }
+    }
+    @Override
+    public void removeIdentifier(int index){
+    	getIdentifiers().remove(index);
+    }
+
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {
@@ -387,6 +466,25 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     @Override
+    public void addSources(Set<IdentifiableSource> sources) {
+        if (sources != null){
+        	for (IdentifiableSource source: sources){
+	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
+	            if (oldSourcedObj != null && oldSourcedObj != this){
+	                oldSourcedObj.getSources().remove(source);
+	            }
+	            getSources().add(source);
+	            source.setSourcedObj(this);
+        	}
+        }
+    }
+    
+    @Override
+    public void removeSources() {
+       this.sources.clear();
+    }
+    
+    @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
@@ -395,8 +493,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         addSource(source);
         return source;
     }
-    
-    
+
+
     @Override
     public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -468,7 +566,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             		 ((BotanicalName)identifiableEntity).setNameCache(null, false);
             		 specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
             		 ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
-            		 
+
             	 }
              }
 
@@ -493,7 +591,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
-             
+
              if (this instanceof BotanicalName){
             	 if (((BotanicalName)this).isAutonym()){
             		 boolean isProtected = false;
@@ -517,8 +615,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          }
 
          // Compare name cache of taxon names
-         
-        
+
+
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
              result = thisNameCache.compareTo(specifiedNameCache);

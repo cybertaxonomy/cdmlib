@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -41,10 +42,10 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private ZoologicalName subGenusName;
 	private ZoologicalName speciesName;
 	private ZoologicalName subSpeciesName;
-	private INomenclaturalAuthor author;
-	private INomenclaturalAuthor exAuthor;
-	private INomenclaturalAuthor basAuthor;
-	private INomenclaturalAuthor exBasAuthor;
+	private TeamOrPersonBase<?> author;
+	private TeamOrPersonBase<?> exAuthor;
+	private TeamOrPersonBase<?> basAuthor;
+	private TeamOrPersonBase<?> exBasAuthor;
 	
 	private final String familyNameString = "Familia";
 	private final String genusNameString = "Genus";

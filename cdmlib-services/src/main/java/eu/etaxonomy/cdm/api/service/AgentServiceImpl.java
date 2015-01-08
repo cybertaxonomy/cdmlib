@@ -16,11 +16,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -30,7 +29,6 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -132,4 +130,31 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
 		return dao.getInstitutionUuidAndTitleCache();
 	}
+	
+	@Override
+    public DeleteResult delete(AgentBase base){
+    	
+		DeleteResult result = this.isDeletable(base, null);
+    	
+    	if (result.isOk()){
+			if (base instanceof Team){
+				Team baseTeam = (Team) base;
+				List<Person> members = baseTeam.getTeamMembers();
+				List<Person> temp = new ArrayList<Person>();
+				for (Person member:members){
+					temp.add(member);
+				}
+				for (Person member: temp){
+					members.remove(member);
+				}
+			}
+			saveOrUpdate(base);
+			
+			dao.delete(base);
+			
+		}
+		
+		return result;
+    		
+    	}
 }

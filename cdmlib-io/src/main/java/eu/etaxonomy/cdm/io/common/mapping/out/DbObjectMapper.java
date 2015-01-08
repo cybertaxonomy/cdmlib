@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 /**
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
 public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
@@ -47,10 +46,6 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		this.isCache = isCache;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		CdmBase value = (CdmBase)super.getValue(cdmBase);
@@ -75,7 +70,6 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 //		getState().getConfig().getCdmAppController().commitTransaction(tx);
 		return result;
 	}
-	
 
 	protected Integer getId(CdmBase cdmBase){
 		DbExportStateBase<?, IExportTransformer> state = getState();
@@ -88,9 +82,6 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		}
 	}	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -100,9 +91,6 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){
@@ -111,6 +99,4 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 			return CdmBase.class;
 		}
 	}
-
-	
 }

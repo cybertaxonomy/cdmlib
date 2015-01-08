@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.ext.geo;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -25,9 +26,17 @@ import java.util.UUID;
 
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.MapType;
+import org.codehaus.jackson.map.type.TypeFactory;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -36,8 +45,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -57,7 +65,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
-    private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
+    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
+
+    private static PresenceAbsenceTerm defaultStatus = PresenceAbsenceTerm.PRESENT();
 
     private static IDefinedTermDao termDao;
 
@@ -69,6 +79,7 @@ public class EditGeoServiceUtilities {
     public static void setTermDao(IDefinedTermDao termDao) {
         EditGeoServiceUtilities.termDao= termDao;
     }
+
 
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
 
@@ -86,27 +97,27 @@ public class EditGeoServiceUtilities {
     }
 
 
-    private static HashMap<PresenceAbsenceTermBase<?>, Color> defaultPresenceAbsenceTermBaseColors = null;
+    private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors = null;
 
-    private static HashMap<PresenceAbsenceTermBase<?>, Color> getDefaultPresenceAbsenceTermBaseColors() {
+    private static HashMap<PresenceAbsenceTerm, Color> getDefaultPresenceAbsenceTermBaseColors() {
         if(defaultPresenceAbsenceTermBaseColors == null){
-            defaultPresenceAbsenceTermBaseColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.PRESENT(), Color.decode("0x4daf4a"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.NATIVE(), Color.decode("0x4daf4a"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
+            defaultPresenceAbsenceTermBaseColors = new HashMap<PresenceAbsenceTerm, Color>();
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.PRESENT(), Color.decode("0x4daf4a"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE(), Color.decode("0x4daf4a"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
 
             /*
              * and now something very hacky ...
              * ONLY-A-TEST is set by the Test class EditGeoServiceTest
              *
-             * TODO remove according line from
-             * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
-             * cyprus are no longer needed !!
+             * FIXME remove according line from
+             * EditGeoServiceTest.setUp() since the hardcoded colors for flora of
+             * cyprus should no longer be needed : #4268 (allow defining custom presence and absence term colors for EditGeoServiceUtilities)
              */
             String onlyTest = System.getProperty("ONLY-A-TEST"); //
             if(onlyTest != null && onlyTest.equals("TRUE")){
@@ -132,24 +143,24 @@ public class EditGeoServiceUtilities {
 
             UUID reportedInErrorUuid = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousUuid), Color.decode("0x339966"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousQUuid), Color.decode("0x339966"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(indigenousUuid), Color.decode("0x339966"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(indigenousQUuid), Color.decode("0x339966"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(cultivatedQUuid), Color.decode("0xbdb76b"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(cultivatedQUuid), Color.decode("0xbdb76b"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(casualUuid), Color.decode("0xffff00"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(casualQUuid), Color.decode("0xffff00"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(casualUuid), Color.decode("0xffff00"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(casualQUuid), Color.decode("0xffff00"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedNonInvasiveUuid), Color.decode("0xff9900"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedNonInvasiveQUuid), Color.decode("0xff9900"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedNonInvasiveUuid), Color.decode("0xff9900"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedNonInvasiveQUuid), Color.decode("0xff9900"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedInvasiveUuid), Color.decode("0xff0000"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedInvasiveQUuid), Color.decode("0xff0000"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedInvasiveUuid), Color.decode("0xff0000"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedInvasiveQUuid), Color.decode("0xff0000"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionablelUuid), Color.decode("0x00ccff"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionableQUuid), Color.decode("0x00ccff"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(questionablelUuid), Color.decode("0x00ccff"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(questionableQUuid), Color.decode("0x00ccff"));
 
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(reportedInErrorUuid), Color.decode("0xcccccc"));
+            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(reportedInErrorUuid), Color.decode("0xcccccc"));
 
         }
         return defaultPresenceAbsenceTermBaseColors;
@@ -217,27 +228,29 @@ public class EditGeoServiceUtilities {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             IGeoServiceAreaMapping mapping,
-            Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
+            Map<PresenceAbsenceTerm,Color> presenceAbsenceTermColors,
             String projectToLayer, List<Language> languages){
 
 
-        /**
+        /*
          * generateMultipleAreaDataParameters switches between the two possible styles:
          * 1. ad=layername1:area-data||layername2:area-data
          * 2. ad=layername1:area-data&ad=layername2:area-data
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        /**
+        /*
          * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
          * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
+         *
+         * a.kohlbecker 2014-07-02 :This bug in the map service has been
+         * fixed now so reusing styles is now possible setting this flag to false.
          */
-        boolean doNotReuseStyles = true;
+        boolean doNotReuseStyles = false;
 
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
-        List<String> legendLabels = new ArrayList<String>();
-
+        List<String> legendSortList = new ArrayList<String>();
 
         String borderWidth = "0.1";
         String borderColorRgb = "";
@@ -249,20 +262,20 @@ public class EditGeoServiceUtilities {
             return "";
         }
 
+        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
+
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
-        List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
+        List<PresenceAbsenceTerm> statusList = new ArrayList<PresenceAbsenceTerm>();
 
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
-
-        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
         Map<String, String> parameters = new HashMap<String, String>();
 
         //style
         int styleCounter = 0;
-        for (PresenceAbsenceTermBase<?> status: statusList){
+        for (PresenceAbsenceTerm status: statusList){
 
             char styleCode = getStyleAbbrev(styleCounter);
 
@@ -273,11 +286,7 @@ public class EditGeoServiceUtilities {
             if (languages.size() == 0){
                 languages.add(Language.DEFAULT());
             }
-            Representation representation = status.getPreferredRepresentation(languages);
-            String statusLabel = representation.getLabel();
-            //statusLabel.replace('introduced: ', '');
-            statusLabel = statusLabel.replace("introduced: ", "introduced, ");
-            statusLabel = statusLabel.replace("native: ", "native,  ");
+            Representation statusRepresentation = status.getPreferredRepresentation(languages);
 
             //getting the area color
             Color statusColor = presenceAbsenceTermColors.get(status);
@@ -294,7 +303,9 @@ public class EditGeoServiceUtilities {
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
             areaStyles.put(styleCounter, styleValues);
-            legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+
+            String legendEntry = styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusRepresentation.getLabel());
+            legendSortList.add(StringUtils.leftPad(String.valueOf(status.getOrderIndex()), INT_MAX_LENGTH, '0') + legendEntry );
             styleCounter++;
         }
 
@@ -302,12 +313,15 @@ public class EditGeoServiceUtilities {
         List<String> styledAreasPerLayer;
         List<String> areasPerStyle;
         /**
+         * Map<Integer, Integer> styleUsage
+         *
          * Used to avoid reusing styles in multiple layers
          *
          * key: the style id
          * value: the count of how often the style has been used for different layers, starts with 0 for first time use
          */
         Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+
         char styleChar;
         for (String layerString : layerMap.keySet()){
             // each layer
@@ -349,7 +363,7 @@ public class EditGeoServiceUtilities {
         if(areaStyles.size() > 0){
             ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
             styleIds.addAll(areaStyles.keySet());
-            Collections.sort(styleIds);
+            Collections.sort(styleIds); // why is it necessary to sort here?
             StringBuilder db = new StringBuilder();
             for(Integer sid : styleIds){
                 if(db.length() > 0){
@@ -359,10 +373,27 @@ public class EditGeoServiceUtilities {
             }
             parameters.put("as", db.toString());
         }
-        if(legendLabels.size() > 0){
-            parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
-        }
+        if(legendSortList.size() > 0){
+            // sort the label entries after the status terms
+            Collections.sort(legendSortList);
+            // since the status terms are have an inverse natural order
+            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+            // the sorted list must be reverted
+//            Collections.reverse(legendSortList);
+            // remove the prepended order index (like 000000000000001 ) from the legend entries
+            @SuppressWarnings("unchecked")
+            Collection<String> legendEntries = CollectionUtils.collect(legendSortList, new Transformer()
+            {
+                @Override
+                public String transform(Object o)
+                {
+                  String s = ((String) o);
+                  return s.substring(INT_MAX_LENGTH, s.length());
+                }
+              });
 
+            parameters.put("title", StringUtils.join(legendEntries.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+        }
 
         if(generateMultipleAreaDataParameters){
             // not generically possible since parameters can not contain duplicate keys with value "ad"
@@ -386,7 +417,7 @@ public class EditGeoServiceUtilities {
      */
     private static void groupStylesAndLayers(Collection<Distribution> distributions,
             Map<String, Map<Integer,Set<Distribution>>> layerMap,
-            List<PresenceAbsenceTermBase<?>> statusList,
+            List<PresenceAbsenceTerm> statusList,
             IGeoServiceAreaMapping mapping) {
 
 
@@ -394,7 +425,7 @@ public class EditGeoServiceUtilities {
         //and collect necessary information
         for (Distribution distribution : distributions){
             //collect status
-            PresenceAbsenceTermBase<?> status = distribution.getStatus();
+            PresenceAbsenceTerm status = distribution.getStatus();
             if(status == null){
                 status = defaultStatus;
             }
@@ -433,21 +464,21 @@ public class EditGeoServiceUtilities {
      */
     private static void addAreaToLayerMap(Map<String, Map<Integer,
             Set<Distribution>>> layerMap,
-            List<PresenceAbsenceTermBase<?>> statusList,
+            List<PresenceAbsenceTerm> statusList,
             Distribution distribution,
             NamedArea area,
             IGeoServiceAreaMapping mapping) {
 
         if (area != null){
-            String geoLayerString = getWMSLayerName(area, mapping);
+            String geoLayerName = getWMSLayerName(area, mapping);
 
-            if(geoLayerString == null){
+            if(geoLayerName == null){
                /* IGNORE areas for which no layer is mapped */
             } else {
-                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerName);
                 if (styleMap == null) {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
-                    layerMap.put(geoLayerString, styleMap);
+                    layerMap.put(geoLayerName, styleMap);
                 }
                 addDistributionToStyleMap(distribution, styleMap, statusList);
             }
@@ -582,7 +613,7 @@ public class EditGeoServiceUtilities {
             return null;
 
         }else if (voc.getUuid().equals(Country.uuidCountryVocabulary)){
-        	return "country_earth:gmi_cntry";
+            return "country_earth:gmi_cntry";
         }
 
         GeoServiceArea areas = mapping.valueOf(area);
@@ -600,8 +631,8 @@ public class EditGeoServiceUtilities {
 
 
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
-            List<PresenceAbsenceTermBase<?>> statusList) {
-        PresenceAbsenceTermBase<?> status = distribution.getStatus();
+            List<PresenceAbsenceTerm> statusList) {
+        PresenceAbsenceTerm status = distribution.getStatus();
         if (status == null) {
             status = defaultStatus;
         }
@@ -711,6 +742,44 @@ public class EditGeoServiceUtilities {
             ascii = 64 + i;
         }
         return (char)ascii;
+    }
+
+    /**
+     * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
+     * @return
+     * @throws IOException
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     */
+    public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson, ITermService termService) throws IOException, JsonParseException,
+            JsonMappingException {
+
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
+        if(StringUtils.isNotEmpty(statusColorJson)){
+
+            ObjectMapper mapper = new ObjectMapper();
+            // TODO cache the color maps to speed this up?
+
+            TypeFactory typeFactory = mapper.getTypeFactory();
+            MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, String.class);
+
+            Map<String,String> statusColorMap = mapper.readValue(statusColorJson, mapType);
+            UUID presenceTermVocabUuid = PresenceAbsenceTerm.NATIVE().getVocabulary().getUuid();
+            presenceAbsenceTermColors = new HashMap<PresenceAbsenceTerm, Color>();
+            PresenceAbsenceTerm paTerm = null;
+            for(String statusId : statusColorMap.keySet()){
+                try {
+                    Color color = Color.decode(statusColorMap.get(statusId));
+                    paTerm = termService.findByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceAbsenceTerm.class);
+                    if(paTerm != null){
+                        presenceAbsenceTermColors.put(paTerm, color);
+                    }
+                } catch (NumberFormatException e){
+                    logger.error("Cannot decode color", e);
+                }
+            }
+        }
+        return presenceAbsenceTermColors;
     }
 
 }

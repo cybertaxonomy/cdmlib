@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -217,9 +218,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param pageSize
      * @param pageNumber
      * @param propertyPaths
-     * @return A List of arrays. Each entry array holds the following entities: Taxon, CommonName, Description, Feature
+     * @return A List matching Taxa
      */
-    public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
+    public List<Taxon> getTaxaByCommonName(String queryString, Classification classification,
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
 
@@ -420,6 +421,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
+  
     /**
      * Creates all inferred synonyms for the species in the tree and insert it to the database
      * @param tree
@@ -476,7 +478,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);
@@ -485,6 +487,10 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             List<String> propertyPaths);
 
     public long countAcceptedTaxaFor(Synonym synonym, Classification classificationFilter);
+
+	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+			String titleSearchStringSqlized, Classification classification,
+			MatchMode matchMode, Set namedAreas);
 
 
 }

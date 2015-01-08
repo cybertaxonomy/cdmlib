@@ -9,8 +9,6 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -525,11 +523,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 //			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
             List<TaggedText> nameTags = getTaggedName(nonViralName);
             tags.addAll(nameTags);
-            if (nameIncludesAuthorship(nonViralName)){
-                String authorCache = getAuthorshipCache(nonViralName);
-                if (StringUtils.isNotBlank(authorCache)){
-                    tags.add(new TaggedText(TagEnum.authors, authorCache));
-                }
+            String authorCache = getAuthorshipCache(nonViralName);
+            if (StringUtils.isNotBlank(authorCache)){
+                tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
         return tags;
@@ -557,7 +553,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 //			result = getUnrankedInfragenericNameCache(nonViralName);
         }else if (rank.isInfraSpecific()){
             tags = getInfraSpeciesTaggedNameCache(nonViralName);
-        }else if (rank.isSpecies()){
+        }else if (rank.isSpecies() || isAggregateWithAuthorship(nonViralName, rank) ){ //exception see #4288
             tags = getSpeciesTaggedNameCache(nonViralName);
         }else if (rank.isInfraGeneric()){
             tags = getInfraGenusTaggedNameCache(nonViralName);
@@ -581,7 +577,16 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 //***************************** PRIVATES ***************************************/
 
 
-    /**
+    private boolean isAggregateWithAuthorship(T nonViralName, Rank rank) {
+		if (rank == null){
+			return false;
+		}else{
+			return rank.isSpeciesAggregate() && ( isNotBlank(nonViralName.getAuthorshipCache()) || nonViralName.getNomenclaturalReference() != null );
+		}
+	}
+
+
+	/**
      * Returns the tag list for an autonym taxon.
      *
      * @see NonViralName#isAutonym()
@@ -618,6 +623,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	        if (StringUtils.isNotBlank(infraSpeciesPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
 	        }
+	        
         } else if (nonViralName.isInfraGeneric()){
         	//genus part
 	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
@@ -628,7 +634,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	            //TODO handle exception
 	            logger.warn("Rank for autonym does not exist or is not lower than species !!");
 	        }else{
-	            String infraGenericMarker = nonViralName.getRank().getAbbreviation();
+	        	Rank rank = nonViralName.getRank();
+	            String infraGenericMarker = rank.getAbbreviation();
+                if (rank.equals(Rank.SECTION_BOTANY()) || rank.equals(Rank.SUBSECTION_BOTANY())){
+                	infraGenericMarker = infraGenericMarker.replace("(bot.)", "");
+                }
 	            if (StringUtils.isNotBlank(infraGenericMarker)){
 	                tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
 	            }
@@ -710,7 +720,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<T> nonViralName){
         Rank rank = nonViralName.getRank();
-        if (rank != null && rank.isSpeciesAggregate()){
+        if (rank != null && rank.isSpeciesAggregate() && isBlank(nonViralName.getAuthorshipCache())){
             return getSpeciesAggregateTaggedCache(nonViralName);
         }
 
@@ -722,6 +732,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         if (rank != null){
             try {
                 infraGenericMarker = rank.getInfraGenericMarker();
+                if (rank.equals(Rank.SECTION_BOTANY()) || rank.equals(Rank.SUBSECTION_BOTANY())){
+                	infraGenericMarker = infraGenericMarker.replace("(bot.)", "");
+                }
             } catch (UnknownCdmTypeException e) {
                 infraGenericMarker = "'unhandled infrageneric rank'";
             }
@@ -762,7 +775,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @return
      */
     protected List<TaggedText> getSpeciesAggregateTaggedCache(NonViralName<?> nonViralName){
-        List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
+        if (! isBlank(nonViralName.getAuthorshipCache())){
+        	List<TaggedText> result = getSpeciesTaggedNameCache(nonViralName);
+        	return result;
+        }
+    	
+    	
+    	List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
 
         addSpeciesAggregateTaggedEpithet(tags, nonViralName);
         addAppendedTaggedPhrase(tags, nonViralName);
