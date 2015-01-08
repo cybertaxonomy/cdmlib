@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  *
  */
-
+@Ignore
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);

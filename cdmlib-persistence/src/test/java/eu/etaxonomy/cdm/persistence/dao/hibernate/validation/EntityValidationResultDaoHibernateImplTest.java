@@ -99,6 +99,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
 
 	@Test
 	@ExpectedDataSet
+	@Ignore //FIXME unignore entity validation result dao delete test
 	public void testDeleteValidationResult(){
 		dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 2);
 		
