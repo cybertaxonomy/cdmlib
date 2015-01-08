@@ -93,7 +93,7 @@ public enum VocabularyEnum {
 	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", DefinedTerm.class),
 	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class)
 	;
-	
+	 
 	
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;
