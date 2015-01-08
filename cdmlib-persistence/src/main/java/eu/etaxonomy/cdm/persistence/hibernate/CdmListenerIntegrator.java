@@ -54,12 +54,14 @@ public class CdmListenerIntegrator implements Integrator {
 		eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator(), new SaveOrUpdateEntityListener());
 		eventRegistry.appendListeners(EventType.DELETE, new CdmDeleteListener());
 		eventRegistry.appendListeners(EventType.POST_LOAD, new CdmPostDataChangeObservableListener());
-		eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener(), l2Listener, l3Listener);
-		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener(), l2Listener, l3Listener);
-		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener(), l3Listener);
-//		eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener());
-//		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener());
-//		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener());
+//with validation
+//		eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener(), l2Listener, l3Listener);
+//		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener(), l2Listener, l3Listener);
+//		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener(), l3Listener);
+//without validation
+		eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener());
+		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener());
+		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener());
 	}
 
 
