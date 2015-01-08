@@ -189,6 +189,6 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @param propertyPaths
      * @return
      */
-    public <T extends IdentifiableEntity> List<T> findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

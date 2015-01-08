@@ -264,6 +264,6 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param propertyPaths
      * @return
      */
-    public <S extends IdentifiableEntity> List<S> listByIdentifier(S clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> listByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

@@ -448,24 +448,30 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     }
     
 	@Override
-	public <T extends IdentifiableEntity> List<T> findByIdentifier(
-			T clazz, String identifier, DefinedTerm identifierType,
+	public <S extends T> List<S> findByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType,
 			MatchMode matchmode, Integer pageSize,
 			Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
         
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-        Query query = getSession().createQuery(
-                "Select c from " + type.getSimpleName() + " as c " +
-                "inner join c.identifier as identifier " +
-                "where identifier.identifier = :identifier " +
-                    " AND identifier.identifierType = :type"
-            );
+        String queryString = "SELECT c FROM " + type.getSimpleName() + " as c " +
+                "INNER JOIN c.identifiers as identifiers " +
+                "WHERE identifiers.identifier = :identifier ";
+
+        if (identifierType != null){
+        	queryString = queryString + " AND identifiers.type = :type";
+        }
+        
+		Query query = getSession().createQuery(queryString);
         query.setString("identifier", identifier);
-        query.setEntity("type", identifierType);
+        if (identifierType != null){
+        	query.setEntity("type", identifierType);
+        }
         //TODO matchmode, pageSize, pageNumber, orderHints, propertyPaths
-        return (List<T>)query.list();
-		
+        List<S> results = (List<S>)query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
 	}
 
 }

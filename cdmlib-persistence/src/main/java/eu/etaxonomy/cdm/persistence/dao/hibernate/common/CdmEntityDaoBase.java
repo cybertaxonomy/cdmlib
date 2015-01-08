@@ -398,7 +398,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
 
-        logger.debug(criteria.toString());
+        if (logger.isDebugEnabled()){logger.debug(criteria.toString());};
 
          @SuppressWarnings("unchecked")
 		List<T> result = criteria.list();

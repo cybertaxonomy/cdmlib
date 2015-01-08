@@ -2444,6 +2444,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationSe
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/HandlingCdmEntitiesTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testListByIdentifier.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testUpdateTitleCache-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text

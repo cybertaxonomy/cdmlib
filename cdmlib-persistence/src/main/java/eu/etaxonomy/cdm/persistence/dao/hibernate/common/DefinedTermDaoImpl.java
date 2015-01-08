@@ -121,7 +121,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, CdmBase sessionObject)");
 		Session session = getSession();
-		if ( sessionObject != null ) {// FIXME is this needed?
+		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
 			session.update(sessionObject);
 		}
 		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");

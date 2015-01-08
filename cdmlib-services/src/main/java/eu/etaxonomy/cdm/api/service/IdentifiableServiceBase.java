@@ -568,8 +568,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	@Override
-	public <S extends IdentifiableEntity> List<S> listByIdentifier(
-			S clazz, String identifier, DefinedTerm identifierType,
+	public <S extends T> List<S> listByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType,
 			MatchMode matchmode, Integer pageSize,
 			Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
