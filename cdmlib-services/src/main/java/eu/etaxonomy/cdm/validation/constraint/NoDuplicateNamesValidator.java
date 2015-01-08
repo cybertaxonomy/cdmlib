@@ -66,7 +66,6 @@ public class NoDuplicateNamesValidator implements
 			} else {
 				return true;
 			}
-
 		}
 	}
 }

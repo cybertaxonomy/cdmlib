@@ -45,6 +45,8 @@
 				<prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
 				<prop key="/remoting/taxon.service">httpTaxonService</prop>
 				<prop key="/remoting/term.service">httpTermService</prop>
+				<prop key="/remoting/entityvalidationresultservice.service">httpEntityValidationResultService</prop>
+				<prop key="/remoting/entityconstraintviolationservice.service">httpEntityConstraintViolationService</prop>
 				<prop key="/remoting/user.service">httpUserService</prop>
 				<prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
 				<prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>

@@ -243,6 +243,26 @@
 		</property>
 	</bean>
 
+	<bean id="httpEntityValidationResultService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="entityValidationResultServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IEntityValidationResultService</value>
+		</property>
+	</bean>
+
+	<bean id="httpEntityConstraintViolationService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="entityConstraintViolationServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService</value>
+		</property>
+	</bean>
+
 	<bean id="httpUserService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">
