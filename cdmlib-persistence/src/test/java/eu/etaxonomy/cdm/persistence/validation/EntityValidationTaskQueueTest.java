@@ -14,9 +14,9 @@ import org.junit.Test;
 
 public class EntityValidationTaskQueueTest {
 
-	private EntityValidationTask evt1;
-	private EntityValidationTask evt2;
-	private EntityValidationTask evt3;
+	private EntityValidationTaskBase evt1;
+	private EntityValidationTaskBase evt2;
+	private EntityValidationTaskBase evt3;
 
 
 	/*

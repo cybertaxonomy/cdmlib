@@ -36,7 +36,7 @@ public class EmployeeWithLongRunningValidation extends CdmBase {
 	 * ValidationExecutor and we want to be sure each submitted task will be treated as a new
 	 * task, otherwise the task would not enter the queue in the first place. The easiest way
 	 * to accomplish this is to just let the equals() method simply return false. See
-	 * {@link EntityValidationTask#equals(Object)}.
+	 * {@link EntityValidationTaskBase#equals(Object)}.
 	 */
 	public boolean equals(Object obj){
 		return false;

@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.validation.EntityValidationTask;
+import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.Severity;
 
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.validation.Severity;
  * entities themselves, with all constraints they violated. This interface provides the
  * latter perspective while {@link IEntityConstraintViolationDao} provides the former
  * perspective. Together these methods provide all persistency operations required
- * internally by the CVI (notably {@link EntityValidationTask}s) and by clients. In fact,
+ * internally by the CVI (notably {@link EntityValidationTaskBase}s) and by clients. In fact,
  * strictly speaking implementors should override methods from the superclass by throwing
  * an exception. They should in any case not be exposed via a service.
  * 
@@ -35,7 +35,7 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 	 * results of the same entity will be cleared first. Note that this method should not
 	 * be exposed via cdmlib-services, because this is a backend-only affair. Populating
 	 * the error tables is done by the CVI (more particularly by an
-	 * {@link EntityValidationTask}). External software like the TaxEditor can and should
+	 * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
 	 * not have access to this method.
 	 * 
 	 * @param errors
