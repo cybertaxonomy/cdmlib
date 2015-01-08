@@ -376,7 +376,8 @@ public class CdmUtils {
     }
 
     /**
-     * Returns true if the passed string starts with an upper case letter.
+     * Returns <code>true</code> if the passed string starts with an upper case letter.
+     * <code>false</code> otherwise. The later includes <code>null</code> and empty strings.
      * @param string
      * @return
      */
