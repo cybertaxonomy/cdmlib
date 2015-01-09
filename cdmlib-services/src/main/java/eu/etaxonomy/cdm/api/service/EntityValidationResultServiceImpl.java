@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.model.validation.Severity;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,50 +20,42 @@ public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidat
 
 
 	@Override
-	protected void setDao(IEntityValidationResultDao dao)
-	{
+	protected void setDao(IEntityValidationResultDao dao){
 		this.dao = dao;
 	}
 
-
 	@Override
-	public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId)
-	{
+	public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId){
 		return dao.getValidationResult(validatedEntityClass, validatedEntityId);
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getValidationResults()
-	{
+	public List<EntityValidationResult> getValidationResults(){
 		return dao.getValidationResults();
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass)
-	{
+	public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass){
 		return dao.getEntityValidationResults(validatedEntityClass);
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass)
-	{
+	public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass){
 		return dao.getEntitiesViolatingConstraint(validatorClass);
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity)
-	{
+	public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity){
 		return dao.getValidationResults(validatedEntityClass, severity);
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getValidationResults(Severity severity)
-	{
+	public List<EntityValidationResult> getValidationResults(Severity severity){
 		// TODO Auto-generated method stub
 		return null;
 	}
