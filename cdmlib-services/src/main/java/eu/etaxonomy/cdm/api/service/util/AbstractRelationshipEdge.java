@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * Holds a RelationshipType ({@link RelationshipTermBase}) of type {@code <T>}
