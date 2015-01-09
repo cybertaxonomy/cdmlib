@@ -1,11 +1,16 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
@@ -59,5 +64,19 @@ public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidat
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
+            CRUDEventType crudEventType) {
+        dao.saveValidationResult(errors, entity, crudEventType);
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
+        dao.deleteValidationResult(validatedEntityClass, validatedEntityId);
+    }
 
 }

@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * Basically just tests that the JSR-303 validation is working in the first place, and
  * that it is working as expected.
- * 
+ *
  * @author ayco holleman
- * 
+ *
  */
 public class EntityValidationTaskTest {
 
@@ -66,7 +66,7 @@ public class EntityValidationTaskTest {
 		emp.setCompany(comp);
 
 		// Validate
-		Level2ValidationTask task = new Level2ValidationTask(emp);
+		Level2ValidationTask task = new Level2ValidationTask(emp, null);
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<CdmBase>> violations = task.validate();
 
@@ -93,7 +93,7 @@ public class EntityValidationTaskTest {
 		one.setFirstName("john");
 		// ERROR 1 (should be SMITH)
 		one.setLastName("smith");
-		Level3ValidationTask task = new Level3ValidationTask(one);
+		Level3ValidationTask task = new Level3ValidationTask(one, null);
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<CdmBase>> violations = task.validate();
 		Assert.assertEquals(violations.size(), 1);

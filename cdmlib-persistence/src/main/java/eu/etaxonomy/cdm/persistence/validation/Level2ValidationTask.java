@@ -10,23 +10,24 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * A {@link Runnable} performing Level-2 validation of a JPA entity
- * 
+ *
  * @author ayco holleman
- * 
+ *
  */
 public class Level2ValidationTask extends EntityValidationTaskBase {
 
-	public Level2ValidationTask(CdmBase entity){
-		super(entity, Level2.class);
+	public Level2ValidationTask(CdmBase entity, IEntityValidationResultCrud dao){
+		super(entity, dao, Level2.class);
 	}
 
 
-	public Level2ValidationTask(CdmBase entity, CRUDEventType crudEventType){
-		super(entity, crudEventType, Level2.class);
+	public Level2ValidationTask(CdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao){
+		super(entity, crudEventType, dao, Level2.class);
 	}
 
 }

@@ -12,18 +12,17 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
-import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.model.validation.Severity;
 
 @Repository
 @Qualifier("EntityValidationResultDaoHibernateImpl")
 public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<EntityValidationResult> implements IEntityValidationResultDao {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EntityValidationResultDaoHibernateImpl.class);
 
 
@@ -80,7 +79,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		query.setString("cls", validatedEntityClass);
 		query.setInteger("id", validatedEntityId);
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		if (result.size() == 0) {
 			return null;
 		}else{
@@ -99,7 +98,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		);
 		//@formatter:on
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		return result;
 	}
 
@@ -115,7 +114,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		//@formatter:on
 		query.setString("cls", validatedEntityClass);
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		return result;
 	}
 
@@ -133,7 +132,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		//@formatter:on
 		query.setString("cls", validatorClass);
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		return result;
 	}
 
@@ -153,7 +152,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		query.setString("cls", validatedEntityClass);
 		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		return result;
 	}
 
@@ -163,15 +162,15 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	{
 		//@formatter:off
 		Query query = getSession().createQuery(
-				"FROM EntityValidationResult vr " 
-					+ "JOIN FETCH vr.entityConstraintViolations cv " 
+				"FROM EntityValidationResult vr "
+					+ "JOIN FETCH vr.entityConstraintViolations cv "
 					+ "WHERE cv.severity = :severity "
 					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
 		);
 		//@formatter:on
 		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
-		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		List<EntityValidationResult> result = query.list();
 		return result;
 	}
 
@@ -190,7 +189,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		 * declaration of CdmBase.
 		 */
 		if (entity instanceof ISelfDescriptive) {
-			ISelfDescriptive isd = (ISelfDescriptive) entity;
+			ISelfDescriptive isd = entity;
 			result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
 			result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
 		}
@@ -210,7 +209,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		violation.setMessage(error.getMessage());
 		String field = error.getPropertyPath().toString();
 		if (entity instanceof ISelfDescriptive) {
-			ISelfDescriptive isd = (ISelfDescriptive) entity;
+			ISelfDescriptive isd = entity;
 			violation.setUserFriendlyFieldName(isd.getUserFriendlyFieldName(field));
 		}
 		else {

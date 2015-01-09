@@ -1465,6 +1465,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/Logi
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilterDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityConstraintViolationDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityValidationResultCrud.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityValidationResultDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text

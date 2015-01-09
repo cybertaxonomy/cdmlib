@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,21 +20,25 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
 import eu.etaxonomy.cdm.persistence.validation.Level3ValidationTask;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
-import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 
+//TODO use a common superclass for both listeners
 @SuppressWarnings("serial")
 public class Level3ValidationEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
 
 	private static final Logger logger = Logger.getLogger(Level3ValidationEventListener.class);
 
-	// We really would like to have a singleton instance injected here
+	// TODO We really would like to have a singleton instance injected here
 	private ValidationExecutor validationExecutor;
 
+	private final IEntityValidationResultCrud dao;
 
-	public Level3ValidationEventListener(){
-	}
+	public Level3ValidationEventListener(IEntityValidationResultCrud dao){
+        this.dao = dao;
+    }
 
 
 	public ValidationExecutor getValidationExecutor(){
@@ -78,7 +82,7 @@ public class Level3ValidationEventListener implements PostInsertEventListener, P
 				return;
 			}
 			CdmBase entity = (CdmBase) object;
-			Level3ValidationTask task = new Level3ValidationTask(entity, trigger);
+			Level3ValidationTask task = new Level3ValidationTask(entity, trigger, dao);
 			validationExecutor.execute(task);
 		}
 		catch (Throwable t) {

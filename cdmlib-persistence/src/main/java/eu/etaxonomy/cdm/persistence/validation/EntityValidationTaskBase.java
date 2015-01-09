@@ -19,17 +19,18 @@ import javax.validation.Validator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 
 /**
  * Abstract base class for JPA entity validation tasks. Note that in the future non-entity
  * classes might also be decorated with constraint annotations. This base class, however,
  * is specifically targeted at the validation of JPA entities (more specifically instances
  * of {@link CdmBase}.
- * 
+ *
  * @author ayco_holleman
- * 
+ *
  */
 public abstract class EntityValidationTaskBase implements Runnable {
 
@@ -39,7 +40,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
 	private final CRUDEventType crudEventType;
 	private final Class<?>[] validationGroups;
 
-	private IEntityValidationResultDao dao;
+	private IEntityValidationResultCrud dao;
 	private Validator validator;
 	private WeakReference<EntityValidationThread> waitForThread;
 
@@ -47,21 +48,21 @@ public abstract class EntityValidationTaskBase implements Runnable {
 	/**
 	 * Create an entity validation task for the specified entity, to be validated
 	 * according to the constraints in the specified validation groups.
-	 * 
+	 *
 	 * @param entity
 	 *            The entity to be validated
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTaskBase(CdmBase entity, Class<?>... validationGroups){
-		this(entity, CRUDEventType.NONE, validationGroups);
+	public EntityValidationTaskBase(CdmBase entity, IEntityValidationResultCrud dao, Class<?>... validationGroups){
+		this(entity, CRUDEventType.NONE, dao, validationGroups);
 	}
 
 
 	/**
 	 * Create an entity validation task for the specified entity, indicating the CRUD
 	 * event that triggered it and the validation groups to be applied.
-	 * 
+	 *
 	 * @param entity
 	 *            The entity to be validated
 	 * @param trigger
@@ -69,10 +70,11 @@ public abstract class EntityValidationTaskBase implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTaskBase(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups){
+	public EntityValidationTaskBase(CdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao, Class<?>... validationGroups){
 		this.entity = entity;
 		this.crudEventType = crudEventType;
 		this.validationGroups = validationGroups;
+		this.dao = dao;
 	}
 
 	public void setValidator(Validator validator){
@@ -150,7 +152,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
 	void waitFor(EntityValidationThread thread){
 		this.waitForThread = new WeakReference<EntityValidationThread>(thread);
 	}
-	
+
 
 	/**
 	 * Two entity validation tasks are considered equal if (1) they validate the same
