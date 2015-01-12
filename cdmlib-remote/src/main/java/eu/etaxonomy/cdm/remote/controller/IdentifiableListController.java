@@ -10,16 +10,23 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -31,6 +38,8 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class IdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> extends BaseListController<T,SERVICE>  {
 
+	@Autowired
+	private ITermService termservice;
 
     /**
      * Find IdentifiableEntity objects by name
@@ -76,5 +85,47 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
 
     }
 
+    /**
+     * list IdentifiableEntity objects by identifiers
+     * 
+     * @param type
+     * @param identifierType
+     * @param identifier
+     * @param pageNumber
+     * @param pageSize
+     * @param matchMode
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"listByIdentifier"})
+    public  List<?> dolistByIdentifier(
+    		@RequestParam(value = "class", required = false) Class type,
+    		@RequestParam(value = "identifierType", required = false) String identifierType,
+            @RequestParam(value = "identifier", required = true) String identifier,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
 
+    	DefinedTerm definedTerm = null;
+    	if(StringUtils.isNotBlank(identifierType)){
+    		identifierType = StringUtils.trim(identifierType);
+    		UUID identifierTypeUUID = UUID.fromString(identifierType);
+    		definedTerm = CdmBase.deproxy(termservice.find(identifierTypeUUID), DefinedTerm.class);
+    	}
+    	
+        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
+
+        return service.listByIdentifier(type, identifier, definedTerm , matchMode, pageSize, pageNumber, null, initializationStrategy);
+    }
 }
