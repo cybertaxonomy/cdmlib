@@ -568,6 +568,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public <S extends T> List<S> listByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType,
 			MatchMode matchmode, Integer pageSize,
