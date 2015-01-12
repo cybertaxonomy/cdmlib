@@ -103,7 +103,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
     public  List<?> dolistByIdentifier(
     		@RequestParam(value = "class", required = false) Class type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
-            @RequestParam(value = "identifier", required = true) String identifier,
+            @RequestParam(value = "identifier", required = false) String identifier,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
