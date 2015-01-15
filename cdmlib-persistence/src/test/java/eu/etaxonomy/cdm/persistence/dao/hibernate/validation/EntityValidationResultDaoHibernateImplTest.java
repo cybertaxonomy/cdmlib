@@ -18,22 +18,20 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.model.validation.Severity;
 
 @DataSet
 public class EntityValidationResultDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
@@ -99,12 +97,12 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
 
 	@Test
 	@ExpectedDataSet
-	@Ignore //FIXME unignore entity validation result dao delete test
+	//@Ignore //FIXME unignore entity validation result dao delete test
 	public void testDeleteValidationResult(){
-		dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 2);
-		
+		dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 200);
+
 		commitAndStartNewTransaction(null);
-		
+
 		List<EntityValidationResult> results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
 		assertEquals("Unexpected number of validation results", 0, results.size());
 	}
