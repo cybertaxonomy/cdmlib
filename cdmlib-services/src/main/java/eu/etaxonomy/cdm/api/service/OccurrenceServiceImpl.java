@@ -707,7 +707,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             fieldUnits.add((FieldUnit) specimen);
         }
         else if(specimen instanceof DerivedUnit){
-            getFieldUnits((DerivedUnit) specimen, fieldUnits);
+            fieldUnits.addAll(getFieldUnits((DerivedUnit) specimen));
         }
         return fieldUnits;
     }
@@ -717,7 +717,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @param original
      * @param fieldUnits
      */
-    private void getFieldUnits(DerivedUnit derivedUnit, Collection<FieldUnit> fieldUnits) {
+    private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
+        Collection<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if(originals!=null && !originals.isEmpty()){
             for(SpecimenOrObservationBase<?> original:originals){
@@ -725,10 +726,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     fieldUnits.add((FieldUnit) original);
                 }
                 else if(original instanceof DerivedUnit){
-                    getFieldUnits((DerivedUnit) original, fieldUnits);
+                    fieldUnits.addAll(getFieldUnits((DerivedUnit) original));
                 }
             }
         }
+        return fieldUnits;
     }
 
     /* (non-Javadoc)
@@ -831,8 +833,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         else if(specimen instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimen;
             if(derivedUnit.getDerivedFrom()!=null){
-                Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
-                getFieldUnits(derivedUnit, fieldUnits);
+                Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
                 for(FieldUnit fieldUnit:fieldUnits){
                     nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
                 }
