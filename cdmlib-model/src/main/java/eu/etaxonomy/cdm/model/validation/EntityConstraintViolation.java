@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * the validation of an entity. It basically is a database model for the
  * {@link ConstraintValidator} class of the javax.validation framework.
  *
- * @author admin.ayco.holleman
+ * @author ayco_holleman
  *
  */
 

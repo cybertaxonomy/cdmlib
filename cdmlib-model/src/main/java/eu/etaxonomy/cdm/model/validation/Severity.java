@@ -25,7 +25,7 @@ import javax.validation.Payload;
  * while behind the scenes only the class of those instances is taken into
  * account.
  *
- * @author ayco holleman
+ * @author ayco_holleman
  */
 public abstract class Severity implements Payload {
 

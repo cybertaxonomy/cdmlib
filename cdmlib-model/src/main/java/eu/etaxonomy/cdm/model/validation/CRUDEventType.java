@@ -19,7 +19,7 @@ package eu.etaxonomy.cdm.model.validation;
  * <i>can</i> possibly trigger a Level-3 validation, because that disrupts the
  * object graph the entity was part of.
  *
- * @author ayco holleman
+ * @author ayco_holleman
  *
  */
 public enum CRUDEventType {
