@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * get validated as well. It's just useless and may lead to unnecessary
  * contention of the queue.
  *
- * @author ayco holleman
+ * @author ayco_holleman
  *
  */
 @SuppressWarnings("serial")

@@ -20,7 +20,7 @@ import javax.validation.Validator;
  *
  * @see {@link #isTerminationRequested()}.
  *
- * @author ayco holleman
+ * @author ayco_holleman
  *
  */
 public final class EntityValidationThread extends Thread {

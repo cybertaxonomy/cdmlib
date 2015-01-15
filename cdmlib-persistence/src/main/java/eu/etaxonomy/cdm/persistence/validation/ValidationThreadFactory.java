@@ -19,7 +19,7 @@ import org.hibernate.validator.HibernateValidatorConfiguration;
 /**
  * {@code ThreadFactory} implementation used by a {@link ValidationExecutor}.
  *
- * @author ayco holleman
+ * @author ayco_holleman
  *
  */
 class ValidationThreadFactory implements ThreadFactory {

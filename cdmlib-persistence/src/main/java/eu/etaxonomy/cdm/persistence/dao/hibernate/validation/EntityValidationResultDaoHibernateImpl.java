@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import java.util.List;
@@ -19,6 +27,12 @@ import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 
+/**
+ *
+ * @author ayco_holleman
+ * @date 15 jan. 2015
+ *
+ */
 @Repository
 @Qualifier("EntityValidationResultDaoHibernateImpl")
 public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<EntityValidationResult> implements

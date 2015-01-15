@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * meant to cancel or correct a previous CRUD operation (e.g. a user of the
  * taxonomic editor may realize he/she did something wrong and then quickly
  * correct it).
- * 
+ *
  * <p>
  * Although a {@code ValidationExecutor} sets up a thread pool containing just a
  * single thread, it does not logically or functionally <i>depend</i> on the
@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * issue, and concurrency the solution, increasing the pool size is still an
  * option. For example, Level-2 validation tasks might be quite amenable to
  * being executed concurrently.
- * 
+ *
  * <p>
  * The reason we extend {@code ThreadPoolExecutor} rather than simply use
  * {@link Executors#newSingleThreadExecutor()} is that we need access to the
@@ -78,9 +78,9 @@ import org.apache.log4j.Logger;
  * logic to prevent needless queueing and queue overruns. This would make them
  * dependent, though, on at least the {@link EntityValidationThread} class, so
  * there are some architectural issues here.
- * 
- * @author a. holleman
- * 
+ *
+ * @author ayco_holleman
+ *
  */
 public class ValidationExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
@@ -118,7 +118,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 
 	/**
 	 * Creates a {@code ValidationExecutor} with a custom task queue size.
-	 * 
+	 *
 	 * @param taskQueueSize
 	 */
 	public ValidationExecutor(int taskQueueSize){

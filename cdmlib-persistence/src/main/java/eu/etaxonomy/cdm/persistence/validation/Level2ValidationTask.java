@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 /**
  * A {@link Runnable} performing Level-2 validation of a JPA entity
  *
- * @author ayco holleman
+ * @author ayco_holleman
  *
  */
 public class Level2ValidationTask extends EntityValidationTaskBase {
