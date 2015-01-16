@@ -206,32 +206,38 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         save(ref, state);
         state.getConfig().setSourceReference(ref);
 
-        List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
-        if (state.getConfig().isUseClassification() && state.getConfig().isInteractWithUser()){
-            Map<String,Classification> classMap = new HashMap<String, Classification>();
-            for (Classification tree : classificationList) {
-                if (! StringUtils.isBlank(tree.getTitleCache())) {
-                    classMap.put(tree.getTitleCache(),tree);
-                }
-            }
-            classification = sui.askForClassification(classMap);
-            if (classification == null){
-                String cla = sui.createNewClassification();
-                if (classMap.get(cla)!= null) {
-                    classification = classMap.get(cla);
-                } else {
-                    classification = Classification.NewInstance(cla, ref, Language.DEFAULT());
-                }
-            }
-            save(classification, state);
+        if(state.getConfig().getClassificationUuid()!=null){
+            //load classification from config if it exists
+            classification = getClassificationService().load(state.getConfig().getClassificationUuid());
         }
-        else{
+        if(classification==null){//no existing classification was set in config
+            List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
+            //get classification via user interaction
+            if (state.getConfig().isUseClassification() && state.getConfig().isInteractWithUser()){
+                Map<String,Classification> classMap = new HashMap<String, Classification>();
+                for (Classification tree : classificationList) {
+                    if (! StringUtils.isBlank(tree.getTitleCache())) {
+                        classMap.put(tree.getTitleCache(),tree);
+                    }
+                }
+                classification = sui.askForClassification(classMap);
+                if (classification == null){
+                    String cla = sui.createNewClassification();
+                    if (classMap.get(cla)!= null) {
+                        classification = classMap.get(cla);
+                    } else {
+                        classification = Classification.NewInstance(cla, ref, Language.DEFAULT());
+                    }
+                }
+                save(classification, state);
+            }
+            // create default classification
             if (classification == null) {
                 String name = NB(state.getConfig().getClassificationName());
                 for (Classification classif : classificationList){
                     if (classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(ref)) {
                         classification=classif;
-//                        System.out.println("FIND SAME CLASSIF");
+                        //                        System.out.println("FIND SAME CLASSIF");
                     }
                 }
                 if (classification == null){
