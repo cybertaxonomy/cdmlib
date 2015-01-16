@@ -1506,7 +1506,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 //        System.out.println("config.isReuseExistingTaxaWhenPossible() :"+config.isReuseExistingTaxaWhenPossible());
         if (config.isReuseExistingTaxaWhenPossible()){
-            List<TaxonBase> c = null;
             try {
                 List<TaxonBase> taxonbaseList = getTaxonService().listByTitle(Taxon.class, scientificName+" sec", MatchMode.BEGINNING, null, null, null, null, null);
                 if (taxonbaseList.size()>0){
@@ -1517,12 +1516,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                 }
                 else{
-                    c = getTaxonService().searchTaxaByName(scientificName, ref);
+                    List<TaxonBase> searchByNameList = getTaxonService().searchTaxaByName(scientificName, ref);
                     if(config.isInteractWithUser() && config.isAllowReuseOtherClassifications()){
-                        taxon = sui.askWhereToFixData(scientificName,c, classification);
+                        taxon = sui.askWhereToFixData(scientificName,searchByNameList, classification);
                     }
                     else{
-                        taxon = sui.lookForTaxaIntoCurrentClassification(c, classification);
+                        taxon = sui.lookForTaxaIntoCurrentClassification(searchByNameList, classification);
                     }
                 }
             } catch (Exception e) {
