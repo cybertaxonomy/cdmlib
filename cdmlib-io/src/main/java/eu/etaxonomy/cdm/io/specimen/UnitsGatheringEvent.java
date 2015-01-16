@@ -92,9 +92,11 @@ public class UnitsGatheringEvent {
      * @param collectorNames
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
-            Double latitude, List<String> collectorName, List<String> team, Abcd206ImportConfigurator config){
+            Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit, String date, List<String> collectorName, List<String> team, Abcd206ImportConfigurator config){
         this.setLocality(termService, locality, languageIso);
         this.setCoordinates(longitude, latitude);
+        this.setDate(date);
+        this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
         if (!collectorName.isEmpty()) {
             List<String> tmp =  new ArrayList<String>(new HashSet<String>(collectorName));
             this.setCollector(tmp.get(0), config);
@@ -183,8 +185,36 @@ public class UnitsGatheringEvent {
 
     }
 
-    public void setElevation(Integer elevation){
-        this.gatheringEvent.setAbsoluteElevation(elevation);
+    public void setDate(String date){
+        TimePeriod timeperiod = this.gatheringEvent.getTimeperiod();
+        if(timeperiod==null){
+            timeperiod = TimePeriod.NewInstance();
+            this.gatheringEvent.setTimeperiod(timeperiod);
+        }
+        timeperiod.setFreeText(date);
+    }
+
+    public void setElevation(String elevationText, String elevationMin, String elevationMax, String elevationUnit){
+        if(elevationText!=null){
+            this.gatheringEvent.setAbsoluteElevationText(elevationText);
+        }
+        else{
+            //TODO check for unit at string end
+            String pattern = "\\D";// regex for non-digits
+            if(elevationMin!=null){
+                Integer min = Integer.parseInt(elevationMin.replaceAll(pattern, ""));
+                this.gatheringEvent.setAbsoluteElevation(min);
+            }
+            if(elevationMax!=null){
+                Integer max = Integer.parseInt(elevationMax.replaceAll(pattern, ""));
+                this.gatheringEvent.setAbsoluteElevation(max);
+            }
+            if(elevationUnit!=null){
+                if(!elevationUnit.equals("m")){
+                    //TODO convert if necessary
+                }
+            }
+        }
     }
 
     /*

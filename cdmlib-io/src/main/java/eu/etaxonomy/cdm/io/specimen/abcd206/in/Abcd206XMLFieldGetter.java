@@ -596,6 +596,106 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getGatheringElevation(Element root) {
+        try {
+            //check for freetext elevation
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Altitude")) {
+                        NodeList altitudes = children.item(j).getChildNodes();
+                        for (int k = 0; k < altitudes.getLength(); k++) {
+                            if (altitudes.item(k).getNodeName().equals(prefix + "MeasurementOrFactText")) {
+                                path = altitudes.item(k).getNodeName();
+                                getHierarchie(altitudes.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                dataHolder.gatheringElevationText = altitudes.item(k).getTextContent();
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        } catch (NullPointerException e) {
+            dataHolder.gatheringElevationText = null;
+        }
+
+        try{
+            //check for atomised elevation
+            if(dataHolder.gatheringElevationText==null){
+                NodeList group = root.getElementsByTagName(prefix + "Gathering");
+                for (int i = 0; i < group.getLength(); i++) {
+                    NodeList children = group.item(i).getChildNodes();
+                    for (int j = 0; j < children.getLength(); j++) {
+                        if (children.item(j).getNodeName().equals(prefix + "Altitude")) {
+                            NodeList altitudes = children.item(j).getChildNodes();
+                            for (int k = 0; k < altitudes.getLength(); k++) {
+                                if (altitudes.item(k).getNodeName().equals(prefix + "MeasurementOrFactAtomised")) {
+                                    NodeList facts = altitudes.item(k).getChildNodes();
+                                    for (int l = 0; l < facts.getLength(); l++) {
+                                        if (facts.item(l).getNodeName().equals(prefix + "LowerValue")) {
+                                            path = facts.item(l).getNodeName();
+                                            getHierarchie(facts.item(l));
+                                            dataHolder.knownABCDelements.add(path);
+                                            path = "";
+                                            dataHolder.gatheringElevationMin = facts.item(l).getTextContent();
+                                        }
+                                        else if (facts.item(l).getNodeName().equals(prefix + "UpperValue")) {
+                                            path = facts.item(l).getNodeName();
+                                            getHierarchie(facts.item(l));
+                                            dataHolder.knownABCDelements.add(path);
+                                            path = "";
+                                            dataHolder.gatheringElevationMax = facts.item(l).getTextContent();
+                                        }
+                                        else if (facts.item(l).getNodeName().equals(prefix + "UnitOfMeasurement")) {
+                                            path = facts.item(l).getNodeName();
+                                            getHierarchie(facts.item(l));
+                                            dataHolder.knownABCDelements.add(path);
+                                            path = "";
+                                            dataHolder.gatheringElevationUnit = facts.item(l).getTextContent();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            dataHolder.gatheringElevationText = null;
+        }
+    }
+
+    protected void getGatheringDate(Element root) {
+        try {
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "DateTime")) {
+                        NodeList dateTimes = children.item(j).getChildNodes();
+                        for (int k = 0; k < dateTimes.getLength(); k++) {
+                            if (dateTimes.item(k).getNodeName().equals(prefix + "DateText")) {
+                                path = dateTimes.item(k).getNodeName();
+                                getHierarchie(dateTimes.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                dataHolder.gatheringDateText = dateTimes.item(k).getTextContent();
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        } catch (NullPointerException e) {
+            dataHolder.gatheringDateText = null;
+        }
+    }
+
     /**
      * getGatheringPeople : get GatheringAgent with fullname
      * @param root

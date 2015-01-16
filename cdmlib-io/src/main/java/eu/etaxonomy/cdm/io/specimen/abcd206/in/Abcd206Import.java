@@ -351,8 +351,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(cdmAppController==null){
                 cdmAppController = this;
             }
-            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(), dataHolder.locality, dataHolder.languageIso,
-                    dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,state.getConfig());
+            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(),
+                    dataHolder.locality, dataHolder.languageIso, dataHolder.longitude, dataHolder.latitude,
+                    dataHolder.gatheringElevationText, dataHolder.gatheringElevationMin,
+                    dataHolder.gatheringElevationMax, dataHolder.gatheringElevationUnit, dataHolder.gatheringDateText,
+                    dataHolder.gatheringAgentList, dataHolder.gatheringTeamList, state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
@@ -376,6 +379,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
             derivedUnitFacade.setCollector(gatheringEvent.getCollector());
             derivedUnitFacade.setCountry((NamedArea)areaCountry);
+            derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
+            derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
+            derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
+            derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
 
             for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
                 derivedUnitFacade.addCollectingArea((NamedArea) area);
@@ -782,6 +789,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             abcdFieldGetter.getNumbers(root);
             abcdFieldGetter.getGeolocation(root);
             abcdFieldGetter.getGatheringPeople(root);
+            abcdFieldGetter.getGatheringDate(root);
+            abcdFieldGetter.getGatheringElevation(root);
             boolean referencefound = abcdFieldGetter.getReferences(root);
             if (!referencefound) {
                 String[]a = {ref.getTitleCache(),"",""};
