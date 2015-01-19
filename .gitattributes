@@ -1444,6 +1444,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/Me
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/TermBaseAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/TitleAndNameCacheAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/TypeDesignationAutoInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationResultCrudJdbcImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationPartDao.java -text

@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
@@ -51,9 +50,9 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
         if (old != null) {
             getSession().delete(old);
         }
-        EntityValidationResult result = createEntityValidationResult(entity, crudEventType);
+        EntityValidationResult result = EntityValidationResult.newInstance(entity, crudEventType);
         for (ConstraintViolation<T> error : errors) {
-            EntityConstraintViolation violation = createEntityConstraintViolation(entity, error);
+            EntityConstraintViolation violation = EntityConstraintViolation.newInstance(entity, error);
             result.addEntityConstraintViolation(violation);
             violation.setEntityValidationResult(result);
         }
@@ -156,49 +155,5 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
         @SuppressWarnings("unchecked")
         List<EntityValidationResult> result = query.list();
         return result;
-    }
-
-    private EntityValidationResult createEntityValidationResult(CdmBase entity, CRUDEventType crudEventType) {
-        EntityValidationResult result = EntityValidationResult.newInstance();
-        result.setCrudEventType(crudEventType);
-        result.setValidatedEntityClass(entity.getClass().getName());
-        result.setValidatedEntityId(entity.getId());
-        result.setValidatedEntityUuid(entity.getUuid());
-        /*
-         * Since CdmBase implements ISelfDescriptive, this is a redundant check.
-         * However, until Andreas Mueller decides that it is actually useful and
-         * appropriate that CdmBase should implement this interface, this check
-         * should be made, so that nothing breaks if the
-         * "implements ISelfDescriptive" is removed from the class declaration
-         * of CdmBase.
-         */
-        if (entity instanceof ISelfDescriptive) {
-            ISelfDescriptive isd = entity;
-            result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
-            result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
-        } else {
-            result.setUserFriendlyTypeName(entity.getClass().getSimpleName());
-            result.setUserFriendlyDescription(entity.toString());
-        }
-        return result;
-    }
-
-    private <T extends CdmBase> EntityConstraintViolation createEntityConstraintViolation(T entity,
-            ConstraintViolation<T> error) {
-        EntityConstraintViolation violation = EntityConstraintViolation.NewInstance();
-        violation.setSeverity(Severity.getSeverity(error));
-        violation.setPropertyPath(error.getPropertyPath().toString());
-        violation.setInvalidValue(error.getInvalidValue().toString());
-        violation.setMessage(error.getMessage());
-        String field = error.getPropertyPath().toString();
-        if (entity instanceof ISelfDescriptive) {
-            ISelfDescriptive isd = entity;
-            violation.setUserFriendlyFieldName(isd.getUserFriendlyFieldName(field));
-        } else {
-            violation.setPropertyPath(field);
-        }
-        violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next()
-                .getName());
-        return violation;
     }
 }
