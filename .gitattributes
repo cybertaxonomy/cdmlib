@@ -1782,7 +1782,6 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -te
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/SpringMVCConfig.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/wigetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
