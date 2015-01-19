@@ -50,9 +50,6 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
         "eu.etaxonomy.cdm.remote.controller",
         "eu.etaxonomy.cdm.remote.service",
         "eu.etaxonomy.cdm.remote.config"
-        //"eu.etaxonomy.cdm.remote.vaadin MUST NOT BE SCANNED HERE
-//        "com.mangofactory.swagger.configuration.SpringSwaggerConfig",
-//        "com.mangofactory.swagger.controllers"
         }
 )
 //@EnableSwagger
@@ -187,10 +184,6 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
        return resolver;
    }
 
-//   @Bean
-//   public VaadinUI vaadinUI(){
-//       return new VaadinUI();
-//   }
 
     // -------- Swagger configuration ------------ //
 

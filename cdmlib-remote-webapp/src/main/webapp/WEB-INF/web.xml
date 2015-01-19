@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0"> 
     <description>cdmlib-remote web-application instance</description>
     <display-name>cdmlib-remote-webapp</display-name>
 
@@ -16,10 +17,7 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
-    <!-- needed for the third party SpringVaadinServlet -->
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
+
 
     <servlet>
         <description>CDM Remote API</description>
@@ -32,48 +30,7 @@
         <servlet-name>cdmlib-remote</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
-
-    <!-- ========================================
-                        VAADIN
-
-         VAADIN is disabled by default.
-         To enable vVaadin add the jvm argument
-         -Dru.xpoft.vaadin.beanName=vaadinUI
-
-         ======================================= -->
-    <!-- optional vaading can also activated by the
-         init-param element below (not recommendet) -->
-
-
-    <servlet>
-      <servlet-name>Vaadin Application Servlet</servlet-name>
-      <servlet-class>eu.etaxonomy.cdm.remote.vaadin.service.CdmVaadinServlet</servlet-class>
-      <init-param>
-        <description>UISet for Vaadin</description>
-        <param-name>beanName</param-name>
-        <param-value>vaadinUI</param-value>
-      </init-param>
-      <init-param>
-        <description>Application widgetset</description>
-        <param-name>widgetset</param-name>
-        <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
-      </init-param>
-    </servlet>
-    <!-- Set to production Mode to true if deployment for server is needed, otherwise set to false for debugging  -->
-    <context-param>
-  	  <param-name>productionMode</param-name>
-	  <param-value>true</param-value>
-  	</context-param>
-    <servlet-mapping>
-      <servlet-name>Vaadin Application Servlet</servlet-name>
-      <url-pattern>/VAADIN/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>Vaadin Application Servlet</servlet-name>
-      <url-pattern>/edit/*</url-pattern>
-    </servlet-mapping>
-
+    
 
     <filter>
       <filter-name>charsetFilter</filter-name>
