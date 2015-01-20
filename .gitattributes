@@ -1597,6 +1597,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityConstraintViolationDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationResultDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationResultCrudJdbcImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmPermissionClassTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
