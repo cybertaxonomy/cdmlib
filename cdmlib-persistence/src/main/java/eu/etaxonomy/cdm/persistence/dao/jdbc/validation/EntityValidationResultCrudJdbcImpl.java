@@ -86,7 +86,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     @Override
     public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType) {
-        deleteValidationResult(entity);
+        deleteValidationResult(entity.getClass().getName(),entity.getId());
         Connection conn = null;
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
@@ -109,8 +109,8 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     }
 
     @Override
-    public void deleteValidationResult(CdmBase forEntity) {
-        int resultId = getValidationResultId(forEntity);
+    public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
+        int resultId = getValidationResultId(validatedEntityClass,validatedEntityId);
         if (resultId == -1) {
             return;
         }
@@ -136,27 +136,6 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             JdbcDaoUtils.close(stmt1);
             JdbcDaoUtils.close(stmt2);
         }
-    }
-
-    private int getValidationResultId(CdmBase forEntity) {
-        String sql = "SELECT id FROM EntityValidationResult WHERE validatedEntityClass = ? AND validatedEntityId = ?";
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = datasource.getConnection();
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, forEntity.getClass().getName());
-            stmt.setInt(2, forEntity.getId());
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            logger.error("Error while retrieving validation result id", e);
-        } finally {
-            JdbcDaoUtils.close(stmt);
-        }
-        return -1;
     }
 
     /**
@@ -272,6 +251,27 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             stmt.setInt(cv_entityvalidationresult_id, validationResultId);
             stmt.executeUpdate();
         }
+    }
+
+    private int getValidationResultId(String validatedEntityClass, int validatedEntityId) {
+        String sql = "SELECT id FROM EntityValidationResult WHERE validatedEntityClass = ? AND validatedEntityId = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = datasource.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, validatedEntityClass);
+            stmt.setInt(2, validatedEntityId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error("Error while retrieving validation result id", e);
+        } finally {
+            JdbcDaoUtils.close(stmt);
+        }
+        return -1;
     }
 
 }
