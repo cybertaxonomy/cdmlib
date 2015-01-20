@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
  * An {@code EntityValidationResult} models the result of validating one entity,
@@ -67,6 +68,34 @@ public class EntityValidationResult extends CdmBase {
 
     public static EntityValidationResult newInstance() {
         return new EntityValidationResult();
+    }
+
+    @SuppressWarnings("cast")
+    // See comment below
+    public static EntityValidationResult newInstance(CdmBase entity, CRUDEventType crudEventType) {
+        EntityValidationResult result = newInstance();
+        result.setCrudEventType(crudEventType);
+        result.setValidatedEntityClass(entity.getClass().getName());
+        result.setValidatedEntityId(entity.getId());
+        result.setValidatedEntityUuid(entity.getUuid());
+        /*
+         * Since I have changed CdmBase to implement ISelfDescriptive, this is a
+         * redundant check, since only instances of CdmBase can be validated
+         * using the validation infrastructure. However, until Andreas Mueller
+         * decides that it is actually useful and appropriate that CdmBase
+         * should implement this interface, this check should be made, so that
+         * nothing breaks if the "implements ISelfDescriptive" is removed from
+         * the class declaration of CdmBase.
+         */
+        if (entity instanceof ISelfDescriptive) {
+            ISelfDescriptive isd = entity;
+            result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
+            result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
+        } else {
+            result.setUserFriendlyTypeName(entity.getClass().getSimpleName());
+            result.setUserFriendlyDescription(entity.toString());
+        }
+        return result;
     }
 
     @XmlElement(name = "ValidatedEntityId")
@@ -172,4 +201,9 @@ public class EntityValidationResult extends CdmBase {
             getEntityConstraintViolations().remove(ecv);
         }
     }
+
+    public void setEntityConstraintViolations(Set<EntityConstraintViolation> errors) {
+        this.entityConstraintViolations = errors;
+    }
+
 }

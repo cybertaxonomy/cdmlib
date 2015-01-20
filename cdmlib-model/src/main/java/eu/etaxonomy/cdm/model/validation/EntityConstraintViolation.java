@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintViolation;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +25,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
  * An {@code EntityConstraintViolation} represents a single error resulting from
@@ -45,8 +47,36 @@ public class EntityConstraintViolation extends CdmBase {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EntityConstraintViolation.class);
 
-    public static EntityConstraintViolation NewInstance() {
+    public static EntityConstraintViolation newInstance() {
         return new EntityConstraintViolation();
+    }
+
+    @SuppressWarnings("cast")
+    public static <T extends CdmBase> EntityConstraintViolation newInstance(T entity, ConstraintViolation<T> error) {
+        EntityConstraintViolation violation = newInstance();
+        violation.setSeverity(Severity.getSeverity(error));
+        violation.setPropertyPath(error.getPropertyPath().toString());
+        violation.setInvalidValue(error.getInvalidValue().toString());
+        violation.setMessage(error.getMessage());
+        String field = error.getPropertyPath().toString();
+        /*
+         * Since I have changed CdmBase to implement ISelfDescriptive, this is a
+         * redundant check, since only instances of CdmBase can be validated
+         * using the validation infrastructure. However, until Andreas Mueller
+         * decides that it is actually useful and appropriate that CdmBase
+         * should implement this interface, this check should be made, so that
+         * nothing breaks if the "implements ISelfDescriptive" is removed from
+         * the class declaration of CdmBase.
+         */
+        if (entity instanceof ISelfDescriptive) {
+            ISelfDescriptive selfDescriptive = entity;
+            violation.setUserFriendlyFieldName(selfDescriptive.getUserFriendlyFieldName(field));
+        } else {
+            violation.setPropertyPath(field);
+        }
+        violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next()
+                .getName());
+        return violation;
     }
 
     @XmlElement(name = "PropertyPath")
@@ -60,7 +90,7 @@ public class EntityConstraintViolation extends CdmBase {
 
     @XmlElement(name = "Severity")
     @Type(type = "eu.etaxonomy.cdm.hibernate.SeverityUserType")
-    private Severity severity;
+    private Severity severity = Severity.ERROR;
 
     @XmlElement(name = "Message")
     private String message;
@@ -122,7 +152,7 @@ public class EntityConstraintViolation extends CdmBase {
      * @return
      */
     public Severity getSeverity() {
-        return severity;
+        return severity == null ? Severity.ERROR : severity;
     }
 
     public void setSeverity(Severity severity) {
