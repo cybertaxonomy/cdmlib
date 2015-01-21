@@ -51,7 +51,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean allowReuseOtherClassifications =true;
     private boolean addMediaAsMediaSpecimen = false;
     private boolean determinationOnFieldUnitLevel = false;
-    private boolean skipDeduplication = true;
+    private boolean deduplicateReferences = false;
+    private boolean deduplicateClassifications = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -332,37 +333,34 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     public void setDeterminationOnFieldUnitLevel(boolean determinationOnFieldUnitLevel) {
         this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
     }
-    
-    public boolean isSkipDeduplication() {
-        return skipDeduplication;
+
+
+    public boolean isDeduplicateClassifications() {
+        return deduplicateClassifications;
     }
 
-    public void setSkipDeduplication(boolean skipDeduplication) {
-        this.skipDeduplication = skipDeduplication;
+    public void setDeduplicateClassifications(boolean deduplicateClassifications) {
+        this.deduplicateClassifications = deduplicateClassifications;
     }
-    
-    /**
-     * @return the allowReuseOtherClassifications
-     */
+
+    public boolean isDeduplicateReferences() {
+        return deduplicateReferences;
+    }
+
+    public void setDeduplicateReferences(boolean deduplicateReferences) {
+        this.deduplicateReferences = deduplicateReferences;
+    }
+
     public boolean isAllowReuseOtherClassifications() {
         return allowReuseOtherClassifications;
     }
 
-    /**
-     * @param allowReuseOtherClassifications the allowReuseOtherClassifications to set
-     */
     public void setAllowReuseOtherClassifications(boolean allowReuseOtherClassifications) {
         this.allowReuseOtherClassifications = allowReuseOtherClassifications;
     }
 
-    /**
-     * @return the specimenUserInteraction
-     */
     public SpecimenUserInteraction getSpecimenUserInteraction() {
         return specimenUserInteraction;
     }
-
-
-
 
 }

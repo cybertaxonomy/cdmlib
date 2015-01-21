@@ -283,8 +283,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // knownABCDelements = new ArrayList<String>();
                 dataHolder.allABCDelements = new HashMap<String, String>();
             }
-            if(!state.getConfig().isSkipDeduplication()){
+            if(state.getConfig().isDeduplicateReferences()){
                 getReferenceService().deduplicate(Reference.class, null, null);
+            }
+            if(state.getConfig().isDeduplicateClassifications()){
                 getClassificationService().deduplicate(Classification.class, null, null);
             }
         }
