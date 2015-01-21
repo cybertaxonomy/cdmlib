@@ -283,14 +283,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // knownABCDelements = new ArrayList<String>();
                 dataHolder.allABCDelements = new HashMap<String, String>();
             }
-            getReferenceService().deduplicate(Reference.class, null, null);
-            getClassificationService().deduplicate(Classification.class, null, null);
-        }
+                getReferenceService().deduplicate(Reference.class, null, null);
+                getClassificationService().deduplicate(Classification.class, null, null);
+            }
         commitTransaction(state.getTx());
         return;
 
     }
-
 
     protected NodeList getUnitsNodeList(URI source) {
         try {
@@ -449,8 +448,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     citationDetail+=", "+citationURL;
                 }
 
-                Reference<?> reference = ReferenceFactory.newGeneric();
-                reference.setTitle(strReference);
+                Reference<?> reference;
+                if(strReference.equals(ref.getTitleCache())){
+                    reference = ref;
+                }
+                else{
+                    reference = ReferenceFactory.newGeneric();
+                    reference.setTitle(strReference);
+                }
 
                 IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
 
@@ -468,7 +473,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 reference.addSource(sour);
                 save(reference, state);
             }
-
 
             List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
             List<DescriptionElementSource> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
@@ -1172,8 +1176,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         save(taxonDescription, state);
         save(taxon, state);
     }
-
-
 
     /**
      * @param derivedUnitBase2
@@ -2187,6 +2189,5 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
     }
-
 
 }
