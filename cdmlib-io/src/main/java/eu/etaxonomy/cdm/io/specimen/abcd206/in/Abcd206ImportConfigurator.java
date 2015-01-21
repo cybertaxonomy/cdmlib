@@ -51,6 +51,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean allowReuseOtherClassifications =true;
     private boolean addMediaAsMediaSpecimen = false;
     private boolean determinationOnFieldUnitLevel = false;
+    private boolean skipDeduplication = true;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -331,7 +332,15 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     public void setDeterminationOnFieldUnitLevel(boolean determinationOnFieldUnitLevel) {
         this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
     }
+    
+    public boolean isSkipDeduplication() {
+        return skipDeduplication;
+    }
 
+    public void setSkipDeduplication(boolean skipDeduplication) {
+        this.skipDeduplication = skipDeduplication;
+    }
+    
     /**
      * @return the allowReuseOtherClassifications
      */
