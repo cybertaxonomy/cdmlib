@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -99,14 +100,15 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @return
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"listByIdentifier"})
-    public  List<?> dolistByIdentifier(
+    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
+    public  Pager<FindByIdentifierDTO<T>> dolistByIdentifier(
     		@RequestParam(value = "class", required = false) Class type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "includeEntity", required = false) Boolean includeEntity,
             HttpServletRequest request,
             HttpServletResponse response
             )
@@ -125,7 +127,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         pagerParams.normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
-
-        return service.listByIdentifier(type, identifier, definedTerm , matchMode, pageSize, pageNumber, null, initializationStrategy);
+        boolean includeCdmEntity = includeEntity == true ? true : false;
+        return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
     }
 }

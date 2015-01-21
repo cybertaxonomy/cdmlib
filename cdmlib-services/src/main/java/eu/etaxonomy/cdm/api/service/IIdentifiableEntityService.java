@@ -15,6 +15,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -252,18 +253,21 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
     public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
     /**
-     * Returns all {@link IdentifiableEntity identifiable entities} which have the according
+     * Returns a Pager for {@link FindByIdentifierDTO DTOs} that hold the identifier including type, title and uuid
+     * and the according CDM Object information (uuid, title and the object itself (optional)).  
+     * 
+     * all {@link IdentifiableEntity identifiable entities} which have the according
      * identifier attached  
-     * @param clazz the identiable entity subclass, may be null
-     * @param identifier the identifer as {@link String}
+     * @param clazz the identifiable entity subclass, may be null
+     * @param identifier the identifier as {@link String}
      * @param identifierType the identifier type, maybe null
      * @param matchmode 
+     * @param includeCdmEntity if true the CDM entity is also returned (this may slow down performance for large datasets)
      * @param pageSize
      * @param pageNumber
-     * @param orderHints
      * @param propertyPaths
      * @return
      */
-    public <S extends T> List<S> listByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<FindByIdentifierDTO<S>> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, boolean includeCdmEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }

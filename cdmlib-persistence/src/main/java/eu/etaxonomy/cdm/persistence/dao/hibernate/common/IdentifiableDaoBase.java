@@ -313,7 +313,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public int count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
-       QueryParser queryParser = new QueryParser(version, defaultField , new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(version, defaultField , new StandardAnalyzer(version));
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -447,31 +447,84 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         return result;
     }
     
-	@Override
-	public <S extends T> List<S> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType,
-			MatchMode matchmode, Integer pageSize,
-			Integer pageNumber, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-        
-		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-        String queryString = "SELECT c FROM " + type.getSimpleName() + " as c " +
-                "INNER JOIN c.identifiers as identifiers " +
-                "WHERE identifiers.identifier = :identifier ";
 
-        if (identifierType != null){
-        	queryString = queryString + " AND identifiers.type = :type";
-        }
+	@Override
+	public <S extends T> int countByIdentifier(Class<S> clazz,
+			String identifier, DefinedTerm identifierType, MatchMode matchmode) {
+		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
         
+		String queryString = "SELECT count(*) FROM " + type.getSimpleName() + " as c " +
+	                "INNER JOIN c.identifiers as ids " +
+	                "WHERE (1=1) ";
+		if (identifier != null){
+			if (matchmode == null || matchmode == MatchMode.EXACT){
+				queryString += " AND ids.identifier = '"  + identifier + "'";
+			}else {
+				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
+			}
+		}
+		if (identifierType != null){
+        	queryString += " AND ids.type = :type";
+        }
+		
 		Query query = getSession().createQuery(queryString);
-        query.setString("identifier", identifier);
         if (identifierType != null){
         	query.setEntity("type", identifierType);
         }
-        //TODO matchmode, pageSize, pageNumber, orderHints, propertyPaths
-        List<S> results = (List<S>)query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        
+		Long c = (Long)query.uniqueResult();
+        return c.intValue();
+	}
+    
+	@Override
+	public <S extends T> List<Object[]> findByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType,
+			MatchMode matchmode, boolean includeEntity, 
+			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        
+		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        
+		String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
+                " INNER JOIN c.identifiers as ids " +
+                " WHERE (1=1) ";
+		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , type.getSimpleName());
+		
+		//Matchmode and identifier
+		if (identifier != null){
+			if (matchmode == null || matchmode == MatchMode.EXACT){
+				queryString += " AND ids.identifier = '"  + identifier + "'";
+			}else {
+				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
+			}
+		}
+        if (identifierType != null){
+        	queryString += " AND ids.type = :type";
+        }
+        //order
+        queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
+		    
+		Query query = getSession().createQuery(queryString);
+        
+		//parameters
+		if (identifierType != null){
+        	query.setEntity("type", identifierType);
+        }
+        
+        //paging
+        setPagingParameter(query, pageSize, pageNumber);
+        
+        List<Object[]> results = (List<Object[]>)query.list();
+        //initialize
+        if (includeEntity){
+        	List<S> entities = new ArrayList<S>();
+        	for (Object[] result : results){
+        		entities.add((S)result[2]);
+        	}
+        	defaultBeanInitializer.initializeAll(entities, propertyPaths);
+        }
         return results;
 	}
+
+
 
 }

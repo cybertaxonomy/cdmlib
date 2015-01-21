@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -22,10 +21,10 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -83,33 +83,68 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	
 	
 	@Test
-	@DataSet(value="IdentifiableServiceBaseTest.testListByIdentifier.xml")
+	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifier.xml")
 	public final void testListByIdentifier(){
 		UUID uuidIdentifierType1 = UUID.fromString("02bb62db-a229-4eeb-83e6-a9a093943d5e");
 		UUID uuidIdentifierType2 = UUID.fromString("ef6e960f-5289-456c-b25c-cff7f4de2f63");
 		
+		
 		DefinedTerm it1 = (DefinedTerm)termService.find(uuidIdentifierType1);
 		Assert.assertNotNull("identifier type must not be null", it1);
 		
-		List<Taxon> taxa = taxonService.listByIdentifier(Taxon.class, "ext-1234", it1, null, null, null, null, null);
-		Assert.assertTrue("Result should not be empty", taxa.size() == 1);
-		Taxon taxon = taxa.get(0);
+		boolean includeEntity = true;
+		Pager<FindByIdentifierDTO<Taxon>> taxa = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
+		Assert.assertTrue("Result should not be empty", taxa.getCount() == 1);
+		FindByIdentifierDTO<Taxon>.CdmEntity entity = taxa.getRecords().get(0).getCdmEntity();
+		Taxon taxon = entity.getEntity();
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), taxon.getUuid());
+		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getCdmUuid());
 		Assert.assertEquals("Taxon should have 1 identifier", 1, taxon.getIdentifiers().size());
-		Identifier identifier = taxon.getIdentifiers().get(0);
+		Identifier<?> identifier = taxon.getIdentifiers().get(0);
 		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
 		Assert.assertEquals(uuidIdentifierType1, type.getUuid());
 		
-		List<TaxonNameBase> names = nameService.listByIdentifier(TaxonNameBase.class, "ext-1234", null, null, null, null, null, null);
-		Assert.assertTrue("Identifier does not exist for TaxonName", names.isEmpty());
+		Pager<FindByIdentifierDTO<TaxonNameBase>> names = nameService.findByIdentifier(
+				TaxonNameBase.class, "ext-1234", null, null, includeEntity, null, null, null);
+		Assert.assertTrue("Identifier does not exist for TaxonName", names.getCount() == 0);
 		
-		taxa = taxonService.listByIdentifier(null, "ext-1234", null, null, null, null, null, null);
-		Assert.assertTrue("Result size for 'ext-1234' should be 1", taxa.size() == 1);
+		taxa = taxonService.findByIdentifier(null, "ext-1234", null, null, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for 'ext-1234' should be 1", taxa.getCount() == 1);
 		
-//		taxa = taxonService.listByIdentifier(Taxon.class, null, null, null, null, null, null, null);
-//		Assert.assertTrue("Result should not be empty", taxa.size() == 2);
+		taxa = taxonService.findByIdentifier(Taxon.class, null, null, null, includeEntity, null, null, null);
+		Assert.assertTrue("Result should not be empty", taxa.getCount() == 2);
+		
+		//includeEntity
+		includeEntity = false;
+		taxa = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
+		entity = taxa.getRecords().get(0).getCdmEntity();
+		Assert.assertNull("Taxon must not be returned with includeEntity = false", entity.getEntity());
+		
+		
+		
+		//Matchmode
+		includeEntity = false;
+		MatchMode matchmode = null;
+		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, matchmode, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
 
-		
+		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.EXACT, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
+
+		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.ANYWHERE, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 1", taxa.getCount() == 1);
+
+		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
+
+		taxa = taxonService.findByIdentifier(Taxon.class, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for 'ext' should be 1", taxa.getCount() == 2);
+
+		//Paging
+		taxa = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, 1, 1, null);
+		Assert.assertEquals("Total result size for starts with 'ext' should be 2", Integer.valueOf(2), taxa.getCount());
+		Assert.assertEquals("Result size for starts with 'ext' second page should be 1", Integer.valueOf(1), taxa.getPageSize());
+		Assert.assertEquals("ext-cache1", taxa.getRecords().get(0).getIdentifier().getIdentifier());
 	}
 
 
