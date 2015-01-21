@@ -60,9 +60,10 @@ public enum MatchMode {
                 queryString = appendWildcard(queryString);
                 queryString = prependWildcard(queryString);
                 break;
-        default:
-            // Fall through for EXACT - Nothing to do //
-            break;
+            case EXACT:
+            	break;  //Nothing to do
+            default:
+            	throw new RuntimeException ("Unsupported Matchmode: " + this.toString());
         }
         return queryString;
     }
@@ -73,7 +74,7 @@ public enum MatchMode {
      */
     private String prependWildcard(String queryString) {
         if(!queryString.startsWith(wildcardStr)){
-            queryString += wildcardStr;
+            queryString = wildcardStr + queryString;
         }
         return queryString;
     }
