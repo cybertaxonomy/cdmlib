@@ -172,7 +172,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return result;
     }
 
-    private EntityValidationResult getValidationResult(PreparedStatement stmt, String validatedEntityClass, int validatedEntityId) throws SQLException {
+    private static EntityValidationResult getValidationResult(PreparedStatement stmt, String validatedEntityClass, int validatedEntityId) throws SQLException {
         EntityValidationResult result = null;
         stmt.setString(1, validatedEntityClass);
         stmt.setInt(2, validatedEntityId);
@@ -193,7 +193,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return result;
     }
 
-    private Set<EntityConstraintViolation> getErrors(PreparedStatement stmt, int resultId) throws SQLException {
+    private static Set<EntityConstraintViolation> getErrors(PreparedStatement stmt, int resultId) throws SQLException {
         Set<EntityConstraintViolation> errors = new HashSet<EntityConstraintViolation>();
         stmt.setInt(1, resultId);
         ResultSet rs = stmt.executeQuery();
@@ -214,7 +214,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return errors;
     }
 
-    private void saveValidationResult(PreparedStatement stmt, CdmBase entity, CRUDEventType crudEventType,
+    private static void saveValidationResult(PreparedStatement stmt, CdmBase entity, CRUDEventType crudEventType,
             int validationResultId) throws SQLException {
         EntityValidationResult validationResult = EntityValidationResult.newInstance(entity, crudEventType);
         stmt.setInt(vr_id, validationResultId);
@@ -234,7 +234,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         stmt.executeUpdate();
     }
 
-    private <T extends CdmBase> void saveErrors(PreparedStatement stmt, Set<ConstraintViolation<T>> errors, T entity,
+    private static <T extends CdmBase> void saveErrors(PreparedStatement stmt, Set<ConstraintViolation<T>> errors, T entity,
             int validationResultId) throws SQLException {
         for (ConstraintViolation<T> error : errors) {
             EntityConstraintViolation ecv = EntityConstraintViolation.newInstance(entity, error);
