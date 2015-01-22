@@ -113,10 +113,10 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertTrue("Identifier does not exist for TaxonName", names.getCount() == 0);
 		
 		taxonPager = taxonService.findByIdentifier(null, "ext-1234", null, null, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for 'ext-1234' should be 1", taxonPager.getCount() == 1);
+		Assert.assertEquals("Result size for 'ext-1234' should be 1", 1, taxonPager.getRecords().size());
 		
 		taxonPager = taxonService.findByIdentifier(Taxon.class, null, null, null, includeEntity, null, null, null);
-		Assert.assertTrue("Result should not be empty", taxonPager.getCount() == 2);
+		Assert.assertEquals("Result should not be empty", 2 , taxonPager.getRecords().size());
 		
 		//includeEntity
 		includeEntity = false;
@@ -145,10 +145,12 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertTrue("Result size for 'ext' should be 1", taxonPager.getCount() == 2);
 
 		//Paging
-		taxonPager = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, 1, 1, null);
-		Assert.assertEquals("Total result size for starts with 'ext' should be 2", Integer.valueOf(2), taxonPager.getCount());
-		Assert.assertEquals("Result size for starts with 'ext' second page should be 1", Integer.valueOf(1), taxonPager.getPageSize());
-		Assert.assertEquals("ext-cache1", taxonPager.getRecords().get(0).getIdentifier().getIdentifier());
+		taxonPager = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertEquals("Total result size for starts with 'ext' should be 4", 4, taxonPager.getRecords().size());
+		taxonPager = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, 2, 1, null);
+		Assert.assertEquals("Total result size for starts with 'ext' should be 4", Integer.valueOf(4), taxonPager.getCount());
+		Assert.assertEquals("Result size for starts with 'ext' second page should be 2", Integer.valueOf(2), taxonPager.getPageSize());
+		Assert.assertEquals("The third taxon (first on second page) should be ext-syn1", "ext-syn1", taxonPager.getRecords().get(0).getIdentifier().getIdentifier());
 		
 		taxonPager = taxonService.findByIdentifier(Taxon.class, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
 		Assert.assertTrue("Result size for 'ext' should be 2", taxonPager.getCount() == 2);
@@ -196,7 +198,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
-	@Test
+//	@Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 		TermVocabulary<DefinedTerm> voc = vocService.find(VocabularyEnum.IdentifierType.getUuid());
