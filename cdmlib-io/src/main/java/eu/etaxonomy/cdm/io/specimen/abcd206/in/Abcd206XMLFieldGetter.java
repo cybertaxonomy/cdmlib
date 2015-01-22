@@ -171,7 +171,7 @@ public class Abcd206XMLFieldGetter {
                         dataHolder.knownABCDelements.add(path);
                         path = "";
                     }
-                    if (scnames.item(n).getNodeName().equals(prefix + "NameAtomised")) {
+                    else if (scnames.item(n).getNodeName().equals(prefix + "NameAtomised")) {
                         try {
                             if (scnames.item(n).hasChildNodes()) {
                                 String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
@@ -792,56 +792,56 @@ public class Abcd206XMLFieldGetter {
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "Subgenus")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "Subgenus")) {
                 atomisedMap.put("Subgenus", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "SpeciesEpithet")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "SpeciesEpithet")) {
                 atomisedMap.put("SpeciesEpithet", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "SubspeciesEpithet")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "SubspeciesEpithet")) {
                 atomisedMap.put("SubspeciesEpithet", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "AuthorTeamOriginalAndYear")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "AuthorTeamOriginalAndYear")) {
                 atomisedMap.put("AuthorTeamOriginalAndYear", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "AuthorTeamParenthesisAndYear")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "AuthorTeamParenthesisAndYear")) {
                 atomisedMap.put("AuthorTeamParenthesisAndYear", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "CombinationAuthorTeamAndYear")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "CombinationAuthorTeamAndYear")) {
                 atomisedMap.put("CombinationAuthorTeamAndYear", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "Breed")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "Breed")) {
                 atomisedMap.put("Breed", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-            if (atomised.item(i).getNodeName().equals(prefix + "NamedIndividual")) {
+            else if (atomised.item(i).getNodeName().equals(prefix + "NamedIndividual")) {
                 atomisedMap.put("NamedIndividual", atomised.item(i).getTextContent());
                 path = atomised.item(i).getNodeName();
                 getHierarchie(atomised.item(i));
