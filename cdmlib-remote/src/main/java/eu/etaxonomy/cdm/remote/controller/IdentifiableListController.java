@@ -101,7 +101,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
-    public  Pager<FindByIdentifierDTO<T>> dolistByIdentifier(
+    public  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
     		@RequestParam(value = "class", required = false) Class type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,

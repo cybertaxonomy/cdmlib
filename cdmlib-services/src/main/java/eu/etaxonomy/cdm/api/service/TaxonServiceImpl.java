@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -3275,11 +3277,40 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return result;
     }
+    
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
         List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
+    
+	@Override
+	@Transactional(readOnly = true)
+	public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
+			MatchMode matchmode, boolean includeEntity, Integer pageSize,
+			Integer pageNumber,	List<String> propertyPaths) {
+		if (subtreeFilter == null){
+			return findByIdentifier(clazz, identifier, identifierType, matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
+		}
+		
+		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+        	daoResults = dao.findByIdentifier(clazz, identifier, identifierType, subtreeFilter,
+    				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+        
+        List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
+        for (Object[] daoObj : daoResults){
+        	if (includeEntity){
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        	}else{
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));	
+        	}
+        }
+		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
+	}
 
 
 }

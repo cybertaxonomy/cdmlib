@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -492,5 +493,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set namedAreas);
 
+	public <S extends TaxonBase> List<Object[]> findByIdentifier(Class<S> clazz, String identifier,
+			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode, 
+			boolean includeEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
+			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
 
 }

@@ -41,6 +41,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
@@ -2156,6 +2157,123 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		
 		return result;
+	}
+	
+	
+	/**
+	 * @param
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countByIdentifier(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.common.DefinedTerm, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.persistence.query.MatchMode)
+	 */
+	@Override
+	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
+			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode) {
+		if (subtreeFilter == null){
+			return countByIdentifier(clazz, identifier, identifierType, matchmode);
+		}
+		
+		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
+		
+		boolean isTaxon = clazz == Taxon.class || clazz == TaxonBase.class;
+		boolean isSynonym = clazz == Synonym.class || clazz == TaxonBase.class;
+		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+		
+		String queryString = "SELECT count(*)  FROM %s as c " +
+                " INNER JOIN c.identifiers as ids " +
+                accTreeJoin +
+                synTreeJoin + 
+                " WHERE (1=1) " +
+                	"  AND ( " + accWhere + " OR " + synWhere + ")";
+		queryString = String.format(queryString, clazz.getSimpleName());
+		
+		if (identifier != null){
+			if (matchmode == null || matchmode == MatchMode.EXACT){
+				queryString += " AND ids.identifier = '"  + identifier + "'";
+			}else {
+				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
+			}
+		}
+		if (identifierType != null){
+        	queryString += " AND ids.type = :type";
+        }
+		
+		Query query = getSession().createQuery(queryString);
+        if (identifierType != null){
+        	query.setEntity("type", identifierType);
+        }
+        
+		Long c = (Long)query.uniqueResult();
+        return c.intValue();
+	}
+	
+	@Override
+	public <S extends TaxonBase> List<Object[]> findByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
+			MatchMode matchmode, boolean includeEntity, 
+			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        
+		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        
+		boolean isTaxon = clazz == Taxon.class || clazz == TaxonBase.class;
+		boolean isSynonym = clazz == Synonym.class || clazz == TaxonBase.class;
+		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
+		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
+		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
+		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
+		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
+		
+		String queryString = "SELECT ids.type, ids.identifier, %s " +
+				" FROM %s as c " +
+                " INNER JOIN c.identifiers as ids " +
+                accTreeJoin +
+				synTreeJoin + 
+                " WHERE (1=1) " +
+                	" AND ( " + accWhere + " OR " + synWhere + ")";
+		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazz.getSimpleName());
+		
+		//Matchmode and identifier
+		if (identifier != null){
+			if (matchmode == null || matchmode == MatchMode.EXACT){
+				queryString += " AND ids.identifier = '"  + identifier + "'";
+			}else {
+				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
+			}
+		}
+        if (identifierType != null){
+        	queryString += " AND ids.type = :type";
+        }
+        //order
+        queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
+		    
+		Query query = getSession().createQuery(queryString);
+        
+		//parameters
+		if (identifierType != null){
+        	query.setEntity("type", identifierType);
+        }
+        
+        //paging
+        setPagingParameter(query, pageSize, pageNumber);
+        
+        List<Object[]> results = (List<Object[]>)query.list();
+        //initialize
+        if (includeEntity){
+        	List<S> entities = new ArrayList<S>();
+        	for (Object[] result : results){
+        		entities.add((S)result[2]);
+        	}
+        	defaultBeanInitializer.initializeAll(entities, propertyPaths);
+        }
+        return results;
+	}
+	
+	
+	public static void main(String[] args){
+		
+		System.out.println(String.format("%%", "Hallo"));
 	}
 
 
