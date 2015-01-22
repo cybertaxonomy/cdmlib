@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -401,20 +402,21 @@ public class SpecimenUserInteraction implements ItemListener {
     @SuppressWarnings("rawtypes")
     public Taxon askWhereToFixData(String scientificName, List<TaxonBase> taxonList, Classification classification) {
         Map<String,TaxonNode> classMap = new HashMap<String, TaxonNode>();
-        boolean sameClassif=false;
+        boolean sameClassification=false;
         Taxon n = null;
-        Taxon cc =null;
-        for (TaxonBase cb: taxonList){
-            cc = (Taxon)cb;
-            for (TaxonNode node : cc.getTaxonNodes()){
-                classMap.put("Reuse the one from the classification \""+node.getClassification().getTitleCache()+"\"", node);
-                if (node.getClassification().getUuid().equals(classification.getUuid())) {
-                    sameClassif=true;
-                    n=node.getTaxon();
+        for (TaxonBase taxonBase: taxonList){
+            if(taxonBase.isInstanceOf(Taxon.class)){
+                Taxon taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                for (TaxonNode node : taxon.getTaxonNodes()){
+                    classMap.put("Reuse the one from the classification \""+node.getClassification().getTitleCache()+"\"", node);
+                    if (node.getClassification().getUuid().equals(classification.getUuid())) {
+                        sameClassification=true;
+                        n=node.getTaxon();
+                    }
                 }
             }
         }
-        if (classMap.keySet().size()==1 && sameClassif) {
+        if (classMap.keySet().size()==1 && sameClassification) {
             return n;
         }
 
@@ -429,7 +431,7 @@ public class SpecimenUserInteraction implements ItemListener {
             return null;
         }
         Collections.sort(possibilities);
-        if(!sameClassif){
+        if(!sameClassification){
             classMap.put("Add a brand new Taxon to the current classification, no recycling please", null);
             possibilities.add(0, "Add a brand new Taxon to the current classification, no recycling please");
         }
@@ -459,18 +461,19 @@ public class SpecimenUserInteraction implements ItemListener {
      */
     @SuppressWarnings("rawtypes")
     public Taxon lookForTaxaIntoCurrentClassification(List<TaxonBase> taxonBaseList, Classification classification) {
-        Taxon taxon =null;
-        Taxon cc =null;
-        for (TaxonBase c:taxonBaseList){
-            cc = (Taxon)c;
-            for (TaxonNode node : cc.getTaxonNodes()){
-                UUID classUuid = node.getClassification().getUuid();
-                if (classification.getUuid().equals(classUuid)){
-                    taxon=cc;
+        Taxon taxonFound =null;
+        for (TaxonBase taxonBase:taxonBaseList){
+            if(taxonBase.isInstanceOf(Taxon.class)){
+                Taxon taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                for (TaxonNode node : taxon.getTaxonNodes()){
+                    UUID classUuid = node.getClassification().getUuid();
+                    if (classification.getUuid().equals(classUuid)){
+                        taxonFound=taxon;
+                    }
                 }
             }
         }
-        return taxon;
+        return taxonFound;
     }
 
 
