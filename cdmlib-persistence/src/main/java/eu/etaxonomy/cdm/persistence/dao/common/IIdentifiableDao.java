@@ -13,10 +13,10 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 
-import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -175,20 +175,33 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 */
 	public abstract Long countTitleCache(Class<? extends T> clazz, String queryString, MatchMode matchMode);
 
+
+	/**
+	 * Return a count of entities having an {@link Identifier} that matches the given parameters.
+	 * @param clazz the entities class
+	 * @param identifier the identifier string
+	 * @param identifierType the identifier type
+	 * @param matchmode
+	 * @see #findByIdentifier
+	 * @return
+	 */
+	public <S extends T> int countByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode);
 	
     /**
-     * Returns all {@link IdentifiableEntity identifiable entities} which have the according
-     * identifier attached  
-     * @param clazz the identiable entity subclass, may be null
-     * @param identifier the identifer as {@link String}
+     * Returns a tuple including the identifier type, the identifier string, 
+     * and if includeEntity is <code>false</code> the CDM entities uuid, and titleCache,
+     * otherwise the CDM entity itself 
+     * @param clazz the identifiable entity subclass, may be null
+     * @param identifier the identifier as {@link String}
      * @param identifierType the identifier type, maybe null
      * @param matchmode 
+     * @param includeCdmEntity
      * @param pageSize
      * @param pageNumber
-     * @param orderHints
      * @param propertyPaths
+     * @see #countByIdentifier(Class, String, DefinedTerm, MatchMode)
      * @return
      */
-    public <S extends T> List<S> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<Object[]> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, boolean includeCdmEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }

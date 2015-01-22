@@ -51,6 +51,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean allowReuseOtherClassifications =true;
     private boolean addMediaAsMediaSpecimen = false;
     private boolean determinationOnFieldUnitLevel = false;
+    private boolean deduplicateReferences = false;
+    private boolean deduplicateClassifications = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -332,28 +334,33 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
     }
 
-    /**
-     * @return the allowReuseOtherClassifications
-     */
+
+    public boolean isDeduplicateClassifications() {
+        return deduplicateClassifications;
+    }
+
+    public void setDeduplicateClassifications(boolean deduplicateClassifications) {
+        this.deduplicateClassifications = deduplicateClassifications;
+    }
+
+    public boolean isDeduplicateReferences() {
+        return deduplicateReferences;
+    }
+
+    public void setDeduplicateReferences(boolean deduplicateReferences) {
+        this.deduplicateReferences = deduplicateReferences;
+    }
+
     public boolean isAllowReuseOtherClassifications() {
         return allowReuseOtherClassifications;
     }
 
-    /**
-     * @param allowReuseOtherClassifications the allowReuseOtherClassifications to set
-     */
     public void setAllowReuseOtherClassifications(boolean allowReuseOtherClassifications) {
         this.allowReuseOtherClassifications = allowReuseOtherClassifications;
     }
 
-    /**
-     * @return the specimenUserInteraction
-     */
     public SpecimenUserInteraction getSpecimenUserInteraction() {
         return specimenUserInteraction;
     }
-
-
-
 
 }

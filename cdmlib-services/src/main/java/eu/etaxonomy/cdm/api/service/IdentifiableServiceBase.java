@@ -17,12 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -39,6 +41,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AutoPropertyInitializer;
@@ -79,12 +82,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 			
-			List<IdentifiableSource> results = new ArrayList<IdentifiableSource>();
-			if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.getSources(t, pageSize, pageNumber,propertyPaths); 
-			}
-			
-			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
+		 List<IdentifiableSource> results = new ArrayList<IdentifiableSource>();
+		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+			 results = dao.getSources(t, pageSize, pageNumber,propertyPaths); 
+		 }
+		
+		 return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	
@@ -568,14 +571,28 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 
 	@Override
-	public <S extends T> List<S> listByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType,
-			MatchMode matchmode, Integer pageSize,
-			Integer pageNumber, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		return dao.findByIdentifier(clazz, identifier, identifierType,
-				matchmode, pageSize, pageNumber, orderHints,
-				propertyPaths);
+	@Transactional(readOnly = true)
+	public <S extends T> Pager<FindByIdentifierDTO<S>> findByIdentifier(
+			Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, 
+			boolean includeEntity, Integer pageSize,
+			Integer pageNumber,	List<String> propertyPaths) {
+		
+		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        if(numberOfResults > 0) { // no point checking again
+        	daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
+    				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
+        }
+        
+        List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
+        for (Object[] daoObj : daoResults){
+        	if (includeEntity){
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        	}else{
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));	
+        	}
+        }
+		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 

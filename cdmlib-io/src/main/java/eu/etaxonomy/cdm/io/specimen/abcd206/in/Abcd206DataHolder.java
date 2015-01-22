@@ -45,6 +45,12 @@ public class Abcd206DataHolder {
 	protected String isocountry;
 	protected int depth;
 	protected int altitude;
+	protected String gatheringDateText;
+	protected String gatheringElevationText;
+	protected String gatheringElevation;
+	protected String gatheringElevationMax;
+	protected String gatheringElevationMin;
+	protected String gatheringElevationUnit;
 
 
 	protected List<Identification> identificationList;

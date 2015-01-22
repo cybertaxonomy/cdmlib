@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <!-- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" -->
   <parent>
     <groupId>eu.etaxonomy</groupId>
@@ -11,8 +12,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-remote</artifactId>
   <properties>
-    <!-- custom property to hold the patch version number shouldn't this be
-      set in the parent pom? -->
+    <!-- custom property to hold the patch version number shouldn't this 
+      be set in the parent pom? -->
     <project.patchversion>0</project.patchversion>
   </properties>
   <name>CDM Remote</name>
@@ -39,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -69,91 +70,91 @@
         </exclusion>
       </exclusions>
     </dependency>
-              <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-expression</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-tx</artifactId>
-                  </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                  </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring-security.version}</version>
-                 <exclusions>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                  </exclusion>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                  </exclusion>
-                </exclusions>
-            </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${spring-security.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-expression</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-tx</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${spring-security.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-web</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${spring-security.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-web</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-core</artifactId>
@@ -217,49 +218,6 @@
       <artifactId>lsid-client</artifactId>
     </dependency>
 
-
-      <dependency>
-  <groupId>com.vaadin</groupId>
-  <artifactId>vaadin-server</artifactId>
-      </dependency>
-      <dependency>
-  <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-shared</artifactId>
-      </dependency>
-      <dependency>
-  <groupId>com.vaadin</groupId>
-  <artifactId>vaadin-client-compiled</artifactId>
-      </dependency>
-      <dependency>
-  <groupId>com.vaadin</groupId>
-  <artifactId>vaadin-client</artifactId>
-  <scope>provided</scope>
-      </dependency>
-      <dependency>
-  <groupId>com.vaadin</groupId>
-  <artifactId>vaadin-themes</artifactId>
-      </dependency>
-      <dependency>
-  <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-client-compiler</artifactId>
-      </dependency>
-
-      <dependency>
-  <groupId>ru.xpoft.vaadin</groupId>
-  <artifactId>spring-vaadin-integration</artifactId>
-      </dependency>
-
-      <dependency>
-     <groupId>org.vaadin.addons</groupId>
-     <artifactId>exporter</artifactId>
-      </dependency>
-
-      <dependency>
-     <groupId>org.vaadin.addons</groupId>
-     <artifactId>wizards-for-vaadin</artifactId>
-      </dependency>
-
-
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>org.springframework.test</artifactId>
@@ -284,6 +242,10 @@
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
       <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -327,52 +289,29 @@
   </dependencies>
 
   <build>
-  <plugins>
-          <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>2.1-beta-1</version>
-        </plugin>
-        <plugin>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-maven-plugin</artifactId>
-          <version>7.3.1</version>
-        <configuration>
-          <strict>true</strict>
-          <force>true</force>
-        <webappDirectory>../cdmlib-remote-webapp/src/main/webapp/VAADIN/widgetsets</webappDirectory>
-        </configuration>
-    <executions>
-      <execution>
-        <goals>
-          <goal>resources</goal>
-          <goal>compile</goal>
-        </goals>
-      </execution>
-    </executions>
-    </plugin>
-  <plugin>
-    <artifactId>maven-resources-plugin</artifactId>
-    <version>2.5</version>
-    <executions>
-      <execution>
-        <id>copy-resources</id>
-        <phase>validate</phase>
-        <goals>
-          <goal>copy-resources</goal>
-        </goals>
-        <configuration>
-          <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
-          <resources>
-            <resource>
-              <directory>../src/site/apt/remote</directory>
-              <filtering>true</filtering>
-            </resource>
-          </resources>
-        </configuration>
-      </execution>
-    </executions>
-  </plugin>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>../src/site/apt/remote</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

@@ -55,8 +55,8 @@ public class UriUtils {
     private static final Logger logger = Logger.getLogger(UriUtils.class);
 
     protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
-	
-    
+
+
     public enum HttpMethod{
         GET,
         POST
@@ -341,6 +341,10 @@ public class UriUtils {
      */
     public static boolean isServiceAvailable(URI serviceUri, Integer timeout){
         boolean result = false;
+
+        if(serviceUri==null || serviceUri.getHost()==null){
+            return false;
+        }
 
         //Http
         HttpClient  client = new DefaultHttpClient();

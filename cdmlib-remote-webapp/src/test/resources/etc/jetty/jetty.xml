@@ -2,26 +2,26 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <!-- ============================================================== -->
-<!-- Sets up characteristics of the org.eclipse.jetty.server.Server --> 
-<!-- instance for the plugin to use. Importantly, it sets up the    -->
+<!-- Sets up characteristics of the org.eclipse.jetty.server.Server -->
+<!-- instance for the plugin to use. Importantly, it sets up the -->
 <!-- org.eclipse.jetty.server.HttpConfiguration element that we can -->
 <!-- refer to in subsequent xml files that configure the connectors -->
 <!-- ============================================================== -->
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
-    <New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+	<New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
 		<Set name="secureScheme">http</Set>
-		<Set name="securePort"><Property name="jetty.secure.port" default="9443" /></Set>
+		<Set name="securePort">
+			<Property name="jetty.secure.port" default="9443" />
+		</Set>
 		<Set name="outputBufferSize">32768</Set>
 		<Set name="requestHeaderSize">8192</Set>
 		<Set name="responseHeaderSize">8192</Set>
 		<Set name="sendServerVersion">true</Set>
 		<Set name="sendDateHeader">false</Set>
 		<Set name="headerCacheSize">512</Set>
-	  <!-- Uncomment to enable handling of X-Forwarded- style headers
-	  <Call name="addCustomizer">
-	    <Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg>
-	  </Call>
-	  -->
+		<!-- Uncomment to enable handling of X-Forwarded- style headers <Call name="addCustomizer"> 
+			<Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg> 
+			</Call> -->
 	</New>
 </Configure>
