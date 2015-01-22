@@ -19,12 +19,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
@@ -73,34 +73,34 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     private static final int cv_createdby_id = 10;
     private static final int cv_entityvalidationresult_id = 11;
 
-    private ICdmDataSource datasource;
+    private DataSource datasource;
 
     public EntityValidationResultCrudJdbcImpl() {
 
     }
 
-    public EntityValidationResultCrudJdbcImpl(ICdmDataSource datasource) {
+    public EntityValidationResultCrudJdbcImpl(DataSource datasource) {
         this.datasource = datasource;
     }
 
     @Override
     public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType) {
-        deleteValidationResult(entity.getClass().getName(),entity.getId());
+        deleteValidationResult(entity.getClass().getName(), entity.getId());
         Connection conn = null;
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         try {
             conn = datasource.getConnection();
-            datasource.startTransaction();
+            JdbcDaoUtils.startTransaction(datasource);
             stmt1 = conn.prepareStatement(VR_SQL_INSERT);
             stmt2 = conn.prepareStatement(CV_SQL_INSERT);
             int nextId = 1 + JdbcDaoUtils.fetchInt(conn, "SELECT MAX(id) FROM entityvalidationresult");
             saveValidationResult(stmt1, entity, crudEventType, nextId);
             saveErrors(stmt2, errors, entity, nextId);
-            datasource.commitTransaction();
+            JdbcDaoUtils.commit(datasource);
         } catch (SQLException e) {
-            JdbcDaoUtils.rollback(conn);
+            JdbcDaoUtils.rollback(datasource);
             logger.error("Problems while saving validation result for entity " + entity, e);
         } finally {
             JdbcDaoUtils.close(stmt1);
@@ -110,7 +110,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
 
     @Override
     public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
-        int resultId = getValidationResultId(validatedEntityClass,validatedEntityId);
+        int resultId = getValidationResultId(validatedEntityClass, validatedEntityId);
         if (resultId == -1) {
             return;
         }
@@ -121,16 +121,16 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         PreparedStatement stmt2 = null;
         try {
             conn = datasource.getConnection();
-            datasource.startTransaction();
+            JdbcDaoUtils.startTransaction(datasource);
             stmt1 = conn.prepareStatement(vrSqlDelete);
             stmt2 = conn.prepareStatement(cvSqlDelete);
             stmt1.setInt(1, resultId);
             stmt1.executeUpdate();
             stmt2.setInt(1, resultId);
             stmt2.executeUpdate();
-            datasource.commitTransaction();
+            JdbcDaoUtils.commit(datasource);
         } catch (SQLException e) {
-            JdbcDaoUtils.rollback(conn);
+            JdbcDaoUtils.rollback(datasource);
             logger.error("Error while deleting validation result", e);
         } finally {
             JdbcDaoUtils.close(stmt1);
@@ -142,11 +142,12 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
      * @param datasource
      *            the datasource to set
      */
-    public void setDatasource(ICdmDataSource datasource) {
+    public void setDatasource(DataSource datasource) {
         this.datasource = datasource;
     }
 
-    public EntityValidationResult getValidationResult(CdmBase entity) {
+    // Called by unit test
+    EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId) {
         String sql1 = "SELECT * FROM entityvalidationresult WHERE validatedentityclass=? AND validatedentityid=?";
         String sql2 = "SELECT * FROM entityconstraintviolation WHERE entityvalidationresult_id=?";
         Connection connection = null;
@@ -156,10 +157,12 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         try {
             connection = datasource.getConnection();
             stmt1 = connection.prepareStatement(sql1);
-            result = getValidationResult(stmt1, entity);
-            stmt2 = connection.prepareStatement(sql2);
-            Set<EntityConstraintViolation> errors = getErrors(stmt2, result.getId());
-            result.setEntityConstraintViolations(errors);
+            result = getValidationResult(stmt1, validatedEntityClass,validatedEntityId);
+            if (result != null) {
+                stmt2 = connection.prepareStatement(sql2);
+                Set<EntityConstraintViolation> errors = getErrors(stmt2, result.getId());
+                result.setEntityConstraintViolations(errors);
+            }
         } catch (SQLException e) {
             logger.error("Error while retrieving validation result", e);
         } finally {
@@ -169,10 +172,10 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return result;
     }
 
-    private EntityValidationResult getValidationResult(PreparedStatement stmt, CdmBase entity) throws SQLException {
+    private EntityValidationResult getValidationResult(PreparedStatement stmt, String validatedEntityClass, int validatedEntityId) throws SQLException {
         EntityValidationResult result = null;
-        stmt.setString(1, entity.getClass().getName());
-        stmt.setInt(2, entity.getId());
+        stmt.setString(1, validatedEntityClass);
+        stmt.setInt(2, validatedEntityId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             result = EntityValidationResult.newInstance();
@@ -186,6 +189,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             result.setUserFriendlyDescription(rs.getString("userfriendlydescription"));
             result.setUserFriendlyTypeName(rs.getString("userfriendlytypename"));
         }
+        rs.close();
         return result;
     }
 
@@ -206,6 +210,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             error.setValidator(rs.getString("validator"));
             errors.add(error);
         }
+        rs.close();
         return errors;
     }
 
@@ -257,6 +262,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         String sql = "SELECT id FROM EntityValidationResult WHERE validatedEntityClass = ? AND validatedEntityId = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
+        int result = -1;
         try {
             conn = datasource.getConnection();
             stmt = conn.prepareStatement(sql);
@@ -264,14 +270,15 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             stmt.setInt(2, validatedEntityId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1);
+                result = rs.getInt(1);
             }
+            rs.close();
         } catch (SQLException e) {
             logger.error("Error while retrieving validation result id", e);
         } finally {
             JdbcDaoUtils.close(stmt);
         }
-        return -1;
+        return result;
     }
 
 }

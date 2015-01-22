@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.persistence.dao.jdbc.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,13 +32,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 
-import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -44,9 +48,12 @@ import eu.etaxonomy.cdm.validation.Level2;
  * @date 20 jan. 2015
  *
  */
-public class EntityValidationResultCrudJdbcImplTest {
+@DataSet
+public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
-    CdmDataSource datasource;
+    private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
+    private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
+    private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
     /**
      * @throws java.lang.Exception
@@ -67,11 +74,6 @@ public class EntityValidationResultCrudJdbcImplTest {
      */
     @Before
     public void setUp() throws Exception {
-        datasource = CdmDataSource.NewMySqlInstance("localhost", "cdm", "root", null);
-        if (!datasource.testConnection()) {
-            throw new Exception("Could not connect to datasource");
-        }
-
     }
 
     /**
@@ -79,9 +81,6 @@ public class EntityValidationResultCrudJdbcImplTest {
      */
     @After
     public void tearDown() throws Exception {
-        if (datasource != null) {
-            datasource.closeOpenConnections();
-        }
     }
 
     /**
@@ -91,7 +90,7 @@ public class EntityValidationResultCrudJdbcImplTest {
      */
     @Test
     public void test_EntityValidationResultCrudJdbcImpl() {
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl();
+         new EntityValidationResultCrudJdbcImpl();
     }
 
     /**
@@ -101,7 +100,7 @@ public class EntityValidationResultCrudJdbcImplTest {
      */
     @Test
     public void test_EntityValidationResultCrudJdbcImplI_CdmDataSource() {
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(datasource);
+        new EntityValidationResultCrudJdbcImpl(dataSource);
     }
 
     /**
@@ -133,10 +132,10 @@ public class EntityValidationResultCrudJdbcImplTest {
         emp.setCompany(comp);
 
         Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(datasource);
+        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
         dao.saveValidationResult(errors, emp, CRUDEventType.NONE);
 
-        EntityValidationResult result = dao.getValidationResult(emp);
+        EntityValidationResult result = dao.getValidationResult(emp.getClass().getName(),emp.getId());
         assertNotNull(result);
         assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -144,14 +143,12 @@ public class EntityValidationResultCrudJdbcImplTest {
         List<EntityConstraintViolation> list = new ArrayList<EntityConstraintViolation>(violations);
         Collections.sort(list, new Comparator<EntityConstraintViolation>() {
             @Override
-            public int compare(EntityConstraintViolation o1, EntityConstraintViolation o2)
-            {
+            public int compare(EntityConstraintViolation o1, EntityConstraintViolation o2) {
                 return o1.getPropertyPath().toString().compareTo(o2.getPropertyPath().toString());
             }
         });
         assertEquals("Unexpected propertypath", list.get(0).getPropertyPath().toString(), "company.name");
         assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "firstName");
-
 
     }
 
@@ -161,7 +158,12 @@ public class EntityValidationResultCrudJdbcImplTest {
      * .
      */
     @Test
+    @ExpectedDataSet
     public void test_DeleteValidationResult() {
+        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
+        dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 200);
+        EntityValidationResult result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        assertTrue(result == null);
     }
 
     /**
@@ -171,6 +173,12 @@ public class EntityValidationResultCrudJdbcImplTest {
      */
     @Test
     public void testSetDatasource() {
+        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl();
+        dao.setDatasource(dataSource);
+    }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {
     }
 
 }
