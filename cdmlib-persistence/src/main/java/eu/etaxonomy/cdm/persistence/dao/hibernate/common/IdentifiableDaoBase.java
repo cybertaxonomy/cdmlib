@@ -453,7 +453,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 			String identifier, DefinedTerm identifierType, MatchMode matchmode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
         
-		String queryString = "SELECT count(*) FROM " + type.getSimpleName() + " as c " +
+		Class<?> clazzParam = clazz == null ? type : clazz;
+		String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
 	                "INNER JOIN c.identifiers as ids " +
 	                "WHERE (1=1) ";
 		if (identifier != null){
@@ -484,10 +485,11 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
         
+		Class<?> clazzParam = clazz == null ? type : clazz;
 		String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 " WHERE (1=1) ";
-		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , type.getSimpleName());
+		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
 		
 		//Matchmode and identifier
 		if (identifier != null){

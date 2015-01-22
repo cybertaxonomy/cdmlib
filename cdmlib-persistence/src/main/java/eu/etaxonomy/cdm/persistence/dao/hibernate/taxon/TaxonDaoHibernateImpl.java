@@ -2171,10 +2171,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			return countByIdentifier(clazz, identifier, identifierType, matchmode);
 		}
 		
+		Class<?> clazzParam = clazz == null ? type : clazz;
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
 		
-		boolean isTaxon = clazz == Taxon.class || clazz == TaxonBase.class;
-		boolean isSynonym = clazz == Synonym.class || clazz == TaxonBase.class;
+		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
@@ -2187,7 +2188,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 synTreeJoin + 
                 " WHERE (1=1) " +
                 	"  AND ( " + accWhere + " OR " + synWhere + ")";
-		queryString = String.format(queryString, clazz.getSimpleName());
+		queryString = String.format(queryString, clazzParam.getSimpleName());
 		
 		if (identifier != null){
 			if (matchmode == null || matchmode == MatchMode.EXACT){
@@ -2216,9 +2217,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-        
-		boolean isTaxon = clazz == Taxon.class || clazz == TaxonBase.class;
-		boolean isSynonym = clazz == Synonym.class || clazz == TaxonBase.class;
+		Class<?> clazzParam = clazz == null ? type : clazz;
+		    
+		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
+		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
@@ -2232,7 +2234,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				synTreeJoin + 
                 " WHERE (1=1) " +
                 	" AND ( " + accWhere + " OR " + synWhere + ")";
-		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazz.getSimpleName());
+		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
 		
 		//Matchmode and identifier
 		if (identifier != null){
