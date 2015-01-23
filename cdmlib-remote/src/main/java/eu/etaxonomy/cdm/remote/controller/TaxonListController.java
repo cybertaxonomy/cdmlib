@@ -109,7 +109,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     /**
      * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
      * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
+     * URI: <b>taxon&#x002F;search</b>
      *
      * @param query
      *            the string to query for. Since the wildcard character '*'
