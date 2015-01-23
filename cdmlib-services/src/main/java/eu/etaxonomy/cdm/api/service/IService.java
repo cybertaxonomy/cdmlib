@@ -111,7 +111,7 @@ public interface IService<T extends ICdmBase>{
      * supplied as an argument, or null if the entity does not exist
      *
      * @param uuid the unique identifier of the entity required
-     * @return an entity of type <T>, or null if the entity does not exist
+     * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
      */
     public T find(UUID uuid);
     
@@ -139,7 +139,7 @@ public interface IService<T extends ICdmBase>{
 	 * underlying database.
 	 * 
 	 * @param uuid
-	 * @return an entity of type <T>, or null if the entity does not exist
+	 * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
 	 */
 	public T findWithoutFlush(UUID uuid);
 
@@ -203,7 +203,7 @@ public interface IService<T extends ICdmBase>{
      * initializes all its *ToOne relations.
      *
      * @param uuid
-     * @return
+     * @return the cdm entity or <code>null</code> if not object with given uuid exists or uuid is <code>null</code>
      */
     public T load(UUID uuid);
 
@@ -216,7 +216,7 @@ public interface IService<T extends ICdmBase>{
      * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param uuid
-     * @return
+     * @return the cdm entity or <code>null</code> if not object with given uuid exists or uuid is <code>null</code>
      */
     public T load(UUID uuid, List<String> propertyPaths);
 
