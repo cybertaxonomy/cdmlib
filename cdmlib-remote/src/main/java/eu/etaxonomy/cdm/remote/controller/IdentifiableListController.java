@@ -127,7 +127,9 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         pagerParams.normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
-        boolean includeCdmEntity = includeEntity == true ? true : false;
+        boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
         return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
     }
+    
+    
 }
