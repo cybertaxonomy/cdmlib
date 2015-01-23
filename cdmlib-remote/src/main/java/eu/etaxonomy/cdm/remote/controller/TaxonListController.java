@@ -459,7 +459,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
+    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifierInTree"})
     public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifierSubtree(
     		@RequestParam(value = "class", required = false) Class<T> type,
     		@RequestParam(value = "identifierType", required = false) UUID identifierType,
