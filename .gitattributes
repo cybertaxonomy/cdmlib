@@ -647,6 +647,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_A
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx -text
