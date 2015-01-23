@@ -86,9 +86,15 @@ public class Abcd206ImportReport {
         out.println("\n");
         out.println("---Created Taxon Nodes---");
         for (TaxonNode taxonNode : createdTaxonNodes) {
-            String nodeString = taxonNode+" ("+taxonNode.getTaxon().getTitleCache()+")";
+            String nodeString = taxonNode.toString();
+            if(taxonNode.getTaxon()!=null){
+                nodeString += " ("+taxonNode.getTaxon().getTitleCache()+")";
+            }
             if(taxonNode.getParent()!=null){
-                nodeString += " with parent "+taxonNode.getParent()+" ("+taxonNode.getParent().getTaxon().getTitleCache()+")";
+                nodeString += " with parent "+taxonNode.getParent();
+                if(taxonNode.getParent().getTaxon()!=null){
+                    nodeString += " ("+taxonNode.getParent().getTaxon().getTitleCache()+")";
+                }
             }
             out.println(nodeString);
         }
@@ -104,6 +110,5 @@ public class Abcd206ImportReport {
         }
         out.close();
     }
-
 
 }
