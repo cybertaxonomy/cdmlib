@@ -296,7 +296,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
         commitTransaction(state.getTx());
-        report.printReport();
+        report.printReport(state.getConfig().getReportUri());
         return;
     }
 

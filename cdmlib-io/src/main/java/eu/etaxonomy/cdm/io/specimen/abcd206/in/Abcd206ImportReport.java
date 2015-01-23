@@ -9,6 +9,10 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +35,6 @@ public class Abcd206ImportReport {
     private final Map<Taxon, List<DerivedUnit>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<DerivedUnit>>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
-
 
     public void addTaxon(Taxon taxon){
         createdTaxa.add(taxon);
@@ -58,32 +61,48 @@ public class Abcd206ImportReport {
         taxonToAssociatedSpecimens.put(taxon, associatedSpecimens);
     }
 
-    public void printReport() {
-        System.out.println("++++++++Import Report+++++++++");
-        System.out.println("---Created Taxon Names---");
+    public void printReport(URI reportUri) {
+        PrintStream out;
+        if(reportUri!=null){
+            try {
+                out = new PrintStream(new File(reportUri));
+            } catch (FileNotFoundException e) {
+                return;
+            }
+        }
+        else{
+            out = System.out;
+        }
+        out.println("++++++++Import Report+++++++++");
+        out.println("---Created Taxon Names---");
         for (TaxonNameBase<?, ?> taxonName : createdNames) {
-            System.out.println(taxonName.getTitleCache());
+            out.println(taxonName.getTitleCache());
         }
-        System.out.println("\n");
-        System.out.println("---Created Taxa---");
+        out.println("\n");
+        out.println("---Created Taxa---");
         for (Taxon taxon : createdTaxa) {
-            System.out.println(taxon.getTitleCache());
+            out.println(taxon.getTitleCache());
         }
-        System.out.println("\n");
-        System.out.println("---Created Taxon Nodes---");
+        out.println("\n");
+        out.println("---Created Taxon Nodes---");
         for (TaxonNode taxonNode : createdTaxonNodes) {
-            System.out.println(taxonNode+" with parent "+taxonNode.getParent());
+            String nodeString = taxonNode+" ("+taxonNode.getTaxon().getTitleCache()+")";
+            if(taxonNode.getParent()!=null){
+                nodeString += " with parent "+taxonNode.getParent()+" ("+taxonNode.getParent().getTaxon().getTitleCache()+")";
+            }
+            out.println(nodeString);
         }
-        System.out.println("\n");
-        System.out.println("---Taxa with associated specimens---");
+        out.println("\n");
+        out.println("---Taxa with associated specimens---");
         for(Entry<Taxon, List<DerivedUnit>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
             List<DerivedUnit> specimens = entry.getValue();
-            System.out.println(taxon.getTitleCache());
+            out.println(taxon.getTitleCache());
             for (DerivedUnit derivedUnit : specimens) {
-                System.out.println("\t- "+derivedUnit.getTitleCache());
+                out.println("\t- "+derivedUnit.getTitleCache());
             }
         }
+        out.close();
     }
 
 

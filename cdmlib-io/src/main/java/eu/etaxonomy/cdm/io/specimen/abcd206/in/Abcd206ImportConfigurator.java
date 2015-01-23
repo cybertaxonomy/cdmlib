@@ -63,6 +63,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static IInputTransformer defaultTransformer = null;
 
     private URI sourceUri;
+    private URI reportUri;
 
 
     @Override
@@ -361,6 +362,14 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public SpecimenUserInteraction getSpecimenUserInteraction() {
         return specimenUserInteraction;
+    }
+
+    public void setReportUri(URI reportUri) {
+        this.reportUri = reportUri;
+    }
+
+    public URI getReportUri() {
+        return reportUri;
     }
 
 }
