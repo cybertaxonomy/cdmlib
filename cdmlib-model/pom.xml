@@ -115,11 +115,6 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
-<!--     Part of hibernate-core since 3.6 -->
-<!--     <dependency> -->
-<!--       <groupId>org.hibernate</groupId> -->
-<!--       <artifactId>hibernate-annotations</artifactId> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
