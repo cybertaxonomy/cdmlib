@@ -1545,7 +1545,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
           </exclusion>
-<!--           <exclusion>  --currently not referenced by any other project
+<!--           <exclusion>  -currently not referenced by any other project
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
           </exclusion> -->
