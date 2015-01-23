@@ -2218,9 +2218,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		    
+		
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
+		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
