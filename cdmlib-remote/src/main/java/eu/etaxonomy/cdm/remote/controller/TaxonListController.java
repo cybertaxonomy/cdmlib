@@ -36,14 +36,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -51,9 +55,11 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -98,6 +104,10 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
     @Autowired
     private IClassificationService classificationService;
+    
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
+
 
     @Autowired
     private ITermService termService;
@@ -432,6 +442,59 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         Taxon bestMatchingTaxon =  service.findBestMatchingTaxon(taxonName);
 
         return bestMatchingTaxon;
+    }
+    
+    /**
+     * list IdentifiableEntity objects by identifiers
+     * 
+     * @param type
+     * @param identifierType
+     * @param identifier
+     * @param pageNumber
+     * @param pageSize
+     * @param matchMode
+     * @param request
+     * @param response
+     * @return
+     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
+    public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
+    		@RequestParam(value = "class", required = false) Class<T> type,
+    		@RequestParam(value = "identifierType", required = false) UUID identifierType,
+            @RequestParam(value = "identifier", required = false) String identifier,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "includeEntity", required = false) Boolean includeEntity,
+            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
+
+    	DefinedTerm definedTerm = null;
+    	if(identifierType != null){
+    		definedTerm = CdmBase.deproxy(termService.find(identifierType), DefinedTerm.class);
+    	}
+    	
+		TaxonNode subTree;
+    	Classification cl = classificationService.find(subtreeUuid);
+		if (cl != null){
+			subTree = cl.getRootNode();
+		}else{
+			subTree = taxonNodeService.find(subtreeUuid);
+		}
+    	
+        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
+        boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
+        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
     }
 
 }

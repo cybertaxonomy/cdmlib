@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 
 /**
  * @author l.morris
@@ -39,6 +41,14 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class IdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> extends BaseListController<T,SERVICE>  {
 
+	
+    @InitBinder
+    @Override
+    public void initBinder(WebDataBinder binder) {
+        super.initBinder(binder);
+        binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
+    }
+	
 	@Autowired
 	private ITermService termservice;
 
@@ -97,6 +107,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      * @param matchMode
      * @param request
      * @param response
+     * @param includeEntity
      * @return
      * @throws IOException
      */
@@ -126,7 +137,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
+        matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
         return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
     }
