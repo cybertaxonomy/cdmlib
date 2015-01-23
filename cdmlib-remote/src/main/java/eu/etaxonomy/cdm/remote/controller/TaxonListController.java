@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -66,6 +68,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  * @date 20.03.2009
  */
 @Controller
+@Api("taxon")
 @RequestMapping(value = {"/taxon"})
 public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
 

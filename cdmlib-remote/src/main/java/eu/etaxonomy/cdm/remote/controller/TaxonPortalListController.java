@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 26.08.2014
  */
 @Controller
+@Api("portal_taxon")
 @RequestMapping(value = {"/portal/taxon"})
 public class TaxonPortalListController extends TaxonListController {
 

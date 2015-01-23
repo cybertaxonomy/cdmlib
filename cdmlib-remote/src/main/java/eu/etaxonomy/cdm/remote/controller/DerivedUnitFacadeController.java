@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -40,6 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
+@Api("derivedUnitFacade")
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
 public class DerivedUnitFacadeController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
 

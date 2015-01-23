@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 /**
@@ -33,6 +35,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  *
  */
 @Controller
+@Api("portal_featureTree")
 @RequestMapping(value = {"/portal/featureTree/{uuid}"})
 public class FeatureTreePortalController extends FeatureTreeController {
 

@@ -35,6 +35,7 @@
     <httpcomponents.version>4.2.3</httpcomponents.version>
     <doxia.version>1.3</doxia.version>
     <poi.version>3.10-FINAL</poi.version>
+    <jackson.version>2.2.3</jackson.version>
   </properties>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
@@ -1113,6 +1114,12 @@
         <version>0.8.7</version>
       </dependency>
       <dependency>
+          <!-- used in eu.etaxonomy.cdm.io.markup -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>15.0</version>
+      </dependency>
+      <dependency>
         <groupId>jaxen</groupId>
         <artifactId>jaxen</artifactId>
         <version>1.1.4</version>
@@ -1239,6 +1246,11 @@
           <exclusion>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <!-- exclude to avoid conficts with swagger -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1513,6 +1525,35 @@
         <artifactId>doxia-module-xhtml</artifactId>
         <version>${doxia.version}</version>
       </dependency>
+      <!-- swagger (rest service doc) -->
+      <dependency>
+        <groupId>com.wordnik</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <!-- should match the swagger-spring depends on -->
+        <version>1.3.5</version>
+      </dependency>
+      <dependency>
+        <groupId>com.mangofactory</groupId>
+        <artifactId>swagger-springmvc</artifactId>
+        <version>0.8.5</version>
+      </dependency>
+      <!-- dependencies for swagger-springmvc, added explicitely -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <!-- END of dependencies for swagger-springmvc, added explicitely -->
     </dependencies>
   </dependencyManagement>
 </project>

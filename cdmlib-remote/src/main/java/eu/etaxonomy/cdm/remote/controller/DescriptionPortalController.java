@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -73,6 +75,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  *
  */
 @Controller
+@Api("portal_description")
 @Transactional(readOnly=true)
 @RequestMapping(value = {
             "/portal/description/{uuid}",

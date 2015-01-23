@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -41,6 +43,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
  */
 
 @Controller
+@Api("name")
 @RequestMapping(value = {"/name/{uuid}"})
 public class NameController extends BaseController<TaxonNameBase, INameService>
 {
@@ -93,7 +96,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             HttpServletResponse response) throws IOException {
 
         if (request != null) {
-        	logger.info("doGetTypeDesignations()" + request.getRequestURI());
+            logger.info("doGetTypeDesignations()" + request.getRequestURI());
         }
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
                 (List<String>) null);

@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -70,6 +72,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  */
 
 @Controller
+@Api("description")
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
 public class DescriptionController extends BaseController<DescriptionBase, IDescriptionService>
 {

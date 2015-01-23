@@ -11,7 +11,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 
@@ -58,44 +61,45 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  * @date 24.03.2009
  */
 @Controller
+@Api(value = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
 public class AgentController extends BaseController<AgentBase, IAgentService>
 {
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(IAgentService service) {
-		this.service = service;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Autowired
+    @Override
+    public void setService(IAgentService service) {
+        this.service = service;
+    }
 
-	/**
-	 * This method is only needed for
-	 * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase} or sub classes
-	 * which are also handled by this controller.
-	 *
-	 * The method
-	 * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache() } is
-	 * annotated with @Transient and thus it is not automatically made available
-	 * by the BaseController.
-	 *
-	 * @param uuid
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(value = {"titleCache"})
-	public ModelAndView doGetTitleCache(@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
-		ModelAndView mv = new ModelAndView();
-		AgentBase<?> agentbase = service.load(uuid);
-		mv.addObject(agentbase.getTitleCache());
-		return mv;
+    /**
+     * This method is only needed for
+     * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase} or sub classes
+     * which are also handled by this controller.
+     *
+     * The method
+     * {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache() } is
+     * annotated with @Transient and thus it is not automatically made available
+     * by the BaseController.
+     *
+     * @param uuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = {"titleCache"}, method = RequestMethod.GET)
+    public ModelAndView doGetTitleCache(@PathVariable("uuid") UUID uuid,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ModelAndView mv = new ModelAndView();
+        AgentBase<?> agentbase = service.load(uuid);
+        mv.addObject(agentbase.getTitleCache());
+        return mv;
 
-	}
+    }
 
 }

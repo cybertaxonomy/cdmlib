@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
@@ -25,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  *
  */
 @Controller
+@Api("polytomousKeyNode")
 @RequestMapping(value = {"/polytomousKeyNode/{uuid}"})
 public class PolytomousKeyNodeController extends BaseController<PolytomousKeyNode, IPolytomousKeyNodeService> {
 

@@ -68,6 +68,17 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 )
 public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
+    private static final String LSID_AUTHORITY_SERVICES = "LSID authority services";
+
+    private static final String DATA_EXPORT = "Data export";
+
+    private static final String GENERIC_REST_API = "Generic REST API";
+
+    private static final String WEB_PORTAL_SERVICES = "Web Portal Services";
+
+    private static final String CATALOGUE_SERVICES = "Catalogue Services";
+
+
     /**
      * turn caching off FOR DEBUGING ONLY !!!!
      */
@@ -125,8 +136,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
     @Override
     @Bean
-//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
-    @DependsOn({"swaggerPluginDefault"})
+    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
+//    @DependsOn({"swaggerPluginDefault"})
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
         /* NOTE: this override is the only reason why this class
          * needs to extends WebMvcConfigurationSupport. We may be able to
@@ -142,8 +153,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
-    @DependsOn({"swaggerPluginDefault"})
+    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
+//    @DependsOn({"swaggerPluginDefault"})
     public XmlViewResolver getOaiXmlViewResolver() {
         XmlViewResolver resolver = new XmlViewResolver();
       resolver.setOrder(1);
@@ -193,8 +204,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
      * the ContentNegotiationManager created by the configurer (see previous method).
      */
    @Bean
-//   @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
-   @DependsOn({"swaggerPluginDefault"})
+   @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
+//   @DependsOn({"swaggerPluginDefault"})
    public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
 
        List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
@@ -234,44 +245,75 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
     * Every SwaggerSpringMvcPlugin bean is picked up by the swagger-mvc framework - allowing for multiple
     * swagger groups i.e. same code base multiple swagger resource listings.
     */
-   @Bean(name="swaggerPluginDefault")
+//   @Bean(name="swaggerPluginDefault")
+   @Bean(name="swaggerPluginGenericAPI")
    public SwaggerSpringMvcPlugin swaggerPluginGenericAPI(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-          .apiInfo(apiInfoDefault())
-          .includePatterns(".*?") // matches all RequestMappings
-          .ignoredParameterTypes(allCdmTpyes());
+          .apiInfo(apiInfo(GENERIC_REST_API, ""))
+          // below regex excludes the paths of all other groups,
+          // !!! also hide the manage and progress controller
+          .includePatterns("/(?!portal/)(?!taxon/oai)(?!reference/oai)(?!name_catalogue/)(?!authority/)(?!csv/)(?!checklist)(?!manage/)(?!progress/).*")
+          .ignoredParameterTypes(allCdmTpyes())
+          .swaggerGroup(GENERIC_REST_API)
+//          .excludeAnnotations(Deprecated.class) // TODO
+          ;
    }
 
-//
-//   @Bean(name="swaggerPluginPortal")
-//   public SwaggerSpringMvcPlugin swaggerPluginPortal(){
-//       logger.debug("swaggerSpringMvcPlugin");
-//       configureModelConverters();
-//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-//          .apiInfo(apiInfoDefault())
-//          .includePatterns("/portal/.*?") // matches all RequestMappings
-//          .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
-//   }
-//
-//   @Bean(name="swaggerPluginNameCatalogue")
-//   public SwaggerSpringMvcPlugin swaggerPluginNameCatalogue(){
-//       configureModelConverters();
-//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-//           .apiInfo(apiInfoDefault())
-//           .includePatterns("/name_catalogue/.*?") // matches all RequestMappings
-//           .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
-//   }
+   @Bean(name="swaggerPluginPortal")
+   public SwaggerSpringMvcPlugin swaggerPluginPortal(){
+       logger.debug("swaggerSpringMvcPlugin");
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+          .apiInfo(apiInfo(WEB_PORTAL_SERVICES, ""))
+          .includePatterns("/portal/.*")
+          .ignoredParameterTypes(allCdmTpyes())
+          .swaggerGroup(WEB_PORTAL_SERVICES);
+   }
 
-//   public SwaggerSpringMvcPlugin swaggerPluginNameOther(){
-//       configureModelConverters();
-//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-//           .apiInfo(apiInfoDefault())
-//           .includePatterns("/((?!)).*?") // matches all RequestMappings
-//           .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
-//   }
+   @Bean(name="swaggerPluginNameCatalogue")
+   public SwaggerSpringMvcPlugin swaggerPluginNameCatalogue(){
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+           .apiInfo(apiInfo(CATALOGUE_SERVICES, ""))
+           .includePatterns("/name_catalogue/.*", "/occurrence_catalogue/.*")
+           .ignoredParameterTypes(allCdmTpyes())
+           .swaggerGroup(CATALOGUE_SERVICES);
+   }
 
+   @Bean(name="swaggerPluginOAIPMH")
+   public SwaggerSpringMvcPlugin swaggerPluginOAIPMH(){
+       logger.debug("swaggerSpringMvcPlugin");
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+          .apiInfo(apiInfo("OAI-PMH", ""))
+          .includePatterns("/reference/oai.*", "/taxon/oai.*")
+          .ignoredParameterTypes(allCdmTpyes())
+          .swaggerGroup("OAI-PMH");
+   }
+
+   @Bean(name="swaggerPluginLSID")
+   public SwaggerSpringMvcPlugin swaggerPluginLSID(){
+       logger.debug("swaggerSpringMvcPlugin");
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+          .apiInfo(apiInfo(LSID_AUTHORITY_SERVICES, ""))
+          .includePatterns("/authority/.*")
+          .ignoredParameterTypes(allCdmTpyes())
+          .swaggerGroup(LSID_AUTHORITY_SERVICES);
+   }
+
+   @Bean(name="swaggerPluginDataExport")
+   public SwaggerSpringMvcPlugin swaggerPluginDataExport(){
+       logger.debug("swaggerSpringMvcPlugin");
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+          .apiInfo(apiInfo(DATA_EXPORT, ""))
+          .includePatterns("/csv/.*", "/checklist.*")
+          .ignoredParameterTypes(allCdmTpyes())
+          .swaggerGroup(DATA_EXPORT);
+   }
 
 
    /**
@@ -322,10 +364,10 @@ private Collection<Class<? extends Object>> allCdmTypes() {
     return classes;
 }
 
-   private ApiInfo apiInfoDefault() {
+   private ApiInfo apiInfo(String title, String description) {
        ApiInfo apiInfo = new ApiInfo(
-               "CDM Remote REST services",
-               "",
+               title,
+               description,
                null, // terms of service
                "EditSupport@bgbm.org",
                "Mozilla Public License 2.0",

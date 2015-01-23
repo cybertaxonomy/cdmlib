@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
@@ -36,45 +38,46 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * is loaded by the {@link UpdatableRoutingDataSource}. If the
  * UpdatableRoutingDataSource is not being used in the actual application
  * context any arbitrary {datasource-name} may be used.
- * <p> 
+ * <p>
  * @author a.kohlbecker
  * @date 18.06.2009
- * 
+ *
  */
-@Controller
+//@Controller // http://gso.gbv.de/sru/DB=2.1/ is defunctional!!! thus this controller is disabled
+@Api(value="ext_bhl-e", description="Provides searche via the SRU (search and retrieve) API of BHL-E ")
 @RequestMapping(value = { "/ext/bhl-e/" })
 public class ExternalBhleController {
-	
-	public static final Logger logger = Logger.getLogger(ExternalBhleController.class);
-	
-	public static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
-	
-	SruServiceWrapper sruServiceWrapper;
-	
-	/**
-	 * 
-	 */
-	public ExternalBhleController() {
-		sruServiceWrapper = new SruServiceWrapper();
-		sruServiceWrapper.setBaseUrl(baseUrl);
-		sruServiceWrapper.addSchemaAdapter(new DublinCoreSchemaAdapter());
-	}
-	
 
-	@RequestMapping(value = { "grib/sru" }, method = RequestMethod.GET)
-	public ModelAndView doSearchRetrieve(
-			@RequestParam(value = "query", required = true) String cqlQuery,
-			HttpServletRequest request, 
-			HttpServletResponse response)
-			throws IOException {
-		
-		logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(cqlQuery) + "\")");
-		ModelAndView mv = new ModelAndView();
-		
-		List<Reference> referenceList = sruServiceWrapper.doSearchRetrieve(cqlQuery, "dc");
-		
-		mv.addObject(referenceList);
-		return mv;
-	}
+    public static final Logger logger = Logger.getLogger(ExternalBhleController.class);
+
+    public static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
+
+    SruServiceWrapper sruServiceWrapper;
+
+    /**
+     *
+     */
+    public ExternalBhleController() {
+        sruServiceWrapper = new SruServiceWrapper();
+        sruServiceWrapper.setBaseUrl(baseUrl);
+        sruServiceWrapper.addSchemaAdapter(new DublinCoreSchemaAdapter());
+    }
+
+
+    @RequestMapping(value = { "grib/sru" }, method = RequestMethod.GET)
+    public ModelAndView doSearchRetrieve(
+            @RequestParam(value = "query", required = true) String cqlQuery,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        logger.info("doSearchRetrieve( " + "query=\"" + ObjectUtils.toString(cqlQuery) + "\")");
+        ModelAndView mv = new ModelAndView();
+
+        List<Reference> referenceList = sruServiceWrapper.doSearchRetrieve(cqlQuery, "dc");
+
+        mv.addObject(referenceList);
+        return mv;
+    }
 
 }

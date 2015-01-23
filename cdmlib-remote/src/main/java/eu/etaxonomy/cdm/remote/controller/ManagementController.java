@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 
 @Controller
+@Api("manage")
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
     public static final Logger logger = Logger

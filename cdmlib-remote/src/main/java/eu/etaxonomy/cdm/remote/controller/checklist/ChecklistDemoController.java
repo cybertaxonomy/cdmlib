@@ -77,19 +77,19 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 public class ChecklistDemoController extends AbstractController implements ResourceLoaderAware{
 
     @Autowired
-	private ApplicationContext appContext;
+    private ApplicationContext appContext;
 
-	@Autowired
-	private ITermService termService;
+    @Autowired
+    private ITermService termService;
 
-	@Autowired
-	private ITaxonService taxonService;
+    @Autowired
+    private ITaxonService taxonService;
 
-	@Autowired
-	private IClassificationService classificationService;
+    @Autowired
+    private IClassificationService classificationService;
 
-	@Autowired
-	public ProgressMonitorController progressMonitorController;
+    @Autowired
+    public ProgressMonitorController progressMonitorController;
 
     private ResourceLoader resourceLoader;
 
@@ -105,13 +105,13 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
 
 
-	private static final Logger logger = Logger.getLogger(ChecklistDemoController.class);
+    private static final Logger logger = Logger.getLogger(ChecklistDemoController.class);
 
-	/**
-	 * Helper method, which allows to convert strings directly into uuids.
-	 *
-	 * @param binder Special DataBinder for data binding from web request parameters to JavaBean objects.
-	 */
+    /**
+     * Helper method, which allows to convert strings directly into uuids.
+     *
+     * @param binder Special DataBinder for data binding from web request parameters to JavaBean objects.
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
@@ -237,122 +237,122 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      * @throws Exception
      */
-	@RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
-	public synchronized ModelAndView doExportRedlist(
-			@RequestParam(value = "features", required = false) final UuidList featureUuids,
-			@RequestParam(value = "clearCache", required = false) final boolean clearCache,
-			@RequestParam(value = "demoExport", required = false) boolean demoExport,
-			@RequestParam(value = "conceptExport", required = false) boolean conceptExport,
-			@RequestParam(value = "classification", required = false) final String classificationUUID,
+    @RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
+    public synchronized ModelAndView doExportRedlist(
+            @RequestParam(value = "features", required = false) final UuidList featureUuids,
+            @RequestParam(value = "clearCache", required = false) final boolean clearCache,
+            @RequestParam(value = "demoExport", required = false) boolean demoExport,
+            @RequestParam(value = "conceptExport", required = false) boolean conceptExport,
+            @RequestParam(value = "classification", required = false) final String classificationUUID,
             @RequestParam(value = "area", required = false) final UuidList areas,
-			@RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
-			@RequestParam(value = "priority", required = false) Integer priority,
-			final HttpServletResponse response,
-			final HttpServletRequest request) throws Exception {
-	    /**
-	     * ========================================
-	     * progress monitor & new thread for export
-	     * ========================================
-	     */
-	    try{
-	        ModelAndView mv = new ModelAndView();
-	        String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
-	        final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
-	        final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
+            @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
+            @RequestParam(value = "priority", required = false) Integer priority,
+            final HttpServletResponse response,
+            final HttpServletRequest request) throws Exception {
+        /**
+         * ========================================
+         * progress monitor & new thread for export
+         * ========================================
+         */
+        try{
+            ModelAndView mv = new ModelAndView();
+            String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
+            final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
+            final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
 
-	        Long result = null;
-	        if(cacheFile.exists()){
-	            result = System.currentTimeMillis() - cacheFile.lastModified();
-	        }
-	        //if file exists return file instantly
-	        //timestamp older than one day?
-	        if(clearCache == false && result != null){ //&& result < 7*(DAY_IN_MILLIS)
-	            logger.info("result of calculation: " + result);
-	            Map<String, File> modelMap = new HashMap<String, File>();
-	            modelMap.put("file", cacheFile);
-	            mv.addAllObjects(modelMap);
-	            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
-	            mv.setView(fdv);
-	            return mv;
-	        }else{//trigger progress monitor and performExport()
-	            String processLabel = "Exporting...";
-	            final String frontbaseUrl = null;
-	            ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
-	            if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
-	                indexMonitorUuid = progressUtil.registerNewMonitor();
-	                Thread subThread = new Thread() {
-	                    @Override
-	                    public void run() {
-	                        try {
-	                            cacheFile.createNewFile();
-	                        } catch (IOException e) {
-	                            logger.info("Could not create file "+ e);
-	                        }
-	                        performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
-	                    }
-	                };
-	                if (priority == null) {
-	                    priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
-	                }
-	                subThread.setPriority(priority);
-	                subThread.start();
-	            }
-	            mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
-	        }
-	        return mv;
-	    }catch(Exception e){
-	        //TODO: Write an specific documentation for this service endpoint
-	       Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-exportCSV.apt");
-	       return exportGetExplanation(response, request, resource);
-	    }
-	}
+            Long result = null;
+            if(cacheFile.exists()){
+                result = System.currentTimeMillis() - cacheFile.lastModified();
+            }
+            //if file exists return file instantly
+            //timestamp older than one day?
+            if(clearCache == false && result != null){ //&& result < 7*(DAY_IN_MILLIS)
+                logger.info("result of calculation: " + result);
+                Map<String, File> modelMap = new HashMap<String, File>();
+                modelMap.put("file", cacheFile);
+                mv.addAllObjects(modelMap);
+                FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
+                mv.setView(fdv);
+                return mv;
+            }else{//trigger progress monitor and performExport()
+                String processLabel = "Exporting...";
+                final String frontbaseUrl = null;
+                ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+                if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+                    indexMonitorUuid = progressUtil.registerNewMonitor();
+                    Thread subThread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                cacheFile.createNewFile();
+                            } catch (IOException e) {
+                                logger.info("Could not create file "+ e);
+                            }
+                            performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
+                        }
+                    };
+                    if (priority == null) {
+                        priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+                    }
+                    subThread.setPriority(priority);
+                    subThread.start();
+                }
+                mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
+            }
+            return mv;
+        }catch(Exception e){
+            //TODO: Write an specific documentation for this service endpoint
+           Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-exportCSV.apt");
+           return exportGetExplanation(response, request, resource);
+        }
+    }
 
-	/**
-	 * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
-	 * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
-	 * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
-	 * Also the path to these taxa may not include taxa from other classifications.
-	 *
-	 * @param taxonUUIDString
-	 * @param classificationStringList
-	 * @param includeDoubtful
-	 * @param onlyCongruent
-	 * @param response
-	 * @param request
-	 * @return
-	 * @throws IOException
-	 */
+    /**
+     * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
+     * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
+     * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
+     * Also the path to these taxa may not include taxa from other classifications.
+     *
+     * @param taxonUUIDString
+     * @param classificationStringList
+     * @param includeDoubtful
+     * @param onlyCongruent
+     * @param response
+     * @param request
+     * @return
+     * @throws IOException
+     */
 
     @RequestMapping(value = { "flockSearch" }, method = { RequestMethod.GET })
-	public ModelAndView doFlockSearchOfIncludedTaxa(
-	        @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
-	        @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
-	        @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
+    public ModelAndView doFlockSearchOfIncludedTaxa(
+            @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
+            @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
+            @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
             @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
-	        HttpServletResponse response,
+            HttpServletResponse response,
             HttpServletRequest request) throws IOException {
-	    try{
-	        ModelAndView mv = new ModelAndView();
-	        UUID taxonUuid = UUID.fromString(taxonUUIDString);
-	        /**
-	         * List<UUID> classificationFilter,
-	         * boolean includeDoubtful,
-	         * boolean onlyCongruent)
-	         */
-	        List<UUID> classificationFilter = null;
-	        if( classificationStringList != null ){
-	            classificationFilter = new ArrayList<UUID>();
-	            for(String classString :classificationStringList){
-	                classificationFilter.add(UUID.fromString(classString));
-	            }
-	        }
-	        final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
-	        IncludedTaxaDTO listIncludedTaxa = taxonService.listIncludedTaxa(taxonUuid, configuration);
-	        mv.addObject(listIncludedTaxa);
-	        return mv;
-	    }catch(Exception e){
+        try{
+            ModelAndView mv = new ModelAndView();
+            UUID taxonUuid = UUID.fromString(taxonUUIDString);
+            /**
+             * List<UUID> classificationFilter,
+             * boolean includeDoubtful,
+             * boolean onlyCongruent)
+             */
+            List<UUID> classificationFilter = null;
+            if( classificationStringList != null ){
+                classificationFilter = new ArrayList<UUID>();
+                for(String classString :classificationStringList){
+                    classificationFilter.add(UUID.fromString(classString));
+                }
+            }
+            final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+            IncludedTaxaDTO listIncludedTaxa = taxonService.listIncludedTaxa(taxonUuid, configuration);
+            mv.addObject(listIncludedTaxa);
+            return mv;
+        }catch(Exception e){
            //TODO: Write an specific documentation for this service endpoint
-	        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-flockSearch.apt");
+            Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-flockSearch.apt");
             return exportGetExplanation(response, request, resource);
         }
     }
@@ -383,62 +383,62 @@ public class ChecklistDemoController extends AbstractController implements Resou
         progressMonitor.setOrigin(origin);
     }
 
-	/**
-	 * Cofiguration method to set the configuration details for the defaultExport in the application context.
-	 * @param cacheFile
-	 *
-	 * @param classificationUUID pass-through the selected {@link Classification classification}
-	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
-	 * @param areas
-	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
-	 * @param progressMonitor
-	 * @return the CsvTaxExportConfiguratorRedlist config
-	 */
-	private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor) {
+    /**
+     * Cofiguration method to set the configuration details for the defaultExport in the application context.
+     * @param cacheFile
+     *
+     * @param classificationUUID pass-through the selected {@link Classification classification}
+     * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
+     * @param areas
+     * @param byteArrayOutputStream pass-through the stream to write out the data later.
+     * @param progressMonitor
+     * @return the CsvTaxExportConfiguratorRedlist config
+     */
+    private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor) {
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<UUID> classificationUUIDS = new HashSet
-		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
-		if(cacheFile == null){
-		    String destination = System.getProperty("java.io.tmpdir");
-		    cacheFile = new File(destination);
-		}
-		List<Feature> features = new ArrayList<Feature>();
-		if(featureUuids != null){
-			for(UUID uuid : featureUuids) {
-				features.add((Feature) termService.find(uuid));
-			}
-		}
-		List<NamedArea> selectedAreas = new ArrayList<NamedArea>();
-		if(areas != null){
-			for(UUID area:areas){
-				logger.info(area);
-				selectedAreas.add((NamedArea)termService.find(area));
-			}
-		}
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Set<UUID> classificationUUIDS = new HashSet
+        (Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
+        if(cacheFile == null){
+            String destination = System.getProperty("java.io.tmpdir");
+            cacheFile = new File(destination);
+        }
+        List<Feature> features = new ArrayList<Feature>();
+        if(featureUuids != null){
+            for(UUID uuid : featureUuids) {
+                features.add((Feature) termService.find(uuid));
+            }
+        }
+        List<NamedArea> selectedAreas = new ArrayList<NamedArea>();
+        if(areas != null){
+            for(UUID area:areas){
+                logger.info(area);
+                selectedAreas.add((NamedArea)termService.find(area));
+            }
+        }
 
-		CsvDemoExportConfigurator config = CsvDemoExportConfigurator.NewInstance(null, cacheFile);
-		config.setDestination(cacheFile);
-		config.setProgressMonitor(progressMonitor);
-		config.setHasHeaderLines(true);
-		config.setFieldsTerminatedBy("\t");
-		config.setClassificationUuids(classificationUUIDS);
-		config.createPreSelectedExport(false, true);
-		if(features != null) {
+        CsvDemoExportConfigurator config = CsvDemoExportConfigurator.NewInstance(null, cacheFile);
+        config.setDestination(cacheFile);
+        config.setProgressMonitor(progressMonitor);
+        config.setHasHeaderLines(true);
+        config.setFieldsTerminatedBy("\t");
+        config.setClassificationUuids(classificationUUIDS);
+        config.createPreSelectedExport(false, true);
+        if(features != null) {
             config.setFeatures(features);
         }
         config.setNamedAreas(selectedAreas);
-		return config;
-	}
+        return config;
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	public void setService(IService service) {
-		// TODO Auto-generated method stub
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    public void setService(IService service) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
     /* (non-Javadoc)
      * @see org.springframework.context.ResourceLoaderAware#setResourceLoader(org.springframework.core.io.ResourceLoader)

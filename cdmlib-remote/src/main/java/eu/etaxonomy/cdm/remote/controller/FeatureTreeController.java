@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
@@ -24,6 +26,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @version 1.0
  */
 @Controller
+@Api("featureTree")
 @RequestMapping(value = {"/featureTree/{uuid}"})
 public class FeatureTreeController extends BaseController<FeatureTree, IFeatureTreeService> {
     private static final Logger logger = Logger

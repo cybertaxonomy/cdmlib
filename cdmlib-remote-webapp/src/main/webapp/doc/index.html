@@ -25,9 +25,29 @@
   <script src='lib/swagger-oauth.js' type='text/javascript'></script>
 
   <script type="text/javascript">
+
+    // ---------------------------------------------
+    // added to support for swagger-springmvc groups
+    // see https://github.com/martypitt/swagger-springmvc#api-documentation-endpoints
+    function getUrlParam(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+           return decodeURIComponent(name[1]);
+     }
+    groupParamValue =  getUrlParam("group");
+    groupParam = (groupParamValue ? "?group=" + groupParamValue : "")
+
+    jQuery(document).ready(function() {
+        idString = 'menu_' + groupParamValue.replace(/\W/g, "_");
+        jQuery('#' + idString).addClass('active');
+    });
+
+    //
+    // Andreas Kohlbecker, 2015
+   // ---------------------------------------------
+
     $(function () {
       window.swaggerUi = new SwaggerUi({
-      url: "/api-docs",
+      url: "/api-docs" + groupParam,
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
       onComplete: function(swaggerApi, swaggerUi){
@@ -68,9 +88,21 @@
 <body class="swagger-section">
   <div id="header">
     <div id="banner">
-      <img src="../images/logo_edit.png"><span> CDM remote REST service API</span>
+      <img src="../images/logo_edit.png">
+      <div id="title"><h1>CDM remote API</hi></div>
+    </div>
+    <div id="menu">
+      <ul>
+        <li id="menu_Generic_REST_API"><a href="?group=Generic+REST+API">Generic REST API</a></li>
+        <li id="menu_Web_Portal_Services"><a href="?group=Web Portal Services">Web Portal Services</a></li>
+        <li id="menu_Catalogue_Services"><a href="?group=Catalogue Services">Catalogue Services</a></li>
+        <li id="menu_Data_export"><a href="?group=Data export">Data export</a></li>
+        <li id="menu_LSID_authority_services"><a href="?group=LSID authority services">LSID authority services</a></li>
+        <li id="menu_OAI_PMH"><a href="?group=OAI-PMH">OAI-PMH</a></li>
+      </ul>
     </div>
   </div>
+
   <div id="description">
   <!--
     <div class="swagger-ui-wrap">

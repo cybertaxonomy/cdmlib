@@ -16,12 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.LSIDException;
 import com.ibm.lsid.server.LSIDServerException;
+import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.lsid.LSIDAuthorityService;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -60,6 +62,8 @@ import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
  * @see com.ibm.lsid.server.servlet.AuthorityServlet
  */
 @Controller
+@Api(value="lsid_authority",
+    description="Controller which accepts incoming requests to the LSIDAuthorityService.")
 public class AuthorityController {
     private static Log log = LogFactory.getLog(AuthorityController.class);
     private LSIDAuthorityService lsidAuthorityService;
@@ -82,7 +86,7 @@ public class AuthorityController {
      * @throws LSIDServerException
      * @see javax.xml.transform.Source
      */
-    @RequestMapping(value="/authority/",params="!lsid") // mapped as absolute path, see CdmAntPathMatcher
+    @RequestMapping(value="/authority/",params="!lsid", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView getAvailableServices() throws LSIDServerException {
         ExpiringResponse expiringResponse = lsidAuthorityService.getAuthorityWSDL();
         return new ModelAndView("Authority.wsdl","source",expiringResponse.getValue());
@@ -96,7 +100,7 @@ public class AuthorityController {
      * @throws LSIDServerException
      * @see javax.xml.transform.Source
      */
-    @RequestMapping(value="/authority/",params="lsid")
+    @RequestMapping(value="/authority/",params="lsid", method = RequestMethod.GET)
     public ModelAndView getAvailableServices(@RequestParam("lsid")LSID lsid) throws LSIDServerException {
         ExpiringResponse expiringResponse = lsidAuthorityService.getAvailableServices(lsid);
         return new ModelAndView("Services.wsdl","source",expiringResponse.getValue());
@@ -110,7 +114,7 @@ public class AuthorityController {
      * @return ModelAndView (null)
      * @throws LSIDServerException
      */
-    @RequestMapping(value="/authority/notify/",params={"lsid","authorityName"})
+    @RequestMapping(value="/authority/notify/",params={"lsid","authorityName"}, method = RequestMethod.GET)
     public ModelAndView notifyForeignAuthority(@RequestParam("lsid")LSID lsid,
                                                @RequestParam("authorityName")LSIDAuthority lsidAuthority) throws LSIDServerException {
         lsidAuthorityService.notifyForeignAuthority(lsid,lsidAuthority);
@@ -122,7 +126,7 @@ public class AuthorityController {
      *
      * @throws LSIDServerException
      */
-    @RequestMapping(value="/authority/notify/")
+    @RequestMapping(value="/authority/notify/", method = RequestMethod.GET)
     public ModelAndView notifyForeignAuthority() throws LSIDException {
         throw new LSIDException(LSIDException.INVALID_METHOD_CALL, "You must supply an lsid and an lsidAuthority");
     }
@@ -135,7 +139,7 @@ public class AuthorityController {
      * @return ModelAndView (null)
      * @throws LSIDServerException
      */
-    @RequestMapping(value="/authority/revoke/",params={"lsid","authorityName"})
+    @RequestMapping(value="/authority/revoke/",params={"lsid","authorityName"}, method = RequestMethod.GET)
     public ModelAndView revokeNotificationForeignAuthority(@RequestParam("lsid")LSID lsid,
                                                            @RequestParam("authorityName")LSIDAuthority lsidAuthority) throws LSIDServerException {
         lsidAuthorityService.revokeNotificationForeignAuthority(lsid,lsidAuthority);
@@ -147,7 +151,7 @@ public class AuthorityController {
      *
      * @throws LSIDServerException
      */
-    @RequestMapping(value="/authority/revoke/")
+    @RequestMapping(value="/authority/revoke/", method = RequestMethod.GET)
     public ModelAndView revokeNotificationForeignAuthority() throws LSIDException {
         throw new LSIDException(LSIDException.INVALID_METHOD_CALL, "You must supply an lsid and an lsidAuthority");
     }

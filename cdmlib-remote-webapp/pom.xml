@@ -16,7 +16,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson.version>2.2.3</jackson.version>
   </properties>
 
   <scm>
@@ -62,7 +61,7 @@
       <artifactId>cdmlib-remote</artifactId>
     </dependency>
     <dependency>
-      <!-- TODO this is also offered by cdmlib-remote, can it be removed? 
+      <!-- TODO this is also offered by cdmlib-remote, can it be removed?
         What does provided mean? -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -138,20 +137,18 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>
     </dependency>
+    <!-- END of dependencies for swagger-springmvc, added explicitely -->
     <!-- testing -->
-	<dependency>
+  <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -235,7 +232,7 @@
               <value>h2_cdmTest</value>
             </systemProperty>
             <systemProperty>
-              <!-- datasources.xml is prepared by <plugins><resources>..</resources> 
+              <!-- datasources.xml is prepared by <plugins><resources>..</resources>
                 above -->
               <name>cdm.beanDefinitionFile</name>
               <value>${project.build.directory}/test-classes/datasources.xml</value>

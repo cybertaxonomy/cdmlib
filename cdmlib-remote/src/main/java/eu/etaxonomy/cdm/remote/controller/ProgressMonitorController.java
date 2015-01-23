@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
@@ -37,6 +39,9 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
+@Api(value="progress", description="provides access to information on long runing processes. "
+        + "Uris to the resources exposed by this controller are provieded in the responses to the"
+        + "HTTP requests that trigger long term processes.")
 @RequestMapping(value="/progress/")
 public class ProgressMonitorController {
 

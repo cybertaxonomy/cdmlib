@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -59,6 +61,7 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  */
 
 @Controller
+@Api("occurrence_catalogue")
 @RequestMapping(value = { "/occurrence_catalogue" })
 public class OccurrenceCatalogueController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService> implements ResourceLoaderAware{
 

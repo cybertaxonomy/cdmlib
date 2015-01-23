@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
@@ -94,6 +96,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  *
  */
 @Controller
+@Api("portal_taxon")
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends TaxonController
 {

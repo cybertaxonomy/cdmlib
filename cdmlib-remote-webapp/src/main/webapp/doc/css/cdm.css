@@ -3,7 +3,7 @@ body.swagger-section #header {
   background-color:#F4F7E7;
 }
 
-#header #banner{
+#header #banner, #header #menu{
   margin-left:auto;
   margin-right:auto;
   max-width: 960px;
@@ -11,10 +11,49 @@ body.swagger-section #header {
   font-family: "Droid Sans",Verdana,Arial,Helvetica,sans-serif;
 }
 
+#header #banner{
+  height: 93px; /* matches logo image */
+}
+
+#title {
+  margin-top: -93px;
+  margin-left: 100px;
+}
+
+
 #description {
   padding-top:10px;
   padding-bottom:10px;
   background-color:#F4F7E7;
+}
+
+#menu {
+  padding-top:10px;
+  padding-bottom:10px;
+  background-color:#F4F7E7;
+}
+
+#menu ul {
+ margin-left: -10px;
+}
+
+#menu li {
+  float: left;
+  margin: 0px 10px;
+  list-style: outside none none;
+}
+
+#menu li.active a {
+  color: #000;
+}
+
+#menu li a {
+  color: #999;
+  display: block;
+  font-size: 16px;
+  padding: 10px 0px 15px;
+  text-align: center;
+  text-decoration: none;
 }
 
 #footer {
