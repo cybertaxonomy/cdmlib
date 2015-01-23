@@ -17,7 +17,7 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
 import eu.etaxonomy.cdm.persistence.hibernate.Level2ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
@@ -37,7 +37,7 @@ public class ValidationManager {
 
     @Autowired
 //    IEntityValidationResultService validationService;
-    IEntityValidationResultDao validationService;
+    IEntityValidationResultCrud validationService;
 
 
     public void registerValidationListeners(){
