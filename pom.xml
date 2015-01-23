@@ -1112,7 +1112,12 @@
         <artifactId>odfdom-java</artifactId>
         <version>0.8.7</version>
       </dependency>
-
+            <dependency>
+                <!-- used in eu.etaxonomy.cdm.io.markup -->
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>15.0</version>
+            </dependency>
       <dependency>
         <groupId>jaxen</groupId>
         <artifactId>jaxen</artifactId>
@@ -1233,15 +1238,18 @@
       </dependency>
 
       <dependency>
-        <!-- needed?? -->
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-engine</artifactId>
         <version>4.2.0.Final</version>
         <exclusions>
-          <!-- still needed ?? -->
           <exclusion>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- exclude for swagger -->
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>

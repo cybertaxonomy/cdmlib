@@ -707,7 +707,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmAssignableTypeFilter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmTypeScanner.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
@@ -1129,6 +1131,7 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
@@ -1781,8 +1784,8 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/CdmSpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/SpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
@@ -1815,6 +1818,31 @@ cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_888888_256x24
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_cd0a0a_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/jquery-ui-1.8.23.custom.css -text
 cdmlib-remote-webapp/src/main/webapp/csv/csvExport.jsp -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/cdm.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/reset.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/screen.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/images/explorer_icons.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/logo_small.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/pet_store_api.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/throbber.gif -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/wordnik_api.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/index.html -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/backbone-min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/handlebars-1.0.0.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/highlight.7.3.pack.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery-1.8.0.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.ba-bbq.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.slideto.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.wiggle.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/shred.bundle.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/shred/content.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/swagger-oauth.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/swagger.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/underscore-min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/o2c.html -text
+cdmlib-remote-webapp/src/main/webapp/doc/swagger-ui.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/swagger-ui.min.js -text
+cdmlib-remote-webapp/src/main/webapp/images/logo_edit.png -text svneol=unset#unset
 cdmlib-remote-webapp/src/main/webapp/index.html -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/csv_export.js -text
