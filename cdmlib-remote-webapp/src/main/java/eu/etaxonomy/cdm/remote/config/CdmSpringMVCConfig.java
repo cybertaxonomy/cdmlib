@@ -18,7 +18,6 @@ import javax.persistence.Entity;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -42,8 +41,6 @@ import org.springframework.web.servlet.view.XmlViewResolver;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.wordnik.swagger.converter.ModelConverters;
-import com.wordnik.swagger.converter.OverrideConverter;
 import com.wordnik.swagger.model.ApiInfo;
 
 import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
@@ -88,6 +85,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
     private SpringSwaggerConfig springSwaggerConfig;
 
+    Collection<Class<? extends Object>> allCdmTypes = null;
+
 //    ========================== JSP =================================
 //    public static final String[] WEB_JAR_RESOURCE_PATTERNS = {"css/", "images/", "lib/", "swagger-ui.js"};
 //    public static final String WEB_JAR_RESOURCE_LOCATION = "classpath:META-INF/resources/";
@@ -126,7 +125,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
     @Override
     @Bean
-    @DependsOn({"swaggerSpringMvcPlugin"})
+//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
+    @DependsOn({"swaggerPluginDefault"})
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
         /* NOTE: this override is the only reason why this class
          * needs to extends WebMvcConfigurationSupport. We may be able to
@@ -142,7 +142,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    @DependsOn({"swaggerSpringMvcPlugin"}) // swaggerSpringMvcPlugin and swaggerGlobalSettings must be loaded earlier
+//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
+    @DependsOn({"swaggerPluginDefault"})
     public XmlViewResolver getOaiXmlViewResolver() {
         XmlViewResolver resolver = new XmlViewResolver();
       resolver.setOrder(1);
@@ -192,7 +193,8 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
      * the ContentNegotiationManager created by the configurer (see previous method).
      */
    @Bean
-   @DependsOn({"swaggerSpringMvcPlugin"})
+//   @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal"})
+   @DependsOn({"swaggerPluginDefault"})
    public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
 
        List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
@@ -232,32 +234,77 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
     * Every SwaggerSpringMvcPlugin bean is picked up by the swagger-mvc framework - allowing for multiple
     * swagger groups i.e. same code base multiple swagger resource listings.
     */
-   @Bean(name="swaggerSpringMvcPlugin")
-   public SwaggerSpringMvcPlugin swaggerSpringMvcPlugin(){
-       // fully skip the creation of cdm model documentation
-       // since it will be too excessive to scan the huge cdm model
-       // which in fact has cycles.
+   @Bean(name="swaggerPluginDefault")
+   public SwaggerSpringMvcPlugin swaggerPluginGenericAPI(){
+       logger.debug("swaggerSpringMvcPlugin");
+       configureModelConverters();
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+          .apiInfo(apiInfoDefault())
+          .includePatterns(".*?") // matches all RequestMappings
+          .ignoredParameterTypes(allCdmTpyes());
+   }
 
-       String emptyJSON = "{}";
-       OverrideConverter sessionConverter = new OverrideConverter();
+//
+//   @Bean(name="swaggerPluginPortal")
+//   public SwaggerSpringMvcPlugin swaggerPluginPortal(){
+//       logger.debug("swaggerSpringMvcPlugin");
+//       configureModelConverters();
+//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+//          .apiInfo(apiInfoDefault())
+//          .includePatterns("/portal/.*?") // matches all RequestMappings
+//          .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
+//   }
+//
+//   @Bean(name="swaggerPluginNameCatalogue")
+//   public SwaggerSpringMvcPlugin swaggerPluginNameCatalogue(){
+//       configureModelConverters();
+//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+//           .apiInfo(apiInfoDefault())
+//           .includePatterns("/name_catalogue/.*?") // matches all RequestMappings
+//           .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
+//   }
+
+//   public SwaggerSpringMvcPlugin swaggerPluginNameOther(){
+//       configureModelConverters();
+//       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+//           .apiInfo(apiInfoDefault())
+//           .includePatterns("/((?!)).*?") // matches all RequestMappings
+//           .ignoredParameterTypes(allCdmTpyes()); // is internally merged with the defaultIgnorableParameterTypes of the
+//   }
+
+
+
+   /**
+     *
+     */
+    private void configureModelConverters() {
+        // fully skip the creation of cdm model documentation
+        // since it will be too excessive to scan the huge cdm model
+        // which in fact has cycles.
+        // not sure if this is working !!!
+//       String emptyJSON = "{}";
+//       OverrideConverter sessionConverter = new OverrideConverter();
+//       sessionConverter.add(Session.class.getName(), emptyJSON);
+//       ModelConverters.addConverter(sessionConverter, true);
+    }
+
 
        //TODO failes to convert json to model
        // "org.json4s.package$MappingException: Did not find value
        //            which can be converted into java.lang.String"
-       sessionConverter.add(Session.class.getName(), emptyJSON);
 
-       ModelConverters.addConverter(sessionConverter, true);
 
-       logger.debug("swaggerSpringMvcPlugin");
-       Collection<Class<? extends Object>> allCdmTypes = allCdmTypes();
-       allCdmTypes.add(eu.etaxonomy.cdm.api.service.pager.Pager.class);
-       allCdmTypes.add(eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.class);
-
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-              .apiInfo(apiInfo())
-              .includePatterns(".*?") // matches all RequestMappings
-              .ignoredParameterTypes(allCdmTypes.toArray(new Class[allCdmTypes.size()])); // is internally merged with the defaultIgnorableParameterTypes of the
-   }
+    /**
+     * @return
+     */
+    private Class<Class<? extends Object>>[] allCdmTpyes() {
+        if (allCdmTypes == null) {
+            allCdmTypes = allCdmTypes();
+            allCdmTypes.add(eu.etaxonomy.cdm.api.service.pager.Pager.class);
+            allCdmTypes.add(eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.class);
+        }
+        return allCdmTypes.toArray(new Class[allCdmTypes.size()]);
+    }
 
 /**
  * @return
@@ -275,7 +322,7 @@ private Collection<Class<? extends Object>> allCdmTypes() {
     return classes;
 }
 
-   private ApiInfo apiInfo() {
+   private ApiInfo apiInfoDefault() {
        ApiInfo apiInfo = new ApiInfo(
                "CDM Remote REST services",
                "",
