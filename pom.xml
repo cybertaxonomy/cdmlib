@@ -1112,12 +1112,6 @@
         <artifactId>odfdom-java</artifactId>
         <version>0.8.7</version>
       </dependency>
-            <dependency>
-                <!-- used in eu.etaxonomy.cdm.io.markup -->
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>15.0</version>
-            </dependency>
       <dependency>
         <groupId>jaxen</groupId>
         <artifactId>jaxen</artifactId>
@@ -1245,11 +1239,6 @@
           <exclusion>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <!-- exclude for swagger -->
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
