@@ -1536,6 +1536,20 @@
         <groupId>com.mangofactory</groupId>
         <artifactId>swagger-springmvc</artifactId>
         <version>0.8.5</version>
+                <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+          </exclusion>
+<!--           <exclusion>  --currently not referenced by any other project
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+          </exclusion> -->
+        </exclusions>
       </dependency>
       <!-- dependencies for swagger-springmvc, added explicitely -->
       <dependency>
