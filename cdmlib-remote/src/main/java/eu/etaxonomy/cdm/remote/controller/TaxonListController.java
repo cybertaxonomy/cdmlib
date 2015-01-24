@@ -482,7 +482,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     	}
     	
 		TaxonNode subTree;
-    	Classification cl = classificationService.find(subtreeUuid);
+    	Classification cl = classificationService.load(subtreeUuid);
 		if (cl != null){
 			subTree = cl.getRootNode();
 		}else{
