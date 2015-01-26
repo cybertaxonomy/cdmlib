@@ -39,11 +39,10 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 *
 	 */
 	private void init() {
-		// Remove all caches
-		getDefaultCacheManager().removalAll();
-		// Create default cache
-		getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
-
+		if(getDefaultCache() == null) {
+			// Create default cache
+			getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
+		}
 		setup();
 	}
 
@@ -83,7 +82,7 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 *
 	 * @return
 	 */
-	private static Cache getDefaultCache() {
+	public static Cache getDefaultCache() {
 		return getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
 	}
 
@@ -94,7 +93,7 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @return
 	 */
-	protected Element getCacheElement(UUID uuid) {
+	public Element getCacheElement(UUID uuid) {
 		return getDefaultCache().get(uuid);
 	}
 

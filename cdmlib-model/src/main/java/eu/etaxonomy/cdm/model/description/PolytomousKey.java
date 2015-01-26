@@ -105,6 +105,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PolytomousKey_NamedArea")
     @NotNull
+    @Cascade({CascadeType.MERGE})
     private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 
     @XmlElementWrapper(name = "ScopeRestrictions")
@@ -114,6 +115,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PolytomousKey_Scope")
     @NotNull
+    @Cascade({CascadeType.MERGE})
     private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 
     @XmlElement(name = "Root")
