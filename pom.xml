@@ -1114,7 +1114,7 @@
         <version>0.8.7</version>
       </dependency>
       <dependency>
-          <!-- used in eu.etaxonomy.cdm.io.markup -->
+          <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
           <version>15.0</version>
@@ -1246,11 +1246,6 @@
           <exclusion>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- exclude to avoid conficts with swagger -->
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
