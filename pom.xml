@@ -1242,12 +1242,6 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-engine</artifactId>
         <version>4.2.0.Final</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.javassist</groupId>
