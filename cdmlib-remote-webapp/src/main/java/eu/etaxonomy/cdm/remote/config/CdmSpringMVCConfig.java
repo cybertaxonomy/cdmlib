@@ -251,7 +251,19 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-          .apiInfo(apiInfo(GENERIC_REST_API, ""))
+          .apiInfo(apiInfo(GENERIC_REST_API, ""
+                  + "<p>The CDM REST API is a RESTful interface to resources stored in the CDM."
+                  + " The RESTful architecture allows accessing the various resources like Taxa, "
+                  + "Names, References, Media, etc by stable URIs. Due to security constraints "
+                  + "and to assure the integration of data, currently only read operations "
+                  + "(= HTTP GET) are permitted, write operations may be available in the future.</p>"
+                  + "<p>The architecture directly exposes domain model entities, i.e. it provides "
+                  + "direct serializations of the objects as they are stored in the CDM but also "
+                  + "returns TDOs of the CDM entities in some cases. The API Service provides an easy to use way "
+                  + "to transfer CDM data to web based clients."
+                  + "</p>"
+                  + "<p>For more information like usage of this service please refer to "
+                  + "<a href=\"http://cybertaxonomy.eu/cdmlib/rest-api.html\">http://cybertaxonomy.eu/cdmlib/rest-api.html</a>"))
           // below regex excludes the paths of all other groups,
           // !!! also hide the manage and progress controller
           .includePatterns("/(?!portal/)(?!taxon/oai)(?!reference/oai)(?!name_catalogue/)(?!authority/)(?!csv/)(?!checklist)(?!manage/)(?!progress/).*")
@@ -266,7 +278,11 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-          .apiInfo(apiInfo(WEB_PORTAL_SERVICES, ""))
+          .apiInfo(apiInfo(WEB_PORTAL_SERVICES, "The Portal Service is a specialization to the "
+                  + "<a href=\"?group=Generic+REST+API\">Generic  REST API</a> as needed by CDM Dataportal "
+                  + " that adds some fields like localized representations to the pure CDM entities. Another important difference "
+                  + " is the initialization depth of the CDM entities. The Portal Service enpoints provide far bigger parts of the "
+                  + " object graph."))
           .includePatterns("/portal/.*")
           .ignoredParameterTypes(allCdmTpyes())
           .swaggerGroup(WEB_PORTAL_SERVICES);
@@ -276,7 +292,17 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
    public SwaggerSpringMvcPlugin swaggerPluginNameCatalogue(){
        configureModelConverters();
        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-           .apiInfo(apiInfo(CATALOGUE_SERVICES, ""))
+           .apiInfo(apiInfo(
+                   CATALOGUE_SERVICES,
+                   "These web services are optimized for using names taxonomic information and occurence data in workflow environments "
+                   + " but are suitabale for all applicatoins in which fast response times are crucial."
+                   + " Additional detailed documentation of these services can also be found at:"
+                   + "<ul>"
+                   + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-name-catalogue.html\">Name Catalogue REST API</a>"
+                   + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-occurrence-catalogue.html\">Occurrence Catalogue REST API</a>"
+                   + "<li><a href=\"doc/?group=Catalogue+Services\">Catalogue Services</a>"
+                   + "</ul>"
+                   ))
            .includePatterns("/name_catalogue/.*", "/occurrence_catalogue/.*")
            .ignoredParameterTypes(allCdmTpyes())
            .swaggerGroup(CATALOGUE_SERVICES);
@@ -287,7 +313,17 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-          .apiInfo(apiInfo("OAI-PMH", ""))
+          .apiInfo(apiInfo(
+                  "OAI-PMH",
+                  "<p>This is an automatcially created documentation on the OAI-PMH API which is atually dedicated to REST services."
+                  + " Since OAI-PMH is not a REST service in the original sense, you may want to refer to"
+                  + " the more specific <a href=\"http://cybertaxonomy.eu/cdmlib/oai-pmh.html\">OAI-PMH documentation</a> or"
+                  + " to the service endpoints them self, which also provide a good, comprehensive and selfexplanatory"
+                  + " level of documentation:</p>"
+                  + "<ul>"
+                  + "<li><a href=\"../reference/oai?verb=Identify\">OAI-PMH for References</a></li>"
+                  + "<li><a href=\"../taxon/oai?verb=Identify\">OAI-PMH for Taxa</a></li>"
+                  + "</ul>"))
           .includePatterns("/reference/oai.*", "/taxon/oai.*")
           .ignoredParameterTypes(allCdmTpyes())
           .swaggerGroup("OAI-PMH");
