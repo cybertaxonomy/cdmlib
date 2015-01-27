@@ -925,17 +925,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //check elements found by super method
         Set<CdmBase> relatedObjects = super.isDeletable(specimen, config).getRelatedObjects();
         for (CdmBase cdmBase : relatedObjects) {
-            deleteResult.addRelatedObject(cdmBase);
             //check for type designation
             if(cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
+                deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             //check for IndividualsAssociations
             else if(cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
+                deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             //check for specimen/taxon description
@@ -943,6 +944,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used in a Description."));
+                deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             //check for children and parents (derivation events)
@@ -958,6 +960,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         //if not and children should not be deleted then it is undeletable
                         deleteResult.setAbort();
                         deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
+                        deleteResult.addRelatedObject(cdmBase);
                         break;
                     }
                     else{
@@ -979,12 +982,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             else if(cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in amplification results."));
+                deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             //check for sequence
             else if(cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in sequences."));
+                deleteResult.addRelatedObject(cdmBase);
                 break;
             }
         }
