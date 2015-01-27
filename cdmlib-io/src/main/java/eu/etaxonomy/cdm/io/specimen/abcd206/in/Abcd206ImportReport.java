@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -30,6 +32,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  */
 public class Abcd206ImportReport {
+
+    static private final Logger logger = Logger.getLogger(Abcd206ImportReport.class);
+
 
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
     private final Map<Taxon, List<DerivedUnit>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<DerivedUnit>>();
@@ -67,7 +72,8 @@ public class Abcd206ImportReport {
             try {
                 out = new PrintStream(new File(reportUri));
             } catch (FileNotFoundException e) {
-                return;
+                logger.warn("Report file could not be found.");
+                out = System.out;
             }
         }
         else{
