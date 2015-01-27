@@ -283,13 +283,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         SpecimenOrObservationBase tempSpecimenOrObservationBase;
         List<DescriptionElementBase> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
         for(DescriptionElementBase element : elements){
-            if(element instanceof IndividualsAssociation){
-                tempIndividualsAssociation = (IndividualsAssociation)element;
+            if(element.isInstanceOf(IndividualsAssociation.class)){
+                tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
                 if(tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null){
                     tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                    if(tempSpecimenOrObservationBase instanceof DerivedUnit){
+                    if(tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)){
                         try {
-                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnit)tempSpecimenOrObservationBase));
+                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
                         } catch (DerivedUnitFacadeNotSupportedException e) {
                             logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " +e.getMessage());
                         }
@@ -350,8 +350,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         TaxonNameBase<?,?> name = associatedTaxon.getName();
         Set<?> typeDesignations = name.getSpecimenTypeDesignations();
         for (Object object : typeDesignations) {
-            if(object instanceof SpecimenTypeDesignation){
-                SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)object;
+            if(object instanceof CdmBase && ((CdmBase)object).isInstanceOf(SpecimenTypeDesignation.class)){
+                SpecimenTypeDesignation specimenTypeDesignation = HibernateProxyHelper.deproxy(object, SpecimenTypeDesignation.class);
                 DerivedUnit typeSpecimen = specimenTypeDesignation.getTypeSpecimen();
                 final TypeDesignationStatusBase typeStatus = specimenTypeDesignation.getTypeStatus();
                 typeSpecimenUUIDtoTypeDesignationStatus.put(typeSpecimen.getUuid(), typeStatus);
@@ -412,13 +412,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             //assemble molecular data
             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
-            if(derivedUnit instanceof DnaSample){
+            if(derivedUnit.isInstanceOf(DnaSample.class)){
                 if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.TissueSample){
                     //TODO implement TissueSample assembly for web service
                 }
                 if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.DnaSample){
 
-                    DnaSample dna = (DnaSample)derivedUnit;
+                    DnaSample dna = HibernateProxyHelper.deproxy(derivedUnit, DnaSample.class);
                     if(!dna.getSequences().isEmpty()){
                         dto.setHasDna(true);
                     }
@@ -452,9 +452,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             //assemble media data
-            else if(derivedUnit instanceof MediaSpecimen){
+            else if(derivedUnit.isInstanceOf(MediaSpecimen.class)){
 
-                MediaSpecimen media = (MediaSpecimen)derivedUnit;
+                MediaSpecimen media = HibernateProxyHelper.deproxy(derivedUnit, MediaSpecimen.class);
                 String mediaUriString = getMediaUriString(media);
                 if(media.getKindOfUnit()!=null){
                     //specimen scan
@@ -703,11 +703,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
 
-        if(specimen instanceof FieldUnit){
-            fieldUnits.add((FieldUnit) specimen);
+        if(specimen.isInstanceOf(FieldUnit.class)){
+            fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }
-        else if(specimen instanceof DerivedUnit){
-            fieldUnits.addAll(getFieldUnits((DerivedUnit) specimen));
+        else if(specimen.isInstanceOf(DerivedUnit.class)){
+            fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class)));
         }
         return fieldUnits;
     }
@@ -722,11 +722,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if(originals!=null && !originals.isEmpty()){
             for(SpecimenOrObservationBase<?> original:originals){
-                if(original instanceof FieldUnit){
-                    fieldUnits.add((FieldUnit) original);
+                if(original.isInstanceOf(FieldUnit.class)){
+                    fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
                 }
-                else if(original instanceof DerivedUnit){
-                    fieldUnits.addAll(getFieldUnits((DerivedUnit) original));
+                else if(original.isInstanceOf(DerivedUnit.class)){
+                    fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(original, DerivedUnit.class)));
                 }
             }
         }
@@ -826,12 +826,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
 
         //FieldUnit
-        if(specimen instanceof FieldUnit){
-            nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements((FieldUnit)specimen));
+        if(specimen.isInstanceOf(FieldUnit.class)){
+            nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(HibernateProxyHelper.deproxy(specimen, FieldUnit.class)));
         }
         //DerivedUnit
-        else if(specimen instanceof DerivedUnit){
-            DerivedUnit derivedUnit = (DerivedUnit)specimen;
+        else if(specimen.isInstanceOf(DerivedUnit.class)){
+            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(specimen, DerivedUnit.class);
             if(derivedUnit.getDerivedFrom()!=null){
                 Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
                 for(FieldUnit fieldUnit:fieldUnits){
