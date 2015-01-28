@@ -96,7 +96,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -123,12 +122,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private ITaxonService taxonService;
 
     @Autowired
-    private ITermService termService;
-
-    @Autowired
-    private INameService nameService;
-
-    @Autowired
     private ISequenceService sequenceService;
 
     @Autowired
@@ -136,10 +129,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
-
-    @Autowired
-    private ICdmGenericDao genericDao;
-
 
     public OccurrenceServiceImpl() {
         logger.debug("Load OccurrenceService Bean");
@@ -973,6 +962,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         if(!childResult.isOk()){
                             deleteResult.setAbort();
                             deleteResult.includeResult(childResult);
+                            deleteResult.addRelatedObject(cdmBase);
                             break;
                         }
                     }
@@ -992,6 +982,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
+        }
+        if(deleteResult.isOk()){
+            //add all related object if deletion is OK so they can be handled by the delete() method
+            deleteResult.addRelatedObjects(relatedObjects);
         }
         return deleteResult;
     }

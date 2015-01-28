@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date 31.03.2014
  *
  */
-@Ignore
 public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegrationTest {
 
     private final UUID FIELD_UNIT_UUID = UUID.fromString("b5f58da5-4442-4001-9d13-33f41518b72a");

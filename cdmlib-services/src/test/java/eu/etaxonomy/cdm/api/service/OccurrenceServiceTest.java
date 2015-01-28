@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -73,7 +72,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date 31.03.2014
  *
  */
-@Ignore
 public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
