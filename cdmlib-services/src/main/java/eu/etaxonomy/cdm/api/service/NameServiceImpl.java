@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
@@ -125,10 +126,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     public DeleteResult delete(TaxonNameBase name){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         DeleteResult result = delete(name, config);
-       
-      
+
+
         return result;
-        
+
     }
 
     /* (non-Javadoc)
@@ -137,12 +138,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
     	DeleteResult result = new DeleteResult();
-    	
+
     	if (name == null){
     		result.setAbort();
             return result;
         }
-    	
+
     	try{
     		result = this.isDeletable(name, config);
         }catch(Exception e){
@@ -153,7 +154,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         if (result.isOk()){
         //remove references to this name
         	removeNameRelationshipsByDeleteConfig(name, config);
-            
+
            //remove name from homotypical group
             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
             if (homotypicalGroup != null){
@@ -166,8 +167,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
 	//			throw new ReferrencedObjectUndeletableException(message);
 	//		}
-	
-	       
+
+
 	        try{
 	        UUID nameUuid = dao.delete(name);
 	        }catch(Exception e){
@@ -175,10 +176,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        	result.setError();
 	        }
 	        return result;
-        } 
-               
-        
-        
+        }
+
+
+
         return result;
     }
 
@@ -834,7 +835,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         List<TaggedText> taggedName = taxonNameBase.getTaggedName();
         return taggedName;
     }
-    
+
     @Override
     public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
@@ -847,7 +848,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     		 result.setError();
     		 return result;
     	}
-    	
+
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
     		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
        		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
@@ -864,9 +865,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             		result.setAbort();
             		break;
             	}
-            	
             }
-            
         }
 
         //concepts
@@ -894,27 +893,31 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 result.setAbort();
             }
             //DescriptionElementSource#nameUsedInSource
-            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+            else if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
             //NameTypeDesignation#typeName
-            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+            else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
-
-           
-
+            //DeterminationEvent#taxonName
+            else if (referencingObject.isInstanceOf(DeterminationEvent.class)){
+                String message = "Name can't be deleted as it is used as a determination event";
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
+            }
         }
 
         //TODO inline references
 
-        
+
         if (!nameConfig.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
             String message = "Name can't be deleted as it is a replaced synonym.";
             result.addException(new Exception(message));
@@ -926,7 +929,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             result.setAbort();
         }
     	return result;
-    	
+
     }
 
 
