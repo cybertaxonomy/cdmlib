@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -269,6 +270,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
 
     public List<TaxonNode> getAllNodes();
+
+	public Classification createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
 
 
 }
