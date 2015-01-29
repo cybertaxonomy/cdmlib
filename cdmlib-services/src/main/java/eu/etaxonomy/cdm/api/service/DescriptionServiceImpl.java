@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -451,6 +452,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return descriptionElementDao.delete(descriptionElement);
     }
 
+    @Override
+    public UUID deleteDescription(DescriptionBase description) {
+    	if (description instanceof TaxonDescription){
+    		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+    		Taxon tax = taxDescription.getTaxon();
+    		tax.removeDescription(taxDescription, true);
+    	}
+    	
+        return dao.delete(description);
+    }
     @Override
     public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
         return vocabularyDao.findByUuid(uuid);
