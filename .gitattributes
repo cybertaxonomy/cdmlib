@@ -2383,6 +2383,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLocationServiceImpl.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestValidationManager.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNoUnit.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
