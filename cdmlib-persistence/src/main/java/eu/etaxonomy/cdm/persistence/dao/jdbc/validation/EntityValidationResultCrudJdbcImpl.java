@@ -24,6 +24,8 @@ import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -38,6 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
  * @date 16 jan. 2015
  *
  */
+@Repository
 public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResultCrud {
 
     public static final Logger logger = Logger.getLogger(EntityValidationResultCrudJdbcImpl.class);
@@ -73,6 +76,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     private static final int cv_createdby_id = 10;
     private static final int cv_entityvalidationresult_id = 11;
 
+    @Autowired
     private DataSource datasource;
 
     public EntityValidationResultCrudJdbcImpl() {
@@ -110,8 +114,8 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
 
     @Override
     public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
-        int resultId = getValidationResultId(validatedEntityClass, validatedEntityId);
-        if (resultId == -1) {
+        int validationResultId = getValidationResultId(validatedEntityClass, validatedEntityId);
+        if (validationResultId == -1) {
             return;
         }
         String vrSqlDelete = "DELETE FROM entityvalidationresult WHERE id = ?";
@@ -124,10 +128,10 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             JdbcDaoUtils.startTransaction(datasource);
             stmt1 = conn.prepareStatement(vrSqlDelete);
             stmt2 = conn.prepareStatement(cvSqlDelete);
-            stmt1.setInt(1, resultId);
-            stmt1.executeUpdate();
-            stmt2.setInt(1, resultId);
+            stmt1.setInt(1, validationResultId);
+            stmt2.setInt(1, validationResultId);
             stmt2.executeUpdate();
+            stmt1.executeUpdate();
             JdbcDaoUtils.commit(datasource);
         } catch (SQLException e) {
             JdbcDaoUtils.rollback(datasource);

@@ -74,8 +74,9 @@ public class EntityConstraintViolation extends CdmBase {
         } else {
             violation.setPropertyPath(field);
         }
-        violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next()
-                .getName());
+        violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().isEmpty()?
+                null :
+                error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
         return violation;
     }
 

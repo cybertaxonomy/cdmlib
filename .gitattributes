@@ -1786,7 +1786,6 @@ cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/input.xml -text
 cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml -text
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
-cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-~]8000.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text

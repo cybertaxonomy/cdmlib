@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.test.function;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.validation.ValidationManager;
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -32,7 +33,8 @@ public class TestValidationManager {
         String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\testValidation2";
         String username = "sa";
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("validationTest", username, "", path,   NomenclaturalCode.ICNAFP);
-//      dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+        dataSource = getMySQLDatasource(schema);
+
 
         //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
         CdmApplicationController appCtr;
@@ -51,6 +53,16 @@ public class TestValidationManager {
 //      deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
 
         appCtr.close();
+
+
+    }
+
+    private CdmDataSource getMySQLDatasource (DbSchemaValidation schema){
+        String server = "localhost";
+        String database = (schema == DbSchemaValidation.VALIDATE  ? "AM_test" : "AM_test");
+        String username = "edit";
+        CdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+        return dataSource;
     }
 
     /**
