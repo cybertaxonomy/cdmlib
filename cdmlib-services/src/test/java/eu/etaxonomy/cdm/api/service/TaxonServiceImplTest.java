@@ -42,6 +42,9 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -52,6 +55,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -104,7 +108,16 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IOccurrenceService occurenceService;
 
-
+    private Synonym synonym;
+    private Synonym synonym2;
+    
+    private Taxon taxWithSyn;
+    private Taxon tax2WithSyn;
+    private Taxon taxWithoutSyn;
+    private UUID uuidSyn;
+    private UUID uuidTaxWithoutSyn;
+    private UUID uuidSyn2;
+    private UUID uuidTaxWithSyn;
 
 /****************** TESTS *****************************/
 
@@ -165,17 +178,20 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testMakeTaxonSynonym() {
-        Rank rank = Rank.SPECIES();
-        Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
-        Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        tax1.addHomotypicSynonym(synonym, null, null);
-        UUID uuidTaxon = service.save(tax1);
-        UUID uuidSyn = service.save(synonym);
+        try {
+			createTestDataSet();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        service.swapSynonymAndAcceptedTaxon(synonym, tax1);
+        service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn);
 
         // find forces flush
-        TaxonBase<?> tax = service.find(uuidTaxon);
+        Taxon tax = (Taxon)service.find(uuidTaxWithSyn);
+        tax.removeSynonym(synonym);
+        tax.addHomotypicSynonym(synonym, null, null);
+        service.saveOrUpdate(tax);
         TaxonBase<?> syn = service.find(uuidSyn);
 
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
@@ -188,21 +204,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testChangeSynonymToAcceptedTaxon(){
-        Rank rank = Rank.SPECIES();
-        //HomotypicalGroup group = HomotypicalGroup.NewInstance();
-        Taxon taxWithoutSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
-        Taxon taxWithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
-        synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
-        //tax2.addHeterotypicSynonymName(synonym.getName());
-        taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-        taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-
-        service.save(taxWithoutSyn);
-        UUID uuidSyn = service.save(synonym);
-        service.save(synonym2);
-        UUID uuidTaxWithSyn =service.save(taxWithSyn);
+    	try {
+			createTestDataSet();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+       
 
         Taxon taxon = null;
         try {
@@ -226,25 +234,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonSynonymForTwoTaxa(){
-        Rank rank = Rank.SPECIES();
-        //HomotypicalGroup group = HomotypicalGroup.NewInstance();
-        Taxon taxWithoutSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
-        Taxon tax2WithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test5", null, null, null, null, null, null, null), null);
-        Taxon taxWithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
-        //synonym2.getName().setHomotypicalGroup(taxWithSyn.getHomotypicGroup());
-        //tax2.addHeterotypicSynonymName(synonym.getName());
-        taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-        taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-        tax2WithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-
-        service.save(taxWithoutSyn);
-
-        UUID uuidSyn = service.save(synonym);
-        service.save(synonym2);
-        UUID uuidTaxWithSyn =service.save(taxWithSyn);
-        service.save(tax2WithSyn);
+        try {
+			createTestDataSet();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 
         Taxon taxon = null;
@@ -261,7 +256,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
         Taxon taxNew = (Taxon)service.find(taxon.getUuid());
-        assertNotNull(syn);
+        assertNull(syn);
         assertNotNull(taxWithSyn);
         assertNotNull(taxNew);
 
@@ -1646,13 +1641,59 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     	
     }
+    
+    @Test
+    public void testDeleteDescriptions(){
+    	try {
+			createTestDataSet();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
+    	SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
+    	UUID uuid = occurenceService.saveOrUpdate(specimen);
+    	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
+    	description.addElement(element);
+    	service.saveOrUpdate(taxWithoutSyn);
+    	Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);
+    	Set<TaxonDescription> descr =  tax.getDescriptions();
+    	assertEquals(1, descr.size());
+    	description = descr.iterator().next();
+    	UUID uuidDescr = description.getUuid();
+    	UUID uuidDescEl = description.getElements().iterator().next().getUuid();
+    	
+    	descriptionService.deleteDescription(description);
+    	service.saveOrUpdate(tax);
+    	description = (TaxonDescription) descriptionService.find(uuidDescr);
+    	specimen = occurenceService.find(uuid);
+    	assertNull(description);
+    	DeleteResult result = occurenceService.delete(specimen);
+    	assertTrue(result.isOk());
+    	
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+    	Rank rank = Rank.SPECIES();
+        
+        taxWithoutSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+        taxWithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        tax2WithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test5", null, null, null, null, null, null, null), null);
+        synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
+        
+        taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+
+        uuidTaxWithoutSyn = service.save(taxWithoutSyn);
+        uuidSyn = service.save(synonym);
+        uuidSyn2 = service.save(synonym2);
+        uuidTaxWithSyn =service.save(taxWithSyn);
         
     }
 

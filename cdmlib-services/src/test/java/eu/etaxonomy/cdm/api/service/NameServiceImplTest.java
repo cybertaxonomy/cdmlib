@@ -357,6 +357,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test 
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameBaseInConcept() {
         final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
 

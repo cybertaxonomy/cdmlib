@@ -1181,12 +1181,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     //check whether taxon will be deleted or not
                     if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
                         taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
-                        name.removeTaxonBase(taxon);
-                        nameService.saveOrUpdate(name);
+                        //name.removeTaxonBase(taxon);
+                        //nameService.saveOrUpdate(name);
+                        taxon.setName(null);
+                        //dao.delete(taxon);
                         DeleteResult nameResult = new DeleteResult();
 
-                        nameResult = nameService.delete(name, config.getNameDeletionConfig());
+                        //remove name if possible (and required)
+                        if (name != null && config.isDeleteNameIfPossible()){
 
+                        	nameResult = nameService.delete(name, config.getNameDeletionConfig());
+
+                        }
+
+                        
+                        
                         if (nameResult.isError()){
                         	//result.setError();
                         	result.addRelatedObject(name);

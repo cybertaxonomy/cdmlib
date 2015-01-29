@@ -37,6 +37,7 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	
 	private boolean ignoreHasReplacedSynonym = true;
 	
+	private boolean removeAllNameTypeDesignations = true;
 	/**
 	 * If true, all name relationships will be deleted prior to deleting the name.
 	 * Exceptions will not be thrown due to existing name relationships.
@@ -131,6 +132,10 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	 */
 	public void setIgnoreHasReplacedSynonym(boolean ignoreHasReplacedSynonym) {
 		this.ignoreHasReplacedSynonym = ignoreHasReplacedSynonym;
+	}
+
+	public boolean isRemoveAllNameTypeDesignations() {
+		return removeAllNameTypeDesignations;
 	}
 	
 }
