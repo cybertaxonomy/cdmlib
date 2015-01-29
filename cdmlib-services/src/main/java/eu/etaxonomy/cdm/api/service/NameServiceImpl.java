@@ -126,10 +126,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     public DeleteResult delete(TaxonNameBase name){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         DeleteResult result = delete(name, config);
-
-
+       
+      
         return result;
-
+        
     }
 
     /* (non-Javadoc)
@@ -138,12 +138,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
     	DeleteResult result = new DeleteResult();
-
+    	
     	if (name == null){
     		result.setAbort();
             return result;
         }
-
+    	
     	try{
     		result = this.isDeletable(name, config);
         }catch(Exception e){
@@ -154,11 +154,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         if (result.isOk()){
         //remove references to this name
         	removeNameRelationshipsByDeleteConfig(name, config);
-
+            
            //remove name from homotypical group
             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
             if (homotypicalGroup != null){
                 homotypicalGroup.removeTypifiedName(name);
+            }
+            if (homotypicalGroup.getTypifiedNames().isEmpty()){
+            	homotypicalGroupDao.delete(homotypicalGroup);
             }
              //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
@@ -167,8 +170,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
 	//			throw new ReferrencedObjectUndeletableException(message);
 	//		}
-
-
+	
+	       
 	        try{
 	        UUID nameUuid = dao.delete(name);
 	        }catch(Exception e){
@@ -176,10 +179,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        	result.setError();
 	        }
 	        return result;
-        }
-
-
-
+        } 
+               
+        
+        
         return result;
     }
 
@@ -835,7 +838,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         List<TaggedText> taggedName = taxonNameBase.getTaggedName();
         return taggedName;
     }
-
+    
     @Override
     public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
@@ -848,7 +851,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     		 result.setError();
     		 return result;
     	}
-
+    	
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
     		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
        		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
@@ -912,12 +915,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
-            }
+        }
         }
 
         //TODO inline references
 
-
+        
         if (!nameConfig.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
             String message = "Name can't be deleted as it is a replaced synonym.";
             result.addException(new Exception(message));
@@ -929,7 +932,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             result.setAbort();
         }
     	return result;
-
+    	
     }
 
 
