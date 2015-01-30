@@ -2311,6 +2311,9 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/TaxonRelationshi
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/DescriptionUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/ValidationManager.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/BatchValidationUtil.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/BatchValidator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/EntityValidationUnit.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
