@@ -25,8 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -54,6 +57,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  *
  */
 @Controller
+@Api("polytomousKeyDTO")
 @RequestMapping(value = {"/dto/polytomousKey/"})
 public class PolytomousKeyNodeDtoController extends AbstractController<PolytomousKey, IPolytomousKeyService> {
 
@@ -93,7 +97,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
     }
 
 
-    @RequestMapping(value = {"{uuid}/linkedStyle"})
+    @RequestMapping(value = {"{uuid}/linkedStyle"}, method = RequestMethod.GET)
     public ModelAndView doLinkedStyle(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
@@ -134,7 +138,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         return mv;
     }
 
-    @RequestMapping(value = {"linkedStyle"})
+    @RequestMapping(value = {"linkedStyle"}, method = RequestMethod.GET)
     public ModelAndView doLinkedStyleByTaxonomicScope(
             @RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,

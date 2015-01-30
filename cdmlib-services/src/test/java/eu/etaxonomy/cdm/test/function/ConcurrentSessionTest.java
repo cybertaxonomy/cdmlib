@@ -892,7 +892,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         // Pre-bound JDBC Connection found! HibernateTransactionManager does
         // not support running within DataSourceTransactionManager if told to manage
         // the DataSource itself. It is recommended to use a single HibernateTransactionManager
-        // for all transactions on a single DataSource, no matter whether Hibernate or JDBC access.
+        // for all transactions on a single DataSource, no matter whether Hibernate or JDBC access'.
         TaxonBase taxonBase1updated = taxonService.find(taxonUuid1);
         logger.info("Title Cache 1 New  Session: " + taxonBase1updated.getTitleCache());
 

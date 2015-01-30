@@ -215,8 +215,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
             description.setTitleCache(message, true);
+            //oldTaxon.removeDescription(description, false);
             newAcceptedTaxon.addDescription(description);
         }
+        oldTaxon.clearDescriptions();
+        
         taxonService.update(newAcceptedTaxon);
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);

@@ -32,7 +32,11 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -93,9 +97,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertNotNull("identifier type must not be null", it1);
 		
 		boolean includeEntity = true;
-		Pager<FindByIdentifierDTO<Taxon>> taxa = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
-		Assert.assertTrue("Result should not be empty", taxa.getCount() == 1);
-		FindByIdentifierDTO<Taxon>.CdmEntity entity = taxa.getRecords().get(0).getCdmEntity();
+		Pager<FindByIdentifierDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
+		Assert.assertTrue("Result should not be empty", taxonPager.getCount() == 1);
+		FindByIdentifierDTO<Taxon>.CdmEntity entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Taxon taxon = entity.getEntity();
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), taxon.getUuid());
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getCdmUuid());
@@ -108,16 +112,16 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 				TaxonNameBase.class, "ext-1234", null, null, includeEntity, null, null, null);
 		Assert.assertTrue("Identifier does not exist for TaxonName", names.getCount() == 0);
 		
-		taxa = taxonService.findByIdentifier(null, "ext-1234", null, null, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for 'ext-1234' should be 1", taxa.getCount() == 1);
+		taxonPager = taxonService.findByIdentifier(null, "ext-1234", null, null, includeEntity, null, null, null);
+		Assert.assertEquals("Result size for 'ext-1234' should be 1", 1, taxonPager.getRecords().size());
 		
-		taxa = taxonService.findByIdentifier(Taxon.class, null, null, null, includeEntity, null, null, null);
-		Assert.assertTrue("Result should not be empty", taxa.getCount() == 2);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, null, null, null, includeEntity, null, null, null);
+		Assert.assertEquals("Result should not be empty", 2 , taxonPager.getRecords().size());
 		
 		//includeEntity
 		includeEntity = false;
-		taxa = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
-		entity = taxa.getRecords().get(0).getCdmEntity();
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
+		entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Assert.assertNull("Taxon must not be returned with includeEntity = false", entity.getEntity());
 		
 		
@@ -125,26 +129,68 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		//Matchmode
 		includeEntity = false;
 		MatchMode matchmode = null;
-		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, matchmode, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "123", null, matchmode, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxonPager.getCount() == 0);
 
-		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.EXACT, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.EXACT, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxonPager.getCount() == 0);
 
-		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.ANYWHERE, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for '123' should be 1", taxa.getCount() == 1);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.ANYWHERE, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 1", taxonPager.getCount() == 1);
 
-		taxa = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.BEGINNING, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for '123' should be 0", taxa.getCount() == 0);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "123", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for '123' should be 0", taxonPager.getCount() == 0);
 
-		taxa = taxonService.findByIdentifier(Taxon.class, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
-		Assert.assertTrue("Result size for 'ext' should be 1", taxa.getCount() == 2);
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for 'ext' should be 1", taxonPager.getCount() == 2);
 
 		//Paging
-		taxa = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, 1, 1, null);
-		Assert.assertEquals("Total result size for starts with 'ext' should be 2", Integer.valueOf(2), taxa.getCount());
-		Assert.assertEquals("Result size for starts with 'ext' second page should be 1", Integer.valueOf(1), taxa.getPageSize());
-		Assert.assertEquals("ext-cache1", taxa.getRecords().get(0).getIdentifier().getIdentifier());
+		taxonPager = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertEquals("Total result size for starts with 'ext' should be 4", 4, taxonPager.getRecords().size());
+		taxonPager = taxonService.findByIdentifier(null, "ext", null, MatchMode.BEGINNING, includeEntity, 2, 1, null);
+		Assert.assertEquals("Total result size for starts with 'ext' should be 4", Integer.valueOf(4), taxonPager.getCount());
+		Assert.assertEquals("Result size for starts with 'ext' second page should be 2", Integer.valueOf(2), taxonPager.getPageSize());
+		Assert.assertEquals("The third taxon (first on second page) should be ext-syn1", "ext-syn1", taxonPager.getRecords().get(0).getIdentifier().getIdentifier());
+		
+		taxonPager = taxonService.findByIdentifier(Taxon.class, "ext", null, MatchMode.BEGINNING, includeEntity, null, null, null);
+		Assert.assertTrue("Result size for 'ext' should be 2", taxonPager.getCount() == 2);
+
+	}
+	
+	@Test
+	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifier.xml")
+	public final void testListByIdentifierClassification(){
+		//classification Filter
+		Classification classification = classificationService.find(5000);
+		TaxonNode rootNode = classification.getRootNode();
+		Pager<FindByIdentifierDTO<Taxon>> taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Assert.assertEquals("Result size for 'ext' should be 1", Integer.valueOf(1), taxonPager.getCount());
+		Assert.assertEquals("Result size for 'ext' should be 1", Integer.valueOf(1), (Integer)taxonPager.getRecords().size());
+		
+		Pager<FindByIdentifierDTO<Taxon>> taxPager = taxonService.findByIdentifier(Taxon.class, "ext-cache1", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Assert.assertEquals("Result size for 'ext' should be 0", Integer.valueOf(0), taxPager.getCount());
+		Assert.assertEquals("Result size for 'ext' should be 0", 0, taxPager.getRecords().size());
+		
+		rootNode = null;  //check against missing filter
+		taxPager = taxonService.findByIdentifier(Taxon.class, "ext-cache1", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Assert.assertEquals("Result size for 'ext-cache1' without filter should be 1", Integer.valueOf(1), taxPager.getCount());
+		Assert.assertEquals("Result size for 'ext-cache1' without filter should be 1", 1, taxPager.getRecords().size());
+		
+		//TaxonBase
+		rootNode = classification.getRootNode();
+		Pager<FindByIdentifierDTO<TaxonBase>> tbPager = taxonService.findByIdentifier(TaxonBase.class, "ext-1234", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Assert.assertEquals("Result size for 'ext' should be 1", Integer.valueOf(1), tbPager.getCount());
+		Assert.assertEquals("Result size for 'ext' should be 1", Integer.valueOf(1), (Integer)tbPager.getRecords().size());
+
+		tbPager = taxonService.findByIdentifier(TaxonBase.class, "ext-cache1", null, rootNode, MatchMode.EXACT, false, null, null, null);
+		Assert.assertEquals("Result size for 'ext' should be 0", Integer.valueOf(0), tbPager.getCount());
+		Assert.assertEquals("Result size for 'ext' should be 0", 0, tbPager.getRecords().size());
+		
+		//Synonym
+		Pager<FindByIdentifierDTO<Synonym>> synPager = taxonService.findByIdentifier(Synonym.class, "ext-syn", null, rootNode, MatchMode.BEGINNING, false, null, null, null);
+		Assert.assertEquals("1 Synonym should be linked to the according classification", Integer.valueOf(1), synPager.getCount());
+		Assert.assertEquals("1 Synonym should be linked to the according classification", 1, synPager.getRecords().size());
+
 	}
 
 
@@ -180,6 +226,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         classification.addChildTaxon(tb, null, null);
         classificationService.saveOrUpdate(classification);
         
+        tb2.addSynonymName(null, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        
         commitAndStartNewTransaction(null);
 
         // this will write flat xml file to the same package in the test resources 
@@ -188,11 +236,11 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		        "TAXONBASE", "TAXONNAMEBASE","IDENTIFIER","TAXONBASE_IDENTIFIER",
 		        "TAXONNAMEBASE_IDENTIFIER",
 		        "REFERENCE",
-		        "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+		        "CLASSIFICATION", "TAXONNODE",
 		        "HOMOTYPICALGROUP",
 		        "TERMVOCABULARY",
-		        "DEFINEDTERMBASE"
-		 });
+		        "SYNONYMRELATIONSHIP"
+		 }, "xxxx");
             
     }
 

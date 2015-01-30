@@ -102,13 +102,13 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public T find(UUID uuid) {
-        return dao.findByUuid(uuid);
+        return uuid == null ? null : dao.findByUuid(uuid);
     }
     
     @Override
     @Transactional(readOnly = true)
     public T findWithoutFlush(UUID uuid) {
-        return dao.findByUuidWithoutFlush(uuid);
+        return uuid == null ? null : dao.findByUuidWithoutFlush(uuid);
     }
 
     @Override
@@ -138,13 +138,13 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public T load(UUID uuid) {
-        return dao.load(uuid);
+        return uuid == null ? null : dao.load(uuid);
     }
 
     @Override
     @Transactional(readOnly = true)
     public T load(UUID uuid, List<String> propertyPaths){
-        return dao.load(uuid, propertyPaths);
+        return uuid == null ? null : dao.load(uuid, propertyPaths);
     }
 
     @Override

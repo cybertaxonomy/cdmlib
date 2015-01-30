@@ -33,15 +33,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -52,10 +58,12 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
+import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -66,6 +74,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  * @date 20.03.2009
  */
 @Controller
+@Api("taxon")
 @RequestMapping(value = {"/taxon"})
 public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
 
@@ -95,6 +104,10 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
     @Autowired
     private IClassificationService classificationService;
+    
+    @Autowired
+    private ITaxonNodeService taxonNodeService;
+
 
     @Autowired
     private ITermService termService;
@@ -104,12 +117,14 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
+        binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
+        
     }
 
     /**
      * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
      * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
+     * URI: <b>taxon&#x002F;search</b>
      *
      * @param query
      *            the string to query for. Since the wildcard character '*'
@@ -429,6 +444,59 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         Taxon bestMatchingTaxon =  service.findBestMatchingTaxon(taxonName);
 
         return bestMatchingTaxon;
+    }
+    
+    /**
+     * list IdentifiableEntity objects by identifiers
+     * 
+     * @param type
+     * @param identifierType
+     * @param identifier
+     * @param pageNumber
+     * @param pageSize
+     * @param matchMode
+     * @param request
+     * @param response
+     * @return
+     * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifierInTree"})
+    public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifierSubtree(
+    		@RequestParam(value = "class", required = false) Class<T> type,
+    		@RequestParam(value = "identifierType", required = false) UUID identifierType,
+            @RequestParam(value = "identifier", required = false) String identifier,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "includeEntity", required = false) Boolean includeEntity,
+            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
+
+    	DefinedTerm definedTerm = null;
+    	if(identifierType != null){
+    		definedTerm = CdmBase.deproxy(termService.find(identifierType), DefinedTerm.class);
+    	}
+    	
+		TaxonNode subTree;
+    	Classification cl = classificationService.load(subtreeUuid);
+		if (cl != null){
+			subTree = cl.getRootNode();
+		}else{
+			subTree = taxonNodeService.find(subtreeUuid);
+		}
+    	
+        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
+        boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
+        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
     }
 
 }

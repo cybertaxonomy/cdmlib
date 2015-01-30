@@ -19,6 +19,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -40,6 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  * TODO this controller should be a portal controller!!
  */
 @Controller
+@Api("portal_classification")
 @RequestMapping(value = {"/portal/classification/{uuid}"})
 public class ClassificationPortalController extends BaseController<Classification,IClassificationService> {
 

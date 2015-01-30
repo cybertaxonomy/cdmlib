@@ -441,6 +441,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/UnitsGatheringEvent.java -t
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206DataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206Import.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportReport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206XMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Identification.java -text
@@ -646,6 +647,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_A
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx -text
@@ -706,7 +708,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmAssignableTypeFilter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmTypeScanner.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
@@ -1128,6 +1132,7 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
@@ -1789,8 +1794,8 @@ cdmlib-remote-webapp/README.TXT -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/CdmSpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/SpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
@@ -1823,6 +1828,31 @@ cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_888888_256x24
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_cd0a0a_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/jquery-ui-1.8.23.custom.css -text
 cdmlib-remote-webapp/src/main/webapp/csv/csvExport.jsp -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/cdm.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/reset.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/css/screen.css -text
+cdmlib-remote-webapp/src/main/webapp/doc/images/explorer_icons.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/logo_small.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/pet_store_api.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/throbber.gif -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/images/wordnik_api.png -text svneol=unset#unset
+cdmlib-remote-webapp/src/main/webapp/doc/index.html -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/backbone-min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/handlebars-1.0.0.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/highlight.7.3.pack.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery-1.8.0.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.ba-bbq.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.slideto.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/jquery.wiggle.min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/shred.bundle.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/shred/content.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/swagger-oauth.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/swagger.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/lib/underscore-min.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/o2c.html -text
+cdmlib-remote-webapp/src/main/webapp/doc/swagger-ui.js -text
+cdmlib-remote-webapp/src/main/webapp/doc/swagger-ui.min.js -text
+cdmlib-remote-webapp/src/main/webapp/images/logo_edit.png -text svneol=unset#unset
 cdmlib-remote-webapp/src/main/webapp/index.html -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/csv_export.js -text
@@ -2238,6 +2268,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/CreateHierarchyForClassificationConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteConfiguratorBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindTaxaAndNamesConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IFindTaxaAndNamesConfigurator.java -text
@@ -2338,6 +2369,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCache
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AbstractSecurityTestBase.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
@@ -2406,6 +2438,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/BlankDataSet.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text

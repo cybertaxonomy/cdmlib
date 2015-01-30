@@ -61,7 +61,7 @@
       <artifactId>cdmlib-remote</artifactId>
     </dependency>
     <dependency>
-      <!-- TODO this is also offered by cdmlib-remote, can it be removed? 
+      <!-- TODO this is also offered by cdmlib-remote, can it be removed?
         What does provided mean? -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -127,8 +127,28 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
-
+    <!-- swagger -->
     <dependency>
+      <groupId>com.mangofactory</groupId>
+      <artifactId>swagger-springmvc</artifactId>
+      <version>0.8.5</version>
+    </dependency>
+    <!-- dependencies for swagger-springmvc, added explicitely -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <!-- END of dependencies for swagger-springmvc, added explicitely -->
+    <!-- testing -->
+  <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -138,7 +158,6 @@
       <artifactId>yjp-controller-api-redist</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -213,7 +232,7 @@
               <value>h2_cdmTest</value>
             </systemProperty>
             <systemProperty>
-              <!-- datasources.xml is prepared by <plugins><resources>..</resources> 
+              <!-- datasources.xml is prepared by <plugins><resources>..</resources>
                 above -->
               <name>cdm.beanDefinitionFile</name>
               <value>${project.build.directory}/test-classes/datasources.xml</value>

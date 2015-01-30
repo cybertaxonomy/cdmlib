@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IStatisticsService;
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
@@ -32,143 +34,144 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * this controller provides a method to count different entities in the entire
  * database as well as from a particular classification items of different types
  * can be chosen have a look at doStatistics method
- * 
+ *
  * @author s.buers
  * @created 07.11.2012
- * 
+ *
  */
 @Controller
+@Api("statistics")
 @RequestMapping(value = { "/statistics" })
 public class StatisticsController {
 
-	private static final Logger logger = Logger
-			.getLogger(StatisticsController.class);
+    private static final Logger logger = Logger
+            .getLogger(StatisticsController.class);
 
-	@Autowired
-	private IClassificationService classificationService;
+    @Autowired
+    private IClassificationService classificationService;
 
-	private IStatisticsService service;
+    private IStatisticsService service;
 
-	@Autowired
-	public void setService(IStatisticsService service) {
-		this.service = service;
-	}
+    @Autowired
+    public void setService(IStatisticsService service) {
+        this.service = service;
+    }
 
-	/**
-	 * example query:
-	 * 
-	 * <pre>
-	 *        part=ALL&part=CLASSIFICATION&type=DESCRIPTIVE_SOURCE_REFERENCES&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMENCLATURAL_REFERENCES
-	 * </pre>
-	 * 
-	 * @param part
-	 * @param type
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView doStatistics(
-			@RequestParam(value = "part", required = false) String[] part,
-			@RequestParam(value = "type", required = false) String[] type,
-			@RequestParam(value = "classificationName", required = false) String[] classificationName,
-			@RequestParam(value = "classificationUuid", required = false) String[] classificationUuid,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+    /**
+     * example query:
+     *
+     * <pre>
+     *        part=ALL&part=CLASSIFICATION&type=DESCRIPTIVE_SOURCE_REFERENCES&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMENCLATURAL_REFERENCES
+     * </pre>
+     *
+     * @param part
+     * @param type
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView doStatistics(
+            @RequestParam(value = "part", required = false) String[] part,
+            @RequestParam(value = "type", required = false) String[] type,
+            @RequestParam(value = "classificationName", required = false) String[] classificationName,
+            @RequestParam(value = "classificationUuid", required = false) String[] classificationUuid,
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-		ModelAndView mv = new ModelAndView();
+        ModelAndView mv = new ModelAndView();
 
-		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
-				part, type, classificationName, classificationUuid);
-		List<Statistics> statistics = service
-				.getCountStatistics(configuratorList);
-		logger.info("doStatistics() - " + request.getRequestURI());
+        List<StatisticsConfigurator> configuratorList = createConfiguratorList(
+                part, type, classificationName, classificationUuid);
+        List<Statistics> statistics = service
+                .getCountStatistics(configuratorList);
+        logger.info("doStatistics() - " + request.getRequestURI());
 
-		mv.addObject(statistics);
-		return mv;
-	}
+        mv.addObject(statistics);
+        return mv;
+    }
 
-	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
-			String[] type, String[] classificationName,
-			String[] classificationUuid) {
+    private List<StatisticsConfigurator> createConfiguratorList(String[] part,
+            String[] type, String[] classificationName,
+            String[] classificationUuid) {
 
-		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+        ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
 
-		// 1. get types for configurators:
-		// in our case all the configurators will have the same types
-		// so we calculate the types once and save them in a helperConfigurator
-		StatisticsConfigurator helperConfigurator = new StatisticsConfigurator();
+        // 1. get types for configurators:
+        // in our case all the configurators will have the same types
+        // so we calculate the types once and save them in a helperConfigurator
+        StatisticsConfigurator helperConfigurator = new StatisticsConfigurator();
 
-		if (type != null) {
-			for (String string : type) {
-				helperConfigurator.addType(StatisticsTypeEnum.valueOf(string));
-			}
-		} else { // if nothing is chosen, count all:
-			for (StatisticsTypeEnum enumValue : StatisticsTypeEnum.values()) {
-				helperConfigurator.addType(enumValue);
-			}
-		}
+        if (type != null) {
+            for (String string : type) {
+                helperConfigurator.addType(StatisticsTypeEnum.valueOf(string));
+            }
+        } else { // if nothing is chosen, count all:
+            for (StatisticsTypeEnum enumValue : StatisticsTypeEnum.values()) {
+                helperConfigurator.addType(enumValue);
+            }
+        }
 
-		// 2. determine the search areas (entire db, all classifications or
-		// specific classifications) and put
-		// each of them in a configurator:
+        // 2. determine the search areas (entire db, all classifications or
+        // specific classifications) and put
+        // each of them in a configurator:
 
-		// gather classifications from names and uuids:
+        // gather classifications from names and uuids:
 
-		Set<Classification> classificationFilters = new HashSet<Classification>();
+        Set<Classification> classificationFilters = new HashSet<Classification>();
 
-		if (classificationName != null) {
-			for (String string : classificationName) {
-					List <Classification> classifications = classificationService
-							.listByTitle(Classification.class, string,
-									MatchMode.EXACT, null, null, null, null,
-									null);
-					classificationFilters.addAll(classifications);
-				
-			}
-		}
-		if (classificationUuid != null && classificationUuid.length > 0) {
-			for (String string : classificationUuid) {
-				if (classificationService.exists(UUID.fromString(string))) {
-					classificationFilters.add(classificationService.find(UUID
-							.fromString(string)));
-				}
-			}
-		}
+        if (classificationName != null) {
+            for (String string : classificationName) {
+                    List <Classification> classifications = classificationService
+                            .listByTitle(Classification.class, string,
+                                    MatchMode.EXACT, null, null, null, null,
+                                    null);
+                    classificationFilters.addAll(classifications);
 
-		// if no part at all was given:
-		if (part == null && classificationFilters.isEmpty()) {
-			helperConfigurator.addFilter(service.getFilterALL_DB());
-			configuratorList.add(helperConfigurator);
-		}
+            }
+        }
+        if (classificationUuid != null && classificationUuid.length > 0) {
+            for (String string : classificationUuid) {
+                if (classificationService.exists(UUID.fromString(string))) {
+                    classificationFilters.add(classificationService.find(UUID
+                            .fromString(string)));
+                }
+            }
+        }
 
-		// else parse list of parts and create configurator for each:
-		if (part != null) {
-			helperConfigurator.addFilter(service.getFilterALL_DB());
-			for (String string : part) {
-				// System.out.println(StatisticsPartEnum.ALL.toString());
-				if (string.equals(StatisticsPartEnum.ALL.toString())) {
-					configuratorList.add(helperConfigurator);
-				} else if (string.equals(StatisticsPartEnum.CLASSIFICATION
-						.toString())) {
-					List<Classification> classificationsList = classificationService
-							.listClassifications(null, 0, null, null);
-					classificationFilters.addAll(classificationsList);
+        // if no part at all was given:
+        if (part == null && classificationFilters.isEmpty()) {
+            helperConfigurator.addFilter(service.getFilterALL_DB());
+            configuratorList.add(helperConfigurator);
+        }
 
-				}
-			}
-		}
-		for (Classification classification : classificationFilters) {
+        // else parse list of parts and create configurator for each:
+        if (part != null) {
+            helperConfigurator.addFilter(service.getFilterALL_DB());
+            for (String string : part) {
+                // System.out.println(StatisticsPartEnum.ALL.toString());
+                if (string.equals(StatisticsPartEnum.ALL.toString())) {
+                    configuratorList.add(helperConfigurator);
+                } else if (string.equals(StatisticsPartEnum.CLASSIFICATION
+                        .toString())) {
+                    List<Classification> classificationsList = classificationService
+                            .listClassifications(null, 0, null, null);
+                    classificationFilters.addAll(classificationsList);
 
-			StatisticsConfigurator newConfigurator = new StatisticsConfigurator();
-			newConfigurator.setType(helperConfigurator.getType());
-			newConfigurator.getFilter().addAll(helperConfigurator.getFilter());
-			newConfigurator.addFilter(classification);
-			configuratorList.add(newConfigurator);
-		}
+                }
+            }
+        }
+        for (Classification classification : classificationFilters) {
 
-		return configuratorList;
-	}
+            StatisticsConfigurator newConfigurator = new StatisticsConfigurator();
+            newConfigurator.setType(helperConfigurator.getType());
+            newConfigurator.getFilter().addAll(helperConfigurator.getFilter());
+            newConfigurator.addFilter(classification);
+            configuratorList.add(newConfigurator);
+        }
+
+        return configuratorList;
+    }
 
 }

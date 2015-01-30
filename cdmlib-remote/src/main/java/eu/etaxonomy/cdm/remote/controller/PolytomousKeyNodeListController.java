@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -22,11 +24,12 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  *
  */
 @Controller
+@Api("polytomousKeyNode")
 @RequestMapping(value = {"/polytomousKeyNode"})
 public class PolytomousKeyNodeListController extends BaseListController<PolytomousKeyNode, IPolytomousKeyNodeService> {
 
-	@Autowired
-	public void setService(IPolytomousKeyNodeService service) {
-		this.service = service;
-	}	
+    @Autowired
+    public void setService(IPolytomousKeyNodeService service) {
+        this.service = service;
+    }
 }

@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
@@ -158,6 +159,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
             if (homotypicalGroup != null){
                 homotypicalGroup.removeTypifiedName(name);
+            }
+            if (homotypicalGroup.getTypifiedNames().isEmpty()){
+            	homotypicalGroupDao.delete(homotypicalGroup);
             }
              //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
@@ -864,9 +868,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             		result.setAbort();
             		break;
             	}
-            	
             }
-            
         }
 
         //concepts
@@ -894,22 +896,26 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 result.setAbort();
             }
             //DescriptionElementSource#nameUsedInSource
-            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+            else if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
             //NameTypeDesignation#typeName
-            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+            else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
-
-           
-
+            //DeterminationEvent#taxonName
+            else if (referencingObject.isInstanceOf(DeterminationEvent.class)){
+                String message = "Name can't be deleted as it is used as a determination event";
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(referencingObject);
+                result.setAbort();
+        }
         }
 
         //TODO inline references

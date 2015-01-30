@@ -559,4 +559,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
 
+	UUID deleteDescription(DescriptionBase description);
+
 }

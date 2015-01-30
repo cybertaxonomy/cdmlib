@@ -14,12 +14,15 @@ import java.util.Arrays;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 /**
  * @author a.kohlbecker
  * @date 14.10.2010
  *
  */
 @Controller
+@Api("portal_derivedUnitFacade")
 @RequestMapping(value = {"/portal/derivedUnitFacade/{uuid}"})
 public class DerivedUnitFacadePortalController extends
         DerivedUnitFacadeController {

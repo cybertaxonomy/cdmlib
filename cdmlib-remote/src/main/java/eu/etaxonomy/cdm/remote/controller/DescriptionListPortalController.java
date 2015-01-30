@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -53,6 +55,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
  *
  */
 @Controller
+@Api("portal_description")
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends IdentifiableListController<DescriptionBase, IDescriptionService> {
 

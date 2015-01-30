@@ -18,7 +18,7 @@ public class MatchModePropertyEditor extends PropertyEditorSupport {
 	
 	public void setAsText(String name) {
 		
-		setValue(MatchMode.valueOf(name));		
+		setValue(MatchMode.valueOf(name == null ? null : name.toUpperCase()));		
 	}
 
 }

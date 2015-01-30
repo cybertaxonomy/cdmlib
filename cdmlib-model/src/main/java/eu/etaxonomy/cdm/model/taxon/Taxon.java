@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -280,7 +281,21 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, null);
+        
+        
         descriptions.remove(description);
+    }
+    
+    public void removeDescription(TaxonDescription description, boolean removeElements){
+    	if (removeElements){
+    		Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>(description.getElements());
+            for (DescriptionElementBase el:elements){
+            	description.getElements().remove(el);
+            }
+            removeDescription(description);
+    	} else{
+    		removeDescription(description);
+    	}
     }
 
     /**
@@ -1832,4 +1847,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         return result;
 
     }
+
+	public void clearDescriptions() {
+		this.descriptions = new HashSet<TaxonDescription>();
+		
+	}
+    
+   
 }

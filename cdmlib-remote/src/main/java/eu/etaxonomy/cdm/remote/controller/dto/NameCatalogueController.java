@@ -41,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -84,6 +86,7 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  */
 
 @Controller
+@Api("name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
 public class NameCatalogueController extends AbstractController<TaxonNameBase, INameService> implements ResourceLoaderAware {
 

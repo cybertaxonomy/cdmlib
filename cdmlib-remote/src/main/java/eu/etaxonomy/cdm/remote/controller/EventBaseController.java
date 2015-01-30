@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -24,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
  *
  */
 @Controller
+@Api("eventBase")
 @RequestMapping(value = {"/eventBase/{uuid}"})
 public class EventBaseController extends BaseController<EventBase, IEventBaseService> {
     @SuppressWarnings("unused")

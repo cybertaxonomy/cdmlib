@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created Apr 8, 2010
  */
 @Controller
+@Api("taxonNode")
 public class TaxonNodeListController extends AbstractController<TaxonNode, ITaxonNodeService> {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNodeListController.class);

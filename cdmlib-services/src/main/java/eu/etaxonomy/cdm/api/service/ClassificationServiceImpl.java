@@ -14,16 +14,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -35,7 +38,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
@@ -47,6 +52,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
@@ -343,5 +349,170 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
+    /**
+     * 
+     * @param allNodesOfClassification
+     * @return null - if  allNodesOfClassification is empty <br>
+     */
+    
+    private Map<String, List<TaxonNode>> getSortedGenusList(Collection<TaxonNode> allNodesOfClassification){
+    	
+    	if(allNodesOfClassification == null || allNodesOfClassification.isEmpty()){
+    		return null;
+    	}
+    	Map<String, List<TaxonNode>> sortedGenusMap = new HashMap<String, List<TaxonNode>>();
+    	for(TaxonNode node:allNodesOfClassification){
+    		final TaxonNode tn = node;
+    		Taxon taxon = node.getTaxon();
+    		NonViralName name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+    		String genusOrUninomial = name.getGenusOrUninomial();
+    		//if rank unknown split string and take first word
+    		if(genusOrUninomial == null){
+    			String titleCache = taxon.getTitleCache();
+    			String[] split = titleCache.split("\\s+");
+    			for(String s:split){
+    				genusOrUninomial = s;
+    				break;
+    			}
+    		}
+    		//if node has children
+    		
+    		//retrieve list from map if not create List
+    		if(sortedGenusMap.containsKey(genusOrUninomial)){
+    			List<TaxonNode> list = sortedGenusMap.get(genusOrUninomial);
+    			list.add(node);
+    			sortedGenusMap.put(genusOrUninomial, list);
+    		}else{
+    			//create List for genus
+    			List<TaxonNode> list = new ArrayList<TaxonNode>();
+    			list.add(node);
+    			sortedGenusMap.put(genusOrUninomial, list);
+    		}
+    	}
+    	return sortedGenusMap;
+    }
 
+    /**
+     * 
+     * creates new Classification and parent TaxonNodes at genus level
+     * 
+     * 
+     * @param map GenusMap which holds a name (Genus) and all the same Taxa as a list
+     * @param classification you want to improve the hierarchy (will not be modified)
+     * @param configurator to change certain settings, if null then standard settings will be taken   
+     * @return new classification with parentNodes for each entry in the map 
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Transactional(readOnly = false)
+	@Override
+    public Classification createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator){
+    	classification = dao.findByUuid(classification.getUuid());
+    	Map<String, List<TaxonNode>> map = getSortedGenusList(classification.getAllNodes());
+    	
+    	final String APPENDIX = "repaired";
+    	String titleCache = org.apache.commons.lang.StringUtils.isBlank(classification.getTitleCache()) ? " " : classification.getTitleCache() ;
+    	//TODO classification clone???
+    	Classification newClassification = Classification.NewInstance(titleCache +" "+ APPENDIX);
+    	newClassification.setReference(classification.getReference());
+
+    	for(Map.Entry<String, List<TaxonNode>> entry:map.entrySet()){
+    		String genus = entry.getKey();
+    		List<TaxonNode> listOfTaxonNodes = entry.getValue();
+    		TaxonNode parentNode = null;
+    		//Search for genus in list 
+    		for(TaxonNode tNode:listOfTaxonNodes){
+    			//take that taxonNode as parent and remove from list with all it possible children
+    			//FIXME NPE for name
+    			TaxonNameBase name = tNode.getTaxon().getName();
+				NonViralName nonViralName = CdmBase.deproxy(name, NonViralName.class);
+    			if(nonViralName.getNameCache().equalsIgnoreCase(genus)){
+    				TaxonNode clone = (TaxonNode) tNode.clone();
+    				if(!tNode.hasChildNodes()){
+    					//FIXME remove classification 
+//    					parentNode = newClassification.addChildNode(clone, 0, classification.getCitation(), classification.getMicroReference());
+    					parentNode = newClassification.addChildNode(clone, 0, clone.getReference(), clone.getMicroReference());
+    					//remove taxonNode from list because just added to classification
+    					listOfTaxonNodes.remove(tNode);
+    				}else{
+    					//get all childNodes 
+    					//save prior Hierarchy and remove them from the list
+    					List<TaxonNode> copyAllChildrenToTaxonNode = copyAllChildrenToTaxonNode(tNode, clone);
+//    					parentNode = newClassification.addChildNode(clone, 0, classification.getCitation(), classification.getMicroReference());
+      					//FIXME remove classification
+    					parentNode = newClassification.addChildNode(clone, 0, clone.getReference(), clone.getMicroReference());
+    					//remove taxonNode from list because just added to classification
+    					listOfTaxonNodes.remove(tNode);
+    					if(copyAllChildrenToTaxonNode != null){
+    						listOfTaxonNodes = (List<TaxonNode>) CollectionUtils.removeAll(listOfTaxonNodes, copyAllChildrenToTaxonNode);
+    					}
+    				}
+    				break;
+    			}
+    		}
+    		if(parentNode == null){
+    			//if no match found in list, create parentNode
+    			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+    			NonViralName nonViralName = parser.parseFullName(genus);
+    			TaxonNameBase taxonNameBase = (TaxonNameBase) nonViralName;
+    			//TODO Sec via configurator
+    			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
+    			parentNode = newClassification.addChildTaxon(taxon, 0, null, null);
+    		}
+    		//iterate over the rest of the list
+    		for(TaxonNode tn : listOfTaxonNodes){
+    			//if TaxonNode has a parent and this is not the classification then skip it 
+    			//and add to new classification via the parentNode as children of it
+    			//this should assures to keep the already existing hierarchy
+    			//FIXME: Assert is not rootnode --> entrypoint is not classification in future but rather rootNode
+    			
+    			if(!tn.isTopmostNode()){
+    				continue; //skip to next taxonNode
+    			}
+    			
+    			TaxonNode clone = (TaxonNode) tn.clone();
+    			//FIXME: citation from node
+    			//TODO: addchildNode without citation and references
+//    			TaxonNode taxonNode = parentNode.addChildNode(clone, classification.getCitation(), classification.getMicroReference());
+    			TaxonNode taxonNode = parentNode.addChildNode(clone, clone.getReference(), clone.getMicroReference());
+    			if(tn.hasChildNodes()){
+    				//save hierarchy in new classification
+    				List<TaxonNode> copyAllChildrenToTaxonNode = copyAllChildrenToTaxonNode(tn, taxonNode);
+    				if(copyAllChildrenToTaxonNode != null){
+    					listOfTaxonNodes = (List<TaxonNode>) CollectionUtils.removeAll(listOfTaxonNodes, copyAllChildrenToTaxonNode);
+    				}
+    			}
+    		}
+    	}
+    	dao.saveOrUpdate(newClassification);
+    	return newClassification;
+    }
+
+    /**
+     * 
+     * recursive method to get all childnodes of taxonNode in classification.
+     * 
+     * @param classification just for References and Citation, can be null
+     * @param copyFromNode TaxonNode with Children
+     * @param copyToNode TaxonNode which will receive the children
+     * @return List of ChildNode which has been added. If node has no children returns null  
+     */
+   private List<TaxonNode> copyAllChildrenToTaxonNode(TaxonNode copyFromNode, TaxonNode copyToNode) {
+		List<TaxonNode> childNodes;
+		if(!copyFromNode.hasChildNodes()){
+			return null;
+		}else{
+			childNodes = copyFromNode.getChildNodes();
+		}
+		for(TaxonNode childNode:childNodes){
+			TaxonNode clone = (TaxonNode) childNode.clone();
+			if(childNode.hasChildNodes()){
+				copyAllChildrenToTaxonNode(childNode, clone);
+			}
+			//FIXME: citation from node instead of classification
+//			copyToNode.addChildNode(clone,classification.getCitation(), classification.getMicroReference());
+			copyToNode.addChildNode(clone, clone.getReference(), clone.getMicroReference());
+		}
+		return childNodes;
+	}
+    
 }

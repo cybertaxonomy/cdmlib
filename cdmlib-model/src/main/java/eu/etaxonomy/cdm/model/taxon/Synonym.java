@@ -1,13 +1,31 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.model.taxon;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -24,20 +42,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
-import java.util.*;
-
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 /**
  * The class for synonyms: these are {@link TaxonBase taxa} the {@link name.TaxonNameBase taxon names}
  * of which are not used by the {@link TaxonBase#getSec() reference} to designate a real
@@ -49,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
  * makes it easier to handle particular relationships between
  * ("accepted/correct") {@link Taxon taxa} on the one hand and between ("synonym") taxa
  * and ("accepted/correct") taxa on the other.
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
@@ -81,22 +85,22 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	@Valid
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
-	// ************* CONSTRUCTORS *************/	
-	/** 
+	// ************* CONSTRUCTORS *************/
+	/**
 	 * Class constructor: creates a new empty synonym instance.
-	 * 
+	 *
 	 * @see 	#Synonym(TaxonNameBase, Reference)
 	 */
 	//TODO should be private, but still produces Spring init errors
 	public Synonym(){
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new synonym instance with
 	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
-	 * 
+	 *
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
 	 * @see    					Synonym#Synonym(TaxonNameBase, Reference)
@@ -105,14 +109,14 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		super(taxonNameBase, sec);
 		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
-	 
+
 	//********* METHODS **************************************/
 
-	/** 
+	/**
 	 * Creates a new synonym instance with
 	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
-	 * 
+	 *
 	 * @param  taxonNameBase	the taxon name used
 	 * @param  sec				the reference using the taxon name
 	 * @see    					#Synonym(TaxonNameBase, Reference)
@@ -121,12 +125,12 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		Synonym result = new Synonym(taxonName, sec);
 		return result;
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set of all {@link SynonymRelationship synonym relationships}
 	 * in which <i>this</i> synonym is involved. <i>This</i> synonym can only
-	 * be the source within these synonym relationships. 
-	 *  
+	 * be the source within these synonym relationships.
+	 *
 	 * @see    #addSynonymRelation(SynonymRelationship)
 	 * @see    #addRelationship(SynonymRelationship)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
@@ -137,8 +141,8 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		return synonymRelations;
 	}
-	
-	/** 
+
+	/**
 	 * @see    #getSynonymRelations()
 	 */
 	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
@@ -151,7 +155,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 * the source of the synonym relationship does not match with <i>this</i>
 	 * synonym no addition will be carried out.<BR>
 	 * This methods does the same as the {@link #addRelationship() addRelationship} method.
-	 * 
+	 *
 	 * @param synonymRelation	the synonym relationship to be added to <i>this</i> synonym's
 	 * 							synonym relationships set
 	 * @see    	   				#addRelationship(SynonymRelationship)
@@ -161,7 +165,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	/** 
+	/**
 	 * Removes one element from the set of {@link SynonymRelationship synonym relationships} assigned
 	 * to <i>this</i> synonym. Due to bidirectionality the given
 	 * synonym relationship will also be removed from the set of synonym
@@ -184,15 +188,15 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		this.synonymRelations.remove(synonymRelation);
 	}
-	
-	
+
+
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> synonym. If
 	 * the source of the synonym relationship does not match with <i>this</i>
 	 * synonym no addition will be carried out.<BR>
 	 * This methods does the same as the {@link #addSynonymRelation(SynonymRelationship) addSynonymRelation} method.
-	 * 
+	 *
 	 * @param synonymRelation	the synonym relationship to be added to <i>this</i> synonym's
 	 * 							synonym relationships set
 	 * @see    	   				#addSynonymRelation(SynonymRelationship)
@@ -202,20 +206,21 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
 	 */
-	public void addRelationship(SynonymRelationship rel){
+	@Override
+    public void addRelationship(SynonymRelationship rel){
 		addSynonymRelation(rel);
 	}
 
 
-	/** 
+	/**
 	 * Returns the set of all ("accepted/correct") {@link Taxon taxa} involved in the same
 	 * {@link SynonymRelationship synonym relationships} as <i>this</i> synonym.
 	 * Each taxon is the target and <i>this</i> synonym is the source of a {@link SynonymRelationship synonym relationship}
 	 * belonging to the {@link #getSynonymRelations() set of synonym relationships} assigned to
 	 * <i>this</i> synonym. For a particular synonym there are more than one
-	 * ("accepted/correct") taxon only if the {@link SynonymRelationship#isProParte() "is pro parte" flag}
+	 * ("accepted/correct") taxa only if the {@link SynonymRelationship#isProParte() "is pro parte" flag}
 	 * of the corresponding {@link SynonymRelationship synonym relationships} is set.
-	 *  
+	 *
 	 * @see    #getSynonymRelations()
 	 * @see    #getRelationType(Taxon)
 	 * @see    SynonymRelationship#isProParte()
@@ -228,13 +233,13 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		return taxa;
 	}
-	
+
 	/**
 	 * Returns true if <i>this</i> is a synonym of the given taxon.
-	 * 
+	 *
 	 * @param taxon	the taxon to check synonym for
 	 * @return	true if <i>this</i> is a ynonms of the given taxon
-	 * 
+	 *
 	 * @see #getAcceptedTaxa()
 	 */
 	@Transient
@@ -242,20 +247,21 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		return getAcceptedTaxa().contains(taxon);
 	}
 
-	@Transient
+	@Override
+    @Transient
 	public boolean isOrphaned() {
 		return false;
 	}
-	/** 
+	/**
 	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the
 	 * {@link SynonymRelationship synonym relationships} where the {@link SynonymRelationship#getSynonym() synonym}
 	 * is <i>this</i> synonym and the {@link SynonymRelationship#getAcceptedTaxon() taxon}
 	 * is the given one. "Null" is returned if the given taxon is "null" or if
 	 * no synonym relationship exists from <i>this</i> synonym to the
 	 * given taxon.
-	 *  
-	 * @param taxon	the ("accepted/correct") taxon which a synonym relationship 
-	 * 				from <i>this</i> synonym should point to 
+	 *
+	 * @param taxon	the ("accepted/correct") taxon which a synonym relationship
+	 * 				from <i>this</i> synonym should point to
 	 * @see    		#getSynonymRelations()
 	 * @see    		#getAcceptedTaxa()
 	 */
@@ -286,49 +292,49 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 * 			is not changed.
 	 * @param citation
 	 * 			if copyCitationInfo is <code>false</code> this citation is set
-	 * 			to the synonym relationship. 
+	 * 			to the synonym relationship.
 	 * @param microCitation
 	 * 			if copyCitationInfo is <code>false</code> this micro citation is set
-	 * 			to the synonym relationship. 
-	 
+	 * 			to the synonym relationship.
+
 	 * @param acceptedTaxon
 	 */
 	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType, boolean copyCitationInfo, Reference citation, String microCitation) {
 		Set<SynonymRelationship> rels = new HashSet<SynonymRelationship>();
 		rels.addAll(this.getSynonymRelations());  //avoid concurrent modification exception
-		
+
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
 			Synonym syn = rel.getSynonym();
-			
+
 			oldAcceptedTaxon.removeSynonym(rel.getSynonym(), false);
-						
+
 			SynonymRelationship newRel = (SynonymRelationship)rel.clone();
 			newRel.setAcceptedTaxon(newAcceptedTaxon);
 			newAcceptedTaxon.getSynonymRelations().add(newRel);
 			newRel.setSynonym(syn);
 			syn.addSynonymRelation(newRel);
-			
+
 			newRel.setType(relType);
 		}
 	}
 //*********************** CLONE ********************************************************/
-	
+
 	@Override
 	public Object clone() {
 		Synonym result;
 		result = (Synonym)super.clone();
-		
+
 		result.setSynonymRelations(new HashSet<SynonymRelationship>());
-		
+
 			for (SynonymRelationship synRelationship : this.getSynonymRelations()){
 				SynonymRelationship newRelationship = (SynonymRelationship)synRelationship.clone();
 				newRelationship.setRelatedFrom(result);
 				result.synonymRelations.add(newRelationship);
 			}
 			return result;
-		
+
 	}
 
-	
+
 }

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -38,6 +40,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  *
  */
 @Controller
+@Api("classification")
 @RequestMapping(value = {"/classification/{uuid}"})
 public class ClassificationController extends BaseController<Classification,IClassificationService> {
 

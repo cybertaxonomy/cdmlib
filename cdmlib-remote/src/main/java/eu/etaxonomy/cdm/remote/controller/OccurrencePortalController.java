@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -40,6 +42,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * @date 24.03.2009
  */
 @Controller
+@Api("portal_occurrence")
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
 public class OccurrencePortalController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
 {

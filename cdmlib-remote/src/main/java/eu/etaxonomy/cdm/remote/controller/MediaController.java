@@ -27,7 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
@@ -43,10 +46,11 @@ import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
  */
 
 @Controller
+@Api("media")
 @RequestMapping(value = {"/media/{uuid}"})
 public class MediaController extends BaseController<Media, IMediaService>
 {
-	
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
      */
@@ -61,7 +65,7 @@ public class MediaController extends BaseController<Media, IMediaService>
             "representations.parts"
     });
 
-    @RequestMapping(value = {"metadata"})
+    @RequestMapping(value = {"metadata"}, method = RequestMethod.GET)
     public ModelAndView doGetMediaMetaData(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, String> result;

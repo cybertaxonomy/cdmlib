@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -52,6 +54,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  *
  */
 @Controller
+@Api("taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 {

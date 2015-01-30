@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -33,6 +35,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  * @date 24.03.2009
  */
 @Controller
+@Api("name")
 @RequestMapping(value = {"/name"})
 public class NameListController extends IdentifiableListController<TaxonNameBase, INameService> {
 

@@ -1,7 +1,7 @@
 /**
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -61,32 +61,32 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * While {@link #getStatement() statements} are required, {@link #getQuestion() questions} and
  * {@link #getFeature() features} are optional and do typically not exist in classical keys.
  * Both, {@link #getQuestion() questions} and {@link #getFeature() features}, will be "answered" by the
- * {@link #getStatement() statements} of the child nodes, where {@link #getQuestion() questions} 
- * are usually free text used in manually created keys while {@link #getFeature() features} are 
- * typically used in automatically created keys based on structured descriptive data. 
+ * {@link #getStatement() statements} of the child nodes, where {@link #getQuestion() questions}
+ * are usually free text used in manually created keys while {@link #getFeature() features} are
+ * typically used in automatically created keys based on structured descriptive data.
  * Only one of them should be defined in a node. However, if both exist the {@link #getQuestion() question}
  * should always be given <b>priority</b> over the {@link #getFeature() feature}.<br>
- * 
+ *
  * Typically a node either links to its child nodes (subnodes) or represents a link
  * to a {@link Taxon taxon}. The later, if taken as part of the tree,  are usually
- * the leaves of the represented tree like structure (taxonomically they are the 
+ * the leaves of the represented tree like structure (taxonomically they are the
  * end point of the decision process).<br>
- * 
+ *
  * However, there are exceptions to this simple structure:
- * 
+ *
  * <li>Subnodes and taxon link<br>
- * 
+ *
  * In rare cases a node can have both, subnodes and a {@link #getTaxon() link to a taxon}.
- * In this case the taxonomic determination process may be either terminated 
+ * In this case the taxonomic determination process may be either terminated
  * at the given {@link Taxon taxon} or can proceed with the children if a more accurate
  * determination is wanted. This may be the case e.g. in a key that generally
- * covers all taxa of rank species and at the same time allows identification of 
+ * covers all taxa of rank species and at the same time allows identification of
  * subspecies or varieties of these taxa.</li>
- * 
+ *
  * <li>{@link #getOtherNode() Other nodes}: <br>
- * 
+ *
  * A node may not only link to its subnodes or to a taxon but it may
- * also link to {@link #getOtherNode() another node} (with a different parent) of either the same key  
+ * also link to {@link #getOtherNode() another node} (with a different parent) of either the same key
  * or another key.
  * <br>
  * <b>NOTE: </b>
@@ -94,48 +94,48 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * of the same tree the key does not represent a strict tree structure
  * anymore. However, as this is a rare case we will still use this term
  * at some places.</li>
- * 
+ *
  * <li>{@link #getSubkey() Subkey}:<br>
- * 
+ *
  * A node may also link to another key ({@link #getSubkey() subkey}) as a whole, which is
  * equal to an {@link #getOtherNode() otherNode} link to the root node of the other key.
  * In this case the path in the decision graph spans over multiple keys.</li>
  * This structure is typically used when a key covers taxa down to a certain rank, whereas
- * taxa below this rank are covered by extra keys (e.g. a parent key may cover all taxa 
+ * taxa below this rank are covered by extra keys (e.g. a parent key may cover all taxa
  * of rank species while subspecies and varieties are covered by a subkeys for each of these
  * species.
  * Another usecase for subkeys is the existence of an alternative key for a certain part
  * of the decision tree.
- *  
+ *
  * <li>Multiple taxa<br>
- * 
+ *
  * Some nodes in legacy keys do link to multiple taxa, meaning that the key ambigous at
- * this point. To represent such nodes one must use child nodes with empty 
- * {@link #getStatement() statements} for each such taxon (in all other cases - except for 
+ * this point. To represent such nodes one must use child nodes with empty
+ * {@link #getStatement() statements} for each such taxon (in all other cases - except for
  * root nodes - the <code>statement</code> is required).
  * Applications that do visualize the key should handle such a node-subnode structure as one
- * node with multiple taxon links. This complicated data structure has been chosen for 
+ * node with multiple taxon links. This complicated data structure has been chosen for
  * this rare to avoid a more complicated <code>List<Taxon></code> structure for the standard
  * case.</li>
- * 
+ *
  * The {@link PolytomousKey#getRoot() root node of the key} may represent the entry point
- * question or feature but does naturally neither have a statement nor a linked taxon as 
- * there is no prior decision yet. 
- * 
+ * question or feature but does naturally neither have a statement nor a linked taxon as
+ * there is no prior decision yet.
+ *
  * <h4>Notes</h4>
  * <p>
- * A polytomous key node can be referenced from multiple other nodes via the 
+ * A polytomous key node can be referenced from multiple other nodes via the
  * {@link #getOtherNode() otherNode} attribute of the other nodes. Therefore, though
  * we speek about a "decision tree" structure a node does not necessarily have only
  * one parent.
  * However, nodes are mainly represented in a tree structure and therefore do have
- * a defined {@link #getParent() parent} which is the "main" parent. But when implementing 
- * visualizing or editing tools one should keep in mind that this parent may not be 
+ * a defined {@link #getParent() parent} which is the "main" parent. But when implementing
+ * visualizing or editing tools one should keep in mind that this parent may not be
  * the only node linking the child node.
- * 
+ *
  * @author a.mueller
  * @created 13-Oct-2010
- * 
+ *
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -183,7 +183,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
 	@JoinColumn(name = "parent_id" /*
 									 * , insertable=false, updatable=false,
@@ -198,27 +198,28 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Feature feature;
 
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Taxon taxon;
 
 	// Refers to an entire key
@@ -227,7 +228,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private PolytomousKey subkey;
 
 	// Refers to an other node within this key or an other key
@@ -235,6 +236,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.MERGE})
 	private PolytomousKeyNode otherNode;
 
 	private Integer nodeNumber = null;
@@ -248,7 +250,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
-// ************************** FACTORY ********************************/	
+// ************************** FACTORY ********************************/
 
 	/**
 	 * Creates a new empty polytomous key node instance.
@@ -259,7 +261,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Creates a new polytomous key node instance.
-	 * 
+	 *
 	 */
 	public static PolytomousKeyNode NewInstance(String statement) {
 		PolytomousKeyNode result = new PolytomousKeyNode();
@@ -269,7 +271,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Creates a new polytomous key node instance.
-	 * 
+	 *
 	 */
 	public static PolytomousKeyNode NewInstance(String statement,
 			String question, Taxon taxon, Feature feature) {
@@ -280,9 +282,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		result.setFeature(feature);
 		return result;
 	}
-	
-// ************************** CONSTRUCTOR *****************************/	
-		
+
+// ************************** CONSTRUCTOR *****************************/
+
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
@@ -297,7 +299,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	protected void setSortIndex(Integer sortIndex) {
 		this.sortIndex = sortIndex;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -330,7 +332,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Returns the taxon this node links to. This is usually the case when this
 	 * node is a leaf.
-	 * 
+	 *
 	 * @return
 	 * @see #setTaxon(Taxon)
 	 * @see #getSubkey()
@@ -344,7 +346,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Sets the taxon this node links to. <BR>
 	 * If a tax
-	 * 
+	 *
 	 * @param taxon
 	 * @see #getTaxon()
 	 */
@@ -401,7 +403,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Returns the parent node of <code>this</code> child.
-	 * 
+	 *
 	 * @return
 	 */
 	public PolytomousKeyNode getParent() {
@@ -410,7 +412,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * For bidirectional use only !
-	 * 
+	 *
 	 * @param parent
 	 */
 	protected void setParent(PolytomousKeyNode parent) {
@@ -428,7 +430,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Adds the given polytomous key node at the end of the list of children of
 	 * <i>this</i> polytomous key node.
-	 * 
+	 *
 	 * @param child
 	 *            the feature node to be added
 	 * @see #getChildren()
@@ -445,7 +447,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Inserts the given child node in the list of children of <i>this</i>
 	 * polytomous key node at the given (index + 1) position. If the given index
 	 * is out of bounds an exception will be thrown.<BR>
-	 * 
+	 *
 	 * @param child
 	 *            the polytomous key node to be added
 	 * @param index
@@ -461,28 +463,28 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-	
-		if(nodeNumber == null) {			
-			nodeNumber = getMaxNodeNumberFromRoot() + 1;			
+
+		if(nodeNumber == null) {
+			nodeNumber = getMaxNodeNumberFromRoot() + 1;
 		}
-		
+
 		children.add(index, child);
 		child.setKey(this.getKey());
-		
+
 		// TODO workaround (see sortIndex doc)
 		for (int i = 0; i < children.size(); i++) {
-			children.get(i).setSortIndex(i);			
+			children.get(i).setSortIndex(i);
 		}
-		child.setSortIndex(index);		
+		child.setSortIndex(index);
 		child.setParent(this);
 	}
-	
+
 
 
 	/**
 	 * Removes the given polytomous key node from the list of
 	 * {@link #getChildren() children} of <i>this</i> polytomous key node.
-	 * 
+	 *
 	 * @param child
 	 *            the feature node which should be removed
 	 * @see #getChildren()
@@ -501,7 +503,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Removes the feature node placed at the given (index + 1) position from
 	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
 	 * If the given index is out of bounds no child will be removed.
-	 * 
+	 *
 	 * @param index
 	 *            the integer indicating the position of the feature node to be
 	 *            removed
@@ -525,31 +527,31 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 		refreshNodeNumbering();
 	}
-	
-// **************************** METHODS ************************************/	
+
+// **************************** METHODS ************************************/
 
 	/**
 	 * Returns the current maximum value of the node number in the entire key
 	 * starting from the root.
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	private int getMaxNodeNumberFromRoot() {
-		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();	
+		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();
 		int rootNumber = this.getKey().getStartNumber();
-		return getMaxNodeNumber(rootNumber, rootKeyNode);		
+		return getMaxNodeNumber(rootNumber, rootKeyNode);
 	}
-	
+
 	/**
 	 * Returns the current maximum value of the node number in the entire key
 	 * starting from the given key node, comparing with a given max value as input.
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	private int getMaxNodeNumber(int maxNumber, PolytomousKeyNode parent) {
-		if (parent.getNodeNumber() != null) {		
+		if (parent.getNodeNumber() != null) {
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
-			for (PolytomousKeyNode child : parent.getChildren()) {				
+			for (PolytomousKeyNode child : parent.getChildren()) {
 				if (parent == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating the max node number.");
 				}else{
@@ -559,47 +561,47 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 		return maxNumber;
 	}
-	
+
 	/**
 	 * Refresh numbering of key nodes starting from root.
-	 * 	 
+	 *
 	 */
-	public void refreshNodeNumbering() {				
+	public void refreshNodeNumbering() {
 		updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
 	}
-	
+
 	/**
-	 * Recursively (depth-first) refresh numbering of key nodes starting from the given key node, 
+	 * Recursively (depth-first) refresh numbering of key nodes starting from the given key node,
 	 * starting with a given node number.
-	 * 
+	 *
 	 * @return new starting node number value
 	 */
 	private int updateNodeNumbering(PolytomousKeyNode node,int nodeN) {
 		int newNodeN = nodeN;
-		if (node.isLeaf()) {			
+		if (node.isLeaf()) {
 			node.setNodeNumber(null);
-		} else {		
-			node.setNodeNumber(nodeN);			
+		} else {
+			node.setNodeNumber(nodeN);
 			newNodeN++;
-			for (PolytomousKeyNode child : node.getChildren()) {												
+			for (PolytomousKeyNode child : node.getChildren()) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
 				}else{
-					newNodeN = updateNodeNumbering(child, newNodeN);				
+					newNodeN = updateNodeNumbering(child, newNodeN);
 				}
 			}
-		}		
+		}
 		return newNodeN;
 	}
-	
 
-	
+
+
 
 	/**
 	 * Returns the feature node placed at the given (childIndex + 1) position
 	 * within the list of {@link #getChildren() children} of <i>this</i> feature
 	 * node. If the given index is out of bounds no child will be returned.
-	 * 
+	 *
 	 * @param childIndex
 	 *            the integer indicating the position of the feature node
 	 * @see #getChildren()
@@ -612,7 +614,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Returns the number of children nodes of <i>this</i> feature node.
-	 * 
+	 *
 	 * @see #getChildren()
 	 */
 	@Transient
@@ -624,7 +626,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Returns the integer indicating the position of the given feature node
 	 * within the list of {@link #getChildren() children} of <i>this</i> feature
 	 * node. If the list does not contain this node then -1 will be returned.
-	 * 
+	 *
 	 * @param node
 	 *            the feature node the position of which is being searched
 	 * @see #addChild(PolytomousKeyNode, int)
@@ -642,7 +644,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Returns the boolean value indicating if <i>this</i> feature node has
 	 * children (false) or not (true). A node without children is at the
 	 * bottommost level of a tree and is called a leaf.
-	 * 
+	 *
 	 * @see #getChildren()
 	 * @see #getChildCount()
 	 */
@@ -657,10 +659,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Returns the statement for <code>this</code> PolytomousKeyNode. When coming
 	 * from the parent node the user needs to agree with the statement (and disagree
 	 * with all statements of sibling nodes) to follow <code>this</code> node.<BR>
-	 * The statement may stand alone (standard in classical keys) or it may be 
-	 * either the answer to the {@link #getQuestion() question} or the 
+	 * The statement may stand alone (standard in classical keys) or it may be
+	 * either the answer to the {@link #getQuestion() question} or the
 	 * value for the {@link #getFeature() feature} of the parent node.
-	 * 
+	 *
 	 * @return the statement
 	 * @see #getQuestion()
 	 */
@@ -675,7 +677,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * If a statement text in the given language exists already it is
 	 * overwritten and the old text is returned. If language is
 	 * <code>null</code> the default language is used instead.
-	 * 
+	 *
 	 * @param text
 	 *            the statement text
 	 * @param language
@@ -704,7 +706,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Returns the question for <code>this</code> PolytomousKeyNode. <BR>
 	 * A question is answered by statements in leads below this tree node.
 	 * Questions are optional and are usually empty in traditional keys.
-	 * 
+	 *
 	 * @return the question
 	 * @see #getStatement()
 	 */
@@ -719,7 +721,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * If a question text in the given language exists already it is overwritten
 	 * and the old text is returned. If language is <code>null</code> the
 	 * default language is used instead.
-	 * 
+	 *
 	 * @param text
 	 * @param language
 	 * @return
@@ -759,7 +761,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * See {@link #getModifyingText}
-	 * 
+	 *
 	 * @param description
 	 *            the language string describing the validity in a particular
 	 *            language
@@ -777,7 +779,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * See {@link #getModifyingText}
-	 * 
+	 *
 	 * @param description
 	 *            the language string describing the validity in a particular
 	 *            language
@@ -790,7 +792,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * See {@link #getModifyingText}
-	 * 
+	 *
 	 * @param text
 	 *            the string describing the validity in a particular language
 	 * @param language
@@ -809,7 +811,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * See {@link #getModifyingText}
-	 * 
+	 *
 	 * @param text
 	 *            the string describing the validity in a particular language
 	 * @param language
@@ -824,7 +826,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * See {@link #getModifyingText}
-	 * 
+	 *
 	 * @param language
 	 *            the language in which the language string to be removed has
 	 *            been formulated
@@ -843,7 +845,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * PolytomousKeyNode by modifying only some of the attributes. The parent,
 	 * the feature and the key are the are the same as for the original feature
 	 * node the children are removed.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */

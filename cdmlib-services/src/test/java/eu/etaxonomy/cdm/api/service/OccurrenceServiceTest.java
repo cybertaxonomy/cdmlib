@@ -497,7 +497,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         config.setDeleteFromDescription(true);
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(specimenDescription));
     }
 
     @Test
@@ -636,7 +635,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         config.setDeleteFromIndividualsAssociation(true);
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(individualsAssociation));
 
     }
 
@@ -711,7 +709,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         deleteResult = occurrenceService.isDeletable(typeSpecimen, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(typeDesignation));
     }
 
     @Test

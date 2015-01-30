@@ -15,12 +15,15 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 /**
  * @author a.kohlbecker
  * @date Jun 24, 2013
  *
  */
 @Controller
+@Api("portal_featureTree")
 @RequestMapping(value = {"/portal/featureTree"})
 public class FeatureTreeListPortalController extends FeatureTreeListController {
 

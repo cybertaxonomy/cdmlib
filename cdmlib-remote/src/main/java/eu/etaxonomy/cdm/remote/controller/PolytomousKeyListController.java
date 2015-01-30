@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -38,6 +40,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  *
  */
 @Controller
+@Api("polytomousKey")
 @RequestMapping(value = {"/polytomousKey"})
 public class PolytomousKeyListController extends IdentifiableListController<PolytomousKey, IPolytomousKeyService> {
 

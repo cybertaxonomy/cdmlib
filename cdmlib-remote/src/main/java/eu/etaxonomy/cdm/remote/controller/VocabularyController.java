@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.wordnik.swagger.annotations.Api;
+
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -23,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  */
 @Controller
+@Api("termVocabulary")
 @RequestMapping(value = {"/termVocabulary/{uuid}"})
 public class VocabularyController extends BaseController<TermVocabulary, IVocabularyService> {
 
