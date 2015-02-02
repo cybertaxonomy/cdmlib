@@ -111,7 +111,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	 * a preselection for available fields. One can still
 	 * select fields manually.
 	 * <p><p>
-	 * Only one of the parameter should be true, otherwise you
+	 * Only one of the parameter should be true, otherwise
 	 * all fields are set to true and will be exported.
 	 * <p><p>
 	 * In future this function might be removed.

@@ -205,7 +205,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
             List<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
 
-            CsvDemoExportConfigurator config = setTaxExportConfigurator(null ,classificationUUID, null, null, null);
+            CsvDemoExportConfigurator config = setTaxExportConfigurator(null ,classificationUUID, null, null, null, false, false);
             config.setPageSize(pagerParams.getPageSize());
             config.setPageNumber(pagerParams.getPageIndex());
             config.setRecordList(recordList);
@@ -241,8 +241,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
     public synchronized ModelAndView doExportRedlist(
             @RequestParam(value = "features", required = false) final UuidList featureUuids,
             @RequestParam(value = "clearCache", required = false) final boolean clearCache,
-            @RequestParam(value = "demoExport", required = false) boolean demoExport,
-            @RequestParam(value = "conceptExport", required = false) boolean conceptExport,
+            @RequestParam(value = "demoExport", required = false) final boolean demoExport,
+            @RequestParam(value = "conceptExport", required = false) final boolean conceptExport,
             @RequestParam(value = "classification", required = false) final String classificationUUID,
             @RequestParam(value = "area", required = false) final UuidList areas,
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
@@ -288,7 +288,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
                             } catch (IOException e) {
                                 logger.info("Could not create file "+ e);
                             }
-                            performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
+                            performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, demoExport, conceptExport, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
                         }
                     };
                     if (priority == null) {
@@ -365,16 +365,18 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * in system temp directory.
      *
      * @param downloadTokenValueId
+     * @param conceptExport 
+     * @param demoExport 
      * @param response
      * @param byteArrayOutputStream
      * @param config
      * @param defaultExport
      */
     private void performExport(File cacheFile, UuidList featureUuids,String classificationUUID, UuidList areas,
-            String downloadTokenValueId, String origin, HttpServletResponse response, IRestServiceProgressMonitor progressMonitor) {
+            String downloadTokenValueId, boolean demoExport, boolean conceptExport, String origin, HttpServletResponse response, IRestServiceProgressMonitor progressMonitor) {
 
         progressMonitor.subTask("configure export");
-        CsvDemoExportConfigurator config = setTaxExportConfigurator(cacheFile, classificationUUID, featureUuids, areas, progressMonitor);
+        CsvDemoExportConfigurator config = setTaxExportConfigurator(cacheFile, classificationUUID, featureUuids, areas, progressMonitor, demoExport, conceptExport);
         CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
         progressMonitor.subTask("invoke export");
         defaultExport.invoke(config);  //triggers export
@@ -392,9 +394,11 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @param areas
      * @param byteArrayOutputStream pass-through the stream to write out the data later.
      * @param progressMonitor
+     * @param conceptExport 
+     * @param demoExport 
      * @return the CsvTaxExportConfiguratorRedlist config
      */
-    private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor) {
+    private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor, boolean demoExport, boolean conceptExport) {
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Set<UUID> classificationUUIDS = new HashSet
@@ -423,7 +427,11 @@ public class ChecklistDemoController extends AbstractController implements Resou
         config.setHasHeaderLines(true);
         config.setFieldsTerminatedBy("\t");
         config.setClassificationUuids(classificationUUIDS);
-        config.createPreSelectedExport(false, true);
+        if(demoExport == false && conceptExport == false){
+        	config.createPreSelectedExport(false, true);
+        }else{
+        	config.createPreSelectedExport(demoExport, conceptExport);
+        }
         if(features != null) {
             config.setFeatures(features);
         }
