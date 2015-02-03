@@ -18,7 +18,7 @@ import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
@@ -44,7 +44,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
     }
 
     @Override
-    public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
+    public <T extends ICdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType) {
         EntityValidationResult old = getValidationResult(entity.getClass().getName(), entity.getId());
         if (old != null) {

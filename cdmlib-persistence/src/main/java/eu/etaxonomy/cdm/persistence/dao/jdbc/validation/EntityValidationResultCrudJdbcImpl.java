@@ -27,7 +27,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
@@ -88,7 +88,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     }
 
     @Override
-    public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
+    public <T extends ICdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType) {
         deleteValidationResult(entity.getClass().getName(), entity.getId());
         Connection conn = null;
@@ -161,7 +161,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         try {
             connection = datasource.getConnection();
             stmt1 = connection.prepareStatement(sql1);
-            result = getValidationResult(stmt1, validatedEntityClass,validatedEntityId);
+            result = getValidationResult(stmt1, validatedEntityClass, validatedEntityId);
             if (result != null) {
                 stmt2 = connection.prepareStatement(sql2);
                 Set<EntityConstraintViolation> errors = getErrors(stmt2, result.getId());
@@ -176,7 +176,8 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return result;
     }
 
-    private static EntityValidationResult getValidationResult(PreparedStatement stmt, String validatedEntityClass, int validatedEntityId) throws SQLException {
+    private static EntityValidationResult getValidationResult(PreparedStatement stmt, String validatedEntityClass,
+            int validatedEntityId) throws SQLException {
         EntityValidationResult result = null;
         stmt.setString(1, validatedEntityClass);
         stmt.setInt(2, validatedEntityId);
@@ -218,7 +219,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         return errors;
     }
 
-    private static void saveValidationResult(PreparedStatement stmt, CdmBase entity, CRUDEventType crudEventType,
+    private static void saveValidationResult(PreparedStatement stmt, ICdmBase entity, CRUDEventType crudEventType,
             int validationResultId) throws SQLException {
         EntityValidationResult validationResult = EntityValidationResult.newInstance(entity, crudEventType);
         stmt.setInt(vr_id, validationResultId);
@@ -238,8 +239,8 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         stmt.executeUpdate();
     }
 
-    private static <T extends CdmBase> void saveErrors(PreparedStatement stmt, Set<ConstraintViolation<T>> errors, T entity,
-            int validationResultId) throws SQLException {
+    private static <T extends ICdmBase> void saveErrors(PreparedStatement stmt, Set<ConstraintViolation<T>> errors,
+            T entity, int validationResultId) throws SQLException {
         for (ConstraintViolation<T> error : errors) {
             EntityConstraintViolation ecv = EntityConstraintViolation.newInstance(entity, error);
             int maxId = JdbcDaoUtils.fetchInt(stmt.getConnection(), "SELECT MAX(id) FROM entityconstraintviolation");

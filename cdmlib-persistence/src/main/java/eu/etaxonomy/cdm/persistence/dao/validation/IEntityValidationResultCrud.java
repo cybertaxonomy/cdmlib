@@ -13,7 +13,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 
@@ -39,7 +39,7 @@ public interface IEntityValidationResultCrud {
      * @param crudEventType
      *            The CRUD operation triggering the validation
      */
-    <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
+    <T extends ICdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType);
 
     /**
