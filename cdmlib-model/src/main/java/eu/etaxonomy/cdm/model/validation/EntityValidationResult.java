@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
@@ -72,7 +73,7 @@ public class EntityValidationResult extends CdmBase {
 
     @SuppressWarnings("cast")
     // See comment below
-    public static EntityValidationResult newInstance(CdmBase entity, CRUDEventType crudEventType) {
+    public static EntityValidationResult newInstance(ICdmBase entity, CRUDEventType crudEventType) {
         EntityValidationResult result = newInstance();
         result.setCrudEventType(crudEventType);
         result.setValidatedEntityClass(entity.getClass().getName());
@@ -88,7 +89,7 @@ public class EntityValidationResult extends CdmBase {
          * the class declaration of CdmBase.
          */
         if (entity instanceof ISelfDescriptive) {
-            ISelfDescriptive isd = entity;
+            ISelfDescriptive isd = (ISelfDescriptive) entity;
             result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
             result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
         } else {
