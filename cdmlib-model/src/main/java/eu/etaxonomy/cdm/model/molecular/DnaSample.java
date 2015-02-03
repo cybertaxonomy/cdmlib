@@ -86,14 +86,14 @@ public class DnaSample extends DerivedUnit implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<Sequence> sequences = new HashSet<Sequence>();
 
 
 	@XmlElementWrapper(name = "AmplificationResults")
 	@XmlElement(name = "AmplificationResult")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade( { CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 	private final Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();
 
@@ -153,7 +153,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		amplificationResult.setDnaSample(null);
 	}
 
-	
+
 	public DnaQuality getDnaQuality() {
 		return dnaQuality;
 	}

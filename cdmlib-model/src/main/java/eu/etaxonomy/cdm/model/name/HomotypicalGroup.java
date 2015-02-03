@@ -227,7 +227,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //	 * @see	#getTypifiedNames()
 //	 */
 //	@OneToMany
-//	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
 //		return specimenTypeDesignations;
 //	}
@@ -293,7 +293,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 //	 * @see	#getTypifiedNames()
 //	 */
 //	@OneToMany
-//	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	public Set<NameTypeDesignation> getNameTypeDesignations() {
 //		return nameTypeDesignations;
 //	}

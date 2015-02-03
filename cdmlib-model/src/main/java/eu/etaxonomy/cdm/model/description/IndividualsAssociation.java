@@ -80,7 +80,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private SpecimenOrObservationBase associatedSpecimenOrObservation;
 
 	/** 

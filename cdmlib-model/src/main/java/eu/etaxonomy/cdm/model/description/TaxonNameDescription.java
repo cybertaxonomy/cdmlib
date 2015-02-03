@@ -58,7 +58,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonNameBase<?,?> taxonName;
 
 //******************* FACTORY ********************************************/

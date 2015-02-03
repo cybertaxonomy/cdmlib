@@ -67,14 +67,14 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private NonViralName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private NonViralName relatedTo;
 	
     @XmlElement(name = "Type")

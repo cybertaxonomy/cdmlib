@@ -72,7 +72,7 @@ public class MediaSpecimen extends DerivedUnit implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Media mediaSpecimen;
 
 // ******************* CONSTRUCTOR *************************/

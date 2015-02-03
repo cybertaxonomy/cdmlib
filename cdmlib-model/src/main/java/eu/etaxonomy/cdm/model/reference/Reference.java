@@ -251,7 +251,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	protected Institution institution;
 
 	@XmlElement(name = "School")
@@ -259,7 +259,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	protected Institution school;
 
     @XmlElement(name = "InReference")
@@ -267,7 +267,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
    // @InReference(groups=Level2.class)
    	protected Reference<?> inReference;
 
@@ -276,7 +276,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @XmlSchemaType(name = "IDREF")
 //    @ManyToOne(fetch = FetchType.LAZY)
 ////    @IndexedEmbedded
-//    @Cascade(CascadeType.SAVE_UPDATE)
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //    protected Reference fullReference;
 //
 //    @XmlElement(name = "AbbreviatedReference")
@@ -284,7 +284,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @XmlSchemaType(name = "IDREF")
 //    @ManyToOne(fetch = FetchType.LAZY)
 ////    @IndexedEmbedded
-//    @Cascade(CascadeType.SAVE_UPDATE)
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //    protected Reference abbreviatedReference;
 
 
@@ -323,7 +323,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
 
 
@@ -332,7 +332,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //	@XmlSchemaType(name = "IDREF")
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	//@IndexedEmbedded
-//	@Cascade(CascadeType.SAVE_UPDATE)
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	@Transient
 //	private ReferenceIdentity referenceIdentity;
 

@@ -107,7 +107,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded
     private Amplification amplification;
 
@@ -116,14 +116,14 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="amplificationResult" , fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
 
     @XmlElement(name = "Cloning")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Cloning cloning;
 
 	/** @see #getSuccessful() */
@@ -146,7 +146,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Media gelPhoto;
 
 

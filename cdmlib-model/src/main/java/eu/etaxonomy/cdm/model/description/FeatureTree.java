@@ -156,7 +156,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	
 
 //	@OneToMany
-//	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	public Set<FeatureNode> getNodes() {
 //		return nodes;
 //	}

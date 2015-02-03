@@ -75,14 +75,14 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 
 //    @XmlElement(name = "HomotypicalGroup")
 //    @XmlIDREF
 //    @XmlSchemaType(name = "IDREF")
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade(CascadeType.SAVE_UPDATE)
+//    @Cascade(CascadeType.SAVE_UPDATE,CascadeType.MERGE)
 //    private HomotypicalGroup homotypicalGroup;
 
     @XmlElement(name = "TypeStatus")

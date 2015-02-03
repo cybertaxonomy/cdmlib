@@ -44,28 +44,28 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
  * a given {@link #getDnaSample() DNA Sample} . The part of the DNA being replicated is defined by the
  * {@link Amplification#getDnaMarker() marker} (also called locus) - implemented in CDM as a {@link DefinedTerm}
  * of term type {@link TermType#DnaMarker}.
- * 
+ *
  * <BR>
  * To execute the replication {@link Primer primers} (short DNA fractions) are
  * used. They may work in both directions of the DNA part therefore we do have a
  * {@link #getForwardPrimer() forward primer} and a {@link #getReversePrimer() reverse primer}.
  * Most (or all?) amplifications require a {@link #getPurification() purification process}. Additionally
  * some use {@link #getCloning()} for replication.
- * 
+ *
  * <H3>Quality control</H3>
  * <BR>
  * For quality control the resulting product (PCR) is tested using a chromatographic method called
  * electrophoresis. The parameters (voltage, ladder used, running time, and gel concentration) used
  * for this electrophoresis as well as the resulting
- * {@link #getGelPhoto() photo} are also relevant for an amplification. 
- * 
+ * {@link #getGelPhoto() photo} are also relevant for an amplification.
+ *
  * We have 2 classes to store the core data for an amplification: {@link Amplification} and {@link AmplificationResult}.
  * <BR>
  * In {@link Amplification} we store all data that is equal for an amplification event which includes amplification
  * of many {@link DnaSample dna samples}. Those data which are relevant only for a specific dna sample are
  * stored in {@link AmplificationResult}. Theoretically this includes data on the resulting PCR. However, as the
  * PCR itself is not persistent we do not store further information on it in the CDM and do not handle
- * {@link AmplificationResult} as a {@link DerivedUnit}. 
+ * {@link AmplificationResult} as a {@link DerivedUnit}.
  * <BR>
  * This may change in future: http://dev.e-taxonomy.eu/trac/ticket/3717.
  * <BR>
@@ -109,7 +109,7 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Primer forwardPrimer;
 
     /** @see #getReversePrimer()*/
@@ -117,7 +117,7 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Primer reversePrimer;
 
 
@@ -125,15 +125,15 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private MaterialOrMethodEvent purification;
-  
+
 	@XmlElement(name = "Institution")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="institution_id")
 	private Institution institution;
 
@@ -160,7 +160,7 @@ public class Amplification extends EventBase implements Cloneable{
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double gelConcentration;
-	
+
 	//automatically created
 	private String labelCache;
 
@@ -236,7 +236,7 @@ public class Amplification extends EventBase implements Cloneable{
 	public void setPurification(MaterialOrMethodEvent purification) {
 		this.purification = purification;
 	}
-	
+
     /**
      * The institution in which the amplification event took place.
      * Usually the {@link Amplification#getActor()} should be a person
@@ -322,9 +322,9 @@ public class Amplification extends EventBase implements Cloneable{
 	public void setLadderUsed(String ladderUsed) {
 		this.ladderUsed = ladderUsed;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Returns the labelCache
 	 * @return
@@ -336,7 +336,7 @@ public class Amplification extends EventBase implements Cloneable{
 
 	/**
 	 * This method pushes the {@link Amplification#labelCache label cache} update.
-	 * The cache is otherwise updated during persist in CacheStrategyUpdater. 
+	 * The cache is otherwise updated during persist in CacheStrategyUpdater.
 	 */
 	public void updateCache(){
         //retrieve data
@@ -347,10 +347,10 @@ public class Amplification extends EventBase implements Cloneable{
 
          //assemble string
          String designation = CdmUtils.concat("_", new String[]{institutionName, staffName, dnaMarkerString, dateString});
-         
+
          this.labelCache = StringUtils.isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
 	}
-	
+
 
 
 	// ********************** CLONE ***********************************/
@@ -368,7 +368,7 @@ public class Amplification extends EventBase implements Cloneable{
 		try{
 			Amplification result = (Amplification)super.clone();
 
-			//don't change marker, forwardPrimer, reversePrimer, 
+			//don't change marker, forwardPrimer, reversePrimer,
 			//purifiaction, ladderUsed, electrophoresisVoltage,
 			//gelRunningTime, gelConcentration
 			return result;

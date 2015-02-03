@@ -67,7 +67,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "representation_id", nullable = false, updatable = false, insertable = false)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private MediaRepresentation mediaRepresentation;
 
 	/**

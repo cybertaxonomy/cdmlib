@@ -137,7 +137,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonNameBase<?,?> nameUsedInSource;
 	
 //*********************** CONSTRUCTOR ******************************/	

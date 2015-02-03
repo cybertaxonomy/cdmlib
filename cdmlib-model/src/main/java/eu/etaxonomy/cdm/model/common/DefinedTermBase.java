@@ -107,7 +107,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private T kindOf;
     /**
      * FIXME - Hibernate returns this as a collection of CGLibProxy$$DefinedTermBase objects
@@ -120,7 +120,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<T> generalizationOf = new HashSet<T>();
 
 //	@XmlElement(name = "PartOf")
@@ -128,7 +128,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 //  @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected T partOf;
 
     /**
@@ -142,7 +142,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<T> includes = new HashSet<T>();
 
     @XmlElementWrapper(name = "Media")
@@ -150,14 +150,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<Media> media = new HashSet<Media>();
 
     @XmlElement(name = "TermVocabulary")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected TermVocabulary<T> vocabulary;
 
   //the unique iedentifier/name this term uses in its given vocabulary #3479
@@ -166,7 +166,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
-    
+
 
 
 //***************************** CONSTRUCTOR *******************************************/
@@ -253,8 +253,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
       public void setPartOf(T partOf){
           this.partOf = partOf;
       }
-      
-      
+
+
     //TODO Comparable implemented only for fixing failing JAXB imports, may be removed when this is fixed
   	@Override
   	@Deprecated //for inner use only
@@ -477,10 +477,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
     // Currently the CDM Caching mechanism is only used for caching terms
     private static ICdmCacher cacher;
-    
+
     /**
      * Gets the CDM cacher object
-     *      
+     *
      * @return the CDM cacher object
      */
     public static ICdmCacher getCacher() {
@@ -489,7 +489,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 	/**
 	 * Sets the CDM cacher object
-	 * 
+	 *
 	 * @param cacher the CDM cacher object
 	 */
 	public static void setCacher(ICdmCacher cacher) {

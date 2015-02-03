@@ -49,7 +49,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
     private Set<Media> media = new HashSet<Media>();

@@ -72,14 +72,14 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution institute;
 	
     @XmlElement(name = "Person", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Person person;
 	
 	public static InstitutionalMembership NewInstance() {

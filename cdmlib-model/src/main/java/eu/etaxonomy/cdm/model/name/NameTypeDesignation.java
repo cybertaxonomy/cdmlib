@@ -71,7 +71,7 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonNameBase typeName;
 
 	

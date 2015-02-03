@@ -181,7 +181,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorTeam;
@@ -191,7 +191,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorTeam;
@@ -201,7 +201,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorTeam;
@@ -211,7 +211,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorTeam;

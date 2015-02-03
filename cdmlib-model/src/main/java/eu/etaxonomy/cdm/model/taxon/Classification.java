@@ -86,7 +86,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
     @XmlElement(name = "Name")
     @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @JoinColumn(name = "name_id", referencedColumnName = "id")
     @IndexedEmbedded
     private LanguageString name;
@@ -103,7 +103,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference<?> reference;
 
     @XmlElement(name = "microReference")
@@ -118,7 +118,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="Classification_GeoScope")
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
  
 	@XmlElement(name = "Description")

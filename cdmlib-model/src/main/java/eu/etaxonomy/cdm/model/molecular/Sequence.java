@@ -109,7 +109,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Media contigFile;
 
 	/** @see #getConsensusSequence() */
@@ -138,7 +138,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
 
 	/** @see #getDnaMarker() */
@@ -161,7 +161,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<Reference> citations = new HashSet<Reference>();
 
 //	//should be calculated in case sequence is set

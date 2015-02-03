@@ -66,7 +66,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="typeSpecimen_id")
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private DerivedUnit typeSpecimen;
 	
 //	/**

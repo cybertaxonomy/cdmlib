@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -43,11 +43,11 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
- * 
+ *
  * The working set class allows the demarcation of a set of descriptions
  * associated with representations and a set of features and their
  * dependencies.
- * 
+ *
  * @author h.fradin
  * @created 12.08.2009
  * @version 1.0
@@ -66,20 +66,20 @@ import eu.etaxonomy.cdm.model.common.Representation;
 public class WorkingSet extends AnnotatableEntity {
 	private static final long serialVersionUID = 3256448866757415686L;
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
-	
+
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private Set<Representation> representations = new HashSet<Representation>();
-	
+
 	@XmlElement(name = "DescriptiveSystem")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private FeatureTree descriptiveSystem;
-	
+
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
     @XmlIDREF
@@ -90,24 +90,24 @@ public class WorkingSet extends AnnotatableEntity {
         joinColumns=@JoinColumn(name="WorkingSet_id"),
         inverseJoinColumns=@JoinColumn(name="descriptions_id")
     )
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new empty working set instance.
 	 */
 	protected WorkingSet() {
 		super();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new empty working set instance.
 	 */
 	public static WorkingSet NewInstance(){
 		return new WorkingSet();
 	}
-	
+
 	public Set<Representation> getRepresentations() {
 		return this.representations;
 	}
@@ -129,14 +129,14 @@ public class WorkingSet extends AnnotatableEntity {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see #getPreferredRepresentation(Language)
 	 * @param language
 	 * @return
 	 */
 	public Representation getPreferredRepresentation(Language language) {
-		Representation repr = getRepresentation(language); 
+		Representation repr = getRepresentation(language);
 		if(repr == null){
 			repr = getRepresentation(Language.DEFAULT());
 		}
@@ -145,7 +145,7 @@ public class WorkingSet extends AnnotatableEntity {
 		}
 		return repr;
 	}
-	
+
 	/**
 	 * Returns the Representation in the preferred language. Preferred languages
 	 * are specified by the parameter languages, which receives a list of
@@ -153,10 +153,10 @@ public class WorkingSet extends AnnotatableEntity {
 	 * any preferred languages is found the method falls back to return the
 	 * Representation in Language.DEFAULT() and if necessary further falls back
 	 * to return the first element found if any.
-	 * 
-	 * TODO think about this fall-back strategy & 
+	 *
+	 * TODO think about this fall-back strategy &
 	 * see also {@link TextData#getPreferredLanguageString(List)}
-	 * 
+	 *
 	 * @param languages
 	 * @return
 	 */
@@ -164,7 +164,7 @@ public class WorkingSet extends AnnotatableEntity {
 		Representation repr = null;
 		if(languages != null){
 			for(Language language : languages) {
-				repr = getRepresentation(language); 
+				repr = getRepresentation(language);
 				if(repr != null){
 					return repr;
 				}
@@ -181,7 +181,7 @@ public class WorkingSet extends AnnotatableEntity {
 		}
 		return repr;
 	}
-	
+
 	@Transient
 	public String getLabel() {
 		if(getLabel(Language.DEFAULT())!=null){
@@ -190,16 +190,16 @@ public class WorkingSet extends AnnotatableEntity {
 		}else{
 			for (Representation r : representations){
 				return r.getLabel();
-			}			
+			}
 		}
 		return super.getUuid().toString();
 	}
-	
+
 	public String getLabel(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null : repr.getLabel();
-	}	
-	
+	}
+
 	public void setLabel(String label){
 		Language lang = Language.DEFAULT();
 		setLabel(label, lang);
@@ -216,30 +216,30 @@ public class WorkingSet extends AnnotatableEntity {
 			this.addRepresentation(repr);
 		}
 	}
-	
+
 	public FeatureTree getDescriptiveSystem() {
 		return descriptiveSystem;
 	}
 	public void setDescriptiveSystem(FeatureTree descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
-	
+
 	/**
 	 * Returns the {@link DescriptionBase descriptions} of
 	 * <i>this</i> working set.
-	 * 
+	 *
 	 * @see    #addDescription(DescriptionBase)
 	 * @see    #removeDescription(DescriptionBase)
 	 */
 	public Set<DescriptionBase> getDescriptions() {
 		return descriptions;
 	}
-	
+
 	/**
 	 * Adds an existing {@link DescriptionBase description} to the set of
 	 * {@link #getDescriptions() descriptions} of <i>this</i>
 	 * working set.
-	 * 
+	 *
 	 * @param description	the description to be added to <i>this</i> working set
 	 * @see    	   			#getDescriptions()
 	 * @see    	   			WorkingSet#addDescription(DescriptionBase)
@@ -251,8 +251,8 @@ public class WorkingSet extends AnnotatableEntity {
 		}
 		return result;
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of {@link #getDescriptions() descriptions} involved
 	 * in <i>this</i> working set.<BR>
 	 *
@@ -268,16 +268,16 @@ public class WorkingSet extends AnnotatableEntity {
 		}
 		return result;
 	}
-	
+
 	//*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> WorkingSet. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> WorkingSet by
 	 * modifying only some of the attributes.
-	 * The descriptions and the descriptive system are the same, the representations 
+	 * The descriptions and the descriptive system are the same, the representations
 	 * are cloned.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -287,16 +287,16 @@ public class WorkingSet extends AnnotatableEntity {
 		try {
 			result = (WorkingSet)super.clone();
 			result.descriptions = new HashSet<DescriptionBase>();
-			
+
 			for (DescriptionBase desc: this.descriptions){
 				result.addDescription(desc);
 			}
-			
+
 			result.representations = new HashSet<Representation>();
 			for (Representation rep : this.representations){
 				result.addRepresentation((Representation)rep.clone());
 			}
-			
+
 			return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
@@ -304,5 +304,5 @@ public class WorkingSet extends AnnotatableEntity {
 			return null;
 		}
 	}
-	
+
 }

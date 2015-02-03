@@ -117,7 +117,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     private TaxonNameBase<?,?> name;
 
@@ -126,7 +126,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     @IndexedEmbedded
     private Reference<?> sec;

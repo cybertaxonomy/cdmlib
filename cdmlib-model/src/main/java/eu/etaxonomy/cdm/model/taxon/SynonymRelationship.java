@@ -81,7 +81,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     @Valid
     private Synonym relatedFrom;
@@ -90,7 +90,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     @Valid
     private Taxon relatedTo;

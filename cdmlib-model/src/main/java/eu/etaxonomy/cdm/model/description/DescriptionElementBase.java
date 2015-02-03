@@ -102,7 +102,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    //@Cascade(CascadeType.SAVE_UPDATE)
+    //@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @Cascade(CascadeType.MERGE)
     @IndexedEmbedded // no depth for terms
     private Feature feature;
@@ -138,7 +138,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded
     private DescriptionBase inDescription;
     

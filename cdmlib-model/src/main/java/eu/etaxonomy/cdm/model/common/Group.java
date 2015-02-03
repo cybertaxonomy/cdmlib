@@ -84,7 +84,7 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
 // ********************* CONSTRUCTOR ************************/    

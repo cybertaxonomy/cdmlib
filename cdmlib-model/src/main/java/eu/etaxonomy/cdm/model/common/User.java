@@ -120,7 +120,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
 
@@ -129,7 +129,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.REFRESH, CascadeType.SAVE_UPDATE}) // see #2414 (Group updating doesn't work)
+    @Cascade({CascadeType.REFRESH, CascadeType.SAVE_UPDATE,CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
     @IndexedEmbedded(depth = 1)
     @NotAudited
     protected Set<Group> groups = new HashSet<Group>();
@@ -150,7 +150,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded(depth = 1)
     protected Person person;
 

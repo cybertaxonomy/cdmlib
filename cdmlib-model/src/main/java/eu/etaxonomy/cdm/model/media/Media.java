@@ -134,7 +134,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private AgentBase<?> artist;
 
 

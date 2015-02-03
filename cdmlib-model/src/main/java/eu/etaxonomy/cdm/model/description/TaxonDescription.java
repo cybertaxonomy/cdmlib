@@ -86,14 +86,14 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionBase_GeoScope")
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 
     @XmlElement( name = "Taxon")
     @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded
     private Taxon taxon;
 

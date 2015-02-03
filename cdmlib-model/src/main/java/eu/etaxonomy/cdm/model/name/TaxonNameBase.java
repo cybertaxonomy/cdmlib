@@ -177,7 +177,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         joinColumns=@javax.persistence.JoinColumn(name="TaxonNameBase_id"),
         inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
     )
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
@@ -243,7 +243,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     private Reference nomenclaturalReference;

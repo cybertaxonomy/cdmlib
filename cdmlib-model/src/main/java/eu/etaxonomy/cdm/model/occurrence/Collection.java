@@ -100,7 +100,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded
 	private Institution institute;
 
@@ -108,7 +108,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Collection superCollection;
 
 // ************** FACTORY METHODS *************************/

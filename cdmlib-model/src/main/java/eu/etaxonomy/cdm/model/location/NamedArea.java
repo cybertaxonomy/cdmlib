@@ -166,7 +166,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     //Binary shape definition for user's defined area as polygon
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Media shape;
 
     private Point pointApproximation;

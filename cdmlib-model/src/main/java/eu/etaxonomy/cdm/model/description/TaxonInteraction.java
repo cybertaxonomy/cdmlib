@@ -82,7 +82,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Taxon taxon2;
 	
 	/** 

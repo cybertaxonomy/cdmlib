@@ -84,7 +84,7 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlSchemaType(name = "IDREF")
     @IndexColumn(name="sortIndex", base = 0)
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
 

@@ -62,7 +62,7 @@ public class ReferenceIdentity extends VersionableEntity {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	//@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference preferredLongForm;
 
 
@@ -71,7 +71,7 @@ public class ReferenceIdentity extends VersionableEntity {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	//@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference preferredAbbreviation;
 	
 	

@@ -66,7 +66,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
     @Embedded
     @Merge(MergeMode.MERGE)
     @Match(MatchMode.IGNORE)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
 	private Contact contact;
 	
 	/** 
