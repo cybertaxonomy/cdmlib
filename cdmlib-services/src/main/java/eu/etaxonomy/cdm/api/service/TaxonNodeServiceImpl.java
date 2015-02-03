@@ -219,13 +219,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             newAcceptedTaxon.addDescription(description);
         }
         oldTaxon.clearDescriptions();
-        
+
         taxonService.update(newAcceptedTaxon);
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
 //        conf.setDeleteNameIfPossible(false);
-        
+
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
@@ -362,6 +362,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
+        //node = dao.merge(node);
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
