@@ -77,7 +77,7 @@ class BatchValidationUtil {
         services.add(new EntityValidationUnit(FeatureNode.class, appConfig.getFeatureNodeService()));
         services.add(new EntityValidationUnit(FeatureTree.class, appConfig.getFeatureTreeService()));
         services.add(new EntityValidationUnit(Group.class, appConfig.getGroupService()));
-        // Causes some AOP-related error:
+        // Causes some AOP-related error when calling list() method on it
         //services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getLocationService()));
         services.add(new EntityValidationUnit(Media.class, appConfig.getMediaService()));
         services.add(new EntityValidationUnit(TaxonNameBase.class, appConfig.getNameService()));

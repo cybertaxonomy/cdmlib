@@ -57,20 +57,22 @@ public class BatchValidator implements Runnable {
 
         // Create some entities violating some constraint
         IReferenceService refService = batchValidator.appController.getReferenceService();
+        @SuppressWarnings("rawtypes")
         List<Reference> refs = refService.list(Reference.class, 0, 0, null, null);
-        for (Reference ref : refs) {
+        for (@SuppressWarnings("rawtypes")
+        Reference ref : refs) {
             refService.delete(ref);
         }
-
-        Reference<?> ref0 = ReferenceFactory.newBook();
-        ref0.setIsbn("----------");
-        ref0.setIssn("++++++++++");
-        refService.save(ref0);
-
-        Reference<?> ref1 = ReferenceFactory.newJournal();
-        ref1.setIsbn("----------");
-        ref1.setIssn("++++++++++");
-        refService.save(ref1);
+        for (int i = 0; i < 1000; ++i) {
+            Reference<?> ref0 = ReferenceFactory.newBook();
+            ref0.setIsbn("bla bla");
+            ref0.setIssn("foo foo");
+            refService.save(ref0);
+            Reference<?> ref1 = ReferenceFactory.newJournal();
+            ref1.setIsbn("bar bar");
+            ref1.setIssn("+++++++");
+            refService.save(ref1);
+        }
 
         batchValidator.run();
     }
@@ -128,14 +130,9 @@ public class BatchValidator implements Runnable {
             }
             for (S entity : entities) {
                 if (BatchValidationUtil.isConstrainedEntityClass(validator, entity.getClass())) {
-                    logger.info("Validating " + entity.toString());
                     Set<ConstraintViolation<S>> errors = validator.validate(entity, Level2.class, Default.class);
-                    logger.info("Num errors: " + errors.size());
                     if (errors.size() != 0) {
-                        String fmt = "Found %s errors in %s with id %s";
-                        String msg = String.format(fmt, errors.size(), entity.getClass().getSimpleName(),
-                                entity.getId());
-                        logger.info(msg);
+                        logger.debug(errors.size() + " error(s) detected in entity " + entity.toString());
                         entityValidationResultService.saveValidationResult(errors, entity, CRUDEventType.NONE);
                     }
                 }
