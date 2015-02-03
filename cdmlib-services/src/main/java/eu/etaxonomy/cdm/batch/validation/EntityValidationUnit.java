@@ -17,39 +17,28 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * @date 29 jan. 2015
  *
  */
-public class EntityValidationUnit {
+class EntityValidationUnit<T extends ICdmBase, S extends T> {
 
-    private Class<? extends ICdmBase> entityClass;
-    private IService<? extends ICdmBase> entityLoader;
+    private final Class<S> entityClass;
+    private final IService<T> entityLoader;
+
+    EntityValidationUnit(Class<S> entityClass, IService<T> entityLoader) {
+        this.entityClass = entityClass;
+        this.entityLoader = entityLoader;
+    }
 
     /**
      * @return the entityClass
      */
-    public Class<? extends ICdmBase> getEntityClass() {
+    Class<S> getEntityClass() {
         return entityClass;
-    }
-
-    /**
-     * @param entityClass
-     *            the entityClass to set
-     */
-    public void setEntityClass(Class<? extends ICdmBase> entityClass) {
-        this.entityClass = entityClass;
     }
 
     /**
      * @return the entityLoader
      */
-    public IService<? extends ICdmBase> getEntityLoader() {
+    IService<T> getEntityLoader() {
         return entityLoader;
-    }
-
-    /**
-     * @param entityLoader
-     *            the entityLoader to set
-     */
-    public void setEntityLoader(IService<? extends ICdmBase> entityLoader) {
-        this.entityLoader = entityLoader;
     }
 
 }

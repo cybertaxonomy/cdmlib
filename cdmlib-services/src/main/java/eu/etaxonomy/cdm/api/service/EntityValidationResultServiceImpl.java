@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.model.validation.Severity;
@@ -81,7 +81,7 @@ public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidat
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
+    public <T extends ICdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
             CRUDEventType crudEventType) {
         dao.saveValidationResult(errors, entity, crudEventType);
 

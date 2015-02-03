@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
@@ -51,7 +51,7 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 //    * the error tables is done by the CVI (more particularly by an
 //    * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
 //    * not have access to this method.
-    <T extends CdmBase> void  saveValidationResult(Set<ConstraintViolation<T>> errors, T entity, CRUDEventType crudEventType);
+    <T extends ICdmBase> void  saveValidationResult(Set<ConstraintViolation<T>> errors, T entity, CRUDEventType crudEventType);
 
 
     /**

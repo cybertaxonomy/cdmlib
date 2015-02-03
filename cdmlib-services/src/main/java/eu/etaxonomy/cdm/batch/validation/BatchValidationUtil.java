@@ -9,20 +9,42 @@
  */
 package eu.etaxonomy.cdm.batch.validation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.Primer;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author ayco_holleman
@@ -31,24 +53,57 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  */
 class BatchValidationUtil {
 
+    public static void main(String[] args) {
+        System.out.println(ITaxonService.class.getGenericInterfaces()[0]);
+    }
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(BatchValidationUtil.class);
 
-    public static List<IService<?>> getAvailableServices(ICdmApplicationConfiguration appConfig)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<IService<?>> services = new ArrayList<IService<?>>();
-        Method[] methods = appConfig.getClass().getMethods();
-        for (Method method : methods) {
-            if (isGetterForService(method)) {
-                IService<?> service = (IService<?>) method.invoke(appConfig);
-                services.add(service);
-            }
-        }
+    // Ideally retrieved dynamically through reflection, but got stuck on
+    // getXXXService methods in ICdmApplicationConfiguration returning proxies
+    // (com.sun.proxy.$Proxy), which is a dead end when attempting to infer
+    // parameter arguments (e.g. the AgentBase in IAgentService<AgentBase>).
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <T extends ICdmBase, S extends T> List<EntityValidationUnit<T, S>> getAvailableServices(
+            ICdmApplicationConfiguration appConfig) {
+        List<EntityValidationUnit<T, S>> services = new ArrayList<EntityValidationUnit<T, S>>();
+        services.add(new EntityValidationUnit(AgentBase.class, appConfig.getAgentService()));
+        services.add(new EntityValidationUnit(Amplification.class, appConfig.getAmplificationService()));
+        services.add(new EntityValidationUnit(Classification.class, appConfig.getClassificationService()));
+        services.add(new EntityValidationUnit(Collection.class, appConfig.getCollectionService()));
+        services.add(new EntityValidationUnit(OriginalSourceBase.class, appConfig.getCommonService()));
+        services.add(new EntityValidationUnit(DescriptionBase.class, appConfig.getDescriptionService()));
+        services.add(new EntityValidationUnit(FeatureNode.class, appConfig.getFeatureNodeService()));
+        services.add(new EntityValidationUnit(FeatureTree.class, appConfig.getFeatureTreeService()));
+        services.add(new EntityValidationUnit(Group.class, appConfig.getGroupService()));
+        // Causes some AOP-related error:
+        //services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getLocationService()));
+        services.add(new EntityValidationUnit(Media.class, appConfig.getMediaService()));
+        services.add(new EntityValidationUnit(TaxonNameBase.class, appConfig.getNameService()));
+        services.add(new EntityValidationUnit(SpecimenOrObservationBase.class, appConfig.getOccurrenceService()));
+        services.add(new EntityValidationUnit(PolytomousKeyNode.class, appConfig.getPolytomousKeyNodeService()));
+        services.add(new EntityValidationUnit(PolytomousKey.class, appConfig.getPolytomousKeyService()));
+        services.add(new EntityValidationUnit(Primer.class, appConfig.getPrimerService()));
+        services.add(new EntityValidationUnit(Reference.class, appConfig.getReferenceService()));
+        services.add(new EntityValidationUnit(Sequence.class, appConfig.getSequenceService()));
+        services.add(new EntityValidationUnit(TaxonNode.class, appConfig.getTaxonNodeService()));
+        services.add(new EntityValidationUnit(TaxonBase.class, appConfig.getTaxonService()));
+        services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getTermService()));
+        services.add(new EntityValidationUnit(User.class, appConfig.getUserService()));
+        services.add(new EntityValidationUnit(TermVocabulary.class, appConfig.getVocabularyService()));
+        services.add(new EntityValidationUnit(WorkingSet.class, appConfig.getWorkingSetService()));
         return services;
     }
 
-    public static Class<?> getServicedEntity(Class<? extends IService<?>> serviceClass) {
-        Type type = ((ParameterizedType) serviceClass.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    // Created to infer (1st) parameter type of parametrized type,
+    // but won't work because the service argument appears to be a
+    // proxy object (com.sun.proxy.$Proxy).
+    public static Class<?> getServicedEntity(IService<?> service) {
+        Class<?> serviceClass = service.getClass();
+        System.out.println(serviceClass.getName());
+        ParameterizedType pt = (ParameterizedType) serviceClass.getGenericInterfaces()[0];
+        Type type = pt.getActualTypeArguments()[0];
         return (Class<?>) type;
     }
 
@@ -56,51 +111,5 @@ class BatchValidationUtil {
         return validator.getConstraintsForClass(entityClass).hasConstraints();
     }
 
-    private static boolean isGetterForService(Method method) {
-        if (method.getParameterTypes().length != 0) {
-            return false;
-        }
-        if (!method.getName().startsWith("get")) {
-            return false;
-        }
-        if (!IService.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
-        return true;
-    }
-
-    // @SuppressWarnings("unchecked")
-    // private static ArrayList<Class<? extends ICdmBase>> getEntityClasses(File
-    // f, String packageName) {
-    // ArrayList<Class<? extends ICdmBase>> result = new ArrayList<Class<?
-    // extends ICdmBase>>();
-    // if (f == null) {
-    // URL url = CdmBaseType.class.getResource("CdmBaseType.class");
-    // f = new File(URI.create(url.toString())).getParentFile();
-    // packageName = "eu.etaxonomy.cdm.";
-    // }
-    // if (f.isDirectory()) {
-    // packageName += f.getName() + ".";
-    // File[] dirContents = f.listFiles();
-    // for (File file : dirContents) {
-    // result.addAll(getEntityClasses(file, packageName));
-    // }
-    // } else if (f.getName().endsWith(".class")) {
-    // String className = packageName + f.getName().substring(0,
-    // f.getName().length() - 6);
-    // try {
-    // Class<?> cls = Class.forName(className);
-    // if (ICdmBase.class.isAssignableFrom(cls)) {
-    // logger.debug("Loading entity class: " + className);
-    // result.add((Class<? extends ICdmBase>) cls);
-    // }
-    // } catch (ClassNotFoundException e) {
-    // // Huh?
-    // logger.error("Class file found but could not be loaded with system class loader: "
-    // + className);
-    // }
-    // }
-    // return result;
-    // }
 
 }
