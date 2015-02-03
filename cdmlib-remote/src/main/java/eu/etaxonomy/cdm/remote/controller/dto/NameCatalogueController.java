@@ -850,7 +850,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             didname[1],
                             secTitle,
                             modified,
-                            nvn.getLsid().toString());
+                            taxon.getLsid().toString());
 
 
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
