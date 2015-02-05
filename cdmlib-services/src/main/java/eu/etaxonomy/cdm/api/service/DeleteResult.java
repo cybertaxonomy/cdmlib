@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,8 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
  * @date 04.01.2012
  *
  */
-public class DeleteResult {
+public class DeleteResult implements Serializable {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 

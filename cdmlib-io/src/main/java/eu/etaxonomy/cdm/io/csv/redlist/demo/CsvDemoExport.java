@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -513,9 +514,13 @@ public class CsvDemoExport extends CsvDemoBase {
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
-		if (type == null){
-			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
-		}else{
+		if (type == null && name.getNomenclaturalCode()!= null && name.getNomenclaturalCode().acceptedTaxonStatusLabel() != null){
+			String acceptedTaxonStatusLabel = name.getNomenclaturalCode().acceptedTaxonStatusLabel();
+			if(StringUtils.isEmpty(acceptedTaxonStatusLabel)){
+				acceptedTaxonStatusLabel="";
+			}
+			record.setTaxonomicStatus(acceptedTaxonStatusLabel);
+		}else if(name.getNomenclaturalCode() != null && name.getNomenclaturalCode().synonymStatusLabel() != null){
 			String status = name.getNomenclaturalCode().synonymStatusLabel();
 			if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
 				status = "heterotypicSynonym";

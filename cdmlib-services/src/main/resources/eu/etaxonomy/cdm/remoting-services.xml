@@ -24,7 +24,7 @@
         <prop key="/remoting/classification.service">httpClassificationService</prop>
         <prop key="/remoting/collection.service">httpCollectionService</prop>
         <prop key="/remoting/common.service">httpCommonService</prop>
-        <prop key="/remoting/database.service">httpDatabaseService</prop>
+        <prop key="/remoting-public/database.service">httpDatabaseService</prop>
         <prop key="/remoting/description.service">httpDescriptionService</prop>
         <prop key="/remoting/featurenode.service">httpFeatureNodeService</prop>
         <prop key="/remoting/featuretree.service">httpFeatureTreeService</prop>
@@ -48,7 +48,7 @@
         <prop key="/remoting/term.service">httpTermService</prop>
         <prop key="/remoting/entityvalidationresult.service">httpEntityValidationResultService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
-        <prop key="/remoting/user.service">httpUserService</prop>
+        <prop key="/remoting-public/user.service">httpUserService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
       </props>
