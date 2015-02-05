@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * The CrudEvent unifies all CRUD events into one interface.
  * Crud as in Create, Retrieve, Update, Delete. This event will only hold CdmBase objects.
- *  
- * 
+ *
+ *
  * @author n.hoffmann
  * @created 24.03.2009
  * @version 1.0
@@ -35,10 +35,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmDataChangeEvent extends AbstractEvent{
 	private static final long serialVersionUID = 9113025682352080372L;
 	private static final Logger logger = Logger.getLogger(CdmDataChangeEvent.class);
-	
+
 	/**
 	 * The event types currently implemented
-	 * 
+	 *
 	 * @author n.hoffmann
 	 * @created 25.03.2009
 	 * @version 1.0
@@ -46,20 +46,20 @@ public class CdmDataChangeEvent extends AbstractEvent{
 	public enum EventType {
 		INSERT, LOAD, UPDATE, DELETE
 	}
-	
-	private CdmBase entity;
-	private EntityPersister persister;
-	private Object[] state;
+
+	private final CdmBase entity;
+	private final EntityPersister persister;
+	private final Object[] state;
 	// for update only
 	private Object[] oldState;
-	private Serializable id;
-	private EventType eventType;
-	
+	private final Serializable id;
+	protected final EventType eventType;
+
 	/**
 	 * @param source
 	 */
 	private CdmDataChangeEvent(
-			CdmBase entity, 
+			CdmBase entity,
 			Serializable id,
 			Object[] state,
 			Object[] oldState,
@@ -94,7 +94,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
 		}
 		return oldState;
 	}
-	
+
 	public EventType getEventType(){
 		return eventType;
 	}
@@ -102,15 +102,15 @@ public class CdmDataChangeEvent extends AbstractEvent{
 	public boolean isInsert(){
 		return eventType == EventType.INSERT;
 	}
-	
+
 	public boolean isLoad(){
 		return eventType == EventType.LOAD;
 	}
-	
+
 	public boolean isUpdate(){
 		return eventType == EventType.UPDATE;
 	}
-	
+
 	public boolean isDelete(){
 		return eventType == EventType.DELETE;
 	}
@@ -126,57 +126,67 @@ public class CdmDataChangeEvent extends AbstractEvent{
 			if(event instanceof PostInsertEvent){
 				PostInsertEvent postEvent = (PostInsertEvent) event;
 				mediationEvent = new CdmDataChangeEvent(
-																(CdmBase)postEvent.getEntity(), 
-																postEvent.getId(), 
-																postEvent.getState(), 
+																(CdmBase)postEvent.getEntity(),
+																postEvent.getId(),
+																postEvent.getState(),
 																null,
-																postEvent.getPersister(), 
-																postEvent.getSession(), 
+																postEvent.getPersister(),
+																postEvent.getSession(),
 																EventType.INSERT
 																);
 			}
 			if(event instanceof PostLoadEvent){
 				PostLoadEvent updateEvent = (PostLoadEvent) event;
 				mediationEvent = new CdmDataChangeEvent(
-																(CdmBase)updateEvent.getEntity(), 
-																updateEvent.getId(), 
+																(CdmBase)updateEvent.getEntity(),
+																updateEvent.getId(),
 																null,
 																null,
-																updateEvent.getPersister(), 
-																updateEvent.getSession(), 
+																updateEvent.getPersister(),
+																updateEvent.getSession(),
 																EventType.LOAD
 																);
 			}
 			if(event instanceof PostUpdateEvent){
 				PostUpdateEvent updateEvent = (PostUpdateEvent) event;
 				mediationEvent = new CdmDataChangeEvent(
-																(CdmBase)updateEvent.getEntity(), 
-																updateEvent.getId(), 
-																updateEvent.getState(), 
+																(CdmBase)updateEvent.getEntity(),
+																updateEvent.getId(),
+																updateEvent.getState(),
 																updateEvent.getOldState(),
-																updateEvent.getPersister(), 
-																updateEvent.getSession(), 
+																updateEvent.getPersister(),
+																updateEvent.getSession(),
 																EventType.UPDATE
 																);
 			}
 			if(event instanceof PostDeleteEvent){
 				PostDeleteEvent deleteEvent = (PostDeleteEvent) event;
 				mediationEvent = new CdmDataChangeEvent(
-																(CdmBase)deleteEvent.getEntity(), 
-																deleteEvent.getId(), 
-																deleteEvent.getDeletedState(), 
+																(CdmBase)deleteEvent.getEntity(),
+																deleteEvent.getId(),
+																deleteEvent.getDeletedState(),
 																null,
-																deleteEvent.getPersister(), 
-																deleteEvent.getSession(), 
+																deleteEvent.getPersister(),
+																deleteEvent.getSession(),
 																EventType.DELETE
 																);
-			}	
+			}
 		}catch(ClassCastException e){
 			// we are only interested in CdmBase entities, we have the try/catch block in case another entity slips through
 			logger.warn("tried to instantiate event for non CdmBase entity");
 		}
-		
+
 		return mediationEvent;
 	}
-	
+
+	public static CdmDataChangeEvent NewInstance(CdmBase entity, EventType eventType) {
+	    return new CdmDataChangeEvent(entity,
+                null,
+                null,
+                null,
+                null,
+                null,
+                eventType);
+	}
+
 }

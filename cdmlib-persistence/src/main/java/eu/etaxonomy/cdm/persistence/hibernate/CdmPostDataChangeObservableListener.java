@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,18 +26,18 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * ICdmPostDataChangeObserver implementors may register for this listener and their update() will 
+ * ICdmPostDataChangeObserver implementors may register for this listener and their update() will
  * be called after any CRUD (Create, Retrieve, Update, Delete).
- * 
+ *
  * Only events whose entities are of type CdmBase will be propagated
- * 
+ *
  * TODO Manage this class via Spring
- * 
+ *
  * @author n.hoffmann
  * @created 24.03.2009
  * @version 1.0
  */
-public class CdmPostDataChangeObservableListener implements 
+public class CdmPostDataChangeObservableListener implements
 		  PostDeleteEventListener
 		, PostInsertEventListener
 		, PostLoadEventListener
@@ -46,13 +46,13 @@ public class CdmPostDataChangeObservableListener implements
 	private static final long serialVersionUID = -8764348096490526927L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmPostDataChangeObservableListener.class);
-	
+
 	/**
-	 * if this is set to true, observers have to be notified manually by calling 
+	 * if this is set to true, observers have to be notified manually by calling
 	 * {@link #delayedNotify()}. All events until then will be stored in {@link #changeEvents}
 	 */
 	private boolean delayed;
-	
+
 	/**
 	 * Define what events will be propagated
 	 */
@@ -60,28 +60,28 @@ public class CdmPostDataChangeObservableListener implements
 					propagateInserts = true,
 					propagateUpdates = true,
 					propagateDeletes = true;
-	
+
 	/**
 	 * DataChangeEvents get stored in this list for delayed propagation
 	 */
 	private CdmDataChangeMap changeEvents;
-	
+
 	/**
-	 * Observing objects 
+	 * Observing objects
 	 */
-	private Set<ICdmPostDataChangeObserver> observers = new HashSet<ICdmPostDataChangeObserver>();
-	
-	
+	private final Set<ICdmPostDataChangeObserver> observers = new HashSet<ICdmPostDataChangeObserver>();
+
+
 	/**
 	 * Singleton instance
 	 */
 	private static CdmPostDataChangeObservableListener instance;
-	
+
 	/**
 	 * @return the singleton CdmPostDataChangeObservableListener
 	 */
 	public static CdmPostDataChangeObservableListener getDefault(){
-		if(instance == null){			
+		if(instance == null){
 			instance = new CdmPostDataChangeObservableListener();
 			// TODO set these properties via Spring
 			// get the delayed version by default
@@ -91,16 +91,16 @@ public class CdmPostDataChangeObservableListener implements
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Register for updates
-	 * 
+	 *
 	 * @param observer
 	 */
 	public void register(ICdmPostDataChangeObserver observer){
 		getDefault().observers.add(observer);
 	}
-	
+
 	/**
 	 * Remove observer from notify queue
 	 * @param observer
@@ -108,10 +108,10 @@ public class CdmPostDataChangeObservableListener implements
 	public void unregister(ICdmPostDataChangeObserver observer){
 		getDefault().observers.remove(observer);
 	}
-	
+
 	public void delayedNotify(){
 		if(delayed && changeEvents.size() > 0){
-			Set<ICdmPostDataChangeObserver> modificationSaveObservers 
+			Set<ICdmPostDataChangeObserver> modificationSaveObservers
 						= new HashSet<ICdmPostDataChangeObserver>(observers);
 			for( ICdmPostDataChangeObserver observer : modificationSaveObservers){
 				observer.update(changeEvents);
@@ -119,13 +119,13 @@ public class CdmPostDataChangeObservableListener implements
 			changeEvents.clear();
 		}
 	}
-	
+
 	/**
 	 * Propagates the event to all registered objects.
-	 * 
+	 *
 	 * @param event
 	 */
-	private void notifyObservers(CdmDataChangeEvent event){
+	public void notifyObservers(CdmDataChangeEvent event){
 		for( ICdmPostDataChangeObserver observer : observers){
 			if(delayed){
 				// store event for delayed propagation
@@ -138,14 +138,24 @@ public class CdmPostDataChangeObservableListener implements
 			}
 		}
 	}
-	
+
+	public void fireNotification(CdmDataChangeEvent event) {
+	    for( ICdmPostDataChangeObserver observer : observers){
+	        // propagate event directly
+	        CdmDataChangeMap tmpMap = new CdmDataChangeMap();
+	        tmpMap.add(event.getEventType(), event);
+	        observer.update(tmpMap);
+
+	    }
+	}
+
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
 		if(propagateInserts && event.getEntity() instanceof CdmBase){
 			getDefault().notifyObservers(CdmDataChangeEvent.NewInstance(event));
 		}
 	}
-	
+
 	@Override
 	public void onPostLoad(PostLoadEvent event) {
 		if(propagateLoads && event.getEntity() instanceof CdmBase){
@@ -239,5 +249,5 @@ public class CdmPostDataChangeObservableListener implements
 	public void setPropagateDeletes(boolean propagateDeletes) {
 		this.propagateDeletes = propagateDeletes;
 	}
-	
+
 }

@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -53,6 +55,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) ;
 
+	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+	        UUID newAcceptedTaxonNodeUUID,
+	        SynonymRelationshipType synonymRelationshipType,
+	        Reference citation,
+	        String citationMicroReference) ;
+
 	/**
 	 * deletes the given taxon nodes
 	 *
@@ -61,8 +69,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 *
 	 */
-	DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
+	public DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
 			TaxonDeletionConfigurator config) ;
+    /**
+     * @param nodeUuids
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config);
+
 	/**
 	 * deletes the given taxon node the configurator defines whether the children will be deleted too or not
 	 *
@@ -80,6 +95,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param end  - limit of how many rows are to be pulled from the database, i.e. 1000 rows.
 	 * @return filtered List of TaxonNode according to the classification provided
 	 */
+
+    /**
+     * @param nodeUuid
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteTaxonNode(UUID nodeUuid, TaxonDeletionConfigurator config);
+
 	public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end);
 
 	/**
@@ -89,6 +112,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 */
 	public int countAllNodesForClassification(Classification classification);
+
+
+
+
 
 
 

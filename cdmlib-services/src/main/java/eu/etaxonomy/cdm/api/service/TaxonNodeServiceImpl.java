@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -100,7 +101,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
+    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode,
+            TaxonNode newAcceptedTaxonNode,
+            SynonymRelationshipType synonymRelationshipType,
+            Reference citation,
+            String citationMicroReference)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -239,12 +244,32 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return synonmyRelationship.getSynonym();
     }
 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#makeTaxonNodeASynonymOfAnotherTaxonNode(java.util.UUID, java.util.UUID, java.util.UUID, java.util.UUID, java.lang.String)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+            UUID newAcceptedTaxonNodeUUID,
+            SynonymRelationshipType synonymRelationshipType,
+            Reference citation,
+            String citationMicroReference) {
+
+        return makeTaxonNodeASynonymOfAnotherTaxonNode(dao.load(oldTaxonNodeUuid),
+                dao.load(newAcceptedTaxonNodeUUID),
+                synonymRelationshipType,
+                citation,
+                citationMicroReference);
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNodes(java.util.List)
      */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) {
+
         if (config == null){
         	config = new TaxonDeletionConfigurator();
         }
@@ -356,13 +381,24 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
 
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config) {
+        Set<ITaxonTreeNode> nodes = new HashSet<ITaxonTreeNode>();
+        for(UUID nodeUuid : nodeUuids) {
+            nodes.add(dao.load(nodeUuid));
+        }
+        return deleteTaxonNodes(nodes, config);
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
      */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
-        //node = dao.merge(node);
+
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
@@ -389,6 +425,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteTaxonNode(UUID nodeUuid, TaxonDeletionConfigurator config) {
+        DeleteResult dr = deleteTaxonNode(dao.load(nodeUuid), config);
+        return dr;
+    }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
      */
@@ -404,6 +446,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public int countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
+
 
 
 
