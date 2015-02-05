@@ -71,7 +71,6 @@ public class EntityValidationResult extends CdmBase {
         return new EntityValidationResult();
     }
 
-    @SuppressWarnings("cast")
     // See comment below
     public static EntityValidationResult newInstance(ICdmBase entity, CRUDEventType crudEventType) {
         EntityValidationResult result = newInstance();
