@@ -62,8 +62,10 @@ public class ValidationManager {
 
             // prepend to register before or append to register after
 
-            eventRegistry.appendListeners(EventType.POST_INSERT, /*new CdmPostDataChangeObservableListener(),*/ l2Listener, l3Listener);
-            eventRegistry.appendListeners(EventType.POST_UPDATE, /*new CdmPostDataChangeObservableListener(),*/ l2Listener, l3Listener);
+            eventRegistry.appendListeners(EventType.POST_INSERT, /*new CdmPostDataChangeObservableListener(),*/ l2Listener , l3Listener);
+            eventRegistry.appendListeners(EventType.POST_UPDATE, /*new CdmPostDataChangeObservableListener(),*/ l2Listener , l3Listener);
+//            eventRegistry.appendListeners(EventType.POST_INSERT, /*new CdmPostDataChangeObservableListener(),*/ l2Listener /*, l3Listener */);
+//            eventRegistry.appendListeners(EventType.POST_UPDATE, /*new CdmPostDataChangeObservableListener(),*/ l2Listener  /*, l3Listener*/);
             eventRegistry.appendListeners(EventType.POST_DELETE, /*new CdmPostDataChangeObservableListener(),*/ l3Listener);
 
         }else{
