@@ -491,11 +491,11 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         logger.info("doFindByIdentifier [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
+        
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
-        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pageSize, pageNumber, initializationStrategy);
+        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
 }
