@@ -19,15 +19,17 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -39,9 +41,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -62,6 +66,13 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 
 	@SpringBeanByType
 	private IReferenceDao referenceDao;
+	
+	@SpringBeanByType
+	private IAmplificationDao amplificationDao;
+	
+	@SpringBeanByType
+	private IDefinedTermDao termDao;
+
 	
 	/**
 	 * @throws java.lang.Exception
@@ -108,12 +119,12 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		ref.setTitle("My Book");
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
-		
+
 		cdmEntityDaoBase.saveOrUpdate(name2);
-		
+
 		Assert.assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
 		BotanicalName nameTest = (BotanicalName)cdmEntityDaoBase.findByUuid(name.getUuid());
-		
+
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
@@ -122,10 +133,10 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		name3.setTitleCache("Test", true);
 		cdmEntityDaoBase.saveOrUpdate(name3);
 		List<TaxonNameBase> taxa = cdmEntityDaoBase.findByTitle("Test");
-		
+
 		TaxonNameBase<?,?> nameBase = taxa.get (0);
 		BotanicalName botName = (BotanicalName)nameBase;
-		
+
 		logger.debug("created "+botName.getCreated());
 		logger.debug("updated: " +botName.getUpdated());
 //		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
@@ -151,7 +162,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		
 		person3 = Person.NewInstance(); //empty person
 		person3.setUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
-		
+
 //		System.out.println(person1.getTitleCache());
 //		System.out.println(person1.getNomenclaturalTitle());
 //		System.out.println(person2.getTitleCache());
@@ -173,8 +184,9 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(person3, person4);
 		Team team2 = (Team) agentDao.findByUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
 		Assert.assertEquals(team1, team2);
-
 	}
+
+
 
 	private Person makePerson1() {
 		Person person1;
@@ -232,15 +244,40 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		
 		commit();
 	}
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
-}	
 	
+	@Test
+//	@DataSet("CacheStrategyGeneratorTest.xml")
+//	@ExpectedDataSet
+	public void testOnSaveOrUpdateAmplification() {
+		Amplification amplification = Amplification.NewInstance();
+		UUID amplUuid = UUID.fromString("11e6b2d5-3eb5-4434-9c56-5bb4c1102147");
+		amplification.setUuid(amplUuid);
+		
+		amplificationDao.save(amplification);
+		Assert.assertEquals("<Amplification:11e6b2d5-3eb5-4434-9c56-5bb4c1102147>", amplification.getLabelCache());
+		
+		Person author = Person.NewTitledInstance("Person");
+		Institution institution = Institution.NewInstance();
+		institution.setName("My institute");
+		DefinedTerm marker = DefinedTerm.NewDnaMarkerInstance("marker", "marker", "dm");
+		
+		amplification.setActor(author);
+		amplification.setTimeperiod(TimePeriodParser.parseString("2008"));
+		amplification.setDnaMarker(marker);
+		amplification.setInstitution(institution);
+		
+		
+		termDao.save(marker);
+		amplificationDao.saveOrUpdate(amplification);
+		Assert.assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+	 */
+	@Override
+	public void createTestDataSet() throws FileNotFoundException {
+		// TODO Auto-generated method stub 
+	}
+}
 
