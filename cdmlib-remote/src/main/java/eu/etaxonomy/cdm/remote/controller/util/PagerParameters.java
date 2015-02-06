@@ -79,7 +79,7 @@ public class PagerParameters {
      * @param response
      * @throws IOException
      */
-    public void normalizeAndValidate(HttpServletResponse response) throws IOException{
+    public PagerParameters normalizeAndValidate(HttpServletResponse response) throws IOException{
 
         if(pageIndex == null){
             pageIndex = 0;
@@ -93,6 +93,7 @@ public class PagerParameters {
         if(pageSize < 0){
             HttpStatusMessage.create("The query parameter 'pageSize' must not be a negative number", 400).setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
+        return this;
     }
 
 
