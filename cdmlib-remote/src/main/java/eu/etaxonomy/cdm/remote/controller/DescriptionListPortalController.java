@@ -82,6 +82,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "annotations",
             "markers",
             "stateData.$",
+            "statisticalValues.*",
             "sources.citation.authorship",
             "sources.nameUsedInSource",
             "multilanguageText",
