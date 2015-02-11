@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
-import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
@@ -1105,7 +1105,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             SingleRead singleRead = HibernateProxyHelper.deproxy(from, SingleRead.class);
             singleRead.getAmplificationResult().removeSingleRead(singleRead);
-            deleteResult.setStatus(DeleteStatus.OK);
+            deleteResult.setStatus(Status.OK);
         }
         else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
             deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);

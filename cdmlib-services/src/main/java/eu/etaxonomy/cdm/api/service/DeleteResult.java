@@ -27,12 +27,12 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
  * @date 04.01.2012
  *
  */
-public class DeleteResult implements Serializable {
+public class DeleteResult extends UpdateResult{
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
-	private DeleteStatus status = DeleteStatus.OK;
+	
 
 	private final List<Exception> exceptions = new ArrayList<Exception>();
 
@@ -47,49 +47,11 @@ public class DeleteResult implements Serializable {
 //		protected ICdmEntityDao<CdmBase> dao;
 //	}
 
-	public enum DeleteStatus {
-		OK(0),
-		ABORT(1),
-		ERROR(3),
-		;
-
-		protected Integer severity;
-		private DeleteStatus(int severity){
-			this.severity = severity;
-		}
-
-		public int compareSeverity(DeleteStatus other){
-			return this.severity.compareTo(other.severity);
-		}
-	}
+	
 
 //***************************** GETTER /SETTER /ADDER *************************/
-	/**
-	 * The resuting status of a delete action.
-	 *
-	 * @see DeleteStatus
-	 * @return
-	 */
-	public DeleteStatus getStatus() {
-		return status;
-	}
-	public void setStatus(DeleteStatus status) {
-		this.status = status;
-	}
+	
 
-	/**
-	 * The highest exception that occurred during delete (if any).
-	 * @return
-	 */
-	public List<Exception> getExceptions() {
-		return exceptions;
-	}
-	public void addException(Exception exception) {
-		this.exceptions.add(exception);
-	}
-	public void addExceptions(List<Exception> exceptions) {
-		this.exceptions.addAll(exceptions);
-	}
 
 	/**
 	 * Related objects that prevent the delete action to take place.
@@ -106,104 +68,16 @@ public class DeleteResult implements Serializable {
 	}
 
 
-//	/**
-//	 * @return
-//	 */
-//	public Set<PersistPair> getObjectsToDelete() {
-//		return objectsToDelete;
-//	}
-//	public void setObjectsToDelete(Set<PersistPair> objectsToDelete) {
-//		this.objectsToDelete = objectsToDelete;
-//	}
-//
-//	/**
-//	 * @return
-//	 */
-//	public Set<PersistPair> getObjectsToSave() {
-//		return objectsToSave;
-//	}
-//	public void setObjectsToSave(Set<PersistPair> objectsToSave) {
-//		this.objectsToSave = objectsToSave;
-//	}
-
-
-//****************** CONVENIENCE *********************************************/
-
-	/**
-	 * Sets the status to {@link DeleteStatus#ERROR} if not yet set to a more serious
-	 * status.
-	 */
-	public void setError(){
-		setMaxStatus(DeleteStatus.ERROR);
-	}
-
-	/**
-	 * Sets the status to {@link DeleteStatus#ABORT} if not yet set to a more serious
-	 * status.
-	 */
-	public void setAbort(){
-		setMaxStatus(DeleteStatus.ABORT);
-	}
-
-	/**
-	 * Sets status to most severe status. If maxStatus is more severe then existing status
-	 * existing status is set to maxStatus. Otherwise nothing changes.
-	 * If minStatus is more severe then given status minStatus will be the new status.
-	 * @param maxStatus
-	 */
-	public void setMaxStatus(DeleteStatus maxStatus) {
-		if (this.status.compareSeverity(maxStatus) < 0){
-			this.status = maxStatus;
-		}
-	}
-
-	public void includeResult(DeleteResult includedResult){
-		this.setMaxStatus(includedResult.getStatus());
-		this.addExceptions(includedResult.getExceptions());
-		this.addRelatedObjects(includedResult.getRelatedObjects());
-	}
-
-	public boolean isOk(){
-		return this.status == DeleteStatus.OK;
-	}
-
-	public boolean isAbort(){
-		return this.status == DeleteStatus.ABORT;
-	}
-
-	public boolean isError(){
-		return this.status == DeleteStatus.ERROR;
-	}
 
 
 
-	@Override
-	public String toString(){
-	    String separator = ", ";
-	    String exceptionString = "";
-	    for (Exception exception : exceptions) {
-            exceptionString += exception.getLocalizedMessage()+separator;
-        }
-	    if(exceptionString.endsWith(separator)){
-	        exceptionString = exceptionString.substring(0, exceptionString.length()-separator.length());
-	    }
-	    String relatedObjectString = "";
-	    for (CdmBase relatedObject: relatedObjects) {
-	        if(relatedObject instanceof IIdentifiableEntity){
-	            relatedObjectString += ((IIdentifiableEntity) relatedObject).getTitleCache()+separator;
-	        }
-	        else{
-	            relatedObjectString += relatedObject.toString()+separator;
-	        }
-	    }
-	    if(relatedObjectString.endsWith(separator)){
-	        relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
-	    }
-		return "[DeleteResult]\n" +
-				"Status: " + status.toString()+"\n" +
-						"Exceptions: " + exceptionString+"\n" +
-								"Related Objects: "+relatedObjectString;
-	}
+	
+
+	
+
+
+
+	
 
 
 }

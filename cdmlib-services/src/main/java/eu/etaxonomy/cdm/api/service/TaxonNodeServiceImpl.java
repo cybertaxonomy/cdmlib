@@ -403,6 +403,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public int countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
+    
+    @Override
+    @Transactional
+    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
+    	Reference reference = taxonNode.getReference();
+    	String microReference = taxonNode.getMicroReference();
+    	newParent.addChildNode(taxonNode, reference, microReference);
+    	dao.saveOrUpdate(taxonNode);
+    	return taxonNode;
+    }
 
 
 
