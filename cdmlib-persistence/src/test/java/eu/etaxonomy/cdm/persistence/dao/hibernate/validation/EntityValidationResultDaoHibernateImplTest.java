@@ -73,7 +73,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
         emp.setCompany(comp);
 
         Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
-        dao.saveValidationResult(errors, emp, CRUDEventType.NONE);
+        dao.saveValidationResult(emp, errors, CRUDEventType.NONE, null);
 
         EntityValidationResult result = dao.getValidationResult(Employee.class.getName(), 1);
         assertNotNull(result);
@@ -138,12 +138,16 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
 
         results = dao.getEntityValidationResults(MEDIA);
         assertEquals("Unexpected number of validation results", 1, results.size());
+        assertEquals("Unexpected number of error", 1, results.get(0).getEntityConstraintViolations().size());
 
         results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
         assertEquals("Unexpected number of validation results", 1, results.size());
+        assertEquals("Unexpected number of error", 2, results.get(0).getEntityConstraintViolations().size());
 
         results = dao.getEntityValidationResults(GATHERING_EVENT);
         assertEquals("Unexpected number of validation results", 2, results.size());
+        assertEquals("Unexpected number of error", 3, results.get(0).getEntityConstraintViolations().size());
+        assertEquals("Unexpected number of error", 1, results.get(1).getEntityConstraintViolations().size());
 
         results = dao.getEntityValidationResults("foo.bar");
         assertEquals("Unexpected number of validation results", 0, results.size());

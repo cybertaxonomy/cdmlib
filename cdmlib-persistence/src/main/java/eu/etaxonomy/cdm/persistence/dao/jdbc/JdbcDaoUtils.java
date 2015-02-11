@@ -104,7 +104,7 @@ public class JdbcDaoUtils {
      * @throws SQLException
      */
     public static int fetchInt(Connection connection, String sql) throws SQLException {
-        int result = -1;
+        int result = 0;
         Statement stmt = null;
         try {
             stmt = connection.createStatement();

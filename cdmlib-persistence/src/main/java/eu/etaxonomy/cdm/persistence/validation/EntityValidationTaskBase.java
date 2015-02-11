@@ -19,6 +19,7 @@ import javax.validation.Validator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
  * Abstract base class for JPA entity validation tasks. Note that in the future
  * non-entity classes might also be decorated with constraint annotations. This
  * base class, however, is specifically targeted at the validation of JPA
- * entities (more specifically instances of {@link CdmBase}.
+ * entities (more specifically instances of {@link ICdmBase}.
  *
  * @author ayco_holleman
  *
@@ -59,8 +60,9 @@ public abstract class EntityValidationTaskBase implements Runnable {
     }
 
     /**
-     * Create an entity validation task for the specified entity, indicating the
-     * CRUD event that triggered it and the validation groups to be applied.
+     * Create an entity validation task for the specified entity, to be
+     * validated according to the constraints in the specified validation
+     * groups, and indicating the CRUD event that triggered the validation.
      *
      * @param entity
      *            The entity to be validated
@@ -111,8 +113,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
                  * eu.etaxonomy.cdm.persistence.dao.hibernate.validation.
                  * EntityValidationResultDaoHibernateImplTest) it DOES work.
                  */
-                dao.deleteValidationResult(entity.getClass().getName(), entity.getId());
-                dao.saveValidationResult(errors, entity, crudEventType);
+                dao.saveValidationResult(entity, errors, crudEventType, null);
             }
         } catch (Throwable t) {
             logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());

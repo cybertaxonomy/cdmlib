@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.jdbc.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -88,9 +89,10 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
      * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#EntityValidationResultCrudJdbcImpl()}
      * .
      */
+    @SuppressWarnings("unused")
     @Test
     public void test_EntityValidationResultCrudJdbcImpl() {
-         new EntityValidationResultCrudJdbcImpl();
+        new EntityValidationResultCrudJdbcImpl();
     }
 
     /**
@@ -98,6 +100,7 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
      * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#EntityValidationResultCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
      * .
      */
+    @SuppressWarnings("unused")
     @Test
     public void test_EntityValidationResultCrudJdbcImplI_CdmDataSource() {
         new EntityValidationResultCrudJdbcImpl(dataSource);
@@ -105,7 +108,7 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#saveValidationResult (java.util.Set, eu.etaxonomy.cdm.model.common.CdmBase, eu.etaxonomy.cdm.model.validation.CRUDEventType)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#saveValidationResult (eu.etaxonomy.cdm.model.common.CdmBase, java.util.Set, eu.etaxonomy.cdm.model.validation.CRUDEventType, Class)}
      * .
      */
     @Test
@@ -133,9 +136,9 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
         Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
         EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
-        dao.saveValidationResult(errors, emp, CRUDEventType.NONE);
+        dao.saveValidationResult(emp, errors, CRUDEventType.NONE, null);
 
-        EntityValidationResult result = dao.getValidationResult(emp.getClass().getName(),emp.getId());
+        EntityValidationResult result = dao.getValidationResult(emp.getClass().getName(), emp.getId());
         assertNotNull(result);
         assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -165,6 +168,37 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
         EntityValidationResult result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
         assertTrue(result == null);
     }
+
+    @Test
+    public void testGetEntityValidationResult() {
+        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
+        EntityValidationResult result;
+
+        result = dao.getValidationResult(MEDIA, 100);
+        assertNotNull(result);
+        assertEquals("Unexpected entity id", 1, result.getId());
+        assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
+
+        result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        assertNotNull(result);
+        assertEquals("Unexpected entity id", 2, result.getId());
+        assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
+
+        result = dao.getValidationResult(GATHERING_EVENT, 300);
+        assertNotNull(result);
+        assertEquals("Unexpected entity id", 3, result.getId());
+        assertEquals("Unexpected number of constraint violations", 3, result.getEntityConstraintViolations().size());
+
+        result = dao.getValidationResult(GATHERING_EVENT, 301);
+        assertNotNull(result);
+        assertEquals("Unexpected entity id", 4, result.getId());
+        assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
+
+        // Test we get a null back
+        result = dao.getValidationResult("Foo Bar", 100);
+        assertNull(result);
+    }
+
 
     /**
      * Test method for
