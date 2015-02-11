@@ -8,11 +8,15 @@
  */
 package eu.etaxonomy.cdm.model.validation;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
+import javax.validation.metadata.ConstraintDescriptor;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,13 +43,12 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EntityConstraintViolation", propOrder = { "PropertyPath", "UserFriendlyFieldName", "InvalidValue",
-        "Severity", "Message", "Validator", "EntityValidationResult" })
+        "Severity", "Message", "Validator", "ValidationGroup0", "EntityValidationResult" })
 @XmlRootElement(name = "EntityConstraintViolation")
 @Entity
 public class EntityConstraintViolation extends CdmBase {
     private static final long serialVersionUID = 6685798691716413950L;
 
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EntityConstraintViolation.class);
 
     public static EntityConstraintViolation newInstance() {
@@ -58,7 +61,6 @@ public class EntityConstraintViolation extends CdmBase {
         violation.setPropertyPath(error.getPropertyPath().toString());
         violation.setInvalidValue(error.getInvalidValue().toString());
         violation.setMessage(error.getMessage());
-        error.getConstraintDescriptor().getGroups();
         String field = error.getPropertyPath().toString();
         /*
          * Since I have changed CdmBase to implement ISelfDescriptive, this is a
@@ -75,8 +77,21 @@ public class EntityConstraintViolation extends CdmBase {
         } else {
             violation.setPropertyPath(field);
         }
-        violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().isEmpty() ? null : error
-                .getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
+        ConstraintDescriptor<?> metadata = error.getConstraintDescriptor();
+        List<?> validators = metadata.getConstraintValidatorClasses();
+        violation.setValidator(validators.isEmpty() ? null : ((Class<?>) validators.iterator().next()).getName());
+        Set<Class<?>> validationGroups = metadata.getGroups();
+
+        // See spec for getGroups(): The set of groups the constraint is applied
+        // on. If the constraint declares no group, a set with only the Default
+        // group is returned.
+        assert(validationGroups != null && validationGroups.size() > 0);
+
+        String validationGroup0 = validationGroups.iterator().next().getName();
+        if(validationGroups.size() > 1) {
+            logger.warn("Encountering constraint that belongs to multiple validation groups. Will use first to create new instance: " + validationGroup0);
+        }
+        violation.setValidationGroup0(validationGroup0);
         return violation;
     }
 
@@ -98,6 +113,9 @@ public class EntityConstraintViolation extends CdmBase {
 
     @XmlElement(name = "Validator")
     private String validator;
+
+    @XmlElement(name = "ValidationGroup0")
+    private String validationGroup0;
 
     @XmlElement(name = "EntityValidationResult")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -185,6 +203,21 @@ public class EntityConstraintViolation extends CdmBase {
 
     public void setValidator(String validator) {
         this.validator = validator;
+    }
+
+    /**
+     * @return the validationGroup0
+     */
+    public String getValidationGroup0() {
+        return validationGroup0;
+    }
+
+    /**
+     * @param validationGroup0
+     *            the validationGroup0 to set
+     */
+    public void setValidationGroup0(String validationGroup0) {
+        this.validationGroup0 = validationGroup0;
     }
 
     public EntityValidationResult getEntityValidationResult() {

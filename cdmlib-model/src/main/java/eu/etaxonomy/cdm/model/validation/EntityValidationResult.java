@@ -32,9 +32,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -55,8 +60,8 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
 @XmlType(name = "EntityValidationResult", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid",
-        "ValidatedEntityClass", "UserFriendlyDescription", "UserFriendlyTypeName", "CrudEventType",
-        "ConstraintViolations" })
+        "ValidatedEntityClass", "ValidationCount", "LastModified", "UserFriendlyDescription", "UserFriendlyTypeName",
+        "CrudEventType", "ConstraintViolations" })
 // @formatter:on
 @XmlRootElement(name = "EntityValidationResult")
 @Entity
@@ -95,6 +100,8 @@ public class EntityValidationResult extends CdmBase {
             result.setUserFriendlyTypeName(entity.getClass().getSimpleName());
             result.setUserFriendlyDescription(entity.toString());
         }
+        result.setValidationCount(1);
+        result.setLastModified(result.getCreated());
         return result;
     }
 
@@ -112,6 +119,16 @@ public class EntityValidationResult extends CdmBase {
 
     @XmlElement(name = "ValidatedEntityClass")
     private String validatedEntityClass;
+
+    @XmlElement(name = "ValidationCount")
+    private int validationCount;
+
+    @XmlElement(name = "LastModified")
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type = "dateTimeUserType")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = DateTimeBridge.class)
+    private DateTime lastModified;
 
     @XmlElement(name = "UserFriendlyDescription")
     private String userFriendlyDescription;
@@ -155,6 +172,22 @@ public class EntityValidationResult extends CdmBase {
 
     public void setValidatedEntityClass(String validatedEntityClass) {
         this.validatedEntityClass = validatedEntityClass;
+    }
+
+    public int getValidationCount() {
+        return validationCount;
+    }
+
+    public void setValidationCount(int validationCount) {
+        this.validationCount = validationCount;
+    }
+
+    public DateTime getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(DateTime lastModified) {
+        this.lastModified = lastModified;
     }
 
     @Override
