@@ -133,7 +133,7 @@ public class BatchValidator implements Runnable {
                     Set<ConstraintViolation<S>> errors = validator.validate(entity, Level2.class, Default.class);
                     if (errors.size() != 0) {
                         logger.debug(errors.size() + " error(s) detected in entity " + entity.toString());
-                        entityValidationResultService.saveValidationResult(errors, entity, CRUDEventType.NONE);
+                        entityValidationResultService.saveValidationResult(entity, errors, CRUDEventType.NONE, null);
                     }
                 }
             }

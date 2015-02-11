@@ -37,11 +37,10 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
     /**
      * Save the result of an entity validation to the error tables. Previous validation
      * results of the same entity will be cleared first.
-     *
+     * @param validatedEntity
+     *            The validated entity
      * @param errors
      *            All constraints violated by the specified entity
-     * @param entity
-     *            The validated entity
      * @param crudEventType
      *            The CRUD operation triggering the validation
      */
@@ -51,7 +50,7 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 //    * the error tables is done by the CVI (more particularly by an
 //    * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
 //    * not have access to this method.
-    <T extends ICdmBase> void  saveValidationResult(Set<ConstraintViolation<T>> errors, T entity, CRUDEventType crudEventType);
+    <T extends ICdmBase> void  saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors, CRUDEventType crudEventType, Class<?>[] validationGroups);
 
 
     /**

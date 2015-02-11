@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
@@ -31,59 +31,52 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidationResult, IEntityValidationResultDao> implements
-		IEntityValidationResultService {
+public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidationResult, IEntityValidationResultDao>
+        implements IEntityValidationResultService {
 
-	@Autowired
-	IEntityValidationResultDao dao;
+    @Autowired
+    IEntityValidationResultDao dao;
 
+    @Override
+    protected void setDao(IEntityValidationResultDao dao) {
+        this.dao = dao;
+    }
 
-	@Override
-	protected void setDao(IEntityValidationResultDao dao){
-		this.dao = dao;
-	}
+    @Override
+    public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId) {
+        return dao.getValidationResult(validatedEntityClass, validatedEntityId);
+    }
 
-	@Override
-	public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId){
-		return dao.getValidationResult(validatedEntityClass, validatedEntityId);
-	}
+    @Override
+    public List<EntityValidationResult> getValidationResults() {
+        return dao.getValidationResults();
+    }
 
+    @Override
+    public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass) {
+        return dao.getEntityValidationResults(validatedEntityClass);
+    }
 
-	@Override
-	public List<EntityValidationResult> getValidationResults(){
-		return dao.getValidationResults();
-	}
+    @Override
+    public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass) {
+        return dao.getEntitiesViolatingConstraint(validatorClass);
+    }
 
+    @Override
+    public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity) {
+        return dao.getValidationResults(validatedEntityClass, severity);
+    }
 
-	@Override
-	public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass){
-		return dao.getEntityValidationResults(validatedEntityClass);
-	}
-
-
-	@Override
-	public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass){
-		return dao.getEntitiesViolatingConstraint(validatorClass);
-	}
-
-
-	@Override
-	public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity){
-		return dao.getValidationResults(validatedEntityClass, severity);
-	}
-
-
-	@Override
-	public List<EntityValidationResult> getValidationResults(Severity severity){
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<EntityValidationResult> getValidationResults(Severity severity) {
+        return dao.getValidationResults(severity);
+    }
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends ICdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity,
-            CRUDEventType crudEventType) {
-        dao.saveValidationResult(errors, entity, crudEventType);
+    public <T extends ICdmBase> void saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors,
+            CRUDEventType crudEventType, Class<?>[] validationGroups) {
+        dao.saveValidationResult(validatedEntity, errors, crudEventType, validationGroups);
 
     }
 
