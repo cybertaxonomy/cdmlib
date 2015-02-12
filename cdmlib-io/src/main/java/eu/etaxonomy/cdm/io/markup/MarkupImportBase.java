@@ -179,6 +179,7 @@ public abstract class MarkupImportBase  {
 	protected static final String EDITORS = "editors";
 	protected static final String HOMONYM = "homonym";
 	protected static final String HOMOTYPES = "homotypes";
+	protected static final String NOMENCLATURAL_NOTES = "nomenclaturalNotes";
 	protected static final String INFRANK = "infrank";
 	protected static final String INFRAUT = "infraut";
 	protected static final String INFRPARAUT = "infrparaut";
@@ -189,6 +190,8 @@ public abstract class MarkupImportBase  {
 	protected static final String PAGES = "pages";
 	protected static final String PARAUT = "paraut";
 	protected static final String PUBFULLNAME = "pubfullname";
+	protected static final String PUBLOCATION = "publocation";
+	protected static final String PUBLISHER = "publisher";
 	protected static final String PUBNAME = "pubname";
 	protected static final String PUBTITLE = "pubtitle";
 	protected static final String PUBTYPE = "pubtype";
@@ -711,6 +714,24 @@ public abstract class MarkupImportBase  {
 			fireNotYetImplementedElement(event.getLocation(), qName, 1);
 		}
 	}
+	
+	/**
+	 * Fires an not yet implemented event and adds the element name to the unhandled elements stack.
+	 * @param event
+	 */
+	protected void handleIgnoreElement(XMLEvent event) {
+		QName qName = event.asStartElement().getName();
+		unhandledElements.push(qName);
+	}
+	
+	protected void handleAmbigousManually(MarkupImportState state,
+			XMLEventReader reader, StartElement startElement) {
+		QName qName = startElement.getName();
+		unhandledElements.push(qName);
+		fireWarningEvent(
+				qName.getLocalPart() + " is ambigous and should therefore be handled manually", 
+				makeLocationStr(startElement.getLocation()), 2, 2);
+	}
 
 	/**
 	 * Checks if a mandatory text is not empty or null.
@@ -900,6 +921,14 @@ public abstract class MarkupImportBase  {
 	 */
 	protected XMLEvent readNoWhitespace(XMLEventReader reader) throws XMLStreamException {
 		XMLEvent event = reader.nextEvent();
+		while (!unhandledElements.isEmpty()){
+			if (event.isStartElement()){
+				handleNotYetImplementedElement(event);
+			}else if (event.isEndElement()){
+				popUnimplemented(event.asEndElement());
+			}
+			event = reader.nextEvent();
+		}
 		while (event.isCharacters() && event.asCharacters().isWhiteSpace()){
 			event = reader.nextEvent();
 		}
@@ -1346,9 +1375,8 @@ public abstract class MarkupImportBase  {
 
 					// Extension
 					UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
-					ExtensionType writerExtensionType = this
-							.getExtensionType(state, uuidWriterExtension,
-									"Writer", "writer", "writer");
+					ExtensionType writerExtensionType = 
+							this.getExtensionType(state, uuidWriterExtension,"Writer", "writer", "writer");
 					Extension extension = Extension.NewInstance();
 					extension.setType(writerExtensionType);
 					extension.setValue(text);
@@ -1619,7 +1647,7 @@ public abstract class MarkupImportBase  {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		result.ref = getAndRemoveAttributeValue(attributes, REF);
 		checkNoAttributes(attributes, parentEvent);
-
+		
 		// text is not handled, needed only for debugging purposes
 		String text = "";
 		while (reader.hasNext()) {
@@ -1629,12 +1657,17 @@ public abstract class MarkupImportBase  {
 			// result.string = string;
 			// }else
 			if (isMyEndingElement(next, parentEvent)) {
+				if (StringUtils.isNotBlank(text)){
+					fireWarningEvent("text is not empty but not handled during import", parentEvent, 4);
+				}
 				return result;
-			} else if (next.isCharacters()) {
+			} else if (next.isCharacters() && unhandledElements.isEmpty()) {
 				text += next.asCharacters().getData();
-
+			} else if (isStartingElement(next, NUM)) {
+				//ignore numbering of footnotes as they are numbered differently in the CDM
+				handleIgnoreElement(next);
 			} else {
-				fireUnexpectedEvent(next, 0);
+				handleUnexpectedElement(next);
 			}
 		}
 		return result;

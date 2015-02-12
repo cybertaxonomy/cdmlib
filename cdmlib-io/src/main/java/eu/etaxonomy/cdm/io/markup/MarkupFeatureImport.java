@@ -24,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -78,6 +79,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		boolean isDescription = feature.equals(Feature.DESCRIPTION());
 		DescriptionElementBase lastDescriptionElement = null;
 		
+		CharOrder charOrder= new CharOrder();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -106,7 +108,8 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				}
 				handleHabitat(state, reader, next);
 			} else if (isStartingElement(next, CHAR)) {
-				List<TextData> textDataList = handleChar(state, reader, next, null);
+				List<TextData> textDataList = handleChar(state, reader, next, null, charOrder);
+				charOrder = charOrder.next();
 				for (TextData textData : textDataList){
 					taxonDescription.addElement(textData);
 				}
@@ -133,9 +136,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			} else if (isStartingElement(next, NUM)) {
 				//TODO
 				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, NUM)) {
-				//TODO
-				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -321,6 +321,43 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 	}
 	
+	public class CharOrder{
+		static final int strlength = 3;
+		private int order = 1;
+		private CharOrder parent;
+		private List<CharOrder> children = new ArrayList<CharOrder>();
+		
+		public CharOrder nextChild(){
+			CharOrder result = new CharOrder();
+			if (! children.isEmpty()) {
+				result.order = children.get(children.size() - 1).order + 1;
+			}
+			result.parent = this;
+			children.add(result);
+			return result;
+		}
+		
+		public CharOrder next(){
+			CharOrder result = new CharOrder();
+			result.order = order + 1;
+			result.parent = parent;
+			if (parent != null){
+				parent.children.add(result);
+			}
+			return result;
+		}
+		
+		public String orderString(){
+			String parentString = parent == null ? "" : parent.orderString();
+			String result = CdmUtils.concat("-", parentString, StringUtils.leftPad(String.valueOf(order), strlength, '0'));
+			return result;
+		}
+		
+		public String toString(){
+			return orderString();
+		}
+	}
+	
 
 	/**
 	 * Handle the char or subchar element. As 
@@ -332,7 +369,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	 * @return List of TextData. Not a single one as the recursive TextData will also be returned
 	 * @throws XMLStreamException
 	 */
-	private List<TextData> handleChar(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature parentFeature) throws XMLStreamException {
+	private List<TextData> handleChar(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature parentFeature, CharOrder myCharOrder) throws XMLStreamException {
 		List<TextData> result = new ArrayList<TextData>();
 		String classValue = getClassOnlyAttribute(parentEvent);
 		Feature feature = makeFeature(classValue, state, parentEvent, parentFeature);
@@ -340,13 +377,19 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			state.putFeatureToCharSorterList(feature);
 		}else{
 			FeatureSorterInfo parentInfo = state.getLatestCharFeatureSorterInfo();
-			if (! parentInfo.getUuid().equals(parentFeature.getUuid())){
-				String message = "The parent char feature is not the same as the latest feature. This is the case for char hierarchies with > 2 levels, which is not yet handled by the import";
-				fireWarningEvent(message, parentEvent, 6);
-			}else{
+//			if (! parentInfo.getUuid().equals(parentFeature.getUuid())){
+//				String message = "The parent char feature is not the same as the latest feature. This is the case for char hierarchies with > 2 levels, which is not yet handled by the import";
+//				fireWarningEvent(message, parentEvent, 6);
+//			}else{
 				state.getLatestCharFeatureSorterInfo().addSubFeature(new FeatureSorterInfo(feature));
-			}
+//			}
 		}
+		
+		TextData textData = TextData.NewInstance(feature);
+		result.add(textData);
+		
+		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, AnnotationType.TECHNICAL().getVocabulary());
+		textData.addAnnotation(Annotation.NewInstance(myCharOrder.orderString(), annType, Language.ENGLISH()));
 		
 		boolean isTextMode = true;
 		String text = "";
@@ -354,9 +397,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				text = text.trim();
-				TextData textData = TextData.NewInstance(feature);
 				textData.putText(getDefaultLanguage(state), text);
-				result.add(textData);
 				return result;
 			} else if (isStartingElement(next, FIGURE_REF)) {
 				//TODO
@@ -381,8 +422,8 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next, specimenImport, nomenclatureImport);
 				} else if (isStartingElement(next, SUB_CHAR)) {
-					List<TextData> textData = handleChar(state, reader, next, feature);
-					result.addAll(textData);
+					List<TextData> subTextData = handleChar(state, reader, next, feature, myCharOrder.nextChild());
+					result.addAll(subTextData);
 				} else if (isStartingElement(next, FOOTNOTE)) {
 					FootnoteDataHolder footnote = handleFootnote(state, reader,	next, specimenImport, nomenclatureImport);
 					if (footnote.isRef()) {
