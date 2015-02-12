@@ -36,6 +36,8 @@ import com.wordnik.swagger.annotations.Api;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -246,6 +248,49 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }
+    
+    /**
+     * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
+     * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
+     * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
+     * Also the path to these taxa may not include taxa from other classifications.
+     *
+     * @param taxonUUIDString
+     * @param classificationStringList
+     * @param includeDoubtful
+     * @param onlyCongruent
+     * @param response
+     * @param request
+     * @return
+     * @throws IOException
+     */
 
+    @RequestMapping(value = { "includedTaxa" }, method = { RequestMethod.GET })
+    public ModelAndView doGetIncludedTaxa(
+            @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
+            @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
+            @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
+            @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
+            HttpServletResponse response,
+            HttpServletRequest request) throws IOException {
+            ModelAndView mv = new ModelAndView();
+            UUID taxonUuid = UUID.fromString(taxonUUIDString);
+            /**
+             * List<UUID> classificationFilter,
+             * boolean includeDoubtful,
+             * boolean onlyCongruent)
+             */
+            List<UUID> classificationFilter = null;
+            if( classificationStringList != null ){
+                classificationFilter = new ArrayList<UUID>();
+                for(String classString :classificationStringList){
+                    classificationFilter.add(UUID.fromString(classString));
+                }
+            }
+            final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+            IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(taxonUuid, configuration);
+            mv.addObject(listIncludedTaxa);
+            return mv;
+    }
 
 }
