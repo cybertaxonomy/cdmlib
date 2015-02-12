@@ -86,10 +86,9 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
+    protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
     private static final String PROPERTY_H2_SERVER = "h2Server";
-
-    protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
     /**
      * List of the tables which are initially being populated during term loading. {@link PersistentTermInitializer}
