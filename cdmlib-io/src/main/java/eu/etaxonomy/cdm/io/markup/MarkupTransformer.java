@@ -696,11 +696,6 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidRudimentaryFlowers = UUID.fromString("acb76a5e-ed63-4aec-afc9-454c1ed0f0cc");
 	public static final UUID uuidPhyllodes = UUID.fromString("9eb3644e-d628-44f0-adc1-0a0ae4996111");
 	
-
-	
-	
-	
-
 	
 
 	/* (non-Javadoc)
