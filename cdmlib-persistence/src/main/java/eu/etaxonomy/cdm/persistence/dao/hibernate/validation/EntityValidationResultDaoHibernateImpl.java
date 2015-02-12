@@ -89,7 +89,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
     @Override
     public List<EntityValidationResult> getValidationResults() {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr JOIN FETCH vr.entityConstraintViolations cv "
+                "FROM EntityValidationResult vr "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         @SuppressWarnings("unchecked")
         List<EntityValidationResult> result = query.list();
