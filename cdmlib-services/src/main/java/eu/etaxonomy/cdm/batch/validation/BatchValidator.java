@@ -13,29 +13,17 @@ import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
-import org.hibernate.validator.HibernateValidator;
-import org.hibernate.validator.HibernateValidatorConfiguration;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 
 /**
  * @author ayco_holleman
@@ -44,58 +32,13 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 public class BatchValidator implements Runnable {
 
-    // Example of how to run the batch validator
-    public static void main(String[] args) {
-
-        String server = "localhost";
-        String database = "cdm_merged";
-        String username = "root";
-        String password = AccountStore.readOrStorePassword(server, database, username, null);
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-
-        BatchValidator batchValidator = new BatchValidator(dataSource);
-
-        // Create some entities violating some constraint
-        IReferenceService refService = batchValidator.appController.getReferenceService();
-        @SuppressWarnings("rawtypes")
-        List<Reference> refs = refService.list(Reference.class, 0, 0, null, null);
-        for (@SuppressWarnings("rawtypes")
-        Reference ref : refs) {
-            refService.delete(ref);
-        }
-        for (int i = 0; i < 1000; ++i) {
-            Reference<?> ref0 = ReferenceFactory.newBook();
-            ref0.setIsbn("bla bla");
-            ref0.setIssn("foo foo");
-            refService.save(ref0);
-            Reference<?> ref1 = ReferenceFactory.newJournal();
-            ref1.setIsbn("bar bar");
-            ref1.setIssn("+++++++");
-            refService.save(ref1);
-        }
-
-        batchValidator.run();
-    }
+    static final Class<?>[] DEFAULT_VALIDATION_GROUPS = new Class<?>[] { Level2.class, Level3.class };
 
     private static final Logger logger = Logger.getLogger(BatchValidator.class);
 
-    private ICdmApplicationConfiguration appController;
-
-    public BatchValidator(ICdmApplicationConfiguration app) {
-        this.appController = app;
-    }
-
-    public BatchValidator(ICdmDataSource dataSource) {
-        this.appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.VALIDATE);
-    }
-
-    public ICdmApplicationConfiguration getAppController() {
-        return appController;
-    }
-
-    public void setAppController(ICdmApplicationConfiguration appController) {
-        this.appController = appController;
-    }
+    private ICdmApplicationConfiguration context;
+    private Validator validator;
+    private Class<?>[] validationGroups;
 
     @Override
     public void run() {
@@ -103,19 +46,17 @@ public class BatchValidator implements Runnable {
     }
 
     private <T extends ICdmBase, S extends T> void validate() {
-
         logger.info("Starting batch validation");
 
-        // Configure validation framework
-        HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
-        ValidatorFactory validatorFactory = config.buildValidatorFactory();
-        Validator validator = validatorFactory.getValidator();
+        if (validationGroups == null) {
+            validationGroups = DEFAULT_VALIDATION_GROUPS;
+        }
 
         // Get service for saving errors to database
-        IEntityValidationResultService entityValidationResultService = appController.getEntityValidationResultService();
+        IEntityValidationResultService validationResultService = context.getEntityValidationResultService();
 
         // Get all services dealing with "real" entities
-        List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(appController);
+        List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(context);
 
         for (EntityValidationUnit<T, S> unit : validationUnits) {
             Class<S> entityClass = unit.getEntityClass();
@@ -130,16 +71,77 @@ public class BatchValidator implements Runnable {
             }
             for (S entity : entities) {
                 if (BatchValidationUtil.isConstrainedEntityClass(validator, entity.getClass())) {
-                    Set<ConstraintViolation<S>> errors = validator.validate(entity, Level2.class, Default.class);
+                    Set<ConstraintViolation<S>> errors = validator.validate(entity, validationGroups);
                     if (errors.size() != 0) {
-                        logger.debug(errors.size() + " error(s) detected in entity " + entity.toString());
-                        entityValidationResultService.saveValidationResult(entity, errors, CRUDEventType.NONE, null);
+                        logger.warn(errors.size() + " error(s) detected in entity " + entity.toString());
+                        validationResultService.saveValidationResult(entity, errors, CRUDEventType.NONE,
+                                validationGroups);
                     }
                 }
             }
         }
 
         logger.info("Batch validation complete");
+    }
+
+    /**
+     * Get the application context that will provide the services that will, on
+     * their turn, provide the entities to be validated.
+     *
+     * @return The application context
+     */
+    public ICdmApplicationConfiguration getAppController() {
+        return context;
+    }
+
+    /**
+     * Set the application context.
+     *
+     * @param context
+     *            The application context
+     */
+    public void setAppController(ICdmApplicationConfiguration context) {
+        this.context = context;
+    }
+
+    /**
+     * Get the {@code Validator} instance that will carry out the validations.
+     *
+     * @return The {@code Validator}
+     */
+    public Validator getValidator() {
+        return validator;
+    }
+
+    /**
+     * Set the {@code Validator} instance that will carry out the validations.
+     *
+     * @param validator
+     *            The {@code Validator}
+     */
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
+
+    /**
+     * Get the validation groups to be applied by the {@code Validator}.
+     *
+     * @return The validation groups
+     */
+    public Class<?>[] getValidationGroups() {
+        return validationGroups;
+    }
+
+    /**
+     * Set the validation groups to be applied by the {@code Validator}. By
+     * default all Level2 and Level3 will be checked. So if that is what you
+     * want, you do not need to call this method before calling {@link #run()}.
+     *
+     * @param validationGroups
+     *            The validation groups
+     */
+    public void setValidationGroups(Class<?>... validationGroups) {
+        this.validationGroups = validationGroups;
     }
 
 }
