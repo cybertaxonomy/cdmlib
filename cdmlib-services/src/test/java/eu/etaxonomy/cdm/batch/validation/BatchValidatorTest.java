@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -88,6 +89,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
      * @throws SQLException
      */
     @Test
+    @Ignore
     public void testRun() throws SQLException {
 
         ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("PUBLIC", "sa", "");
