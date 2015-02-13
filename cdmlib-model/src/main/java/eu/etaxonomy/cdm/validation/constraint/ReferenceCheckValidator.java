@@ -8,11 +8,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 public class ReferenceCheckValidator implements
-ConstraintValidator<ReferenceCheck, Reference>{
+ConstraintValidator<ReferenceCheck, Reference<?>>{
 
-	//@Override
 	@Override
-    public boolean isValid(Reference value,
+    public boolean isValid(Reference<?> value,
 			ConstraintValidatorContext constraintValidatorContext) {
 		boolean isValid = true;
 
@@ -27,7 +26,7 @@ ConstraintValidator<ReferenceCheck, Reference>{
 
 
 
-	private boolean validIsbn(Reference value, ConstraintValidatorContext constraintValidatorContext){
+	private boolean validIsbn(Reference<?> value, ConstraintValidatorContext constraintValidatorContext){
 		boolean isValid = true;
 
 		if ((value.getType() != ReferenceType.Book && value.getType() != ReferenceType.Proceedings && value.getType() != ReferenceType.Generic ) ) {
@@ -39,7 +38,6 @@ ConstraintValidator<ReferenceCheck, Reference>{
 		return isValid;
 	}
 
-	//@Override
 	@Override
     public void initialize(ReferenceCheck constraintAnnotation) {
 		// TODO Auto-generated method stub

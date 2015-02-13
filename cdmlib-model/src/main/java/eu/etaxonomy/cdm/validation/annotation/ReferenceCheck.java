@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.validation.constraint.ReferenceCheckValidator;
 @Constraint(validatedBy = ReferenceCheckValidator.class)
 @Documented
 public @interface ReferenceCheck {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.InReference.ReferenceShouldNotHaveIsbn.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level2.class
 }

@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
@@ -116,8 +117,8 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-@InReference(groups = Level2.class)
-@ReferenceCheck(groups = Level2.class)
+@InReference(groups=Level3.class)
+@ReferenceCheck(groups=Level2.class)
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
@@ -140,7 +141,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //	@NullOrNotEmpty
 	@Length(max = 4096)  //TODO is the length attribute really required twice (see @Column)??
 	private String title;
-	
+
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitle" )
 	@Field
@@ -148,7 +149,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String abbrevTitle;
-	
+
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitleCache" )
 	@Field
@@ -157,7 +158,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //	@NotNull
 	@Length(max = 1024)
 	private String abbrevTitleCache;
-	
+
 	@XmlElement(name = "protectedAbbrevTitleCache")
 	@Merge(MergeMode.OR)
 	private boolean protectedAbbrevTitleCache;
@@ -360,7 +361,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	protected Reference(ReferenceType type) {
 		this.type = type;
 	}
-	
+
 	@Override
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
@@ -368,10 +369,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
             public void propertyChange(PropertyChangeEvent ev) {
             	if (!ev.getPropertyName().equals("titleCache") && !ev.getPropertyName().equals("abbrevTitleCache") && !ev.getPropertyName().equals("cacheStrategy")){
             		if (! isProtectedTitleCache()){
-            			titleCache = null;	
+            			titleCache = null;
             		}
             		if (! isProtectedAbbrevTitleCache()){
-            			abbrevTitleCache = null;	
+            			abbrevTitleCache = null;
             		}
             	}
             }
@@ -381,7 +382,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 
 //*************************** GETTER / SETTER ******************************************/
-	
+
 
 	@Override
 	public String getAbbrevTitleCache() {
@@ -393,7 +394,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
             this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
         }
-        return abbrevTitleCache;	
+        return abbrevTitleCache;
 	}
 
 	@Override
@@ -401,13 +402,13 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	public void setAbbrevTitleCache(String abbrevTitleCache) {
 		this.abbrevTitleCache = abbrevTitleCache;
 	}
-	
+
 	@Override
 	public void setAbbrevTitleCache(String abbrevTitleCache, boolean isProtected) {
-		this.protectedAbbrevTitleCache = isProtected;	
+		this.protectedAbbrevTitleCache = isProtected;
 		setAbbrevTitleCache(abbrevTitleCache);
 	}
-	
+
 	@Override
 	public boolean isProtectedAbbrevTitleCache() {
 		return protectedAbbrevTitleCache;
@@ -427,7 +428,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	public void setAbbrevTitle(String abbrevTitle) {
 		this.abbrevTitle = abbrevTitle;
 	}
-	
+
 
 	@Override
     public String getEditor() {
@@ -499,7 +500,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     public void setIssn(String issn) {
 		this.issn = issn;
 	}
-	
+
     @Override
 	public DOI getDoi() {
 		return doi;
@@ -891,7 +892,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		rectifyCacheStrategy();
 		return super.generateTitle();
 	}
-	
+
     public String generateAbbrevTitle() {
 		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
 		return getCacheStrategy().getAbbrevTitleCache(this);
@@ -1196,11 +1197,12 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 //*************************** CACHE STRATEGIES ******************************/
 
+    @Override
     public S getCacheStrategy() {
     	rectifyCacheStrategy();
     	return this.cacheStrategy;
     }
-	
+
 	/**
 	 * The type property of this class is mapped on the field level to the data base column, so
 	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor}
@@ -1255,9 +1257,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.cacheStrategy = (S)cacheStrategy;
 
 	}
-	
-	
-	
+
+
+
 //    @Override
 //    protected void initListener(){
 //        PropertyChangeListener listener = new PropertyChangeListener() {
@@ -1318,8 +1320,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}
 	}
-	
-//******************************* toString *****************************/	
+
+//******************************* toString *****************************/
 
 	@Override
 	public String toString() {
@@ -1333,8 +1335,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return super.toString();
 		}
 	}
-	
-	
+
+
 
 
 }

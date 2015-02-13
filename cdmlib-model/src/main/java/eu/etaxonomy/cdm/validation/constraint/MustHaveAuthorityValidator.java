@@ -15,12 +15,12 @@ import javax.validation.ConstraintValidatorContext;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
+import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 
 public class MustHaveAuthorityValidator implements
-		ConstraintValidator<MustHaveAuthority, NonViralName> {
+		ConstraintValidator<NameMustHaveAuthority, NonViralName> {
 
-	public void initialize(MustHaveAuthority mustHaveAuthority) { }
+	public void initialize(NameMustHaveAuthority mustHaveAuthority) { }
 
 	public boolean isValid(NonViralName name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;

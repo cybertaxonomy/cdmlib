@@ -137,7 +137,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
     @XmlAttribute(name= "UseNameCache")
     private boolean useNameCache = false;
-    
+
     @XmlAttribute(name = "publish")
     private boolean publish = true;
 
@@ -250,7 +250,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setDoubtful(boolean doubtful){
         this.doubtful = doubtful;
     }
-    
+
 
     /**
      * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not

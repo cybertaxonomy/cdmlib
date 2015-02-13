@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.validation.constraint.MustHaveAuthorityValidator;
 @Retention(RUNTIME)
 @Constraint(validatedBy = MustHaveAuthorityValidator.class)
 @Documented
-public @interface MustHaveAuthority {
+public @interface NameMustHaveAuthority {
 	
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority.message}";
 	

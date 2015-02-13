@@ -1056,7 +1056,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustN
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithetsForRank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/HomotypicSynonymsShouldBelongToGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/InReference.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/MustHaveAuthority.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NameMustHaveAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NamesWithHomotypicRelationshipsMustBelongToSameGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NullOrNotEmpty.java -text
