@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustDeriveNameFromParentValidator;
 
 @Target( { TYPE })
@@ -17,10 +18,10 @@ import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustDeriveNameFromParentV
 @Constraint(validatedBy = ChildTaxaMustDeriveNameFromParentValidator.class)
 @Documented
 public @interface ChildTaxaMustDeriveNameFromParent {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {Level3.class};
 }

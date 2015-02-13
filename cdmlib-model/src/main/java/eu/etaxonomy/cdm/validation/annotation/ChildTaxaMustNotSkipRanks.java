@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustNotSkipRanksValidator;
 
 @Target( { TYPE })
@@ -17,10 +18,10 @@ import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustNotSkipRanksValidator
 @Constraint(validatedBy = ChildTaxaMustNotSkipRanksValidator.class)
 @Documented
 public @interface ChildTaxaMustNotSkipRanks {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {Level3.class};
 }
