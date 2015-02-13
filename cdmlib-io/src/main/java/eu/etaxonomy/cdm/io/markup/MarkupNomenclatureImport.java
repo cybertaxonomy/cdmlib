@@ -72,17 +72,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (isStartingElement(next, HOMOTYPES)) {
-				handleHomotypes(state, reader, next.asStartElement());
-			} else if (isMyEndingElement(next, parentEvent)) {
+			if (isMyEndingElement(next, parentEvent)) {
 				return;
-			} else {
+			} else if (isStartingElement(next, HOMOTYPES)) {
+				handleHomotypes(state, reader, next.asStartElement());
+			} else if (isStartingElement(next, NOMENCLATURAL_NOTES)) {
+				handleAmbigousManually(state, reader, next.asStartElement());
+			} else  {
 				fireSchemaConflictEventExpectedStartTag(HOMOTYPES, reader);
 				state.setUnsuccessfull();
 			}
 		}
 		return;
 	}
+
 
 	private void handleHomotypes(MarkupImportState state,
 			XMLEventReader reader, StartElement parentEvent)
@@ -717,6 +720,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String year = getAndRemoveMapKey(refMap, YEAR);
 		String pubName = getAndRemoveMapKey(refMap, PUBNAME);
 		String pages = getAndRemoveMapKey(refMap, PAGES);
+		String publocation = getAndRemoveMapKey(refMap, PUBLOCATION);
+		String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
 
 		if (state.isCitation()) {
 			reference = handleCitationSpecific(state, type, authorStr,
@@ -733,6 +738,18 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			reference.getInBook().setDatePublished(timeperiod);
 		}
 		reference.setDatePublished(timeperiod);
+		
+		//Quickfix for these 2 attributes used in feature.references
+		Reference<?> inRef = reference.getInReference() == null ? reference : reference.getInReference();
+		//publocation
+		if (StringUtils.isNotEmpty(publisher)){
+			inRef.setPublisher(publisher);
+		}
+		
+		//publisher
+		if (StringUtils.isNotEmpty(publocation)){
+			inRef.setPlacePublished(publocation);
+		}
 		
 		// TODO
 		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };

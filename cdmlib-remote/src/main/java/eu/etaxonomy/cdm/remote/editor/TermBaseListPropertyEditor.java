@@ -67,7 +67,7 @@ public class TermBaseListPropertyEditor<T extends DefinedTermBase<?>> extends Te
             }
 
             if(termList == null){
-                throw new java.lang.IllegalArgumentException("No TermBase instances found for the supplied list og identifiers " + text);
+                throw new java.lang.IllegalArgumentException("No TermBase instances found for the supplied list of identifiers " + text);
             }
 
             setValue(termList);

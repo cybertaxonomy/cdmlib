@@ -217,15 +217,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			} else if (isStartingElement(next, TO_KEY)) {
 				//TODO
 				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, TO_KEY)){
-				//TODO
-				popUnimplemented(next.asEndElement());
 			} else if (isStartingElement(next, KEYNOTES)) {
-				//TODO
-				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, KEYNOTES)){
-				//TODO
-				popUnimplemented(next.asEndElement());
+				handleAmbigousManually(state, reader, next.asStartElement());
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -390,12 +383,11 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			}
 		}
 		//report missing match, if num exists
-		if (matchingNodes.isEmpty() /* TODO redo comment && num != null  */){
+		if (num != null && matchingNodes.isEmpty() /* TODO redo comment && num != null (later DONE) */){
 			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
 			message = String.format(message, num, leadsKey.toString());
 			fireWarningEvent(message, event, 1);
-		}
-		
+		}	
 	}
 	
 	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {

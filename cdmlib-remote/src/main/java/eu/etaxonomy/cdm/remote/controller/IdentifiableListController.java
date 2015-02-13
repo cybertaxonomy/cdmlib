@@ -134,12 +134,11 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
     	
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
-        return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
+        return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
     
     

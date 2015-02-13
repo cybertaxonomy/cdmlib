@@ -2264,6 +2264,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxaAndNamesSearchMod
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UpdateResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text

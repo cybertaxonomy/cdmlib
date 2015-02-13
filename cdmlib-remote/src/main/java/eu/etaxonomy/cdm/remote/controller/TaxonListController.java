@@ -104,7 +104,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
     @Autowired
     private IClassificationService classificationService;
-    
+
     @Autowired
     private ITaxonNodeService taxonNodeService;
 
@@ -118,7 +118,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         super.initBinder(binder);
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
-        
+
     }
 
     /**
@@ -445,10 +445,10 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         return bestMatchingTaxon;
     }
-    
+
     /**
      * list IdentifiableEntity objects by identifiers
-     * 
+     *
      * @param type
      * @param identifierType
      * @param identifier
@@ -461,42 +461,41 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @see IdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifierInTree"})
-    public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifierSubtree(
-    		@RequestParam(value = "class", required = false) Class<T> type,
-    		@RequestParam(value = "identifierType", required = false) UUID identifierType,
+    @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"}, params={"subtree"})
+    public <T extends TaxonBase>  Pager<FindByIdentifierDTO<T>> doFindByIdentifier(
+            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "identifierType", required = false) UUID identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
-            @RequestParam(value = "includeEntity", required = false) Boolean includeEntity,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "includeEntity", required = false, defaultValue="true") Boolean includeEntity, //TODO true only for debuging
+            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             )
              throws IOException {
 
-    	DefinedTerm definedTerm = null;
-    	if(identifierType != null){
-    		definedTerm = CdmBase.deproxy(termService.find(identifierType), DefinedTerm.class);
-    	}
-    	
-		TaxonNode subTree;
-    	Classification cl = classificationService.load(subtreeUuid);
-		if (cl != null){
-			subTree = cl.getRootNode();
-		}else{
-			subTree = taxonNodeService.find(subtreeUuid);
-		}
-    	
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+        DefinedTerm definedTerm = null;
+        if(identifierType != null){
+            definedTerm = CdmBase.deproxy(termService.find(identifierType), DefinedTerm.class);
+        }
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
+        TaxonNode subTree;
+        Classification cl = classificationService.load(subtreeUuid);
+        if (cl != null){
+            subTree = cl.getRootNode();
+        }else{
+            subTree = taxonNodeService.find(subtreeUuid);
+        }
+
+        logger.info("doFindByIdentifier [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
-        boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
-        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeCdmEntity, pageSize, pageNumber, initializationStrategy);
+        return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
 }

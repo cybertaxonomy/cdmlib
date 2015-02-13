@@ -90,6 +90,8 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
+	public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent);
+
 
 
 
