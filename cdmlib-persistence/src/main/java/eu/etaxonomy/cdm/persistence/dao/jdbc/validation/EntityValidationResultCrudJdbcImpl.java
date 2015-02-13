@@ -207,8 +207,8 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
 
     private static void updateValidationResultRecord(Connection conn, int validationResultId,
             CRUDEventType crudEventType) throws SQLException {
-        String sql = "UPDATE entityvalidationresult SET crudeventtype=?"
-                + "validationcount = validationcount + 1, lastmodified=? WHERE id=?";
+        String sql = "UPDATE entityvalidationresult SET crudeventtype=?, "
+                + " validationcount = validationcount + 1, lastmodified=? WHERE id=?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
