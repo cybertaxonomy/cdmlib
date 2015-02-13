@@ -113,7 +113,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
                  * eu.etaxonomy.cdm.persistence.dao.hibernate.validation.
                  * EntityValidationResultDaoHibernateImplTest) it DOES work.
                  */
-                dao.saveValidationResult(entity, errors, crudEventType, null);
+                dao.saveValidationResult(entity, errors, crudEventType, validationGroups);
             }
         } catch (Throwable t) {
             logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
