@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EntityConstraintViolation", propOrder = { "PropertyPath", "UserFriendlyFieldName", "InvalidValue",
-        "Severity", "Message", "Validator", "ValidationGroup0", "EntityValidationResult" })
+        "Severity", "Message", "Validator", "ValidationGroup", "EntityValidationResult" })
 @XmlRootElement(name = "EntityConstraintViolation")
 @Entity
 public class EntityConstraintViolation extends CdmBase {
@@ -87,11 +87,11 @@ public class EntityConstraintViolation extends CdmBase {
         // group is returned.
         assert(validationGroups != null && validationGroups.size() > 0);
 
-        String validationGroup0 = validationGroups.iterator().next().getName();
+        String validationGroup = validationGroups.iterator().next().getName();
         if(validationGroups.size() > 1) {
-            logger.warn("Encountering constraint that belongs to multiple validation groups. Will use first to create new instance: " + validationGroup0);
+            logger.warn("Encountering constraint that belongs to multiple validation groups. Will use first to create new instance: " + validationGroup);
         }
-        violation.setValidationGroup0(validationGroup0);
+        violation.setValidationGroup(validationGroup);
         return violation;
     }
 
@@ -114,8 +114,8 @@ public class EntityConstraintViolation extends CdmBase {
     @XmlElement(name = "Validator")
     private String validator;
 
-    @XmlElement(name = "ValidationGroup0")
-    private String validationGroup0;
+    @XmlElement(name = "ValidationGroup")
+    private String validationGroup;
 
     @XmlElement(name = "EntityValidationResult")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -206,18 +206,18 @@ public class EntityConstraintViolation extends CdmBase {
     }
 
     /**
-     * @return the validationGroup0
+     * @return the validationGroup
      */
-    public String getValidationGroup0() {
-        return validationGroup0;
+    public String getValidationGroup() {
+        return validationGroup;
     }
 
     /**
-     * @param validationGroup0
-     *            the validationGroup0 to set
+     * @param validationGroup
+     *            the validationGroup to set
      */
-    public void setValidationGroup0(String validationGroup0) {
-        this.validationGroup0 = validationGroup0;
+    public void setValidationGroup(String validationGroup) {
+        this.validationGroup = validationGroup;
     }
 
     public EntityValidationResult getEntityValidationResult() {

@@ -65,7 +65,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
 
     private static final String SQL_INSERT_CONSTRAINT_VIOLATION = "INSERT INTO entityconstraintviolation"
             + "(id, created, uuid,  invalidvalue, message, propertypath, userfriendlyfieldname, severity,"
-            + "validator, validationgroup0, createdby_id, entityvalidationresult_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            + "validator, validationgroup, createdby_id, entityvalidationresult_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final int cv_id = 1;
     private static final int cv_created = 2;
@@ -76,7 +76,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     private static final int cv_userfriendlyfieldname = 7;
     private static final int cv_severity = 8;
     private static final int cv_validator = 9;
-    private static final int cv_validationgroup0 = 10;
+    private static final int cv_validationgroup = 10;
     private static final int cv_createdby_id = 11;
     private static final int cv_entityvalidationresult_id = 12;
 
@@ -155,7 +155,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
                 if (i != 0) {
                     sql.append(" OR ");
                 }
-                sql.append("validationgroup0 = ?");
+                sql.append("validationgroup = ?");
             }
             sql.append(")");
         }
@@ -245,7 +245,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
                 stmt.setString(cv_userfriendlyfieldname, ecv.getUserFriendlyFieldName());
                 stmt.setString(cv_severity, ecv.getSeverity().toString());
                 stmt.setString(cv_validator, ecv.getValidator());
-                stmt.setString(cv_validationgroup0, ecv.getValidationGroup0());
+                stmt.setString(cv_validationgroup, ecv.getValidationGroup());
                 if (ecv.getCreatedBy() != null) {
                     stmt.setInt(cv_createdby_id, ecv.getCreatedBy().getId());
                 } else {
@@ -349,7 +349,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
                 error.setUserFriendlyFieldName(rs.getString("userfriendlyfieldname"));
                 error.setSeverity(Severity.forName(rs.getString("severity")));
                 error.setValidator(rs.getString("validator"));
-                error.setValidationGroup0(rs.getString("validationgroup0"));
+                error.setValidationGroup(rs.getString("validationgroup"));
                 errors.add(error);
             }
             rs.close();

@@ -155,7 +155,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
         Iterator<EntityConstraintViolation> iterator = fromResult.getEntityConstraintViolations().iterator();
         while (iterator.hasNext()) {
             EntityConstraintViolation ecv = iterator.next();
-            if (validationGroupNames.contains(ecv.getValidationGroup0())) {
+            if (validationGroupNames.contains(ecv.getValidationGroup())) {
                 iterator.remove();
             }
         }
@@ -180,7 +180,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
                 if (i != 0) {
                     sql.append(" OR ");
                 }
-                sql.append("validationgroup0 = :param" + i);
+                sql.append("validationgroup = :param" + i);
             }
             sql.append(")");
         }

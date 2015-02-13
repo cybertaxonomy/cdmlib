@@ -11,9 +11,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
+import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-import eu.etaxonomy.cdm.model.validation.Severity;
 
 @DataSet(value="EntityValidationResultDaoHibernateImplTest.xml")
 public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegrationTest {
