@@ -105,11 +105,12 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             int entityId = validatedEntity.getId();
             EntityValidationResult previousResult = getValidationResultRecord(conn, entityClass, entityId);
             if (previousResult == null) {
-                // The entity has never been validated before
-                // We should now create an entityvalidationresult record whether
-                // or not the entity has errors, because the entity HAS been
-                // validated
-                // so its validationcount is now 1.
+                /*
+                 * The entity has never been validated before. We should now
+                 * create an entityvalidationresult record whether or not the
+                 * entity has errors, because the entity HAS been validated so
+                 * its validationcount is now 1.
+                 */
                 int validationResultId = saveValidationResultRecord(conn, validatedEntity, crudEventType);
                 if (errors.size() != 0) {
                     saveErrorRecords(conn, validationResultId, validatedEntity, errors);

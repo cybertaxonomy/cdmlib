@@ -93,25 +93,9 @@ public abstract class EntityValidationTaskBase implements Runnable {
                 waitForThread.get().join();
             }
             Set<ConstraintViolation<ICdmBase>> errors = validate();
-            if (dao != null) {
-                /*
-                 * This test for null is a hack!!! It should normally be
-                 * regarded as a program error (assertion error) if the dao is
-                 * null. The beforeExecute() method of the ValidationExecutor
-                 * guarantees that both the dao and the validator are set before
-                 * an entity is validated. However, in the test phase mock
-                 * records are inserted into the test database (H2), which
-                 * triggers their validation (i.e. this method will be called).
-                 * At that time the dao is not set yet. So where I can have the
-                 * dao injected such that I can pass it on to the
-                 * EntityValidationTask? When I annotate the dao field with
-                 *
-                 * @SpringBeanByType, it doesn't work, even though when I add
-                 *
-                 * @SpringBeanByType to the same dao in my test classes (e.g.
-                 * eu.etaxonomy.cdm.persistence.dao.hibernate.validation.
-                 * EntityValidationResultDaoHibernateImplTest) it DOES work.
-                 */
+            if (dao == null) {
+                logger.error("Cannot save validation result to database (missing DAO)");
+            } else {
                 dao.saveValidationResult(entity, errors, crudEventType, validationGroups);
             }
         } catch (Throwable t) {
@@ -120,7 +104,6 @@ public abstract class EntityValidationTaskBase implements Runnable {
     }
 
     protected Set<ConstraintViolation<ICdmBase>> validate() {
-        assert (validator != null);
         return validator.validate(entity, validationGroups);
     }
 
