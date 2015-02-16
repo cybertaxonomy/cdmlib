@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -104,13 +105,26 @@ public abstract class EntityValidationTaskBase implements Runnable {
     }
 
     protected Set<ConstraintViolation<ICdmBase>> validate() {
-        return validator.validate(entity, validationGroups);
+        Set<ConstraintViolation<ICdmBase>> result = null;
+        try {
+            result = validator.validate(entity, validationGroups);
+        } catch (Exception e) {
+            logger.error("Error while calling validate on validator " +
+                    (validator == null ? "null" : validator.toString())+
+                     " for entity: " +
+                     (entity == null ? "null" : entity.toString()) +
+                      "; groups: " + (validationGroups == null ? "null" : validationGroups) +
+                      ":" + e.getMessage());
+        }
+        return result == null ?
+                new HashSet<ConstraintViolation<ICdmBase>>() :
+                result;
     }
 
     /**
      * Get the JPA entity validated in this task
      */
-    ICdmBase getEntity() {
+    protected ICdmBase getEntity() {
         return entity;
     }
 

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,14 +18,11 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.collection.spi.PersistentCollection;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
-import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -36,7 +33,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
 public interface ICommonService extends IService<OriginalSourceBase>{
-//	
+//
 //	/** find cdmBase by UUID**/
 //	public abstract CdmBase getCdmBaseByUuid(UUID uuid);
 //
@@ -48,16 +45,16 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @param metaData
 	 */
 	public void saveAllMetaData(Collection<CdmMetaData> metaData);
-	
+
 	/**
 	 * Returns all meta data.
 	 * @return
 	 */
 	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData();
-	
-	
+
+
 	/**
-	 * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of 
+	 * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of
 	 * with namespace <code>idNamespace</code> and with an idInSource in <code>idInSourceSet</code> <BR>
 	 * The key of the map is the idInSource. If there are multiple objects that have the same id an arbitrary one is chosen.
 	 * @param clazz
@@ -66,7 +63,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @return
 	 */
 	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
-	
+
 	/**
 	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace
 	 * @param clazz
@@ -76,17 +73,17 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 */
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
-	
+
 	/**
 	 * Returns all CdmBase objects that reference the referencedCdmBase.
 	 * For example, if referencedCdmBase is an agent it may return all taxon names
-	 * that have this person as an author but also all books, articles, etc. that have 
+	 * that have this person as an author but also all books, articles, etc. that have
 	 * this person as an author
 	 * @param referencedCdmBase
 	 * @return
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
-	
+
 	/**
 	 * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
 	 * to merge first. If no merge strategy is defined (null), the DefaultMergeStrategy will be taken as default.
@@ -97,7 +94,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @throws MergeException
 	 */
 	public <T extends IMergable> void   merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
-	
+
 	/**
 	 * Returns all objects that match the object to match according to the given match strategy.
 	 * If no match strategy is defined the default match strategy is taken.
@@ -108,7 +105,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @throws MatchException
 	 */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
-		
+
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
 	 * @see ICdmGenericDao#find(Class, int)
@@ -123,73 +120,78 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 
 	/**
 	 * Initializes a lazy loaded persistent collection.
-	 * 
+	 *
 	 * @param col the persistent collection to initialize
 	 * @return the initialized persistent collection
 	 */
 	public PersistentCollection initializeCollection(PersistentCollection col);
-	
+
 	/**
 	 * Checks if a lazy loaded persistent collection is empty.
-	 * 
-	 * @param col the persistent collection 
+	 *
+	 * @param col the persistent collection
 	 * @return the initialized persistent collection
 	 */
 	public boolean isEmpty(PersistentCollection col);
-		
+
 	/**
 	 * Returns the size of a persistent collection.
-	 * 
+	 *
 	 * @param col the persistent collection to initialize
 	 * @return the size of the persistent collection
 	 */
 	public int size(PersistentCollection col);
-	
+
 	/**
 	 * Returns the object contained in a persistent collection at the given index.
-	 * 
-	 * @param col the persistent collection 
+	 *
+	 * @param col the persistent collection
 	 * @param index the index of the requested element
 	 * @return the object at the requested index
 	 */
 	public Object get(PersistentCollection col, int index);
-	
+
 	/**
 	 * checks whether an object is contained within a persistent collection.
-	 * 
-	 * @param col the persistent collection 
+	 *
+	 * @param col the persistent collection
 	 * @param element the element to check for
 	 * @return true if the element exists in the collection, false o/w
 	 */
 	public boolean contains(PersistentCollection col, Object element);
-	
+
 	/**
 	 * checks whether an index object exists within a persistent collection
 	 * (usually a map)
-	 * 
-	 * @param col the persistent collection 
+	 *
+	 * @param col the persistent collection
 	 * @param key the index object to look for.
 	 * @return true if the index object exists in the collection, false o/w
 	 */
 	public boolean containsKey(PersistentCollection col, Object key);
-	
+
 	/**
 	 * checks whether an value object exists within a persistent collection
 	 * (usually a map)
-	 * 
-	 * @param col the persistent collection 
+	 *
+	 * @param col the persistent collection
 	 * @param key the value object to look for.
 	 * @return true if the value object exists in the collection, false o/w
 	 */
 	public boolean containsValue(PersistentCollection col, Object element);
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
-	
+
 	/**
 	 * Preliminary, may be moved to test later
 	 */
 	@Deprecated
 	public void createFullSampleData();
-	
-	
+
+	//TODO as common service currently implements OriginalSourceBase this is additionally needed
+	//maybe fixed in future
+    void updateEntity(CdmBase cdmBase);
+
+
+
 }

@@ -9,14 +9,18 @@
 */
 package eu.etaxonomy.cdm.api.validation;
 
+import javax.annotation.PostConstruct;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl;
 import eu.etaxonomy.cdm.persistence.hibernate.Level2ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
@@ -32,14 +36,25 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 @Component
 public class ValidationManager {
 
+    private final boolean level2Enabled = false;
+    private final boolean level3Enabled = false;
+
+    private Level2ValidationEventListener l2Listener;
+    private Level3ValidationEventListener l3Listener;
+
     @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
+    @Qualifier("cdmApplicationDefaultConfiguration")
+    private ICdmApplicationConfiguration cdmApplicationDefaultConfiguration;
+
+    @Autowired
 //    IEntityValidationResultService validationService;
 //    IEntityValidationResultCrud validationService;
-    EntityValidationResultCrudJdbcImpl validationService;
+    EntityValidationResultCrudJdbcImpl validationDao;
 
+    @PostConstruct
     public void registerValidationListeners(){
         if (sessionFactory != null && sessionFactory instanceof SessionFactoryImpl){
             ServiceRegistryImplementor serviceRegistry = ((SessionFactoryImpl)sessionFactory).getServiceRegistry();
@@ -48,29 +63,36 @@ public class ValidationManager {
 
             //duplication strategy
 //            eventRegistry.addDuplicationStrategy(CdmListenerDuplicationStrategy.NewInstance);
-
+            eventRegistry.getEventListenerGroup(EventType.POST_INSERT);
 
             ValidationExecutor validationExecutor = new ValidationExecutor();
 
             //level2
-            Level2ValidationEventListener l2Listener = new Level2ValidationEventListener(validationService);
+            l2Listener = new Level2ValidationEventListener(validationDao);
             l2Listener.setValidationExecutor(validationExecutor);
 
             //level3
-            Level3ValidationEventListener l3Listener = new Level3ValidationEventListener(validationService);
+            l3Listener = new Level3TransactionalValidationEventListener(cdmApplicationDefaultConfiguration, validationDao);
             l3Listener.setValidationExecutor(validationExecutor);
 
             // prepend to register before or append to register after
 
-            eventRegistry.appendListeners(EventType.POST_INSERT, /*new CdmPostDataChangeObservableListener(),*/ l2Listener , l3Listener);
-            eventRegistry.appendListeners(EventType.POST_UPDATE, /*new CdmPostDataChangeObservableListener(),*/ l2Listener , l3Listener);
-//            eventRegistry.appendListeners(EventType.POST_INSERT, /*new CdmPostDataChangeObservableListener(),*/ l2Listener /*, l3Listener */);
-//            eventRegistry.appendListeners(EventType.POST_UPDATE, /*new CdmPostDataChangeObservableListener(),*/ l2Listener  /*, l3Listener*/);
-            eventRegistry.appendListeners(EventType.POST_DELETE, /*new CdmPostDataChangeObservableListener(),*/ l3Listener);
+            eventRegistry.appendListeners(EventType.POST_INSERT, l2Listener , l3Listener);
+            eventRegistry.appendListeners(EventType.POST_UPDATE, l2Listener , l3Listener);
+            //TODO don't we need l2Listener validation also for deleting the results?
+            eventRegistry.appendListeners(EventType.POST_DELETE, l3Listener);
 
         }else{
             throw new RuntimeException("Session factory not available or not of type SessionFactoryImpl");
         }
+    }
+
+    //for future use
+    private void enableLevel2Listener(boolean enable){
+
+    }
+
+    private void enableLevel3Listener(boolean enable){
 
     }
 

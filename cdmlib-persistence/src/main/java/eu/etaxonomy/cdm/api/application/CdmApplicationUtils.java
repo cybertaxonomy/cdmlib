@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
 public class CdmApplicationUtils {
     private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
