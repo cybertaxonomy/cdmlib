@@ -18,7 +18,6 @@ import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
@@ -37,7 +36,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
 
     private static final Logger logger = Logger.getLogger(EntityValidationTaskBase.class);
 
-    private final CdmBase entity;
+    private final ICdmBase entity;
     private final CRUDEventType crudEventType;
     private final Class<?>[] validationGroups;
 
@@ -55,7 +54,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
      * @param validationGroups
      *            The validation groups to apply
      */
-    public EntityValidationTaskBase(CdmBase entity, IEntityValidationResultCrud dao, Class<?>... validationGroups) {
+    public EntityValidationTaskBase(ICdmBase entity, IEntityValidationResultCrud dao, Class<?>... validationGroups) {
         this(entity, CRUDEventType.NONE, dao, validationGroups);
     }
 
@@ -71,7 +70,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
      * @param validationGroups
      *            The validation groups to apply
      */
-    public EntityValidationTaskBase(CdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao,
+    public EntityValidationTaskBase(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao,
             Class<?>... validationGroups) {
         this.entity = entity;
         this.crudEventType = crudEventType;
@@ -93,7 +92,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
             if (waitForThread != null && waitForThread.get() != null) {
                 waitForThread.get().join();
             }
-            Set<ConstraintViolation<CdmBase>> errors = validate();
+            Set<ConstraintViolation<ICdmBase>> errors = validate();
             if (dao != null) {
                 /*
                  * This test for null is a hack!!! It should normally be
@@ -120,7 +119,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
         }
     }
 
-    protected Set<ConstraintViolation<CdmBase>> validate() {
+    protected Set<ConstraintViolation<ICdmBase>> validate() {
         assert (validator != null);
         return validator.validate(entity, validationGroups);
     }
@@ -128,7 +127,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
     /**
      * Get the JPA entity validated in this task
      */
-    CdmBase getEntity() {
+    ICdmBase getEntity() {
         return entity;
     }
 

@@ -17,7 +17,7 @@ import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
 import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
@@ -64,16 +64,16 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 	private void validate(Object object, CRUDEventType trigger){
 		try {
 			if (object == null) {
-				logger.warn("Nothing to validate (entity is null)");
+				logger.debug("Nothing to validate (entity is null)");
 				return;
 			}
-			if (!(object instanceof CdmBase)) {
+			if (!(object instanceof ICdmBase)) {
 				if (object.getClass() != HashMap.class) {
-					logger.warn("Level-2 validation bypassed for entities of type " + object.getClass().getName());
+					logger.debug("Level-2 validation bypassed for entities of type " + object.getClass().getName());
 				}
 				return;
 			}
-			CdmBase entity = (CdmBase) object;
+			ICdmBase entity = (ICdmBase) object;
 			Level2ValidationTask task = new Level2ValidationTask(entity, trigger, dao);
 			validationExecutor.execute(task);
 		}

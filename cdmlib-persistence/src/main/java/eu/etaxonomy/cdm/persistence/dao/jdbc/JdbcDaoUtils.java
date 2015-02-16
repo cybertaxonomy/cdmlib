@@ -64,6 +64,10 @@ public class JdbcDaoUtils {
      */
     public static void commit(DataSource datasource) {
         try {
+            if (datasource.getConnection().getAutoCommit()) {
+                logger.debug("Commit request ignored (autocommit=true)");
+                return;
+            }
             if (datasource instanceof ICdmDataSource) {
                 ((ICdmDataSource) datasource).commitTransaction();
             } else {
@@ -84,6 +88,10 @@ public class JdbcDaoUtils {
      */
     public static void rollback(DataSource datasource) {
         try {
+            if (datasource.getConnection().getAutoCommit()) {
+                logger.debug("Rollback request ignored (autocommit=true)");
+                return;
+            }
             if (datasource instanceof ICdmDataSource) {
                 ((ICdmDataSource) datasource).rollback();
             } else if (!datasource.getConnection().getAutoCommit()) {

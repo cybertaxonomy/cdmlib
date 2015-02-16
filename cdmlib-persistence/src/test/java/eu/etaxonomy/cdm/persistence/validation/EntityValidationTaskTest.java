@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * Basically just tests that the JSR-303 validation is working in the first place, and
@@ -68,14 +68,14 @@ public class EntityValidationTaskTest {
 		// Validate
 		Level2ValidationTask task = new Level2ValidationTask(emp, null);
 		task.setValidator(factory.getValidator());
-		Set<ConstraintViolation<CdmBase>> violations = task.validate();
+		Set<ConstraintViolation<ICdmBase>> violations = task.validate();
 
 		Assert.assertEquals("Expecting three validation errors", 2, violations.size());
 
 		// Test that validation failed where we expected it to fail
 		String[] paths = new String[violations.size()];
 		int i = 0;
-		for (ConstraintViolation<CdmBase> cv : violations) {
+		for (ConstraintViolation<ICdmBase> cv : violations) {
 			paths[i++] = cv.getPropertyPath().toString();
 		}
 		Arrays.sort(paths);
@@ -95,7 +95,7 @@ public class EntityValidationTaskTest {
 		one.setLastName("smith");
 		Level3ValidationTask task = new Level3ValidationTask(one, null);
 		task.setValidator(factory.getValidator());
-		Set<ConstraintViolation<CdmBase>> violations = task.validate();
+		Set<ConstraintViolation<ICdmBase>> violations = task.validate();
 		Assert.assertEquals(violations.size(), 1);
 		// Assert that validation failed where we expected it to fail.
 		Assert.assertEquals(violations.iterator().next().getInvalidValue(), "smith");
