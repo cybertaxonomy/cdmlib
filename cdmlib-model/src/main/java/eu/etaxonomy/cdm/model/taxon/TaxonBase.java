@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -345,6 +346,13 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
         }
 
 
+    }
+
+    /**
+     * @return
+     */
+    public Rank getNullSafeRank() {
+        return name == null ? null : name.getRank();
     }
 
 

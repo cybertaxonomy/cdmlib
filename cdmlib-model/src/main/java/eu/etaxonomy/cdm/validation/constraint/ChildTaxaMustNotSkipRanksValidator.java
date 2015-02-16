@@ -26,18 +26,25 @@ public class ChildTaxaMustNotSkipRanksValidator implements
 	@Override
     public boolean isValid(TaxonNode taxonNode, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
-		Taxon parent = taxonNode.getParent().getTaxon();
-		Taxon child = taxonNode.getTaxon();
 
+	    try{
+	        Taxon parent = taxonNode.getParent() == null ? null : taxonNode.getParent().getTaxon();
+	        Rank parentRank = parent == null ? null : parent.getNullSafeRank();
+	        Rank childRank = taxonNode.getNullSafeRank();
 
-		if(parent.getName().getRank().isSupraGeneric() && child.getName().getRank().isLower(Rank.GENUS())) {
-			valid = false;
-			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
-		} else if(parent.getName().getRank().isHigher(Rank.SPECIES()) && child.getName().getRank().isLower(Rank.SPECIES())) {
-			valid = false;
-			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
-		}
-
+    	    if (parent != null  && parent.getName() != null && childRank != null ) {
+                if(parent.getName().isSupraGeneric() && childRank.isLower(Rank.GENUS())) {
+        			valid = false;
+        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+        		} else if(parentRank != null && parentRank.isHigher(Rank.SPECIES())
+        		        && childRank.isLower(Rank.SPECIES())) {
+        			valid = false;
+        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+        		}
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 		return valid;
 	}
 }

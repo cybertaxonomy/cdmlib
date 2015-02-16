@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
@@ -791,6 +792,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	public boolean hasTaxon() {
 		return (taxon!= null);
 	}
+
+    /**
+     * @return
+     */
+    public Rank getNullSafeRank() {
+        return hasTaxon() ? getTaxon().getNullSafeRank() : null;
+    }
 
 
 

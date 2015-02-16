@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
 
@@ -25,15 +25,20 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
 	@Override
     public boolean isValid(TaxonNode taxonNode, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
-		Taxon parent = taxonNode.getParent().getTaxon();
-		Taxon child = taxonNode.getTaxon();
-
-
-		if(parent.getName().getRank().equals(child.getName().getRank()) || parent.getName().getRank().isLower(child.getName().getRank())) {
-			valid = false;
-			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
-		}
+        try {
+            Rank parentRank = taxonNode.getParent() == null ? null : taxonNode.getParent().getNullSafeRank();
+            Rank childRank = taxonNode.getNullSafeRank();
+            if (parentRank != null && childRank != null ){
+                if(parentRank.equals(childRank) || parentRank.isLower(childRank)) {
+                    valid = false;
+                    constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 		return valid;
 	}
+
 }
