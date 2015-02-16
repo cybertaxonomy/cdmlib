@@ -101,6 +101,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
             }
         } catch (Throwable t) {
             logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
+            t.printStackTrace();
         }
     }
 

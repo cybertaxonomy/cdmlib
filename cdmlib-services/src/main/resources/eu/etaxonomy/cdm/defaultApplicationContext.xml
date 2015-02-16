@@ -25,7 +25,7 @@
 
   <bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>
 
-  <bean id="validationManager" class="eu.etaxonomy.cdm.api.validation.ValidationManager" scope="prototype"/>
+  <bean id="validationManager" class="eu.etaxonomy.cdm.api.validation.ValidationManager"/>
 
 
   <!-- TODO move to io -->

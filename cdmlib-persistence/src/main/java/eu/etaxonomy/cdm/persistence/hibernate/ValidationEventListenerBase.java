@@ -84,7 +84,7 @@ public abstract class ValidationEventListenerBase implements PostInsertEventList
         try {
            if (!(object instanceof CdmBase)) {
                 if (object.getClass() != HashMap.class) {
-                    logger.warn(levelString() + " validation bypassed for entities of type " + object.getClass().getName());
+                    if(logger.isDebugEnabled()){ logger.debug(levelString() + " validation bypassed for entities of type " + object.getClass().getName());}
                 }
                 return;
             }

@@ -46,7 +46,10 @@ class Level3TransactionalValidationTask extends Level3ValidationTask {
             TransactionStatus tx = repository.startTransaction(true);
             //TODO what if getEntity() is not CdmBase?
             CdmBase cdmBase = CdmBase.deproxy(getEntity(), CdmBase.class);
-            repository.getCommonService().updateEntity(cdmBase);
+            repository.getCommonService().find(cdmBase.getId());
+            //was but create Entity in 2 open sessions error
+            //not sure if the above works, should set the entity, but allowing to do so is critical the id is part of hash function, so we have to make sure that only entities with the same id can be replaced
+//            repository.getCommonService().updateEntity(cdmBase);
             Set<ConstraintViolation<ICdmBase>> result = super.validate();
             repository.commitTransaction(tx);
             return result;

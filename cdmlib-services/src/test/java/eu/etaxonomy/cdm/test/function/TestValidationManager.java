@@ -33,7 +33,7 @@ public class TestValidationManager {
         String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\testValidation2";
         String username = "sa";
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("validationTest", username, "", path,   NomenclaturalCode.ICNAFP);
-        dataSource = getMySQLDatasource(schema);
+//        dataSource = getMySQLDatasource(schema);
 
 
         //CdmPersistentDataSource.save(dataSource.getName(), dataSource);

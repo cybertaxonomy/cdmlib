@@ -18,6 +18,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -34,10 +35,13 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
  *
  */
 @Component
+@Lazy(false)
 public class ValidationManager {
 
     private final boolean level2Enabled = false;
     private final boolean level3Enabled = false;
+
+    private boolean isInitialized  = false;
 
     private Level2ValidationEventListener l2Listener;
     private Level3ValidationEventListener l3Listener;
@@ -56,44 +60,48 @@ public class ValidationManager {
 
     @PostConstruct
     public void registerValidationListeners(){
-        if (sessionFactory != null && sessionFactory instanceof SessionFactoryImpl){
-            ServiceRegistryImplementor serviceRegistry = ((SessionFactoryImpl)sessionFactory).getServiceRegistry();
+        if (!isInitialized){
+            if (sessionFactory != null && sessionFactory instanceof SessionFactoryImpl){
+                ServiceRegistryImplementor serviceRegistry = ((SessionFactoryImpl)sessionFactory).getServiceRegistry();
 
-            final EventListenerRegistry eventRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+                final EventListenerRegistry eventRegistry = serviceRegistry.getService(EventListenerRegistry.class);
 
-            //duplication strategy
-//            eventRegistry.addDuplicationStrategy(CdmListenerDuplicationStrategy.NewInstance);
-            eventRegistry.getEventListenerGroup(EventType.POST_INSERT);
+                //duplication strategy
+    //            eventRegistry.addDuplicationStrategy(CdmListenerDuplicationStrategy.NewInstance);
+                eventRegistry.getEventListenerGroup(EventType.POST_INSERT);
 
-            ValidationExecutor validationExecutor = new ValidationExecutor();
+                ValidationExecutor validationExecutor = new ValidationExecutor();
 
-            //level2
-            l2Listener = new Level2ValidationEventListener(validationDao);
-            l2Listener.setValidationExecutor(validationExecutor);
+                //level2
+                l2Listener = new Level2ValidationEventListener(validationDao);
+                l2Listener.setValidationExecutor(validationExecutor);
 
-            //level3
-            l3Listener = new Level3TransactionalValidationEventListener(cdmApplicationDefaultConfiguration, validationDao);
-            l3Listener.setValidationExecutor(validationExecutor);
+                //level3
+                l3Listener = new Level3TransactionalValidationEventListener(cdmApplicationDefaultConfiguration, validationDao);
+                l3Listener.setValidationExecutor(validationExecutor);
 
-            // prepend to register before or append to register after
+                // prepend to register before or append to register after
 
-            eventRegistry.appendListeners(EventType.POST_INSERT, l2Listener , l3Listener);
-            eventRegistry.appendListeners(EventType.POST_UPDATE, l2Listener , l3Listener);
-            //TODO don't we need l2Listener validation also for deleting the results?
-            eventRegistry.appendListeners(EventType.POST_DELETE, l3Listener);
+                eventRegistry.appendListeners(EventType.POST_INSERT, l2Listener , l3Listener);
+                eventRegistry.appendListeners(EventType.POST_UPDATE, l2Listener , l3Listener);
+                //TODO don't we need l2Listener validation also for deleting the results?
+                eventRegistry.appendListeners(EventType.POST_DELETE, l3Listener);
 
-        }else{
-            throw new RuntimeException("Session factory not available or not of type SessionFactoryImpl");
+                isInitialized = true;
+
+            }else{
+                throw new RuntimeException("Session factory not available or not of type SessionFactoryImpl");
+            }
         }
     }
 
     //for future use
-    private void enableLevel2Listener(boolean enable){
-
+    private void enableLevel2Listener(boolean enabled){
+        l2Listener.setEnabled(enabled);
     }
 
-    private void enableLevel3Listener(boolean enable){
-
+    private void enableLevel3Listener(boolean enabled){
+        l3Listener.setEnabled(enabled);
     }
 
 }

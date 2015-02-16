@@ -82,6 +82,7 @@ import org.apache.log4j.Logger;
  * @author ayco_holleman
  *
  */
+//maybe we want to make this a spring component ?
 public class ValidationExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
 	private static final Logger logger = Logger.getLogger(ValidationExecutor.class);
