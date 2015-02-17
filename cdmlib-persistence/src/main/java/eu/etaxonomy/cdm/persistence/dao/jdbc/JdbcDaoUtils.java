@@ -64,10 +64,10 @@ public class JdbcDaoUtils {
      */
     public static void commit(DataSource datasource) {
         try {
-//            if (datasource.getConnection().getAutoCommit()) {
-//                logger.debug("Commit request ignored (autocommit=true)");
-//                return;
-//            }
+            if (datasource.getConnection().getAutoCommit()) {
+                logger.debug("Commit request ignored (autocommit=true)");
+                return;
+            }
             if (datasource instanceof ICdmDataSource) {
                 ((ICdmDataSource) datasource).commitTransaction();
             } else {
