@@ -59,7 +59,9 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
     			}
 			}
         }
-//		}
+		if (!valid){
+		    constraintContext.disableDefaultConstraintViolation();
+		}
 		return valid;
 	}
 }
