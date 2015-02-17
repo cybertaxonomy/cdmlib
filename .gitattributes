@@ -965,6 +965,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/CRUDEventType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityConstraintViolation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityValidationResult.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityValidationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/Severity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecord.java -text
