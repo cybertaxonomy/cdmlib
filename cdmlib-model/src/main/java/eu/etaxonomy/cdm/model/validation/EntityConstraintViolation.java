@@ -62,7 +62,6 @@ public class EntityConstraintViolation extends CdmBase {
         violation.setPropertyPath(propPath);
         violation.setInvalidValue(error.getInvalidValue() == null ? "NULL" : error.getInvalidValue().toString());
         violation.setMessage(error.getMessage());
-        String field = propPath;
         /*
          * Since I have changed CdmBase to implement ISelfDescriptive, this is a
          * redundant check, since only instances of CdmBase can be validated
@@ -74,9 +73,10 @@ public class EntityConstraintViolation extends CdmBase {
          */
         if (entity instanceof ISelfDescriptive) {
             ISelfDescriptive selfDescriptive = (ISelfDescriptive) entity;
-            violation.setUserFriendlyFieldName(selfDescriptive.getUserFriendlyFieldName(field));
-        } else {
-            violation.setPropertyPath(field);
+            violation.setUserFriendlyFieldName(selfDescriptive.getUserFriendlyFieldName(propPath));
+        }
+        else {
+        	violation.setUserFriendlyFieldName(propPath);
         }
         ConstraintDescriptor<?> metadata = error.getConstraintDescriptor();
         List<?> validators = metadata.getConstraintValidatorClasses();
