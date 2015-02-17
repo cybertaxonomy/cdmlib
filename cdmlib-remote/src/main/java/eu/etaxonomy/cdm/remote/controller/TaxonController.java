@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -212,8 +212,11 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     }
 
     @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
-    public ModelAndView doGetFieldUnits(
+    public Pager<FieldUnit> doGetFieldUnits(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetFieldUnits() - " + request.getRequestURI());
@@ -226,14 +229,12 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){
-            Collection<FieldUnit> associatedFieldUnits = occurrenceService.listFieldUnitsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, null);
-            mv.addObject(associatedFieldUnits);
-        } else {
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            return null;
-        }
+            PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+            pagerParams.normalizeAndValidate(response);
 
-        return mv;
+            return occurrenceService.pageFieldUnitsByAssociatedTaxon(null, (Taxon) tb, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+        }
+        return null;
     }
 
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
@@ -248,7 +249,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }
-    
+
     /**
      * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
      * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.

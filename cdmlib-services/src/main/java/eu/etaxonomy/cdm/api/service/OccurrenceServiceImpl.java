@@ -308,8 +308,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return pageFieldUnitsByAssociatedTaxon(null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageFieldUnitsByAssociatedTaxon(java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public Pager<FieldUnit> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
 
         if(!getSession().contains(associatedTaxon)){
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
@@ -317,11 +326,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
 
-        List<SpecimenOrObservationBase> records = pageByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for(SpecimenOrObservationBase<?> specimen:records){
             fieldUnits.addAll(getFieldUnits(specimen.getUuid()));
         }
-        return fieldUnits;
+        return new DefaultPagerImpl<FieldUnit>(pageNumber, fieldUnits.size(), pageSize, new ArrayList<FieldUnit>(fieldUnits));
     }
 
     @Override
