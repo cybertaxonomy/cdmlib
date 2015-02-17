@@ -308,7 +308,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<SpecimenOrObservationBase> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
         return pageFieldUnitsByAssociatedTaxon(null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
     }
 
@@ -316,7 +316,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageFieldUnitsByAssociatedTaxon(java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
-    public Pager<FieldUnit> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+    public Pager<SpecimenOrObservationBase> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
@@ -324,13 +324,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
-        Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
-
+        //gather the IDs of all relevant field units
+        Set<Integer> fieldUnitIds = new HashSet<Integer>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for(SpecimenOrObservationBase<?> specimen:records){
-            fieldUnits.addAll(getFieldUnits(specimen.getUuid()));
+            for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
+                fieldUnitIds.add(fieldUnit.getId());
+            }
         }
-        return new DefaultPagerImpl<FieldUnit>(pageNumber, fieldUnits.size(), pageSize, new ArrayList<FieldUnit>(fieldUnits));
+        //dao.listByIds() does the paging of the field units. Passing the field units directly to the Pager would not work
+        List<SpecimenOrObservationBase> fieldUnits = dao.listByIds(fieldUnitIds, pageSize, pageNumber, orderHints, propertyPaths);
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitIds.size(), pageSize, fieldUnits);
     }
 
     @Override

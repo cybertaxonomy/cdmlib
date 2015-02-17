@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -212,7 +211,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     }
 
     @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
-    public Pager<FieldUnit> doGetFieldUnits(
+    public Pager<SpecimenOrObservationBase> doGetFieldUnits(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
