@@ -1063,6 +1063,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 //********** Casting methods ***********************************/
 
+	/**
+	 * @return
+	 */
 	public IArticle castReferenceToArticle(){
 		setType(ReferenceType.Article);
 		return this;

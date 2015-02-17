@@ -58,10 +58,11 @@ public class EntityConstraintViolation extends CdmBase {
     public static <T extends ICdmBase> EntityConstraintViolation newInstance(T entity, ConstraintViolation<T> error) {
         EntityConstraintViolation violation = newInstance();
         violation.setSeverity(Severity.getSeverity(error));
-        violation.setPropertyPath(error.getPropertyPath().toString());
-        violation.setInvalidValue(error.getInvalidValue().toString());
+        String propPath = error.getPropertyPath() == null ? "-" : error.getPropertyPath().toString();
+        violation.setPropertyPath(propPath);
+        violation.setInvalidValue(error.getInvalidValue() == null ? "NULL" : error.getInvalidValue().toString());
         violation.setMessage(error.getMessage());
-        String field = error.getPropertyPath().toString();
+        String field = propPath;
         /*
          * Since I have changed CdmBase to implement ISelfDescriptive, this is a
          * redundant check, since only instances of CdmBase can be validated

@@ -31,6 +31,7 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
             if (parentRank != null && childRank != null ){
                 if(parentRank.equals(childRank) || parentRank.isLower(childRank)) {
                     valid = false;
+                    constraintContext.disableDefaultConstraintViolation();
                     constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
                 }
             }

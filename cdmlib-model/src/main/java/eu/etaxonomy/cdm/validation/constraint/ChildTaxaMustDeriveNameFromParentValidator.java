@@ -52,6 +52,9 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
                             constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("specificEpithet").addConstraintViolation();
                         }
                     }
+                    if (! valid){
+                        constraintContext.disableDefaultConstraintViolation();
+                    }
                 }
             }
 		}

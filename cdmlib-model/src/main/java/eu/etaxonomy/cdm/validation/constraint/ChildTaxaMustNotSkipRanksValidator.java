@@ -41,6 +41,9 @@ public class ChildTaxaMustNotSkipRanksValidator implements
         			valid = false;
         			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
         		}
+                if (!valid){
+                    constraintContext.disableDefaultConstraintViolation();
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
