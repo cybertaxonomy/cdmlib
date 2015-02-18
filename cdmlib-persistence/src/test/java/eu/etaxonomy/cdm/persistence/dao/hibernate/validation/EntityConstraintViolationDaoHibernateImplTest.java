@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
-@DataSet(value="EntityValidationResultDaoHibernateImplTest.xml")
+@DataSet(value="EntityValidationDaoHibernateImplTest.xml")
 public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegrationTest {
 
 	private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";

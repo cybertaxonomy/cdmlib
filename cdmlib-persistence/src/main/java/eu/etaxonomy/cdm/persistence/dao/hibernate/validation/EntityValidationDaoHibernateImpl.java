@@ -166,14 +166,14 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         for (ConstraintViolation<T> error : errors) {
             EntityConstraintViolation violation = EntityConstraintViolation.newInstance(validatedEntity, error);
             toResult.addEntityConstraintViolation(violation);
-            violation.setEntityValidationResult(toResult);
+            violation.setEntityValidation(toResult);
         }
     }
 
     @SuppressWarnings("unused")
     private void deletedErrorRecords(int validationResultId, Class<?>[] validationGroups) {
         StringBuilder sql = new StringBuilder(127);
-        sql.append("DELETE FROM EntityConstraintViolation ecv WHERE ecv.entityValidationResult.id = :id");
+        sql.append("DELETE FROM EntityConstraintViolation ecv WHERE ecv.entityValidation.id = :id");
         if (validationGroups != null && validationGroups.length != 0) {
             sql.append(" AND (");
             for (int i = 0; i < validationGroups.length; ++i) {

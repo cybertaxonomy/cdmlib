@@ -45,7 +45,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     public static final Logger logger = Logger.getLogger(EntityValidationCrudJdbcImpl.class);
 
-    private static final String SQL_INSERT_VALIDATION_RESULT = "INSERT INTO entityvalidationresult"
+    private static final String SQL_INSERT_VALIDATION_RESULT = "INSERT INTO entityvalidation"
             + "(id, created, uuid,  crudeventtype, validatedentityclass, validatedentityid,"
             + "validatedentityuuid, userfriendlydescription, userfriendlytypename, validationcount,"
             + "lastmodified, createdby_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -65,7 +65,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static final String SQL_INSERT_CONSTRAINT_VIOLATION = "INSERT INTO entityconstraintviolation"
             + "(id, created, uuid,  invalidvalue, message, propertypath, userfriendlyfieldname, severity,"
-            + "validator, validationgroup, createdby_id, entityvalidationresult_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            + "validator, validationgroup, createdby_id, entityvalidation_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final int cv_id = 1;
     private static final int cv_created = 2;
@@ -78,7 +78,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
     private static final int cv_validator = 9;
     private static final int cv_validationgroup = 10;
     private static final int cv_createdby_id = 11;
-    private static final int cv_entityvalidationresult_id = 12;
+    private static final int cv_entityvalidation_id = 12;
 
     @Autowired
     private DataSource datasource;
@@ -108,7 +108,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
             if (previousResult == null) {
                 /*
                  * The entity has never been validated before. We should now
-                 * create an entityvalidationresult record whether or not the
+                 * create an entityvalidation record whether or not the
                  * entity has errors, because the entity HAS been validated so
                  * its validationcount is now 1.
                  */
@@ -151,7 +151,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
     private static void deletedErrorRecords(Connection conn, int validationResultId, Class<?>[] validationGroups)
             throws SQLException {
         StringBuilder sql = new StringBuilder(127);
-        sql.append("DELETE FROM entityconstraintviolation WHERE entityvalidationresult_id = ?");
+        sql.append("DELETE FROM entityconstraintviolation WHERE entityvalidation_id = ?");
         if (validationGroups != null && validationGroups.length != 0) {
             sql.append(" AND (");
             for (int i = 0; i < validationGroups.length; ++i) {
@@ -180,12 +180,12 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
     private static <T extends ICdmBase> int saveValidationResultRecord(Connection conn, T entity,
             CRUDEventType crudEventType) throws SQLException {
         PreparedStatement stmt = null;
-        int validationResultId;
+        int entityValidationId;
         try {
             stmt = conn.prepareStatement(SQL_INSERT_VALIDATION_RESULT);
-            validationResultId = 10 + JdbcDaoUtils.fetchInt(conn, "SELECT MAX(id) FROM entityvalidationresult");
+            entityValidationId = 10 + JdbcDaoUtils.fetchInt(conn, "SELECT MAX(id) FROM entityvalidation");
             EntityValidation validationResult = EntityValidation.newInstance(entity, crudEventType);
-            stmt.setInt(vr_id, validationResultId);
+            stmt.setInt(vr_id, entityValidationId);
             stmt.setDate(vr_created, new Date(validationResult.getCreated().getMillis()));
             stmt.setString(vr_uuid, validationResult.getUuid().toString());
             stmt.setString(vr_crudeventtype, validationResult.getCrudEventType().toString());
@@ -205,12 +205,12 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
         } finally {
             JdbcDaoUtils.close(stmt);
         }
-        return validationResultId;
+        return entityValidationId;
     }
 
     private static void updateValidationResultRecord(Connection conn, int validationResultId,
             CRUDEventType crudEventType) throws SQLException {
-        String sql = "UPDATE entityvalidationresult SET crudeventtype=?, "
+        String sql = "UPDATE entityvalidation SET crudeventtype=?, "
                 + " validationcount = validationcount + 1, lastmodified=? WHERE id=?";
         PreparedStatement stmt = null;
         try {
@@ -225,7 +225,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
     }
 
     private static void deleteValidationResultRecord(Connection conn, int validationResultId) throws SQLException {
-        String sql = "DELETE FROM entityvalidationresult WHERE id = ?";
+        String sql = "DELETE FROM entityvalidation WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, validationResultId);
         stmt.executeUpdate();
@@ -254,7 +254,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
                 } else {
                     stmt.setNull(cv_createdby_id, Types.INTEGER);
                 }
-                stmt.setInt(cv_entityvalidationresult_id, validationResultId);
+                stmt.setInt(cv_entityvalidation_id, validationResultId);
                 stmt.executeUpdate();
             }
         } finally {
@@ -283,7 +283,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static <T extends ICdmBase> EntityValidation getValidationResultRecord(Connection conn,
             String validatedEntityClass, int validatedEntityId) throws SQLException {
-        String sql = "SELECT * FROM entityvalidationresult WHERE validatedentityclass=? AND validatedentityid=?";
+        String sql = "SELECT * FROM entityvalidation WHERE validatedentityclass=? AND validatedentityid=?";
         EntityValidation result = null;
         PreparedStatement stmt = null;
         try {
@@ -315,7 +315,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static int getValidationResultId(Connection conn, String validatedEntityClass, int validatedEntityId)
             throws SQLException {
-        String sql = "SELECT id FROM entityvalidationresult WHERE validatedentityclass = ? AND validatedentityid = ?";
+        String sql = "SELECT id FROM entityvalidation WHERE validatedentityclass = ? AND validatedentityid = ?";
         PreparedStatement stmt = null;
         int result = -1;
         try {
@@ -335,7 +335,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static Set<EntityConstraintViolation> getErrorRecords(Connection conn, int validationResultId)
             throws SQLException {
-        String sql = "SELECT * FROM entityconstraintviolation WHERE entityvalidationresult_id=?";
+        String sql = "SELECT * FROM entityconstraintviolation WHERE entityvalidation_id=?";
         PreparedStatement stmt = null;
         Set<EntityConstraintViolation> errors = new HashSet<EntityConstraintViolation>();
         try {

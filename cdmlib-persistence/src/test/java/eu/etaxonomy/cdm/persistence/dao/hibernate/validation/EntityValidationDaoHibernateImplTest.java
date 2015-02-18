@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.validation.Level2;
 
 @DataSet
-public class EntityValidationResultDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
@@ -104,7 +104,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     }
 
     @Test
-    public void testGetEntityValidationResult() {
+    public void testGetEntityValidation() {
         EntityValidation result;
 
         result = dao.getEntityValidation(MEDIA, 100);
@@ -133,7 +133,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     }
 
     @Test
-    public void testGetEntityValidationResults_String() {
+    public void testGetEntityValidations_String() {
         List<EntityValidation> results;
 
         results = dao.getEntityValidations(MEDIA);
@@ -171,7 +171,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     }
 
     @Test
-    public void testGetEntityValidationResults_String_Severity() {
+    public void testGetEntityValidations_String_Severity() {
         List<EntityValidation> results;
 
         results = dao.getEntityValidations(MEDIA, Severity.NOTICE);
@@ -204,7 +204,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     }
 
     @Test
-    public void testGetEntityValidationResults_Severity() {
+    public void testGetEntityValidations_Severity() {
         List<EntityValidation> results;
         results = dao.getEntityValidations(Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 1, results.size());

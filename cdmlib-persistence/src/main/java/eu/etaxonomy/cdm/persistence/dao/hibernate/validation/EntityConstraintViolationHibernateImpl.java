@@ -42,8 +42,8 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
     public List<EntityConstraintViolation> getConstraintViolations() {
         // @formatter:off
         Query query = getSession().createQuery(
-                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidationResult vr "
-                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
+                        + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId");
         // @formatter:on
         @SuppressWarnings("unchecked")
         List<EntityConstraintViolation> result = query.list();
@@ -54,9 +54,9 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
     public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass) {
         // @formatter:off
         Query query = getSession().createQuery(
-                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidationResult vr "
-                        + "WHERE vr.validatedEntityClass = :cls "
-                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
+                        + "WHERE ev.validatedEntityClass = :cls "
+                        + "ORDER BY ev.validatedEntityClass, vr.validatedEntityId");
         // @formatter:on
         query.setString("cls", validatedEntityClass);
         @SuppressWarnings("unchecked")
@@ -68,9 +68,9 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
     public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass, Severity severity) {
         // @formatter:off
         Query query = getSession().createQuery(
-                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidationResult vr "
-                        + "WHERE vr.validatedEntityClass = :cls " + "AND cv.severity = :severity "
-                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
+                        + "WHERE ev.validatedEntityClass = :cls " + "AND cv.severity = :severity "
+                        + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId");
         // @formatter:on
         query.setString("cls", validatedEntityClass);
         query.setString("severity", severity.toString());
@@ -83,8 +83,8 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
     public List<EntityConstraintViolation> getConstraintViolations(Severity severity) {
         // @formatter:off
         Query query = getSession().createQuery(
-                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidationResult vr "
-                        + "WHERE cv.severity = :severity " + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+                "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
+                        + "WHERE cv.severity = :severity " + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId");
         // @formatter:on
         query.setString("severity", severity.toString());
         @SuppressWarnings("unchecked")

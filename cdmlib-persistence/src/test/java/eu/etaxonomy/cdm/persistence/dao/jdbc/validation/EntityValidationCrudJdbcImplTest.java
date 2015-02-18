@@ -28,10 +28,7 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -50,7 +47,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  *
  */
 @DataSet
-public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
+public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
@@ -59,50 +56,30 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
     /**
      * @throws java.lang.Exception
      */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationResultCrudJdbcImpl()}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationCrudJdbcImpl()}
      * .
      */
     @SuppressWarnings("unused")
     @Test
-    public void test_EntityValidationResultCrudJdbcImpl() {
+    public void testEntityValidationCrudJdbcImpl() {
         new EntityValidationCrudJdbcImpl();
     }
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationResultCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
      * .
      */
     @SuppressWarnings("unused")
     @Test
-    public void test_EntityValidationResultCrudJdbcImplI_CdmDataSource() {
+    public void test_EntityValidationCrudJdbcImplI_CdmDataSource() {
         new EntityValidationCrudJdbcImpl(dataSource);
     }
 
@@ -170,7 +147,7 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
     }
 
     @Test
-    public void testGetEntityValidationResult() {
+    public void testGetEntityValidation() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         EntityValidation result;
 
