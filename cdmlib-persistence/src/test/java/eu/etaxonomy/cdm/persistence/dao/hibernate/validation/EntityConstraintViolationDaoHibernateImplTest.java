@@ -27,15 +27,13 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 
 
 	@Test
-	public void init()
-	{
+	public void init(){
 		assertNotNull("Expecting an instance of IEntityConstraintViolationDao", dao);
 	}
 
 
 	@Test
-	public void testGetConstraintViolations_String()
-	{
+	public void testGetConstraintViolations_String(){
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA);
@@ -53,8 +51,7 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 
 
 	@Test
-	public void testGetConstraintViolations_String_Severity()
-	{
+	public void testGetConstraintViolations_String_Severity(){
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA, Severity.NOTICE);
@@ -87,5 +84,4 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 	public void createTestDataSet() throws FileNotFoundException {
 		// TODO Auto-generated method stub
 	}
-
 }
