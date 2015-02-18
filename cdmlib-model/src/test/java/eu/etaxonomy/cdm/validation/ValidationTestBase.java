@@ -33,11 +33,22 @@ public abstract class ValidationTestBase {
         validator = validatorFactory.getValidator();
     }
 
-    protected void assertNoConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+
+    protected void validateHasConstraint(Object cdmBase, Class validatorClass, Class group) {
+        Set<ConstraintViolation<Object>> constraintViolations  = validator.validate(cdmBase, group);
+        assertHasConstraintOnValidator(constraintViolations, validatorClass);
+    }
+
+    protected void validateHasNoConstraint(Object cdmBase, Class validatorClass, Class group) {
+        Set<ConstraintViolation<Object>> constraintViolations  = validator.validate(cdmBase, group);
+        assertNoConstraintOnValidator(constraintViolations, validatorClass);
+    }
+
+    protected void assertNoConstraintOnValidator(Set<ConstraintViolation<Object>> constraintViolations, Class validatorClass) {
         assertHasConstraintOnValidator(constraintViolations, validatorClass, false);
     }
 
-    protected void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+    protected void assertHasConstraintOnValidator(Set<ConstraintViolation<Object>> constraintViolations, Class validatorClass) {
         assertHasConstraintOnValidator(constraintViolations, validatorClass, true);
     }
 
@@ -45,7 +56,7 @@ public abstract class ValidationTestBase {
      * @param constraintViolations
      * @return
      */
-    protected void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass, boolean requiresViolation) {
+    private void assertHasConstraintOnValidator(Set<ConstraintViolation<Object>> constraintViolations, Class validatorClass, boolean requiresViolation) {
         boolean hasViolation = false;
         for (ConstraintViolation<?> violation : constraintViolations){
             Class<?> validatedValidatorClass = violation.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next();

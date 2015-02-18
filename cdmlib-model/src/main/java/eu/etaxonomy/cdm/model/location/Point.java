@@ -21,6 +21,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * @author m.doering
@@ -65,10 +67,12 @@ public class Point implements Cloneable, Serializable {
     //TODO was Float but H2 threw errors
     @XmlElement(name = "Longitude")
     @Longitude(of="point")
+    @NotNull(groups = Level2.class)
     private Double longitude;
 
     @XmlElement(name = "Latitude")
     @Latitude(of="point")
+    @NotNull(groups = Level2.class)
     private Double latitude;
 
     /**
