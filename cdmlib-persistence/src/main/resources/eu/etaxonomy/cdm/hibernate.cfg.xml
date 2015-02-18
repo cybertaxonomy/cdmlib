@@ -193,7 +193,7 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
       
       <!-- Validation Package -->
-      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidationResult"/>
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidation"/>
       <mapping class="eu.etaxonomy.cdm.model.validation.EntityConstraintViolation"/>
       
       <!-- View Package -->
