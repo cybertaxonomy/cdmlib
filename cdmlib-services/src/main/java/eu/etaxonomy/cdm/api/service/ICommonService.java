@@ -20,10 +20,10 @@ import org.hibernate.collection.spi.PersistentCollection;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
-public interface ICommonService extends IService<OriginalSourceBase>{
+public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 //
 //	/** find cdmBase by UUID**/
 //	public abstract CdmBase getCdmBaseByUuid(UUID uuid);
@@ -193,5 +193,17 @@ public interface ICommonService extends IService<OriginalSourceBase>{
     void updateEntity(CdmBase cdmBase);
 
 
+    /**
+     * Generic method to retrieve a list of objects. Use only if no specific service class
+     * can be used.
+     * @param type
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @see IService#list(Class, Integer, Integer, List, List)
+     * @return
+     */
+    public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

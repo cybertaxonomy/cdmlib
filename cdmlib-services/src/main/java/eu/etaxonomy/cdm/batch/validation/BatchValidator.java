@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.validation.Level3;
  * @date 27 jan. 2015
  *
  */
+//@Component
 public class BatchValidator implements Runnable {
 
     static final Class<?>[] DEFAULT_VALIDATION_GROUPS = new Class<?>[] { Level2.class, Level3.class };
@@ -53,7 +55,7 @@ public class BatchValidator implements Runnable {
         }
 
         // Get service for saving errors to database
-        IEntityValidationService validationResultService = context.getEntityValidationResultService();
+        IEntityValidationService validationResultService = context.getEntityValidationService();
 
         // Get all services dealing with "real" entities
         List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(context);

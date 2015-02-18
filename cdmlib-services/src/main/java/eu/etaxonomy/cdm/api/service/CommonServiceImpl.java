@@ -26,11 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -43,22 +43,15 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalSourceDao> implements ICommonService {
+public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/ implements ICommonService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
 	@Autowired
-	IOriginalSourceDao originalSourceDao;
+	private IOriginalSourceDao originalSourceDao;
 
 	@Autowired
-	ICdmGenericDao genericDao;
-
-
-	@Override
-    @Autowired
-	protected void setDao(IOriginalSourceDao dao) {
-		this.dao = dao;
-	}
+	private ICdmGenericDao genericDao;
 
 	@Override
 	public CdmBase find(Class<? extends CdmBase> clazz, int id){
@@ -234,18 +227,6 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 
 
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-//	 */
-//	@Override
-//	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
-//			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-//			List<String> propertyPaths) {
-//		logger.warn("Not yet implemented");
-//		return null;
-//	}
-
 	@Transactional(readOnly = false)
 	@Override
 	public void saveAllMetaData(Collection<CdmMetaData> metaData) {
@@ -314,6 +295,10 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
     @Override
     public void updateEntity(CdmBase cdmBase) {
         genericDao.update(cdmBase);
+    }
+
+    public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
+        return genericDao.list(type,limit, start, orderHints,propertyPaths);
     }
 
 

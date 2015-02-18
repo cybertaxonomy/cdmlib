@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -72,7 +71,7 @@ class BatchValidationUtil {
         services.add(new EntityValidationUnit(Amplification.class, appConfig.getAmplificationService()));
         services.add(new EntityValidationUnit(Classification.class, appConfig.getClassificationService()));
         services.add(new EntityValidationUnit(Collection.class, appConfig.getCollectionService()));
-        services.add(new EntityValidationUnit(OriginalSourceBase.class, appConfig.getCommonService()));
+//        services.add(new EntityValidationUnit(OriginalSourceBase.class, appConfig.getCommonService()));
         services.add(new EntityValidationUnit(DescriptionBase.class, appConfig.getDescriptionService()));
         services.add(new EntityValidationUnit(FeatureNode.class, appConfig.getFeatureNodeService()));
         services.add(new EntityValidationUnit(FeatureTree.class, appConfig.getFeatureTreeService()));
