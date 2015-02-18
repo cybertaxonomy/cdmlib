@@ -56,7 +56,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
         Query query = getSession().createQuery(
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "WHERE ev.validatedEntityClass = :cls "
-                        + "ORDER BY ev.validatedEntityClass, vr.validatedEntityId");
+                        + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId");
         // @formatter:on
         query.setString("cls", validatedEntityClass);
         @SuppressWarnings("unchecked")
