@@ -13,7 +13,7 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
  * @author ayco_holleman
  *
  */
-public interface IEntityValidationResultDao extends IEntityValidationResultCrud, ICdmEntityDao<EntityValidationResult> {
+public interface IEntityValidationDao extends IEntityValidationCrud, ICdmEntityDao<EntityValidation> {
 
     /**
      * Get the validation result for a particular entity.
@@ -43,19 +43,19 @@ public interface IEntityValidationResultDao extends IEntityValidationResultCrud,
      *            The fully qualified class name of the entity's class.
      * @param validatedEntityId
      *            The id of the entity
-     * @return The {@code EntityValidationResult} or null if the entity has not
+     * @return The {@code EntityValidation} or null if the entity has not
      *         been validated yet
      *
      */
-    EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId);
+    EntityValidation getEntityValidation(String validatedEntityClass, int validatedEntityId);
 
     /**
      * Get all validation results for all validated entities. The results are
      * sorted according the type and id of the validated entities.
      *
-     * @return The {@code EntityValidationResult}s
+     * @return The {@code EntityValidation}s
      */
-    List<EntityValidationResult> getValidationResults();
+    List<EntityValidation> getEntityValidations();
 
     /**
      * Get all validation results for all validated entities of the specified
@@ -65,9 +65,9 @@ public interface IEntityValidationResultDao extends IEntityValidationResultCrud,
      * @param validatedEntityClass
      *            The fully qualified class name of the entity class
      *
-     * @return The {@code EntityValidationResult}s
+     * @return The {@code EntityValidation}s
      */
-    List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass);
+    List<EntityValidation> getEntityValidations(String validatedEntityClass);
 
     /**
      * Get all entities that violated a particular constraint. The results are
@@ -81,9 +81,9 @@ public interface IEntityValidationResultDao extends IEntityValidationResultCrud,
      *            The fully qualified class name of the
      *            {@link ConstraintValidator}.
      *
-     * @return The {@code EntityValidationResult}s
+     * @return The {@code EntityValidation}s
      */
-    List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass);
+    List<EntityValidation> getEntitiesViolatingConstraint(String validatorClass);
 
     /**
      * Get all validation results for all entities of the specified type. Only
@@ -95,11 +95,11 @@ public interface IEntityValidationResultDao extends IEntityValidationResultCrud,
      *            The fully qualified class name of the entity class.
      * @param severity
      *            The severity of the {@link EntityConstraintViolation}s
-     *            associated with the {@code EntityValidationResult}
+     *            associated with the {@code EntityValidation}
      *
-     * @return The {@code EntityValidationResult}s
+     * @return The {@code EntityValidation}s
      */
-    List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity);
+    List<EntityValidation> getEntityValidations(String validatedEntityClass, Severity severity);
 
     /**
      * Get all validation results. Only constraint violations of the specified
@@ -108,10 +108,10 @@ public interface IEntityValidationResultDao extends IEntityValidationResultCrud,
      *
      * @param severity
      *            The severity of the {@link EntityConstraintViolation}s
-     *            associated with the {@code EntityValidationResult}
+     *            associated with the {@code EntityValidation}
      *
-     * @return The {@code EntityValidationResult}s
+     * @return The {@code EntityValidation}s
      */
-    List<EntityValidationResult> getValidationResults(Severity severity);
+    List<EntityValidation> getEntityValidations(Severity severity);
 
 }

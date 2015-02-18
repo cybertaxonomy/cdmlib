@@ -30,10 +30,10 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.jdbc.JdbcDaoUtils;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 
 /**
  * @author ayco_holleman
@@ -41,9 +41,9 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
  *
  */
 @Repository
-public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResultCrud {
+public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
-    public static final Logger logger = Logger.getLogger(EntityValidationResultCrudJdbcImpl.class);
+    public static final Logger logger = Logger.getLogger(EntityValidationCrudJdbcImpl.class);
 
     private static final String SQL_INSERT_VALIDATION_RESULT = "INSERT INTO entityvalidationresult"
             + "(id, created, uuid,  crudeventtype, validatedentityclass, validatedentityid,"
@@ -83,11 +83,11 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     @Autowired
     private DataSource datasource;
 
-    public EntityValidationResultCrudJdbcImpl() {
+    public EntityValidationCrudJdbcImpl() {
 
     }
 
-    public EntityValidationResultCrudJdbcImpl(DataSource datasource) {
+    public EntityValidationCrudJdbcImpl(DataSource datasource) {
         this.datasource = datasource;
     }
 
@@ -96,14 +96,14 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     }
 
     @Override
-    public <T extends ICdmBase> void saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors,
+    public <T extends ICdmBase> void saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors,
             CRUDEventType crudEventType, Class<?>[] validationGroups) {
         try {
             Connection conn = datasource.getConnection();
             JdbcDaoUtils.startTransaction(datasource);
             String entityClass = validatedEntity.getClass().getName();
             int entityId = validatedEntity.getId();
-            EntityValidationResult previousResult = getValidationResultRecord(conn, entityClass, entityId);
+            EntityValidation previousResult = getValidationResultRecord(conn, entityClass, entityId);
             if (previousResult == null) {
                 /*
                  * The entity has never been validated before. We should now
@@ -130,7 +130,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     }
 
     @Override
-    public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
+    public void deleteEntityValidation(String validatedEntityClass, int validatedEntityId) {
         try {
             Connection conn = datasource.getConnection();
             JdbcDaoUtils.startTransaction(datasource);
@@ -182,7 +182,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         try {
             stmt = conn.prepareStatement(SQL_INSERT_VALIDATION_RESULT);
             validationResultId = 10 + JdbcDaoUtils.fetchInt(conn, "SELECT MAX(id) FROM entityvalidationresult");
-            EntityValidationResult validationResult = EntityValidationResult.newInstance(entity, crudEventType);
+            EntityValidation validationResult = EntityValidation.newInstance(entity, crudEventType);
             stmt.setInt(vr_id, validationResultId);
             stmt.setDate(vr_created, new Date(validationResult.getCreated().getMillis()));
             stmt.setString(vr_uuid, validationResult.getUuid().toString());
@@ -261,11 +261,11 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
     }
 
     // Called by unit test
-    EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId) {
+    EntityValidation getValidationResult(String validatedEntityClass, int validatedEntityId) {
         try {
             Connection conn = datasource.getConnection();
             JdbcDaoUtils.startTransaction(datasource);
-            EntityValidationResult result = getValidationResultRecord(conn, validatedEntityClass, validatedEntityId);
+            EntityValidation result = getValidationResultRecord(conn, validatedEntityClass, validatedEntityId);
             if (result != null) {
                 result.setEntityConstraintViolations(getErrorRecords(conn, result.getId()));
             }
@@ -278,10 +278,10 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
         }
     }
 
-    private static <T extends ICdmBase> EntityValidationResult getValidationResultRecord(Connection conn,
+    private static <T extends ICdmBase> EntityValidation getValidationResultRecord(Connection conn,
             String validatedEntityClass, int validatedEntityId) throws SQLException {
         String sql = "SELECT * FROM entityvalidationresult WHERE validatedentityclass=? AND validatedentityid=?";
-        EntityValidationResult result = null;
+        EntityValidation result = null;
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
@@ -289,7 +289,7 @@ public class EntityValidationResultCrudJdbcImpl implements IEntityValidationResu
             stmt.setInt(2, validatedEntityId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                result = EntityValidationResult.newInstance();
+                result = EntityValidation.newInstance();
                 result.setId(rs.getInt("id"));
                 result.setCreated(new DateTime(rs.getDate("created").getTime()));
                 result.setUuid(UUID.fromString(rs.getString("uuid")));

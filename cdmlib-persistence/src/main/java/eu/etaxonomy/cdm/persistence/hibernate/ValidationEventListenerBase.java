@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 
@@ -36,11 +36,11 @@ public abstract class ValidationEventListenerBase implements PostInsertEventList
 
     private ValidationExecutor validationExecutor;
 
-    private final IEntityValidationResultCrud dao;
+    private final IEntityValidationCrud dao;
 
     private boolean enabled = true;
 
-    protected ValidationEventListenerBase(IEntityValidationResultCrud dao){
+    protected ValidationEventListenerBase(IEntityValidationCrud dao){
         this.dao = dao;
     }
 
@@ -66,7 +66,7 @@ public abstract class ValidationEventListenerBase implements PostInsertEventList
     /**
      * @return the dao
      */
-    protected IEntityValidationResultCrud getDao() {
+    protected IEntityValidationCrud getDao() {
         return dao;
     }
 

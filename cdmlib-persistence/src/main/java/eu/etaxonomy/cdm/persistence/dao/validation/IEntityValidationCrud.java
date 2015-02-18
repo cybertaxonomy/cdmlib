@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.validation.CRUDEventType;
  * @date 09.01.2015
  *
  */
-public interface IEntityValidationResultCrud {
+public interface IEntityValidationCrud {
 
     /**
      * Save the result of an entity validation to the error tables. Errors from
@@ -51,7 +51,7 @@ public interface IEntityValidationResultCrud {
      *            The CRUD operation triggering the validation
      * @param validationGroups
      */
-    <T extends ICdmBase> void saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors,
+    <T extends ICdmBase> void saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors,
             CRUDEventType crudEventType, Class<?>[] validationGroups);
 
     /**
@@ -63,6 +63,6 @@ public interface IEntityValidationResultCrud {
      * @param validatedEntityId
      *            The id of the entity
      */
-    void deleteValidationResult(String validatedEntityClass, int validatedEntityId);
+    void deleteEntityValidation(String validatedEntityClass, int validatedEntityId);
 
 }

@@ -38,7 +38,7 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -86,29 +86,29 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#EntityValidationResultCrudJdbcImpl()}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationResultCrudJdbcImpl()}
      * .
      */
     @SuppressWarnings("unused")
     @Test
     public void test_EntityValidationResultCrudJdbcImpl() {
-        new EntityValidationResultCrudJdbcImpl();
+        new EntityValidationCrudJdbcImpl();
     }
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#EntityValidationResultCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationResultCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
      * .
      */
     @SuppressWarnings("unused")
     @Test
     public void test_EntityValidationResultCrudJdbcImplI_CdmDataSource() {
-        new EntityValidationResultCrudJdbcImpl(dataSource);
+        new EntityValidationCrudJdbcImpl(dataSource);
     }
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#saveValidationResult (eu.etaxonomy.cdm.model.common.CdmBase, java.util.Set, eu.etaxonomy.cdm.model.validation.CRUDEventType, Class)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#saveEntityValidation (eu.etaxonomy.cdm.model.common.CdmBase, java.util.Set, eu.etaxonomy.cdm.model.validation.CRUDEventType, Class)}
      * .
      */
     @Test
@@ -135,10 +135,10 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
         emp.setCompany(comp);
 
         Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
-        dao.saveValidationResult(emp, errors, CRUDEventType.NONE, null);
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        dao.saveEntityValidation(emp, errors, CRUDEventType.NONE, null);
 
-        EntityValidationResult result = dao.getValidationResult(emp.getClass().getName(), emp.getId());
+        EntityValidation result = dao.getValidationResult(emp.getClass().getName(), emp.getId());
         assertNotNull(result);
         assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -157,22 +157,22 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#deleteValidationResult (java.lang.String, int)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#deleteEntityValidation (java.lang.String, int)}
      * .
      */
     @Test
     @ExpectedDataSet
     public void test_DeleteValidationResult() {
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
-        dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 200);
-        EntityValidationResult result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        dao.deleteEntityValidation(SYNONYM_RELATIONSHIP, 200);
+        EntityValidation result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
         assertTrue(result == null);
     }
 
     @Test
     public void testGetEntityValidationResult() {
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl(dataSource);
-        EntityValidationResult result;
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        EntityValidation result;
 
         result = dao.getValidationResult(MEDIA, 100);
         assertNotNull(result);
@@ -202,12 +202,12 @@ public class EntityValidationResultCrudJdbcImplTest extends CdmIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl#setDatasource (eu.etaxonomy.cdm.database.ICdmDataSource)}
+     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#setDatasource (eu.etaxonomy.cdm.database.ICdmDataSource)}
      * .
      */
     @Test
     public void testSetDatasource() {
-        EntityValidationResultCrudJdbcImpl dao = new EntityValidationResultCrudJdbcImpl();
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl();
         dao.setDatasource(dataSource);
     }
 

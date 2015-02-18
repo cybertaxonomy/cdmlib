@@ -25,9 +25,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -41,11 +41,11 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
     @SpringBeanByType
-    private IEntityValidationResultDao dao;
+    private IEntityValidationDao dao;
 
     @Test
     public void init() {
-        assertNotNull("Expecting an instance of IEntityValidationResultDao", dao);
+        assertNotNull("Expecting an instance of IEntityValidationDao", dao);
     }
 
     @Test
@@ -73,9 +73,9 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
         emp.setCompany(comp);
 
         Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
-        dao.saveValidationResult(emp, errors, CRUDEventType.NONE, null);
+        dao.saveEntityValidation(emp, errors, CRUDEventType.NONE, null);
 
-        EntityValidationResult result = dao.getValidationResult(Employee.class.getName(), 1);
+        EntityValidation result = dao.getEntityValidation(Employee.class.getName(), 1);
         assertNotNull(result);
         assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -95,67 +95,67 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
     @ExpectedDataSet
     // @Ignore //FIXME unignore entity validation result dao delete test
     public void testDeleteValidationResult() {
-        dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 200);
+        dao.deleteEntityValidation(SYNONYM_RELATIONSHIP, 200);
 
         commitAndStartNewTransaction(null);
 
-        List<EntityValidationResult> results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
+        List<EntityValidation> results = dao.getEntityValidations(SYNONYM_RELATIONSHIP);
         assertEquals("Unexpected number of validation results", 0, results.size());
     }
 
     @Test
     public void testGetEntityValidationResult() {
-        EntityValidationResult result;
+        EntityValidation result;
 
-        result = dao.getValidationResult(MEDIA, 100);
+        result = dao.getEntityValidation(MEDIA, 100);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 1, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 2, result.getId());
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(GATHERING_EVENT, 300);
+        result = dao.getEntityValidation(GATHERING_EVENT, 300);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 3, result.getId());
         assertEquals("Unexpected number of constraint violations", 3, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(GATHERING_EVENT, 301);
+        result = dao.getEntityValidation(GATHERING_EVENT, 301);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 4, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
         // Test we get a null back
-        result = dao.getValidationResult("Foo Bar", 100);
+        result = dao.getEntityValidation("Foo Bar", 100);
         assertNull(result);
     }
 
     @Test
     public void testGetEntityValidationResults_String() {
-        List<EntityValidationResult> results;
+        List<EntityValidation> results;
 
-        results = dao.getEntityValidationResults(MEDIA);
+        results = dao.getEntityValidations(MEDIA);
         assertEquals("Unexpected number of validation results", 1, results.size());
         assertEquals("Unexpected number of error", 1, results.get(0).getEntityConstraintViolations().size());
 
-        results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
+        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP);
         assertEquals("Unexpected number of validation results", 1, results.size());
         assertEquals("Unexpected number of error", 2, results.get(0).getEntityConstraintViolations().size());
 
-        results = dao.getEntityValidationResults(GATHERING_EVENT);
+        results = dao.getEntityValidations(GATHERING_EVENT);
         assertEquals("Unexpected number of validation results", 2, results.size());
         assertEquals("Unexpected number of error", 3, results.get(0).getEntityConstraintViolations().size());
         assertEquals("Unexpected number of error", 1, results.get(1).getEntityConstraintViolations().size());
 
-        results = dao.getEntityValidationResults("foo.bar");
+        results = dao.getEntityValidations("foo.bar");
         assertEquals("Unexpected number of validation results", 0, results.size());
     }
 
     @Test
     public void testGetEntitiesViolatingConstraint_String() {
-        List<EntityValidationResult> results;
+        List<EntityValidation> results;
 
         results = dao.getEntitiesViolatingConstraint("com.example.NameValidator");
         assertEquals("Unexpected number of validation results", 1, results.size());
@@ -172,45 +172,45 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmTransactional
 
     @Test
     public void testGetEntityValidationResults_String_Severity() {
-        List<EntityValidationResult> results;
+        List<EntityValidation> results;
 
-        results = dao.getValidationResults(MEDIA, Severity.NOTICE);
+        results = dao.getEntityValidations(MEDIA, Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 0, results.size());
-        results = dao.getValidationResults(MEDIA, Severity.WARNING);
+        results = dao.getEntityValidations(MEDIA, Severity.WARNING);
         assertEquals("Unexpected number of validation results", 0, results.size());
-        results = dao.getValidationResults(MEDIA, Severity.ERROR);
+        results = dao.getEntityValidations(MEDIA, Severity.ERROR);
         assertEquals("Unexpected number of validation results", 1, results.size());
         assertEquals("Unexpected number of validation results", 1, results.iterator().next()
                 .getEntityConstraintViolations().size());
         assertEquals("Unexpected severity", Severity.ERROR, results.iterator().next().getEntityConstraintViolations()
                 .iterator().next().getSeverity());
 
-        results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.NOTICE);
+        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 0, results.size());
-        results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.WARNING);
+        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.WARNING);
         assertEquals("Unexpected number of validation results", 1, results.size());
-        results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.ERROR);
+        results = dao.getEntityValidations(SYNONYM_RELATIONSHIP, Severity.ERROR);
         assertEquals("Unexpected number of validation results", 1, results.size());
 
-        results = dao.getValidationResults(GATHERING_EVENT, Severity.NOTICE);
+        results = dao.getEntityValidations(GATHERING_EVENT, Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 1, results.size());
-        results = dao.getValidationResults(GATHERING_EVENT, Severity.WARNING);
+        results = dao.getEntityValidations(GATHERING_EVENT, Severity.WARNING);
         assertEquals("Unexpected number of validation results", 1, results.size());
-        results = dao.getValidationResults(GATHERING_EVENT, Severity.ERROR);
+        results = dao.getEntityValidations(GATHERING_EVENT, Severity.ERROR);
         assertEquals("Unexpected number of validation results", 2, results.size());
 
-        results = dao.getValidationResults("foo.bar", Severity.ERROR);
+        results = dao.getEntityValidations("foo.bar", Severity.ERROR);
         assertEquals("Unexpected number of validation results", 0, results.size());
     }
 
     @Test
     public void testGetEntityValidationResults_Severity() {
-        List<EntityValidationResult> results;
-        results = dao.getValidationResults(Severity.NOTICE);
+        List<EntityValidation> results;
+        results = dao.getEntityValidations(Severity.NOTICE);
         assertEquals("Unexpected number of validation results", 1, results.size());
-        results = dao.getValidationResults(Severity.WARNING);
+        results = dao.getEntityValidations(Severity.WARNING);
         assertEquals("Unexpected number of validation results", 2, results.size());
-        results = dao.getValidationResults(Severity.ERROR);
+        results = dao.getEntityValidations(Severity.ERROR);
         assertEquals("Unexpected number of validation results", 4, results.size());
     }
 

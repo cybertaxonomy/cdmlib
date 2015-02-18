@@ -15,7 +15,7 @@ import org.hibernate.event.spi.PostDeleteEventListener;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 import eu.etaxonomy.cdm.persistence.validation.Level3ValidationTask;
 
@@ -26,7 +26,7 @@ public class Level3ValidationEventListener extends ValidationEventListenerBase
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Level3ValidationEventListener.class);
 
-    public Level3ValidationEventListener(IEntityValidationResultCrud dao) {
+    public Level3ValidationEventListener(IEntityValidationCrud dao) {
         super(dao);
     }
 

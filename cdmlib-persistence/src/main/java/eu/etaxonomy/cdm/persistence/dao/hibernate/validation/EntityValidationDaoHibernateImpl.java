@@ -24,10 +24,10 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 
 /**
  *
@@ -36,23 +36,23 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
  *
  */
 @Repository
-@Qualifier("EntityValidationResultDaoHibernateImpl")
-public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<EntityValidationResult> implements
-        IEntityValidationResultDao {
+@Qualifier("EntityValidationDaoHibernateImpl")
+public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityValidation> implements
+        IEntityValidationDao {
 
-    private static final Logger logger = Logger.getLogger(EntityValidationResultDaoHibernateImpl.class);
+    private static final Logger logger = Logger.getLogger(EntityValidationDaoHibernateImpl.class);
 
-    public EntityValidationResultDaoHibernateImpl() {
-        super(EntityValidationResult.class);
+    public EntityValidationDaoHibernateImpl() {
+        super(EntityValidation.class);
     }
 
     @Override
-    public <T extends ICdmBase> void saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors,
+    public <T extends ICdmBase> void saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors,
             CRUDEventType crudEventType, Class<?>[] validationGroups) {
-        EntityValidationResult result = getValidationResult(validatedEntity.getClass().getName(),
+        EntityValidation result = getEntityValidation(validatedEntity.getClass().getName(),
                 validatedEntity.getId());
         if (result == null) {
-            result = EntityValidationResult.newInstance(validatedEntity, crudEventType);
+            result = EntityValidation.newInstance(validatedEntity, crudEventType);
             addNewErrors(result, validatedEntity, errors);
             getSession().save(result);
         } else {
@@ -63,22 +63,22 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
     }
 
     @Override
-    public void deleteValidationResult(String validatedEntityClass, int validatedEntityId) {
-        EntityValidationResult result = getValidationResult(validatedEntityClass, validatedEntityId);
+    public void deleteEntityValidation(String validatedEntityClass, int validatedEntityId) {
+        EntityValidation result = getEntityValidation(validatedEntityClass, validatedEntityId);
         if (result != null) {
             getSession().delete(result);
         }
     }
 
     @Override
-    public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId) {
+    public EntityValidation getEntityValidation(String validatedEntityClass, int validatedEntityId) {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr "
+                "FROM EntityValidation vr "
                         + "WHERE vr.validatedEntityClass = :cls AND vr.validatedEntityId = :id");
         query.setString("cls", validatedEntityClass);
         query.setInteger("id", validatedEntityId);
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         if (result.size() == 0) {
             return null;
         } else {
@@ -87,63 +87,63 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
     }
 
     @Override
-    public List<EntityValidationResult> getValidationResults() {
+    public List<EntityValidation> getEntityValidations() {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr "
+                "FROM EntityValidation vr "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
-    public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass) {
+    public List<EntityValidation> getEntityValidations(String validatedEntityClass) {
         Query query = getSession()
                 .createQuery(
-                        "FROM EntityValidationResult vr "
+                        "FROM EntityValidation vr "
                                 + "WHERE vr.validatedEntityClass = :cls ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         query.setString("cls", validatedEntityClass);
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
-    public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass) {
+    public List<EntityValidation> getEntitiesViolatingConstraint(String validatorClass) {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr JOIN FETCH vr.entityConstraintViolations cv "
+                "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                         + "WHERE cv.validator = :cls ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         query.setString("cls", validatorClass);
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
-    public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity) {
+    public List<EntityValidation> getEntityValidations(String validatedEntityClass, Severity severity) {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr JOIN FETCH vr.entityConstraintViolations cv "
+                "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                         + "WHERE vr.validatedEntityClass = :cls " + "AND cv.severity = :severity "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         query.setString("cls", validatedEntityClass);
         query.setString("severity", severity.toString());
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
-    public List<EntityValidationResult> getValidationResults(Severity severity) {
+    public List<EntityValidation> getEntityValidations(Severity severity) {
         Query query = getSession().createQuery(
-                "FROM EntityValidationResult vr JOIN FETCH vr.entityConstraintViolations cv "
+                "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                         + "WHERE cv.severity = :severity " + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
         query.setString("severity", severity.toString());
         @SuppressWarnings("unchecked")
-        List<EntityValidationResult> result = query.list();
+        List<EntityValidation> result = query.list();
         return result;
     }
 
-    private static void deleteOldErrors(EntityValidationResult fromResult, Class<?>[] validationGroups) {
+    private static void deleteOldErrors(EntityValidation fromResult, Class<?>[] validationGroups) {
         if (fromResult.getEntityConstraintViolations() == null || fromResult.getEntityConstraintViolations().size() == 0) {
             return;
         }
@@ -161,7 +161,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
         }
     }
 
-    private static <T extends ICdmBase> void addNewErrors(EntityValidationResult toResult, T validatedEntity,
+    private static <T extends ICdmBase> void addNewErrors(EntityValidation toResult, T validatedEntity,
             Set<ConstraintViolation<T>> errors) {
         for (ConstraintViolation<T> error : errors) {
             EntityConstraintViolation violation = EntityConstraintViolation.newInstance(validatedEntity, error);

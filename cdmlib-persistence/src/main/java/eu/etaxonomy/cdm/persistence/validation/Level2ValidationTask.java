@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -21,11 +21,11 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 public class Level2ValidationTask extends EntityValidationTaskBase {
 
-    public Level2ValidationTask(ICdmBase entity, IEntityValidationResultCrud dao) {
+    public Level2ValidationTask(ICdmBase entity, IEntityValidationCrud dao) {
         super(entity, dao, Level2.class);
     }
 
-    public Level2ValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao) {
+    public Level2ValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationCrud dao) {
         super(entity, crudEventType, dao, Level2.class);
     }
 

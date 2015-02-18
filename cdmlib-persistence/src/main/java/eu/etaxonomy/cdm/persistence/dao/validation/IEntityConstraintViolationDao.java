@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * A DAO for accessing the error tables populated as a consequence of entity
- * validation errors. See {@link IEntityValidationResultDao} for more info.
+ * validation errors. See {@link IEntityValidationDao} for more info.
  *
  * @author ayco_holleman
  *
@@ -56,7 +56,7 @@ public interface IEntityConstraintViolationDao extends ICdmEntityDao<EntityConst
      *            The fully qualified class name of the entity class
      * @param severity
      *            The severity of the {@link EntityConstraintViolation}s
-     *            associated with the {@code EntityValidationResult}
+     *            associated with the {@code EntityValidation}
      *
      * @return The {@code EntityConstraintViolation}s
      */
@@ -69,7 +69,7 @@ public interface IEntityConstraintViolationDao extends ICdmEntityDao<EntityConst
      *
      * @param severity
      *            The severity of the {@link EntityConstraintViolation}s
-     *            associated with the {@code EntityValidationResult}
+     *            associated with the {@code EntityValidation}
      *
      * @return The {@code EntityConstraintViolation}s
      */

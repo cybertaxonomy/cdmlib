@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 
@@ -23,7 +23,7 @@ public class Level2ValidationEventListener extends ValidationEventListenerBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Level2ValidationEventListener.class);
 
-	public Level2ValidationEventListener(IEntityValidationResultCrud dao){
+	public Level2ValidationEventListener(IEntityValidationCrud dao){
 	    super(dao);
 	}
 

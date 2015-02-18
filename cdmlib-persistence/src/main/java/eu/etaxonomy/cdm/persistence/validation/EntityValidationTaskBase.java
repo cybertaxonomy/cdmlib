@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 
 /**
  * Abstract base class for JPA entity validation tasks. Note that in the future
@@ -41,7 +41,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
     private final CRUDEventType crudEventType;
     private final Class<?>[] validationGroups;
 
-    private IEntityValidationResultCrud dao;
+    private IEntityValidationCrud dao;
     private Validator validator;
     private WeakReference<EntityValidationThread> waitForThread;
 
@@ -55,7 +55,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
      * @param validationGroups
      *            The validation groups to apply
      */
-    public EntityValidationTaskBase(ICdmBase entity, IEntityValidationResultCrud dao, Class<?>... validationGroups) {
+    public EntityValidationTaskBase(ICdmBase entity, IEntityValidationCrud dao, Class<?>... validationGroups) {
         this(entity, CRUDEventType.NONE, dao, validationGroups);
     }
 
@@ -71,7 +71,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
      * @param validationGroups
      *            The validation groups to apply
      */
-    public EntityValidationTaskBase(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao,
+    public EntityValidationTaskBase(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationCrud dao,
             Class<?>... validationGroups) {
         this.entity = entity;
         this.crudEventType = crudEventType;
@@ -83,7 +83,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
         this.validator = validator;
     }
 
-    public void setDao(IEntityValidationResultDao dao) {
+    public void setDao(IEntityValidationDao dao) {
         this.dao = dao;
     }
 
@@ -97,7 +97,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
             if (dao == null) {
                 logger.error("Cannot save validation result to database (missing DAO)");
             } else {
-                dao.saveValidationResult(entity, errors, crudEventType, validationGroups);
+                dao.saveEntityValidation(entity, errors, crudEventType, validationGroups);
             }
         } catch (Throwable t) {
             logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
