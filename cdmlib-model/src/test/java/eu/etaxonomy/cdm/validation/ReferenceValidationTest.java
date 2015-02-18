@@ -132,14 +132,25 @@ public class ReferenceValidationTest  {
         myRef.setInReference(myRef);
         myRef.setTitle("My book section");
         assertHasConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);
-  }
 
+        myRef.setInBook(book);
+        assertNoConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);
+
+	}
+
+	private void assertNoConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+	    assertHasConstraintOnValidator(constraintViolations, validatorClass, false);
+	}
+
+	private void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+	    assertHasConstraintOnValidator(constraintViolations, validatorClass, true);
+	}
 
     /**
      * @param constraintViolations
      * @return
      */
-    private boolean assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+    private void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass, boolean requiresViolation) {
         boolean hasViolation = false;
         for (ConstraintViolation<?> violation : constraintViolations){
             Class<?> validatedValidatorClass = violation.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next();
@@ -147,10 +158,12 @@ public class ReferenceValidationTest  {
 	            hasViolation = true;
 	        }
 	    }
-        if (! hasViolation){
+        if (! hasViolation  && requiresViolation){
             Assert.fail("constraint violations are missing an validator class " + validatorClass.getSimpleName());
+        }else if (hasViolation  && ! requiresViolation){
+            Assert.fail("constraint violations should not exist for validator class " + validatorClass.getSimpleName());
         }
-        return hasViolation;
+        return;
     }
 
 }
