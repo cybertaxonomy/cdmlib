@@ -17,9 +17,6 @@ import java.net.URISyntaxException;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
@@ -46,17 +43,12 @@ import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
 public class ReferenceValidationTest extends ValidationTestBase {
 	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
 
-
-	private Validator validator;
-
 	private IBook book;
 
 	@Before
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
 		book.setIsbn("1-919795-99-5");

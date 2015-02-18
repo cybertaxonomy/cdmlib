@@ -14,9 +14,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -40,12 +37,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author ben.clark
  *
  */
-public class TaxonNameCannotBeAcceptedAndSynonymTest{
+public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameCannotBeAcceptedAndSynonymTest.class);
-
-
-	private Validator validator;
 
 	private BotanicalName name1;
 	private BotanicalName name2;
@@ -60,8 +54,6 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest{
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
 		name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name3 = BotanicalName.NewInstance(Rank.SPECIES());

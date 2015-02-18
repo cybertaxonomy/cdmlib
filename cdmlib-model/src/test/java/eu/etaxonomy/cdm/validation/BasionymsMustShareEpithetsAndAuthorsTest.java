@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.validation;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -47,9 +44,6 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
 
-
-	private Validator validator;
-
 	private BotanicalName name;
 	private BotanicalName basionymName;
 	private Person author1;
@@ -61,8 +55,6 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");

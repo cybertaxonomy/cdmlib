@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.validation;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -46,7 +43,6 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
     private static final Logger logger = Logger.getLogger(ValidTaxonomicYearTest.class);
 
 
-	private Validator validator;
 
 	private BotanicalName name;
 
@@ -58,8 +54,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
+
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");

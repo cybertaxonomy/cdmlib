@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.validation;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.junit.Assert;
 
@@ -21,7 +24,14 @@ import org.junit.Assert;
  * @date 18.02.2015
  *
  */
-public class ValidationTestBase {
+public abstract class ValidationTestBase {
+
+    protected Validator validator;
+
+    {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
 
     protected void assertNoConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
         assertHasConstraintOnValidator(constraintViolations, validatorClass, false);

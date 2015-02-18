@@ -15,9 +15,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
@@ -45,17 +42,12 @@ public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CorrectEpithetsForRankTest.class);
 
-
-	private Validator validator;
-
 	private BotanicalName name;
 
 	@Before
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setAuthorshipCache("L.");
