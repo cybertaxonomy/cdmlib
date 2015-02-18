@@ -98,9 +98,10 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
     @Override
     public <T extends ICdmBase> void saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors,
             CRUDEventType crudEventType, Class<?>[] validationGroups) {
+    	Connection conn = null;
         try {
-            Connection conn = datasource.getConnection();
-            JdbcDaoUtils.startTransaction(datasource);
+            conn = datasource.getConnection();
+            JdbcDaoUtils.startTransaction(conn);
             String entityClass = validatedEntity.getClass().getName();
             int entityId = validatedEntity.getId();
             EntityValidation previousResult = getValidationResultRecord(conn, entityClass, entityId);
@@ -122,27 +123,28 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
                     saveErrorRecords(conn, previousResult.getId(), validatedEntity, errors);
                 }
             }
-            JdbcDaoUtils.commit(datasource);
+            conn.commit();
         } catch (Throwable t) {
             logger.error("Error while saving validation result:", t);
-            JdbcDaoUtils.rollback(datasource);
+            JdbcDaoUtils.rollback(conn);
         }
     }
 
     @Override
     public void deleteEntityValidation(String validatedEntityClass, int validatedEntityId) {
+    	Connection conn = null;
         try {
-            Connection conn = datasource.getConnection();
-            JdbcDaoUtils.startTransaction(datasource);
+            conn = datasource.getConnection();
+            JdbcDaoUtils.startTransaction(conn);
             int validationResultId = getValidationResultId(conn, validatedEntityClass, validatedEntityId);
             if (validationResultId == -1) {
                 return;
             }
             deleteValidationResultRecord(conn, validationResultId);
             deletedErrorRecords(conn, validationResultId, null);
-            JdbcDaoUtils.commit(datasource);
+            conn.commit();
         } catch (Throwable t) {
-            JdbcDaoUtils.rollback(datasource);
+            JdbcDaoUtils.rollback(conn);
         }
     }
 
@@ -262,18 +264,19 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     // Called by unit test
     EntityValidation getValidationResult(String validatedEntityClass, int validatedEntityId) {
+    	Connection conn = null;
         try {
-            Connection conn = datasource.getConnection();
-            JdbcDaoUtils.startTransaction(datasource);
+            conn = datasource.getConnection();
+            JdbcDaoUtils.startTransaction(conn);
             EntityValidation result = getValidationResultRecord(conn, validatedEntityClass, validatedEntityId);
             if (result != null) {
                 result.setEntityConstraintViolations(getErrorRecords(conn, result.getId()));
             }
-            JdbcDaoUtils.commit(datasource);
+            conn.commit();
             return result;
         } catch (Throwable t) {
             logger.error("Error while retrieving validation result", t);
-            JdbcDaoUtils.rollback(datasource);
+            JdbcDaoUtils.rollback(conn);
             return null;
         }
     }
