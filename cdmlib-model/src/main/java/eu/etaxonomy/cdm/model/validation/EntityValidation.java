@@ -46,12 +46,12 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
- * An {@code EntityValidationResult} models the result of validating one entity,
+ * An {@code EntityValidation} models the result of validating one entity,
  * that is, the outcome of calling {@link Validator#validate(Object, Class...)}.
  * More than one constraint {@link EntityConstraintViolation} may be violated
  * while validating the entity.
  *
- * @see EntityValidationResult
+ * @see EntityValidation
  *
  * @author ayco_holleman
  *
@@ -59,26 +59,26 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
-@XmlType(name = "EntityValidationResult", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid",
+@XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid",
         "ValidatedEntityClass", "ValidationCount", "LastModified", "UserFriendlyDescription", "UserFriendlyTypeName",
         "CrudEventType", "ConstraintViolations" })
 // @formatter:on
-@XmlRootElement(name = "EntityValidationResult")
+@XmlRootElement(name = "EntityValidation")
 @Entity
-public class EntityValidationResult extends CdmBase {
+public class EntityValidation extends CdmBase {
 
     private static final long serialVersionUID = 9120571815593117363L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(EntityValidationResult.class);
+    private static final Logger logger = Logger.getLogger(EntityValidation.class);
 
-    public static EntityValidationResult newInstance() {
-        return new EntityValidationResult();
+    public static EntityValidation newInstance() {
+        return new EntityValidation();
     }
 
     // See comment below
-    public static EntityValidationResult newInstance(ICdmBase entity, CRUDEventType crudEventType) {
-        EntityValidationResult result = newInstance();
+    public static EntityValidation newInstance(ICdmBase entity, CRUDEventType crudEventType) {
+        EntityValidation result = newInstance();
         result.setCrudEventType(crudEventType);
         result.setValidatedEntityClass(entity.getClass().getName());
         result.setValidatedEntityId(entity.getId());
@@ -146,7 +146,7 @@ public class EntityValidationResult extends CdmBase {
     @Fetch(value = FetchMode.JOIN)
     private Set<EntityConstraintViolation> entityConstraintViolations;
 
-    protected EntityValidationResult() {
+    protected EntityValidation() {
         super();
     }
 
