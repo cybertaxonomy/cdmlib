@@ -36,9 +36,9 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
  * An {@code EntityConstraintViolation} represents a single error resulting from the
  * validation of an entity. It basically is a database model for the
  * {@link ConstraintValidator} class of the javax.validation framework.
- * 
+ *
  * @author ayco_holleman
- * 
+ *
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -172,7 +172,7 @@ public class EntityConstraintViolation extends CdmBase {
 
 	/**
 	 * Get the value that violated the constraint.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getInvalidValue()
@@ -189,7 +189,7 @@ public class EntityConstraintViolation extends CdmBase {
 
 	/**
 	 * Get the severity of the constraint violation.
-	 * 
+	 *
 	 * @return
 	 */
 	public Severity getSeverity()
@@ -206,7 +206,7 @@ public class EntityConstraintViolation extends CdmBase {
 
 	/**
 	 * Get the error message associated with the constraint violation.
-	 * 
+	 *
 	 * @return The error message
 	 */
 	public String getMessage()
@@ -224,7 +224,7 @@ public class EntityConstraintViolation extends CdmBase {
 	/**
 	 * Get the fully qualified class name of the {@link ConstraintValidator} responsible
 	 * for invalidating the entity.
-	 * 
+	 *
 	 * @param validator
 	 */
 	public String getValidator()
@@ -258,14 +258,12 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
-	public EntityValidation getEntityValidationResult()
-	{
+	public EntityValidation getEntityValidation(){
 		return entityValidation;
 	}
 
 
-	public void setEntityValidationResult(EntityValidation entityValidation)
-	{
+	public void setEntityValidation(EntityValidation entityValidation){
 		this.entityValidation = entityValidation;
 	}
 

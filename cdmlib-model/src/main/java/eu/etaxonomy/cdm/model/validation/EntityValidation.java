@@ -140,13 +140,13 @@ public class EntityValidation extends CdmBase {
     @XmlElement(name = "CrudEventType")
     @Enumerated(EnumType.STRING)
     private CRUDEventType crudEventType;
-    
+
     @XmlElement(name = "Status")
     @Enumerated(EnumType.STRING)
     private EntityValidationStatus status;
 
     @XmlElementWrapper(name = "EntityConstraintViolations")
-    @OneToMany(mappedBy = "entityValidationResult")
+    @OneToMany(mappedBy = "entityValidation")
     @Cascade({ CascadeType.ALL })
     @Fetch(value = FetchMode.JOIN)
     private Set<EntityConstraintViolation> entityConstraintViolations;
