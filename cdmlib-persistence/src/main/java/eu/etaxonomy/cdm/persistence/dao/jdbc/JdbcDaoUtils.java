@@ -14,16 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author ayco_holleman
  * @date 20 jan. 2015
- * 
+ *
  */
 public class JdbcDaoUtils {
 
@@ -33,7 +29,7 @@ public class JdbcDaoUtils {
 	/**
 	 * Closes a JDBC {@code Statement} while trapping and suppressing any
 	 * {@code SQLException} that may be thrown in the process.
-	 * 
+	 *
 	 * @param stmt
 	 *            The {@code Statement} to close
 	 */
@@ -57,11 +53,10 @@ public class JdbcDaoUtils {
 		}
 	}
 
-
 	/**
 	 * Rollback the current transaction while trapping and suppressing any
 	 * {@code SQLException} that may be thrown in the process.
-	 * 
+	 *
 	 * @param connection
 	 *            The JDBC connection through which the transaction takes place
 	 */
@@ -81,7 +76,7 @@ public class JdbcDaoUtils {
 	/**
 	 * Retrieves the first column from the first record returned by the specified sql
 	 * query. The column is presumed to be an integer column.
-	 * 
+	 *
 	 * @param connection
 	 * @param sql
 	 * @return
