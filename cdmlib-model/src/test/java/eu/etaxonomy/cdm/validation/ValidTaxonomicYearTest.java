@@ -108,10 +108,10 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
         Set<ConstraintViolation<ZoologicalName>> constraintViolations  = validator.validate(zooName, Level3.class);
         assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
 
-        //currently we do not use the publication year for zooName.getYear, but this may change in future.
-        //we may adapt this test then
         zooName.setPublicationYear(1730);
         constraintViolations  = validator.validate(zooName, Level3.class);
+        //currently we do not use the publication year for zooName.getYear, but this may change in future.
+        //we may adapt this test then
         assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
 
         zooName.setNomenclaturalReference(beforeLineRef);
