@@ -362,7 +362,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 
 	@Override
-	public IEntityValidationService getEntityValidationResultService(){
+	public IEntityValidationService getEntityValidationService(){
 		return entityValidationService;
 	}
 

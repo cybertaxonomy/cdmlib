@@ -53,7 +53,7 @@ public class EntityValidationServiceImpl extends ServiceBase<EntityValidation, I
     }
 
     @Override
-    public List<EntityValidation> getEntityValidationResults(String validatedEntityClass) {
+    public List<EntityValidation> getEntityValidations(String validatedEntityClass) {
         return dao.getEntityValidations(validatedEntityClass);
     }
 

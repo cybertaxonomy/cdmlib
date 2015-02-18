@@ -566,8 +566,8 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 
 	@Override
-	public IEntityValidationService getEntityValidationResultService(){
-		return configuration.getEntityValidationResultService();
+	public IEntityValidationService getEntityValidationService(){
+		return configuration.getEntityValidationService();
 	}
 
 

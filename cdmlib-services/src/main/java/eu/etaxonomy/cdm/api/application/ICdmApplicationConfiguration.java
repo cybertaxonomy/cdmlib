@@ -265,7 +265,7 @@ public interface ICdmApplicationConfiguration{
 	/**
 	 * @return
 	 */
-	public IEntityValidationService getEntityValidationResultService();
+	public IEntityValidationService getEntityValidationService();
 
 
 	/**

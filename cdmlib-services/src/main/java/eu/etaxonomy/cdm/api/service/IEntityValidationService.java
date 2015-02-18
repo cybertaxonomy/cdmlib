@@ -99,7 +99,7 @@ public interface IEntityValidationService extends IService<EntityValidation>,
 	 *
 	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidation> getEntityValidationResults(String validatedEntityClass);
+	List<EntityValidation> getEntityValidations(String validatedEntityClass);
 
 
 	/**

@@ -107,7 +107,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
         // So we should have 20 validation results (10 for books, 10 for
         // journals);
-        IEntityValidationService validationResultService = app.getEntityValidationResultService();
+        IEntityValidationService validationResultService = app.getEntityValidationService();
         List<EntityValidation> results = validationResultService.getValidationResults();
         Assert.assertEquals("Expected 20 validation results", 20, results.size());
 
