@@ -27,6 +27,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
 
 
 
@@ -38,9 +39,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
  *
  * @author ben.clark
  *
+ *
  */
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
-public class CorrectEpithetsForRankTest  {
+public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CorrectEpithetsForRankTest.class);
 
@@ -70,7 +71,7 @@ public class CorrectEpithetsForRankTest  {
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
+        assertTrue("There should be no constraint violations as this name has the correct epithets for its rank",constraintViolations.isEmpty());
 	}
 
 	@Test
@@ -79,6 +80,7 @@ public class CorrectEpithetsForRankTest  {
 		name.setSpecificEpithet(null); // at the default level, this property can be null
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
+        assertHasConstraintOnValidator((Set)constraintViolations, CorrectEpithetsForRankValidator.class);
 	}
 
 	@Test

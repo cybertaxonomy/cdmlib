@@ -1238,6 +1238,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/MustHaveAuthorityTest.jav
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/NameValidCharactersTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/ReferenceValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAcceptedAndSynonymTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/ValidationTestBase.java -text
 cdmlib-model/src/test/resources/log4j.properties -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text

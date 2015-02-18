@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
  *
  */
 @SuppressWarnings("unused")
-public class ReferenceValidationTest  {
+public class ReferenceValidationTest extends ValidationTestBase {
 	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
 
 
@@ -138,32 +138,5 @@ public class ReferenceValidationTest  {
 
 	}
 
-	private void assertNoConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
-	    assertHasConstraintOnValidator(constraintViolations, validatorClass, false);
-	}
-
-	private void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
-	    assertHasConstraintOnValidator(constraintViolations, validatorClass, true);
-	}
-
-    /**
-     * @param constraintViolations
-     * @return
-     */
-    private void assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass, boolean requiresViolation) {
-        boolean hasViolation = false;
-        for (ConstraintViolation<?> violation : constraintViolations){
-            Class<?> validatedValidatorClass = violation.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next();
-	        if (validatedValidatorClass.equals(validatorClass)){
-	            hasViolation = true;
-	        }
-	    }
-        if (! hasViolation  && requiresViolation){
-            Assert.fail("constraint violations are missing an validator class " + validatorClass.getSimpleName());
-        }else if (hasViolation  && ! requiresViolation){
-            Assert.fail("constraint violations should not exist for validator class " + validatorClass.getSimpleName());
-        }
-        return;
-    }
 
 }
