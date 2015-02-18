@@ -101,6 +101,7 @@ public class EntityValidation extends CdmBase {
             result.setUserFriendlyDescription(entity.toString());
         }
         result.setValidationCount(1);
+        result.setStatus(EntityValidationStatus.IN_PROGRESS);
         result.setLastModified(result.getCreated());
         return result;
     }
@@ -139,6 +140,10 @@ public class EntityValidation extends CdmBase {
     @XmlElement(name = "CrudEventType")
     @Enumerated(EnumType.STRING)
     private CRUDEventType crudEventType;
+    
+    @XmlElement(name = "Status")
+    @Enumerated(EnumType.STRING)
+    private EntityValidationStatus status;
 
     @XmlElementWrapper(name = "EntityConstraintViolations")
     @OneToMany(mappedBy = "entityValidationResult")
@@ -207,7 +212,17 @@ public class EntityValidation extends CdmBase {
         this.crudEventType = crudEventType;
     }
 
-    @Override
+	public EntityValidationStatus getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(EntityValidationStatus status)
+	{
+		this.status = status;
+	}
+
+	@Override
     public String getUserFriendlyDescription() {
         return userFriendlyDescription;
     }
@@ -238,5 +253,6 @@ public class EntityValidation extends CdmBase {
     public void setEntityConstraintViolations(Set<EntityConstraintViolation> errors) {
         this.entityConstraintViolations = errors;
     }
+
 
 }
