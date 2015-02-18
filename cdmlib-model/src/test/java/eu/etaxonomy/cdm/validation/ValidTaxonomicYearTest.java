@@ -9,10 +9,6 @@
 
 package eu.etaxonomy.cdm.validation;
 
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,12 +38,14 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ValidTaxonomicYearTest.class);
 
+    static Class validatorClass = ValidTaxonomicYearValidator.class;
+    static Class group = Level3.class;
 
 
 	private BotanicalName name;
 
-	private Reference<?> beforeLineRef;
-    private Reference<?> afterLineRef;
+	private Reference<?> beforeLineeRef;
+    private Reference<?> afterLineeRef;
 
 
 	@Before
@@ -61,11 +59,11 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 		name.setFullTitleCache("Aus aus L.");
 		name.setTitleCache("Aus aus L.", true);
 
-		beforeLineRef = ReferenceFactory.newBook();
-		beforeLineRef.setDatePublished(TimePeriodParser.parseString("1752"));
+		beforeLineeRef = ReferenceFactory.newBook();
+		beforeLineeRef.setDatePublished(TimePeriodParser.parseString("1752"));
 
-	    afterLineRef = ReferenceFactory.newBook();
-	    afterLineRef.setDatePublished(TimePeriodParser.parseString("1754"));
+	    afterLineeRef = ReferenceFactory.newBook();
+	    afterLineeRef.setDatePublished(TimePeriodParser.parseString("1754"));
 
 	}
 
@@ -73,24 +71,21 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 /****************** TESTS *****************************/
 
 	@Test
-	public void testNotBeforeLine() {
-        name.setNomenclaturalReference(beforeLineRef);
-	    Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level3.class);
-        assertHasConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+	public void testNotBeforeLinee() {
+        name.setNomenclaturalReference(beforeLineeRef);
+        validateHasConstraint(name, validatorClass, group);
 	}
 
 	@Test
-    public void testAfterLine() {
-        name.setNomenclaturalReference(afterLineRef);
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level3.class);
-        assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+    public void testAfterLinee() {
+        name.setNomenclaturalReference(afterLineeRef);
+        validateHasNoConstraint(name, validatorClass, group);
     }
 
     @Test
     public void testNoNomRef() {
         name.setNomenclaturalReference(null);
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level3.class);
-        assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+        validateHasNoConstraint(name, validatorClass, group);
     }
 
     @Test
@@ -100,18 +95,15 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 
         zooName.setNomenclaturalReference(null);
         zooName.setPublicationYear(1788);
-        Set<ConstraintViolation<ZoologicalName>> constraintViolations  = validator.validate(zooName, Level3.class);
-        assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+        validateHasNoConstraint(zooName, validatorClass, group);
 
         zooName.setPublicationYear(1730);
-        constraintViolations  = validator.validate(zooName, Level3.class);
         //currently we do not use the publication year for zooName.getYear, but this may change in future.
         //we may adapt this test then
-        assertNoConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+        validateHasNoConstraint(zooName, validatorClass, group);
 
-        zooName.setNomenclaturalReference(beforeLineRef);
-        constraintViolations  = validator.validate(zooName, Level3.class);
-        assertHasConstraintOnValidator((Set)constraintViolations, ValidTaxonomicYearValidator.class);
+        zooName.setNomenclaturalReference(beforeLineeRef);
+        validateHasConstraint(zooName, validatorClass, group);
 
 
     }
