@@ -20,14 +20,11 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.context.ApplicationContext;
+import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -48,39 +45,14 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
-    @SpringBeanByType
-    private IReferenceService referenceService;
+//    @SpringBeanByType
+//    private BatchValidator batchValidator;
 
-    @SpringBeanByType
-    private IEntityValidationService entityValidationService;
+//    @SpringBeanByName  //does not exist as such
+    private ICdmApplicationConfiguration app;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+    @SpringApplicationContext
+    private ApplicationContext applicationContext;
 
     /**
      * Test method for
@@ -93,7 +65,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
     public void testRun() throws SQLException {
 
         ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("PUBLIC", "sa", "");
-        ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
+        app = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
 
         HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
         ValidatorFactory validatorFactory = config.buildValidatorFactory();
@@ -148,16 +120,9 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestDataSet()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-
     }
 
 }
