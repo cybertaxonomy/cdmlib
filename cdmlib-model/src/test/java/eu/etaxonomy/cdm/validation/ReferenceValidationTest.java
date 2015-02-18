@@ -32,6 +32,9 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
+import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
 
 
 /**
@@ -111,7 +114,8 @@ public class ReferenceValidationTest  {
         article.setTitleCache("article", true);
         bookSection.setInReference(article);
         constraintViolations  = validator.validate(bookSection, Level3.class);
-        assertTrue("There should be a constraint violation as this book has an invalid inReference",constraintViolations.size() == 1);
+//        assertTrue("There should be a constraint violation as this book has an invalid inReference",constraintViolations.size() == 1);
+        assertHasConstraintOnValidator((Set)constraintViolations, InReferenceValidator.class);
     }
 
 
@@ -121,5 +125,32 @@ public class ReferenceValidationTest  {
 		Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be one constraint violations as this article is not valid at level 2 (has an isbn)", constraintViolations.isEmpty());
 	}
+
+	@Test
+	public final <T extends IReferenceBaseCacheStrategy >void testNoRecursiveInReference(){
+	    Reference<T> myRef = ReferenceFactory.newBookSection();
+        myRef.setInReference(myRef);
+        myRef.setTitle("My book section");
+        assertHasConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);
+  }
+
+
+    /**
+     * @param constraintViolations
+     * @return
+     */
+    private boolean assertHasConstraintOnValidator(Set<ConstraintViolation<?>> constraintViolations, Class validatorClass) {
+        boolean hasViolation = false;
+        for (ConstraintViolation<?> violation : constraintViolations){
+            Class<?> validatedValidatorClass = violation.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next();
+	        if (validatedValidatorClass.equals(validatorClass)){
+	            hasViolation = true;
+	        }
+	    }
+        if (! hasViolation){
+            Assert.fail("constraint violations are missing an validator class " + validatorClass.getSimpleName());
+        }
+        return hasViolation;
+    }
 
 }

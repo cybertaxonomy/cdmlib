@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.InReference;
+import eu.etaxonomy.cdm.validation.annotation.NoRecursiveInReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
@@ -117,8 +118,10 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-@InReference(groups=Level3.class)
+//@InReference(groups=Level3.class)
 @ReferenceCheck(groups=Level2.class)
+@InReference(groups=Level3.class)
+@NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
@@ -269,7 +272,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @ManyToOne(fetch = FetchType.LAZY)
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-   // @InReference(groups=Level2.class)
    	protected Reference<?> inReference;
 
 //    @XmlElement(name = "FullReference")

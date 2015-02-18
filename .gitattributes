@@ -1060,6 +1060,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/InReference.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NameMustHaveAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NamesWithHomotypicRelationshipsMustBelongToSameGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoRecursiveInReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NullOrNotEmpty.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ReferenceCheck.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/TaxonNameCannotBeAcceptedAndSynonym.java -text
@@ -1072,6 +1073,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/HomotypicSynon
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/InReferenceValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoRecursiveInReferenceValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NullOrNotEmptyValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ReferenceCheckValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.java -text
