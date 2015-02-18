@@ -19,9 +19,9 @@ import javax.validation.ConstraintViolation;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 
 /**
  * A service that provides several retrieval methods for entity validation outcomes. The
@@ -31,8 +31,8 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
  * @author ayco_holleman
  *
  */
-public interface IEntityValidationResultService extends IService<EntityValidationResult>,
-        IEntityValidationResultCrud {
+public interface IEntityValidationService extends IService<EntityValidation>,
+        IEntityValidationCrud {
 
     /**
      * Save the result of an entity validation to the error tables. Previous validation
@@ -50,7 +50,7 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 //    * the error tables is done by the CVI (more particularly by an
 //    * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
 //    * not have access to this method.
-    <T extends ICdmBase> void  saveValidationResult(T validatedEntity, Set<ConstraintViolation<T>> errors, CRUDEventType crudEventType, Class<?>[] validationGroups);
+    <T extends ICdmBase> void  saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors, CRUDEventType crudEventType, Class<?>[] validationGroups);
 
 
     /**
@@ -64,7 +64,7 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
      */
 @Override
 //    This method should not be exposed via cdmlib-services.
-    void deleteValidationResult(String validatedEntityClass, int validatedEntityId);
+    void deleteEntityValidation(String validatedEntityClass, int validatedEntityId);
 
 
 	/**
@@ -74,20 +74,20 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 	 *            The fully qualified class name of the entity's class.
 	 * @param validatedEntityId
 	 *            The id of the entity
-	 * @return The {@code EntityValidationResult} or null if the entity has not been
+	 * @return The {@code EntityValidation} or null if the entity has not been
 	 *         validated yet
 	 *
 	 */
-	EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId);
+	EntityValidation getValidationResult(String validatedEntityClass, int validatedEntityId);
 
 
 	/**
 	 * Get all validation results for all validated entities. The results are sorted
 	 * according the type and id of the validated entities.
 	 *
-	 * @return The {@code EntityValidationResult}s
+	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidationResult> getValidationResults();
+	List<EntityValidation> getValidationResults();
 
 
 	/**
@@ -97,9 +97,9 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 	 * @param validatedEntityClass
 	 *            The fully qualified class name of the entity class
 	 *
-	 * @return The {@code EntityValidationResult}s
+	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass);
+	List<EntityValidation> getEntityValidationResults(String validatedEntityClass);
 
 
 	/**
@@ -113,9 +113,9 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 	 * @param validatorClass
 	 *            The fully qualified class name of the {@link ConstraintValidator}.
 	 *
-	 * @return The {@code EntityValidationResult}s
+	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass);
+	List<EntityValidation> getEntitiesViolatingConstraint(String validatorClass);
 
 
 	/**
@@ -127,11 +127,11 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 	 *            The fully qualified class name of the entity class.
 	 * @param severity
 	 *            The severity of the {@link EntityConstraintViolation}s associated with
-	 *            the {@code EntityValidationResult}
+	 *            the {@code EntityValidation}
 	 *
-	 * @return The {@code EntityValidationResult}s
+	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity);
+	List<EntityValidation> getValidationResults(String validatedEntityClass, Severity severity);
 
 
 	/**
@@ -141,10 +141,10 @@ public interface IEntityValidationResultService extends IService<EntityValidatio
 	 *
 	 * @param severity
 	 *            The severity of the {@link EntityConstraintViolation}s associated with
-	 *            the {@code EntityValidationResult}
+	 *            the {@code EntityValidation}
 	 *
-	 * @return The {@code EntityValidationResult}s
+	 * @return The {@code EntityValidation}s
 	 */
-	List<EntityValidationResult> getValidationResults(Severity severity);
+	List<EntityValidation> getValidationResults(Severity severity);
 
 }

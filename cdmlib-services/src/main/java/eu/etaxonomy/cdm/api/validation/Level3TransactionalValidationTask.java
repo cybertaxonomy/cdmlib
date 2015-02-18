@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.validation.Level3ValidationTask;
 
 /**
@@ -31,11 +31,11 @@ class Level3TransactionalValidationTask extends Level3ValidationTask {
 
     private ICdmApplicationConfiguration repository;
 
-    public Level3TransactionalValidationTask(CdmBase entity, IEntityValidationResultCrud dao) {
+    public Level3TransactionalValidationTask(CdmBase entity, IEntityValidationCrud dao) {
         super(entity, dao);
     }
 
-    public Level3TransactionalValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationResultCrud dao, ICdmApplicationConfiguration repository) {
+    public Level3TransactionalValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationCrud dao, ICdmApplicationConfiguration repository) {
         super(entity, crudEventType, dao);
         this.repository = repository;
     }

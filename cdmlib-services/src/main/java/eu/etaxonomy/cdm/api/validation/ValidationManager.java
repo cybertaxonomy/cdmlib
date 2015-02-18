@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationResultCrudJdbcImpl;
+import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl;
 import eu.etaxonomy.cdm.persistence.hibernate.Level2ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
@@ -54,9 +54,9 @@ public class ValidationManager {
     private ICdmApplicationConfiguration cdmApplicationDefaultConfiguration;
 
     @Autowired
-//    IEntityValidationResultService validationService;
-//    IEntityValidationResultCrud validationService;
-    EntityValidationResultCrudJdbcImpl validationDao;
+//    IEntityValidationService validationService;
+//    IEntityValidationCrud validationService;
+    EntityValidationCrudJdbcImpl validationDao;
 
     @PostConstruct
     public void registerValidationListeners(){

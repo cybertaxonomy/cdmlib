@@ -2201,7 +2201,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImp
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeByAreaLabelComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityConstraintViolationServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityValidationResultServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityValidationServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EventBaseServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
@@ -2217,7 +2217,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityConstraintViolationService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityValidationResultService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityValidationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEventBaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.java -text

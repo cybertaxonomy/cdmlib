@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -150,7 +150,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
 	@Autowired
-	private IEntityValidationResultService entityValidationResultService;
+	private IEntityValidationService entityValidationService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -362,8 +362,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 
 	@Override
-	public IEntityValidationResultService getEntityValidationResultService(){
-		return entityValidationResultService;
+	public IEntityValidationService getEntityValidationResultService(){
+		return entityValidationService;
 	}
 
 

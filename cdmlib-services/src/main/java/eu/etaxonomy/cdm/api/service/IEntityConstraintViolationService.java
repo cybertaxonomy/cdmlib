@@ -59,7 +59,7 @@ public interface IEntityConstraintViolationService extends IService<EntityConstr
 	 *            The fully qualified class name of the entity class
 	 * @param severity
 	 *            The severity of the {@link EntityConstraintViolation}s associated with
-	 *            the {@code EntityValidationResult}
+	 *            the {@code EntityValidation}
 	 *
 	 * @return The {@code EntityConstraintViolation}s
 	 */
@@ -72,7 +72,7 @@ public interface IEntityConstraintViolationService extends IService<EntityConstr
 	 *
 	 * @param severity
 	 *            The severity of the {@link EntityConstraintViolation}s associated with
-	 *            the {@code EntityValidationResult}
+	 *            the {@code EntityValidation}
 	 *
 	 * @return The {@code EntityConstraintViolation}s
 	 */

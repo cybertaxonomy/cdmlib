@@ -31,14 +31,14 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -52,7 +52,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
     private IReferenceService referenceService;
 
     @SpringBeanByType
-    private IEntityValidationResultService entityValidationService;
+    private IEntityValidationService entityValidationService;
 
     /**
      * @throws java.lang.Exception
@@ -135,13 +135,13 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
         // So we should have 20 validation results (10 for books, 10 for
         // journals);
-        IEntityValidationResultService validationResultService = app.getEntityValidationResultService();
-        List<EntityValidationResult> results = validationResultService.getValidationResults();
+        IEntityValidationService validationResultService = app.getEntityValidationResultService();
+        List<EntityValidation> results = validationResultService.getValidationResults();
         Assert.assertEquals("Expected 20 validation results", 20, results.size());
 
         // And we should have a total of 70 (10 * (3+4)) constraint violations
         int errors = 0;
-        for(EntityValidationResult result: results) {
+        for(EntityValidation result: results) {
             errors += result.getEntityConstraintViolations().size();
         }
         Assert.assertEquals("Expected 70 errors", 70, errors);

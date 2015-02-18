@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultCrud;
+import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 
@@ -26,7 +26,7 @@ class Level3TransactionalValidationEventListener extends Level3ValidationEventLi
 
 	private final ICdmApplicationConfiguration repository;
 
-	public Level3TransactionalValidationEventListener(ICdmApplicationConfiguration repository, IEntityValidationResultCrud dao){
+	public Level3TransactionalValidationEventListener(ICdmApplicationConfiguration repository, IEntityValidationCrud dao){
         super(dao);
         this.repository = repository;
     }

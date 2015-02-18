@@ -18,7 +18,7 @@ import javax.validation.Validator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -53,7 +53,7 @@ public class BatchValidator implements Runnable {
         }
 
         // Get service for saving errors to database
-        IEntityValidationResultService validationResultService = context.getEntityValidationResultService();
+        IEntityValidationService validationResultService = context.getEntityValidationResultService();
 
         // Get all services dealing with "real" entities
         List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(context);
@@ -74,7 +74,7 @@ public class BatchValidator implements Runnable {
                     Set<ConstraintViolation<S>> errors = validator.validate(entity, validationGroups);
                     if (errors.size() != 0) {
                         logger.warn(errors.size() + " error(s) detected in entity " + entity.toString());
-                        validationResultService.saveValidationResult(entity, errors, CRUDEventType.NONE,
+                        validationResultService.saveEntityValidation(entity, errors, CRUDEventType.NONE,
                                 validationGroups);
                     }
                 }
