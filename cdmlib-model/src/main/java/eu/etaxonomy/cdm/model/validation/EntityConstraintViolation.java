@@ -127,7 +127,7 @@ public class EntityConstraintViolation extends CdmBase {
 
 	@XmlElement(name = "EntityValidation")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.ALL })
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	private EntityValidation entityValidation;
 
 
