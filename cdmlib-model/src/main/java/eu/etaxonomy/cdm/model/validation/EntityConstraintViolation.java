@@ -52,14 +52,12 @@ public class EntityConstraintViolation extends CdmBase {
 	private static final Logger logger = Logger.getLogger(EntityConstraintViolation.class);
 
 
-	public static EntityConstraintViolation newInstance()
-	{
+	public static EntityConstraintViolation newInstance(){
 		return new EntityConstraintViolation();
 	}
 
 
-	public static <T extends ICdmBase> EntityConstraintViolation newInstance(T entity, ConstraintViolation<T> error)
-	{
+	public static <T extends ICdmBase> EntityConstraintViolation newInstance(T entity, ConstraintViolation<T> error){
 		EntityConstraintViolation violation = newInstance();
 		violation.setSeverity(Severity.getSeverity(error));
 		String propPath = error.getPropertyPath() == null ? "-" : error.getPropertyPath().toString();
@@ -131,9 +129,7 @@ public class EntityConstraintViolation extends CdmBase {
 	private EntityValidation entityValidation;
 
 
-	protected EntityConstraintViolation()
-	{
-	}
+	protected EntityConstraintViolation(){}
 
 
 	/**
@@ -143,14 +139,12 @@ public class EntityConstraintViolation extends CdmBase {
 	 * annotations, and the error was in a parent or child entity, will this be a
 	 * dot-separated path (e.g. "addresses[0].street" or "company.name").
 	 */
-	public String getPropertyPath()
-	{
+	public String getPropertyPath(){
 		return propertyPath;
 	}
 
 
-	public void setPropertyPath(String propertyPath)
-	{
+	public void setPropertyPath(String propertyPath){
 		this.propertyPath = propertyPath;
 	}
 
@@ -158,14 +152,12 @@ public class EntityConstraintViolation extends CdmBase {
 	/**
 	 * A user-friendly name for the property path.
 	 */
-	public String getUserFriendlyFieldName()
-	{
+	public String getUserFriendlyFieldName(){
 		return userFriendlyFieldName;
 	}
 
 
-	public void setUserFriendlyFieldName(String userFriendlyFieldName)
-	{
+	public void setUserFriendlyFieldName(String userFriendlyFieldName){
 		this.userFriendlyFieldName = userFriendlyFieldName;
 	}
 
@@ -175,14 +167,12 @@ public class EntityConstraintViolation extends CdmBase {
 	 *
 	 * @return
 	 */
-	public String getInvalidValue()
-	{
+	public String getInvalidValue(){
 		return invalidValue;
 	}
 
 
-	public void setInvalidValue(String invalidValue)
-	{
+	public void setInvalidValue(String invalidValue){
 		this.invalidValue = invalidValue;
 	}
 
@@ -192,14 +182,12 @@ public class EntityConstraintViolation extends CdmBase {
 	 *
 	 * @return
 	 */
-	public Severity getSeverity()
-	{
+	public Severity getSeverity(){
 		return severity == null ? Severity.ERROR : severity;
 	}
 
 
-	public void setSeverity(Severity severity)
-	{
+	public void setSeverity(Severity severity){
 		this.severity = severity;
 	}
 
@@ -209,14 +197,12 @@ public class EntityConstraintViolation extends CdmBase {
 	 *
 	 * @return The error message
 	 */
-	public String getMessage()
-	{
+	public String getMessage(){
 		return message;
 	}
 
 
-	public void setMessage(String message)
-	{
+	public void setMessage(String message){
 		this.message = message;
 	}
 
@@ -227,14 +213,12 @@ public class EntityConstraintViolation extends CdmBase {
 	 *
 	 * @param validator
 	 */
-	public String getValidator()
-	{
+	public String getValidator(){
 		return validator;
 	}
 
 
-	public void setValidator(String validator)
-	{
+	public void setValidator(String validator){
 		this.validator = validator;
 	}
 
@@ -242,8 +226,7 @@ public class EntityConstraintViolation extends CdmBase {
 	/**
 	 * @return the validationGroup
 	 */
-	public String getValidationGroup()
-	{
+	public String getValidationGroup(){
 		return validationGroup;
 	}
 
@@ -252,8 +235,7 @@ public class EntityConstraintViolation extends CdmBase {
 	 * @param validationGroup
 	 *            the validationGroup to set
 	 */
-	public void setValidationGroup(String validationGroup)
-	{
+	public void setValidationGroup(String validationGroup){
 		this.validationGroup = validationGroup;
 	}
 

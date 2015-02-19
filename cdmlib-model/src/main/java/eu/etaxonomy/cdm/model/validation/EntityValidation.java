@@ -212,13 +212,11 @@ public class EntityValidation extends CdmBase {
         this.crudEventType = crudEventType;
     }
 
-	public EntityValidationStatus getStatus()
-	{
+	public EntityValidationStatus getStatus(){
 		return status;
 	}
 
-	public void setStatus(EntityValidationStatus status)
-	{
+	public void setStatus(EntityValidationStatus status){
 		this.status = status;
 	}
 
@@ -254,6 +252,5 @@ public class EntityValidation extends CdmBase {
     public void setEntityConstraintViolations(Set<EntityConstraintViolation> errors) {
         this.entityConstraintViolations = errors;
     }
-
 
 }
