@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
+import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 import eu.etaxonomy.cdm.persistence.validation.EntityValidationTaskBase;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
@@ -81,6 +83,8 @@ public abstract class ValidationEventListenerBase implements PostInsertEventList
             if(logger.isDebugEnabled()){logger.debug("Nothing to validate (entity is null)");}
             return;
         }
+
+
         try {
            if (!(object instanceof CdmBase)) {
                 if (object.getClass() != HashMap.class) {
@@ -88,6 +92,11 @@ public abstract class ValidationEventListenerBase implements PostInsertEventList
                 }
                 return;
             }
+            if (object instanceof EntityValidation || object instanceof EntityConstraintViolation) {
+                if(logger.isDebugEnabled()){ logger.debug(levelString() + " validation bypassed for entities of type " + object.getClass().getName() + ". We do not validate validation result entities themselves");}
+                return;
+            }
+            //validate
             ICdmBase entity = HibernateProxyHelper.deproxy(object, CdmBase.class) ;
             EntityValidationTaskBase task = createValidationTask(entity, trigger);
             getValidationExecutor().execute(task);

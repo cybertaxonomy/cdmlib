@@ -146,10 +146,10 @@ public class EntityValidation extends CdmBase {
     private EntityValidationStatus status;
 
     @XmlElementWrapper(name = "EntityConstraintViolations")
-    @OneToMany(mappedBy = "entityValidation")
+    @OneToMany(mappedBy = "entityValidation", orphanRemoval=true)
     @Cascade({ CascadeType.ALL })
     @Fetch(value = FetchMode.JOIN)
-    private Set<EntityConstraintViolation> entityConstraintViolations;
+    private Set<EntityConstraintViolation> entityConstraintViolations = new HashSet<EntityConstraintViolation>();
 
     protected EntityValidation() {
         super();
@@ -247,6 +247,7 @@ public class EntityValidation extends CdmBase {
     public void removeEntityConstraintViolation(EntityConstraintViolation ecv) {
         if (ecv != null) {
             getEntityConstraintViolations().remove(ecv);
+            ecv.setEntityValidation(null);
         }
     }
 

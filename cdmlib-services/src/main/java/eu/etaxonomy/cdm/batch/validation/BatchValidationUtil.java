@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.batch.validation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.print.attribute.standard.Media;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -37,11 +39,14 @@ import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -94,6 +99,20 @@ class BatchValidationUtil {
         services.add(new EntityValidationUnit(WorkingSet.class, appConfig.getWorkingSetService()));
         return services;
     }
+
+    public static <T extends ICdmBase, S extends T> List<Class<CdmBase>> getClassesToValidate(){
+        List<Class<CdmBase>> classesToValidate = new ArrayList<Class<CdmBase>>();
+        classesToValidate.addAll((List)Arrays.asList(new Class[]{
+                Reference.class,
+                NameRelationship.class,
+                TaxonNameBase.class,
+                TaxonBase.class,
+                SynonymRelationship.class,
+                TaxonNode.class,
+                GatheringEvent.class}));
+        return classesToValidate;
+    }
+
 
     // Created to infer (1st) parameter type of parametrized type,
     // but won't work because the service argument appears to be a

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -49,16 +48,16 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
     @Override
     public <T extends ICdmBase> void saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors,
             CRUDEventType crudEventType, Class<?>[] validationGroups) {
-        EntityValidation result = getEntityValidation(validatedEntity.getClass().getName(),
+        EntityValidation entityValidation = getEntityValidation(validatedEntity.getClass().getName(),
                 validatedEntity.getId());
-        if (result == null) {
-            result = EntityValidation.newInstance(validatedEntity, crudEventType);
-            addNewErrors(result, validatedEntity, errors);
-            getSession().save(result);
+        if (entityValidation == null) {
+            entityValidation = EntityValidation.newInstance(validatedEntity, crudEventType);
+            addNewErrors(entityValidation, validatedEntity, errors);
+            getSession().save(entityValidation);
         } else {
-            deleteOldErrors(result, validationGroups);
-            addNewErrors(result, validatedEntity, errors);
-            getSession().merge(result);
+            deleteOldErrors(entityValidation, validationGroups);
+            addNewErrors(entityValidation, validatedEntity, errors);
+            getSession().merge(entityValidation);
         }
     }
 
@@ -152,13 +151,17 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         for (Class<?> c : validationGroupSet) {
             validationGroupNames.add(c.getName());
         }
-        Iterator<EntityConstraintViolation> iterator = fromResult.getEntityConstraintViolations().iterator();
-        while (iterator.hasNext()) {
-            EntityConstraintViolation ecv = iterator.next();
+//        Iterator<EntityConstraintViolation> iterator = fromResult.getEntityConstraintViolations().iterator();
+        Set<EntityConstraintViolation> constraintsToDelete = new HashSet<EntityConstraintViolation>();
+        for (EntityConstraintViolation ecv : fromResult.getEntityConstraintViolations()){
             if (validationGroupNames.contains(ecv.getValidationGroup())) {
-                iterator.remove();
+                constraintsToDelete.add(ecv);
             }
         }
+        for (EntityConstraintViolation ecv : constraintsToDelete){
+            fromResult.removeEntityConstraintViolation(ecv);
+        }
+
     }
 
     private static <T extends ICdmBase> void addNewErrors(EntityValidation toResult, T validatedEntity,

@@ -82,7 +82,7 @@ import org.apache.log4j.Logger;
  * @author ayco_holleman
  *
  */
-//maybe we want to make this a spring component ?
+//maybe we want to make this a spring component ?  #4663
 public class ValidationExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
 	private static final Logger logger = Logger.getLogger(ValidationExecutor.class);
@@ -111,10 +111,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * {@link #rejectedExecution(Runnable, ThreadPoolExecutor)}.
 	 */
 	public ValidationExecutor(){
-		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS,
-				new EntityValidationTaskQueue(TASK_QUEUE_SIZE));
-		setThreadFactory(new ValidationThreadFactory());
-		setRejectedExecutionHandler(this);
+	    this(TASK_QUEUE_SIZE);
 	}
 
 	/**

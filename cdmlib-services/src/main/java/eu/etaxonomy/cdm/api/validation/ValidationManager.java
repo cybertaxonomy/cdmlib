@@ -19,9 +19,12 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.batch.validation.BatchValidator;
+import eu.etaxonomy.cdm.batch.validation.ValidationScheduler;
 import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl;
 import eu.etaxonomy.cdm.persistence.hibernate.Level2ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
@@ -38,8 +41,10 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 @Lazy(false)
 public class ValidationManager {
 
-    private final boolean level2Enabled = false;
-    private final boolean level3Enabled = false;
+    private boolean validationEnabled = true;
+
+    private boolean level2Enabled = false;
+    private boolean level3Enabled = false;
 
     private boolean isInitialized  = false;
 
@@ -50,15 +55,46 @@ public class ValidationManager {
     private SessionFactory sessionFactory;
 
     @Autowired
+    private BatchValidator batchValidator;
+
+    @Autowired
     @Qualifier("cdmApplicationDefaultConfiguration")
     private ICdmApplicationConfiguration cdmApplicationDefaultConfiguration;
 
     @Autowired
 //    IEntityValidationService validationService;
 //    IEntityValidationCrud validationService;
-    EntityValidationCrudJdbcImpl validationDao;
+    private EntityValidationCrudJdbcImpl validationDao;
+
+//    private TaskExecutor taskExecutor;
+
+    private TaskScheduler scheduler;
 
     @PostConstruct
+    public void initializeManager(){
+        registerValidationListeners();
+        initTaskExecutor();
+    }
+
+
+    /**
+     *
+     */
+    private void initTaskExecutor() {
+//        taskExecutor = new ThreadPoolTaskExecutor();
+        ValidationScheduler validationScheduler = new ValidationScheduler();
+        validationScheduler.initialize();
+        scheduler = validationScheduler;
+        scheduler.scheduleWithFixedDelay(batchValidator, 5000);
+        //TODO how to disable scheduling if not wanted for a certain time
+
+    }
+
+    public void startBatchValidation(){
+        batchValidator.run();
+    }
+
+
     public void registerValidationListeners(){
         if (!isInitialized){
             if (sessionFactory != null && sessionFactory instanceof SessionFactoryImpl){
@@ -97,11 +133,19 @@ public class ValidationManager {
 
     //for future use
     private void enableLevel2Listener(boolean enabled){
-        l2Listener.setEnabled(enabled);
+        level2Enabled = enabled;
+        l2Listener.setEnabled(level2Enabled && validationEnabled);
     }
 
     private void enableLevel3Listener(boolean enabled){
-        l3Listener.setEnabled(enabled);
+        level3Enabled = enabled;
+        l3Listener.setEnabled(level3Enabled && validationEnabled);
+    }
+
+    private void enableValidation(boolean enabled){
+        validationEnabled = enabled;
+        l2Listener.setEnabled(level2Enabled);
+        l3Listener.setEnabled(level3Enabled);
     }
 
 }

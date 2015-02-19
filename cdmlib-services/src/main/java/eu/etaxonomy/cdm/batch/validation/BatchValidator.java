@@ -13,14 +13,27 @@ import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.HibernateValidatorConfiguration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -28,26 +41,141 @@ import eu.etaxonomy.cdm.validation.Level3;
 
 /**
  * @author ayco_holleman
+ * @author a.mueller
  * @date 27 jan. 2015
  *
  */
-//@Component
-public class BatchValidator implements Runnable {
+@Component("batchValidator")
+public class BatchValidator implements Runnable, ApplicationContextAware {
 
     static final Class<?>[] DEFAULT_VALIDATION_GROUPS = new Class<?>[] { Level2.class, Level3.class };
 
     private static final Logger logger = Logger.getLogger(BatchValidator.class);
 
-    private ICdmApplicationConfiguration context;
+
+    private ICdmApplicationConfiguration repository;
+
+    private ApplicationContext appContext;
+
     private Validator validator;
     private Class<?>[] validationGroups;
 
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) {
+        this.appContext = appContext;
+    }
+
     @Override
     public void run() {
+        initValidator();
         validate();
     }
 
+    /**
+     *
+     */
+    private void initValidator() {
+        if (getValidator() == null){
+            HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
+            ValidatorFactory factory = config.buildValidatorFactory();
+            setValidator(factory.getValidator());
+        }
+        if (validationGroups == null) {
+            validationGroups = DEFAULT_VALIDATION_GROUPS;
+        }
+    }
+
+
+
     private <T extends ICdmBase, S extends T> void validate() {
+        logger.info("Starting batch validation");
+
+       // Get service for saving errors to database
+//        IEntityValidationService validationResultService = context.getEntityValidationService();
+        IEntityValidationService entityValidationService = appContext.getBean(IEntityValidationService.class);
+
+        // Get all services dealing with "real" entities
+        List<Class<CdmBase>> classesToValidate = BatchValidationUtil.getClassesToValidate();
+
+        for (Class<CdmBase> entityClass : classesToValidate) {
+            //TODO currently this seems to work only on the exact class, we may move it down
+            //to single entity validation again but cache the information for each class
+            if (true || BatchValidationUtil.isConstrainedEntityClass(validator, entityClass)){
+
+    //          ICommonService commonService = repository.getCommonService();
+                ICommonService commonService = appContext.getBean(ICommonService.class);
+                logger.info("Loading entities of type " + entityClass.getName());
+                //false for saving validation results
+                //TODO can we handle results in a different transaction?
+                boolean readOnly = false;
+                TransactionStatus txStatus =  startTransaction(readOnly);
+                handleSlice(commonService, entityClass, entityValidationService);
+                commitTransaction(txStatus);
+            }
+        }
+
+        logger.info("Batch validation complete");
+    }
+
+    /**
+     * @param txStatus
+     */
+    private void commitTransaction(TransactionStatus txStatus) {
+        PlatformTransactionManager txManager = getTransactionManager();
+        txManager.commit(txStatus);
+
+    }
+
+    /**
+     * @param readOnly
+     * @return
+     *
+     */
+    private TransactionStatus startTransaction(boolean readOnly) {
+        PlatformTransactionManager txManager = getTransactionManager();
+
+        DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+        defaultTxDef.setReadOnly(readOnly);
+        TransactionDefinition txDef = defaultTxDef;
+        TransactionStatus txStatus = txManager.getTransaction(txDef);
+        return txStatus;
+    }
+
+    /**
+     * @return
+     */
+    private PlatformTransactionManager getTransactionManager() {
+        PlatformTransactionManager txManager = appContext.getBean(HibernateTransactionManager.class);
+        return txManager;
+    }
+
+    /**
+     * @param commonService
+     * @param entityClass
+     * @param entityValidationService
+     *
+     */
+    private void handleSlice(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService) {
+        List<CdmBase> entities;
+        try {
+            entities = commonService.list(entityClass, 0, 0, null, null);
+        } catch (Throwable t) {
+            logger.error("Failed to load entities", t);
+            return;
+        }
+        for (CdmBase entity : entities) {
+            Set<ConstraintViolation<CdmBase>> errors = getValidator().validate(entity, getValidationGroups());
+            if (errors.size() != 0) {
+                if (logger.isInfoEnabled()){logger.info(errors.size() + " constraint violation(s) detected in entity " + entity.toString());}
+                entityValidationService.saveEntityValidation(entity, errors, CRUDEventType.NONE,
+                        getValidationGroups());
+            }
+        }
+
+    }
+
+    private <T extends ICdmBase, S extends T> void validate_old() {
         logger.info("Starting batch validation");
 
         if (validationGroups == null) {
@@ -55,10 +183,10 @@ public class BatchValidator implements Runnable {
         }
 
         // Get service for saving errors to database
-        IEntityValidationService validationResultService = context.getEntityValidationService();
+        IEntityValidationService validationResultService = repository.getEntityValidationService();
 
         // Get all services dealing with "real" entities
-        List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(context);
+        List<EntityValidationUnit<T, S>> validationUnits = BatchValidationUtil.getAvailableServices(repository);
 
         for (EntityValidationUnit<T, S> unit : validationUnits) {
             Class<S> entityClass = unit.getEntityClass();
@@ -72,8 +200,8 @@ public class BatchValidator implements Runnable {
                 continue;
             }
             for (S entity : entities) {
-                if (BatchValidationUtil.isConstrainedEntityClass(validator, entity.getClass())) {
-                    Set<ConstraintViolation<S>> errors = validator.validate(entity, validationGroups);
+                if (BatchValidationUtil.isConstrainedEntityClass(getValidator(), entity.getClass())) {
+                    Set<ConstraintViolation<S>> errors = getValidator().validate(entity, validationGroups);
                     if (errors.size() != 0) {
                         logger.warn(errors.size() + " error(s) detected in entity " + entity.toString());
                         validationResultService.saveEntityValidation(entity, errors, CRUDEventType.NONE,
@@ -93,7 +221,7 @@ public class BatchValidator implements Runnable {
      * @return The application context
      */
     public ICdmApplicationConfiguration getAppController() {
-        return context;
+        return repository;
     }
 
     /**
@@ -103,7 +231,7 @@ public class BatchValidator implements Runnable {
      *            The application context
      */
     public void setAppController(ICdmApplicationConfiguration context) {
-        this.context = context;
+        this.repository = context;
     }
 
     /**

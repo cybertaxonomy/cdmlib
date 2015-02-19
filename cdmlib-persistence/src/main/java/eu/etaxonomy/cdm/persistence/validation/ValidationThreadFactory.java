@@ -25,7 +25,7 @@ import org.hibernate.validator.HibernateValidatorConfiguration;
 class ValidationThreadFactory implements ThreadFactory {
 
     private static final String THREAD_GROUP_NAME = "VALIDATION";
-    private static final String DEFAULT_THREAD_NAME = "";
+    private static final String DEFAULT_THREAD_NAME = "DEFAUL_VALIDATION";
 
     // TODO: Autowire this?
     private final ValidatorFactory factory;
