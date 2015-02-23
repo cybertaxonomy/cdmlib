@@ -257,7 +257,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         includeCdmBaseAttributes = true;
         tableName = "EntityConstraintViolation";
         columnNames = new String[]{"invalidvalue","message","propertypath","severity","userfriendlyfieldname",
-                "validator","entityvalidation_id"};
+                "validator","entityvalidationresult_id"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","int"};
         referencedTables = new String[]{null,null,null,null,null,null,"EntityValidation"};
         creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
