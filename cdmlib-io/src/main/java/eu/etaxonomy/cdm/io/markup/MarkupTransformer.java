@@ -109,6 +109,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	//annotation type uuids
 	public static final UUID uuidFootnote = UUID.fromString("b91fab29-7d26-4277-b549-262da0d901b1");
+	public static final UUID uuidOriginalOrder = UUID.fromString("27516d8b-9f36-4fcf-aad4-77996a06ee40");
 	public static final UUID uuidWriterAnnotation = UUID.fromString("df73df4a-93a1-4d95-a552-1cebe26db51b");
 	
 	
@@ -681,6 +682,19 @@ public class MarkupTransformer extends InputTransformerBase {
 //	guianas
 	public static final UUID uuidExtraxylarySclerenchyma = UUID.fromString("cdddefbe-2f41-4d5c-89e8-4790b6d069fb");
 
+	public static final UUID uuidWoodSpecimens= UUID.fromString("dc12d16b-4ffb-4f33-814e-fed692e6d792");
+	public static final UUID uuidJuvenileBranches = UUID.fromString("630f2377-c511-4c8b-8661-d76a101d1e2b");
+	public static final UUID uuidFamilyDescription = UUID.fromString("75a5b240-e0dd-4654-b2e5-938ad24dde96");
+	public static final UUID uuidFamilyCharacteristics = UUID.fromString("6ac1c8cf-704c-4472-83c4-42d114c0badd");
+	public static final UUID uuidTimbersAndTheirProperties = UUID.fromString("096a9ba0-0260-4fd3-8847-940c055d17d0");
+	public static final UUID uuidTaxonomicChanges = UUID.fromString("f247f3c6-a399-411d-b1ce-b1768c3e73a8");
+	public static final UUID uuidPseudanthia = UUID.fromString("59fa2859-64a8-4523-b7a0-81cd14a8edec");
+	public static final UUID uuidMalePerianth = UUID.fromString("19aeded5-01df-4cd3-9f1e-da3bd8f43fd5");
+	public static final UUID uuidFemalePerianth = UUID.fromString("4e9b88dd-7c76-4adb-b796-fe0aeae2b3e9");
+	public static final UUID uuidUtricles = UUID.fromString("9b3992ab-7acc-4ec3-bcfa-65e7cb47005f");
+	public static final UUID uuidBisexualFlowers = UUID.fromString("804ba3b8-3600-4b79-b94c-30993cb16637");
+	public static final UUID uuidRudimentaryFlowers = UUID.fromString("acb76a5e-ed63-4aec-afc9-454c1ed0f0cc");
+	public static final UUID uuidPhyllodes = UUID.fromString("9eb3644e-d628-44f0-adc1-0a0ae4996111");
 	
 	
 
@@ -1263,6 +1277,20 @@ public class MarkupTransformer extends InputTransformerBase {
 		
 		//guianas
 		}else if (key.equalsIgnoreCase("extraxylary sclerenchyma")){return uuidExtraxylarySclerenchyma;
+		
+		}else if (key.equalsIgnoreCase("wood specimens")){return uuidExtraxylarySclerenchyma;
+		}else if (key.equalsIgnoreCase("FAMILY DESCRIPTION")){return uuidFamilyDescription;
+		}else if (key.equalsIgnoreCase("TIMBERS AND THEIR PROPERTIES")){return uuidTimbersAndTheirProperties;
+		}else if (key.equalsIgnoreCase("FAMILY CHARACTERISTICS")){return uuidFamilyCharacteristics;
+		}else if (key.equalsIgnoreCase("juvenile branches")){return uuidJuvenileBranches;
+		}else if (key.equalsIgnoreCase("taxonomic changes")){return uuidTaxonomicChanges;
+		}else if (key.equalsIgnoreCase("pseudanthia")){return uuidPseudanthia;
+		}else if (key.equalsIgnoreCase("male perianth")){return uuidMalePerianth;
+		}else if (key.equalsIgnoreCase("female perianth")){return uuidFemalePerianth;
+		}else if (key.equalsIgnoreCase("utricles")){return uuidUtricles;
+		}else if (key.equalsIgnoreCase("bisexual flowers")){return uuidBisexualFlowers;
+		}else if (key.equalsIgnoreCase("rudimentary flowers")){return uuidRudimentaryFlowers;
+		}else if (key.equalsIgnoreCase("phyllodes")){return uuidPhyllodes;
 		
 		
 //		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;

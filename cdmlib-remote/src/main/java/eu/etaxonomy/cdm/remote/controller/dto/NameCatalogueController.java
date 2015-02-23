@@ -849,7 +849,8 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             didname[0],
                             didname[1],
                             secTitle,
-                            modified);
+                            modified,
+                            taxon.getLsid().toString());
 
 
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
@@ -985,7 +986,7 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
                             didname[0],
                             didname[1],
                             secTitle,
-                            modified);
+                            modified, null);
                     // add accepted taxa (if exists) to taxon information object
 
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();

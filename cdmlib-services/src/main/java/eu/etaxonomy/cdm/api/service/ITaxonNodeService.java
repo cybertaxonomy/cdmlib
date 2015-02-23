@@ -120,20 +120,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
 
+
     /**
      * @param taxonNodeUuid
      * @param newParentTaxonNodeUuid
      * @return
      */
     public TaxonNode moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
-
-
-
-
-
-
-
-
-
 
 }

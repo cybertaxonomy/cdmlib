@@ -118,26 +118,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		while (reader.hasNext()) {
 			XMLEvent event = readNoWhitespace(reader);
 			// TODO cardinality of alternative
-			if (event.isEndElement()) {
-				if (isEndingElement(event, elName)) {
-					return;
-				} else {
-					if (isEndingElement(event, BIOGRAPHIES)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(event.asEndElement());
-					} else if (isEndingElement(event, REFERENCES)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(event.asEndElement());
-					} else if (isEndingElement(event, TEXT_SECTION)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(event.asEndElement());
-					} else if (isEndingElement(event, ADDENDA)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(event.asEndElement());
-					} else {
-						handleUnexpectedElement(event);
-					}
-				}
+			if (isEndingElement(event, elName)) {
+				return;
 			} else if (event.isStartElement()) {
 				if (isStartingElement(event, META_DATA)) {
 					handleMetaData(state, reader, event);
@@ -334,46 +316,28 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		Reference<?> descriptionReference = state.getConfig().getSourceReference();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (next.isEndElement()) {
-				if (isMyEndingElement(next, parentEvent)) {
-//					checkMandatoryElement(hasTitle, parentEvent, TAXONTITLE);
-					checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
-					boolean inClassification = getAndRemoveBooleanAttributeValue(next, attributes, "inClassification", true);
-					state.setTaxonInClassification(inClassification);
-					handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
-					if (taxon.getName().getRank() == null){
-						String warning = "No rank exists for taxon " + taxon.getTitleCache();
-						fireWarningEvent(warning, next, 12);
-						taxon.getName().setRank(Rank.UNKNOWN_RANK());
-					}
-					
-					keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
-					state.setCurrentTaxon(null);
-					state.setCurrentTaxonNum(null);
-					if (taxon.getName().getRank().isHigher(Rank.GENUS())){
-						state.setLatestGenusEpithet(null);
-					}else{
-						state.setLatestGenusEpithet(((NonViralName<?>)taxon.getName()).getGenusOrUninomial());
-					}
-					save(taxon, state);
-					return taxon;
-				} else {
-					if (isEndingElement(next, HEADING)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, TEXT_SECTION)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, REFERENCES)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, FIGURE_REF)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else {
-						handleUnexpectedEndElement(next.asEndElement());
-					}
+			if (isMyEndingElement(next, parentEvent)) {
+//				checkMandatoryElement(hasTitle, parentEvent, TAXONTITLE);
+				checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
+				boolean inClassification = getAndRemoveBooleanAttributeValue(next, attributes, "inClassification", true);
+				state.setTaxonInClassification(inClassification);
+				handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
+				if (taxon.getName().getRank() == null){
+					String warning = "No rank exists for taxon " + taxon.getTitleCache();
+					fireWarningEvent(warning, next, 12);
+					taxon.getName().setRank(Rank.UNKNOWN_RANK());
 				}
+				
+				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
+				state.setCurrentTaxon(null);
+				state.setCurrentTaxonNum(null);
+				if (taxon.getName().getRank().isHigher(Rank.GENUS())){
+					state.setLatestGenusEpithet(null);
+				}else{
+					state.setLatestGenusEpithet(((NonViralName<?>)taxon.getName()).getGenusOrUninomial());
+				}
+				save(taxon, state);
+				return taxon;
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, HEADING)) {
 					handleNotYetImplementedElement(next);
@@ -450,7 +414,12 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		taxon.addExtension(writer.extension);
 		// TODO what if taxonTitle comes later
-		if (StringUtils.isNotBlank(taxonTitle) && writer.extension != null) {
+		taxonTitle = taxonTitle != null ? taxonTitle : taxon.getName() == null ? null : ((NonViralName)taxon.getName()).getNameCache();
+		if (writer.extension != null) {
+			if (StringUtils.isBlank(taxonTitle)){
+				fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
+				taxonTitle = null;
+			}
 			Reference<?> sec = ReferenceFactory.newBookSection();
 			sec.setTitle(taxonTitle);
 			TeamOrPersonBase<?> author = createAuthor(writer.writer);
@@ -459,7 +428,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			taxon.setSec(sec);
 			registerFootnotes(state, sec, writer.footnotes);
 		} else {
-			String message = "No taxontitle exists for writer";
+			String message = "There is no writer extension defined";
 			fireWarningEvent(message, next, 6);
 		}
 	}
@@ -473,16 +442,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				return text;
-			} else if (next.isEndElement()) {
-				if (isEndingElement(next, HEADING)) {
-					popUnimplemented(next.asEndElement());
-				} else if (isEndingElement(next, WRITER)) {
-					popUnimplemented(next.asEndElement());
-				} else if (isEndingElement(next, NUM)) {
-					popUnimplemented(next.asEndElement());
-				} else {
-					handleUnexpectedEndElement(next.asEndElement());
-				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, HEADING)) {
 					handleNotYetImplementedElement(next);

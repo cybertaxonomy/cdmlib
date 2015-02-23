@@ -307,55 +307,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
         }
     }
 
-    /**
-     * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
-     * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
-     * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
-     * Also the path to these taxa may not include taxa from other classifications.
-     *
-     * @param taxonUUIDString
-     * @param classificationStringList
-     * @param includeDoubtful
-     * @param onlyCongruent
-     * @param response
-     * @param request
-     * @return
-     * @throws IOException
-     */
-
-    @RequestMapping(value = { "flockSearch" }, method = { RequestMethod.GET })
-    public ModelAndView doFlockSearchOfIncludedTaxa(
-            @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
-            @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
-            @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
-            @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
-            HttpServletResponse response,
-            HttpServletRequest request) throws IOException {
-        try{
-            ModelAndView mv = new ModelAndView();
-            UUID taxonUuid = UUID.fromString(taxonUUIDString);
-            /**
-             * List<UUID> classificationFilter,
-             * boolean includeDoubtful,
-             * boolean onlyCongruent)
-             */
-            List<UUID> classificationFilter = null;
-            if( classificationStringList != null ){
-                classificationFilter = new ArrayList<UUID>();
-                for(String classString :classificationStringList){
-                    classificationFilter.add(UUID.fromString(classString));
-                }
-            }
-            final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
-            IncludedTaxaDTO listIncludedTaxa = taxonService.listIncludedTaxa(taxonUuid, configuration);
-            mv.addObject(listIncludedTaxa);
-            return mv;
-        }catch(Exception e){
-           //TODO: Write an specific documentation for this service endpoint
-            Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-flockSearch.apt");
-            return exportGetExplanation(response, request, resource);
-        }
-    }
 
     //=========== Helper Methods ===============//
 

@@ -24,8 +24,10 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -48,6 +50,10 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_DESCRIPTION = "description";
 	protected static final String MODS_NAME_PART = "namePart";
 	protected static final String MODS_AFFILIATION = "affiliation";
+	protected static final String MODS_PUBLISHER ="publisher";
+	protected static final String MODS_DATE_ISSUED ="dateIssued";
+	protected static final String MODS_PLACE ="place";
+	protected static final String MODS_EDITION ="edition";
 
 	
 	public MarkupModsImport(MarkupDocumentImport docImport) {
@@ -78,7 +84,7 @@ public class MarkupModsImport extends MarkupImportBase {
 			} else if (isStartingElement(next, MODS_NAME)) {
 				handleName(state, reader, next, modsRef);
 			} else if (isStartingElement(next, MODS_ORIGININFO)) {
-				handleNotYetImplementedElement(next);
+				handleOriginInfo(state, reader, next, modsRef);
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -86,8 +92,46 @@ public class MarkupModsImport extends MarkupImportBase {
 		return;
 	}
 
-	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, 
-			XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
+	private void handleOriginInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			
+			if (isMyEndingElement(next, parentEvent)) {
+				return;
+			}else if (isStartingElement(next, MODS_PUBLISHER)) {
+				String publisher = this.getCData(state, reader, next);
+				if (modsRef.getPublisher() != null){
+					fireWarningEvent("Multiple publisher infos given. Concat by ;", next, 2);
+				}
+				modsRef.setPublisher(CdmUtils.concat(";", modsRef.getPublisher(), publisher));
+			}else if (isStartingElement(next, MODS_DATE_ISSUED)) {
+				String dateIssued = this.getCData(state, reader, next);
+				if (modsRef.getDatePublished() != null && ! modsRef.getDatePublished().isEmpty()){
+					fireWarningEvent("Multiple publish date infos given. I overwrite older information. Please check manually ;", next, 4);
+				}
+				TimePeriod timePeriod = TimePeriodParser.parseString(dateIssued);
+				modsRef.setDatePublished(timePeriod);
+			}else if (isStartingElement(next, MODS_PLACE)) {
+				String place = this.getCData(state, reader, next);
+				if (modsRef.getPlacePublished() != null){
+					fireWarningEvent("Multiple place published infos given. Concat by ;", next, 2);
+				}
+				modsRef.setPlacePublished(CdmUtils.concat(";", modsRef.getPlacePublished(), place));
+			}else if (isStartingElement(next, MODS_EDITION)) {
+				String edition = this.getCData(state, reader, next);
+				if (modsRef.getEdition() != null){
+					fireWarningEvent("Multiple edition infos given. Concat by ;", next, 2);
+				}
+				modsRef.setEdition(CdmUtils.concat(";", modsRef.getEdition(), edition));
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		return;
+	}
+
+	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		
 		

@@ -683,12 +683,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         if (configurator.isDoTaxaByCommonNames()) {
 
-            if(configurator.getPageSize() == null ){
+            //if(configurator.getPageSize() == null ){
                 List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
                 if(commonNameResults != null){
                     results.addAll(commonNameResults);
                 }
-            }
+           // }
         }
         return results;
     }

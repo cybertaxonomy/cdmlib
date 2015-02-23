@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
-import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
@@ -308,20 +308,33 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<SpecimenOrObservationBase> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return pageFieldUnitsByAssociatedTaxon(null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageFieldUnitsByAssociatedTaxon(java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public Pager<SpecimenOrObservationBase> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
 
         if(!getSession().contains(associatedTaxon)){
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
-        Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
-
-        List<SpecimenOrObservationBase> records = pageByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        //gather the IDs of all relevant field units
+        Set<Integer> fieldUnitIds = new HashSet<Integer>();
+        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for(SpecimenOrObservationBase<?> specimen:records){
-            fieldUnits.addAll(getFieldUnits(specimen.getUuid()));
+            for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
+                fieldUnitIds.add(fieldUnit.getId());
+            }
         }
-        return fieldUnits;
+        //dao.listByIds() does the paging of the field units. Passing the field units directly to the Pager would not work
+        List<SpecimenOrObservationBase> fieldUnits = dao.listByIds(fieldUnitIds, pageSize, pageNumber, orderHints, propertyPaths);
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitIds.size(), pageSize, fieldUnits);
     }
 
     @Override
@@ -1105,7 +1118,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             SingleRead singleRead = HibernateProxyHelper.deproxy(from, SingleRead.class);
             singleRead.getAmplificationResult().removeSingleRead(singleRead);
-            deleteResult.setStatus(DeleteStatus.OK);
+            deleteResult.setStatus(Status.OK);
         }
         else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
             deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
