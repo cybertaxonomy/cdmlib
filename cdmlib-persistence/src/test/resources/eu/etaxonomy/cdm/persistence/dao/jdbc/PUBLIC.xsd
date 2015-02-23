@@ -421,7 +421,7 @@
 	<xsd:element name="AMPLIFICATIONRESULT_MARKER_AUD" type="AMPLIFICATIONRESULT_MARKER_AUD__type" />
 	<xsd:element name="AMPLIFICATION_ANNOTATION_AUD" type="AMPLIFICATION_ANNOTATION_AUD__type" />
 	<xsd:element name="WORKINGSET" type="WORKINGSET__type" />
-	<xsd:element name="ENTITYVALIDATIONRESULT" type="ENTITYVALIDATIONRESULT__type" />
+	<xsd:element name="ENTITYVALIDATION" type="ENTITYVALIDATION__type" />
 	<xsd:element name="ORIGINALSOURCEBASE_MARKER_AUD" type="ORIGINALSOURCEBASE_MARKER_AUD__type" />
 	<xsd:element name="COLLECTION_MEDIA_AUD" type="COLLECTION_MEDIA_AUD__type" />
 	<xsd:element name="DEFINEDTERMBASE_IDENTIFIER" type="DEFINEDTERMBASE_IDENTIFIER__type" />
@@ -3950,7 +3950,7 @@
 		<xsd:attribute name="ID" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="ENTITYVALIDATIONRESULT__type">
+	<xsd:complexType name="ENTITYVALIDATION__type">
 		<xsd:attribute name="CREATED" use="optional" />
 		<xsd:attribute name="USERFRIENDLYTYPENAME" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
@@ -4191,7 +4191,7 @@
 		<xsd:attribute name="INVALIDVALUE" use="optional" />
 		<xsd:attribute name="PROPERTYPATH" use="optional" />
 		<xsd:attribute name="SEVERITY" use="optional" />
-		<xsd:attribute name="ENTITYVALIDATIONRESULT_ID" use="optional" />
+		<xsd:attribute name="ENTITYVALIDATION_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="CLASSIFICATION_EXTENSION__type">
 		<xsd:attribute name="CLASSIFICATION_ID" use="optional" />

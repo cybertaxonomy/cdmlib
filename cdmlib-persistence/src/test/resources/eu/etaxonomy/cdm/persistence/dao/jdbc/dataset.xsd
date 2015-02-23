@@ -425,7 +425,7 @@
 				<xsd:element name="AMPLIFICATIONRESULT_MARKER_AUD" type="dflt:AMPLIFICATIONRESULT_MARKER_AUD__type" />
 				<xsd:element name="AMPLIFICATION_ANNOTATION_AUD" type="dflt:AMPLIFICATION_ANNOTATION_AUD__type" />
 				<xsd:element name="WORKINGSET" type="dflt:WORKINGSET__type" />
-				<xsd:element name="ENTITYVALIDATIONRESULT" type="dflt:ENTITYVALIDATIONRESULT__type" />
+				<xsd:element name="ENTITYVALIDATION" type="dflt:ENTITYVALIDATION__type" />
 				<xsd:element name="ORIGINALSOURCEBASE_MARKER_AUD" type="dflt:ORIGINALSOURCEBASE_MARKER_AUD__type" />
 				<xsd:element name="COLLECTION_MEDIA_AUD" type="dflt:COLLECTION_MEDIA_AUD__type" />
 				<xsd:element name="DEFINEDTERMBASE_IDENTIFIER" type="dflt:DEFINEDTERMBASE_IDENTIFIER__type" />
