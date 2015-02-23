@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.cache.MockCdmCacher;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -148,12 +147,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
 
-		// Have to add a mock cdm cacher since the disabling of transactions
-		// results in the default CdmCacher object not working due to the fact that
-		// the current session for the CdmGenericDaoImpl.findByUuidWithoutFlush in
-		// the autowired CdmDaoCacher is null
-		// Comment out the line below to see the error.
-        MockCdmCacher cdmCacher = new MockCdmCacher();
 
     }
 

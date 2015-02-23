@@ -2352,7 +2352,6 @@ cdmlib-services/src/main/resources/wsdl/LSIDDataServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/application/FirstDataInserterTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/CdmCacherTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/MockCdmCacher.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
