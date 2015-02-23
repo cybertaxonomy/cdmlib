@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
@@ -943,7 +942,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
-    
+
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
 
@@ -951,6 +950,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
+
+    /**
+     * @param synonymUuid
+     * @param taxonUuid
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config);
 
 
 

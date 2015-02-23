@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,21 +38,21 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * the taxon names involved in the name relationship or on decisions taken by
  * the competent authorities; they do not depend on the use made of these
  * taxon names in a particular reference or in a particular taxonomic treatment.
- * Most relationships are to be understood as 'is .... of': for instance 
+ * Most relationships are to be understood as 'is .... of': for instance
  * <i>Linum radiola</i> L. is a replaced synonym of <i>Radiola linoides</i> Roth or
  * <i>Astragalus rhizanthus</i> Boiss. is a later homonym of
- * <i>Astragalus rhizanthus</i> Royle.  
+ * <i>Astragalus rhizanthus</i> Royle.
  * <P>
  * A standard (ordered) list of name relationship type instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional name relationship
- * types if needed. 
+ * types if needed.
  * <P>
  * This class corresponds partially to: <ul>
  * <li> TaxonRelationshipTerm and NomenclaturalNoteTypeTerm according to the TDWG ontology
  * <li> RelationshipType and NomenclaturalNoteType according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:38
  */
@@ -80,39 +80,40 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
 	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
 	private static final UUID uuidOriginalSpellingFor = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
-	
-	
+
+
 	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		return new NameRelationshipType(term, label, labelAbbrev, symmetric, transitive);
 	}
 
-	
-	protected static Map<UUID, NameRelationshipType> termMap = null;		
-	
+
+	protected static Map<UUID, NameRelationshipType> termMap = null;
+
 	protected static NameRelationshipType findTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;
+		if (termMap == null || termMap.isEmpty()){
+		    return getTermByClassAndUUID(NameRelationshipType.class, uuid);
+		} else {
+		    return termMap.get(uuid);
 		}
-		return (NameRelationshipType)termMap.get(uuid);
 	}
-	
-	
-//********************************** Constructor *********************************/	
+
+
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
   	protected  NameRelationshipType() {
 		super(TermType.NameRelationshipType);
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor: creates an additional name relationship type
 	 * instance with a description, a label, a label abbreviation and the flags
 	 * indicating whether <i>this</i> new name relationship type is symmetric and/or
 	 * transitive.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new name relationship type to be created 
+	 * 						 new name relationship type to be created
 	 * @param	label  		 the string identifying the new name relationship
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -128,9 +129,9 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 
-	
+
 //************************** METHODS ********************************
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -138,7 +139,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public void resetTerms(){
 		termMap = null;
 	}
-	
+
 	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
@@ -154,10 +155,10 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 */
 	@Transient
 	public boolean isInvalidType(){
-		if (this.equals(VALIDATED_BY_NAME()) || 
+		if (this.equals(VALIDATED_BY_NAME()) ||
 				this.equals(LATER_VALIDATED_BY_NAME())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
@@ -178,12 +179,12 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 */
 	@Transient
 	public boolean isLegitimateType(){
-		if (this.equals(BASIONYM()) || 
-				this.equals(REPLACED_SYNONYM()) || 
+		if (this.equals(BASIONYM()) ||
+				this.equals(REPLACED_SYNONYM()) ||
 				this.equals(ALTERNATIVE_NAME()) ||
 				this.equals(CONSERVED_AGAINST())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
@@ -206,15 +207,15 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public boolean isIllegitimateType(){
 		//TODO: implement isX method. Maybe as persistent class attribute?
 		//TODO: RejectedInFavour,
-		if (this.equals(LATER_HOMONYM()) || 
+		if (this.equals(LATER_HOMONYM()) ||
 				this.equals(TREATED_AS_LATER_HOMONYM())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
 	}
-	
+
 	@Transient
 	public boolean isBasionymRelation(){
 		if (BASIONYM() == null){
@@ -222,7 +223,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 		return this.equals(BASIONYM());
 	}
-	
+
 	@Transient
 	public boolean isReplacedSynonymRelation(){
 		if (REPLACED_SYNONYM() == null){
@@ -231,10 +232,10 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		return this.equals(REPLACED_SYNONYM());
 	}
 
-	
+
 	/**
 	 * Returns the "orthographic variant" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is an 
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is an
 	 * orthographic variant of the second taxon name. The two {@link TaxonNameBase taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
@@ -248,11 +249,11 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
 		  return findTermByUuid(uuidOrthographicVariant);
 	}
-	
+
 	/**
-	 * Returns the {@link TaxonNameBase taxon name} as it is spelled in the original 
-	 * publication of the given name. The first (left) name in the relationship takes the role 
-	 * of the original spelling whereas the second (right) name takes the role of the 
+	 * Returns the {@link TaxonNameBase taxon name} as it is spelled in the original
+	 * publication of the given name. The first (left) name in the relationship takes the role
+	 * of the original spelling whereas the second (right) name takes the role of the
 	 * current/correct spelling.<BR>
 	 * Original spelling is a specialization of {@link #ORTHOGRAPHIC_VARIANT()}.
 	 * <BR>
@@ -262,18 +263,18 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType ORIGINAL_SPELLING(){
 		return findTermByUuid(uuidOriginalSpellingFor);
 	}
-	
+
 	/**
 	 * Returns the "misspelling" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is a 
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is a
 	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Anhelica silvestris</i> L. is a misspelling of
 	 * <i>Angelica silvestris</i> L.<BR>
-	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are a 
-	 * subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are complementary to 
+	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are a
+	 * subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are complementary to
 	 * emendations. A misspelling is always an {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
 	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
@@ -285,16 +286,16 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "emendation" name relationship type. The first
-	 * {@link TaxonNameBase taxon name} involved in such a relationship is a 
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is a
 	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
 	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Angelica silvestris</i> L. is a emendation of
 	 * <i>Angelica sylvestris</i> L.<BR>
-	 * The name corrected by an emendation has originally been used on purpose (not accidentially) 
-	 * Therefore emendations are a subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are 
-	 * complementary to {@link #MISSPELLING missepllings}. An emendation is always an 
+	 * The name corrected by an emendation has originally been used on purpose (not accidentially)
+	 * Therefore emendations are a subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are
+	 * complementary to {@link #MISSPELLING missepllings}. An emendation is always an
 	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.<BR>
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
 	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
@@ -316,7 +317,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * For instance <i>Astragalus rhizanthus</i> Boiss. is a later homonym of
 	 * <i>Astragalus rhizanthus</i> Royle.<BR>
 	 * This type is not symmetric but transitive.
-	 * 
+	 *
 	 * @see	NomenclaturalStatusType#isIllegitimateType()
 	 * @see	NomenclaturalStatusType#isLegitimateType()
 	 */
@@ -324,7 +325,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	  return findTermByUuid(uuidLaterHomonym);
 	}
 
-	
+
 	/**
 	 * Returns the "treated as later homonym" name relationship type. The first
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is
@@ -336,7 +337,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * taxon name is "illegitimate" and the second one is "legitimate" (this
 	 * corresponds to "invalid" and "valid" in case of {@link ZoologicalName zoological names}).<BR>
 	 * This type is not symmetric but transitive.
-	 * 
+	 *
 	 * @see	#LATER_HOMONYM()
 	 * @see	NomenclaturalStatusType#isIllegitimateType()
 	 * @see	NomenclaturalStatusType#isLegitimateType()
@@ -344,30 +345,30 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
 	  return findTermByUuid(uuidTreatedAsLaterHomonym);
 	}
-	
+
 	/**
 	 * Returns the "later isonym" name relationship type where the first
 	 * {@link TaxonNameBase taxon name} involved has been published after the second taxon name.<BR>
-	 * In contrast to the {@link #LATER_HOMONYM() later homonym} relationship the two 
+	 * In contrast to the {@link #LATER_HOMONYM() later homonym} relationship the two
 	 * {@link TaxonNameBase taxon names} involved have the type(s) so they belong to the
 	 * same {@link HomotypicalGroup homotypical groups}. As later homonyms they have in general
 	 * different {@link NonViralName#getAuthorshipCache() authorship} and their name parts
 	 * must be (almost) identical, so one could be mistaken for the other one.<BR>
 	 * Later isonyms are validly published names but with a wrong citation. So there are rather errors
 	 * then independent names.<BR>
-	 * Isonyms are handled in Article 6, Note 2 of the ICNAFP (Melbourne Code): 
+	 * Isonyms are handled in Article 6, Note 2 of the ICNAFP (Melbourne Code):
 	 * <code>When the same name, based on the same type, has been published independently at different
-	 *  times perhaps by different authors, then only the earliest of these �isonyms� has 
-	 *  nomenclatural status. The name is always to be cited from its original 
+	 *  times perhaps by different authors, then only the earliest of these �isonyms� has
+	 *  nomenclatural status. The name is always to be cited from its original
 	 *  place of valid publication, and later isonyms may be disregarded (but see Art. 14.15).</code>
 	 * <BR><BR>
 	 * See discussion at: <a href=http://dev.e-taxonomy.eu/trac/ticket/2901>#2901</a>
-	 * 
+	 *
 	 */
 	public static final NameRelationshipType LATER_ISONYM(){
 		return findTermByUuid(uuidLaterIsonym);
 	}
-	
+
 	/**
 	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
 	 * involved in such a relationship are family names. The first one is a
@@ -385,12 +386,12 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	  return findTermByUuid(uuidAlternativeName);
 	}
 	/**
-	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name} 
+	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name}
 	 * involved in such a relationship is the "basionym" of the second taxon
 	 * name. Both taxon names belong to the same {@link HomotypicalGroup homotypical group}).
-	 * The basionym is the epithet-bringing taxon name (first taxon name 
+	 * The basionym is the epithet-bringing taxon name (first taxon name
 	 * ever validly published given to the same {@link Rank#isInfraGeneric() infrageneric}
-	 * taxon, the epithet of which is the same as in the second taxon name 
+	 * taxon, the epithet of which is the same as in the second taxon name
 	 * originated through a reclassification).<BR>
 	 * According to the ICBN the author of the basionym must be mentioned in the
 	 * later taxon name (by placing it in parentheses before the authority of
@@ -402,7 +403,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	  return findTermByUuid(uuidBasionym);
 	}
 	/**
-	 * Returns the "replaced synonym" name relationship type. The first 
+	 * Returns the "replaced synonym" name relationship type. The first
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
 	 * "replaced synonym" of the second taxon name. Both taxon names belong to
 	 * the same {@link HomotypicalGroup homotypical group}. The replaced synonym is the
@@ -418,7 +419,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * of reclassification a taxon name <i>Cytisus biflorum</i> had been already
 	 * published by L'H�r.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * 
+	 *
 	 * @see #BASIONYM()
 	 * @see #LATER_HOMONYM()
 	 * @see NomenclaturalStatusType#NOVUM()
@@ -436,7 +437,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * For instance <i>Cephaloziella</i> (Spruce) Schiffn. is conserved against
 	 * <i>Dichiton</i> Mont.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * 
+	 *
 	 * @see NomenclaturalStatusType#CONSERVED()
 	 * @see NomenclaturalStatusType#REJECTED()
 	 * @see NomenclaturalStatusType#isLegitimateType()
@@ -452,7 +453,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * 
+	 *
 	 * @see		NomenclaturalStatusType#isInvalidType()
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
@@ -466,15 +467,15 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * 
+	 *
 	 * @see		NomenclaturalStatusType#isInvalidType()
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
-	  return findTermByUuid(uuidLaterValidatedByName); 
+	  return findTermByUuid(uuidLaterValidatedByName);
 	}
 	/**
-	 * Returns the "blocking name" name relationship type. The first 
+	 * Returns the "blocking name" name relationship type. The first
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
 	 * "blocking name" for the second taxon name. Both taxon names belong to
 	 * different {@link HomotypicalGroup homotypical groups}). The blocking taxon name is the
@@ -486,7 +487,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * <i>Cytisus fontanesii</i> Spach ("novum" taxon name) when reclassifying
 	 * <i>Spartium biflorum</i> Desf. from <i>Spartium</i> to <i>Cytisus</i>.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * 
+	 *
 	 * @see #REPLACED_SYNONYM()
 	 * @see #LATER_HOMONYM()
 	 * @see NomenclaturalStatusType#NOVUM()

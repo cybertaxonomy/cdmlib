@@ -219,10 +219,11 @@ public class Rank extends OrderedTermBase<Rank> {
 
 
     protected static Rank getTermByUuid(UUID uuid){
-        if (termMap == null){
-            return null;  //better return null then initialize the termMap in an unwanted way
+        if (termMap == null || termMap.isEmpty()){
+           return getTermByClassAndUUID(Rank.class, uuid);
+        } else {
+            return termMap.get(uuid);
         }
-        return termMap.get(uuid);
     }
 
     public static final Rank EMPIRE(){

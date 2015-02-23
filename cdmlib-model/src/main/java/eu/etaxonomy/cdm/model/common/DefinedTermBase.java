@@ -48,7 +48,7 @@ import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
-import eu.etaxonomy.cdm.model.ICdmCacher;
+import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -476,14 +476,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     }
 
     // Currently the CDM Caching mechanism is only used for caching terms
-    private static ICdmCacher cacher;
+    private static ICdmUuidCacher cacher;
 
     /**
      * Gets the CDM cacher object
      *
      * @return the CDM cacher object
      */
-    public static ICdmCacher getCacher() {
+    public static ICdmUuidCacher getCacher() {
 		return cacher;
 	}
 
@@ -492,7 +492,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 *
 	 * @param cacher the CDM cacher object
 	 */
-	public static void setCacher(ICdmCacher cacher) {
+	public static void setCacher(ICdmUuidCacher cacher) {
 		DefinedTermBase.cacher = cacher;
+	}
+
+	public static <T extends DefinedTermBase> T getTermByClassAndUUID(Class<T> clazz, UUID uuid) {
+	    if(cacher != null) {
+	        Object obj = getCacher().load(uuid);
+	        if(obj != null && obj.getClass().equals(clazz)) {
+	            return (T)obj;
+	        }
+	    }
+	    return null;
 	}
 }

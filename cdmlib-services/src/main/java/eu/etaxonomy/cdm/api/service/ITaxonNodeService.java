@@ -113,6 +113,20 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
+    /**
+     * @param taxonNode
+     * @param newParentTaxonNode
+     * @return
+     */
+    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
+
+    /**
+     * @param taxonNodeUuid
+     * @param newParentTaxonNodeUuid
+     * @return
+     */
+    public TaxonNode moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
+
 
 
 

@@ -93,7 +93,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
-import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -683,7 +682,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(),configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
         }
         if (configurator.isDoTaxaByCommonNames()) {
-            
+
             if(configurator.getPageSize() == null ){
                 List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
                 if(commonNameResults != null){
@@ -991,7 +990,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     @Override
     public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification)  {
-    	
+
     	if (config == null){
             config = new TaxonDeletionConfigurator();
         }
@@ -1074,12 +1073,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 " which also describes specimens or abservations";
                         //throw new ReferencedObjectUndeletableException(message);
                     }
+
                     removeDescriptions.add(desc);
-                    descriptionService.delete(desc);
+
 
                 }
                 for (TaxonDescription desc: removeDescriptions){
                     taxon.removeDescription(desc);
+                    descriptionService.delete(desc);
                 }
             }
 
@@ -1194,8 +1195,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         }
 
-                        
-                        
+
+
                         if (nameResult.isError()){
                         	//result.setError();
                         	result.addRelatedObject(name);
@@ -1374,7 +1375,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 return result;
             }
 
-        
+
         }
         return result;
 //        else{
@@ -1390,6 +1391,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config) {
+        Synonym synonym = HibernateProxyHelper.deproxy(dao.load(synonymUuid), Synonym.class);
+        Taxon taxon = HibernateProxyHelper.deproxy(dao.load(taxonUuid), Taxon.class);
+        return deleteSynonym(synonym, taxon, config);
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findIdenticalTaxonNameIds(java.util.List)
@@ -3099,34 +3107,34 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (!(ref instanceof TaxonNameBase)){
                 if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
                     message = "The Taxon can't be deleted as long as it has synonyms.";
-                    
+
                 }
                 if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
                     message = "The Taxon can't be deleted as long as it has factual data.";
-                   
+
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
                     message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-                    
+
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
                         message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
-                        
+
                     } else{
                         message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-                        
+
                     }
                 }
                 if (ref instanceof PolytomousKeyNode){
                     message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
-                    
+
                 }
 
                 if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
                    message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                   
+
 
                 }
 
@@ -3140,13 +3148,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //TaxonInteraction
                 if (ref.isInstanceOf(TaxonInteraction.class)){
                     message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
-                    
+
                 }
 
               //TaxonInteraction
                 if (ref.isInstanceOf(DeterminationEvent.class)){
                     message = "Taxon can't be deleted as it is used in a determination event";
-                    
+
                 }
 
             }
@@ -3286,13 +3294,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return result;
     }
-    
+
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
         List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
-    
+
 	@Override
 	@Transactional(readOnly = true)
 	public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
@@ -3302,20 +3310,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (subtreeFilter == null){
 			return findByIdentifier(clazz, identifier, identifierType, matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
 		}
-		
+
 		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
         List<Object[]> daoResults = new ArrayList<Object[]>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType, subtreeFilter,
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
-        
+
         List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
         		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));	
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
         	}
         }
 		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);

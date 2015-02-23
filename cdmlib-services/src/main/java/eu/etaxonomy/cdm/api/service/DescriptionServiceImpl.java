@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -57,6 +59,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -83,6 +86,8 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     protected ITermVocabularyDao vocabularyDao;
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
+    protected ITaxonDao taxonDao;
+
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
 
@@ -124,6 +129,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     @Autowired
     protected void setNaturalLanguageGenerator(NaturalLanguageGenerator naturalLanguageGenerator) {
         this.naturalLanguageGenerator = naturalLanguageGenerator;
+    }
+
+    @Autowired
+    protected void setTaxonDao(ITaxonDao taxonDao) {
+        this.taxonDao = taxonDao;
     }
 
     /**
@@ -459,7 +469,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
     	}
-    	
+
         return dao.delete(description);
     }
     @Override
@@ -661,6 +671,37 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         List<NamedArea> results = dao.listNamedAreasInUse(pageSize, pageNumber, propertyPaths);
         return new DefaultPagerImpl<NamedArea>(pageNumber, results.size(), pageSize, results);
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public void moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
+        List<TaxonDescription> descriptions = new ArrayList(sourceTaxon.getDescriptions());
+        for(TaxonDescription description : descriptions){
+
+            String moveMessage = String.format("Description moved from %s", sourceTaxon);
+            if(description.isProtectedTitleCache()){
+                String separator = "";
+                if(!StringUtils.isBlank(description.getTitleCache())){
+                    separator = " - ";
+                }
+                description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+            }
+            Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+            annotation.setAnnotationType(AnnotationType.TECHNICAL());
+            description.addAnnotation(annotation);
+            targetTaxon.addDescription(description);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid) {
+        Taxon sourceTaxon = HibernateProxyHelper.deproxy(taxonDao.load(sourceTaxonUuid), Taxon.class);
+        Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        moveTaxonDescriptions(sourceTaxon, targetTaxon);
+
     }
 
 }

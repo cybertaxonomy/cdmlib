@@ -7,7 +7,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
-import eu.etaxonomy.cdm.model.ICdmCacher;
+import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -19,11 +19,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @param <T>
  */
 
-public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
+public abstract class CdmCacher implements ICdmUuidCacher {
 
 
 
-	private static final String DEFAULT_CACHE_NAME = "defaultCache";
+	public static final String DEFAULT_CACHE_NAME = "defaultCache";
 
 	/**
 	 * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
@@ -64,14 +64,20 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @return
 	 */
 	private CacheConfiguration getDefaultCacheConfiguration() {
+	    // This is 2.6.9 API
+//	    SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
+//        sizeOfConfig.setMaxDepth(10000);
+//        sizeOfConfig.setMaxDepthExceededBehavior("abort");
 		// For a better understanding on how to size caches, refer to
 		// http://ehcache.org/documentation/configuration/cache-size
 		return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
 	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
 	    .eternal(false)
+
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2);
+	    .timeToIdleSeconds(60*60*2)
+	    .statistics(true);
 	    // This is 2.6.9 API
 		//.maxEntriesLocalDisk(1000);
 	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
@@ -101,8 +107,8 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
      * @see eu.etaxonomy.cdm.model.ICdmCacher#put(java.util.UUID, eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public  T put(UUID uuid, T cdmEntity) {
-        T cachedCdmEntity = getFromCache(uuid);
+    public  CdmBase put(UUID uuid, CdmBase cdmEntity) {
+        CdmBase cachedCdmEntity = getFromCache(uuid);
         if(getFromCache(uuid) == null) {
             getDefaultCache().put(new Element(uuid, cdmEntity));
             return cdmEntity;
@@ -111,24 +117,28 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
         }
     }
 
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
 	 */
 	@Override
-    public T load(UUID uuid) {
+    public CdmBase load(UUID uuid) {
 		Element e = getCacheElement(uuid);
-		T cdmEntity;
+		CdmBase cdmEntity;
 		if (e == null) {
-
 		    // nothing in the cache for "key" (or expired) ... re-load the entity
 			cdmEntity = findByUuid(uuid);
-			// default cache is a non-null cache
+			// currently default cache is a non-null cache
+			// We would like to have the possibility to put null values in the cache,
+			// but we need to first distinguish between real null values and null values
+			// returned by the service is the type of class does not match
 			if(cdmEntity != null) {
 			    put(uuid, cdmEntity);
 			}
 		} else {
 		    // there is a valid element in the cache, however getObjectValue() may be null
-		    cdmEntity = (T)e.getValue();
+		    cdmEntity = (CdmBase)e.getValue();
 		}
 		return cdmEntity;
 	}
@@ -138,14 +148,50 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
 	 */
 	@Override
-    public  T getFromCache(UUID uuid) {
+    public  CdmBase getFromCache(UUID uuid) {
 		Element e = getCacheElement(uuid);
 		if (e == null) {
 			return null;
 		} else {
-		    return(T)e.getObjectValue();
+		    return(CdmBase)e.getObjectValue();
 		}
 	}
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public CdmBase getFromCache(CdmBase cdmBase) {
+       return getFromCache(cdmBase.getUuid());
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#put(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public void put(CdmBase cdmEntity) {
+        if(cdmEntity != null) {
+            put(cdmEntity.getUuid(), cdmEntity);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#load(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public CdmBase load(CdmBase cdmEntity) {
+        CdmBase cachedCdmEntity = getFromCache(cdmEntity);
+        if(cdmEntity != null && isCachable(cdmEntity)) {
+            put(cdmEntity);
+            return cdmEntity;
+        }
+        return null;
+    }
+
+
 
 
 	/* (non-Javadoc)
@@ -163,9 +209,9 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	@Override
     public boolean existsAndIsNotNull(UUID uuid) {
 		Element e = getCacheElement(uuid);
-		T cdmEntity;
+		CdmBase cdmEntity;
 		if (e != null) {
-			return (T)e.getObjectValue() != null;
+			return e.getObjectValue() != null;
 		}
 		return false;
 	}
@@ -176,7 +222,7 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @return
 	 */
-	protected abstract T findByUuid(UUID uuid);
+	protected abstract CdmBase findByUuid(UUID uuid);
 
 
 

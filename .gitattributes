@@ -712,6 +712,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmAssignableTypeFilter.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmTypeScanner.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmUuidCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
@@ -794,7 +795,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/VocabularyEnum.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/WrongTermTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermLoader.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/MockCdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermNotFoundException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
@@ -1030,6 +1030,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/Match.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchMode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchStrategyConfigurator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/Matching.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/IMergable.java -text

@@ -1,24 +1,21 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
@@ -33,17 +30,18 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
 
 
-	@Autowired
+	@Override
+    @Autowired
 	protected void setDao(IPolytomousKeyNodeDao dao) {
 		this.dao = dao;
 	}
-	
+
 	@Override
 	public UUID delete(PolytomousKeyNode node, boolean deleteChildren){
 		UUID uuid = node.getUuid();
 		node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
 		List<PolytomousKeyNode> children = node.getChildren();
-		
+
 		if(!deleteChildren){
 			PolytomousKeyNode parent = node.getParent();
 			for (PolytomousKeyNode child: children){
@@ -51,7 +49,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 				parent.removeChild(node);
 				dao.update(child);
 			}
-			
+
 			dao.update(node);
 		}
 		if (node.getParent()!= null){
@@ -62,7 +60,13 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 		}
 		dao.delete(node);
 		return uuid;
-		
+
 	}
+
+	   @Override
+	    public UUID delete(UUID nodeUuid, boolean deleteChildren){
+	       PolytomousKeyNode node = dao.load(nodeUuid);
+	       return delete(node, deleteChildren);
+	   }
 
 }

@@ -425,12 +425,31 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     }
 
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(UUID nodeUuid, TaxonDeletionConfigurator config) {
         DeleteResult dr = deleteTaxonNode(dao.load(nodeUuid), config);
         return dr;
     }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode) {
+        return newParentTaxonNode.addChildNode(taxonNode,
+                newParentTaxonNode.getReference(),
+                newParentTaxonNode.getMicroReference());
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public TaxonNode moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid) {
+        return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
+
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
      */

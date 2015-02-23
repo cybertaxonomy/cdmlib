@@ -561,4 +561,16 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
 	UUID deleteDescription(DescriptionBase description);
 
+    /**
+     * @param sourceTaxon
+     * @param targetTaxon
+     */
+    public void moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon);
+
+    /**
+     * @param sourceTaxonUuid
+     * @param targetTaxonUuid
+     */
+    public void moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid);
+
 }

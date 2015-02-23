@@ -5,12 +5,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl;
 
 /**
  * CDM Entity Cacher class which handles the caching of Defined Terms.
@@ -20,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl;
  * @param <T>
  */
 @Component
-public class CdmTermCacher<T extends CdmBase> extends CdmCacher<T> {
+public class CdmTermCacher extends CdmCacher {
 
 	@Autowired
 	ITermService termService;
@@ -34,8 +31,24 @@ public class CdmTermCacher<T extends CdmBase> extends CdmCacher<T> {
 	 * @see eu.etaxonomy.cdm.api.cache.CdmCacher#findByUuid(java.util.UUID)
 	 */
 	@Override
-	protected  T findByUuid(UUID uuid) {
-		return (T)termService.findWithoutFlush(uuid);
+	protected  CdmBase findByUuid(UUID uuid) {
+		return termService.findWithoutFlush(uuid);
 	}
+
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#isCachable(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean isCachable(CdmBase cdmEntity) {
+        if(cdmEntity != null && cdmEntity instanceof DefinedTermBase) {
+            return true;
+        }
+        return false;
+    }
+
+
+
 
 }
