@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -106,6 +107,7 @@ class BatchValidationUtil {
                 Reference.class,
                 NameRelationship.class,
                 TaxonNameBase.class,
+                TypeDesignationBase.class,
                 TaxonBase.class,
                 SynonymRelationship.class,
                 TaxonNode.class,

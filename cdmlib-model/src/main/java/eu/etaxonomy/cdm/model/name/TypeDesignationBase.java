@@ -33,6 +33,8 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 
 /**
  * The (abstract) class representing a typification of one or several {@link TaxonNameBase taxon names}.<BR>
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@ValidTypeDesignation(groups=Level2.class)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
     private static final long serialVersionUID = 8622351017235131355L;
 
@@ -169,7 +172,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 //     * @see   #getTypifiedNames()
 //     * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
 //     * Probably it is a relict of an old version.
-//     * See also http://dev.e-taxonomy.eu/trac/ticket/2173 
+//     * See also http://dev.e-taxonomy.eu/trac/ticket/2173
 //     */
 //    @Deprecated
 //    public HomotypicalGroup getHomotypicalGroup() {
@@ -184,6 +187,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
      * type designation. This is a subset of the taxon names belonging to the
      * corresponding {@link #getHomotypicalGroup() homotypical group}.
      */
+    @Override
     public Set<TaxonNameBase> getTypifiedNames() {
         return typifiedNames;
     }
