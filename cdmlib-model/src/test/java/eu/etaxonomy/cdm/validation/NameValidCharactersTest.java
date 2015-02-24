@@ -15,9 +15,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
+import org.hibernate.validator.internal.constraintvalidators.PatternValidator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -119,4 +121,27 @@ public class NameValidCharactersTest extends ValidationTestBase  {
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, the second letter of the genus part is capitalized",constraintViolations.isEmpty());
 	}
+
+	/**
+     * Test validation at level2 with an invalid name - this should pass as the genus part
+     * does not have a capitalized first letter
+     */
+    @Test
+    public final void testAuthorship() {
+        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertNoConstraintOnValidator((Set)constraintViolations, Pattern.class);
+
+        name.setAuthorshipCache("", true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertHasConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+        name.setAuthorshipCache(null, true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertNoConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+        name.setAuthorshipCache("L\\u05EB", true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertHasConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+    }
 }

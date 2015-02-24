@@ -72,7 +72,4 @@ public class ValidPointTest extends ValidationTestBase{
 	    validateHasNoConstraint(gatheringEvent, NotNullValidator.class, Level2.class);
    }
 
-
-
-
 }
