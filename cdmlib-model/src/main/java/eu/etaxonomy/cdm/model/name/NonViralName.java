@@ -226,7 +226,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     //TODO Val #3379
 //    @NotNull
     @Size(max = 255)
-    @Pattern(regexp = "[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
+    @Pattern(regexp = "^[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+$", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
     private String authorshipCache;
 
     @XmlElement(name = "ProtectedAuthorshipCache")
