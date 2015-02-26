@@ -177,6 +177,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     }
 
 
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#setDatasource (eu.etaxonomy.cdm.database.ICdmDataSource)}

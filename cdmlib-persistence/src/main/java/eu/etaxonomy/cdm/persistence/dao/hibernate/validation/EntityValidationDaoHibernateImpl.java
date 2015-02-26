@@ -90,7 +90,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         Query query = getSession().createQuery(
                 "FROM EntityValidation vr "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")       
         List<EntityValidation> result = query.list();
         return result;
     }
