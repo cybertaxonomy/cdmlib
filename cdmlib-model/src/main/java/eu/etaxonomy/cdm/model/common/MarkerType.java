@@ -59,14 +59,14 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
     private boolean isTechnical=false;
 
  // ***************************** FACTORY METHODD ************************/
-    
+
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
 		return new MarkerType(term, label, labelAbbrev);
 	}
 
 
 // ***************************** CONSTRUCTOR ******************************/
-    
+
 	//for hibernate use only
 	@Deprecated
 	protected MarkerType() {
@@ -79,7 +79,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		super(TermType.MarkerType, term, label, labelAbbrev);
 	}
 
-// ******************** METHODS **************************************************/	
+// ******************** METHODS **************************************************/
 
 	/**
 	 * A flag indicating if markers of this type are user content or technical information
@@ -103,7 +103,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 //***************************** TERMS **************************************/
 
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -114,11 +114,11 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 
 	protected static MarkerType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-			vocabularyStore.initialize();
-		}
-		return termMap.get(uuid);
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(MarkerType.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
 
 	public static final MarkerType IMPORTED(){

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * The class representing the categories of {@link HybridRelationship hybrid relationships}
  * between a {@link BotanicalName botanical taxon name} used as a parent of a hybrid taxon
  * name and the hybrid taxon name itself. Hybrids and their parents are always
- * plants. The relationships are to be understood as 'is .... of'. 
+ * plants. The relationships are to be understood as 'is .... of'.
  * <P>
  * A standard (ordered) list of hybrid relationship type instances will be
  * automatically created as the project starts. But this class allows to extend
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * <li> TaxonRelationshipTerm according to the TDWG ontology
  * <li> RelationshipType according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
@@ -61,7 +61,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
-	protected static Map<UUID, HybridRelationshipType> termMap = null;		
+	protected static Map<UUID, HybridRelationshipType> termMap = null;
 
 	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");
 	private static final UUID uuidSecondParent = UUID.fromString("0485fc3d-4755-4f53-8832-b82774484c43");
@@ -71,27 +71,27 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	private static final UUID uuidMaleParent = UUID.fromString("8b7324c5-cc6c-4109-b708-d49b187815c4");
 	private static final UUID uuidMajorParent = UUID.fromString("da759eea-e3cb-4d3c-ae75-084c2d08f4ed");
 	private static final UUID uuidMinorParent = UUID.fromString("e556b240-b03f-46b8-839b-ad89df633c5a");
-	
-	
+
+
 	public static HybridRelationshipType NewInstance(String term, String label, String labelAbbrev) {
 		return new HybridRelationshipType(term, label, labelAbbrev);
 	}
 
-//********************************** Constructor *********************************/	
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
   	protected HybridRelationshipType() {
 		super(TermType.HybridRelationshipType);
 	}
-	/** 
+	/**
 	 * Class constructor: creates an additional hybrid relationship type
 	 * instance with a description (in the {@link Language#DEFAULT() default language}), a label,
 	 * a label abbreviation and the flags indicating whether this new hybrid
 	 * relationship type is symmetric and/or transitive.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new hybrid relationship type to be created 
+	 * 						 new hybrid relationship type to be created
 	 * @param	label  		 the string identifying the new hybrid relationship
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -102,9 +102,9 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 		super(TermType.HybridRelationshipType, term, label, labelAbbrev, false, false);
 	}
 
-	
+
 //************************** METHODS ********************************
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -112,20 +112,21 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	public void resetTerms(){
 		termMap = null;
 	}
-	
-	
+
+
 	protected static HybridRelationshipType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
-		}
-		return (HybridRelationshipType)termMap.get(uuid);
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(HybridRelationshipType.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
-	
+
 	/**
 	 * Returns the "first parent" hybrid relationship type. The elements of the
 	 * {@link NonViralName non-viral taxon name} used as "first parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
-	 * 
+	 *
 	 * @see	#SECOND_PARENT()
 	 * @see #THIRD_PARENT()
 	 * @see #FOURTH_PARENT()
@@ -140,7 +141,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * Returns the "second parent" hybrid relationship type. The elements of the
 	 * {@link NonViralName non-viral taxon name} used as "second parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
-	 * 
+	 *
 	 * @see	#FIRST_PARENT()
 	 * @see #MALE_PARENT()
 	 * @see #MINOR_PARENT()
@@ -148,35 +149,35 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	public static final HybridRelationshipType SECOND_PARENT(){
 		return getTermByUuid(uuidSecondParent);
 	}
-	
+
 	/**
 	 * Returns the "third parent" hybrid relationship type. The elements of the
 	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
-	 * 
+	 *
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType THIRD_PARENT(){
 		return getTermByUuid(uuidThirdParent);
 	}
-	
+
 	/**
 	 * Returns the "fourth parent" hybrid relationship type. The elements of the
 	 * {@link NonViralName non viral taxon name} used as "third parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
-	 * 
+	 *
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType FOURTH_PARENT(){
 		return getTermByUuid(uuidFourthParent);
 	}
-	
+
 	/**
 	 * Returns the "female parent" hybrid relationship type. The taxon the name
 	 * of which plays the female parent role is the genetic mother of the taxon
 	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name})<BR>
 	 * For nomenclature purposes a "female parent" is also a "first parent".
-	 * 
+	 *
 	 * @see	#MALE_PARENT()
 	 * @see	#FIRST_PARENT()
 	 */
@@ -189,7 +190,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * of which plays the male parent role is the genetic father of the taxon
 	 * which is the hybrid (and has the hybrid {@link NonViralName non-viral taxon name}).<BR>
 	 * For nomenclature purposes a "male parent" is also a "second parent".
-	 * 
+	 *
 	 * @see	#MALE_PARENT()
 	 * @see	#SECOND_PARENT()
 	 */
@@ -198,14 +199,14 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 
 	/**
-	 * Returns the "major parent" hybrid relationship type. This relationship 
+	 * Returns the "major parent" hybrid relationship type. This relationship
 	 * maybe used for hybrids which have parents that are not equally represented
 	 * in the child (e.g. some fern hybrids).
 	 * For nomenclature purposes a "major parent" is also a "first parent".<BR>
 	 * Major and minor parent relationships are usually represented in a
 	 * hybrid formula with a "greater than" symbol (>). It replaces the multiplication
 	 * symbol which is generally used for hybrid fromulas.
-	 * 
+	 *
 	 * @see	#FIRST_PARENT()
 	 * @see #MINOR_PARENT()
 	 */
@@ -214,34 +215,34 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 
 	/**
-	 * Returns the "minor parent" hybrid relationship type. This relationship 
+	 * Returns the "minor parent" hybrid relationship type. This relationship
 	 * maybe used for hybrids which have parents that are not equally represented
 	 * in the child (e.g. some fern hybrids).<BR>
 	 * For nomenclature purposes a "major parent" is also a "second parent".
 	 * Major and minor parent relationships are usually represented in a
 	 * hybrid formula with a "greater than" symbol (>). It replaces the multiplication
 	 * symbol which is generally used for hybrid fromulas.
-	 * 
+	 *
 	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType MINOR_PARENT(){
 		return getTermByUuid(uuidMinorParent);
 	}
-	
-	
+
+
 	@Override
 	public int compareTo(HybridRelationshipType otherRelationshipType) {
 		return super.performCompareTo(otherRelationshipType, true);
 	}
-	
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<HybridRelationshipType> termVocabulary) {
 		termMap = new HashMap<UUID, HybridRelationshipType>();
 		for (HybridRelationshipType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (HybridRelationshipType)term);
-		}	
+			termMap.put(term.getUuid(), term);
+		}
 	}
-	
+
 //	@Override
 //	public HybridRelationshipType readCsvLine(Class<HybridRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 //		return super.readCsvLine(termClass, csvLine, terms);

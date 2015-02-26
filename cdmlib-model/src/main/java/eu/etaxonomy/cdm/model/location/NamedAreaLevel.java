@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -44,7 +44,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedAreaLevel.class);
 
-	protected static Map<UUID, NamedAreaLevel> termMap = null;		
+	protected static Map<UUID, NamedAreaLevel> termMap = null;
 
 	private static final UUID uuidTdwgLevel1 = UUID.fromString("cd7771b2-7427-4a01-9057-7d7a897dddaf");
 	private static final UUID uuidTdwgLevel2 = UUID.fromString("38efa5fd-d7f0-451c-9de9-e6cce41e2225");
@@ -73,7 +73,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	public static NamedAreaLevel NewInstance(String term, String label, String labelAbbrev){
 		return new NamedAreaLevel(term, label, labelAbbrev);
 	}
-	
+
 //************************** CONSTRUCTOR ********************************
 
 	//for hibernate use only
@@ -86,17 +86,18 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		super(TermType.NamedAreaLevel, term, label, labelAbbrev);
 	}
 
-	
-	
+
+
 //************************** METHODS ********************************
-	
+
 	protected static NamedAreaLevel getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
-		}
-		return (NamedAreaLevel)termMap.get(uuid);
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(NamedAreaLevel.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
-		
+
 	/**
 	 * Continents
 	 */
@@ -149,7 +150,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		}
 		return result;
 	}
-	
+
 	public static final boolean isTDWG_LEVEL2(String str){
 		boolean result = false;
 		if (uuidTdwgLevel2.compareTo(UUID.fromString(str)) == 0){
@@ -157,7 +158,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		}
 		return result;
 	}
-	
+
 	public static final boolean isTDWG_LEVEL3(String str){
 		boolean result = false;
 		if (uuidTdwgLevel3.compareTo(UUID.fromString(str)) == 0){
@@ -165,7 +166,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		}
 		return result;
 	}
-	
+
 	public static final boolean isTDWG_LEVEL4(String str){
 		boolean result = false;
 		if (uuidTdwgLevel4.compareTo(UUID.fromString(str)) == 0){
@@ -173,7 +174,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		}
 		return result;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
@@ -183,13 +184,13 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		termMap = null;
 	}
 
-	
+
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedAreaLevel> termVocabulary) {
 		termMap = new HashMap<UUID, NamedAreaLevel>();
 		for (NamedAreaLevel term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (NamedAreaLevel)term);
-		}	
+			termMap.put(term.getUuid(), term);
+		}
 	}
 }

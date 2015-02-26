@@ -614,16 +614,11 @@ public class Feature extends DefinedTermBase<Feature> {
 //******************************* STATIC METHODS *****************************************
 
 	protected static Feature getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way
-			//example for an unwanted initialization: before initializing spring you may use a static method of this class.
-			//This would result in an default terminitialization instead of a database based
-			// term initialization
-
-//			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-//			vocabularyStore.initialize();
-		}
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(Feature.class, uuid);
+        } else {
 			return termMap.get(uuid);
+        }
 	}
 
 	/**

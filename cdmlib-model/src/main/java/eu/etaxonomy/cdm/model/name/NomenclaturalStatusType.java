@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * <li> NomenclaturalNoteTypeTerm according to the TDWG ontology
  * <li> NomenclaturalNoteType  according to the TCS
  * </ul>
- * 
+ *
  * @author a.mueller
  * @created 10.07.2008
  */
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
-	
+
 	private static final long serialVersionUID = 1337101678484153972L;
 
 	private static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
@@ -106,46 +106,45 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidZooInvalid = UUID.fromString("2bef7039-c129-410b-815e-2a1f7249127b");
 	private static final UUID uuidZooSuppressed = UUID.fromString("a61602c7-fbd4-4eb4-98a2-44919db8920b");
 
-	
-	
+
+
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
 		return new NomenclaturalStatusType(description, label, labelAbbrev, language);
 	}
-	
+
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev) {
 		return new NomenclaturalStatusType(description, label, labelAbbrev);
 	}
-		
-	
-	protected static Map<UUID, NomenclaturalStatusType> termMap = null;	
+
+
+	protected static Map<UUID, NomenclaturalStatusType> termMap = null;
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
 
-	
+
 	protected static Map<UUID, NomenclaturalStatusType> zooTermMap = null;
 	private static Map<String, UUID> zooAbbrevMap = null;
 	private static Map<String, UUID> zooLabelMap = null;
 
-	
-	
+
+
 	protected static NomenclaturalStatusType getTermByUuid(UUID uuid){
-		if (termMap == null && zooTermMap == null){
-//			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-//			vocabularyStore.initialize();
-			return null;
-		}
+	    if (termMap == null && termMap.isEmpty() && zooTermMap == null && zooTermMap.isEmpty()){
+	        return getTermByClassAndUUID(NomenclaturalStatusType.class, uuid);
+
+	    }
 		NomenclaturalStatusType result = null;
 		if (termMap != null){
-			result = (NomenclaturalStatusType)termMap.get(uuid);
+			result = termMap.get(uuid);
 		}
 		if (result == null && zooTermMap != null){
-			result = (NomenclaturalStatusType)zooTermMap.get(uuid);
+			result = zooTermMap.get(uuid);
 		}
 		return result;
 	}
 
-	
-//********************************** Constructor *********************************/	
+
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -153,13 +152,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		super(TermType.NomenclaturalStatusType);
 	}
 
-	/** 
+	/**
 	 * Class constructor: creates an additional nomenclatural status type
 	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label
 	 * and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new nomenclatural status type to be created 
+	 * 						 new nomenclatural status type to be created
 	 * @param	label  		 the string identifying the new nomenclatural status
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -176,7 +175,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		super(TermType.NomenclaturalStatusType);
 		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
 	}
-	
+
 //********* METHODS **************************************
 
 
@@ -188,7 +187,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
-	 * type is itself "invalid" or a kind of "invalid" (true) or not (false) - 
+	 * type is itself "invalid" or a kind of "invalid" (true) or not (false) -
 	 * this corresponds to "not available" for {@link ZoologicalName zoological names} -.
 	 * Returns false if <i>this</i> nomenclatural status type is null. The use
 	 * of "invalid" {@link TaxonNameBase taxon names} should be avoided.<BR>
@@ -242,7 +241,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 				this.equals(ORTHOGRAPHY_CONSERVED()) ||
 				this.equals(REJECTED_PROP()) ||
 				this.equals(UTIQUE_REJECTED_PROP()) ||
-				this.equals(COMB_NOV()) 
+				this.equals(COMB_NOV())
 			){
 			return true;
 		}else{
@@ -587,7 +586,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Returns the nomenclatural status type "invalid" (this corresponds to 
+	 * Returns the nomenclatural status type "invalid" (this corresponds to
 	 * "not available" for {@link ZoologicalName zoological names}). The use of "invalid"
 	 * {@link TaxonNameBase taxon names} should be avoided.<BR>
 	 * A taxon name is "invalid" if it is not "valid"; this means that
@@ -633,9 +632,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
 		return getTermByUuid(uuidCombinationInvalid);
 	}
-	
+
 	/**
-	 * Returns the nomenclatural status type "illegitimate combination". 
+	 * Returns the nomenclatural status type "illegitimate combination".
 	 * TODO explanation
 	 *
 	 * @see  #isInvalidType()
@@ -657,7 +656,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Returns the nomenclatural status type "valid" (this corresponds to 
+	 * Returns the nomenclatural status type "valid" (this corresponds to
 	 * "available" for {@link ZoologicalName zoological names}).<BR>
 	 * A {@link TaxonNameBase taxon name} is "valid" if it:<ul>
 	 * <li>has been effectively published and
@@ -679,15 +678,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears sometimes in literature and
 	 * represents the opinion of the author who considers the {@link TaxonNameBase taxon name} to be
 	 * unusable for an unambiguous taxonomic use.
-	 * 
+	 *
 	 * @see  #AMBIGUOUS()
 	 * @see  #CONFUSUM()
-	 * 
+	 *
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getTermByUuid(uuidSubnudum);
 	}
-	
+
 	/**
 	 * Returns the nomenclatural status type "comb. nov.". No further information available for now.
 	 * @return
@@ -713,7 +712,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getTermByUuid(uuidOpusUtiqueOppr);
 	}
-	
+
 	/**
 	 * TODO
 	 * @return
@@ -737,7 +736,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final  NomenclaturalStatusType ZOO_SUPPRESSED (){
 		return getTermByUuid(uuidZooSuppressed);
 	}
-	
+
 	//TODO further Zoological status
 
 
@@ -751,24 +750,24 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the nomenclatural status type identified through its label
 	 * abbreviation. Preliminary implementation for BotanicalNameParser.
-	 * 
+	 *
 	 * @param	statusAbbreviation	the label abbreviation
-	 * @param name 
+	 * @param name
 	 * @return  					the nomenclatural status type
-	 * 					
+	 *
 	 */
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, NonViralName<?> name) throws UnknownCdmTypeException{
-		if (statusAbbreviation == null){ 
+		if (statusAbbreviation == null){
 			throw new NullPointerException("statusAbbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}
-		if (statusAbbreviation == null){ 
+		if (statusAbbreviation == null){
 			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}
 		NomenclaturalStatusType result = null;
-		
+
 		//TODO handle undefined names correctly
 		boolean isZooname = name.getNomenclaturalCode().equals(NomenclaturalCode.ICZN);
-		
+
 		Map<String, UUID> map = isZooname ? zooAbbrevMap : abbrevMap;
 		if (map == null ){
 			return null;
@@ -783,13 +782,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 		if (result != null){
 			return result;
-		}else { 
+		}else {
 			if (statusAbbreviation == null){
 				statusAbbreviation = "(null)";
 			}
 			throw new UnknownCdmTypeException("Unknown nom. status abbreviation: " + statusAbbreviation);
-		}	
-		
+		}
+
 //		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
 //		}else if (statusAbbreviation.equalsIgnoreCase("nom. dub.")) { return NomenclaturalStatusType.DOUBTFUL();
 //		}else if (statusAbbreviation.equalsIgnoreCase("nom. confus.")) { return NomenclaturalStatusType.CONFUSUM();
@@ -827,18 +826,18 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Returns the nomenclatural status type identified through its label. 
-	 * 
+	 * Returns the nomenclatural status type identified through its label.
+	 *
 	 * @param	statusLabel	the nomenclatural status label
 	 * @return  the nomenclatural status type
-	 * 					
+	 *
 	 */
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByLabel(String statusLabel) throws UnknownCdmTypeException{
-		if (statusLabel == null){ 
+		if (statusLabel == null){
 			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeBylabel");
 		}
 		NomenclaturalStatusType result = null;
-		if (statusLabel == null){ 
+		if (statusLabel == null){
 			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeByLabel");
 		}
 		if (labelMap == null){
@@ -851,13 +850,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 		if (result != null){
 			return result;
-		}else { 
+		}else {
 			if (statusLabel == null){
 				statusLabel = "(null)";
 			}
 			throw new UnknownCdmTypeException("Unknown nom. status label: " + statusLabel);
 		}
-		
+
 //		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
 //		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();
 //		}else if (statusLabel.equalsIgnoreCase("Doubtful")) { return NomenclaturalStatusType.DOUBTFUL();
@@ -892,12 +891,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 
-	/** 
-	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
+	/**
+	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri,
 	 * description text, label and label abbreviation) coming from a csv line.
 	 * The implicit language for the description text is "latin".
 	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.common.DefinedTermBase DefinedTermBase}.
-	 * 
+	 *
 	 * @param	csvLine 	the (ordered) list of substrings from a csv string
 	 * 						to be used to fill <i>this</i> nomenclatural status type
 	 * @see					#NomenclaturalStatusType(String, String, String)
@@ -905,7 +904,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
 	 */
 
-	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
+	@Override
+    public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
 		try {
 			NomenclaturalStatusType newInstance = termClass.newInstance();
 			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN(), abbrevAsId);
@@ -913,7 +913,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
-		} 
+		}
 	}
 
 	@Override
@@ -938,7 +938,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			throw new IllegalArgumentException("Unknown Nom.Status Vocabulary");
 		}
 	}
-	
+
 	/**
 	 * Adds the status type to the (abbreviated) label maps
 	 * @param term
@@ -952,10 +952,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		list.add(Language.LATIN());
 		list.add(Language.ENGLISH());
 		list.add(Language.DEFAULT());
-		
+
 		Representation representation = statusType.getPreferredRepresentation(list);
 		if (representation != null){
-			
+
 			String abbrevLabel = representation.getAbbreviatedLabel();
 			String label = representation.getLabel();
 			if (abbrevLabel == null){
@@ -965,9 +965,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 			//add to map
 			abbrevMap.put(abbrevLabel, statusType.getUuid());
-			labelMap.put(label.toLowerCase(), statusType.getUuid());	
+			labelMap.put(label.toLowerCase(), statusType.getUuid());
 		}
-		
+
 	}
 
 
@@ -975,20 +975,20 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * NomenclaturalStatusType should always be shown in latin, therefore the only existing representation
 	 * is the latin one. In case we pass in another Language to this method it will return a <code>null</code> representation.
-	 * 
+	 *
 	 * In case the representation becomes null, we fall back to the latin representation.
-	 * 
+	 *
 	 */
 	@Override
 	public Representation getRepresentation(Language lang) {
 		Representation representation = super.getRepresentation(lang);
-		
+
 		if(representation == null){
 			representation = super.getRepresentation(Language.LATIN());
 		}
-		
-		return representation; 
+
+		return representation;
 	}
-	
-	
+
+
 }

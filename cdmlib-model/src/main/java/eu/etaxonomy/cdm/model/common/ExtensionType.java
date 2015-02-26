@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -53,24 +53,24 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final UUID uuidOrder = UUID.fromString("ecb7770d-a295-49ee-a88f-e9e137a7cabb");
 	private static final UUID uuidInformalCategory = UUID.fromString("11bbc52f-a085-43d3-9f9b-cbe0d1eb9a91");
 	private static final UUID uuidUrl = UUID.fromString("d769fa9f-51ee-4e11-8152-b5ce72b7f413");
-	
-	protected static Map<UUID, ExtensionType> termMap = null;		
 
-	/** 
+	protected static Map<UUID, ExtensionType> termMap = null;
+
+	/**
 	 * Creates a new empty extension type instance.
-	 * 
+	 *
 	 * @see #NewInstance(String, String, String)
 	 */
 	public static ExtensionType NewInstance() {
 		return new ExtensionType();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new extension type instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new extension type to be created 
+	 * 						 new extension type to be created
 	 * @param	label  		 the string identifying the new extension type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new extension type to be created
@@ -81,20 +81,20 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		return new ExtensionType(term, label, labelAbbrev);
 	}
 
-//********************************** Constructor *******************************************************************/	
-	
+//********************************** Constructor *******************************************************************/
+
 	//for hibernate use only
 	@Deprecated
 	protected ExtensionType() {
 		super(TermType.ExtensionType);
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new extension type instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new extension type to be created 
+	 * 						 new extension type to be created
 	 * @param	label  		 the string identifying the new extension type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new extension type to be created
@@ -105,8 +105,8 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	}
 
 //************************** METHODS *******************************************************/
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -115,16 +115,16 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		termMap = null;
 	}
 
-	
+
 	protected static ExtensionType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-			vocabularyStore.initialize();
-		}
-		return (ExtensionType)termMap.get(uuid);
+	    if (termMap == null || termMap.isEmpty()){
+	        return getTermByClassAndUUID(ExtensionType.class, uuid);
+	    } else {
+	        return termMap.get(uuid);
+	    }
 	}
 
-	
+
 	public static final ExtensionType XML_FRAGMENT(){
 		return getTermByUuid(uuidXmlFragment);
 	}
@@ -146,23 +146,23 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	public static final ExtensionType THIRD_HYBRID_PARENT(){
 		return getTermByUuid(uuid3rdHybridParent);
 	}
-	
+
 	public static final ExtensionType AREA_OF_INTREREST(){
 		return getTermByUuid(uuidAreaOfInterest);
 	}
-	
+
 	public static final ExtensionType NOMENCLATURAL_STANDARD(){
 		return getTermByUuid(uuidNomStandard);
 	}
-	
+
 	public static final ExtensionType ABBREVIATION(){
 		return getTermByUuid(uuidAbbreviation);
 	}
-	
+
 	public static final ExtensionType ORDER(){
 		return getTermByUuid(uuidOrder);
 	}
-	
+
 	public static final ExtensionType INFORMAL_CATEGORY(){
 		return getTermByUuid(uuidInformalCategory);
 	}
@@ -170,8 +170,8 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	public static final ExtensionType URL(){
 		return getTermByUuid(uuidUrl);
 	}
-	
-	
+
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<ExtensionType> termVocabulary) {
 		termMap = new HashMap<UUID, ExtensionType>();

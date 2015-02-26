@@ -40,15 +40,15 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 	public static final UUID uuidDnaQualityHigh = UUID.fromString("ec443c76-5987-4ec5-a66b-da207f70b47f");
 	public static final UUID uuidDnaQualityMedium = UUID.fromString("2a174892-1246-4807-9022-71ce8639346b");
 	public static final UUID uuidDnaQualityLow = UUID.fromString("a3bf12ff-b041-425f-bdaa-aa51da65eebc");
-	
-	
+
+
 	protected static Map<UUID, OrderedTerm> termMap = null;
 
 
 	protected static OrderedTerm getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;
-		}else{
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(OrderedTerm.class, uuid);
+        } else {
 			return termMap.get(uuid);
 		}
 	}
@@ -62,7 +62,7 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 	public static OrderedTerm NewDnaQualityInstance(String description, String label, String labelAbbrev){
 		return new OrderedTerm(TermType.DnaQualityType, description, label, labelAbbrev);
 	}
-	
+
 
 //******************* CONSTRUCTOR ***********************************/
 

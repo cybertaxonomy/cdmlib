@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.occurrence;
 
@@ -56,11 +56,11 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	private static final UUID uuidSexualReproduction = UUID.fromString("aa79baac-165d-47ad-9e80-52a03776d8ae");
 	private static final UUID uuidPreparation = UUID.fromString("c868c472-4b60-4299-920a-a5698e4c26f4");
 	private static final UUID uuidCultivationExSitu = UUID.fromString("39d6d69c-17aa-4ece-a137-5ac47ed5d737");
-	
-	protected static Map<UUID, DerivationEventType> termMap = null;		
-	
 
-	
+	protected static Map<UUID, DerivationEventType> termMap = null;
+
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -68,8 +68,8 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	public static DerivationEventType NewInstance(){
 		return new DerivationEventType();
 	}
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -77,37 +77,38 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	public static DerivationEventType NewInstance(String term, String label, String labelAbbrev){
 		return new DerivationEventType(term, label, labelAbbrev);
 	}
-	
-//********************************** Constructor *********************************/	
+
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
   	protected DerivationEventType() {
 		super(TermType.DerivationEventType);
 	}
-	
-	
+
+
 	private DerivationEventType(String term, String label, String labelAbbrev) {
 		super(TermType.DerivationEventType, term, label, labelAbbrev);
 	}
 
 
 //************************** METHODS ********************************
-	
-	
+
+
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
 
-	
+
 	protected static DerivationEventType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
-		}
-		return (DerivationEventType)termMap.get(uuid);
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(DerivationEventType.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
-	
+
 	/**
 	 * TODO distinguish from {@link #DUPLICATE_SEGREGATEION()}
 	 * @return
@@ -147,10 +148,10 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	/**
 	 * Event which groups units (specimen, observations, samples).<BR>
 	 * This may be used if the deriving
-	 * unit is a composition of multiple single units (e.g. a specimen is based on mulitple 
+	 * unit is a composition of multiple single units (e.g. a specimen is based on mulitple
 	 * herbaria sheets, which may be the case according to the {@link NomenclaturalCode#ICNAFP}).<BR>
 	 * Another important usage is the grouping of specimen to create a common {@link DescriptionBase description} of this specimen group.
-	 * This is a standard part of the scientific workflow when one works on a certain taxonomic group and examines 
+	 * This is a standard part of the scientific workflow when one works on a certain taxonomic group and examines
 	 * the specimen.<BR>
 	 * Also it may be used if a larger specimen (e.g. a dinosaur skeleton) is composed of multiple {@link FieldUnit field units}.
 	 * @return
@@ -161,9 +162,9 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	/**
 	 * The extraction of 1 individual out of a sample including many individuals not necessarily all representing the
 	 * same taxon. Example: individualization of 1 algae from of a water sample for further reasearch and determination)
-	 * 
-	 * The extraction of 1 individual/organism out of any kind of sample (usually mixed samples with >1 taxa). 
-	 * The resulting individual may be used for a diversity of purposes like pure identification, 
+	 *
+	 * The extraction of 1 individual/organism out of any kind of sample (usually mixed samples with >1 taxa).
+	 * The resulting individual may be used for a diversity of purposes like pure identification,
 	 * image creation, further derivation, property assignment, ...)
 	 * @return The indidivualization event
 	 */
@@ -171,7 +172,7 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 		return getTermByUuid(uuidIndividualSelection);
 	}
 	/**
-	 * Extraction of 1 individual out of a sample and cultivation of this individual 
+	 * Extraction of 1 individual out of a sample and cultivation of this individual
 	 * (usually resulting in sample of many similar individuals).
 	 * The individual cultivation event includes an {@link #INDIVIDUAL_SELECTION()} event
 	 * @return The individual cultivation event
@@ -186,22 +187,22 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	 */
 	public static final DerivationEventType PREPARATION(){
 		return getTermByUuid(uuidPreparation);
-	}	
+	}
 	/**
 	 * Ex-situ cultivation.
 	 * @return
 	 */
 	public static final DerivationEventType CULTIVATION_EX_SITU(){
 		return getTermByUuid(uuidCultivationExSitu);
-	}	
-	
-	
+	}
+
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DerivationEventType> termVocabulary) {
 		termMap = new HashMap<UUID, DerivationEventType>();
 		for (DerivationEventType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (DerivationEventType)term);
-		}	
+			termMap.put(term.getUuid(), term);
+		}
 	}
-	
+
 }

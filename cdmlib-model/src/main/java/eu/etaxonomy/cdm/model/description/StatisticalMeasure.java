@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * This class represents terms describing different statistical measures (such
  * as "sample size", "minimum" or "average") for {@link Feature features} that can be
  * described with numerical values (like for instance weights or temperature).
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:54
  */
@@ -47,10 +47,10 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final long serialVersionUID = 9168097283660941430L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
-	
-	protected static Map<UUID, StatisticalMeasure> termMap = null;		
 
-	
+	protected static Map<UUID, StatisticalMeasure> termMap = null;
+
+
 	private static final UUID uuidMin = UUID.fromString("2c8b42e5-154c-42bd-a301-03b483275dd6");
 	private static final UUID uuidMax = UUID.fromString("8955815b-7d21-4149-b1b7-d37af3c2046c");
 	private static final UUID uuidAverage = UUID.fromString("264c3979-d551-4795-9e25-24c6b533fbb1");
@@ -63,20 +63,20 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	public  static final UUID uuidStatisticalMeasureUnknownData = UUID.fromString("4bbd6e78-6d4e-4ec8-ac14-12f53aae049e");
 
 	//********* FACTORY METHODS **************************************/
-	/** 
+	/**
 	 * Creates a new empty statistical measure instance.
-	 * 
+	 *
 	 * @see #NewInstance(String, String, String)
 	 */
 	public static StatisticalMeasure NewInstance(){
 		return new StatisticalMeasure();
 	}
-	/** 
+	/**
 	 * Creates a new statistical measure instance with a description
 	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new statistical measure to be created 
+	 * 						 new statistical measure to be created
 	 * @param	label  		 the string identifying the new statistical measure
 	 * 						 to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -85,15 +85,15 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	 */
 	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
 		return new StatisticalMeasure(term, label, labelAbbrev);
-	}	
-	
-	
-//********************************** Constructor *******************************************************************/	
+	}
 
-	// ************* CONSTRUCTORS *************/	
-	/** 
+
+//********************************** Constructor *******************************************************************/
+
+	// ************* CONSTRUCTORS *************/
+	/**
 	 * Class constructor: creates a new empty statistical measure instance.
-	 * 
+	 *
 	 * @see #StatisticalMeasure(String, String, String)
 	 */
 	//for hibernate use only
@@ -104,10 +104,10 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private StatisticalMeasure(String term, String label, String labelAbbrev) {
 		super(TermType.StatisticalMeasure, term, label, labelAbbrev);
 	}
-	
-	
+
+
 //************************** METHODS ********************************
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -116,13 +116,14 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 		termMap = null;
 	}
 
-	
-	
+
+
 	protected static StatisticalMeasure getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
-		}
-		return (StatisticalMeasure)termMap.get(uuid);
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(StatisticalMeasure.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
 
 	public static final StatisticalMeasure MIN(){
@@ -156,14 +157,14 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	public static final StatisticalMeasure STANDARD_DEVIATION(){
 		return getTermByUuid(uuidStandardDeviation);
 	}
-	
-	
+
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<StatisticalMeasure> termVocabulary) {
 		termMap = new HashMap<UUID, StatisticalMeasure>();
 		for (StatisticalMeasure term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (StatisticalMeasure)term);
+			termMap.put(term.getUuid(), term);
 		}
 	}
-	
+
 }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,18 +36,18 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * will be here referred as "type-bringing" taxon names.
  * <P>
  * The different status indicate whether the {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} used as types
- * in a designation are duplicates, replacements, related specimens etc. 
+ * in a designation are duplicates, replacements, related specimens etc.
  * <P>
  * A standard (ordered) list of type designation status instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional type designation
- * status if needed. 
+ * status if needed.
  * <P>
  * This class corresponds to: <ul>
  * <li> NomencalturalTypeTypeTerm according to the TDWG ontology
  * <li> NomenclaturalTypeStatusOfUnitsEnum according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:07:00
  */
@@ -61,7 +61,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);
 
-	protected static Map<UUID, SpecimenTypeDesignationStatus> termMap = null;		
+	protected static Map<UUID, SpecimenTypeDesignationStatus> termMap = null;
 
 	private static final UUID uuidType = UUID.fromString("7194020b-a326-4b47-9bfe-9f31a30aba7f");
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
@@ -84,8 +84,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidOriginalMaterial = UUID.fromString("49c96cae-6be6-401e-9b36-1bc12d9dc8f9");
 	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
 	private static final UUID uuidIsoparatype = UUID.fromString("497137f3-b614-4183-8a22-97fcd6e2bdd8");
-	
-//********************************** Constructor *********************************/	
+
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -94,13 +94,13 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 
-	/** 
+	/**
 	 * Class constructor: creates an additional type designation status instance
 	 * with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label
 	 * and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new type designation status to be created 
+	 * 						 new type designation status to be created
 	 * @param	label  		 the string identifying the new type designation
 	 * 						 status to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
@@ -110,9 +110,9 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
 		super(TermType.SpecimenTypeDesignationStatus, term, label, labelAbbrev);
 	}
-	
+
 //************************** METHODS ********************************
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -121,15 +121,16 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		termMap = null;
 	}
 
-	
+
 	protected static SpecimenTypeDesignationStatus findTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;
-		}
-		return (SpecimenTypeDesignationStatus)termMap.get(uuid);
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(SpecimenTypeDesignationStatus.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
 
-	
+
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> type designation
 	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
@@ -157,21 +158,21 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "unknown" designation status. One may choose this status to indicate that the type 
-	 * designation is not    
-	 * 
+	 * Returns the "unknown" designation status. One may choose this status to indicate that the type
+	 * designation is not
+	 *
 	 */
 	public static final SpecimenTypeDesignationStatus TYPE(){
 		return findTermByUuid(uuidType);
 	}
-	
+
 	/**
 	 * Returns the "holotype" designation status. A holotype of a
 	 * set of names is the one {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
 	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorTeam() author} of the
 	 * "type-bringing" {@link TaxonNameBase taxon name} (or by the author of a later validated
 	 * "invalid" taxon name).
-	 * 
+	 *
 	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
 	 */
 	public static final SpecimenTypeDesignationStatus HOLOTYPE(){
@@ -185,7 +186,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * "type-bringing" {@link TaxonNameBase taxon name}, when the
 	 * holotype is found to to be assigned to taxon names belonging to more than one
 	 * {@link HomotypicalGroup homotypical group}, or as long as it is missing.
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus LECTOTYPE(){
@@ -196,8 +197,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "neotype" designation status. A neotype is a
 	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} selected to serve as nomenclatural type
 	 * as long as all of the material on which the "type-bringing" {@link TaxonNameBase taxon name} was based
-	 * is missing. 
-	 * 
+	 * is missing.
+	 *
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus NEOTYPE(){
@@ -225,7 +226,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	/**
 	 * Returns the "isotype" designation status. </BR>An isotype is any duplicate of
 	 * the holotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOTYPE(){
@@ -237,20 +238,20 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the
 	 * "type-bringing" {@link TaxonNameBase taxon name} when no holotype was designated,
 	 * or any one of two or more specimens simultaneously designated as types.
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SYNTYPE(){
 		return findTermByUuid(uuidSyntype);
 	}
-	
+
 	/**
-	 * Returns the "isosyntype" designation status. </BR>An isosyntype is any 
-	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen} cited in the 
-	 * protologue of the type-bringing {@link TaxonNameBase taxon name} which is 
+	 * Returns the "isosyntype" designation status. </BR>An isosyntype is any
+	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen} cited in the
+	 * protologue of the type-bringing {@link TaxonNameBase taxon name} which is
 	 * a duplicate of a {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus#SYNTYPE() syntype}.
 	 * See also article 9.10 of the ICBN
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOSYNTYPE(){
@@ -263,7 +264,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * {@link TaxonNameBase taxon name} that is neither the holotype nor an isotype,
 	 * nor one of the syntypes if two or more specimens were simultaneously
 	 * designated as types.
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 * @see	#ISOTYPE()
 	 * @see	#SYNTYPE()
@@ -276,7 +277,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "isolectotype" designation status. </BR>
 	 * An isolectotype is any
 	 * duplicate of the lectotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
-	 * 
+	 *
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOLECTOTYPE(){
@@ -287,31 +288,31 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "isoneotype" designation status. </BR>
 	 * An isoneotype is any
 	 * duplicate of the neotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
-	 * 
+	 *
 	 * @see	#NEOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISONEOTYPE(){
 		return findTermByUuid(uuidIsoneotype);
 	}
-	
+
 	/**
 	 * Returns the "isoparatype" designation status. </BR>
 	 * An isoparatype is any
 	 * duplicate of a paratype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
-	 * 
+	 *
 	 * @see	#PARATYPE()
 	 * @see #ISOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOPARATYPE(){
 		return findTermByUuid(uuidIsoparatype);
 	}
-	
+
 	/**
 	 * Returns the "paraneotype" designation status. </BR>
 	 * A paraneotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},
 	 * cited when selecting a neotype, other than the neotype itself. Also
 	 * called "neoparatype" in zoology.
-	 * 
+	 *
 	 * @see	#NEOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus PARANEOTYPE(){
@@ -322,7 +323,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "second step lectotype" designation status. </BR>
 	 * A second step lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}, designated as lectotype
 	 * in order to substitute another already existing lectotype.
-	 * 
+	 *
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SECOND_STEP_LECTOTYPE(){
@@ -333,7 +334,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "second step neotype" designation status. </BR>
 	 * A second step neotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}, designated as neotype
 	 * in order to substitute another already existing neotype.
-	 * 
+	 *
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus SECOND_STEP_NEOTYPE(){
@@ -344,7 +345,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "paralectotype" designation status. </BR>
 	 * A paralectotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}, cited when designating a lectotype, other than
 	 * the lectotype itself. Also called "lectoparatype" in zoology.
-	 * 
+	 *
 	 * @see	#LECTOTYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus PARALECTOTYPE(){
@@ -354,7 +355,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	/**
 	 * Returns the "isoepitype" designation status. An isoepitype is any
 	 * duplicate of the epitype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
-	 * 
+	 *
 	 * @see	#EPITYPE()
 	 */
 	public static final SpecimenTypeDesignationStatus ISOEPITYPE(){
@@ -366,7 +367,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * a lectotype that is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit drawing}
 	 * and not a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 * "Iconotype" does not have type status according to the ICBN.
-	 * 
+	 *
 	 * @see	#HOLOTYPE()
 	 * @see	#LECTOTYPE()
 	 */
@@ -375,9 +376,9 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "unspecific" type designation status. Used if from literature where it is not 
+	 * Returns the "unspecific" type designation status. Used if from literature where it is not
 	 * clear if it refers to another publication not cited or if it is a new designation.
-	 * 
+	 *
 	 */
 	public static final SpecimenTypeDesignationStatus UNSPECIFIC(){
 		return findTermByUuid(uuidUnspecified);
@@ -387,22 +388,22 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the "original material" type designation status.
 	 * Botanical term for material from which a lectotype can be designated.
 	 * "Original material" does not have type status according to the ICBN.
-	 * 
+	 *
 	 */
 	public static final SpecimenTypeDesignationStatus ORIGINAL_MATERIAL(){
 		return findTermByUuid(uuidOriginalMaterial);
 	}
-	
-	
+
+
 	/**
 	 * Returns the "phototype" type designation status.
 	 * "Phototype" does not have type status according to the ICBN.
-	 * 
+	 *
 	 */
 	public static final SpecimenTypeDesignationStatus PHOTOTYPE(){
 		return findTermByUuid(uuidPhototype);
 	}
-	
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SpecimenTypeDesignationStatus> termVocabulary) {
 		termMap = new HashMap<UUID, SpecimenTypeDesignationStatus>();

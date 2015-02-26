@@ -53,15 +53,15 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static final UUID uuidSpecimenScan = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 	public static final UUID uuidDetailImage = UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34");
 	//...
-	
-	
+
+
 	protected static Map<UUID, DefinedTerm> termMap = null;
 
 
 	protected static DefinedTerm getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;
-		}else{
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(DefinedTerm.class, uuid);
+        } else{
 			return termMap.get(uuid);
 		}
 	}
@@ -75,7 +75,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm NewModifierInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.Modifier, description, label, labelAbbrev);
 	}
-	
+
 	public static DefinedTerm NewInstitutionTypeInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.InstitutionType, description, label, labelAbbrev);
 	}
@@ -99,11 +99,11 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm NewKindOfUnitInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
 	}
-	
+
 	public static DefinedTerm NewIdentifierTypeInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
 	}
-	
+
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only

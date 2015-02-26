@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -43,12 +43,12 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	private static final long serialVersionUID = 8280172429797206548L;
 	private static final Logger logger = Logger.getLogger(NamedAreaType.class);
 
-	protected static Map<UUID, NamedAreaType> termMap = null;		
-	
+	protected static Map<UUID, NamedAreaType> termMap = null;
+
 	private static final UUID uuidNaturalArea = UUID.fromString("cc33167c-d366-4030-b984-6b14e4f5fd22");
 	private static final UUID uuidAdministrationArea = UUID.fromString("1799f581-f425-40d6-a4db-ec2c638c0e92");
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -57,22 +57,22 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 		logger.debug("NewInstance");
 		return new NamedAreaType(term, label, labelAbbrev);
 	}
-	
+
 // *********************** CONSTRUCTOR ******************************/
-	
+
 	//for hibernate use only
 	@Deprecated
 	protected NamedAreaType(){
 		super(TermType.NamedAreaType);
-	}	
+	}
 
 	private NamedAreaType(String term, String label, String labelAbbrev) {
 		super(TermType.NamedAreaType, term, label, labelAbbrev);
 	}
-	
+
 //************************** METHODS ********************************
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -81,14 +81,15 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 		termMap = null;
 	}
 
-	
+
 	protected static NamedAreaType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null then initialize the termMap in an unwanted way 
-		}
-		return (NamedAreaType)termMap.get(uuid);
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(NamedAreaType.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
 	}
-	
+
 	/**
 	 * The boundaries are given by natural factors (mountains, valleys, climate, etc.)
 	 */
@@ -107,8 +108,8 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	protected void setDefaultTerms(TermVocabulary<NamedAreaType> termVocabulary) {
 		termMap = new HashMap<UUID, NamedAreaType>();
 		for (NamedAreaType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (NamedAreaType)term);
-		}	
+			termMap.put(term.getUuid(), term);
+		}
 	}
-	
+
 }

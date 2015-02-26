@@ -78,10 +78,11 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	}
 
 	protected static AnnotationType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			return null;  //better return null than initialize the termMap in an unwanted way
-		}
-		return termMap.get(uuid);
+	    if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(AnnotationType.class, uuid);
+        }  else {
+            return termMap.get(uuid);
+        }
 	}
 
 
