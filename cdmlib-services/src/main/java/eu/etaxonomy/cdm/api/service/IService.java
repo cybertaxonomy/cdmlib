@@ -60,7 +60,7 @@ public interface IService<T extends ICdmBase>{
      * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
      * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
      * were initialized prior to the refresh).
-     * 
+     *
      * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
      *
      * @param t
@@ -86,8 +86,8 @@ public interface IService<T extends ICdmBase>{
      */
     public DeleteResult delete(T persistentObject) ;
 
-	
-    
+    public DeleteResult delete(UUID uuid) ;
+
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
      * identifier supplied exists in the database, or false if no such entity can be
@@ -114,30 +114,30 @@ public interface IService<T extends ICdmBase>{
      * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
      */
     public T find(UUID uuid);
-    
 
-    
+
+
 	/**
 	 * Return a persisted entity that matches the unique identifier
      * supplied as an argument, or null if the entity does not exist.
      * <p>
      * The difference between this method and {@link #find(UUID) find} is
-     * that this method makes the hibernate read query with the 
+     * that this method makes the hibernate read query with the
      * {@link org.hibernate.FlushMode FlushMode} for the session set to 'MANUAL'
      * <p>
-     * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely 
+     * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely
      * necessary and safe to ensure that the hibernate session is not flushed before a read
      * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacher CdmCacher},
-     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load} 
-     * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion 
-     * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session 
+     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load}
+     * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion
+     * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session
      * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
-	 * which in turn (in the event that name cache is null) eventually calls the 
-	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again. 
+	 * which in turn (in the event that name cache is null) eventually calls the
+	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again.
 	 * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
-	 * method should always be used to ensure that the persistence layer is always in sync with the 
+	 * method should always be used to ensure that the persistence layer is always in sync with the
 	 * underlying database.
-	 * 
+	 *
 	 * @param uuid
 	 * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
 	 */

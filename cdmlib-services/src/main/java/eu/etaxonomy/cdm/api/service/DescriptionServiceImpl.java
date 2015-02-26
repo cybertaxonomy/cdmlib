@@ -462,16 +462,42 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return descriptionElementDao.delete(descriptionElement);
     }
 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#deleteDescriptionElement(java.util.UUID)
+     */
     @Override
-    public UUID deleteDescription(DescriptionBase description) {
+    public UUID deleteDescriptionElement(UUID descriptionElementUuid) {
+        return deleteDescriptionElement(descriptionElementDao.load(descriptionElementUuid));
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteDescription(DescriptionBase description) {
+        DeleteResult deleteResult = new DeleteResult();
+
     	if (description instanceof TaxonDescription){
     		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
+
+            deleteResult.addUpdatedObject(tax);
     	}
 
-        return dao.delete(description);
+        return deleteResult;
     }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#deleteDescription(java.util.UUID)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteDescription(UUID descriptionUuid) {
+        return deleteDescription(dao.load(descriptionUuid));
+    }
+
+
     @Override
     public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
         return vocabularyDao.findByUuid(uuid);
@@ -676,8 +702,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
     @Override
     @Transactional(readOnly = false)
-    public void moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
+    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
         List<TaxonDescription> descriptions = new ArrayList(sourceTaxon.getDescriptions());
+        UpdateResult result = new UpdateResult();
+        result.addUpdatedObject(sourceTaxon);
+        result.addUpdatedObject(targetTaxon);
         for(TaxonDescription description : descriptions){
 
             String moveMessage = String.format("Description moved from %s", sourceTaxon);
@@ -693,15 +722,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             description.addAnnotation(annotation);
             targetTaxon.addDescription(description);
         }
+        return result;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid) {
+    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid) {
         Taxon sourceTaxon = HibernateProxyHelper.deproxy(taxonDao.load(sourceTaxonUuid), Taxon.class);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        moveTaxonDescriptions(sourceTaxon, targetTaxon);
+        return moveTaxonDescriptions(sourceTaxon, targetTaxon);
 
     }
+
+
 
 }

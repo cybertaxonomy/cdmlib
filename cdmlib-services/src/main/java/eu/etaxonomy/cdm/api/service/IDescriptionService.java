@@ -99,6 +99,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement);
 
+    public UUID deleteDescriptionElement(UUID descriptionElementUuid);
+
     /**
      * List the descriptions of type <T>, filtered using the following parameters
      *
@@ -559,18 +561,22 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
 
-	UUID deleteDescription(DescriptionBase description);
+	public DeleteResult deleteDescription(DescriptionBase description);
+
+	public DeleteResult deleteDescription(UUID descriptionUuid);
 
     /**
      * @param sourceTaxon
      * @param targetTaxon
+     * @return
      */
-    public void moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon);
+    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon);
 
     /**
      * @param sourceTaxonUuid
      * @param targetTaxonUuid
+     * @return
      */
-    public void moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid);
+    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid);
 
 }

@@ -959,6 +959,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config);
 
+    /**
+     * @param synonymUUid
+     * @param acceptedTaxonUuid
+     * @return
+     */
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid);
+
+    /**
+     * @param taxonUuid
+     * @param config
+     * @param classificationUuid
+     * @return
+     */
+    public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
+
 
 
 

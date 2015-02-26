@@ -48,6 +48,21 @@ public class CdmTermCacher extends CdmCacher {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.cache.CdmCacher#load(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public CdmBase load(CdmBase cdmEntity) {
+
+        CdmBase cachedCdmEntity = getFromCache(cdmEntity);
+        if(cachedCdmEntity == null && isCachable(cdmEntity)) {
+            put(cdmEntity);
+           cachedCdmEntity = cdmEntity;
+        }
+        return cachedCdmEntity;
+
+    }
+
 
 
 

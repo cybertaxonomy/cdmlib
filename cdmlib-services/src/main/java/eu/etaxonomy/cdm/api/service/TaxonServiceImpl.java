@@ -256,6 +256,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
 
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid) {
+        UpdateResult result = new UpdateResult();
+        Synonym synonym = (Synonym)dao.load(synonymUuid);
+        Taxon taxon = (Taxon)dao.load(acceptedTaxonUuid);
+        result.addUpdatedObject(synonym);
+        result.addUpdatedObject(taxon);
+        swapSynonymAndAcceptedTaxon(synonym, taxon);
+        return result;
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
      */
@@ -984,7 +996,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.findIdenticalTaxonNames(propertyPath);
     }
 
-
+    @Override
+    public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid)  {
+        return deleteTaxon((Taxon)dao.load(taxonUuid), config, classificationDao.load(classificationUuid));
+    }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
      */
@@ -1348,7 +1363,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             for (Taxon relatedTaxon : taxonSet){
     //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-                relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
+                relatedTaxon.removeSynonym(synonym, false);
+                this.saveOrUpdate(relatedTaxon);
             }
             this.saveOrUpdate(synonym);
 
@@ -1365,7 +1381,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //remove name if possible (and required)
                 if (name != null && config.isDeleteNameIfPossible()){
 
-                        nameService.delete(name, config.getNameDeletionConfig());
+                        DeleteResult nameDeleteresult = nameService.delete(name, config.getNameDeletionConfig());
+                        if (nameDeleteresult.isAbort()){
+                        	result.addExceptions(nameDeleteresult.getExceptions());
+                        	result.addUpdatedObject(name);
+                        }
 
                 }
 
@@ -1394,9 +1414,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = false)
     @Override
     public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config) {
-        Synonym synonym = HibernateProxyHelper.deproxy(dao.load(synonymUuid), Synonym.class);
-        Taxon taxon = HibernateProxyHelper.deproxy(dao.load(taxonUuid), Taxon.class);
-        return deleteSynonym(synonym, taxon, config);
+        return deleteSynonym((Synonym)dao.load(synonymUuid), (Taxon)dao.load(taxonUuid), config);
     }
 
     /* (non-Javadoc)

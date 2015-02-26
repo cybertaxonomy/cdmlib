@@ -41,7 +41,7 @@ public class ConversationHolderMock extends ConversationHolder {
 	 */
 	@Override
     public boolean isBound(){
-		return true;
+		return false;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class ConversationHolderMock extends ConversationHolder {
 
 	@Override
     public boolean isClosed(){
-		return false;
+		return true;
 	}
 
 }

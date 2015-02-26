@@ -6,6 +6,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -63,8 +64,9 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 	 *
 	 * @return
 	 */
-	private CacheConfiguration getDefaultCacheConfiguration() {
-	    // This is 2.6.9 API
+	protected CacheConfiguration getDefaultCacheConfiguration() {
+	    CacheEventListenerFactoryConfiguration factory;
+        // This is 2.6.9 API
 //	    SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
 //        sizeOfConfig.setMaxDepth(10000);
 //        sizeOfConfig.setMaxDepthExceededBehavior("abort");
@@ -72,11 +74,12 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 		// http://ehcache.org/documentation/configuration/cache-size
 		return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
 	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-	    .eternal(false)
-
+	    .eternal(true)
+	    .copyOnRead(false)
+	    .copyOnWrite(false)
 	    // default ttl and tti set to 2 hours
-	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2)
+	    //.timeToLiveSeconds(60*60*2)
+	    //.timeToIdleSeconds(60*60*2)
 	    .statistics(true);
 	    // This is 2.6.9 API
 		//.maxEntriesLocalDisk(1000);
@@ -111,6 +114,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         CdmBase cachedCdmEntity = getFromCache(uuid);
         if(getFromCache(uuid) == null) {
             getDefaultCache().put(new Element(uuid, cdmEntity));
+            CdmBase test = getFromCache(uuid);
             return cdmEntity;
         } else {
             return cachedCdmEntity;
@@ -125,6 +129,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 	@Override
     public CdmBase load(UUID uuid) {
 		Element e = getCacheElement(uuid);
+
 		CdmBase cdmEntity;
 		if (e == null) {
 		    // nothing in the cache for "key" (or expired) ... re-load the entity
@@ -138,7 +143,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 			}
 		} else {
 		    // there is a valid element in the cache, however getObjectValue() may be null
-		    cdmEntity = (CdmBase)e.getValue();
+		    cdmEntity = (CdmBase)e.getObjectValue();
 		}
 		return cdmEntity;
 	}
@@ -182,14 +187,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      * @see eu.etaxonomy.cdm.model.ICdmCacher#load(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public CdmBase load(CdmBase cdmEntity) {
-        CdmBase cachedCdmEntity = getFromCache(cdmEntity);
-        if(cdmEntity != null && isCachable(cdmEntity)) {
-            put(cdmEntity);
-            return cdmEntity;
-        }
-        return null;
-    }
+    public abstract CdmBase load(CdmBase cdmEntity);
 
 
 

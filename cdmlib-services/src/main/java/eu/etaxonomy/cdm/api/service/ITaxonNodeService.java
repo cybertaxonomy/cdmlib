@@ -55,7 +55,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) ;
 
-	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymRelationshipType synonymRelationshipType,
 	        Reference citation,
@@ -118,7 +118,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param newParentTaxonNode
      * @return
      */
-    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
 
 
     /**
@@ -126,6 +126,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param newParentTaxonNodeUuid
      * @return
      */
-    public TaxonNode moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
 
 }

@@ -250,17 +250,24 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+    public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
             UUID newAcceptedTaxonNodeUUID,
             SynonymRelationshipType synonymRelationshipType,
             Reference citation,
             String citationMicroReference) {
 
-        return makeTaxonNodeASynonymOfAnotherTaxonNode(dao.load(oldTaxonNodeUuid),
-                dao.load(newAcceptedTaxonNodeUUID),
+        UpdateResult result = new UpdateResult();
+        TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
+        TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
+        result.addUpdatedObject(oldTaxonParentNode);
+        TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
+        result.addUpdatedObject(newTaxonNode);
+        makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
+                newTaxonNode,
                 synonymRelationshipType,
                 citation,
                 citationMicroReference);
+        return result;
     }
 
     /* (non-Javadoc)
@@ -283,7 +290,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            taxonNode = HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
 
 		            	//check whether the node has children or the children are already deleted
-		            if(taxonNode.hasChildNodes()){
+		            if(taxonNode.hasChildNodes()) {
 	            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
 	            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
 	        			children.addAll(childNodesList);
@@ -340,7 +347,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            	}
 	            		classification = null;
 
-		            }else {
+		            } else {
 		            	classification = null;
 		            	Taxon taxon = taxonNode.getTaxon();
 		            	//node is rootNode
@@ -360,6 +367,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 		            }
 
+		            result.addUpdatedObject(taxonNode.getParent());
 		            UUID uuid = dao.delete(taxonNode);
 		            logger.debug("Deleted node " +uuid.toString());
 	        	}else {
@@ -372,6 +380,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	        }
         }
         if (classification != null){
+            result.addUpdatedObject(classification);
         	DeleteResult resultClassification = classService.delete(classification);
         	 if (!resultClassification.isOk()){
                  result.addExceptions(resultClassification.getExceptions());
@@ -400,29 +409,33 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
 
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+    	TaxonNode parent = node.getParent();
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
+    	DeleteResult result;
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
-    		return taxonService.deleteTaxon(taxon, config, node.getClassification());
+    	    result = taxonService.deleteTaxon(taxon, config, node.getClassification());
+    	    result.addUpdatedObject(parent);
+
+    		return result;
     	} else{
-    		DeleteResult result = new DeleteResult();
+    		result = new DeleteResult();
     		boolean success = taxon.removeTaxonNode(node);
-    		if (success){
+    		if (success) {
+    		    result.addUpdatedObject(parent);
     			if (!dao.delete(node).equals(null)){
     				return result;
     			} else {
     				result.setError();
     				return result;
     			}
-    		}else{
+    		} else {
     			result.setError();
     			result.addException(new Exception("The node can not be removed from the taxon."));
     			return result;
     		}
-
     	}
-
     }
 
 
@@ -435,17 +448,23 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 
     @Override
-    @Transactional(readOnly = false)
-    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode) {
-        return newParentTaxonNode.addChildNode(taxonNode,
-                newParentTaxonNode.getReference(),
-                newParentTaxonNode.getMicroReference());
+    @Transactional
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
+        UpdateResult result = new UpdateResult();
+        result.addUpdatedObject(taxonNode.getParent());
+        result.addUpdatedObject(newParent);
 
+        Reference reference = taxonNode.getReference();
+        String microReference = taxonNode.getMicroReference();
+        newParent.addChildNode(taxonNode, reference, microReference);
+        dao.saveOrUpdate(taxonNode);
+
+        return result;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public TaxonNode moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid) {
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid) {
         return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
 
     }
@@ -465,16 +484,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public int countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
-    
-    @Override
-    @Transactional
-    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
-    	Reference reference = taxonNode.getReference();
-    	String microReference = taxonNode.getMicroReference();
-    	newParent.addChildNode(taxonNode, reference, microReference);
-    	dao.saveOrUpdate(taxonNode);
-    	return taxonNode;
-    }
+
 
 
 

@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +25,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -82,6 +80,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public DeleteResult delete(UUID uuid) {
+        return delete(dao.load(uuid));
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
         return dao.exists(uuid);
@@ -104,7 +108,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public T find(UUID uuid) {
         return uuid == null ? null : dao.findByUuid(uuid);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public T findWithoutFlush(UUID uuid) {
@@ -227,7 +231,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
     }
-    
-    
+
+
 
 }
