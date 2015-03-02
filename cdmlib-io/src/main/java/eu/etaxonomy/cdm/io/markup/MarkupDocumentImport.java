@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -182,6 +183,10 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 	
 	public ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
 		return super.getExtensionType(state, uuid, label, text, labelAbbrev);
+	}
+
+	public DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+		return super.getIdentiferType(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
 	public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){

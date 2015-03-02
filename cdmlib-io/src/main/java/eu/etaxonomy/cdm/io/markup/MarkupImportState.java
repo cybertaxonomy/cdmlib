@@ -72,6 +72,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private boolean isNameType = false;
 	private boolean isProParte = false;
 	
+	private boolean isSpecimenType = false;
+
+	
 	private String baseMediaUrl = null;
 	
 	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<String, FootnoteDataHolder>();
@@ -414,6 +417,16 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void setLatestReferenceInHomotype(Reference<?> latestReferenceInHomotype) {
 		this.latestReferenceInHomotype = latestReferenceInHomotype;
 	}
+
+	public void setSpecimenType(boolean isSpecimenType) {
+		this.isSpecimenType = isSpecimenType;
+	}
+
+	public boolean isSpecimenType() {
+		return isSpecimenType;
+	}
+	
+	
 
 
 }

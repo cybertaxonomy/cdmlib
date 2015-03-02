@@ -27,19 +27,27 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -68,6 +76,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	private static final String FIELD_NUM = "fieldNum";
 	private static final String FULL_TYPE = "fullType";
 	private static final String FULL_DATE = "fullDate";
+	private static final String GATHERING_NOTES = "gatheringNotes";
 	private static final String LOST = "lost";
 	private static final String MONTH = "month";
 	private static final String SUB_GATHERING = "subGathering";
@@ -124,11 +133,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		String text = "";
 		String collectionAndType = "";
+		state.setSpecimenType(false);
 		// elements
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				makeSpecimenType(state, facade, text, collectionAndType, firstName, parentEvent);
+				state.setSpecimenType(false);
 				return;
 			} else if (isStartingElement(next, FULL_TYPE)) {
 				handleNotYetImplementedElement(next);
@@ -229,11 +240,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	}
 	
 	
-	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent , DerivedUnitFacade facade) throws XMLStreamException {
+	private void handleGathering(MarkupImportState state, XMLEventReader readerOrig, XMLEvent parentEvent , DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		boolean hasCollector = false;
 		boolean hasFieldNum = false;
 
+		LookAheadEventReader reader = new LookAheadEventReader(parentEvent.asStartElement(), readerOrig);
+		
 		// elements
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -260,7 +273,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				String fieldNumStr = getCData(state, reader, next);
 				facade.setFieldNumber(fieldNumStr);
 			} else if (isStartingElement(next, ALTERNATIVE_FIELD_NUM)) {
-				handleNotYetImplementedElement(next);
+				handleAlternativeFieldNumber(state, reader, next, facade.innerFieldUnit());
 			} else if (isStartingElement(next, COLLECTION_TYPE_STATUS)) {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {  //does this make sense here?
@@ -273,11 +286,33 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, LOCALITY)) {
 				handleLocality(state, reader, next, facade);
+			} else if (isStartingElement(next, FULL_NAME)) {
+				Rank defaultRank = Rank.SPECIES(); // can be any
+				NonViralName<?> name = createNameByCode(state, defaultRank);
+				handleFullName(state, reader, name, next);
+				DeterminationEvent.NewInstance(name, facade.innerDerivedUnit() != null ? facade.innerDerivedUnit() : facade.innerFieldUnit());
 			} else if (isStartingElement(next, DATES)) {
 				TimePeriod timePeriod = handleDates(state, reader, next);
 				facade.setGatheringPeriod(timePeriod);
+			} else if (isStartingElement(next, GATHERING_NOTES)) {
+				handleAmbigousManually(state, reader, next.asStartElement());
 			} else if (isStartingElement(next, NOTES)) {
 				handleNotYetImplementedElement(next);
+			}else if (next.isCharacters()) {
+				String text = next.asCharacters().getData().trim();
+				if (isPunctuation(text)){
+					//do nothing
+				}else if (state.isSpecimenType() && charIsSimpleType(text) ){
+						//do nothing
+				}else if ( charIsOpeningOrClosingBracket(text) ){
+					//for now we don't do anything, however in future brackets may have semantics
+				}else if ( text.equals("=") && reader.nextIsStart(ALTERNATIVE_FIELD_NUM)){
+					//do nothing
+				}else{
+					//TODO
+					String message = "Unrecognized text: %s";
+					fireWarningEvent(String.format(message, text), next, 6);
+				}
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -286,6 +321,27 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 	}
 	
+	
+	private void handleAlternativeFieldNumber(MarkupImportState state, XMLEventReader reader, XMLEvent parent, FieldUnit fieldUnit) throws XMLStreamException {
+		Map<String, Attribute> attrs = getAttributes(parent);
+		Boolean doubtful = this.getAndRemoveBooleanAttributeValue(parent, attrs, "doubful", false);
+		
+		//for now we do not handle annotation and typeNotes
+		String altFieldNum = getCData(state, reader, parent, false).trim();
+		DefinedTerm type = this.getIdentifierType(state, MarkupTransformer.uuidIdentTypeAlternativeFieldNumber, "Alternative field number", "Alternative field number", "alt. field no.", null);
+		Identifier<?> identifier = Identifier.NewInstance(fieldUnit, altFieldNum, type);
+		if (doubtful){
+			fireWarningEvent("Marking alternative field numbers as doubtful not yet possible, see #4673", parent,4);
+//			Marker.NewInstance(identifier, "true", MarkerType.IS_DOUBTFUL());
+		}
+		
+	}
+
+
+	private boolean charIsOpeningOrClosingBracket(String text) {
+		return text.equals("(") || text.equals(")");
+	}
+
 
 	private TimePeriod handleDates(MarkupImportState state, XMLEventReader reader, XMLEvent parent) throws XMLStreamException {
 		checkNoAttributes(parent);
@@ -416,7 +472,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	}
 
 	
-	public List<DescriptionElementBase> handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature) throws XMLStreamException {
+	public List<DescriptionElementBase> handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature, TaxonDescription defaultDescription) throws XMLStreamException {
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 		//reset current areas
 		state.removeCurrentAreas();
@@ -456,6 +512,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
+			} else if (isStartingElement(next, GATHERING_GROUP)) {
+				List<DescriptionElementBase> list = getGatheringGroupDescription(state, reader, next);				
+				result.addAll(list);
 			}else if (next.isCharacters()) {
 				String text = next.asCharacters().getData().trim();
 				if (isPunctuation(text)){
@@ -474,7 +533,89 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 	
 
-private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUnitFacade facade) {
+	private List<DescriptionElementBase> getGatheringGroupDescription(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String geoScope = getAndRemoveAttributeValue(attributes, "geoscope");
+		Boolean doubtful = getAndRemoveBooleanAttributeValue(parentEvent, attributes, DOUBTFUL, null);
+		checkNoAttributes(attributes, parentEvent);
+		
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+
+		
+		TaxonDescription td = null;
+		
+		if (isNotBlank(geoScope)){
+			NamedArea area = Country.getCountryByLabel(geoScope);
+			if (area == null){
+				try {
+					area = state.getTransformer().getNamedAreaByKey(geoScope);
+				} catch (Exception e) {
+					fireWarningEvent("getNamedArea not supported", parentEvent, 16);
+				}
+			}
+			if (area == null){
+				fireWarningEvent("Area for geoscope not found: " +  geoScope +"; add specimen group to ordinary description", parentEvent, 4);
+			}else{
+				state.addCurrentArea(area);
+				Set<TaxonDescription> descs = state.getCurrentTaxon().getDescriptions();
+				for (TaxonDescription desc : descs){
+					Set<NamedArea> scopes = desc.getGeoScopes();
+					if (scopes.size() == 1 && scopes.iterator().next().equals(area)){
+						td = desc;
+						break;
+					}
+				}
+				if (td == null){
+					TaxonDescription desc = TaxonDescription.NewInstance(state.getCurrentTaxon());
+					desc.addGeoScope(area);
+					if (doubtful != null){
+						desc.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), doubtful));
+					}
+					td = desc;
+				}
+			}
+		}
+		
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (result.isEmpty()){
+					fireWarningEvent("Gathering group created empty Individual Associations list", parentEvent, 4);
+				}
+				state.removeCurrentAreas();
+				return result;
+			} else if (isStartingElement(next, GATHERING)) {
+				DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.DerivedUnit);
+				addCurrentAreas(state, next, facade);
+				handleGathering(state, reader, next, facade);
+				SpecimenOrObservationBase<?> specimen;
+				if (facade.innerDerivedUnit() != null){
+					specimen = facade.innerDerivedUnit();
+				}else{
+					specimen = facade.innerFieldUnit();
+				}
+				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
+				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
+				result.add(individualsAssociation);
+				
+			}else if (next.isCharacters()) {
+				String text = next.asCharacters().getData().trim();
+				if (isPunctuation(text)){
+					//do nothing
+				}else{
+					//TODO
+					String message = "Unrecognized text: %s";
+					fireWarningEvent(String.format(message, text), next, 6);
+				}
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<Gathering group> has no closing tag");
+		
+	}
+
+	private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUnitFacade facade) {
 		for (NamedArea area : state.getCurrentAreas()){
 			if (area == null){
 				continue;
