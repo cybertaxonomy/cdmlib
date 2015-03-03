@@ -112,7 +112,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		int entityValidationId = -1;
 		try {
 			conn = datasource.getConnection();
-			//JdbcDaoUtils.startTransaction(conn);
+			JdbcDaoUtils.startTransaction(conn);
 			String entityClass = validatedEntity.getClass().getName();
 			int entityId = validatedEntity.getId();
 			EntityValidation previousResult = getEntityValidationRecord(conn, entityClass, entityId);
@@ -135,12 +135,15 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 					saveErrorRecords(conn, previousResult.getId(), validatedEntity, errors);
 				}
 			}
-			//conn.commit();
+			conn.commit();
 		}
 		catch (Throwable t) {
 			logger.error("Error while saving validation result:", t);
-			//JdbcDaoUtils.rollback(conn);
+			JdbcDaoUtils.rollback(conn);
+			
+			// Runs within its own transaction!
 			setStatus(conn, entityValidationId, EntityValidationStatus.ERROR);
+			
 			return;
 		}
 		setStatus(conn, entityValidationId, EntityValidationStatus.OK);
@@ -153,17 +156,17 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		Connection conn = null;
 		try {
 			conn = datasource.getConnection();
-			//JdbcDaoUtils.startTransaction(conn);
+			JdbcDaoUtils.startTransaction(conn);
 			int validationResultId = getValidationResultId(conn, validatedEntityClass, validatedEntityId);
 			if (validationResultId == -1) {
 				return;
 			}
 			deleteValidationResultRecord(conn, validationResultId);
 			deletedErrorRecords(conn, validationResultId, null);
-			//conn.commit();
+			conn.commit();
 		}
 		catch (Throwable t) {
-			//JdbcDaoUtils.rollback(conn);
+			JdbcDaoUtils.rollback(conn);
 		}
 	}
 
@@ -303,17 +306,17 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		Connection conn = null;
 		try {
 			conn = datasource.getConnection();
-			//JdbcDaoUtils.startTransaction(conn);
+			JdbcDaoUtils.startTransaction(conn);
 			EntityValidation result = getEntityValidationRecord(conn, validatedEntityClass, validatedEntityId);
 			if (result != null) {
 				result.setEntityConstraintViolations(getErrorRecords(conn, result.getId()));
 			}
-			//conn.commit();
+			conn.commit();
 			return result;
 		}
 		catch (Throwable t) {
 			logger.error("Error while retrieving validation result", t);
-			//JdbcDaoUtils.rollback(conn);
+			JdbcDaoUtils.rollback(conn);
 			return null;
 		}
 	}
@@ -333,12 +336,12 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		String sql = "UPDATE entityvalidation SET status = ? WHERE id = ?";
 		PreparedStatement stmt = null;
 		try {
-			//JdbcDaoUtils.startTransaction(conn);
+			JdbcDaoUtils.startTransaction(conn);
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, status.toString());
 			stmt.setInt(2, entityValidationId);
 			stmt.executeUpdate();
-			//conn.commit();
+			conn.commit();
 		}
 		catch (Throwable t) {
 			logger.error("Failed to set validation status", t);
