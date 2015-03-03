@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -1635,6 +1634,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, Abcd206ImportState state, int unitIndexInAbcdFile){
         NonViralName taxonName = null;
         Abcd206ImportConfigurator config = state.getConfig();
+        if(config.isIgnoreAuthorship()){
+            String nameCache = parseScientificName(scientificName).getNameCache();
+            List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.BEGINNING, null, null, null, null, null);
+            if(names.size()>0){
+                if(names.size()>1){
+                    logger.warn("More than one taxon name was found for "+scientificName+"!");
+                    logger.warn("The first one found was chosen.");
+                }
+                return names.iterator().next();
+            }
+        }
         if(config.isReuseExistingTaxaWhenPossible()){
             //search for existing names
             List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
@@ -1660,9 +1670,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             taxonName = NonViralName.NewInstance(rank);
             taxonName.setFullTitleCache(scientificName,true);
             taxonName.setTitleCache(scientificName, true);
-            if (rank != null) {
-                taxonName.setRank(rank);
-            }
         }
         save(taxonName, state);
         report.addName(taxonName);

@@ -53,6 +53,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean determinationOnFieldUnitLevel = false;
     private boolean deduplicateReferences = false;
     private boolean deduplicateClassifications = false;
+    private boolean ignoreAuthorship = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -370,6 +371,14 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public URI getReportUri() {
         return reportUri;
+    }
+
+    public void setIgnoreAuthorship(boolean ignoreAuthorship) {
+        this.ignoreAuthorship = ignoreAuthorship;
+    }
+
+    public boolean isIgnoreAuthorship() {
+        return ignoreAuthorship;
     }
 
 }
