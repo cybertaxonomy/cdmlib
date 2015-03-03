@@ -45,6 +45,18 @@ public class JdbcDaoUtils {
 		}
 	}
 
+	public static void close(Connection conn)
+	{
+		if (conn != null) {
+			try {
+				conn.close();
+			}
+			catch (Throwable t) {
+				logger.error("Error closing JDBC connection", t);
+			}
+		}
+	}
+
 
 	public static void startTransaction(Connection conn) throws SQLException
 	{

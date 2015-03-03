@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 /**
  * @author ayco_holleman
  * @date 16 jan. 2015
- *
+ * 
  */
 @Repository
 public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
@@ -110,6 +110,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 	{
 		Connection conn = null;
 		int entityValidationId = -1;
+		EntityValidationStatus status = EntityValidationStatus.OK;
 		try {
 			conn = datasource.getConnection();
 			JdbcDaoUtils.startTransaction(conn);
@@ -139,14 +140,11 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		}
 		catch (Throwable t) {
 			logger.error("Error while saving validation result:", t);
+			status = EntityValidationStatus.ERROR;
 			JdbcDaoUtils.rollback(conn);
-			
-			// Runs within its own transaction!
-			setStatus(conn, entityValidationId, EntityValidationStatus.ERROR);
-			
-			return;
 		}
-		setStatus(conn, entityValidationId, EntityValidationStatus.OK);
+		setStatus(conn, entityValidationId, status);
+		JdbcDaoUtils.close(conn);
 	}
 
 
@@ -168,6 +166,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 		catch (Throwable t) {
 			JdbcDaoUtils.rollback(conn);
 		}
+		JdbcDaoUtils.close(conn);
 	}
 
 
@@ -324,11 +323,11 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
 	private static void setStatus(Connection conn, int entityValidationId, EntityValidationStatus status)
 	{
-		if(conn == null) {
+		if (conn == null) {
 			// Something has gone awfully wrong, but that's being dealt with on a higher level
 			return;
 		}
-		if(entityValidationId <= 0) {
+		if (entityValidationId <= 0) {
 			// Something went wrong before we could insert a record into the entityvalidation
 			// table or retrieve one using entityclass/entityid
 			return;
