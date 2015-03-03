@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -264,6 +265,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             updateProgress(state, message);
 
             dataHolder = new Abcd206DataHolder();
+            dataHolder.reset();
 
             Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(dataHolder, prefix);
 
@@ -284,9 +286,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // unhandled ABCD elements
                 //compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, abcdFieldGetter);
 
-                // reset the ABCD elements added in CDM
-                // knownABCDelements = new ArrayList<String>();
-                dataHolder.allABCDelements = new HashMap<String, String>();
+                dataHolder.reset();
             }
             if(state.getConfig().isDeduplicateReferences()){
                 getReferenceService().deduplicate(Reference.class, null, null);

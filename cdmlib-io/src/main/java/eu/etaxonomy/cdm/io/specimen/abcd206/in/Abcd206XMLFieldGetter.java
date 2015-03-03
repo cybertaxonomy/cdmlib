@@ -156,7 +156,6 @@ public class Abcd206XMLFieldGetter {
         // logger.info("IN getScientificName " + dataHolder.nomenclatureCode);
         NodeList taxonsIdentified, scnames, atomised;
         String tmpName = "";
-        dataHolder.atomisedStr = "";
         taxonsIdentified = result.getChildNodes();
         for (int l = 0; l < taxonsIdentified.getLength(); l++) {
 
