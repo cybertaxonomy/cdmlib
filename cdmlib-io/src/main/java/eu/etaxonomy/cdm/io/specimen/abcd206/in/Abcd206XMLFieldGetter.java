@@ -568,10 +568,10 @@ public class Abcd206XMLFieldGetter {
         }
 
         //FIXME: temporary hack for Campanula import #4677
-        dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[^\\w]", "");
+        dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
         List<String> namedAreaList = dataHolder.namedAreaList;
         for (String namedArea : namedAreaList) {
-            dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[^\\w]", "");
+            dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
         }
     }
 
