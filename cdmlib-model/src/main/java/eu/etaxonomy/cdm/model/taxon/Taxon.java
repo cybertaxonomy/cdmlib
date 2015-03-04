@@ -51,13 +51,13 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
-import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -193,8 +193,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @param  sec				the reference using the taxon name
      * @see    					#Taxon(TaxonNameBase, Reference)
      */
-    public static Taxon NewUnknownStatusInstance(TaxonNameBase taxonNameBase, Reference sec){
-        Taxon result = new Taxon(taxonNameBase, sec);
+    public static Taxon NewUnknownStatusInstance(NonViralName name, Reference sec){
+        Taxon result = new Taxon(name, sec);
         result.setTaxonStatusUnknown(true);
         return result;
     }
@@ -281,11 +281,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, null);
-        
-        
+
+
         descriptions.remove(description);
     }
-    
+
     public void removeDescription(TaxonDescription description, boolean removeElements){
     	if (removeElements){
     		Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>(description.getElements());
@@ -1455,7 +1455,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @see    				#removeSynonym(Synonym)
      * @see    	   			Synonym#getSynonymRelations()
      */
-    public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName, Reference citation, String microCitation){
+    public SynonymRelationship addHomotypicSynonymName(NonViralName synonymName, Reference citation, String microCitation){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
         return addHomotypicSynonym(synonym, citation, microCitation);
     }
@@ -1504,7 +1504,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     		synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
     	} else{
     		logger.warn("The synonym is already related to the taxon.");
-    		
+
     	}
         return synRel;
     }
@@ -1850,8 +1850,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 
 	public void clearDescriptions() {
 		this.descriptions = new HashSet<TaxonDescription>();
-		
+
 	}
-    
-   
+
+
 }

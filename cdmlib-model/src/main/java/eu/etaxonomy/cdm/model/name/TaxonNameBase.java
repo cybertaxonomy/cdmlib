@@ -10,13 +10,10 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,7 +50,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -235,7 +231,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.EAGER)
     @CacheUpdate(value ="nameCache")
     //TODO Val #3379, handle maybe as groups = Level2.class ??
-//    @NotNull 
+//    @NotNull
     @IndexedEmbedded(depth=1)
     private Rank rank;
 
@@ -648,7 +644,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return false;
     }
-    
+
     /**
      * Indicates <i>this</i> taxon name is a {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym}
      * of any other taxon name. Returns "true", if a replaced
@@ -743,10 +739,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             return null;
         }
     }
-    
+
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
-     *  
+     *
      */
     @Transient
     public Set<TaxonNameBase> getReplacedSynonyms(){
@@ -1328,8 +1324,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
-     
-       
+
+
     }
 
     /**
@@ -1633,14 +1629,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return getRank().isInfraSpecific();
     }
-    
+
     /**
-     * Returns true if this name's rank indicates a rank that aggregates species like species 
-     * aggregates or species groups, false otherwise. This methods currently returns false 
+     * Returns true if this name's rank indicates a rank that aggregates species like species
+     * aggregates or species groups, false otherwise. This methods currently returns false
      * for all user defined ranks.
      *
      *@see Rank#isSpeciesAggregate()
-     * 
+     *
      * @return
      */
     @Transient
