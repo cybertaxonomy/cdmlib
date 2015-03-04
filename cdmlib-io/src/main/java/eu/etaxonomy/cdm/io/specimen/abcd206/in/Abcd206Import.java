@@ -1673,7 +1673,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             NonViralName<?> parsedName = parseScientificName(scientificName);
             if(parsedName!=null){
                 String nameCache = parsedName.getNameCache();
-                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.BEGINNING, null, null, null, null, null);
+                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, nameCache, MatchMode.BEGINNING, null, null, null, null, null);
                 if(names.size()>0){
                     if(names.size()>1){
                         logger.warn("More than one taxon name was found for "+scientificName+"!");
