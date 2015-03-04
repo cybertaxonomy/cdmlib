@@ -24,143 +24,131 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
 
 
-	public static final String DEFAULT_CACHE_NAME = "defaultCache";
+    public static final String DEFAULT_CACHE_NAME = "defaultCache";
 
-	/**
-	 * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
-	 *
-	 */
-	public CdmCacher() {
-		init();
-	}
+    /**
+     * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
+     *
+     */
+    public CdmCacher() {
+        init();
+    }
 
-	/**
-	 * Initialises an empty singleton {@link net.sf.ehcache.CacheManager} and
-	 * sets itself as the cacher object in specific CDM Entity objects.
-	 *
-	 */
-	private void init() {
-		if(getDefaultCache() == null) {
-			// Create default cache
-			getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
-		}
-		setup();
-	}
+    /**
+     * Initialises an empty singleton {@link net.sf.ehcache.CacheManager} and
+     * sets itself as the cacher object in specific CDM Entity objects.
+     *
+     */
+    private void init() {
+        if(getDefaultCache() == null) {
+            // Create default cache
+            getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
+        }
+        setup();
+    }
 
-	protected abstract void setup();
+    protected abstract void setup();
 
-	/**
-	 * Returns the singleton default cache manager.
-	 *
-	 * @return
-	 */
-	public static CacheManager getDefaultCacheManager() {
-		// this ensures a singleton cache manager
-		return CacheManager.create();
-	}
+    /**
+     * Returns the singleton default cache manager.
+     *
+     * @return
+     */
+    public static CacheManager getDefaultCacheManager() {
+        // this ensures a singleton cache manager
+        return CacheManager.create();
+    }
 
-	/**
-	 * Returns the default cache configuration.
-	 *
-	 * @return
-	 */
-	protected CacheConfiguration getDefaultCacheConfiguration() {
-	    CacheEventListenerFactoryConfiguration factory;
-        // This is 2.6.9 API
-//	    SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
-//        sizeOfConfig.setMaxDepth(10000);
-//        sizeOfConfig.setMaxDepthExceededBehavior("abort");
-		// For a better understanding on how to size caches, refer to
-		// http://ehcache.org/documentation/configuration/cache-size
-		return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
-	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-	    .eternal(true)
-	    .copyOnRead(false)
-	    .copyOnWrite(false)
-	    // default ttl and tti set to 2 hours
-	    //.timeToLiveSeconds(60*60*2)
-	    //.timeToIdleSeconds(60*60*2)
-	    .statistics(true);
-	    // This is 2.6.9 API
-		//.maxEntriesLocalDisk(1000);
-	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
-	}
+    /**
+     * Returns the default cache configuration.
+     *
+     * @return
+     */
+    protected CacheConfiguration getDefaultCacheConfiguration() {
+        CacheEventListenerFactoryConfiguration factory;
+        // For a better understanding on how to size caches, refer to
+        // http://ehcache.org/documentation/configuration/cache-size
+        return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
+        .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+        .eternal(false)
+        // default ttl and tti set to 2 hours
+        .timeToLiveSeconds(60*60*2)
+        .timeToIdleSeconds(60*60*2)
+        .statistics(true);
 
-	/**
-	 * Returns the default cache
-	 *
-	 * @return
-	 */
-	public static Cache getDefaultCache() {
-		return getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
-	}
+    }
+
+    /**
+     * Returns the default cache
+     *
+     * @return
+     */
+    public static Cache getDefaultCache() {
+        return getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
+    }
 
 
-	/**
-	 * Gets the cache element corresponding to the given {@link java.util.UUID}
-	 *
-	 * @param uuid
-	 * @return
-	 */
-	public Element getCacheElement(UUID uuid) {
-		return getDefaultCache().get(uuid);
-	}
+    /**
+     * Gets the cache element corresponding to the given {@link java.util.UUID}
+     *
+     * @param uuid
+     * @return
+     */
+    public Element getCacheElement(UUID uuid) {
+        return getDefaultCache().get(uuid);
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.ICdmCacher#put(java.util.UUID, eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public  CdmBase put(UUID uuid, CdmBase cdmEntity) {
+    public  void put(UUID uuid, CdmBase cdmEntity) {
         CdmBase cachedCdmEntity = getFromCache(uuid);
-        if(getFromCache(uuid) == null) {
+        if(cachedCdmEntity == null) {
             getDefaultCache().put(new Element(uuid, cdmEntity));
-            CdmBase test = getFromCache(uuid);
-            return cdmEntity;
-        } else {
-            return cachedCdmEntity;
         }
     }
 
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
+     */
+    @Override
     public CdmBase load(UUID uuid) {
-		Element e = getCacheElement(uuid);
+        Element e = getCacheElement(uuid);
 
-		CdmBase cdmEntity;
-		if (e == null) {
-		    // nothing in the cache for "key" (or expired) ... re-load the entity
-			cdmEntity = findByUuid(uuid);
-			// currently default cache is a non-null cache
-			// We would like to have the possibility to put null values in the cache,
-			// but we need to first distinguish between real null values and null values
-			// returned by the service is the type of class does not match
-			if(cdmEntity != null) {
-			    put(uuid, cdmEntity);
-			}
-		} else {
-		    // there is a valid element in the cache, however getObjectValue() may be null
-		    cdmEntity = (CdmBase)e.getObjectValue();
-		}
-		return cdmEntity;
-	}
+        CdmBase cdmEntity;
+        if (e == null) {
+            // nothing in the cache for "key" (or expired) ... re-load the entity
+            cdmEntity = findByUuid(uuid);
+            // currently default cache is a non-null cache
+            // We would like to have the possibility to put null values in the cache,
+            // but we need to first distinguish between real null values and null values
+            // returned by the service is the type of class does not match
+            if(cdmEntity != null) {
+                put(uuid, cdmEntity);
+            }
+        } else {
+            // there is a valid element in the cache, however getObjectValue() may be null
+            cdmEntity = (CdmBase)e.getObjectValue();
+        }
+        return cdmEntity;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
+     */
+    @Override
     public  CdmBase getFromCache(UUID uuid) {
-		Element e = getCacheElement(uuid);
-		if (e == null) {
-			return null;
-		} else {
-		    return(CdmBase)e.getObjectValue();
-		}
-	}
+        Element e = getCacheElement(uuid);
+        if (e == null) {
+            return null;
+        } else {
+            return(CdmBase)e.getObjectValue();
+        }
+    }
 
 
     /* (non-Javadoc)
@@ -168,7 +156,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      */
     @Override
     public CdmBase getFromCache(CdmBase cdmBase) {
-       return getFromCache(cdmBase.getUuid());
+        return getFromCache(cdmBase.getUuid());
     }
 
 
@@ -192,35 +180,47 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.ICdmCacher#exists(java.util.UUID)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#exists(java.util.UUID)
+     */
+    @Override
     public boolean exists(UUID uuid) {
-		return getCacheElement(uuid) != null;
-	}
+        return getCacheElement(uuid) != null;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.ICdmCacher#existsAndIsNotNull(java.util.UUID)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#exists(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean exists(CdmBase cdmBase) {
+        if(cdmBase != null) {
+            return exists(cdmBase.getUuid());
+        }
+        return false;
+
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.ICdmCacher#existsAndIsNotNull(java.util.UUID)
+     */
+    @Override
     public boolean existsAndIsNotNull(UUID uuid) {
-		Element e = getCacheElement(uuid);
-		CdmBase cdmEntity;
-		if (e != null) {
-			return e.getObjectValue() != null;
-		}
-		return false;
-	}
+        Element e = getCacheElement(uuid);
+        CdmBase cdmEntity;
+        if (e != null) {
+            return e.getObjectValue() != null;
+        }
+        return false;
+    }
 
-	/**
-	 * Finds CDM Entity by uuid
-	 *
-	 * @param uuid
-	 * @return
-	 */
-	protected abstract CdmBase findByUuid(UUID uuid);
+    /**
+     * Finds CDM Entity by uuid
+     *
+     * @param uuid
+     * @return
+     */
+    protected abstract CdmBase findByUuid(UUID uuid);
 
 
 

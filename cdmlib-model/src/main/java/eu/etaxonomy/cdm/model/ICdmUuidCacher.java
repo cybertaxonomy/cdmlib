@@ -25,7 +25,7 @@ public interface ICdmUuidCacher extends ICdmCacher {
      * @param uuid
      * @param cdmEntity
      */
-    public  CdmBase put(UUID uuid, CdmBase cdmEntity);
+    public void put(UUID uuid, CdmBase cdmEntity);
 
 	/**
 	 * Load a CDM Entity object with given UUID.

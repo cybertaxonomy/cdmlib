@@ -26,4 +26,6 @@ public interface ICdmCacher {
 
     public boolean isCachable(CdmBase cdmEntity);
 
+    public boolean exists(CdmBase cdmBase);
+
 }
