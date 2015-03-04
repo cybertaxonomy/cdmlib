@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -565,13 +564,6 @@ public class Abcd206XMLFieldGetter {
             }
         } catch (NullPointerException e) {
             dataHolder.namedAreaList = new ArrayList<String>();
-        }
-
-        //FIXME: temporary hack for Campanula import #4677
-        dataHolder.locality.replace(dataHolder.country, "");
-        List<String> namedAreaList = dataHolder.namedAreaList;
-        for (String namedArea : namedAreaList) {
-            dataHolder.locality.replace(namedArea, "");
         }
     }
 
