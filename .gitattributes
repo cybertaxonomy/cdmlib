@@ -1341,6 +1341,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaU
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/TermUpdater_33_34.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/UsernameConstraintUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/SchemaUpdater_341_35.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/TermUpdater_34_35.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
