@@ -451,8 +451,9 @@ public class Abcd206XMLFieldGetter {
     /**
      * getGeolocation : get locality
      * @param root
+     * @param state 
      */
-    protected void getGeolocation(Element root) {
+    protected void getGeolocation(Element root, Abcd206ImportState state) {
         NodeList group, childs;
         try {
             group = root.getElementsByTagName(prefix + "LocalityText");
@@ -567,11 +568,16 @@ public class Abcd206XMLFieldGetter {
             dataHolder.namedAreaList = new ArrayList<String>();
         }
 
-        //FIXME: temporary hack for Campanula import #4677
-        dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
-        List<String> namedAreaList = dataHolder.namedAreaList;
-        for (String namedArea : namedAreaList) {
-            dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
+        if(state.getConfig().isRemoveCountryFromLocalityText()){
+            if(dataHolder.locality.startsWith(dataHolder.country)){
+                dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
+            }
+            List<String> namedAreaList = dataHolder.namedAreaList;
+            for (String namedArea : namedAreaList) {
+                if(dataHolder.locality.startsWith(namedArea)){
+                    dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
+                }
+            }
         }
     }
 

@@ -54,6 +54,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean deduplicateReferences = false;
     private boolean deduplicateClassifications = false;
     private boolean ignoreAuthorship = false;
+    private boolean removeCountryFromLocalityText = false;
 
     private boolean mapUnitIdToCatalogNumber = true;
     private boolean mapUnitIdToAccessionNumber = false;
@@ -406,6 +407,14 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public void setMapUnitIdToCatalogNumber(boolean mapUnitIdToCatalogNumber) {
         this.mapUnitIdToCatalogNumber = mapUnitIdToCatalogNumber;
+    }
+
+    public void setRemoveCountryFromLocalityText(boolean removeCountryFromLocalityText) {
+        this.removeCountryFromLocalityText = removeCountryFromLocalityText;
+    }
+
+    public boolean isRemoveCountryFromLocalityText() {
+        return removeCountryFromLocalityText;
     }
 
 }
