@@ -731,7 +731,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitFacade.setAccessionNumber(NB(dataHolder.accessionNumber));
         }
         if(config.isMapUnitIdToBarcode()){
-            derivedUnitFacade.setCatalogNumber(NB(dataHolder.unitID));
+            derivedUnitFacade.setBarcode(NB(dataHolder.unitID));
         }
         // derivedUnitFacade.setCollectorsNumber(NB(dataHolder.collectorsNumber));
 
@@ -1670,14 +1670,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         NonViralName taxonName = null;
         Abcd206ImportConfigurator config = state.getConfig();
         if(config.isIgnoreAuthorship()){
-            String nameCache = parseScientificName(scientificName).getNameCache();
-            List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.BEGINNING, null, null, null, null, null);
-            if(names.size()>0){
-                if(names.size()>1){
-                    logger.warn("More than one taxon name was found for "+scientificName+"!");
-                    logger.warn("The first one found was chosen.");
+            NonViralName<?> parsedName = parseScientificName(scientificName);
+            if(parsedName!=null){
+                String nameCache = parsedName.getNameCache();
+                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.BEGINNING, null, null, null, null, null);
+                if(names.size()>0){
+                    if(names.size()>1){
+                        logger.warn("More than one taxon name was found for "+scientificName+"!");
+                        logger.warn("The first one found was chosen.");
+                    }
+                    return names.iterator().next();
                 }
-                return names.iterator().next();
             }
         }
         if(config.isReuseExistingTaxaWhenPossible()){
