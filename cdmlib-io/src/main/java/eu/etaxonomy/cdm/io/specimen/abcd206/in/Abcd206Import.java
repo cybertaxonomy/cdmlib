@@ -1640,7 +1640,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         logger.warn("Either it is a pro parte synonym or has no accepted taxa");
                     }
                     else{
-                        return acceptedTaxa.iterator().next();
+                        return acceptedTaxaOfSynonym.iterator().next();
                     }
                 }
             }
