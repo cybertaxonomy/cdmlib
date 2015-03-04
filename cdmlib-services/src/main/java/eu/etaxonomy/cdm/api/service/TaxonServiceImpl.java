@@ -264,6 +264,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Taxon taxon = (Taxon)dao.load(acceptedTaxonUuid);
         result.addUpdatedObject(synonym);
         result.addUpdatedObject(taxon);
+        result.setCdmEntity(synonym);
         swapSynonymAndAcceptedTaxon(synonym, taxon);
         return result;
     }
@@ -997,6 +998,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid)  {
         return deleteTaxon((Taxon)dao.load(taxonUuid), config, classificationDao.load(classificationUuid));
     }

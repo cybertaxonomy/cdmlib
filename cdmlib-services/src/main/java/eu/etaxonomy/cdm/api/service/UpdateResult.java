@@ -11,15 +11,15 @@
 	package eu.etaxonomy.cdm.api.service;
 
 	import java.io.Serializable;
-	import java.util.ArrayList;
-	import java.util.HashSet;
-	import java.util.List;
-	import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-	import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
-	import eu.etaxonomy.cdm.model.common.CdmBase;
-	import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
 	/**
 	 * This class represents the result of an update action.
@@ -29,8 +29,8 @@
 	 *
 	 */
 public class UpdateResult implements Serializable{
-	
-	
+
+
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(UpdateResult.class);
@@ -40,6 +40,8 @@ public class UpdateResult implements Serializable{
 		private final List<Exception> exceptions = new ArrayList<Exception>();
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
+
+		private CdmBase cdmEntity;
 
 //		private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
 	//
@@ -208,7 +210,14 @@ public class UpdateResult implements Serializable{
 									"Related Objects: "+relatedObjectString;
 		}
 
+        public CdmBase getCdmEntity() {
+            return cdmEntity;
+        }
+        public void setCdmEntity(CdmBase cdmEntity) {
+            this.cdmEntity = cdmEntity;
+        }
 
-	
+
+
 
 }

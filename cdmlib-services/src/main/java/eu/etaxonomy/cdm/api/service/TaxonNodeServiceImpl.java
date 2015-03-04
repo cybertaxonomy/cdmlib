@@ -262,11 +262,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(oldTaxonParentNode);
         TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
         result.addUpdatedObject(newTaxonNode);
-        makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
+
+        Synonym synonym = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
                 newTaxonNode,
                 synonymRelationshipType,
                 citation,
                 citationMicroReference);
+        result.setCdmEntity(oldTaxonParentNode);
         return result;
     }
 
@@ -368,6 +370,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            }
 
 		            result.addUpdatedObject(taxonNode.getParent());
+		            if(result.getCdmEntity() == null){
+		                result.setCdmEntity(taxonNode);
+                    }
 		            UUID uuid = dao.delete(taxonNode);
 		            logger.debug("Deleted node " +uuid.toString());
 	        	}else {
@@ -417,13 +422,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
     	    result = taxonService.deleteTaxon(taxon, config, node.getClassification());
     	    result.addUpdatedObject(parent);
-
+    	    result.setCdmEntity(node);
     		return result;
     	} else{
     		result = new DeleteResult();
     		boolean success = taxon.removeTaxonNode(node);
     		if (success) {
     		    result.addUpdatedObject(parent);
+    		    result.setCdmEntity(node);
     			if (!dao.delete(node).equals(null)){
     				return result;
     			} else {
@@ -436,6 +442,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     			return result;
     		}
     	}
+
     }
 
 
@@ -453,7 +460,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         UpdateResult result = new UpdateResult();
         result.addUpdatedObject(taxonNode.getParent());
         result.addUpdatedObject(newParent);
-
+        result.setCdmEntity(taxonNode);
         Reference reference = taxonNode.getReference();
         String microReference = taxonNode.getMicroReference();
         newParent.addChildNode(taxonNode, reference, microReference);

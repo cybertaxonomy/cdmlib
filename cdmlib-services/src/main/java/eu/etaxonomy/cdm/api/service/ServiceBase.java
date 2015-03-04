@@ -72,6 +72,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     	DeleteResult result = new DeleteResult();
     	try{
     		dao.delete(persistentObject);
+    		result.setCdmEntity(persistentObject);
     	} catch(DataAccessException e){
     		result.setError();
     		result.addException(e);

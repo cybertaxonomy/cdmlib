@@ -482,6 +482,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     		tax.removeDescription(taxDescription, true);
 
             deleteResult.addUpdatedObject(tax);
+            deleteResult.setCdmEntity(tax);
     	}
 
         return deleteResult;
