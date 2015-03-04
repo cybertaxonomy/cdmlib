@@ -445,6 +445,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportRep
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206XMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Identification.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd21/ggbn/AbcdGgbnParser.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExtensionTypeExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevelExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevellRow.java -text
@@ -567,6 +568,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportExportTest.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportConfiguratorTestNonEmptyDB.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdGgbnImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest.java -text
@@ -647,7 +649,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_A
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/campanula_abietina_subspecies.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx -text

@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
+import eu.etaxonomy.cdm.io.specimen.abcd21.ggbn.AbcdGgbnParser;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -277,6 +278,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             for (int i = 0; i < unitsList.getLength(); i++) {
                 System.out.println("------------------------------------------------------------------------------------------");
 
+                checkForUnitExtensions((Element) unitsList.item(i));
+
                 this.setUnitPropertiesXML( (Element) unitsList.item(i), abcdFieldGetter);
                 //				refreshTransaction(state);
                 this.handleSingleUnit(state);
@@ -297,6 +300,23 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         commitTransaction(state.getTx());
         report.printReport(state.getConfig().getReportUri());
         return;
+    }
+
+    /**
+     * @param item
+     */
+    private void checkForUnitExtensions(Element item) {
+        NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtension");
+        for(int i=0;i<unitExtensions.getLength();i++){
+            if(unitExtensions.item(i) instanceof Element){
+                Element unitExtension = (Element) unitExtensions.item(i);
+                NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
+                if(unitExtension.getTagName().equals("ggbn:GGBN")){
+                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
+                    ggbnParser.parse(ggbn);
+                }
+            }
+        }
     }
 
     protected NodeList getUnitsNodeList(URI source) {
@@ -326,6 +346,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (unitList.getLength() == 0) {
                 unitList = root.getElementsByTagName("abcd:Unit");
                 prefix = "abcd:";
+            }
+            if (unitList.getLength() == 0) {
+                unitList = root.getElementsByTagName("abcd21:Unit");
+                prefix = "abcd21:";
             }
         } catch (Exception e) {
             logger.warn(e);
@@ -695,9 +719,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     private void setCollectionData(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
-        // set catalogue number (unitID)
-        derivedUnitFacade.setCatalogNumber(NB(dataHolder.unitID));
-        derivedUnitFacade.setAccessionNumber(NB(dataHolder.accessionNumber));
+        Abcd206ImportConfigurator config = state.getConfig();
+        if(config.isMapUnitIdToCatalogNumber()){
+            // set catalogue number (unitID)
+            derivedUnitFacade.setCatalogNumber(NB(dataHolder.unitID));
+        }
+        if(config.isMapUnitIdToAccessionNumber()){
+            derivedUnitFacade.setAccessionNumber(NB(dataHolder.unitID));
+        }
+        else{
+            derivedUnitFacade.setAccessionNumber(NB(dataHolder.accessionNumber));
+        }
+        if(config.isMapUnitIdToBarcode()){
+            derivedUnitFacade.setCatalogNumber(NB(dataHolder.unitID));
+        }
         // derivedUnitFacade.setCollectorsNumber(NB(dataHolder.collectorsNumber));
 
         /*

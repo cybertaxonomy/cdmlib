@@ -55,6 +55,9 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean deduplicateClassifications = false;
     private boolean ignoreAuthorship = false;
 
+    private boolean mapUnitIdToCatalogNumber = true;
+    private boolean mapUnitIdToAccessionNumber = false;
+    private boolean mapUnitIdToBarcode = false;
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
@@ -379,6 +382,30 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public boolean isIgnoreAuthorship() {
         return ignoreAuthorship;
+    }
+
+    public boolean isMapUnitIdToAccessionNumber() {
+        return mapUnitIdToAccessionNumber;
+    }
+
+    public boolean isMapUnitIdToBarcode() {
+        return mapUnitIdToBarcode;
+    }
+
+    public boolean isMapUnitIdToCatalogNumber() {
+        return mapUnitIdToCatalogNumber;
+    }
+
+    public void setMapUnitIdToAccessionNumber(boolean mapUnitIdToAccessionNumber) {
+        this.mapUnitIdToAccessionNumber = mapUnitIdToAccessionNumber;
+    }
+
+    public void setMapUnitIdToBarcode(boolean mapUnitIdToBarcode) {
+        this.mapUnitIdToBarcode = mapUnitIdToBarcode;
+    }
+
+    public void setMapUnitIdToCatalogNumber(boolean mapUnitIdToCatalogNumber) {
+        this.mapUnitIdToCatalogNumber = mapUnitIdToCatalogNumber;
     }
 
 }
