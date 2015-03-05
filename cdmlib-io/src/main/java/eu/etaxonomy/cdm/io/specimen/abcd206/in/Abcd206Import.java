@@ -275,7 +275,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             for (int i = 0; i < unitsList.getLength(); i++) {
                 System.out.println("------------------------------------------------------------------------------------------");
 
-                checkForUnitExtensions((Element) unitsList.item(i));
+//                checkForUnitExtensions((Element) unitsList.item(i));
 
                 this.setUnitPropertiesXML( (Element) unitsList.item(i), abcdFieldGetter, state);
                 //				refreshTransaction(state);
@@ -1578,7 +1578,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             NonViralName<?> parsedName = parseScientificName(scientificName);
             if(parsedName!=null){
                 String nameCache = parsedName.getNameCache();
-                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, nameCache, MatchMode.BEGINNING, null, null, null, null, null);
+                List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if(names.size()>0){
                     if(names.size()>1){
                         logger.warn("More than one taxon name was found for "+scientificName+"!");
