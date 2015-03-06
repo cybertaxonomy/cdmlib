@@ -2355,10 +2355,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -t
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/Level3TransactionalValidationEventListener.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/Level3TransactionalValidationTask.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/ValidationManager.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/BatchValidationUtil.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/BatchValidator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/EntityValidationUnit.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/batch/validation/ValidationScheduler.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidationUtil.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/EntityValidationUnit.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/ValidationScheduler.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
@@ -2420,7 +2420,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServi
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/utility/DescriptionUtilityTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/batch/validation/BatchValidatorTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidatorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/scripts/FixMultipleTextDataInImageGalleries.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/example/ApplicationExample.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text

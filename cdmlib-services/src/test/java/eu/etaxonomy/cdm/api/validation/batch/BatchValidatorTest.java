@@ -7,7 +7,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.batch.validation;
+package eu.etaxonomy.cdm.api.validation.batch;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.validation.batch.BatchValidator;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -56,7 +57,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.batch.validation.BatchValidator#run()}.
+     * {@link eu.etaxonomy.cdm.api.validation.batch.BatchValidator#run()}.
      *
      * @throws SQLException
      */
