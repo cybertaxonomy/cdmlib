@@ -93,7 +93,7 @@ public abstract class EntityValidationTaskBase implements Runnable {
             if (waitForThread != null && waitForThread.get() != null) {
                 waitForThread.get().join();
             }
-            Set<ConstraintViolation<ICdmBase>> errors = validate();
+            Set<ConstraintViolation<ICdmBase>> errors = validateWithErrorHandling();
             if (dao == null) {
                 logger.error("Cannot save validation result to database (missing DAO)");
             } else {
@@ -105,11 +105,12 @@ public abstract class EntityValidationTaskBase implements Runnable {
         }
     }
 
-    protected Set<ConstraintViolation<ICdmBase>> validate() {
+    protected Set<ConstraintViolation<ICdmBase>> validateWithErrorHandling() {
         Set<ConstraintViolation<ICdmBase>> result = null;
         try {
             result = validator.validate(entity, validationGroups);
         } catch (Exception e) {
+            //TODO convert it into a Constraint violation: #4695
             logger.error("Error while calling validate on validator " +
                     (validator == null ? "null" : validator.toString())+
                      " for entity: " +
