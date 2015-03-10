@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -23,6 +25,7 @@ public class SpecimenTypeParser {
 	public static class TypeInfo{
 		public SpecimenTypeDesignationStatus status;
 		public String collectionString;
+		public boolean notDesignated;
 	}
 	
 	/**
@@ -36,6 +39,15 @@ public class SpecimenTypeParser {
 	public static SpecimenTypeDesignationStatus parseSpecimenTypeStatus(String type) throws UnknownCdmTypeException {
 		//TODO also compare with NameTypeParser
 		//TODO further types
+		
+		if (StringUtils.isBlank(type)){
+			return null;
+		}else if (type.endsWith("type") && ! type.equalsIgnoreCase("type")){
+			type = type.substring(0, type.length() -4 );
+		}else if (type.endsWith("types") && ! type.equalsIgnoreCase("types")){
+			type = type.substring(0, type.length() -5 );
+		}
+		
 		SpecimenTypeDesignationStatus status; 
 		if (type.equalsIgnoreCase("iso")){
 			status = SpecimenTypeDesignationStatus.ISOTYPE();
