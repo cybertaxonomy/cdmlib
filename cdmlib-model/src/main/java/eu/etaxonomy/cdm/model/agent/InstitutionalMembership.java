@@ -187,7 +187,7 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 	 * @see	#getDepartment()
 	 */
 	public void setDepartment(String department){
-		this.department = department;
+		this.department = department == "" ? null : department;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 	 * @see	#getRole()
 	 */
 	public void setRole(String role){
-		this.role = role;
+		this.role = role == "" ? null : role;
 	}
 	
 //*********************** CLONE ********************************************************/

@@ -81,7 +81,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      */
     @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = nomenclaturalTitle;
+        this.nomenclaturalTitle = nomenclaturalTitle == "" ? null : nomenclaturalTitle;
     }
 
     /* (non-Javadoc)

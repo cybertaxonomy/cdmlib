@@ -159,7 +159,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getPobox()
 	 */
 	public void setPobox(String pobox){
-		this.pobox = pobox;
+		this.pobox = pobox == "" ? null : pobox;
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getStreet()
 	 */
 	public void setStreet(String street){
-		this.street = street;
+		this.street = street == "" ? null : street;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getPostcode()
 	 */
 	public void setPostcode(String postcode){
-		this.postcode = postcode;
+		this.postcode = postcode == "" ? null : postcode;
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getLocality()
 	 */
 	public void setLocality(String locality){
-		this.locality = locality;
+		this.locality = locality == "" ? null: locality;		
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see			#getRegion()
 	 */
 	public void setRegion(String region){
-		this.region = region;
+		this.region = region == "" ? null: region;
 	}
 	
 //************************ CLONE ************************ //
