@@ -57,6 +57,8 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
@@ -116,6 +118,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		if (StringUtils.isNotEmpty(typeStatus)) {
 			// TODO
 			// currently not needed
+			fireWarningEvent("Type status not yet used", parentEvent, 4);
 		} else if (StringUtils.isNotEmpty(notSeen)) {
 			handleNotYetImplementedAttribute(attributes, NOT_SEEN);
 		} else if (StringUtils.isNotEmpty(unknown)) {
@@ -153,11 +156,8 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				state.resetCollectionAndType();
 				return;
 			} else if (isStartingElement(next, FULL_TYPE)) {
-				handleNotYetImplementedElement(next);
 				handleAmbigousManually(state, reader, next.asStartElement());
 				isFullType = true;
-				// homotypicalGroup = handleNom(state, reader, next, taxon,
-				// homotypicalGroup);
 			} else if (isStartingElement(next, TYPE_STATUS)) {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, GATHERING)) {
@@ -181,7 +181,6 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleUnexpectedElement(next);
 			}
 		}
-		// TODO handle missing end element
 		throw new IllegalStateException("Specimen type has no closing tag"); 
 	}
 
@@ -197,7 +196,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			this.fireWarningEvent(String.format(message, text), parentEvent, 4);
 		}
 		
-		if (makeFotgSpecimenType(state, collectionAndType, facade, name, parentEvent)){
+		if (makeFotgSpecimenType(state, collectionAndType, facade, name, parentEvent) || state.getConfig().isUseFotGSpecimenTypeCollectionAndTypeOnly()){
 			return;
 		}else{
 			// remove brackets
@@ -225,12 +224,21 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	
 
 	private Pattern fotgTypePattern = null;
+	/**
+	 * Implemented for Flora of the Guyanas this may include duplicated code from similar places
+	 * @param state
+	 * @param collectionAndTypeOrig
+	 * @param facade
+	 * @param name
+	 * @param parentEvent
+	 * @return
+	 */
 	private boolean makeFotgSpecimenType(MarkupImportState state, final String collectionAndTypeOrig, DerivedUnitFacade facade, NonViralName<?> name, XMLEvent parentEvent) {
 		String collectionAndType = collectionAndTypeOrig;
 		
 		String notDesignatedRE = "not\\s+designated";
 		String designatedByRE = "\\s*\\(((designated\\s+by\\s+|according\\s+to\\s+)[^\\)]+|here\\s+designated)\\)";
-		String typesRE = "(holotype|isotypes?|neotype|isoneotype|lectotype|isolectotype|typ\\.\\scons\\.,?)";
+		String typesRE = "(holotype|isotypes?|neotype|isoneotype|syntype|lectotype|isolectotypes?|typ\\.\\scons\\.,?)";
 		String collectionRE = "[A-Z\\-]{1,5}!?";
 		String collectionsRE = String.format("%s(,\\s+%s)*",collectionRE, collectionRE);
 		String addInfoRE = "(not\\s+seen|(presumed\\s+)?destroyed)";
@@ -276,6 +284,8 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					matcher = singleTypePattern.matcher(collectionAndType);
 				}
 				
+				List<SpecimenTypeDesignation> designations = new ArrayList<SpecimenTypeDesignation>();
+				
 				//single types
 				for (String singleTypeOrig : singleTypes){
 					String singleType = singleTypeOrig;
@@ -300,7 +310,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 					
 					//collection
-					Pattern collectionPattern = Pattern.compile("^" + collectionRE);
+					Pattern collectionPattern = Pattern.compile("^" + collectionsRE);
 					matcher = collectionPattern.matcher(singleType);
 					String[] collectionStrings = new String[0];
 					if (matcher.find()){
@@ -311,9 +321,17 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					}
 					
 					//addInfo
+					if (!singleType.isEmpty() && singleType.startsWith(", ")){
+						singleType = singleType.substring(2);
+					}
+					
 					boolean notSeen = false;
 					if (singleType.equals("not seen")){
 						singleType = singleType.replace("not seen", "");
+						notSeen = true;
+					}
+					if (singleType.startsWith("not seen, ")){
+						singleType = singleType.replace("not seen, ", "");
 						notSeen = true;
 					}
 					boolean destroyed = false;
@@ -321,16 +339,16 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						destroyed = true;
 						singleType = singleType.replace("destroyed", "");
 					}
-					boolean presumablyDestroyed = false;
-					if (singleType.equals("presumably destroyed")){
-						presumablyDestroyed = true;
-						singleType = singleType.replace("presumably destroyed", "");
+					boolean presumedDestroyed = false;
+					if (singleType.equals("presumed destroyed")){
+						presumedDestroyed = true;
+						singleType = singleType.replace("presumed destroyed", "");
 					}
-					boolean hasAddInfo = notSeen || destroyed || presumablyDestroyed;
+					boolean hasAddInfo = notSeen || destroyed || presumedDestroyed;
 					
 					
 					if (!singleType.isEmpty()){
-						String message = "SingleType could not fully read. Remaining: " + singleType;
+						String message = "SingleType was not fully read. Remaining: " + singleType + ". Original singleType was: " + singleTypeOrig;
 						fireWarningEvent(message, parentEvent, 6);
 						System.out.println(message);
 					}
@@ -342,38 +360,59 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 							DerivedUnit unit = isFirst ? facade.innerDerivedUnit()
 									: facade.addDuplicate(collection, null, null, null, null);
 							SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
+							designations.add(desig);
 							desig.setTypeSpecimen(unit);
 							desig.setTypeStatus(typeStatus);
 							handleSpecimenTypeAddInfo(state, notSeen, destroyed,
-									presumablyDestroyed, desig);
+									presumedDestroyed, desig);
 							name.addTypeDesignation(desig, true);
+							isFirst = false;
 						}
-					}else if (hasAddInfo){
+					}else if (hasAddInfo){  //handle addInfo if no collection data available
 						SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
+						designations.add(desig);
+						desig.setTypeStatus(typeStatus);
 						handleSpecimenTypeAddInfo(state, notSeen, destroyed,
-								presumablyDestroyed, desig);
+								presumedDestroyed, desig);
 						name.addTypeDesignation(desig, true);
 					}else{
 						fireWarningEvent("No type designation could be created as collection info was not recognized", parentEvent, 4);
 					}
-					
-					
-					
-					
 				}
 				
 				if (designatedBy != null){
-					//TODO
-					fireWarningEvent("Designated by not yet implemented: " + designatedBy, parentEvent, 4);
+					if (designations.size() != 1){
+						fireWarningEvent("Size of type designations is not exactly 1, which is expected for 'designated by'", parentEvent, 2);
+					}
+					for (SpecimenTypeDesignation desig : designations){
+						if (designatedBy.startsWith("designated by")){
+							String titleCache = designatedBy.replace("designated by", "").trim();
+							Reference<?> reference = ReferenceFactory.newGeneric();
+							reference.setTitleCache(titleCache, true);
+							desig.setCitation(reference);
+							//in future we could also try to parse it automatically
+							fireWarningEvent("MANUALLY: Designated by should be parsed manually: " + titleCache, parentEvent, 1);
+						}else if (designatedBy.equals("designated here")){
+							Reference<?> ref = state.getConfig().getSourceReference();
+							desig.setCitation(ref);
+							fireWarningEvent("MANUALLY: Microcitation should be added to 'designated here", parentEvent, 1);
+						}else if (designatedBy.startsWith("according to")){
+							String annotationStr = designatedBy.replace("according to", "").trim();
+							Annotation annotation = Annotation.NewInstance(annotationStr, AnnotationType.EDITORIAL(), Language.ENGLISH());
+							desig.addAnnotation(annotation);
+						}else{
+							fireWarningEvent("Designated by does not match known pattern: " + designatedBy, parentEvent, 6);
+						}
+					}
 				}
-				
-				
 			}else{
 				fireWarningEvent("CollectionAndType unexpectedly not matching: " + collectionAndTypeOrig, parentEvent, 6);
 			}
 			return true;
 		}else{
-			System.out.println("NO MATCH: " + collectionAndType);
+			if (state.getConfig().isUseFotGSpecimenTypeCollectionAndTypeOnly()){
+				fireWarningEvent("NO MATCH: " + collectionAndTypeOrig, parentEvent, 4);
+			}
 			return false;
 		}
 		
@@ -402,11 +441,11 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	/**
 	 * @param notSeen
 	 * @param destroyed
-	 * @param presumablyDestroyed
+	 * @param presumedDestroyed
 	 * @param desig
 	 */
 	private void handleSpecimenTypeAddInfo(MarkupImportState state, boolean notSeen, boolean destroyed,
-			boolean presumablyDestroyed, SpecimenTypeDesignation desig) {
+			boolean presumedDestroyed, SpecimenTypeDesignation desig) {
 		if (notSeen){
 			UUID uuidNotSeenMarker = MarkupTransformer.uuidNotSeen;
 			MarkerType notSeenMarkerType = getMarkerType(state, uuidNotSeenMarker, "Not seen", "Not seen", null, null);
@@ -421,7 +460,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			desig.addMarker(marker);
 			fireWarningEvent("'destroyed' not yet fully implemented", "handleSpecimenTypeAddInfo", 4);
 		}
-		if (presumablyDestroyed){
+		if (presumedDestroyed){
 			Annotation annotation = Annotation.NewInstance("presumably destroyed", Language.ENGLISH());
 			annotation.setAnnotationType(AnnotationType.EDITORIAL());
 			desig.addAnnotation(annotation);
@@ -575,6 +614,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			fireUnexpectedEvent(next, 0);
 		}
 		
+		if (isMyEndingElement(next, parent)){
+			return;  //in case we have a completely empty element
+		}
 		next = readNoWhitespace(reader);
 		if (isMyEndingElement(next, parent)){
 			return;

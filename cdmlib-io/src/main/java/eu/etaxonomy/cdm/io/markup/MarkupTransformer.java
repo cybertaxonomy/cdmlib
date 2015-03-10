@@ -117,6 +117,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidFeaturePlaceholder = UUID.fromString("89568794-375e-4a02-b75d-bd65601fb877");
 	public static final UUID uuidDestroyed = UUID.fromString("50d8b8c9-60e7-4efd-8b30-dec124ab9059");
 	public static final UUID uuidNotSeen = UUID.fromString("90241156-4fd0-4370-aeca-16c573fd0fa9");
+	public static final UUID uuidLost = UUID.fromString("90241156-4fd0-4370-aeca-16c573fd0fa9");
 	
 	
 	//identifier type uuids
