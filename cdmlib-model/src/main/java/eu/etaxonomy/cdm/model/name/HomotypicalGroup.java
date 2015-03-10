@@ -127,6 +127,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	public void addTypifiedName(TaxonNameBase typifiedName) {
 		if (typifiedName != null){
 			typifiedNames.add(typifiedName);
+			//if (typifiedName.getHomotypicalGroup() != null && !typifiedName.getHomotypicalGroup().equals(this))
 			typifiedName.setHomotypicalGroup(this);
 		}
 	}
@@ -137,9 +138,12 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @param  taxonBase	the taxon name which should be removed from the corresponding set
 	 * @see    				#addTypifiedName(TaxonNameBase)
 	 */
-	public void removeTypifiedName(TaxonNameBase typifiedName) {
-		HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
-		typifiedName.setHomotypicalGroup(newHomotypicalGroup);
+	public void removeTypifiedName(TaxonNameBase typifiedName, boolean removeGroup) {
+		if (removeGroup){
+			HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
+			typifiedName.setHomotypicalGroup(newHomotypicalGroup);
+		}
+		
 		typifiedNames.remove(typifiedName);	
 	}
 
@@ -406,11 +410,16 @@ public class HomotypicalGroup extends AnnotatableEntity {
         if (typifiedNames.size() < 2){return;}
 //        
     	//Add new relations
-        for (TaxonNameBase name : typifiedNames) {
+        Set<TaxonNameBase> typified = new HashSet<TaxonNameBase>();
+        for (TaxonNameBase name : typifiedNames){
+        	typified.add(name);
+        }
+        for (TaxonNameBase name : typified) {
     		if (!name.equals(basionymName)) {
 		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered);
 			}
     	}
+        typifiedNames= typified;
     }
     
     /**

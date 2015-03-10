@@ -476,7 +476,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
             if(removeSynonymNameFromHomotypicalGroup){
                 HomotypicalGroup synHG = synonym.getName().getHomotypicalGroup();
                 if (synHG.getTypifiedNames().size() > 1){
-                    synHG.removeTypifiedName(synonym.getName());
+                    synHG.removeTypifiedName(synonym.getName(), false);
                 }
             }
         }
