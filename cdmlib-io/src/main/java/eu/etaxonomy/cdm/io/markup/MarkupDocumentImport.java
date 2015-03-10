@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -191,6 +192,10 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 	
 	public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		return super.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
+	public MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
+		return super.getMarkerType(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
 	public TextData getFeaturePlaceholder(MarkupImportState state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {

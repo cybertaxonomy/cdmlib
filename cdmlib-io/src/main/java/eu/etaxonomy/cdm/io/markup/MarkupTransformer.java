@@ -101,9 +101,6 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	
 	
-	
-	
-	
 	//extension type uuids
 	public static final UUID uuidTaxonTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
 	public static final UUID uuidWriterExtension = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
@@ -118,6 +115,9 @@ public class MarkupTransformer extends InputTransformerBase {
 //	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
 	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
 	public static final UUID uuidFeaturePlaceholder = UUID.fromString("89568794-375e-4a02-b75d-bd65601fb877");
+	public static final UUID uuidDestroyed = UUID.fromString("50d8b8c9-60e7-4efd-8b30-dec124ab9059");
+	public static final UUID uuidNotSeen = UUID.fromString("90241156-4fd0-4370-aeca-16c573fd0fa9");
+	
 	
 	//identifier type uuids
 	public static final UUID uuidIdentTypeAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
@@ -1324,6 +1324,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
+		}else if (key.equalsIgnoreCase("not seen")){return uuidNotSeen;
+		}else if (key.equalsIgnoreCase("destroyed")){return uuidDestroyed;
 		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
