@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.name.HomotypicalGroupDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -308,7 +310,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
                Integer pageNumber, List<String> propertyPaths) {
         boolean doCount = false;
-        Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
+        Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false);
         if (query != null){
             List<Taxon> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -823,13 +825,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     private Query prepareTaxaByCommonName(String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
+            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount, boolean doNotReturnFullEntities){
 
-        String what;
-        if(doCount){
-            what = "select  count(t)";
-        } else {
-            what = "select  t";
+        String what = "select";
+        if (doNotReturnFullEntities){
+        	what += " t.uuid, t.titleCache ";
+        }else {
+        	what += (doCount ? " count(t)": " t");
         }
         String hql= what + " from Taxon t " +
         "join t.descriptions d "+
@@ -1016,8 +1018,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
         }
-
-        return super.delete(taxonBase);
+       
+       return super.delete(taxonBase);
+      
     }
 
     @Override
@@ -1868,7 +1871,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas) {
         boolean doCount = true;
-        Query query = prepareTaxaByCommonName(searchString, classification, matchMode, namedAreas, null, null, doCount);
+        Query query = prepareTaxaByCommonName(searchString, classification, matchMode, namedAreas, null, null, doCount, false);
         if (query != null && !query.list().isEmpty()) {
             Object o = query.uniqueResult();
             if(o != null) {
@@ -2149,12 +2152,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set namedAreas) {
 		List<UuidAndTitleCache<IdentifiableEntity>> result = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
-		List<TaxonBase> taxa = getTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null);
-		if (!taxa.isEmpty()){
-			for (TaxonBase taxon:taxa){
-				result.add(new UuidAndTitleCache<IdentifiableEntity>(taxon.getUuid(), taxon.getTitleCache()));
-			}
-		}
+		 Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
+	        if (query != null){
+	            result = query.list();
+	            
+	            return result;
+	        }
+	       
 		
 		return result;
 	}

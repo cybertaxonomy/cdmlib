@@ -174,7 +174,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		Set<CdmBase> result = new HashSet<CdmBase>();
+		if (referencedCdmBase == null) {
+			return null;
+		}
 		try {
+			
 			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 			
