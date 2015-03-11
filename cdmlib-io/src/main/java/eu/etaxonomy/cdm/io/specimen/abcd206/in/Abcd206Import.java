@@ -1573,22 +1573,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 
     private TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, Abcd206ImportState state, int unitIndexInAbcdFile){
-        NonViralName taxonName = null;
+        TaxonNameBase<?, ?> taxonName = null;
         Abcd206ImportConfigurator config = state.getConfig();
         if(config.isIgnoreAuthorship()){
             NonViralName<?> parsedName = parseScientificName(scientificName);
             if(parsedName!=null){
                 String nameCache = parsedName.getNameCache();
                 List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
-                return getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
+                taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
             }
         }
-        if(config.isReuseExistingTaxaWhenPossible()){
+        else if(config.isReuseExistingTaxaWhenPossible()){
             //search for existing names
             List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
-            return getBestMatchingName(scientificName, names);
+            taxonName =  getBestMatchingName(scientificName, names);
         }
-        if (config.isParseNameAutomatically()){
+        else if (config.isParseNameAutomatically()){
             taxonName = parseScientificName(scientificName);
         }
         else {
@@ -1602,39 +1602,44 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             taxonName = NonViralName.NewInstance(rank);
             taxonName.setFullTitleCache(scientificName,true);
             taxonName.setTitleCache(scientificName, true);
+            report.addName(taxonName);
+            logger.info("Created new taxon name "+taxonName);
         }
         save(taxonName, state);
-        report.addName(taxonName);
-        logger.info("Created new taxon name "+taxonName);
         return taxonName;
     }
 
     private TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names){
         for (TaxonNameBase taxonNameBase : names) {
             if(names.size()>0){
-                //prefer names with accepted taxa
+                //check accepted taxa
                 List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<TaxonNameBase>();
                 for (TaxonNameBase nonViralName : names) {
                     if(!nonViralName.getTaxa().isEmpty()){
                         namesWithAcceptedTaxa.add(nonViralName);
                     }
                 }
-                if(namesWithAcceptedTaxa.size()>0){
-                    TaxonNameBase firstNameWithAcceptedTaxon = namesWithAcceptedTaxa.iterator().next();
+                if(namesWithAcceptedTaxa.size()>0){//check classification
                     if(namesWithAcceptedTaxa.size()>1){
-                        String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithAcceptedTaxon+" was chosen for "+derivedUnitBase;
+                        //not decidable
+                        String message = String.format("More than one taxon name was found for %s!"
+                                , scientificName);
                         report.addInfoMessage(message);
                         logger.warn(message);
+                        return null;
                     }
-                    return firstNameWithAcceptedTaxon;
+                    return namesWithAcceptedTaxa.iterator().next();
                 }
                 //no names with accepted taxa found
                 report.addInfoMessage("No accepted taxa found for "+scientificName);
                 TaxonNameBase firstNameWithoutAcceptedTaxon = names.iterator().next();
-                if(names.size()>1){
-                    String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithoutAcceptedTaxon+" was chosen for "+derivedUnitBase;
-                    report.addInfoMessage(message);
-                    logger.warn(message);
+                if(names.size()>0){
+                    if(names.size()>1){
+                        String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithoutAcceptedTaxon+" was chosen for "+derivedUnitBase;
+                        report.addInfoMessage(message);
+                        logger.warn(message);
+                        return null;
+                    }
                 }
                 return firstNameWithoutAcceptedTaxon;
             }
