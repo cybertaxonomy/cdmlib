@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -126,8 +125,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 //        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
     }
 
-  /*  @Test
-    @Ignore
+    @Test
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
@@ -144,6 +142,6 @@ public class GbifQueryServiceWrapperTest extends TestCase{
             fail(e.getMessage());
         }
 
-    }*/
+    }
 
 }
