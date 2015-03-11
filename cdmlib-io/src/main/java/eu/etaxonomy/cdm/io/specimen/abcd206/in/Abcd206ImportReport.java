@@ -40,6 +40,7 @@ public class Abcd206ImportReport {
     private final Map<Taxon, List<DerivedUnit>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<DerivedUnit>>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
+    private final List<String> infoMessages = new ArrayList<String>();
 
     public void addTaxon(Taxon taxon){
         createdTaxa.add(taxon);
@@ -80,17 +81,17 @@ public class Abcd206ImportReport {
             out = System.out;
         }
         out.println("++++++++Import Report+++++++++");
-        out.println("---Created Taxon Names---");
+        out.println("---Created Taxon Names ("+createdNames.size()+")---");
         for (TaxonNameBase<?, ?> taxonName : createdNames) {
             out.println(taxonName.getTitleCache());
         }
         out.println("\n");
-        out.println("---Created Taxa---");
+        out.println("---Created Taxa ("+createdTaxa.size()+")---");
         for (Taxon taxon : createdTaxa) {
             out.println(taxon.getTitleCache());
         }
         out.println("\n");
-        out.println("---Created Taxon Nodes---");
+        out.println("---Created Taxon Nodes ("+createdTaxonNodes.size()+")---");
         for (TaxonNode taxonNode : createdTaxonNodes) {
             String nodeString = taxonNode.toString();
             if(taxonNode.getTaxon()!=null){
@@ -109,12 +110,24 @@ public class Abcd206ImportReport {
         for(Entry<Taxon, List<DerivedUnit>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
             List<DerivedUnit> specimens = entry.getValue();
-            out.println(taxon.getTitleCache());
+            out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
             for (DerivedUnit derivedUnit : specimens) {
                 out.println("\t- "+derivedUnit.getTitleCache());
             }
         }
+        out.println("\n");
+        out.println("---Info messages---");
+        for(String message:infoMessages){
+            out.println(message);
+        }
         out.close();
+    }
+
+    /**
+     * @param message
+     */
+    public void addInfoMessage(String message) {
+        infoMessages.add(message);
     }
 
 }

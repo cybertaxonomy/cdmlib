@@ -104,6 +104,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     //TODO make all fields ABCD206ImportState variables
     private Classification classification = null;
+    private Classification defaultClassification = null;
     private Reference<?> ref = null;
 
     private Abcd206DataHolder dataHolder;
@@ -1579,25 +1580,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(parsedName!=null){
                 String nameCache = parsedName.getNameCache();
                 List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
-                if(names.size()>0){
-                    if(names.size()>1){
-                        logger.warn("More than one taxon name was found for "+scientificName+"!");
-                        logger.warn("The first one found was chosen.");
-                    }
-                    return names.iterator().next();
-                }
+                return getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
             }
         }
         if(config.isReuseExistingTaxaWhenPossible()){
             //search for existing names
             List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
-            if(names.size()>0){
-                if(names.size()>1){
-                    logger.warn("More than one taxon name was found for "+scientificName+"!");
-                    logger.warn("The first one found was chosen.");
-                }
-                return names.iterator().next();
-            }
+            return getBestMatchingName(scientificName, names);
         }
         if (config.isParseNameAutomatically()){
             taxonName = parseScientificName(scientificName);
@@ -1620,14 +1609,50 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         return taxonName;
     }
 
+    private TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names){
+        for (TaxonNameBase taxonNameBase : names) {
+            if(names.size()>0){
+                //prefer names with accepted taxa
+                List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<TaxonNameBase>();
+                for (TaxonNameBase nonViralName : names) {
+                    if(!nonViralName.getTaxa().isEmpty()){
+                        namesWithAcceptedTaxa.add(nonViralName);
+                    }
+                }
+                if(namesWithAcceptedTaxa.size()>0){
+                    TaxonNameBase firstNameWithAcceptedTaxon = namesWithAcceptedTaxa.iterator().next();
+                    if(namesWithAcceptedTaxa.size()>1){
+                        String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithAcceptedTaxon+" was chosen for "+derivedUnitBase;
+                        report.addInfoMessage(message);
+                        logger.warn(message);
+                    }
+                    return firstNameWithAcceptedTaxon;
+                }
+                //no names with accepted taxa found
+                report.addInfoMessage("No accepted taxa found for "+scientificName);
+                TaxonNameBase firstNameWithoutAcceptedTaxon = names.iterator().next();
+                if(names.size()>1){
+                    String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithoutAcceptedTaxon+" was chosen for "+derivedUnitBase;
+                    report.addInfoMessage(message);
+                    logger.warn(message);
+                }
+                return firstNameWithoutAcceptedTaxon;
+            }
+        }
+        return null;
+    }
+
     private Taxon getOrCreateTaxonForName(TaxonNameBase<?, ?> taxonNameBase, Abcd206ImportState state){
         Set<Taxon> acceptedTaxa = taxonNameBase.getTaxa();
         if(acceptedTaxa.size()>0){
+            Taxon firstAcceptedTaxon = acceptedTaxa.iterator().next();
             if(acceptedTaxa.size()>1){
-                logger.warn("More than one accepted taxon was found for taxon name: "+taxonNameBase.getTitleCache()+"!");
-                logger.warn("the first one was chosen");
+                String message = "More than one accepted taxon was found for taxon name: "
+                        + taxonNameBase.getTitleCache() + "!\n" + firstAcceptedTaxon + "was chosen for "+derivedUnitBase;
+                report.addInfoMessage(message);
+                logger.warn(message);
             }
-            return acceptedTaxa.iterator().next();
+            return firstAcceptedTaxon;
         }
         else{
             Set<TaxonBase> taxonAndSynonyms = taxonNameBase.getTaxonBases();
@@ -1636,8 +1661,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
                     Set<Taxon> acceptedTaxaOfSynonym = synonym.getAcceptedTaxa();
                     if(acceptedTaxaOfSynonym.size()!=1){
-                        logger.warn("No accepted taxa could be found for taxon name: "+taxonNameBase.getTitleCache()+"!");
-                        logger.warn("Either it is a pro parte synonym or has no accepted taxa");
+                        String message = "No accepted taxa could be found for taxon name: "
+                                + taxonNameBase.getTitleCache()
+                                + "!\nEither it is a pro parte synonym or has no accepted taxa";
+                        report.addInfoMessage(message);
+                        logger.warn(message);
                     }
                     else{
                         return acceptedTaxaOfSynonym.iterator().next();
@@ -2225,6 +2253,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
+    }
+
+    /**
+     * Gets the default classification. If <code>null</code> creates it
+     * @param state the current import state
+     * @return the default classification
+     */
+    public Classification getDefaultClassification(Abcd206ImportState state) {
+        if(defaultClassification==null){
+            defaultClassification = Classification.NewInstance("Default Classification ABCD", ref, Language.DEFAULT());
+            save(defaultClassification, state);
+        }
+        return defaultClassification;
     }
 
 }
