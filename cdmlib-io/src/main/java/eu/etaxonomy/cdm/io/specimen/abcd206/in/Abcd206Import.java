@@ -1575,18 +1575,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, Abcd206ImportState state, int unitIndexInAbcdFile){
         TaxonNameBase<?, ?> taxonName = null;
         Abcd206ImportConfigurator config = state.getConfig();
-        if(config.isIgnoreAuthorship()){
-            NonViralName<?> parsedName = parseScientificName(scientificName);
-            if(parsedName!=null){
-                String nameCache = parsedName.getNameCache();
-                List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
-                taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
+        if(config.isReuseExistingTaxaWhenPossible()){
+            if(config.isIgnoreAuthorship()){
+                NonViralName<?> parsedName = parseScientificName(scientificName);
+                if(parsedName!=null){
+                    String nameCache = parsedName.getNameCache();
+                    List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
+                    taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
+                }
             }
-        }
-        else if(config.isReuseExistingTaxaWhenPossible()){
-            //search for existing names
-            List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
-            taxonName =  getBestMatchingName(scientificName, names);
+            else {
+                //search for existing names
+                List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
+                taxonName = getBestMatchingName(scientificName, names);
+            }
         }
         else if (config.isParseNameAutomatically()){
             taxonName = parseScientificName(scientificName);
@@ -1610,40 +1612,42 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
     private TaxonNameBase<?, ?> getBestMatchingName(String scientificName, java.util.Collection<TaxonNameBase> names){
-        for (TaxonNameBase taxonNameBase : names) {
-            if(names.size()>0){
-                //check accepted taxa
-                List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<TaxonNameBase>();
-                for (TaxonNameBase nonViralName : names) {
-                    if(!nonViralName.getTaxa().isEmpty()){
-                        namesWithAcceptedTaxa.add(nonViralName);
-                    }
-                }
-                if(namesWithAcceptedTaxa.size()>0){//check classification
-                    if(namesWithAcceptedTaxa.size()>1){
-                        //not decidable
-                        String message = String.format("More than one taxon name was found for %s!"
-                                , scientificName);
-                        report.addInfoMessage(message);
-                        logger.warn(message);
-                        return null;
-                    }
-                    return namesWithAcceptedTaxa.iterator().next();
-                }
-                //no names with accepted taxa found
-                report.addInfoMessage("No accepted taxa found for "+scientificName);
-                TaxonNameBase firstNameWithoutAcceptedTaxon = names.iterator().next();
-                if(names.size()>0){
-                    if(names.size()>1){
-                        String message = "More than one taxon name was found for "+scientificName+"!\n"+firstNameWithoutAcceptedTaxon+" was chosen for "+derivedUnitBase;
-                        report.addInfoMessage(message);
-                        logger.warn(message);
-                        return null;
-                    }
-                }
-                return firstNameWithoutAcceptedTaxon;
+        List<TaxonNameBase> namesWithAcceptedTaxa = new ArrayList<TaxonNameBase>();
+        for (TaxonNameBase name : names) {
+            if(!name.getTaxa().isEmpty()){
+                namesWithAcceptedTaxa.add(name);
             }
         }
+        String message = "More than one taxon name was found for "+scientificName+"!";
+        //check for names with accepted taxa
+        if(namesWithAcceptedTaxa.size()>0){
+            if(namesWithAcceptedTaxa.size()>1){
+                report.addInfoMessage(message);
+                logger.warn(message);
+                return null;
+            }
+            return namesWithAcceptedTaxa.iterator().next();
+        }
+        //no names with accepted taxa found -> check accepted taxa of synonyms
+        List<Taxon> taxaFromSynonyms = new ArrayList<Taxon>();
+        for (TaxonNameBase name : names) {
+            Set<TaxonBase> taxonBases = name.getTaxonBases();
+            for (TaxonBase taxonBase : taxonBases) {
+                if(taxonBase.isInstanceOf(Synonym.class)){
+                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
+                    taxaFromSynonyms.addAll(synonym.getAcceptedTaxa());
+                }
+            }
+        }
+        if(taxaFromSynonyms.size()>0){
+            if(taxaFromSynonyms.size()>1){
+                report.addInfoMessage(message);
+                logger.warn(message);
+                return null;
+            }
+            return taxaFromSynonyms.iterator().next().getName();
+        }
+        report.addInfoMessage("No accepted taxa found for "+scientificName);
         return null;
     }
 
