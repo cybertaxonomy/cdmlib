@@ -109,6 +109,9 @@ public class LookAheadEventReader implements XMLEventReader {
 		reader.close();
 	}
 
+	public boolean previousWasEnd(String name){
+		return hasStartElement(name, -1, 0);
+	}
 	
 	public boolean nextIsStart(String name){
 		return hasStartElement(name, 0, 1);
@@ -126,6 +129,23 @@ public class LookAheadEventReader implements XMLEventReader {
 			
 			XMLEvent ev = cachedEvents.get(i);
 			if (ev.isStartElement() && ev.asStartElement().getName().getLocalPart().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasEndElement(String name, int start, int end){
+		if (end > 0 ){
+			end = 0;
+		}
+		if (-start > usedEvents.size()){
+			start = -cachedEvents.size();
+		}
+		for (int i = start; i < end; i++){
+			
+			XMLEvent ev = cachedEvents.get( cachedEvents.size() + i );
+			if (ev.isEndElement() && ev.asEndElement().getName().getLocalPart().equals(name)){
 				return true;
 			}
 		}

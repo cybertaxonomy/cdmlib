@@ -384,6 +384,11 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					if (designations.size() != 1){
 						fireWarningEvent("Size of type designations is not exactly 1, which is expected for 'designated by'", parentEvent, 2);
 					}
+					designatedBy = designatedBy.trim();
+					if (designatedBy.startsWith("(") && designatedBy.endsWith(")") ){
+						designatedBy = designatedBy.substring(1, designatedBy.length() - 1);
+					}
+					
 					for (SpecimenTypeDesignation desig : designations){
 						if (designatedBy.startsWith("designated by")){
 							String titleCache = designatedBy.replace("designated by", "").trim();
@@ -563,10 +568,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					//do nothing
 				}else if (state.isSpecimenType() && charIsSimpleType(text) ){
 						//do nothing
+				}else if ( (text.equals("=") || text.equals("(") ) && reader.nextIsStart(ALTERNATIVE_FIELD_NUM)){
+					//do nothing
+				}else if ( (text.equals(").") || text.equals(")")) && reader.previousWasEnd(ALTERNATIVE_FIELD_NUM)){
+					//do nothing
 				}else if ( charIsOpeningOrClosingBracket(text) ){
 					//for now we don't do anything, however in future brackets may have semantics
-				}else if ( text.equals("=") && reader.nextIsStart(ALTERNATIVE_FIELD_NUM)){
-					//do nothing
 				}else{
 					//TODO
 					String message = "Unrecognized text: %s";
@@ -633,13 +640,14 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			List<Collection> list = this.docImport.getCollectionService().searchByCode(code);
 			if (list.size() == 1){
 				collection = list.get(0);
-			}else{
+			}else if (list.size() > 1){
 				fireWarningEvent("More then one occurrence for collection " + code +  " in database. Collection not reused" , "", 1);
 			}
 			
 			if (collection == null){
 				collection = Collection.NewInstance();
 				collection.setCode(code);
+				this.docImport.getCollectionService().saveOrUpdate(collection);
 			}
 			state.putCollectionByCode(code, collection);
 		}

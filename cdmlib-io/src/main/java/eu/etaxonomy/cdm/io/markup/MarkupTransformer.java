@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -121,7 +122,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	
 	//identifier type uuids
-	public static final UUID uuidIdentTypeAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
+	public static final UUID uuidIdentTypeAlternativeFieldNumber = DefinedTerm.uuidAlternativeFieldNumber;
 	
 	
 	//named ared level uuids
@@ -1283,7 +1284,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		//guianas
 		}else if (key.equalsIgnoreCase("extraxylary sclerenchyma")){return uuidExtraxylarySclerenchyma;
 		
-		}else if (key.equalsIgnoreCase("wood specimens")){return uuidExtraxylarySclerenchyma;
+		}else if (key.equalsIgnoreCase("wood specimens")){return uuidWoodSpecimens;
 		}else if (key.equalsIgnoreCase("FAMILY DESCRIPTION")){return uuidFamilyDescription;
 		}else if (key.equalsIgnoreCase("TIMBERS AND THEIR PROPERTIES")){return uuidTimbersAndTheirProperties;
 		}else if (key.equalsIgnoreCase("FAMILY CHARACTERISTICS")){return uuidFamilyCharacteristics;
