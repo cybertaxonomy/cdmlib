@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
 
 /**
@@ -56,42 +57,26 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		String newColumnName;
 		String oldColumnName;
 		String query;
+		String columnNames[];
+		String referencedTables[];
+		String columnTypes[];
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
-		//DnaMarker in Primer
-		//TODO H2 / PostGreSQL / SQL Server
-		stepName = "Add foreign key for Primer.dnaMarker";
-		tableName = "Primer";
-		newColumnName = "dnaMarker_id";
-		boolean notNull = false;
-		String referencedTable = "DefinedTermBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		
+		//IntextReference
+		stepName = "Add IntextReference table";
+		tableName = "IntextReference";
+		columnNames = new String[]{"startpos","endpos","agent_id","annotation_id",
+				"languagestring_id","media_id","occurrence_id","reference_id","taxon_id","taxonname_id"};
+		referencedTables = new String[]{null, null, "AgentBase","Annotation","LanguageString","Media",
+				"SpecimenOrObservationBase","Reference","TaxonBase","TaxonNameBase"};
+		columnTypes = new String[]{"int","int","int","int","int","int","int","int","int","int"};
+		step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, 
+				columnTypes, referencedTables, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//Institution for DerivationEvent
-		stepName = "Add foreign key for DerivationEvent.institution";
-		tableName = "DerivationEvent";
-		newColumnName = "institution_id";
-		referencedTable = "AgentBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-
-		//Institution for Amplication
-		stepName = "Add foreign key for Amplification.institution";
-		tableName = "Amplification";
-		newColumnName = "institution_id";
-		referencedTable = "AgentBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
 		
-		//TaxonName for DeterminationEvent
-		stepName = "Add foreign key for DeterminationEvent.taxonName";
-		tableName = "DeterminationEvent";
-		newColumnName = "taxonname_id";
-		referencedTable = "TaxonNameBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
 
 		
 		return stepList;

@@ -320,8 +320,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
         }else{
             languageString = LanguageString.NewInstance(text, language);
         }
-        LanguageString result = this.multilanguageText.put(language , languageString);
-        return (result == null ? null : result);
+        this.multilanguageText.put(language , languageString);
+        return languageString;
     }
 
 
