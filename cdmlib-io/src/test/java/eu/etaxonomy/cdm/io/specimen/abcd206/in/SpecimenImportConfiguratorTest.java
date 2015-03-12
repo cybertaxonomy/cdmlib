@@ -119,6 +119,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
+	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator);
@@ -140,7 +141,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@Ignore
-	@DataSet(value="../../../BlankDataSet.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2);
 		assertTrue("Return value for import.invoke should be true", result);
