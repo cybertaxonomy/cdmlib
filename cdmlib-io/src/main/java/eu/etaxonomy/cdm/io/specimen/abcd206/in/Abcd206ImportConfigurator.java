@@ -38,6 +38,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 
     private static String sourceReferenceTitle = null;
+    @Deprecated
+    //FIXME what does this do?
     private boolean parseNameAutomatically = false;
     private boolean reuseExistingMetadata = true;
     private String taxonReference = null;
@@ -205,11 +207,11 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         }
         return sourceReference;
     }
-
+    @Deprecated
     public void setParseNameAutomatically(boolean doParsing){
         this.parseNameAutomatically=doParsing;
     }
-
+    @Deprecated
     public boolean isParseNameAutomatically(){
         return this.parseNameAutomatically;
     }

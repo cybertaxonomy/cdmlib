@@ -1575,6 +1575,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private TaxonNameBase<?, ?> getOrCreateTaxonName(String scientificName, Rank rank, Abcd206ImportState state, int unitIndexInAbcdFile){
         TaxonNameBase<?, ?> taxonName = null;
         Abcd206ImportConfigurator config = state.getConfig();
+
+        //check atomised name data for rank
+        NonViralName<?> atomisedTaxonName = null;
+        if (rank==null && unitIndexInAbcdFile>=0 && (dataHolder.atomisedIdentificationList != null || dataHolder.atomisedIdentificationList.size() > 0)) {
+            atomisedTaxonName = setTaxonNameByType(dataHolder.atomisedIdentificationList.get(unitIndexInAbcdFile), scientificName);
+            if(atomisedTaxonName!=null){
+                rank = atomisedTaxonName.getRank();
+            }
+        }
+        if(rank==null){
+            String message = "No rank specified for "+derivedUnitBase+". Assuming species.";
+            report.addInfoMessage(message);
+            logger.warn(message);
+            rank = Rank.SPECIES();
+        }
+
         if(config.isReuseExistingTaxaWhenPossible()){
             if(config.isIgnoreAuthorship()){
                 NonViralName<?> parsedName = parseScientificName(scientificName);
@@ -1592,14 +1608,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         else if (config.isParseNameAutomatically()){
             taxonName = parseScientificName(scientificName);
-        }
-        else {
-            //check for atomised name data
-            if (unitIndexInAbcdFile>=0 && (dataHolder.atomisedIdentificationList != null || dataHolder.atomisedIdentificationList.size() > 0)) {
-                taxonName = setTaxonNameByType(dataHolder.atomisedIdentificationList.get(unitIndexInAbcdFile), scientificName);
+            if(taxonName!=null){
+                report.addName(taxonName);
+                logger.info("Created new taxon name "+taxonName);
             }
         }
-        if(taxonName==null){
+        if(taxonName==null && atomisedTaxonName!=null){
+            taxonName = atomisedTaxonName;
+            report.addName(taxonName);
+            logger.info("Created new taxon name "+taxonName);
+        }
+        else if(taxonName==null){
             //create new taxon name
             taxonName = NonViralName.NewInstance(rank);
             taxonName.setFullTitleCache(scientificName,true);
