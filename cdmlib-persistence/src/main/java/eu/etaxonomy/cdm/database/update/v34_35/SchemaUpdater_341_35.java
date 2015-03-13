@@ -15,11 +15,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableCreator;
+import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
 
 /**
@@ -60,6 +60,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		String columnNames[];
 		String referencedTables[];
 		String columnTypes[];
+//		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
@@ -76,7 +77,37 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				columnTypes, referencedTables, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//Drop EntityValidationResult and EntityConstraintViolation
+		stepName = "Drop EntityConstraintViolation table";
+		tableName = "EntityConstraintViolation";
+		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
+		stepList.add(step);
 		
+		stepName = "Drop EntityValidationResult table";
+		tableName = "EntityValidationResult";
+		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
+		stepList.add(step);
+		
+        //... and create new entity validation and 
+        stepName = "Create EntityValidation table";
+        tableName = "EntityValidation";
+        columnNames = new String[]{"crudeventtype","userfriendlydescription","userfriendlytypename",
+                "validatedentityclass","validatedentityid","validatedentityuuid, validationcount, status"};
+        columnTypes = new String[]{"string_255","string_255","string_255","string_255","int","string_36","int","string_20"};
+        referencedTables = new String[]{null,null,null,null,null,null,null,null};
+        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //... constraint violation
+		stepName = "Create EntityConstraintViolation table";
+        tableName = "EntityConstraintViolation";
+        columnNames = new String[]{"invalidvalue","message","propertypath","severity","userfriendlyfieldname",
+        		"validationgroup","validator","entityvalidation_id"};
+        columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","string_255","int"};
+        referencedTables = new String[]{null,null,null,null,null,null,null,"EntityValidationResult"};
+        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
 
 		
 		return stepList;
