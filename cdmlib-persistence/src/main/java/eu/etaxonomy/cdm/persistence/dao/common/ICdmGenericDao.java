@@ -208,6 +208,16 @@ public interface ICdmGenericDao {
 
 	public void createFullSampleData();
 
+
+    /**
+     * Returns the number of objects belonging to a certain class being stored
+     * in the database
+     * @param type
+     * @return
+     */
+    public int count(Class<? extends CdmBase> type);
+
+
 	   /**
      * Returns a sublist of CdmBase instances stored in the database. A maximum
      * of 'limit' objects are returned, starting at object with index 'start'.
@@ -225,5 +235,6 @@ public interface ICdmGenericDao {
      * @throws DataAccessException
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

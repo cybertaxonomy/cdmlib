@@ -297,9 +297,16 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         genericDao.update(cdmBase);
     }
 
+    @Override
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
         return genericDao.list(type,limit, start, orderHints,propertyPaths);
     }
+
+    @Override
+    public <S extends CdmBase> int count(Class<S> type) {
+        return genericDao.count(type);
+    }
+
 
 
 }

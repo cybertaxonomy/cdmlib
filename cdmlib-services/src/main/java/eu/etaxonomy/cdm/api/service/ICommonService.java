@@ -193,6 +193,15 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
     void updateEntity(CdmBase cdmBase);
 
 
+
+    /**
+     * Returns the number of objects that belong to a certain class.
+     * @param type the CdmBase class
+     * @return the number of objects in the database
+     */
+    public <S extends CdmBase> int count(Class<S> type);
+
+
     /**
      * Generic method to retrieve a list of objects. Use only if no specific service class
      * can be used.
@@ -205,5 +214,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @return
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }
