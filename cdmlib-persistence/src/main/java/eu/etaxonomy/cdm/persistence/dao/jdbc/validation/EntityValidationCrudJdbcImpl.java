@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 /**
  * @author ayco_holleman
  * @date 16 jan. 2015
- * 
+ *
  */
 @Repository
 public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
@@ -49,7 +49,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 	private static final String SQL_INSERT_VALIDATION_RESULT = "INSERT INTO entityvalidation"
 			+ "(id, created, uuid,  crudeventtype, validatedentityclass, validatedentityid,"
 			+ "validatedentityuuid, userfriendlydescription, userfriendlytypename, validationcount,"
-			+ "lastmodified, status, createdby_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "updated, status, createdby_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final int vr_id = 1;
 	private static final int vr_created = 2;
@@ -61,7 +61,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 	private static final int vr_userfriendlydescription = 8;
 	private static final int vr_userfriendlytypename = 9;
 	private static final int vr_validationcount = 10;
-	private static final int vr_lastmodified = 11;
+	private static final int vr_updated = 11;
 	private static final int vr_status = 12;
 	private static final int vr_createdby_id = 13;
 
@@ -219,7 +219,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 			stmt.setString(vr_userfriendlydescription, validationResult.getUserFriendlyDescription());
 			stmt.setString(vr_userfriendlytypename, validationResult.getUserFriendlyTypeName());
 			stmt.setInt(vr_validationcount, 1);
-			stmt.setDate(vr_lastmodified, new Date(validationResult.getCreated().getMillis()));
+			stmt.setDate(vr_updated, new Date(validationResult.getCreated().getMillis()));
 			stmt.setString(vr_status, EntityValidationStatus.IN_PROGRESS.toString());
 			if (validationResult.getCreatedBy() != null) {
 				stmt.setInt(vr_createdby_id, validationResult.getCreatedBy().getId());
@@ -239,7 +239,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 	private static void updateValidationResultRecord(Connection conn, int validationResultId, CRUDEventType crudEventType) throws SQLException
 	{
 		String sql = "UPDATE entityvalidation SET crudeventtype=?, validationcount = validationcount + 1, "
-				+ "lastmodified = ?, status = ? WHERE id=?";
+				+ "updated = ?, status = ? WHERE id=?";
 		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement(sql);

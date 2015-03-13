@@ -131,7 +131,7 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
         result = dao.getEntityValidation("Foo Bar", 100);
         assertNull(result);
     }
-    
+
     @Test
     public void testGetEntityValidations() {
     	List<EntityValidation> results = dao.getEntityValidations();

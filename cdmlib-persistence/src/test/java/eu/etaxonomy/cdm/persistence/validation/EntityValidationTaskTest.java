@@ -68,7 +68,7 @@ public class EntityValidationTaskTest {
 		// Validate
 		Level2ValidationTask task = new Level2ValidationTask(emp, null);
 		task.setValidator(factory.getValidator());
-		Set<ConstraintViolation<ICdmBase>> violations = task.validate();
+		Set<ConstraintViolation<ICdmBase>> violations = task.validateWithErrorHandling();
 
 		Assert.assertEquals("Expecting three validation errors", 2, violations.size());
 
@@ -95,7 +95,7 @@ public class EntityValidationTaskTest {
 		one.setLastName("smith");
 		Level3ValidationTask task = new Level3ValidationTask(one, null);
 		task.setValidator(factory.getValidator());
-		Set<ConstraintViolation<ICdmBase>> violations = task.validate();
+		Set<ConstraintViolation<ICdmBase>> violations = task.validateWithErrorHandling();
 		Assert.assertEquals(violations.size(), 1);
 		// Assert that validation failed where we expected it to fail.
 		Assert.assertEquals(violations.iterator().next().getInvalidValue(), "smith");

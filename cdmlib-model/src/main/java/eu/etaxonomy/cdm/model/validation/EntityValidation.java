@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
 @XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid",
-        "ValidatedEntityClass", "ValidationCount", "LastModified", "UserFriendlyDescription", "UserFriendlyTypeName",
+        "ValidatedEntityClass", "ValidationCount", "Updated", "UserFriendlyDescription", "UserFriendlyTypeName",
         "CrudEventType", "ConstraintViolations" })
 // @formatter:on
 @XmlRootElement(name = "EntityValidation")
@@ -102,7 +102,7 @@ public class EntityValidation extends CdmBase {
         }
         result.setValidationCount(1);
         result.setStatus(EntityValidationStatus.IN_PROGRESS);
-        result.setLastModified(result.getCreated());
+        result.setUpdated(result.getCreated());
         return result;
     }
 
@@ -124,12 +124,12 @@ public class EntityValidation extends CdmBase {
     @XmlElement(name = "ValidationCount")
     private int validationCount;
 
-    @XmlElement(name = "LastModified")
+    @XmlElement(name = "Updated", type = String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Type(type = "dateTimeUserType")
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime lastModified;
+    private DateTime updated;
 
     @XmlElement(name = "UserFriendlyDescription")
     private String userFriendlyDescription;
@@ -187,12 +187,12 @@ public class EntityValidation extends CdmBase {
         this.validationCount = validationCount;
     }
 
-    public DateTime getLastModified() {
-        return lastModified;
+    public DateTime getUpdated() {
+        return updated;
     }
 
-    public void setLastModified(DateTime lastModified) {
-        this.lastModified = lastModified;
+    public void setUpdated(DateTime updated) {
+        this.updated = updated;
     }
 
     @Override
