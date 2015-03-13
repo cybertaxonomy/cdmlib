@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 public class ValidationManager {
 
     private boolean validationEnabled = true;
+    private final boolean batchValidationEnabled = true;
 
     private boolean level2Enabled = false;
     private boolean level3Enabled = false;

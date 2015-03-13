@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
+import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 
@@ -68,6 +69,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
 
     @Override
     public void run() {
+        Thread.currentThread().setPriority(1);
         initValidator();
         validate();
     }
@@ -95,6 +97,8 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
 //        IEntityValidationService validationResultService = context.getEntityValidationService();
         IEntityValidationService entityValidationService = appContext.getBean(IEntityValidationService.class);
 
+        EntityValidationCrudJdbcImpl jdbcPersister = appContext.getBean(EntityValidationCrudJdbcImpl.class);
+
         // Get all services dealing with "real" entities
         List<Class<CdmBase>> classesToValidate = BatchValidationUtil.getClassesToValidate();
 
@@ -110,7 +114,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
                 //TODO can we handle results in a different transaction?
                 boolean readOnly = false;
                 TransactionStatus txStatus =  startTransaction(readOnly);
-                handleSlice(commonService, entityClass, entityValidationService);
+                handleSingleClass(commonService, entityClass, entityValidationService, jdbcPersister);
                 commitTransaction(txStatus);
             }
         }
@@ -150,26 +154,48 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
         return txManager;
     }
 
+    private void handleSingleClass(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService, EntityValidationCrudJdbcImpl jdbcPersister) {
+        int n = commonService.count(entityClass);
+        int pageSize = 1000;
+        for (int page = 0; page < n ; page = page + pageSize ){
+            handlePage(commonService, entityClass, entityValidationService, jdbcPersister,
+                    page/pageSize, pageSize);
+        }
+    }
+
+
     /**
      * @param commonService
      * @param entityClass
      * @param entityValidationService
+     * @param jdbcPersister
      *
      */
-    private void handleSlice(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService) {
+    private void handlePage(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService, EntityValidationCrudJdbcImpl jdbcPersister, int start, int pageSize) {
+
         List<CdmBase> entities;
+
         try {
-            entities = commonService.list(entityClass, 0, 0, null, null);
+//            commonService.count()
+            entities = commonService.list(entityClass, pageSize, 0, null, null);
         } catch (Throwable t) {
+            //TODO handle exception
             logger.error("Failed to load entities", t);
             return;
         }
         for (CdmBase entity : entities) {
-            Set<ConstraintViolation<CdmBase>> errors = getValidator().validate(entity, getValidationGroups());
-            if (errors.size() != 0) {
-                if (logger.isInfoEnabled()){logger.info(errors.size() + " constraint violation(s) detected in entity " + entity.toString());}
-                entityValidationService.saveEntityValidation(entity, errors, CRUDEventType.NONE,
-                        getValidationGroups());
+            try {
+                Set<ConstraintViolation<CdmBase>> errors = getValidator().validate(entity, getValidationGroups());
+                if (errors.size() != 0) {
+                    if (logger.isInfoEnabled()){logger.info(errors.size() + " constraint violation(s) detected in entity " + entity.toString());}
+//                    entityValidationService.saveEntityValidation(entity, errors, CRUDEventType.NONE,
+//                            getValidationGroups());
+
+                    jdbcPersister.saveEntityValidation(entity, errors, CRUDEventType.NONE, getValidationGroups());
+                }
+            } catch (Exception e) {
+                // TODO Exception handling
+                e.printStackTrace();
             }
         }
 

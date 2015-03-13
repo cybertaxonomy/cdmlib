@@ -41,7 +41,7 @@ class Level3TransactionalValidationTask extends Level3ValidationTask {
     }
 
     @Override
-    protected Set<ConstraintViolation<ICdmBase>> validate() {
+    protected Set<ConstraintViolation<ICdmBase>> validateWithErrorHandling() {
         if (repository != null){
             TransactionStatus tx = repository.startTransaction(true);
             //TODO what if getEntity() is not CdmBase?
@@ -50,11 +50,11 @@ class Level3TransactionalValidationTask extends Level3ValidationTask {
             //was "create Entity in 2 open sessions" error
             //not sure if the above works, should set the entity, but allowing to do so is critical the id is part of hash function, so we have to make sure that only entities with the same id can be replaced
 //            repository.getCommonService().updateEntity(cdmBase);
-            Set<ConstraintViolation<ICdmBase>> result = super.validate();
+            Set<ConstraintViolation<ICdmBase>> result = super.validateWithErrorHandling();
             repository.commitTransaction(tx);
             return result;
         }else{
-            return super.validate();
+            return super.validateWithErrorHandling();
         }
     }
 

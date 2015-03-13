@@ -19,9 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ValidationScheduler extends ThreadPoolTaskScheduler {
+    private static final long serialVersionUID = 7110200522760862056L;
 
-
-    public ValidationScheduler(){
-
-    }
+    public ValidationScheduler(){}
 }

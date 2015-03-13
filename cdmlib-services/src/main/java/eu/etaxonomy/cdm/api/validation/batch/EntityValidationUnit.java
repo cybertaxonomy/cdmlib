@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
+ * Probably not required anymore
  * @author ayco_holleman
  * @date 29 jan. 2015
  *

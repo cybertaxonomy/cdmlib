@@ -37,7 +37,8 @@ public class NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator imple
 		       if(!nameRelationship.getFromName().getHomotypicalGroup().equals(nameRelationship.getToName().getHomotypicalGroup())) {
 		           valid = false;
 		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addNode("fromName").addNode("homotypicalGroup").addConstraintViolation();
-		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addNode("toName").addNode("homotypicalGroup").addConstraintViolation();
+                   //remove duplicate violation as it does not give more information
+//		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addNode("toName").addNode("homotypicalGroup").addConstraintViolation();
 		       }
 		   }
 		}

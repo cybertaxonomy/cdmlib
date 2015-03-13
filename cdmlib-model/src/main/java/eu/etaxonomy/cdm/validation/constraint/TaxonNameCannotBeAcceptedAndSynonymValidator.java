@@ -38,7 +38,8 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
     			for(TaxonBase t1 : taxa) {
     				for(TaxonBase t2 : taxa) { // pairwise comparison of all taxa sharing the same name
     					if(!t1.equals(t2)) { // exclude self comparison
-    						if(Hibernate.isInitialized(t1.getSec()) && Hibernate.isInitialized(t2.getSec())) { // Check that the sec property is initialized
+    						//TODO check if this does not exclude validator from checking things correctly
+    					    if(Hibernate.isInitialized(t1.getSec()) && Hibernate.isInitialized(t2.getSec())) { // Check that the sec property is initialized
     							if(t1.getSec() != null &&   t1.getSec().equals(t2.getSec())) { // only compare concepts belonging to the same source
     								TaxonBase<?> taxonBase1 = TaxonBase.deproxy(t1, TaxonBase.class);
     								TaxonBase<?> taxonBase2 = TaxonBase.deproxy(t2, TaxonBase.class);
@@ -46,8 +47,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
     								if(taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Taxon.class)) {
     									valid = false;
     									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}").addNode("name").addConstraintViolation();
-    								}
-    								if((taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Synonym.class)
+    								}else if((taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Synonym.class)
     								        || (taxonBase1.isInstanceOf(Synonym.class) && taxonBase2.isInstanceOf(Taxon.class)))) {
     									valid = false;
     									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}").addNode("name").addConstraintViolation();
