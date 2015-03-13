@@ -66,6 +66,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		
 		
 		//IntextReference
+		//#4706
 		stepName = "Add IntextReference table";
 		tableName = "IntextReference";
 		columnNames = new String[]{"startpos","endpos","agent_id","annotation_id",
@@ -78,6 +79,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//Drop EntityValidationResult and EntityConstraintViolation
+		//#4709
 		stepName = "Drop EntityConstraintViolation table";
 		tableName = "EntityConstraintViolation";
 		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
