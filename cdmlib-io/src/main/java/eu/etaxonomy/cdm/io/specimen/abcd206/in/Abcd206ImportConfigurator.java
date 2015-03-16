@@ -57,7 +57,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean deduplicateClassifications = false;
     private boolean ignoreAuthorship = false;
     private boolean removeCountryFromLocalityText = false;
-    private boolean moveNewTaxaToDefaultClassification = false;
+    private boolean moveNewTaxaToDefaultClassification = true;
 
     private boolean mapUnitIdToCatalogNumber = true;
     private boolean mapUnitIdToAccessionNumber = false;
