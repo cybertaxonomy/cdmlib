@@ -15,9 +15,11 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -122,7 +124,6 @@ public class Abcd206ImportReport {
             out.println(nodeString);
         }
         out.println("\n");
-        int specimenCount = 0;
         out.println("---Taxa with associated specimens---");
         for(Entry<Taxon, List<DerivedUnit>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
@@ -130,16 +131,20 @@ public class Abcd206ImportReport {
             out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
             for (DerivedUnit derivedUnit : specimens) {
                 out.println("\t- ["+derivedUnit.getRecordBasis()+"] "+derivedUnit.getTitleCache());
-                specimenCount++;
                 //check for derivates
                 List<DerivedUnit> list = derivateMap.get(derivedUnit);
                 for (DerivedUnit derivate : list) {
                     out.println("\t\t- ["+derivate.getRecordBasis()+"] "+derivate.getTitleCache());
-                    specimenCount++;
                 }
             }
         }
-        out.println("Specimens created: "+specimenCount);
+        //all specimens
+        Set<DerivedUnit> allSpecimens = new HashSet<DerivedUnit>();
+        for (Entry<DerivedUnit, List<DerivedUnit>> entry : derivateMap.entrySet()) {
+            allSpecimens.add(entry.getKey());
+            allSpecimens.addAll(entry.getValue());
+        }
+        out.println("Specimens created: "+allSpecimens.size());
         out.println("\n");
         out.println("---Info messages---");
         for(String message:infoMessages){

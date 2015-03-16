@@ -57,6 +57,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean deduplicateClassifications = false;
     private boolean ignoreAuthorship = false;
     private boolean removeCountryFromLocalityText = false;
+    private boolean moveNewTaxaToDefaultClassification = false;
 
     private boolean mapUnitIdToCatalogNumber = true;
     private boolean mapUnitIdToAccessionNumber = false;
@@ -417,6 +418,14 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public boolean isRemoveCountryFromLocalityText() {
         return removeCountryFromLocalityText;
+    }
+
+    public boolean isMoveNewTaxaToDefaultClassification() {
+        return moveNewTaxaToDefaultClassification;
+    }
+
+    public void setMoveNewTaxaToDefaultClassification(boolean moveNewTaxaToDefaultClassification) {
+        this.moveNewTaxaToDefaultClassification = moveNewTaxaToDefaultClassification;
     }
 
 }
