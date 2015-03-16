@@ -1840,9 +1840,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             else{
                 if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
                     node = getDefaultClassification(state).addParentChild(parent, child, ref, "");
+                    save(getDefaultClassification(state), state);
                 }
                 else{
                     node = classification.addParentChild(parent, child, ref, "");
+                    save(classification, state);
                 }
             }
         }
@@ -1855,13 +1857,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             else{
                 if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
                     node = getDefaultClassification(state).addChildTaxon(child, ref, null);
+                    save(getDefaultClassification(state), state);
                 }
                 else{
                     node = classification.addChildTaxon(child, ref, null);
+                    save(classification, state);
                 }
             }
         }
-        save(classification, state);
         report.addTaxonNode(node);
         return node.getTaxon();
     }
