@@ -1817,7 +1817,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 parent = saveOrUpdateClassification(species, subspecies, state);
             }
         }
-        if (preferredFlag) {
+        if (preferredFlag && parent!=taxon) {
             saveOrUpdateClassification(parent, taxon, state);
         }
     }
@@ -1868,8 +1868,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
         }
-        report.addTaxonNode(node);
-        return node.getTaxon();
+        if(node!=null){
+            report.addTaxonNode(node);
+            return node.getTaxon();
+        }
+        String message = "Could not create taxon node for " +child;
+        report.addInfoMessage(message);
+        logger.warn(message);
+        return null;
     }
 
     /**
