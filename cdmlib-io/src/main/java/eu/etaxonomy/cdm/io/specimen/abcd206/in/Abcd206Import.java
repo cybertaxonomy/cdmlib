@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -276,11 +277,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             for (int i = 0; i < unitsList.getLength(); i++) {
                 System.out.println("------------------------------------------------------------------------------------------");
 
-//                checkForUnitExtensions((Element) unitsList.item(i));
-
-                this.setUnitPropertiesXML( (Element) unitsList.item(i), abcdFieldGetter, state);
+                Element item = (Element) unitsList.item(i);
+                this.setUnitPropertiesXML( item, abcdFieldGetter, state);
                 //				refreshTransaction(state);
                 this.handleSingleUnit(state);
+
+                checkForUnitExtensions(item, derivedUnitBase, state);
 
                 // compare the ABCD elements added in to the CDM and the
                 // unhandled ABCD elements
@@ -302,16 +304,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     /**
      * @param item
+     * @param state
      */
-    private void checkForUnitExtensions(Element item) {
+    private void checkForUnitExtensions(Element item, DerivedUnit derivedUnit, Abcd206ImportState state) {
         NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtension");
         for(int i=0;i<unitExtensions.getLength();i++){
             if(unitExtensions.item(i) instanceof Element){
                 Element unitExtension = (Element) unitExtensions.item(i);
                 NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
-                if(unitExtension.getTagName().equals("ggbn:GGBN")){
-                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
-                    ggbnParser.parse(ggbn);
+                AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
+                DnaSample dnaSample = ggbnParser.parse(ggbn);
+                report.addDerivate(derivedUnit, dnaSample);
+                save(dnaSample, state);
+                //add dna sample derivate to derived unit
+                if(derivedUnit!=null && dnaSample!=null){
+                    DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
                 }
             }
         }
@@ -1215,6 +1222,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         save(taxonDescription, state);
         save(taxon, state);
+        report.addDerivate(derivedUnitBase);
         report.addIndividualAssociation(taxon, derivedUnitBase);
     }
 

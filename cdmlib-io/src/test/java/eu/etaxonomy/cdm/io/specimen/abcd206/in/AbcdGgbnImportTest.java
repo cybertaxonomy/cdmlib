@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +31,9 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -82,6 +86,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         boolean result = defaultImport.invoke(importConfigurator);
         assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
+        assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
+
+        assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 //        assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonNameBase.class));
 //        /*
 //         * Classification

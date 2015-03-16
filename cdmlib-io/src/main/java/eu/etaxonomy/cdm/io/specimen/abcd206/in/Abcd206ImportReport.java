@@ -38,6 +38,7 @@ public class Abcd206ImportReport {
 
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
     private final Map<Taxon, List<DerivedUnit>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<DerivedUnit>>();
+    private final Map<DerivedUnit, List<DerivedUnit>> derivateMap = new HashMap<DerivedUnit, List<DerivedUnit>>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
@@ -52,6 +53,21 @@ public class Abcd206ImportReport {
 
     public void addTaxonNode(TaxonNode taxonNode){
         createdTaxonNodes.add(taxonNode);
+    }
+
+    public void addDerivate(DerivedUnit parent){
+        addDerivate(parent, null);
+    }
+
+    public void addDerivate(DerivedUnit parent, DerivedUnit child){
+        List<DerivedUnit> children = derivateMap.get(parent);
+        if(children==null){
+            children = new ArrayList<DerivedUnit>();
+        }
+        if(child!=null){
+            children.add(child);
+        }
+        derivateMap.put(parent, children);
     }
 
     /**
@@ -106,6 +122,7 @@ public class Abcd206ImportReport {
             out.println(nodeString);
         }
         out.println("\n");
+        int specimenCount = 0;
         out.println("---Taxa with associated specimens---");
         for(Entry<Taxon, List<DerivedUnit>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
@@ -113,8 +130,16 @@ public class Abcd206ImportReport {
             out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
             for (DerivedUnit derivedUnit : specimens) {
                 out.println("\t- "+derivedUnit.getTitleCache());
+                specimenCount++;
+                //check for derivates
+                List<DerivedUnit> list = derivateMap.get(derivedUnit);
+                for (DerivedUnit derivate : list) {
+                    out.println("\t\t- "+derivate.getTitleCache());
+                    specimenCount++;
+                }
             }
         }
+        System.out.println("Specimens created: "+specimenCount);
         out.println("\n");
         out.println("---Info messages---");
         for(String message:infoMessages){
