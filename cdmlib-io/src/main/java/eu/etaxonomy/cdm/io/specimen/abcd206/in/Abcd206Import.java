@@ -247,6 +247,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
                 if (classification == null){
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
+                    //we do not need a default classification when creating an empty new one
+                    defaultClassification = classification;
                 }
                 //                if (state.getConfig().getClassificationUuid() != null) {
                 //                    classification.setUuid(state.getConfig().getClassificationUuid());
@@ -1726,7 +1728,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void addTaxonNode(Taxon taxon, Abcd206ImportState state, boolean preferredFlag) {
         logger.info("link taxon to a taxonNode "+taxon.getTitleCache());
         boolean exist = false;
-        for (TaxonNode p : classification.getAllNodes()){
+        Set<TaxonNode> allNodes = classification.getAllNodes();
+        for (TaxonNode p : allNodes){
             try{
                 if(p.getTaxon().equals(taxon)) {
                     exist =true;
