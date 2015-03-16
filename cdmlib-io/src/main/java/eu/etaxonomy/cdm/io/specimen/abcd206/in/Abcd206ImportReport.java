@@ -129,17 +129,17 @@ public class Abcd206ImportReport {
             List<DerivedUnit> specimens = entry.getValue();
             out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
             for (DerivedUnit derivedUnit : specimens) {
-                out.println("\t- "+derivedUnit.getTitleCache());
+                out.println("\t- ["+derivedUnit.getRecordBasis()+"] "+derivedUnit.getTitleCache());
                 specimenCount++;
                 //check for derivates
                 List<DerivedUnit> list = derivateMap.get(derivedUnit);
                 for (DerivedUnit derivate : list) {
-                    out.println("\t\t- "+derivate.getTitleCache());
+                    out.println("\t\t- ["+derivate.getRecordBasis()+"] "+derivate.getTitleCache());
                     specimenCount++;
                 }
             }
         }
-        System.out.println("Specimens created: "+specimenCount);
+        out.println("Specimens created: "+specimenCount);
         out.println("\n");
         out.println("---Info messages---");
         for(String message:infoMessages){
