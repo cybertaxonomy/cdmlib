@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -69,6 +70,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 
 	@Test
+	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
