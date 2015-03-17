@@ -1679,7 +1679,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             return taxaFromSynonyms.iterator().next().getName();
         }
-        report.addInfoMessage("No accepted taxa found for "+scientificName);
         return null;
     }
 
@@ -1740,11 +1739,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
         if (!exist){
-            addParentTaxon(taxon, state, preferredFlag);
+            if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
+                addParentTaxon(taxon, state, preferredFlag, getDefaultClassification(state));
+            }
+            else{
+                addParentTaxon(taxon, state, preferredFlag, classification);
+            }
         }
     }
 
-    private boolean hasTaxonNodeInClassification(Taxon taxon){
+    private boolean hasTaxonNodeInClassification(Taxon taxon, Classification classification){
         for (TaxonNode node : taxon.getTaxonNodes()){
             if(node.getClassification().equals(classification)){
                 return true;
@@ -1755,10 +1759,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     /**
      * Add the hierarchy for a Taxon(add higher taxa)
+     * @param classification
      * @param taxon: a taxon to add as a node
      * @param state: the ABCD import state
      */
-    private void addParentTaxon(Taxon taxon, Abcd206ImportState state, boolean preferredFlag){
+    private void addParentTaxon(Taxon taxon, Abcd206ImportState state, boolean preferredFlag, Classification classification){
         NonViralName<?>  nvname = CdmBase.deproxy(taxon.getName(), NonViralName.class);
         Rank rank = nvname.getRank();
         Taxon genus =null;
@@ -1771,7 +1776,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix, Rank.GENUS(), preferredFlag, state, -1);
             genus = getOrCreateTaxonForName(taxonName, state);
             if (preferredFlag) {
-                parent = saveOrUpdateClassification(null, genus, state);
+                parent = saveOrUpdateClassification(null, genus, classification, state);
             }
 
         }
@@ -1782,7 +1787,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SUBGENUS(), preferredFlag, state, -1);
                 subgenus = getOrCreateTaxonForName(taxonName, state);
                 if (preferredFlag) {
-                    parent = saveOrUpdateClassification(genus, subgenus, state);
+                    parent = saveOrUpdateClassification(genus, subgenus, classification, state);
                 }            }
         }
         if (rank.isLower(Rank.SPECIES())){
@@ -1794,7 +1799,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name+" "+spe, Rank.SPECIES(), preferredFlag, state, -1);
                     species = getOrCreateTaxonForName(taxonName, state);
                     if (preferredFlag) {
-                        parent = saveOrUpdateClassification(subgenus, species, state);
+                        parent = saveOrUpdateClassification(subgenus, species, classification, state);
                     }
                 }
             }
@@ -1805,7 +1810,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SPECIES(), preferredFlag, state, -1);
                     species = getOrCreateTaxonForName(taxonName, state);
                     if (preferredFlag) {
-                        parent = saveOrUpdateClassification(genus, species, state);
+                        parent = saveOrUpdateClassification(genus, species, classification, state);
                     }
                 }
             }
@@ -1814,11 +1819,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(nvname.getFullTitleCache(), Rank.SUBSPECIES(), preferredFlag, state, -1);
             subspecies = getOrCreateTaxonForName(taxonName, state);
             if (preferredFlag) {
-                parent = saveOrUpdateClassification(species, subspecies, state);
+                parent = saveOrUpdateClassification(species, subspecies, classification, state);
             }
         }
         if (preferredFlag && parent!=taxon) {
-            saveOrUpdateClassification(parent, taxon, state);
+            saveOrUpdateClassification(parent, taxon, classification, state);
         }
     }
 
@@ -1827,9 +1832,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param parent: the higher Taxon
      * @param child : the lower (or current) Taxon
      * return the Taxon from the new created Node
+     * @param classification
      * @param state
      */
-    private Taxon saveOrUpdateClassification(Taxon parent, Taxon child, Abcd206ImportState state) {
+    private Taxon saveOrUpdateClassification(Taxon parent, Taxon child, Classification classification, Abcd206ImportState state) {
         TaxonNode node =null;
         if (parent != null) {
             parent = (Taxon) getTaxonService().find(parent.getUuid());
@@ -1837,35 +1843,23 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             //here we do not have to check if the taxon nodes already exists
             //this is done by classification.addParentChild()
             //do not add child node if it already exists
-            if(hasTaxonNodeInClassification(child)){
+            if(hasTaxonNodeInClassification(child, classification)){
                 return child;
             }
             else{
-                if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
-                    node = getDefaultClassification(state).addParentChild(parent, child, ref, "");
-                    save(getDefaultClassification(state), state);
-                }
-                else{
-                    node = classification.addParentChild(parent, child, ref, "");
-                    save(classification, state);
-                }
+                node = classification.addParentChild(parent, child, ref, "");
+                save(classification, state);
             }
         }
         else {
             child = (Taxon) getTaxonService().find(child.getUuid());
             //do not add child node if it already exists
-            if(hasTaxonNodeInClassification(child)){
+            if(hasTaxonNodeInClassification(child, classification)){
                 return child;
             }
             else{
-                if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
-                    node = getDefaultClassification(state).addChildTaxon(child, ref, null);
-                    save(getDefaultClassification(state), state);
-                }
-                else{
-                    node = classification.addChildTaxon(child, ref, null);
-                    save(classification, state);
-                }
+                node = classification.addChildTaxon(child, ref, null);
+                save(classification, state);
             }
         }
         if(node!=null){
