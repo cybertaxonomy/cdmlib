@@ -1589,15 +1589,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         if(config.isReuseExistingTaxaWhenPossible()){
-            if(config.isIgnoreAuthorship() && preferredFlag){
+            NonViralName<?> parsedName = parseScientificName(scientificName);
+            if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
-                NonViralName<?> parsedName = parseScientificName(scientificName);
-                if(parsedName!=null){
-                    String nameCache = parsedName.getNameCache();
-                    List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
-                    taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
-                }
+                String nameCache = parsedName.getNameCache();
+                List<NonViralName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
+                taxonName = getBestMatchingName(scientificName, new ArrayList<TaxonNameBase>(names));
             }
             else {
                 //search for existing names
@@ -1678,7 +1676,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 report.addInfoMessage(message);
                 logger.warn(message);
             }
-            return firstAcceptedTaxon;
+            else{
+                return firstAcceptedTaxon;
+            }
         }
         else{
             Set<TaxonBase> taxonAndSynonyms = taxonNameBase.getTaxonBases();
