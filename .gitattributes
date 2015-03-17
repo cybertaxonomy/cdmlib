@@ -646,6 +646,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/wrongSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
