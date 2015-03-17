@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
-import com.sun.msv.grammar.ReferenceContainer;
 
 /**
  * This class enables to set configuration to the createHierarchy service in classification service.
