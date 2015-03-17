@@ -429,6 +429,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	}
+	@Test
+	@DataSet
+	public void testMoveTaxonNode(){
+		
+	}
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

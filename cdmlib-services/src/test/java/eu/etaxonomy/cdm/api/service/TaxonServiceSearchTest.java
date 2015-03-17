@@ -234,6 +234,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
+         
+         configurator.setTitleSearchString("silver fir");
+         configurator.setMatchMode(MatchMode.BEGINNING);
+         configurator.setDoTaxa(false);
+         configurator.setDoSynonyms(false);
+         configurator.setDoNamesWithoutTaxa(true);
+         configurator.setDoTaxaByCommonNames(true);
+
+         list = taxonService.findTaxaAndNamesForEditor(configurator);
+
+         Assert.assertEquals("Expecting one entity", 1, list.size());
+         
     }
 
     @SuppressWarnings("rawtypes")

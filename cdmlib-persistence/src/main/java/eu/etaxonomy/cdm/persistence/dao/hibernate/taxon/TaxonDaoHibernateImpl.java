@@ -829,7 +829,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         String what = "select";
         if (doNotReturnFullEntities){
-        	what += " t.uuid, t.titleCache ";
+        	what += " t.uuid, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
         }else {
         	what += (doCount ? " count(t)": " t");
         }
@@ -2151,16 +2151,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set namedAreas) {
-		List<UuidAndTitleCache<IdentifiableEntity>> result = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+		List<Object> resultArray = new ArrayList<Object>();
 		 Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
 	        if (query != null){
-	            result = query.list();
-	            
-	            return result;
+	            resultArray = query.list();
+	            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>() ;
+	            Object[] result;
+	            for(int i = 0; i<resultArray.size();i++){
+	            	result = (Object[]) resultArray.get(i);
+	            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
+	            }
+	            return returnResult;
 	        }
 	       
 		
-		return result;
+		return null;
 	}
 	
 	
