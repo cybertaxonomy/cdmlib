@@ -96,6 +96,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
+    private static final String DEFAULT_CLASSIFICATION_ABCD = "Default Classification ABCD";
+
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
     private final boolean DEBUG = true;
@@ -264,6 +266,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String message = "nb units to insert: " + unitsList.getLength();
             logger.info(message);
             updateProgress(state, message);
+            state.getConfig().getProgressMonitor().beginTask("Importing ABCD file", unitsList.getLength());
 
             dataHolder = new Abcd206DataHolder();
             dataHolder.reset();
@@ -277,11 +280,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
 
             for (int i = 0; i < unitsList.getLength(); i++) {
-                System.out.println("------------------------------------------------------------------------------------------");
-
                 Element item = (Element) unitsList.item(i);
                 this.setUnitPropertiesXML( item, abcdFieldGetter, state);
-                //				refreshTransaction(state);
+                updateProgress(state, "Importing data for unit ("+i+"/"+unitsList.getLength()+")"+dataHolder.unitID);
                 this.handleSingleUnit(state);
 
                 checkForUnitExtensions(item, derivedUnitBase, state);
@@ -374,8 +375,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.info("handleSingleUnit "+ref);
         }
         try {
-            updateProgress(state, "Importing data for unit: " + dataHolder.unitID);
-
             // create facade
             DerivedUnitFacade derivedUnitFacade = getFacade();
             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
@@ -1036,7 +1035,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
 
         if (DEBUG) {
-            System.out.println("MAKE INDIVIDUALS ASSOCIATION");
+            logger.info("MAKE INDIVIDUALS ASSOCIATION");
         }
 
         TaxonDescription taxonDescription = null;
@@ -2321,7 +2320,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     public Classification getDefaultClassification(Abcd206ImportState state) {
         if(defaultClassification==null){
-            defaultClassification = Classification.NewInstance("Default Classification ABCD", ref, Language.DEFAULT());
+            List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
+            for (Classification classif : classificationList){
+                if (classif.getTitleCache().equalsIgnoreCase(DEFAULT_CLASSIFICATION_ABCD) && classif.getCitation().equals(ref)) {
+                    defaultClassification=classif;
+                    break;
+                }
+            }
+            defaultClassification = Classification.NewInstance(DEFAULT_CLASSIFICATION_ABCD, ref, Language.DEFAULT());
             save(defaultClassification, state);
         }
         return defaultClassification;
