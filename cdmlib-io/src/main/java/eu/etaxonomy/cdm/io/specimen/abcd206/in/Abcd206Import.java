@@ -1090,7 +1090,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 try{
                     sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);
                 }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-            } else{
+            } else if(osb.getCitation()!=null){
                 try{
                     sourceMap.put(osb.getCitation().getTitleCache(),osb);
                 }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
