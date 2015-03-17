@@ -523,18 +523,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 osbSet.addAll(issTmp);
             }
 
-
-            for( OriginalSourceBase<?> osb:osbSet) {
-                if(osb.getCitationMicroReference() !=null  && !osb.getCitationMicroReference().isEmpty()) {
-                    try{
-                        sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);
-                    }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-                } else{
-                    try{
-                        sourceMap.put(osb.getCitation().getTitleCache(),osb);
-                    }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-                }
-            }
+            addToSourceMap(sourceMap, osbSet);
 
             if( state.getConfig().isInteractWithUser()){
                 List<OriginalSourceBase<?>>sources=null;
@@ -593,6 +582,24 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         return;
+    }
+
+    /**
+     * @param sourceMap
+     * @param osbSet
+     */
+    private void addToSourceMap(Map<String, OriginalSourceBase<?>> sourceMap, Set<OriginalSourceBase> osbSet) {
+        for( OriginalSourceBase<?> osb:osbSet) {
+            if(osb.getCitation()!=null && osb.getCitationMicroReference() !=null  && !osb.getCitationMicroReference().isEmpty()) {
+                try{
+                    sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);
+                }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
+            } else if(osb.getCitation()!=null){
+                try{
+                    sourceMap.put(osb.getCitation().getTitleCache(),osb);
+                }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
+            }
+        }
     }
 
     /**
@@ -1084,17 +1091,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
 
-        for( OriginalSourceBase<?> osb:osbSet) {
-            if(osb.getCitationMicroReference() !=null && !osb.getCitationMicroReference().isEmpty()) {
-                try{
-                    sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);
-                }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-            } else if(osb.getCitation()!=null){
-                try{
-                    sourceMap.put(osb.getCitation().getTitleCache(),osb);
-                }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-            }
-        }
+        addToSourceMap(sourceMap, osbSet);
 
         if (state.getConfig().isInteractWithUser()){
             List<OriginalSourceBase<?>> res = null;
@@ -1152,17 +1149,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
 
-            for( OriginalSourceBase<?> osb:osbSet) {
-                if(osb.getCitationMicroReference() !=null && !osb.getCitationMicroReference().isEmpty()) {
-                    try{
-                        sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);
-                    }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-                } else if(osb.getCitation()!=null){
-                    try{
-                        sourceMap.put(osb.getCitation().getTitleCache(),osb);
-                    }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
-                }
-            }
+            addToSourceMap(sourceMap, osbSet);
 
             List<OriginalSourceBase<?>> sources =null;
             if(!associationSourcesSet) {
