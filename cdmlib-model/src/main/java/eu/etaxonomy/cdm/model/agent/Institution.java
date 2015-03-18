@@ -178,7 +178,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see	   #getCode()
 	 */
 	public void setCode(String code){
-		this.code = code;
+		this.code = code == "" ? null : code;
 	}
 
 
@@ -193,7 +193,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see	   #getName()
 	 */
 	public void setName(String name){
-		this.name = name;
+		this.name = name == "" ? null: name;
 	}
 
 //*********************** CLONE ********************************************************/

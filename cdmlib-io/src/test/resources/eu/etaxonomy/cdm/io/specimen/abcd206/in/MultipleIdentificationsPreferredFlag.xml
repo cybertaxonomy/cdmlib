@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd:DataSets>
+      <abcd:DataSet>
+        <abcd:TechnicalContacts>
+          <abcd:TechnicalContact>
+            <abcd:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd:Name>
+            <abcd:Email>biodiversitydata@bgbm.org</abcd:Email>
+            <abcd:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd:Address>
+          </abcd:TechnicalContact>
+        </abcd:TechnicalContacts>
+        <abcd:ContentContacts>
+          <abcd:ContentContact>
+            <abcd:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd:Name>
+            <abcd:Email>biodiversitydata@bgbm.org</abcd:Email>
+            <abcd:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd:Address>
+          </abcd:ContentContact>
+        </abcd:ContentContacts>
+        <abcd:Metadata>
+          <abcd:Description>
+            <abcd:Representation abcd:language="en">
+              <abcd:Title>Herbarium Berolinense</abcd:Title>
+              <abcd:Details>The herbarium of the Botanic Garden and Botanical Museum Berlin-Dahlem (herbarium acronym: B) is the largest in Germany and holds a collection of more than 3.5 million preserved specimens. All plant groups – flowering plants, ferns, mosses, liverworts, and algae, as well as fungi and lichens – are represented in the collections which are worldwide in scope. Associated with the general herbarium are special collections of dried fruits and seeds, wood samples, and specimens preserved in alcohol. The collections of the herbarium are growing constantly through field research conducted by staff, and through gifts, acquisitions, and exchanges of specimens from other herbaria</abcd:Details>
+            </abcd:Representation>
+          </abcd:Description>
+          <abcd:IconURI>http://www.bgbm.org/BGBM/icons/bgbmlogo.gif</abcd:IconURI>
+          <abcd:RevisionData>
+            <abcd:Creators>Herbarium Berolinense</abcd:Creators>
+            <abcd:DateCreated>2003-06-01T00:00:00</abcd:DateCreated>
+            <abcd:DateModified>2008-02-21T11:00:00</abcd:DateModified>
+          </abcd:RevisionData>
+          <abcd:Owners>
+            <abcd:Owner>
+              <abcd:Organisation>
+                <abcd:Name>
+                  <abcd:Representation abcd:language="en">
+                    <abcd:Text>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd:Text>
+                    <abcd:Abbreviation>BGBM</abcd:Abbreviation>
+                  </abcd:Representation>
+                </abcd:Name>
+              </abcd:Organisation>
+              <abcd:Addresses>
+                <abcd:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd:Address>
+              </abcd:Addresses>
+              <abcd:EmailAddresses>
+                <abcd:EmailAddress>biodiversitydata@bgbm.org</abcd:EmailAddress>
+              </abcd:EmailAddresses>
+              <abcd:URIs>
+                <abcd:URL>http://www.bgbm.org</abcd:URL>
+              </abcd:URIs>
+            </abcd:Owner>
+          </abcd:Owners>
+          <abcd:IPRStatements>
+            <abcd:TermsOfUseStatements>
+              <abcd:TermsOfUse abcd:language="en">
+                <abcd:Text>Textual metadata on specimens from the Herbarium Berolinense (B) are released under the Creative Commons 1.0 Public Domain Dedication waiver [http://creativecommons.org/publicdomain/zero/1.0/].</abcd:Text>
+              </abcd:TermsOfUse>
+            </abcd:TermsOfUseStatements>
+            <abcd:Citations>
+              <abcd:Citation abcd:language="en">
+                <abcd:Text>Röpert D. (ed.) 2000+ [continuously updated]: Digital specimen images at the Herbarium Berolinense. - Published at http://ww2.bgbm.org/herbarium/default.cfm [accessed dd Mmm yyyy].     For reference to a specimen cite the stable identifier as shown on the specimen detail page   (e.g. http://herbarium.bgbm.org/object/B200072053).     For reference to an individual image, cite the barcode of the specimen as well as the image ID as shown on the image detail page.</abcd:Text>
+              </abcd:Citation>
+            </abcd:Citations>
+          </abcd:IPRStatements>
+        </abcd:Metadata>
+        <abcd:Units>          
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100365470</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0365470</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Plantae</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula flagellaris Halácsy</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>flagellaris</abcd:FirstEpithet>
+                          <abcd:AuthorTeam>Halácsy</abcd:AuthorTeam>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>0</abcd:PreferredFlag>
+              </abcd:Identification>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Plantae</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula tymphaea Hausskn.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>tymphaea</abcd:FirstEpithet>
+                          <abcd:AuthorTeam>Hausskn.</abcd:AuthorTeam>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:SpecimenUnit>
+              <abcd:NomenclaturalTypeDesignations>
+                <abcd:NomenclaturalTypeDesignation>
+                  <abcd:TypeStatus>type</abcd:TypeStatus>
+                </abcd:NomenclaturalTypeDesignation>
+              </abcd:NomenclaturalTypeDesignations>
+            </abcd:SpecimenUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/03/65/47/b_10_0365470.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=101078</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Partial images provided by this server are released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a format or resolution which is not provided here, please contact us (d.roepert[at]bgbm.org).</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>14.07.1893</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>E. de Halácsy</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>Epirus boreali-orientalis; in herbidis regionis superioris mt. Peristeri; solo calcareo.</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name>Greece</abcd:Name>
+                <abcd:ISO3166Code>GR</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:Altitude>
+                <abcd:MeasurementOrFactAtomised>
+                  <abcd:LowerValue>1700 m</abcd:LowerValue>
+                  <abcd:UnitOfMeasurement>m</abcd:UnitOfMeasurement>
+                </abcd:MeasurementOrFactAtomised>
+              </abcd:Altitude>
+            </abcd:Gathering>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100365470</abcd:RecordURI>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>

@@ -55,10 +55,12 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -82,6 +84,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -101,6 +104,7 @@ public abstract class MarkupImportBase  {
 	protected static final String COORDINATES = "coordinates";
 	protected static final String DATES = "dates";
 	protected static final String GATHERING = "gathering";
+	protected static final String GATHERING_GROUP = "gatheringGroup";
 	protected static final String GENUS_ABBREVIATION = "genus abbreviation";
 	protected static final String FOOTNOTE = "footnote";
 	protected static final String FOOTNOTE_REF = "footnoteRef";
@@ -681,9 +685,9 @@ public abstract class MarkupImportBase  {
 	 */
 	protected void handleUnexpectedElement(XMLEvent event) {
 		if (event.isStartElement()){
-			handleUnexpectedStartElement(event);
+			handleUnexpectedStartElement(event, 2);
 		}else if (event.isEndElement()){
-			handleUnexpectedEndElement(event.asEndElement());
+			handleUnexpectedEndElement(event.asEndElement(), 2);
 		}else if (event.getEventType() == XMLStreamConstants.COMMENT){
 			//do nothing
 		}else if (! unhandledElements.empty()){
@@ -729,7 +733,7 @@ public abstract class MarkupImportBase  {
 		QName qName = startElement.getName();
 		unhandledElements.push(qName);
 		fireWarningEvent(
-				qName.getLocalPart() + " is ambigous and should therefore be handled manually", 
+				"Handle manually: " + qName.getLocalPart() + " is ambigous and should therefore be handled manually", 
 				makeLocationStr(startElement.getLocation()), 2, 2);
 	}
 
@@ -1038,8 +1042,16 @@ public abstract class MarkupImportBase  {
 		return docImport.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
 	
+	protected DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+		return docImport.getIdentifierType(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
 	protected AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		return docImport.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
+	protected MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
+		return docImport.getMarkerType(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
 	protected NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
@@ -1120,6 +1132,28 @@ public abstract class MarkupImportBase  {
 		NomenclaturalCode nc = makeNomenclaturalCode(state);
 		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
 		return name;
+	}
+	
+	protected void handleFullName(MarkupImportState state, XMLEventReader reader,
+			NonViralName<?> name, XMLEvent next) throws XMLStreamException {
+		String fullNameStr;
+		Map<String, Attribute> attrs = getAttributes(next);
+		String rankStr = getAndRemoveRequiredAttributeValue(next,
+				attrs, "rank");
+		Rank rank = makeRank(state, rankStr, false);
+		name.setRank(rank);
+		if (rank == null) {
+			String message = "Rank was computed as null. This must not be.";
+			fireWarningEvent(message, next, 6);
+			name.setRank(Rank.UNKNOWN_RANK());
+		}
+		if (!attrs.isEmpty()) {
+			handleUnexpectedAttributes(next.getLocation(), attrs);
+		}
+//		next = readNoWhitespace(reader);
+		fullNameStr = getCData(state, reader, next, false);
+		NonViralNameParserImpl.NewInstance().parseFullName(name, fullNameStr, rank, false);
+//		name.setTitleCache(fullNameStr, true);
 	}
 	
 
@@ -1341,7 +1375,16 @@ public abstract class MarkupImportBase  {
 	protected boolean isPunctuation(String text) {
 		return text == null ? false : text.trim().matches("^[\\.,;:]$");
 	}
+	
 
+	/**
+	 * Text indicating that type information is following but no information about the type of the type
+	 * @param text
+	 * @return
+	 */
+	protected boolean charIsSimpleType(String text) {
+		return text.matches("(?i)Type:");
+	}
 	
 	protected String getXmlTag(XMLEvent event) {
 		String result;

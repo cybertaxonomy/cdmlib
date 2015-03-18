@@ -361,7 +361,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 
 	protected Reference(ReferenceType type) {
-		this.type = type;
+		if (type == null){
+			this.type = ReferenceType.Generic;
+		} else{
+			this.type = type;
+		}
 	}
 
 	@Override

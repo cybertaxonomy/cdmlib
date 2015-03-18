@@ -36,8 +36,11 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -119,6 +122,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
+	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator);
@@ -139,6 +143,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 
 	@Test
+	@Ignore
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2);
@@ -189,6 +194,94 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
          *      - Campanula patula subsp. abietina
          */
         assertEquals("Number of TaxonNodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
+	}
+
+	@Test
+	@Ignore
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testImportVariety() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+
+	    /*
+	     * Classification
+	     *  - Campanula
+	     *   - Campanula versicolor var. tomentella Hal.
+	     */
+	    assertEquals(3, taxonNodeService.count(TaxonNode.class));
+	    assertEquals(2, nameService.count(TaxonNameBase.class));
+	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
+	    boolean varietyFound = false;
+	    for(TaxonNameBase<?, ?> name:nameService.list(TaxonNameBase.class, null, null, null, null)){
+	        if(name.getRank().equals(Rank.VARIETY())){
+	            varietyFound = true;
+	        }
+	    }
+	    assertTrue("Variety rank not set", varietyFound);
+	}
+
+	@Test
+	@Ignore
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testMultipleIdentificationsPreferredFlag() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+
+	    String nonPreferredNameCache = "Campanula flagellaris";
+	    String preferredNameCache = "Campanula tymphaea";
+	    //Campanula, "Campanula tymphaea Hausskn.", "Campanula flagellaris Halácsy"
+	    assertEquals(3, nameService.count(TaxonNameBase.class));
+	    /*
+	     * Classification
+	     *  - Campanula
+	     *   - Campanula tymphaea Hausskn.
+	     */
+	    assertEquals(3, taxonNodeService.count(TaxonNode.class));
+	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
+	    DerivedUnit derivedUnit = occurrenceService.list(DerivedUnit.class, null, null, null, null).get(0);
+	    assertEquals(2, derivedUnit.getDeterminations());
+	    for(DeterminationEvent determinationEvent:derivedUnit.getDeterminations()){
+	        if(determinationEvent.getPreferredFlag()){
+	            assertEquals(preferredNameCache,((NonViralName<?>) determinationEvent.getTaxonName()).getNameCache());
+	        }
+	        else{
+	            assertEquals(nonPreferredNameCache,((NonViralName<?>) determinationEvent.getTaxonName()).getNameCache());
+	        }
+	    }
+
+	}
+
+	@Test
+	@Ignore
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testSetUnitIDAsBarcode() {
+
 	}
 
     /* (non-Javadoc)

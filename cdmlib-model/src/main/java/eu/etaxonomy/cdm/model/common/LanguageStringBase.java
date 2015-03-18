@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -70,7 +73,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @Cascade({CascadeType.MERGE})
     @IndexedEmbedded(depth=1)
     protected Language language;
-
+    
     protected LanguageStringBase() {
         super();
     }

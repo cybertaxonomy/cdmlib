@@ -242,7 +242,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
-		this.prefix = prefix;
+		this.prefix = prefix == "" ? null : prefix;
 	}
 
 
@@ -260,7 +260,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
-		this.firstname = firstname;
+		this.firstname = firstname == "" ? null : firstname;
 	}
 
 
@@ -277,7 +277,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
-		this.lastname = lastname;
+		this.lastname = lastname == "" ? null : lastname;
 	}
 
 
@@ -292,7 +292,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
-		this.suffix = suffix;
+		this.suffix = suffix == "" ? null: suffix;
 	}
 
 

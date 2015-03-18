@@ -133,10 +133,7 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
+	@Override
 	public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
@@ -237,6 +234,18 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	public void setUseEditorAsInAuthorWhereNeeded(boolean useEditorAsInAuthorWhereNeeded) {
 		this.useEditorAsInAuthorWhereNeeded = useEditorAsInAuthorWhereNeeded;
 	}
+	
+	boolean useFotGSpecimenTypeCollectionAndTypeOnly = false;
+
+	public boolean isUseFotGSpecimenTypeCollectionAndTypeOnly() {
+		return useFotGSpecimenTypeCollectionAndTypeOnly;
+	}
+
+	public void setUseFotGSpecimenTypeCollectionAndTypeOnly(
+			boolean useFotGSpecimenTypeCollectionAndTypeOnly) {
+		this.useFotGSpecimenTypeCollectionAndTypeOnly = useFotGSpecimenTypeCollectionAndTypeOnly;
+	}
+	
 
 	
 }

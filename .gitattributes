@@ -445,6 +445,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportRep
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206XMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Identification.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd21/ggbn/AbcdGgbnParser.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExtensionTypeExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevelExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevellRow.java -text
@@ -567,6 +568,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportExportTest.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportConfiguratorTestNonEmptyDB.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdGgbnImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest.java -text
@@ -643,11 +645,15 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample_mo
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/wrongSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.cgi -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/campanula_abietina_subspecies.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx -text
@@ -743,6 +749,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IDefinedTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEnumTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIntextReferencable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IKeyTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IMultiLanguageText.java -text
@@ -760,6 +767,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IVersionableEntity.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Identifier.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IntextReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSID.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDWSDLLocator.java -text
@@ -1352,6 +1360,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaU
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/SchemaUpdater_34_341.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/TermUpdater_33_34.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/UsernameConstraintUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/SchemaUpdater_341_35.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/TermUpdater_34_35.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
@@ -2430,6 +2440,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configurati
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLocationServiceImpl.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestModelUpdate.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestValidationManager.java -text

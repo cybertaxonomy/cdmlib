@@ -157,8 +157,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
         result.setFormat(format);
         return result;
     }
-    
-    
+
+
     /**
      * Creates a new text data instance with a given text in a given particular
      * {@link Language language} and with the given text format for structuring it.
@@ -279,24 +279,6 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
         }
     }
 
-    /**
-     * Creates a {@link LanguageString language string} based on the given text string
-     * and the given {@link Language language}, returns it and adds it to the multilanguage
-     * text representing the content of <i>this</i> text data.
-     *
-     * @param text		the string representing the content of the text data
-     * 					in a particular language
-     * @param language	the language in which the text string is formulated
-     * @see    	   		#getMultilanguageText()
-     * @see    	   		#putText(LanguageString)
-     * @return			the previous language string associated with the given Language, or null if there was no mapping for the given Language
-     * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
-     * 					Use the {@link #putText(Language, String) putText} method instead
-     */
-    @Deprecated
-    public LanguageString putText(String text, Language language) {
-        return this.putText(language, text);
-    }
 
     /**
      * Creates a {@link LanguageString language string} based on the given text string
@@ -320,8 +302,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
         }else{
             languageString = LanguageString.NewInstance(text, language);
         }
-        LanguageString result = this.multilanguageText.put(language , languageString);
-        return (result == null ? null : result);
+        this.multilanguageText.put(language , languageString);
+        return languageString;
     }
 
 

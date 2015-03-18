@@ -270,7 +270,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
 		firePropertyChange("nomenclaturalTitle", this.nomenclaturalTitle, nomenclaturalTitle);
-		this.nomenclaturalTitle = nomenclaturalTitle;
+		this.nomenclaturalTitle = nomenclaturalTitle == "" ? null: nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 

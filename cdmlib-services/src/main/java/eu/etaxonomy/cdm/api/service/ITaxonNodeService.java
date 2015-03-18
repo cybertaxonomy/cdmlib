@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -90,7 +91,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
-	public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent);
+	public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent);
+
+	public UpdateResult moveTaxonNode(UUID taxonNodeUUID, UUID newParentUUID);
 
 
 

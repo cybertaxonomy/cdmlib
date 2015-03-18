@@ -93,6 +93,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
+	public static final UUID uuidUserDefinedIdentifierTypeVocabulary = UUID.fromString("194b173b-e2c8-49f1-bbfa-d5d51556cf68");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
 	public static final UUID uuidUserDefinedMeasurementUnitVocabulary = UUID.fromString("d5e72bb7-f312-4080-bb86-c695d04a6e66");
@@ -196,6 +197,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	
+	
+	
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
 	}
@@ -219,6 +222,28 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putExtensionType(extensionType);
 		}
 		return extensionType;
+	}
+	
+	protected DefinedTerm getIdentiferType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
+		DefinedTerm identifierType = state.getIdentifierType(uuid);
+		if (identifierType == null){
+			identifierType = (DefinedTerm)getTermService().find(uuid);
+			if (identifierType == null){
+				identifierType = DefinedTerm .NewIdentifierTypeInstance(text, label, labelAbbrev);
+				identifierType.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(TermType.IdentifierType, uuidUserDefinedIdentifierTypeVocabulary, "User defined vocabulary for identifier types", "User Defined Identifier Types", null, null, isOrdered, identifierType);
+				}
+				voc.addTerm(identifierType);
+				getTermService().saveOrUpdate(identifierType);
+			}
+			state.putIdentifierType(identifierType);
+		}
+		return identifierType;
 	}
 	
 	

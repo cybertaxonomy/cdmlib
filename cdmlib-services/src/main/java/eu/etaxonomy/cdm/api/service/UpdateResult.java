@@ -11,15 +11,16 @@
 	package eu.etaxonomy.cdm.api.service;
 
 	import java.io.Serializable;
-	import java.util.ArrayList;
-	import java.util.HashSet;
-	import java.util.List;
-	import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 	import org.apache.log4j.Logger;
 
 	import eu.etaxonomy.cdm.model.common.CdmBase;
-	import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 	/**
 	 * This class represents the result of an update action.
@@ -40,6 +41,8 @@ public class UpdateResult implements Serializable{
 		private final List<Exception> exceptions = new ArrayList<Exception>();
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
+		
+		private CdmBase cdmEntity;
 
 //		private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
 	//
@@ -206,6 +209,10 @@ public class UpdateResult implements Serializable{
 					"Status: " + status.toString()+"\n" +
 							"Exceptions: " + exceptionString+"\n" +
 									"Related Objects: "+relatedObjectString;
+		}
+		public void setCdmEntity(CdmBase cdmBase) {
+			this.cdmEntity = cdmBase;
+			
 		}
 
 

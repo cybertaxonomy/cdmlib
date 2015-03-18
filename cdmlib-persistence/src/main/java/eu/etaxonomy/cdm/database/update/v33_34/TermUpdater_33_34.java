@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
+import eu.etaxonomy.cdm.database.update.v34_35.TermUpdater_34_35;
 
 /**
  * @author a.mueller
@@ -71,7 +72,7 @@ public class TermUpdater_33_34 extends TermUpdaterBase implements ITermUpdater {
 	
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_34_35.NewInstance();
 	}
 
 	@Override

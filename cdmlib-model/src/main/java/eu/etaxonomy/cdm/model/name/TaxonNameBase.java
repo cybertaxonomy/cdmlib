@@ -49,6 +49,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -1231,9 +1232,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         if (homotypicalGroup == null){
             throw new IllegalArgumentException("HomotypicalGroup of name should never be null but was set to 'null'");
         }
+        /*if (this.homotypicalGroup != null){
+        	this.homotypicalGroup.removeTypifiedName(this, false);
+        }*/
         this.homotypicalGroup = homotypicalGroup;
-        if (! homotypicalGroup.typifiedNames.contains(this)){
-            homotypicalGroup.addTypifiedName(this);
+        if (!this.homotypicalGroup.typifiedNames.contains(this)){
+        	 this.homotypicalGroup.addTypifiedName(this);
         }
     }
 
@@ -1696,6 +1700,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
         HomotypicalGroup homotypicalGroup = this.getHomotypicalGroup();
+        
 
         if (homotypicalGroup == null) {
             return;
@@ -1861,8 +1866,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
             //homotypicalGroup
             //TODO still needs to be discussed
-            homotypicalGroup = HomotypicalGroup.NewInstance();
-            homotypicalGroup.addTypifiedName(this);
+            result.homotypicalGroup = HomotypicalGroup.NewInstance();
+            result.homotypicalGroup.addTypifiedName(this);
 
             //no changes to: appendedPharse, nomenclaturalReference,
             //nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts

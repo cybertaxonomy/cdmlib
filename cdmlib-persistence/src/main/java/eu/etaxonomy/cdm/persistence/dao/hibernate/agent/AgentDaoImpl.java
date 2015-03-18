@@ -161,4 +161,6 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		Query query = getSession().createQuery("select uuid, titleCache from " + type.getSimpleName() + " where dtype = 'Institution'");
 		return getUuidAndTitleCache(query);
 	}
+	
+	
 }

@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -71,6 +73,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private boolean isCitation = false;
 	private boolean isNameType = false;
 	private boolean isProParte = false;
+	
+	private boolean isSpecimenType = false;
+
 	
 	private String baseMediaUrl = null;
 	
@@ -414,6 +419,38 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void setLatestReferenceInHomotype(Reference<?> latestReferenceInHomotype) {
 		this.latestReferenceInHomotype = latestReferenceInHomotype;
 	}
+
+	public void setSpecimenType(boolean isSpecimenType) {
+		this.isSpecimenType = isSpecimenType;
+	}
+
+	public boolean isSpecimenType() {
+		return isSpecimenType;
+	}
+
+
+	//or do we need to make this a uuid?
+	private Map<String, Collection> collectionMap = new HashMap<String, Collection>();
+	public Collection getCollectionByCode(String code) {
+		return collectionMap.get(code);
+	}
+
+	public void putCollectionByCode(String code, Collection collection) {
+		collectionMap.put(code, collection);
+	}
+
+
+	String collectionAndType = "";
+	public void addCollectionAndType(String txt) {
+		collectionAndType = CdmUtils.concat("@", collectionAndType, txt);
+	}
+	public String getCollectionAndType() {
+		return collectionAndType;
+	}	
+	public void resetCollectionAndType() {
+		collectionAndType = "";
+	}	
+	
 
 
 }
