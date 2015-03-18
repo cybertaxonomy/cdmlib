@@ -74,7 +74,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		referencedTables = new String[]{null, null, "AgentBase","Annotation","LanguageString","Media",
 				"SpecimenOrObservationBase","Reference","TaxonBase","TaxonNameBase"};
 		columnTypes = new String[]{"int","int","int","int","int","int","int","int","int","int"};
-		step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, 
+		step = TableCreator.NewVersionableInstance(stepName, tableName, columnNames, 
 				columnTypes, referencedTables, INCLUDE_AUDIT);
 		stepList.add(step);
 		
@@ -97,7 +97,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
                 "validatedentityclass","validatedentityid","validatedentityuuid", "validationcount", "status"};
         columnTypes = new String[]{"datetime","string_255","string_255","string_255","string_255","int","string_36","int","string_20"};
         referencedTables = new String[]{null,null,null,null,null,null,null,null,null};
-        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
         stepList.add(step);
 
         //... constraint violation
@@ -107,7 +107,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         		"validationgroup","validator","entityvalidation_id"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","string_255","int"};
         referencedTables = new String[]{null,null,null,null,null,null,null,"EntityValidationResult"};
-        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
         stepList.add(step);
 
 		return stepList;

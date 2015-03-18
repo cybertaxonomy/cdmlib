@@ -249,7 +249,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
                 "validatedentityclass","validatedentityid","validatedentityuuid"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","int","string_36"};
         referencedTables = new String[]{null,null,null,null,null,null};
-        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
         stepList.add(creator);
 
         //EntityConstraintViolation
@@ -260,7 +260,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
                 "validator","entityvalidationresult_id"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","int"};
         referencedTables = new String[]{null,null,null,null,null,null,"EntityValidationResult"};
-        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
         stepList.add(creator);
 
         //make OriginalSourceBase.sourceType allow NULL
