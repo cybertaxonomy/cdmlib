@@ -347,7 +347,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         // Switch groups
-        oldHomotypicalGroup.removeTypifiedName(synonymName);
+        oldHomotypicalGroup.removeTypifiedName(synonymName, false);
         newHomotypicalGroup.addTypifiedName(synonymName);
 
         //remove existing basionym relationships
@@ -1346,8 +1346,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 taxonSet.addAll(synonym.getAcceptedTaxa());
             }
             for (Taxon relatedTaxon : taxonSet){
-    //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-                relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
+            	HibernateProxyHelper.deproxy(relatedTaxon, Taxon.class);
+                relatedTaxon.removeSynonym(synonym, false);
+                this.saveOrUpdate(relatedTaxon);
             }
             this.saveOrUpdate(synonym);
 
@@ -1364,7 +1365,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //remove name if possible (and required)
                 if (name != null && config.isDeleteNameIfPossible()){
 
-                        nameService.delete(name, config.getNameDeletionConfig());
+                        DeleteResult nameDeleteresult = nameService.delete(name, config.getNameDeletionConfig());
+                        if (nameDeleteresult.isAbort()){
+                        	result.addExceptions(nameDeleteresult.getExceptions());
+                        	result.addUpdatedObject(name);
+                        }
 
                 }
 

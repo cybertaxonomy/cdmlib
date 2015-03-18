@@ -59,7 +59,7 @@ public class Extension extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private ExtensionType type;
+    private ExtensionType type;
 	
     @XmlElement(name = "ExtendedObject")
     @XmlIDREF

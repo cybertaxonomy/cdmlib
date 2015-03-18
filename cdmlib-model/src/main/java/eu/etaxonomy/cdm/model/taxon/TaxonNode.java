@@ -551,10 +551,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setParent(parent);
 
         // set the classification to the parents classification
-        Classification classification = parent.getClassification();
-        //FIXME also set the tree index here for performance reasons
-        setClassificationRecursively(classification);
-
+       
+	        Classification classification = parent.getClassification();
+	        //FIXME also set the tree index here for performance reasons
+	        setClassificationRecursively(classification);
+        
         // add this node to the parent child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){

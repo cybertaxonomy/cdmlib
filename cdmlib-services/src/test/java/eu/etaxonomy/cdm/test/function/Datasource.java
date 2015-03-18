@@ -20,6 +20,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -62,7 +64,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -101,9 +103,9 @@ public class Datasource {
 //		
 		//H2
 //		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-    	String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
+    	String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
 		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
     	
  		try {
@@ -123,6 +125,7 @@ public class Datasource {
 
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
+
 		
 		appCtr.close();
 	}

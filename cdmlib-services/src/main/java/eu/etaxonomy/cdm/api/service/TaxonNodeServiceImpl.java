@@ -178,7 +178,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
-            for(TaxonNode childNode : oldTaxonNode.getChildNodes()){
+        	List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+        	for (TaxonNode childNode : oldTaxonNode.getChildNodes()){
+        		childNodes.add(childNode);
+        	}
+            for(TaxonNode childNode :childNodes){
                 newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference()); // childNode.getSynonymToBeUsed()
             }
         }
@@ -404,15 +408,29 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
     
+    
     @Override
     @Transactional
-    public TaxonNode moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
-    	Reference reference = taxonNode.getReference();
-    	String microReference = taxonNode.getMicroReference();
-    	newParent.addChildNode(taxonNode, reference, microReference);
-    	dao.saveOrUpdate(taxonNode);
-    	return taxonNode;
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
+        UpdateResult result = new UpdateResult();
+        result.addUpdatedObject(taxonNode.getParent());
+        result.addUpdatedObject(newParent);
+        result.setCdmEntity(taxonNode);
+        Reference reference = taxonNode.getReference();
+        String microReference = taxonNode.getMicroReference();
+        newParent.addChildNode(taxonNode, reference, microReference);
+        dao.saveOrUpdate(taxonNode);
+
+        return result;
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid) {
+        return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
+
+    }
+
 
 
 

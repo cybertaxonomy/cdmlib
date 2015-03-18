@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -65,6 +67,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     @Autowired
     private ITaxonDao taxonDao;
+    
+    @Autowired
+    private IHomotypicalGroupDao homotypicalGroupDao;
 
     public TaxonNameDaoHibernateImpl() {
         super(TaxonNameBase.class);
@@ -729,11 +734,25 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
-      
-        super.delete(persistentObject);
-
+        
+        if (persistentObject == null){
+            logger.warn(type.getName() + " was 'null'");
+            return null;
+        }
+        getSession().saveOrUpdate(persistentObject);
+        UUID persUuid = persistentObject.getUuid();
+        persistentObject = this.load(persUuid);
+        UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
+        getSession().delete(persistentObject);
+               
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
+        }
+        HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
+        if (homotypicalGroup != null){
+        	if (homotypicalGroup.getTypifiedNames().isEmpty()){
+        		homotypicalGroupDao.delete(homotypicalGroup);
+        	}
         }
         return persistentObject.getUuid();
     }

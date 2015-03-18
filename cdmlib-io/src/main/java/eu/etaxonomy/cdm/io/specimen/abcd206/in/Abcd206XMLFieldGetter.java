@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -156,7 +157,6 @@ public class Abcd206XMLFieldGetter {
         // logger.info("IN getScientificName " + dataHolder.nomenclatureCode);
         NodeList taxonsIdentified, scnames, atomised;
         String tmpName = "";
-        dataHolder.atomisedStr = "";
         taxonsIdentified = result.getChildNodes();
         for (int l = 0; l < taxonsIdentified.getLength(); l++) {
 
@@ -451,8 +451,9 @@ public class Abcd206XMLFieldGetter {
     /**
      * getGeolocation : get locality
      * @param root
+     * @param state 
      */
-    protected void getGeolocation(Element root) {
+    protected void getGeolocation(Element root, Abcd206ImportState state) {
         NodeList group, childs;
         try {
             group = root.getElementsByTagName(prefix + "LocalityText");
@@ -565,6 +566,18 @@ public class Abcd206XMLFieldGetter {
             }
         } catch (NullPointerException e) {
             dataHolder.namedAreaList = new ArrayList<String>();
+        }
+
+        if(state.getConfig().isRemoveCountryFromLocalityText()){
+            if(dataHolder.locality.startsWith(dataHolder.country)){
+                dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
+            }
+            List<String> namedAreaList = dataHolder.namedAreaList;
+            for (String namedArea : namedAreaList) {
+                if(dataHolder.locality.startsWith(namedArea)){
+                    dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
+                }
+            }
         }
     }
 

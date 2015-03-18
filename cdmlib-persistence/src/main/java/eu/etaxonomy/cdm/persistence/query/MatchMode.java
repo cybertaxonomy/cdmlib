@@ -23,7 +23,7 @@ public enum MatchMode {
      */
     EXACT("="),
     /**
-     * translates into <code>field LIKE %term</code>
+     * translates into <code>field LIKE term%</code>
      */
     BEGINNING("LIKE"),
     /**
@@ -31,7 +31,7 @@ public enum MatchMode {
      */
     ANYWHERE("LIKE"),
     /**
-     * translates into <code>field LIKE term%</code>
+     * translates into <code>field LIKE %term</code>
      */
     END("LIKE");
 

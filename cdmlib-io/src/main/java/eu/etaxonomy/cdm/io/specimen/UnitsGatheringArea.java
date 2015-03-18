@@ -93,11 +93,15 @@ public class UnitsGatheringArea {
         HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
         for (String namedAreaStr : namedAreas){
             for (DefinedTermBase na:termsList){
-                if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
-                    if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-                        matchingTerms.put(na.getTitleCache()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
-                    }
-                }
+            	if (na != null && namedAreas != null){
+	                if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
+	                    if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+	                        matchingTerms.put(na.getTitleCache()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+	                    }
+	                }
+            	}else{
+            		logger.debug("This should not happen.");
+            	}
             }
             //            logger.info("matchingterms: "+matchingTerms.keySet().toString());
             UUID areaUUID = null;

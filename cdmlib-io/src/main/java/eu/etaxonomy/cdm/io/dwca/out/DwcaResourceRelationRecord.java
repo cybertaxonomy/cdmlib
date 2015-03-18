@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

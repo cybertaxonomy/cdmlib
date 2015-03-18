@@ -18,10 +18,12 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
@@ -94,12 +96,9 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	public static final UUID uuidLanguageNomPilot = UUID.fromString("6aeb1a09-cb06-479d-9688-4574f2b80238");
 	
-	
-
-	{
-//		Languag
-	}
-	
+	//Languages FotG
+	public static final UUID uuidLanguagesCreol = UUID.fromString("9fc6b094-8c94-4758-ab0a-8eaafd6a6e27");
+	public static final UUID uuidLanguagesBoni = UUID.fromString("48e52604-ee3f-4427-8c3d-e867811f6aee");
 	
 	
 	
@@ -117,6 +116,13 @@ public class MarkupTransformer extends InputTransformerBase {
 //	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
 	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
 	public static final UUID uuidFeaturePlaceholder = UUID.fromString("89568794-375e-4a02-b75d-bd65601fb877");
+	public static final UUID uuidDestroyed = UUID.fromString("50d8b8c9-60e7-4efd-8b30-dec124ab9059");
+	public static final UUID uuidNotSeen = UUID.fromString("90241156-4fd0-4370-aeca-16c573fd0fa9");
+	public static final UUID uuidLost = UUID.fromString("90241156-4fd0-4370-aeca-16c573fd0fa9");
+	
+	
+	//identifier type uuids
+	public static final UUID uuidIdentTypeAlternativeFieldNumber = DefinedTerm.uuidAlternativeFieldNumber;
 	
 	
 	//named ared level uuids
@@ -1278,7 +1284,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		//guianas
 		}else if (key.equalsIgnoreCase("extraxylary sclerenchyma")){return uuidExtraxylarySclerenchyma;
 		
-		}else if (key.equalsIgnoreCase("wood specimens")){return uuidExtraxylarySclerenchyma;
+		}else if (key.equalsIgnoreCase("wood specimens")){return uuidWoodSpecimens;
 		}else if (key.equalsIgnoreCase("FAMILY DESCRIPTION")){return uuidFamilyDescription;
 		}else if (key.equalsIgnoreCase("TIMBERS AND THEIR PROPERTIES")){return uuidTimbersAndTheirProperties;
 		}else if (key.equalsIgnoreCase("FAMILY CHARACTERISTICS")){return uuidFamilyCharacteristics;
@@ -1320,6 +1326,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
+		}else if (key.equalsIgnoreCase("not seen")){return uuidNotSeen;
+		}else if (key.equalsIgnoreCase("destroyed")){return uuidDestroyed;
 		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
@@ -1395,6 +1403,10 @@ public class MarkupTransformer extends InputTransformerBase {
 		
 		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("78");
 		}else if (key.equalsIgnoreCase("West Indies")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("81");
+		
+		//guyana
+		}else if (key.equalsIgnoreCase("guyana")){return Country.GUYANAREPUBLICOF();
+		}else if (key.equalsIgnoreCase("suriname")){return Country.SURINAMEREPUBLICOF();
 		
 		}else{
 			return null;
@@ -1513,6 +1525,12 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("nom pilot")){return uuidLanguageNomPilot;
 		
 		
+		//FotG
+		}else if (key.equalsIgnoreCase("Creol")){return uuidLanguagesCreol;
+		}else if (key.equalsIgnoreCase("Creole")){return uuidLanguagesCreol;
+		}else if (key.equalsIgnoreCase("Boni")){return uuidLanguagesBoni;	
+		
+		
 		}else{
 			return null;
 		}
@@ -1529,10 +1547,5 @@ public class MarkupTransformer extends InputTransformerBase {
 			return null;
 		}
 	}
-	
-	
-	
-	
-	
 	
 }

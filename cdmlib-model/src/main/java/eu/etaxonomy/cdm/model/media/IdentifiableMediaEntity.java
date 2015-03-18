@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @MappedSuperclass
 @Audited
-public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy<?>> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy<?>> extends IdentifiableEntity<S> implements IMediaEntity{
 	private static final long serialVersionUID = 4038647011021908313L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);

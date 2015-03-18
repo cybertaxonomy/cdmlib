@@ -103,7 +103,7 @@ public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEnti
 
 
 	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+		this.identifier = identifier == "" ? null : identifier;
 	}
 
 
