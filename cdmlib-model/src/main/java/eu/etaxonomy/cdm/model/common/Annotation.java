@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
     "commentator",
     "annotatedObj",
     "annotationType",
-    "linkbackUri"
+    "linkbackUri",
+    "intextReferences"
 })
 @Entity
 @Audited
