@@ -280,6 +280,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
 
             for (int i = 0; i < unitsList.getLength(); i++) {
+                if(state.getConfig().getProgressMonitor().isCanceled()){
+                    break;
+                }
                 Element item = (Element) unitsList.item(i);
                 this.setUnitPropertiesXML( item, abcdFieldGetter, state);
                 updateProgress(state, "Importing data for unit "+dataHolder.unitID+" ("+i+"/"+unitsList.getLength()+")");
