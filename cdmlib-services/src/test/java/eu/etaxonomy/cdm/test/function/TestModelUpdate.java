@@ -38,6 +38,7 @@ public class TestModelUpdate {
 		
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm35");
+//		database = "validation_cichorieae";
 		String username = "edit";
 		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
