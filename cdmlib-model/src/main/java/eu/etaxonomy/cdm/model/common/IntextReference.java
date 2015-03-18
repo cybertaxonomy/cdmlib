@@ -136,6 +136,11 @@ public class IntextReference extends VersionableEntity {
 
 //********************** CONSTRUCTOR ********************************************/
 	
+	/**
+	 * @deprecated for internal use only
+	 */
+	@Deprecated //for hibernate use only
+	private IntextReference(){};
 	
 	private IntextReference(TaxonNameBase<?, ?> taxonName, TaxonBase<?> taxon,
 				SpecimenOrObservationBase<?> occurrence, AgentBase<?> agent,
