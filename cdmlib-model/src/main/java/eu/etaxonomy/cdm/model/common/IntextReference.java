@@ -42,11 +42,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
     "taxon",
     "occurrence",
     "agent",
-    "reference"
+    "reference",
+    "media",
+    "languageString",
+    "annotation",
+    "startPos",
+    "endPos"
 })
 @Entity
 @Audited
-public class IntextReference extends CdmBase {
+public class IntextReference extends VersionableEntity {
 	private static final long serialVersionUID = -7002541566256975424L;
 	
     @XmlElement(name = "TaxonName")
