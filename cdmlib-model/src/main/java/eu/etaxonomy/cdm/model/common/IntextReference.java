@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.model.common;
 
@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * to the according CdmBase.
  * This way we may keep referential integrity and we may also support correct
  * deduplication or deletion of the referenced objects.
- * 
+ *
  * @see #4706
- * 
+ *
  * @author a.mueller
  *
  */
@@ -53,67 +53,67 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Audited
 public class IntextReference extends VersionableEntity {
 	private static final long serialVersionUID = -7002541566256975424L;
-	
+
     @XmlElement(name = "TaxonName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private TaxonNameBase<?,?> taxonName;
-    
+
     @XmlElement(name = "Taxon")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private TaxonBase<?> taxon;
-    
+
     @XmlElement(name = "Occurrence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private SpecimenOrObservationBase<?> occurrence;
-    
+
     @XmlElement(name = "Agent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private AgentBase<?> agent;
-    
+
     @XmlElement(name = "Reference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private Reference<?> reference;
-    
+
     @XmlElement(name = "Media")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private Media media;
-	
-    //TODO or do we want to link to LanguageString Base?? 
+
+    //TODO or do we want to link to LanguageString Base??
     @XmlElement(name = "LanguageString")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     private LanguageString languageString;
-    
-    //TODO or do we want to link to LanguageString Base?? 
+
+    //TODO or do we want to link to LanguageString Base??
     @XmlElement(name = "Annotation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     private Annotation annotation;
-    
+
 	private int startPos;
-	
+
 	private int endPos;
-	
-// ***************** FACTORY METHOD ***********************************	
-	
+
+// ***************** FACTORY METHOD ***********************************
+
 	public static IntextReference NewTaxonNameInstance(TaxonNameBase<?,?> taxonName, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(taxonName, null, null, null, null, null, languageString, start, end);
 	}
-	
+
 	public static IntextReference NewTaxonInstance(TaxonBase<?> taxon, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(null, taxon, null, null, null, null, languageString, start, end);
 	}
@@ -129,19 +129,19 @@ public class IntextReference extends VersionableEntity {
 	public static IntextReference NewReferenceInstance(Reference<?> reference, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(null, null, null, null, reference, null, languageString, start, end);
 	}
-	
+
 	public static IntextReference NewReferenceInstance(Media media, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(null, null, null, null, null, media, languageString, start, end);
 	}
 
 //********************** CONSTRUCTOR ********************************************/
-	
+
 	/**
 	 * @deprecated for internal use only
 	 */
 	@Deprecated //for hibernate use only
-	private IntextReference(){};
-	
+	private IntextReference(){}
+
 	private IntextReference(TaxonNameBase<?, ?> taxonName, TaxonBase<?> taxon,
 				SpecimenOrObservationBase<?> occurrence, AgentBase<?> agent,
 				Reference<?> reference, Media media, LanguageStringBase languageString, int start, int end) {
@@ -161,17 +161,17 @@ public class IntextReference extends VersionableEntity {
 			this.startPos = start;
 			this.endPos = end;
 	}
-	
-	
-// ****************    GETTER / SETTER ******************************************/	
-	
+
+
+// ****************    GETTER / SETTER ******************************************/
+
 	public TaxonNameBase<?, ?> getTaxonName() {
 		return taxonName;
 	}
 	public void setTaxonName(TaxonNameBase<?, ?> taxonName) {
 		this.taxonName = taxonName;
 	}
-	
+
 
 	public TaxonBase<?> getTaxon() {
 		return taxon;
@@ -179,21 +179,21 @@ public class IntextReference extends VersionableEntity {
 	public void setTaxon(TaxonBase<?> taxon) {
 		this.taxon = taxon;
 	}
-	
+
 	public SpecimenOrObservationBase<?> getOccurrence() {
 		return occurrence;
 	}
 	public void setOccurrence(SpecimenOrObservationBase<?> occurrence) {
 		this.occurrence = occurrence;
 	}
-	
+
 	public AgentBase<?> getAgent() {
 		return agent;
 	}
 	public void setAgent(AgentBase<?> agent) {
 		this.agent = agent;
 	}
-	
+
 	public Reference<?> getReference() {
 		return reference;
 	}
@@ -201,8 +201,8 @@ public class IntextReference extends VersionableEntity {
 		this.reference = reference;
 	}
 
-	
-	
+
+
 	public Media getMedia() {
 		return media;
 	}
@@ -238,5 +238,5 @@ public class IntextReference extends VersionableEntity {
 	public void setEndPos(int endPos) {
 		this.endPos = endPos;
 	}
-	
+
 }
