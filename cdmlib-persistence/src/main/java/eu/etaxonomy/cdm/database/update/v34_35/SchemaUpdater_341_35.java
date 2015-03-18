@@ -93,10 +93,10 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         //... and create new entity validation and 
         stepName = "Create EntityValidation table";
         tableName = "EntityValidation";
-        columnNames = new String[]{"crudeventtype","userfriendlydescription","userfriendlytypename",
-                "validatedentityclass","validatedentityid","validatedentityuuid, validationcount, status"};
-        columnTypes = new String[]{"string_255","string_255","string_255","string_255","int","string_36","int","string_20"};
-        referencedTables = new String[]{null,null,null,null,null,null,null,null};
+        columnNames = new String[]{"updated","crudeventtype","userfriendlydescription","userfriendlytypename",
+                "validatedentityclass","validatedentityid","validatedentityuuid", "validationcount", "status"};
+        columnTypes = new String[]{"datetime","string_255","string_255","string_255","string_255","int","string_36","int","string_20"};
+        referencedTables = new String[]{null,null,null,null,null,null,null,null,null};
         step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
         stepList.add(step);
 
@@ -110,8 +110,6 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
         stepList.add(step);
 
-
-		
 		return stepList;
 		
 	}
