@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,11 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -43,34 +43,28 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalSourceDao> implements ICommonService {
+public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/ implements ICommonService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
-	
-	@Autowired
-	IOriginalSourceDao originalSourceDao;
-	
-	@Autowired
-	ICdmGenericDao genericDao;
-
 
 	@Autowired
-	protected void setDao(IOriginalSourceDao dao) {
-		this.dao = dao;
-	}
-	
+	private IOriginalSourceDao originalSourceDao;
+
+	@Autowired
+	private ICdmGenericDao genericDao;
+
 	@Override
 	public CdmBase find(Class<? extends CdmBase> clazz, int id){
 		return genericDao.find(clazz, id);
 	}
-	
+
 
 	@Override
 	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
 		Map<String, ? extends ISourceable> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
 		return list;
 	}
-	
+
 	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
@@ -79,33 +73,33 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 			result = list.get(0);
 		}return result;
 	}
-	
-	
+
+
 	@Override
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		return this.genericDao.getReferencingObjects(referencedCdmBase);
-	}	
-	
-	
+	}
+
+
 	@Override
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
 		return this.genericDao.getReferencingObjectsForDeletion(referencedCdmBase);
 	}
 //		try {
 //			Set<Class<? extends CdmBase>> allCdmClasses = genericDao.getAllCdmClasses(false); //findAllCdmClasses();
-//			
+//
 //			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 //			Class referencedClass = referencedCdmBase.getClass();
 //			Set<CdmBase> result = new HashSet<CdmBase>();
 //			logger.debug("Referenced Class: " + referencedClass.getName());
-//			
+//
 //			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 //				Set<Field> fields = getFields(cdmClass);
 //				for (Field field: fields){
 //					Class<?> type = field.getType();
 //					//class
 //					if (! type.isInterface()){
-//						if (referencedClass.isAssignableFrom(type)|| 
+//						if (referencedClass.isAssignableFrom(type)||
 //								type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
 //							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
 //						}
@@ -113,9 +107,9 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //					}else if (type.isAssignableFrom(referencedClass)){
 //							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
 //					}else if (Collection.class.isAssignableFrom(type)){
-//						
+//
 //						if (checkIsSetOfType(field, referencedClass, type) == true){
-//							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, true);	
+//							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, true);
 //						}
 //					}
 ////				Class[] interfaces = referencedClass.getInterfaces();
@@ -125,16 +119,16 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 ////						handleSingleClass(interfaze, type, field, cdmClass, result, referencedCdmBase);
 ////					}
 ////				}
-//				}	
+//				}
 //			}
 //			return result;
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //			throw new RuntimeException(e);
 //		}
-//		
+//
 //	}
-//	
+//
 //	private boolean checkIsSetOfType(Field field, Class referencedClass, Class<?> type){
 //		Type genericType = (ParameterizedTypeImpl)field.getGenericType();
 //		if (genericType instanceof ParameterizedTypeImpl){
@@ -169,28 +163,28 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		}
 //		return false;
 //	}
-//	
-//	
-//	
-//	
+//
+//
+//
+//
 //	private boolean handleSingleClass(Class itemClass, Class type, Field field, Class cdmClass, Set<CdmBase> result,CdmBase value, boolean isCollection){
 //		if (! Modifier.isStatic(field.getModifiers())){
 //			String methodName = StringUtils.rightPad(field.getName(), 30);
 //			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 //			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
-//			
+//
 //			logger.debug(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
 ////			result_old.add(method);
 //			result.addAll(getCdmBasesByFieldAndClass(field, itemClass, cdmClass, value, isCollection));
 //		}
 //		return true;
 //	}
-//	
+//
 //	private Set<Field> getFields(Class clazz){
 //		Set<Field> result = new HashSet<Field>();
 //		for (Field field: clazz.getDeclaredFields()){
 //			if (!Modifier.isStatic(field.getModifiers())){
-//				result.add(field);	
+//				result.add(field);
 //			}
 //		}
 //		Class superclass = clazz.getSuperclass();
@@ -199,7 +193,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		}
 //		return result;
 //	}
-//	
+//
 //	private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class itemClass, Class otherClazz, CdmBase item, boolean isCollection){
 //		Set<CdmBase> result = new HashSet<CdmBase>();
 //		if (isCollection){
@@ -209,7 +203,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		}
 //		return result;
 //	}
-	
+
 	@Override
 	public List getHqlResult(String hqlQuery){
 		return genericDao.getHqlResult(hqlQuery);
@@ -231,19 +225,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		}
 		return genericDao.findMatching(objectToMatch, matchStrategy);
 	}
-	
-	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-//	 */
-//	@Override
-//	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
-//			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-//			List<String> propertyPaths) {
-//		logger.warn("Not yet implemented");
-//		return null;
-//	}
+
 
 	@Transactional(readOnly = false)
 	@Override
@@ -271,33 +253,33 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
             return genericDao.initializeCollection(col);
 
     }
-    
+
     @Override
     public boolean isEmpty(PersistentCollection col) {
             return genericDao.isEmpty(col);
 
     }
-    
+
     @Override
 	public int size(PersistentCollection col) {
     	return genericDao.size(col);
     }
-    
+
     @Override
     public Object get(PersistentCollection col, int index) {
     	return genericDao.get(col, index);
     }
-    
+
     @Override
     public boolean contains(PersistentCollection col, Object element) {
     	return genericDao.contains(col, element);
     }
-    
-    @Override    
+
+    @Override
     public boolean containsKey(PersistentCollection col, Object key) {
     	return genericDao.containsKey(col, key);
     }
-    
+
     @Override
     public boolean containsValue(PersistentCollection col, Object element) {
     	return genericDao.containsValue(col, element);
@@ -308,4 +290,23 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	public void createFullSampleData() {
 		genericDao.createFullSampleData();
 	}
+
+
+    @Override
+    public void updateEntity(CdmBase cdmBase) {
+        genericDao.update(cdmBase);
+    }
+
+    @Override
+    public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
+        return genericDao.list(type,limit, start, orderHints,propertyPaths);
+    }
+
+    @Override
+    public <S extends CdmBase> int count(Class<S> type) {
+        return genericDao.count(type);
+    }
+
+
+
 }

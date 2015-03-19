@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,21 +30,21 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MonitoredListableBeanFactory.class);
-	
+
 	private boolean isInitializingBeans = false;
 	private IProgressMonitor currentMonitor;
-	
+
 	private static List<String> beansToMonitor = Arrays.asList("sessionFactory","defaultBeanInitializer","persistentTermInitializer");
-	private Set<String> alreadyMonitoredBeans = new HashSet<String>();
+	private final Set<String> alreadyMonitoredBeans = new HashSet<String>();
 
 	public MonitoredListableBeanFactory(){
 	}
-	
+
 //	@Override
 //	protected RootBeanDefinition getMergedLocalBeanDefinition(String beanName) throws BeansException {
 //		if (registeredBeanNames.contains(beanName)){
 //			return super.getMergedLocalBeanDefinition(beanName);
-//				
+//
 //		}
 ////		String message = "Handle bean '%s'";
 ////		message = String.format(message, beanName);
@@ -54,8 +54,9 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 ////		registeredBeanNames.add(beanName);
 //		return result;
 //	}
-	
-	public void preInstantiateSingletons() throws BeansException {
+
+	@Override
+    public void preInstantiateSingletons() throws BeansException {
 		isInitializingBeans = true;
 		checkMonitorCancelled(currentMonitor);
 		int countBeans = 0;
@@ -86,7 +87,8 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 //		}
 //		return result;
 //	}
-	
+
+	@Override
 	protected Object createBean(final String name, final RootBeanDefinition mbd, final Object[] args){
 		boolean doMonitor = isInitializingBeans && beansToMonitor.contains(name) && !alreadyMonitoredBeans.contains(name);
 		checkMonitorCancelled(currentMonitor);
@@ -111,18 +113,18 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 		return result;
 	}
 
-	
+
 	/**
 	 * @param mainMonitor the mainMonitor to set
 	 */
 	public void setCurrentMonitor(IProgressMonitor monitor) {
 		this.currentMonitor = monitor;
 	}
-	
+
 	private void checkMonitorCancelled(IProgressMonitor monitor) {
 		if (monitor != null && monitor.isCanceled()){
 			throw new CancellationException();
-		}	
+		}
 	}
-		
+
 }

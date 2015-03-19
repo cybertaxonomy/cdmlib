@@ -2220,7 +2220,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImp
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeByAreaLabelComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityConstraintViolationServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityValidationResultServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EntityValidationServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EventBaseServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
@@ -2236,7 +2236,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityConstraintViolationService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityValidationResultService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityValidationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEventBaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.java -text
@@ -2363,6 +2363,13 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/AbstractRelation
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/TaxonRelationshipEdge.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/DescriptionUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/Level3TransactionalValidationEventListener.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/Level3TransactionalValidationTask.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/ValidationManager.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidationUtil.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/EntityValidationUnit.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/validation/batch/ValidationScheduler.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
@@ -2424,6 +2431,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServi
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/utility/DescriptionUtilityTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/validation/batch/BatchValidatorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/scripts/FixMultipleTextDataInImageGalleries.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/example/ApplicationExample.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text
@@ -2433,8 +2441,10 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configurati
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLocationServiceImpl.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestModelUpdate.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestValidationManager.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNoUnit.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text

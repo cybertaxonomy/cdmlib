@@ -8,19 +8,18 @@
 	* The contents of this file are subject to the Mozilla Public License Version 1.1
 	* See LICENSE.TXT at the top of this package for the full license terms.
 	*/
-	package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.api.service;
 
-	import java.io.Serializable;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-	import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
-	import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 	/**
 	 * This class represents the result of an update action.
