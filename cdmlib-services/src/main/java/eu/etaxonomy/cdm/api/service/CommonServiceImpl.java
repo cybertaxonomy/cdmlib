@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.collection.spi.PersistentCollection;
@@ -293,11 +294,6 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
 
     @Override
-    public void updateEntity(CdmBase cdmBase) {
-        genericDao.update(cdmBase);
-    }
-
-    @Override
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
         return genericDao.list(type,limit, start, orderHints,propertyPaths);
     }
@@ -307,6 +303,19 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         return genericDao.count(type);
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public UUID save(CdmBase newInstance) {
+        return genericDao.save(newInstance);
+    }
+    
 
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
+        //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
+    	//and generally the saveAll method should work for other CdmBase types with generics removed
+    	return (Map)originalSourceDao.saveAll((Collection)newInstances);
+    }
 
 }

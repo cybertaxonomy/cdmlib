@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.Session;
 import org.hibernate.collection.spi.PersistentCollection;
@@ -188,11 +189,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	@Deprecated
 	public void createFullSampleData();
 
-	//TODO as common service currently implements OriginalSourceBase this is additionally needed
-	//maybe fixed in future
-    void updateEntity(CdmBase cdmBase);
-
-
 
     /**
      * Returns the number of objects that belong to a certain class.
@@ -215,5 +211,21 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * Save a new entity (persists the entity)
+     * @param newInstance the new entity to be persisted
+     * @return A generated UUID for the new persistent entity
+     */
+    public UUID save(CdmBase newInstance);
+    
 
+    /**
+     * Save a collection containing new entities (persists the entities)
+     * @param newInstances the new entities to be persisted
+     * @return A Map containing the new entities, keyed using the generated UUID's
+     *         of those entities
+     */
+    public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+    
+    
 }

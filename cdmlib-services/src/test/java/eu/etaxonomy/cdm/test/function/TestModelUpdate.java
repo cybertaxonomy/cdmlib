@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.IntextReference;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TestModelUpdate {
@@ -94,10 +96,30 @@ public class TestModelUpdate {
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
+	private void updateRemoteWebappTestH2(){
+		String path = "C:\\Users\\a.mueller\\eclipse\\workspaces\\mergeBoth\\merge\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
+		
+    	
+ 		try {
+			CdmUpdater updater = new CdmUpdater();
+			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+		CdmApplicationController appCtr;
+		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
+	}
+	
 
 	private void test(){
 		System.out.println("Start Datasource");
-		testMySQL();
+//		testMySQL();
+		
+		updateRemoteWebappTestH2();
+		
     	//testDatabaseChange();
 		
 		//testSqlServer();
