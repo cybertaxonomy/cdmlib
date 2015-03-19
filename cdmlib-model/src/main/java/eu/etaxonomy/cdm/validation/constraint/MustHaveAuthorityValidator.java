@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation.constraint;
 
@@ -14,40 +14,41 @@ import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
+import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 
 public class MustHaveAuthorityValidator implements
-		ConstraintValidator<MustHaveAuthority, NonViralName> {
+		ConstraintValidator<NameMustHaveAuthority, NonViralName<?>> {
 
-	public void initialize(MustHaveAuthority mustHaveAuthority) { }
+	@Override
+    public void initialize(NameMustHaveAuthority mustHaveAuthority) { }
 
-	public boolean isValid(NonViralName name, ConstraintValidatorContext constraintContext) {
+    @Override
+    public boolean isValid(NonViralName<?> name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
-		
+
 		if(name.getBasionymAuthorTeam() == null && name.getAuthorshipCache() == null) {
 		    valid = false;
-		    if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
-			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+		    if(name.isInstanceOf(BotanicalName.class) && name.isInfraSpecific()) {
+			    if(name.isAutonym() ) {
 				    valid = true; // is AUTONYM
-			    } 
-		    } 
-		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
-		    	valid = true;
 			    }
-		    
-		    } else {
+		    }
+		    if(name.isSpeciesAggregate()) { // Species aggregates don't have authorities
+		    	valid = true;
+			}
+
+		} else {
 			valid = true;
-			if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
-			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+			if(name.isInstanceOf(BotanicalName.class) && name.isInfraSpecific()) {
+			    if(name.isAutonym()) {
 				    valid = false; // is AUTONYM
-			    } 
-		    } 
-		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
+			    }
+		    }
+		    if(name.isSpeciesAggregate()) { // Species aggregates don't have authorities
 			    valid = false;
 		    }
 		}
-		
-		return valid;		
+
+		return valid;
 	}
 }

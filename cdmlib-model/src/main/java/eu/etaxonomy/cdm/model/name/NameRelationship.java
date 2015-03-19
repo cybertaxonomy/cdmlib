@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,11 +28,12 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
 import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
 
 /**
  * The class representing a relationship between two {@link TaxonNameBase taxon names} according
- * to the {@link NomenclaturalCode nomenclatural code} which governs both of them. 
+ * to the {@link NomenclaturalCode nomenclatural code} which governs both of them.
  * This includes a {@link NameRelationshipType name relationship type} (for instance "later homonym" or
  * "orthographic variant") and the article of the corresponding nomenclatural
  * code on which the assignation of the relationship type is based.
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
  * <li> Relationship according to the TDWG ontology
  * <li> TaxonRelationship according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:37
@@ -55,7 +56,8 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 })
 @Entity
 @Audited
-@NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = {Level3.class})
+@NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
+@BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> implements Cloneable{
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
@@ -64,7 +66,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	//the note property.
     @XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
-    
+
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -78,7 +80,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase relatedTo;
-	
+
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -93,13 +95,13 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		super();
 	}
 
-	
-	// ************* CONSTRUCTORS *************/	
+
+	// ************* CONSTRUCTORS *************/
 	/**
 	 * Class constructor: creates a new name relationship instance with no
 	 * reference and adds it to the respective
 	 * {@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
-	 * 
+	 *
 	 * @param toName			the taxon name to be set as target for the new name relationship
 	 * @param fromName			the taxon name to be set as source for the new name relationship
 	 * @param type				the relationship type to be assigned to the new name relationship
@@ -112,12 +114,12 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	protected NameRelationship(TaxonNameBase toName, TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered) {
 		this(toName, fromName, type, null, null, ruleConsidered);
 	}
-	
+
 	/**
 	 * Class constructor: creates a new name relationship instance including
-	 * its {@link  eu.etaxonomy.cdm.model.reference.Reference reference source} and adds it to the respective 
+	 * its {@link  eu.etaxonomy.cdm.model.reference.Reference reference source} and adds it to the respective
 	 *{@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
-	 * 
+	 *
 	 * @param toName				the taxon name to be set as target for the new name relationship
 	 * @param fromName				the taxon name to be set as source for the new name relationship
 	 * @param type					the relationship type to be assigned to the new name relationship
@@ -133,13 +135,13 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		super(fromName, toName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}
-	
+
 	//********* METHODS **************************************/
 
-	/** 
+	/**
 	 * Returns the {@link TaxonNameBase taxon name} that plays the source role
 	 * in <i>this</i> taxon name relationship.
-	 *  
+	 *
 	 * @see   #getToName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
@@ -147,7 +149,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	public TaxonNameBase getFromName(){
 		return this.getRelatedFrom();
 	}
-	
+
 	/**
 	 * @see  #getFromName()
 	 */
@@ -155,10 +157,10 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		this.setRelatedFrom(fromName);
 	}
 
-	/** 
+	/**
 	 * Returns the {@link TaxonNameBase taxon name} that plays the target role
 	 * in <i>this</i> taxon name relationship.
-	 *  
+	 *
 	 * @see   #getFromName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
@@ -166,7 +168,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	public TaxonNameBase getToName(){
 		return this.getRelatedTo();
 	}
-	
+
 	/**
 	 * @see  #getToName()
 	 */
@@ -174,7 +176,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		this.setRelatedTo(toName);
 	}
 
-	/** 
+	/**
 	 * Returns the nomenclatural code rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code ruling
 	 * the  taxon name(s) of this nomenclatural status).
@@ -194,48 +196,54 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	}
 
 	// for extra-package access to relatedFrom use getFromName instead
-	protected TaxonNameBase getRelatedFrom() {
+	@Override
+    protected TaxonNameBase getRelatedFrom() {
 		return relatedFrom;
 	}
-	
+
     // for extra-package access to relatedFrom use getToName instead
-	protected TaxonNameBase getRelatedTo() {
+	@Override
+    protected TaxonNameBase getRelatedTo() {
 		return relatedTo;
 	}
 
-	public NameRelationshipType getType() {
+	@Override
+    public NameRelationshipType getType() {
 		return type;
 	}
 
-	protected void setRelatedFrom(TaxonNameBase relatedFrom) {
+	@Override
+    protected void setRelatedFrom(TaxonNameBase relatedFrom) {
 		if (relatedFrom == null){
 			this.deletedObjects.add(this.relatedFrom);
 		}
 		this.relatedFrom = relatedFrom;
 	}
 
-	protected void setRelatedTo(TaxonNameBase relatedTo) {
+	@Override
+    protected void setRelatedTo(TaxonNameBase relatedTo) {
 		if (relatedTo == null){
 			this.deletedObjects.add(this.relatedTo);
 		}
 		this.relatedTo = relatedTo;
 	}
 
-	public void setType(NameRelationshipType type) {
+	@Override
+    public void setType(NameRelationshipType type) {
 		this.type = type;
 	}
-	
-	
+
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> name relationship. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> name relationship by
 	 * modifying only some of the attributes.<BR>
-	 * CAUTION: Cloning a relationship will not add the relationship to the according 
+	 * CAUTION: Cloning a relationship will not add the relationship to the according
 	 * {@link #relatedFrom} and {@link #relatedTo} objects. The method is meant to be used
 	 * mainly for internal purposes (e.g. used within {@link TaxonNameBase#clone()}
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.RelationshipBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -251,5 +259,5 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 			e.printStackTrace();
 			return null;
 		}
-	}	
+	}
 }

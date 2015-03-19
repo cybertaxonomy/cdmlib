@@ -51,7 +51,6 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
-import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -122,7 +121,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    @Valid
+//    @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
     // all taxa relations with rel.toTaxon==this
@@ -133,7 +132,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    @Valid
+//    @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
     @XmlAttribute(name= "taxonStatusUnknown")
@@ -281,21 +280,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, null);
-        
-        
         descriptions.remove(description);
-    }
-    
-    public void removeDescription(TaxonDescription description, boolean removeElements){
-    	if (removeElements){
-    		Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>(description.getElements());
-            for (DescriptionElementBase el:elements){
-            	description.getElements().remove(el);
-            }
-            removeDescription(description);
-    	} else{
-    		removeDescription(description);
-    	}
     }
 
     /**
@@ -1504,7 +1489,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     		synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
     	} else{
     		logger.warn("The synonym is already related to the taxon.");
-    		
+
     	}
         return synRel;
     }
@@ -1848,10 +1833,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 
     }
 
-	public void clearDescriptions() {
+    public void clearDescriptions() {
 		this.descriptions = new HashSet<TaxonDescription>();
-		
 	}
-    
-   
 }

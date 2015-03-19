@@ -17,10 +17,10 @@ import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustDeriveNameFromParentV
 @Constraint(validatedBy = ChildTaxaMustDeriveNameFromParentValidator.class)
 @Documented
 public @interface ChildTaxaMustDeriveNameFromParent {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {}; //Level3.class
 }

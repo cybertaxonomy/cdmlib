@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.validation.annotation;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -10,17 +11,18 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustNotSkipRanksValidator;
+import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
 
-@Target( { TYPE })
+
+@Target( { TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ChildTaxaMustNotSkipRanksValidator.class)
+@Constraint(validatedBy = TypeDesignationValidator.class)
 @Documented
-public @interface ChildTaxaMustNotSkipRanks {
+public @interface ValidTypeDesignation {
 
-	String message() default "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.message}";
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.name.ValidTypeDesignation.message}";
 
 	Class<? extends Payload>[] payload() default {};
 
-	Class<?>[] groups() default {};  //Level3.class
+	Class<?>[] groups() default {};  //Level2.class
 }

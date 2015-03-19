@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation.annotation;
 
@@ -26,10 +26,10 @@ import eu.etaxonomy.cdm.validation.constraint.StubValidator;
 @Constraint(validatedBy = StubValidator.class)
 @Documented
 public @interface NoDuplicateNames {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level3.class or level4
 }

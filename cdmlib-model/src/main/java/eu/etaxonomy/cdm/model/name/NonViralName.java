@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
-import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
+import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -117,7 +117,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @Configurable
 @CorrectEpithetsForRank(groups = Level2.class)
-@MustHaveAuthority(groups = Level2.class)
+@NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> implements Cloneable{
     private static final long serialVersionUID = 4441110073881088033L;
@@ -145,8 +145,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @CacheUpdate("nameCache")
     @Size(max = 255)
     @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
-    @NullOrNotEmpty 
-    @NotEmpty(groups = Level3.class)  //TODO shouldn't this be only @NotNull as @NullOrNotEmpty already checks for not being empty.
+    @NullOrNotEmpty
+    @NotNull(groups = Level2.class)
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
@@ -226,7 +226,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     //TODO Val #3379
 //    @NotNull
     @Size(max = 255)
-    @Pattern(regexp = "[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
+    @Pattern(regexp = "^[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+$", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
     private String authorshipCache;
 
     @XmlElement(name = "ProtectedAuthorshipCache")
@@ -244,7 +244,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})  
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
