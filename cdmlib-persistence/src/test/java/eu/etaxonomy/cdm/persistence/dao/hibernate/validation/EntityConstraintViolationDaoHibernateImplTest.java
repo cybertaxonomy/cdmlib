@@ -11,11 +11,11 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
+import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-import eu.etaxonomy.cdm.model.validation.Severity;
 
-@DataSet(value="EntityValidationResultDaoHibernateImplTest.xml")
+@DataSet(value="EntityValidationDaoHibernateImplTest.xml")
 public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegrationTest {
 
 	private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
@@ -27,15 +27,13 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 
 
 	@Test
-	public void init()
-	{
+	public void init(){
 		assertNotNull("Expecting an instance of IEntityConstraintViolationDao", dao);
 	}
 
 
 	@Test
-	public void testGetConstraintViolations_String()
-	{
+	public void testGetConstraintViolations_String(){
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA);
@@ -53,8 +51,7 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 
 
 	@Test
-	public void testGetConstraintViolations_String_Severity()
-	{
+	public void testGetConstraintViolations_String_Severity(){
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA, Severity.NOTICE);
@@ -87,5 +84,4 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmIntegratio
 	public void createTestDataSet() throws FileNotFoundException {
 		// TODO Auto-generated method stub
 	}
-
 }
