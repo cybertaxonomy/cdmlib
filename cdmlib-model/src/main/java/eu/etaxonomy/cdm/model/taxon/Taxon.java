@@ -282,6 +282,19 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         ReflectionUtils.setField(field, description, null);
         descriptions.remove(description);
     }
+    
+    
+    public void removeDescription(TaxonDescription description, boolean removeElements){
+    	if (removeElements){
+    		Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>(description.getElements());
+            for (DescriptionElementBase el:elements){
+            	description.getElements().remove(el);
+            }
+            removeDescription(description);
+    	} else{
+    		removeDescription(description);
+    	}
+    }
 
     /**
      * Returns the image gallery for a taxon. If there are multiple taxon descriptions
