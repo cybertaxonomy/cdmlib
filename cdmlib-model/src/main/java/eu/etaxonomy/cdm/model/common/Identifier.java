@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
-public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEntity {
+public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEntity {
 	private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Identifier.class);
