@@ -25,7 +25,6 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 
 /**
@@ -55,6 +54,13 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 //    @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
+    
+    //under construction #4311
+    @XmlElement(name="CollectorTitle")
+    @Field(index=Index.YES)
+    @Size(max = 255)
+    protected String collectorTitle;
+    
 
     @Transient
     @XmlTransient

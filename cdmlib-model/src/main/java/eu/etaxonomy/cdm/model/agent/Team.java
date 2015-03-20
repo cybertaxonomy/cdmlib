@@ -75,6 +75,10 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;
 
+    //under construction #4311
+    @XmlElement(name = "ProtectedCollectorTitleCache")
+	private boolean protectedCollectorTitleCache = false;
+    
 	//An abbreviated name for the team (e. g. in case of nomenclatural authorteams). 
     //A non abbreviated name for the team (e. g.
 	//in case of some bibliographical references)

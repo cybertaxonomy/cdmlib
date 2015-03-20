@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -127,6 +128,23 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         tableName = "Identifier";
         step = ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
+        
+        //agent - collector title  #4311
+        stepName = "Add collector title for TeamOrPersonBase";
+        tableName = "AgentBase";
+        newColumnName = "collectorTitle";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+        
+        //agent - collector title  #4311
+        stepName = "Add protectedCollectorTitleCache to Team";
+        tableName = "AgentBase";
+        newColumnName = "protectedCollectorTitleCache";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+ 
+        
+        
         
         //#4110 update idInVocabulary for some new databases
         updateAreas(stepList);
