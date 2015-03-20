@@ -26,10 +26,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TestModelUpdate {
@@ -69,7 +65,7 @@ public class TestModelUpdate {
 //		description.addElement(textData);
 //		LanguageString text = textData.putText(Language.ENGLISH(), "Ich bin ein toller text");
 //		IntextReference.NewAgentInstance(person, text, 3, 5);
-
+//
 //		appCtr.getAgentService().save(person);
 //		appCtr.getTaxonService().save(taxon);
 //		appCtr.getCommonService().createFullSampleData();
