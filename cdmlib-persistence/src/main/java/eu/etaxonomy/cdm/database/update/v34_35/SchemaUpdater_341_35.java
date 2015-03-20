@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -116,6 +117,12 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         String sql = "DELETE FROM @@TaxonNode@@ WHERE classification_id IS NULL";
         tableName = "TaxonNode";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, tableName, 0);
+        stepList.add(step);
+        
+        //identifier versionable -> annotatable
+        stepName = "Upgrade identifier from versionable to annotatable";
+        tableName = "Identifier";
+        step = ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
         
 		return stepList;

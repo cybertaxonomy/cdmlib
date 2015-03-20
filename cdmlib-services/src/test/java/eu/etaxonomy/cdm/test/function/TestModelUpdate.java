@@ -116,9 +116,9 @@ public class TestModelUpdate {
 
 	private void test(){
 		System.out.println("Start Datasource");
-//		testMySQL();
+		testMySQL();
 		
-		updateRemoteWebappTestH2();
+//		updateRemoteWebappTestH2();
 		
     	//testDatabaseChange();
 		
