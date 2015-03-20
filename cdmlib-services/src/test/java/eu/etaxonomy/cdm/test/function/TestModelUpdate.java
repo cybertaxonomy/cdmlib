@@ -96,8 +96,13 @@ public class TestModelUpdate {
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
+	/**
+	 * Updates the H2 test database in remote web-app.
+	 * Requires that the local path to the database is adapted
+	 */
+	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-		String path = "C:\\Users\\a.mueller\\eclipse\\workspaces\\mergeBoth\\merge\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 		
     	
@@ -111,6 +116,7 @@ public class TestModelUpdate {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
+		appCtr.close();
 	}
 	
 
