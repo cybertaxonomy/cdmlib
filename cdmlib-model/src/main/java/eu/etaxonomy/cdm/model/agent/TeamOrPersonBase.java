@@ -37,7 +37,8 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {
-    "nomenclaturalTitle"
+    "nomenclaturalTitle",
+    "collectorTitle"
 })
 @Entity
 @Audited

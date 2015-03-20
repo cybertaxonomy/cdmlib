@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Team", propOrder = {
 	"protectedNomenclaturalTitleCache",
+	"protectedCollectorTitleCache",
     "teamMembers"
 })
 @XmlRootElement(name = "Team")
