@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
@@ -110,6 +111,13 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
         stepList.add(step);
 
+        //Delete orphaned taxon nodes #2341
+        stepName = "Delete orhphaned taxon nodes";
+        String sql = "DELETE FROM @@TaxonNode@@ WHERE classification_id IS NULL";
+        tableName = "TaxonNode";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, tableName, 0);
+        stepList.add(step);
+        
 		return stepList;
 		
 	}
