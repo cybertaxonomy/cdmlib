@@ -97,7 +97,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
-		//TaxonName for DeterminationEvent
+		//TaxonName for DeterminationEvent #3448, #4203, #4518
 		stepName = "Add foreign key for DeterminationEvent.taxonName";
 		tableName = "DnaQuality";
 		newColumnName = "typedPurificationMethod_id";
@@ -106,11 +106,9 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		
-		
-		//FIXME H2, SQL Server, PostGres
-		//update DerivationEvent.taxonname_id
+		//update DerivationEvent.taxonname_id #3448, #4203, #4518
 		stepName = "Update taxon name in derivation event";
-		query = "UPDATE DeterminationEvent dev " +
+		query = "UPDATE DeterminationEvent " +
 				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = dev.taxon_id) " + 
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";

@@ -143,7 +143,15 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
  
-        
+		
+		//update DerivationEvent.taxonname_id  #4578, #3448, #4203, #4518
+		stepName = "Update taxon name in derivation event";
+		query = "UPDATE DeterminationEvent " +
+				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = dev.taxon_id) " + 
+				" WHERE taxon_id IS NOT NULL ";
+		tableName = "DeterminationEvent";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
+		stepList.add(step);
         
         
         //#4110 update idInVocabulary for some new databases
