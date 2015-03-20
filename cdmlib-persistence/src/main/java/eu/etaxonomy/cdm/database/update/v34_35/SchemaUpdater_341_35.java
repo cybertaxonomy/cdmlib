@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database.update.v34_35;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +24,8 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
+import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
@@ -125,12 +128,59 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         step = ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
         
+        //#4110 update idInVocabulary for some new databases
+        updateAreas(stepList);
+        
 		return stepList;
 		
 	}
 
+	//#4110 update idInVocabulary for some new databases
+    private void updateAreas(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String uuid;
+		ISchemaUpdaterStep step;
+		String tableName = "DefinedTermBase";
 
+		//ANSI - SQL
+		String queryVocUuid = " UPDATE @@DefinedTermBase@@ "
+				+ " SET idInVocabulary = " +
+					" (SELECT abbreviatedlabel "
+					+ " FROM @@DefinedTermBase_Representation@@ MN "
+					+ " INNER JOIN @@Representation@@ r ON r.id = MN.representations_id "
+					+ " WHERE MN.DefinedTermBase_id = @@DefinedTermBase@@.id) "
+				+ " WHERE idInVocabulary IS NULL AND EXISTS (SELECT * FROM @@TermVocabulary@@ voc WHERE voc.id = @@DefinedTermBase@@.vocabulary_id " +
+						" AND voc.uuid = '%s') ";
 
+	    // Country => all
+		stepName = "Update idInVocabulary for Countries if necessary";
+		uuid = Country.uuidCountryVocabulary.toString();
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+				String.format(queryVocUuid, uuid), 99)
+				.setDefaultAuditing(tableName);
+		stepList.add(step);
+
+		// TdwgAreas => all
+		stepName = "Update idInVocabulary for TDWG areas if necessary";
+		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+				String.format(queryVocUuid, uuid), 99)
+				.setDefaultAuditing(tableName);
+		stepList.add(step);
+		
+		// Waterbody => all
+		stepName = "Update idInVocabulary for Waterbody if necessary";
+		uuid = NamedArea.uuidWaterbodyVocabulary.toString();
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+				String.format(queryVocUuid, uuid), 99)
+				.setDefaultAuditing(tableName);
+		stepList.add(step);
+		
+		// Continent => None has an id
+
+		
+		
+	}
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
