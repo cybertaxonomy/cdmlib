@@ -261,12 +261,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }
