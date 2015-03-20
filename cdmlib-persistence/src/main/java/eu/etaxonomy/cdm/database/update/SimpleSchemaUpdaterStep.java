@@ -51,6 +51,13 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
+	/**
+	 * @param stepName Step name
+	 * @param defaultQuery query
+	 * @param nonAuditedTableName the name of the non audited table. E.g. TaxonNameBase (whild TaxonNameBase_AUD is the audited table
+	 * @param adapt preliminary
+	 * @return
+	 */
 	public static SimpleSchemaUpdaterStep NewAuditedInstance(String stepName, String defaultQuery, String nonAuditedTableName, int adapt){
 		boolean audit = StringUtils.isNotBlank(nonAuditedTableName);
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, nonAuditedTableName, null);
