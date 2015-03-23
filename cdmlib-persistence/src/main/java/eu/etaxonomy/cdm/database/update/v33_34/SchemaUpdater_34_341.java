@@ -109,15 +109,12 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		//update DerivationEvent.taxonname_id #3448, #4203, #4518
 		stepName = "Update taxon name in derivation event";
 		query = "UPDATE DeterminationEvent " +
-				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = dev.taxon_id) " + 
+				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " + 
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
 		stepList.add(step);
  		
-		
-		
-
 		mergePresenceAbsenceVocs(stepList);
 	
 		
