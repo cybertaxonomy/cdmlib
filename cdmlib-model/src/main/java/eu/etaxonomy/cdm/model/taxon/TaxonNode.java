@@ -797,6 +797,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     /**
      * @return
      */
+	@Transient
     public Rank getNullSafeRank() {
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
