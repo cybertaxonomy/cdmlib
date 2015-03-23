@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -36,6 +38,7 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidation;
+import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -46,7 +49,6 @@ import eu.etaxonomy.cdm.validation.Level2;
  * @date 20 jan. 2015
  *
  */
-@DataSet
 public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
@@ -59,7 +61,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     @Before
     public void setUp() throws Exception {
     }
-
 
     /**
      * Test method for
@@ -89,6 +90,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
      * .
      */
     @Test
+    @DataSet
     public void test_SaveValidationResult_Set_T_CRUDEventType() {
         HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
         ValidatorFactory factory = config.buildValidatorFactory();
@@ -115,7 +117,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         dao.saveEntityValidation(emp, errors, CRUDEventType.NONE, null);
 
-        EntityValidation result = dao.getValidationResult(emp.getClass().getName(), emp.getId());
+        EntityValidation result = dao.getEntityValidation(emp.getClass().getName(), emp.getId());
         assertNotNull(result);
         assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -132,51 +134,152 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     }
 
+    @Test
+    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testSaveAlreadyExistingError-result.xml")
+    // Test proving that if an exactly identical
+    // EntityConstraintViolation (as per equals() method)
+    // is already in database, the only thing that happens
+    // is an increment of the validation counter.
+    public void testSaveAlreadyExistingError() {
+
+        // All same as in @DataSet:
+
+        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+
+        Employee emp = new Employee();
+        emp.setId(100);
+        emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
+        // Other properties not relevant for this test
+
+        EntityValidation entityValidation = EntityValidation.newInstance();
+        entityValidation.setValidatedEntity(emp);
+        entityValidation.setId(1);
+        entityValidation.setUuid(UUID.fromString("dae5b090-30e8-45bc-9460-2eb2028d3c18"));
+        entityValidation.setCreated(created);
+        entityValidation.setCrudEventType(CRUDEventType.INSERT);
+        entityValidation.setValidationCount(5);
+
+        EntityConstraintViolation error = EntityConstraintViolation.newInstance();
+
+        // Actually not same as in @DataSet to force
+        // EntityConstraintViolation.equals() method to
+        // take other properties into account
+        // (propertyPath, invalidValue, etc.)
+        error.setId(Integer.MIN_VALUE);
+
+        error.setCreated(created);
+        error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
+        error.setSeverity(Severity.ERROR);
+        error.setPropertyPath("firstName");
+        error.setInvalidValue("Foo");
+        error.setMessage("Garbage In Garbage Out");
+        error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
+        error.setValidator("eu.etaxonomy.cdm.persistence.validation.GarbageValidator");
+        Set<EntityConstraintViolation> errors = new HashSet<EntityConstraintViolation>(1);
+        errors.add(error);
+
+        entityValidation.addEntityConstraintViolation(error);
+
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
+    }
+
+
+    @Test
+    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testReplaceError-result.xml")
+    // Test proving that if an entity has been validated,
+    // yielding 1 error (as in @DataSet),  and a subsequent
+    // validation also yields 1 error, but a different one,
+    // then validation count is increased, the old error is
+    // removed and the new error is inserted.
+    public void testReplaceError() {
+
+        // All identical to @DataSet:
+
+        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+
+        Employee emp = new Employee();
+        emp.setId(100);
+        emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
+        // Other properties not relevant for this test
+
+        EntityValidation entityValidation = EntityValidation.newInstance();
+        entityValidation.setValidatedEntity(emp);
+        entityValidation.setId(1);
+        entityValidation.setUuid(UUID.fromString("dae5b090-30e8-45bc-9460-2eb2028d3c18"));
+        entityValidation.setCreated(created);
+        entityValidation.setCrudEventType(CRUDEventType.INSERT);
+        entityValidation.setValidationCount(5);
+
+        EntityConstraintViolation error = EntityConstraintViolation.newInstance();
+        error.setId(38);
+        error.setCreated(created);
+        error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
+        error.setSeverity(Severity.ERROR);
+        error.setPropertyPath("firstName");
+
+        // Except for:
+        error.setInvalidValue("Bar");
+
+        error.setMessage("Garbage In Garbage Out");
+        error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
+        error.setValidator("eu.etaxonomy.cdm.persistence.validation.GarbageValidator");
+        Set<EntityConstraintViolation> errors = new HashSet<EntityConstraintViolation>(1);
+        errors.add(error);
+
+        entityValidation.addEntityConstraintViolation(error);
+
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
+    }
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#deleteEntityValidation (java.lang.String, int)}
      * .
      */
     @Test
+    @DataSet
     @ExpectedDataSet
     public void test_DeleteValidationResult() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         dao.deleteEntityValidation(SYNONYM_RELATIONSHIP, 200);
-        EntityValidation result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        EntityValidation result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
         assertTrue(result == null);
     }
 
     @Test
+    @DataSet
     public void testGetEntityValidation() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         EntityValidation result;
 
-        result = dao.getValidationResult(MEDIA, 100);
+        result = dao.getEntityValidation(MEDIA, 100);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 1, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
+        result = dao.getEntityValidation(SYNONYM_RELATIONSHIP, 200);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 2, result.getId());
         assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(GATHERING_EVENT, 300);
+        result = dao.getEntityValidation(GATHERING_EVENT, 300);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 3, result.getId());
         assertEquals("Unexpected number of constraint violations", 3, result.getEntityConstraintViolations().size());
 
-        result = dao.getValidationResult(GATHERING_EVENT, 301);
+        result = dao.getEntityValidation(GATHERING_EVENT, 301);
         assertNotNull(result);
         assertEquals("Unexpected entity id", 4, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
         // Test we get a null back
-        result = dao.getValidationResult("Foo Bar", 100);
+        result = dao.getEntityValidation("Foo Bar", 100);
         assertNull(result);
     }
-
-
 
     /**
      * Test method for
