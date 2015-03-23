@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
@@ -10,13 +9,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-print</artifactId>
+  <version>3.5.0</version>
   <packaging>jar</packaging>
   <name>CDM Print Publisher</name>
   <description>EDIT CDM Print Publishing Framework</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-print/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</url>
   </scm>
   <developers>
     <developer>

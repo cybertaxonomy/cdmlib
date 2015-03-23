@@ -7,12 +7,13 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
+  <version>3.5.0</version>
   <name>CDM Domain Model</name>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-model/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-model</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-model</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-model</url>
   </scm>
   <build>
     <plugins>
