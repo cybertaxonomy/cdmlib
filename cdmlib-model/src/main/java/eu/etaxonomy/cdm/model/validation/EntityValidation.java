@@ -46,10 +46,10 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
- * An {@code EntityValidation} models the result of validating one entity,
- * that is, the outcome of calling {@link Validator#validate(Object, Class...)}.
- * More than one constraint {@link EntityConstraintViolation} may be violated
- * while validating the entity.
+ * An {@code EntityValidation} models the result of validating one entity, that
+ * is, the outcome of calling {@link Validator#validate(Object, Class...)}. More
+ * than one constraint {@link EntityConstraintViolation} may be violated while
+ * validating the entity.
  *
  * @see EntityValidation
  *
@@ -59,9 +59,9 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
-@XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid",
-        "ValidatedEntityClass", "ValidationCount", "Updated", "UserFriendlyDescription", "UserFriendlyTypeName",
-        "CrudEventType", "ConstraintViolations" })
+@XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid", "ValidatedEntityClass",
+        "ValidationCount", "Updated", "UserFriendlyDescription", "UserFriendlyTypeName", "CrudEventType",
+        "ConstraintViolations" })
 // @formatter:on
 @XmlRootElement(name = "EntityValidation")
 @Entity
@@ -76,30 +76,16 @@ public class EntityValidation extends CdmBase {
         return new EntityValidation();
     }
 
-    // See comment below
-    public static EntityValidation newInstance(ICdmBase entity, CRUDEventType crudEventType) {
+    /**
+     * Create a new {@code EntityValidation} instance.
+     * @param validatedEntity
+     * @param crudEventType
+     * @return
+     */
+    public static EntityValidation newInstance(ICdmBase validatedEntity, CRUDEventType crudEventType) {
         EntityValidation result = newInstance();
+        result.setValidatedEntity(validatedEntity);
         result.setCrudEventType(crudEventType);
-        result.setValidatedEntityClass(entity.getClass().getName());
-        result.setValidatedEntityId(entity.getId());
-        result.setValidatedEntityUuid(entity.getUuid());
-        /*
-         * Since I have changed CdmBase to implement ISelfDescriptive, this is a
-         * redundant check, since only instances of CdmBase can be validated
-         * using the validation infrastructure. However, until Andreas Mueller
-         * decides that it is actually useful and appropriate that CdmBase
-         * should implement this interface, this check should be made, so that
-         * nothing breaks if the "implements ISelfDescriptive" is removed from
-         * the class declaration of CdmBase.
-         */
-        if (entity instanceof ISelfDescriptive) {
-            ISelfDescriptive isd = (ISelfDescriptive) entity;
-            result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
-            result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
-        } else {
-            result.setUserFriendlyTypeName(entity.getClass().getSimpleName());
-            result.setUserFriendlyDescription(entity.toString());
-        }
         result.setValidationCount(1);
         result.setStatus(EntityValidationStatus.IN_PROGRESS);
         result.setUpdated(result.getCreated());
@@ -146,13 +132,27 @@ public class EntityValidation extends CdmBase {
     private EntityValidationStatus status;
 
     @XmlElementWrapper(name = "EntityConstraintViolations")
-    @OneToMany(mappedBy = "entityValidation", orphanRemoval=true)
+    @OneToMany(mappedBy = "entityValidation", orphanRemoval = true)
     @Cascade({ CascadeType.ALL })
     @Fetch(value = FetchMode.JOIN)
     private Set<EntityConstraintViolation> entityConstraintViolations = new HashSet<EntityConstraintViolation>();
 
     protected EntityValidation() {
         super();
+    }
+
+    public void setValidatedEntity(ICdmBase entity) {
+        setValidatedEntityClass(entity.getClass().getName());
+        setValidatedEntityId(entity.getId());
+        setValidatedEntityUuid(entity.getUuid());
+        if (entity instanceof ISelfDescriptive) {
+            ISelfDescriptive isd = (ISelfDescriptive) entity;
+            setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
+            setUserFriendlyDescription(isd.getUserFriendlyDescription());
+        } else {
+            setUserFriendlyTypeName(entity.getClass().getSimpleName());
+            setUserFriendlyDescription(entity.toString());
+        }
     }
 
     public int getValidatedEntityId() {
@@ -212,15 +212,15 @@ public class EntityValidation extends CdmBase {
         this.crudEventType = crudEventType;
     }
 
-	public EntityValidationStatus getStatus(){
-		return status;
-	}
+    public EntityValidationStatus getStatus() {
+        return status;
+    }
 
-	public void setStatus(EntityValidationStatus status){
-		this.status = status;
-	}
+    public void setStatus(EntityValidationStatus status) {
+        this.status = status;
+    }
 
-	@Override
+    @Override
     public String getUserFriendlyDescription() {
         return userFriendlyDescription;
     }
