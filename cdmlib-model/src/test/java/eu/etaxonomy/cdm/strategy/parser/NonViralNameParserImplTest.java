@@ -72,6 +72,9 @@ public class NonViralNameParserImplTest {
 	final private String strNameTeam1 = "Abies alba Mueller & L."; 
 	final private String strNameZoo1 = "Abies alba Mueller & L., 1822";
 	final private String strNameZoo2 = "Abies alba (Mueller, 1822) Ciardelli, 2002";
+	final private String strNameZoo3 = "Marmota marmota normalis Ciardelli, 2002";
+	final private String strNameZoo4 = "Marmota marmota subsp. normalis Ciardelli, 2002";
+	final private String strNameZoo5 = "Marmota marmota var. normalis Ciardelli, 2002";
 	
 	final private String strNameEmpty = "";
 	final private String strNameNull = null;
@@ -281,6 +284,23 @@ public class NonViralNameParserImplTest {
 		assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
 		assertEquals("Mueller",  nameZoo2.getBasionymAuthorTeam().getNomenclaturalTitle());
 		assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorTeam().getNomenclaturalTitle());
+		
+		//subsp
+		ZoologicalName nameZoo3 = (ZoologicalName)parser.parseFullName(strNameZoo3);
+		assertEquals("Ciardelli",  nameZoo3.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertFalse("Subsp. without marker should be parsable", nameZoo3.hasProblem());
+		assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo3.getRank());
+
+		ZoologicalName nameZoo4 = (ZoologicalName)parser.parseFullName(strNameZoo4);
+		assertEquals("Ciardelli",  nameZoo4.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertFalse("Subsp. without marker should be parsable", nameZoo4.hasProblem());
+		assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo4.getRank());
+
+		ZoologicalName nameZoo5 = (ZoologicalName)parser.parseFullName(strNameZoo5);
+		assertEquals("Ciardelli",  nameZoo5.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertFalse("Subsp. without marker should be parsable", nameZoo5.hasProblem());
+		assertEquals("Variety should be recognized", Rank.VARIETY(), nameZoo5.getRank());
+
 		
 		//Autonym
 		BotanicalName autonymName = (BotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICBN, null);
