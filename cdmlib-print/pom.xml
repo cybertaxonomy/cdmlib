@@ -9,14 +9,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-print</artifactId>
-  <version>3.5.0</version>
+  <version>3.5.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>CDM Print Publisher</name>
   <description>EDIT CDM Print Publishing Framework</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-print</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-print/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-print/</url>
   </scm>
   <developers>
     <developer>

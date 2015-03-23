@@ -9,13 +9,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-persistence</artifactId>
-  <version>3.5.0</version>
+  <version>3.5.1-SNAPSHOT</version>
   <name>CDM Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-persistence</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-persistence</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-persistence</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
   </scm>
   <build>
     <plugins>

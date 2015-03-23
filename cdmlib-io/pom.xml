@@ -10,13 +10,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-io</artifactId>
-  <version>3.5.0</version>
+  <version>3.5.1-SNAPSHOT</version>
   <name>CDM Import/Export</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-io</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-io</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-commons-3.5.0/cdmlib-io</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
   </scm>
   <build>
     <plugins>
