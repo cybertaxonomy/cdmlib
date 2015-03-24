@@ -45,6 +45,12 @@ public class ShiftUsertTypeTest {
 	public void testDisassembleObject() {
 		Serializable nullValue = this.shiftUserType.disassemble(null);
 		Assert.assertNull(nullValue);
+		Serializable emptyValue = this.shiftUserType.disassemble(new Shift[0]);
+		Assert.assertEquals("", emptyValue);
+		Serializable singleValue = this.shiftUserType.disassemble(new Shift[]{new Shift(2, 3)});
+		Assert.assertEquals("2,3", singleValue);
+		Serializable twoValues = this.shiftUserType.disassemble(new Shift[]{new Shift(2, 3),new Shift(3, -1)});
+		Assert.assertEquals("2,3;3,-1", twoValues);
 	}
 
 	/**
