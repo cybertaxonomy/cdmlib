@@ -276,7 +276,7 @@
                 <artifactItem>
                   <groupId>eu.etaxonomy</groupId>
                   <artifactId>cdm-vaadin</artifactId>
-                  <version> ${project.version}</version>
+                  <version>${cdm-vaadin.version}</version>
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/cdm-vaadin</outputDirectory>
