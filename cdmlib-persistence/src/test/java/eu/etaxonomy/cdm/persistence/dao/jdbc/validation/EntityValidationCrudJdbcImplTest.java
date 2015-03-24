@@ -278,6 +278,63 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
     }
+    @Test
+    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testOneOldOneNewError-result.xml")
+    // Test proving that if an entity has been validated,
+    // yielding 1 error (as in @DataSet), and _another_
+    // entity is now validated yielding an equals() error,
+    // things behave as expected (2 entityvalidations, each
+    // having 1 entityconstraintviolation)
+    public void testOneOldOneNewError() {
+
+        DateTime created = new DateTime(2014, 1, 1, 0, 0);
+
+        // Same entity as in @DataSet
+        Employee emp = new Employee();
+        emp.setId(100);
+        emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
+        // Other properties not relevant for this test
+
+        EntityValidation entityValidation = EntityValidation.newInstance();
+        entityValidation.setValidatedEntity(emp);
+        entityValidation.setId(1);
+        entityValidation.setUuid(UUID.fromString("dae5b090-30e8-45bc-9460-2eb2028d3c18"));
+        entityValidation.setCreated(created);
+        entityValidation.setCrudEventType(CRUDEventType.INSERT);
+
+
+        // Old error (in @DataSet)
+        EntityConstraintViolation error = EntityConstraintViolation.newInstance();
+        error.setId(Integer.MIN_VALUE);
+        error.setCreated(created);
+        error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425ba"));
+        error.setSeverity(Severity.ERROR);
+        error.setPropertyPath("firstName");
+        error.setInvalidValue("Foo");
+        error.setMessage("Garbage In Garbage Out");
+        error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
+        error.setValidator("eu.etaxonomy.cdm.persistence.validation.GarbageValidator");
+        entityValidation.addEntityConstraintViolation(error);
+
+        // New error (not in @DataSet)
+        error = EntityConstraintViolation.newInstance();
+        // Don't leave ID generation to chance; we want it to be same as in
+        // @ExpectedDataSet
+        error.setId(2);
+        error.setCreated(created);
+        error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425bb"));
+        error.setSeverity(Severity.ERROR);
+        error.setPropertyPath("lastName");
+        error.setInvalidValue("Bar");
+        error.setMessage("Garbage In Garbage Out");
+        error.setValidationGroup("eu.etaxonomy.cdm.validation.Level2");
+        error.setValidator("eu.etaxonomy.cdm.persistence.validation.LastNameValidator");
+        entityValidation.addEntityConstraintViolation(error);
+
+        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
+    }
 
 
 
