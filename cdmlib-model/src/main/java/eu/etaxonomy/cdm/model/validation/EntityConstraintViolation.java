@@ -238,7 +238,6 @@ public class EntityConstraintViolation extends CdmBase {
             return true;
         }
         EntityConstraintViolation other = (EntityConstraintViolation) obj;
-        assert (getId() <= 0 && other.getId() <= 0);
         if (!equals(invalidValue, other.invalidValue)) {
             return false;
         }
@@ -256,15 +255,12 @@ public class EntityConstraintViolation extends CdmBase {
 
     @Override
     public int hashCode() {
-        if (getId() > 0) {
-            return super.hashCode();
-        }
         int hash = 17;
         hash = (hash * 31) + (invalidValue == null ? 0 : invalidValue.hashCode());
         hash = (hash * 31) + (propertyPath == null ? 0 : propertyPath.hashCode());
         hash = (hash * 31) + (validator == null ? 0 : validator.hashCode());
         hash = (hash * 31) + (validationGroup == null ? 0 : validationGroup.hashCode());
-        return hash;
+        return hash | super.hashCode();
     }
 
     private static boolean equals(Object o1, Object o2) {
