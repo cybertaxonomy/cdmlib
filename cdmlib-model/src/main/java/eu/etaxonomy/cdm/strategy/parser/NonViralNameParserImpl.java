@@ -838,24 +838,36 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //infraSpecies
 			 else if (infraSpeciesPattern.matcher(fullNameString).matches()){
-				String infraSpecRankEpi = epi[2];
+				String infraSpecRankMarker = epi[2];
 				String infraSpecEpi = epi[3];
-				if ("tax.".equals(infraSpecRankEpi)){
-					infraSpecRankEpi += " " +  epi[3];
+				if ("tax.".equals(infraSpecRankMarker)){
+					infraSpecRankMarker += " " +  epi[3];
 					infraSpecEpi = epi[4];
 				}
 				Rank infraSpecificRank;
-				if ("[unranked]".equals(infraSpecRankEpi)){
+				if ("[unranked]".equals(infraSpecRankMarker)){
 					infraSpecificRank = Rank.INFRASPECIFICTAXON();
 				}else{
-					infraSpecificRank = Rank.getRankByIdInVoc(infraSpecRankEpi);
+					infraSpecificRank = Rank.getRankByIdInVoc(infraSpecRankMarker);
 				}
 				nameToBeFilled.setRank(infraSpecificRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);
-				authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankEpi.length() + 1 + infraSpecEpi.length());
-			}//old infraSpecies
+				authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankMarker.length() + 1 + infraSpecEpi.length());
+	
+			 }
+		      //infraSpecies without marker
+			 else if (zooInfraSpeciesPattern.matcher(fullNameString).matches()){
+					String infraSpecEpi = epi[2];
+					Rank infraSpecificRank = Rank.SUBSPECIES();
+					nameToBeFilled.setRank(infraSpecificRank);
+					nameToBeFilled.setGenusOrUninomial(epi[0]);
+					nameToBeFilled.setSpecificEpithet(epi[1]);
+					nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);
+					authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecEpi.length());
+		
+			 }//old infraSpecies
 			 else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
 				boolean implemented = false;
 				if (implemented){

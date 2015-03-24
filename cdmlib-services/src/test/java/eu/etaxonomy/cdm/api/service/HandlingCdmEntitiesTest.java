@@ -41,7 +41,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
 
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
     private static final String LIE_NOSESSION = "could not initialize proxy - no Session";

@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 17.09.2009
- * @version 1.0
  */
 public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")

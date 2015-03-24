@@ -351,6 +351,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     /**
      * @return
      */
+    @Transient
     public Rank getNullSafeRank() {
         return name == null ? null : name.getRank();
     }

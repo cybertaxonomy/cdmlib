@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -39,7 +40,7 @@ public class TestModelUpdate {
 		
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm35");
-//		database = "validation_cichorieae";
+		database = "campanula_test";
 		String username = "edit";
 		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -57,16 +58,16 @@ public class TestModelUpdate {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
-		Person person = Person.NewInstance();
-		TextData textData = TextData.NewInstance();
-		Taxon taxon = Taxon.NewInstance(null, null);
-		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-		description.addElement(textData);
-		LanguageString text = textData.putText(Language.ENGLISH(), "Ich bin ein toller text");
-		IntextReference.NewAgentInstance(person, text, 3, 5);
-
-		appCtr.getAgentService().save(person);
-		appCtr.getTaxonService().save(taxon);
+//		Person person = Person.NewInstance();
+//		TextData textData = TextData.NewInstance();
+//		Taxon taxon = Taxon.NewInstance(null, null);
+//		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+//		description.addElement(textData);
+//		LanguageString text = textData.putText(Language.ENGLISH(), "Ich bin ein toller text");
+//		IntextReference.NewAgentInstance(person, text, 3, 5);
+//
+//		appCtr.getAgentService().save(person);
+//		appCtr.getTaxonService().save(taxon);
 //		appCtr.getCommonService().createFullSampleData();
 
 		//		insertSomeData(appCtr);
@@ -96,8 +97,13 @@ public class TestModelUpdate {
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
+	/**
+	 * Updates the H2 test database in remote web-app.
+	 * Requires that the local path to the database is adapted
+	 */
+	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-		String path = "C:\\Users\\a.mueller\\eclipse\\workspaces\\mergeBoth\\merge\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 		
     	
@@ -111,14 +117,15 @@ public class TestModelUpdate {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
+		appCtr.close();
 	}
 	
 
 	private void test(){
 		System.out.println("Start Datasource");
-//		testMySQL();
+		testMySQL();
 		
-		updateRemoteWebappTestH2();
+//		updateRemoteWebappTestH2();
 		
     	//testDatabaseChange();
 		

@@ -1569,7 +1569,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 //				+ " WHERE MN.DefinedTermBase_id = dtb.id) "
 //				+ " WHERE voc.uuid = '%s'";
 
-		//ANSI
+		//ANSI - SQL
 		String queryVocUuid = " UPDATE @@DefinedTermBase@@ "
 				+ " SET idInVocabulary = " +
 					" (SELECT abbreviatedlabel "

@@ -1303,6 +1303,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseT
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/AuditedSchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ClassBaseTypeUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ClassChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnNameChanger.java -text
@@ -1631,6 +1632,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permissio
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/Level2ValidationEventListenerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUpdateEntityListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/Address.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CaseMode.java -text
@@ -1737,10 +1739,19 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationCrudJdbcImplTest.testReplaceError-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationCrudJdbcImplTest.testSave.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationCrudJdbcImplTest.testSaveAlreadyExistingError-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationDaoHibernateImplTest.testDeleteValidationResult-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/dataset.dtd -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testAllErrorsSolved-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testOneOldOneNewError-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testReplaceError-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testSameErrorOtherEntity-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testSave.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.testSaveAlreadyExistingError-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.test_DeleteValidationResult-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/jdbc/validation/EntityValidationCrudJdbcImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.testOnSaveOrUpdateAgents-result.xml -text
