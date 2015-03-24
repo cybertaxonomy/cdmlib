@@ -1147,6 +1147,7 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/ShiftUsertTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
