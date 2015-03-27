@@ -1288,6 +1288,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/NomenclaturalCodeAwar
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PermissionDeniedException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PersistentTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/UpdatableRoutingDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/WrappedCdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/H2DatabaseType.java -text
