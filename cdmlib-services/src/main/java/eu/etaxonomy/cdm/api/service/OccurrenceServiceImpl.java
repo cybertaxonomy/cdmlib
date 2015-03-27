@@ -462,6 +462,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO hierarchyDTO){
+        if(!getSession().contains(derivedUnit)){
+            derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
+        }
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
         preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
