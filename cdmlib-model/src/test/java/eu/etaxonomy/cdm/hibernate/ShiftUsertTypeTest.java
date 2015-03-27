@@ -3,10 +3,7 @@
  */
 package eu.etaxonomy.cdm.hibernate;
 
-import static org.junit.Assert.*;
-
 import java.io.Serializable;
-import java.sql.Types;
 
 import org.junit.Assert;
 import org.junit.Before;
