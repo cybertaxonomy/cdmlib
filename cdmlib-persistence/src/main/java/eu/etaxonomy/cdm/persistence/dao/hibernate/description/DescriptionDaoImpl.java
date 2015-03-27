@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -872,10 +874,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     @Override
     public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
         StringBuilder queryString = new StringBuilder(
-                // TODO use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) ....
                 "SELECT DISTINCT a.id, a.partOf.id"
                 + " FROM Distribution AS d LEFT JOIN d.area AS a");
         Query query = getSession().createQuery(queryString.toString());
@@ -912,6 +913,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
         }
 
+        // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
+        // rows for a term with multiple representations
         String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
                 + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
                 + "where a.id in (:allAreaIds) order by a.id";
@@ -926,7 +929,6 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         List<Object[]> parentResults = query.list();
         List<TermDto> dtoList = termDtoListFrom(parentResults);
 
-
         return dtoList;
     }
 
@@ -935,19 +937,23 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
      * @return
      */
     private List<TermDto> termDtoListFrom(List<Object[]> results) {
-        List<TermDto> dtoList = new ArrayList<TermDto>(results.size());
+        Map<UUID, TermDto> dtoMap = new HashMap<UUID, TermDto>(results.size());
         for (Object[] elements : results) {
-            Set<Representation> representations;
-            if(elements[1] instanceof Representation) {
-                representations = new HashSet<Representation>(1);
-                representations.add((Representation)elements[1]);
+            UUID uuid = (UUID)elements[0];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
             } else {
-                representations = (Set<Representation>)elements[1];
+                Set<Representation> representations;
+                if(elements[1] instanceof Representation) {
+                    representations = new HashSet<Representation>(1);
+                    representations.add((Representation)elements[1]);
+                } else {
+                    representations = (Set<Representation>)elements[1];
+                }
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3]));
             }
-
-            dtoList.add(new TermDto((UUID)elements[0], representations, (UUID)elements[2], (UUID)elements[3]));
         }
-        return dtoList;
+        return new ArrayList<TermDto>(dtoMap.values());
     }
 
 

@@ -119,4 +119,12 @@ public class TermDto {
         return partOfUuid;
     }
 
+    /**
+     * @param representation
+     */
+    public void addRepresentation(Representation representation) {
+        representations.add(representation);
+
+    }
+
 }

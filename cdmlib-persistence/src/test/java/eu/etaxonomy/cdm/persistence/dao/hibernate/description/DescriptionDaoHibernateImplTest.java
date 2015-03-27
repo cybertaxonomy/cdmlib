@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +32,11 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -617,7 +620,12 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @DataSet
     public void testListNamedAreasInUse(){
 
-        List<TermDto> list = null;
+        Collection<TermDto> list = null;
+
+        DefinedTermBase antarctica = definedTermDao.load(antarcticaUuid);
+        antarctica.getRepresentations().add(Representation.NewInstance("Antarktis", "Antarktis", "An", Language.GERMAN()));
+        definedTermDao.saveOrUpdate(antarctica);
+        commitAndStartNewTransaction(null);
 
         list = descriptionDao.listNamedAreasInUse(false, null, null);
         Assert.assertEquals(3, list.size());
@@ -629,7 +637,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     // @Ignore // the first query in listNamedAreasInUse is for some reason not working with h2
     public void testListNamedAreasInUseWithParents(){
 
-        List<TermDto> list = null;
+        Collection<TermDto> list = null;
 
         list = descriptionDao.listNamedAreasInUse(true, null, null);
         Assert.assertEquals(3, list.size());
