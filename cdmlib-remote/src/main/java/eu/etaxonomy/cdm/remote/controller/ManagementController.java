@@ -9,7 +9,10 @@
  */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -126,7 +129,7 @@ public class ManagementController {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        final Set<Class<? extends CdmBase>> typeSet = asList(types);
+        final List<Class<? extends CdmBase>> typeSet = asList(types);
 
         String processLabel = "Re-indexing";
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
@@ -154,17 +157,18 @@ public class ManagementController {
     /**
      * @param types
      */
-    private Set<Class<? extends CdmBase>> asList(Class<? extends CdmBase>[] types) {
-        Set<Class<? extends CdmBase>> typeSet = null;
+    private List<Class<? extends CdmBase>> asList(Class<? extends CdmBase>[] types) {
+        
+    	List<Class<? extends CdmBase>> typeList = null;
         if(types != null) {
-            typeSet = new HashSet<Class<? extends CdmBase>>();
+            typeList = new ArrayList<Class<? extends CdmBase>>();
             for (Class<? extends CdmBase> type : types) {
-                if(type != null) {
-                    typeSet.add(type);
+                if(type != null && ! typeList.contains(type)) {
+                    typeList.add(type);
                 }
             }
         }
-        return typeSet;
+        return typeList;
     }
 
     /**
