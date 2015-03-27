@@ -57,7 +57,7 @@ public class SingleReadAlignment extends VersionableEntity {
 	
 	//TODO XML mapping / user type
 	@Type(type="shiftUserType")
-    private Shift[] shifts;
+    private Shift[] shifts = new Shift[0];
 	
 	@XmlElement(name = "EditedSequence")
     @Lob
@@ -142,6 +142,9 @@ public class SingleReadAlignment extends VersionableEntity {
 	}
 	public void setShifts(Shift[] shifts) {
 		this.shifts = shifts;
+		if (shifts == null){
+			shifts = new Shift[0];
+		}
 	}
 
 	//edited sequence
