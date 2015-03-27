@@ -356,20 +356,28 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if(fieldUnit.getGatheringEvent()!=null){
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
             //Country
-            final NamedArea country = gatheringEvent.getCountry();
-            fieldUnitDTO.setCountry(country!=null?country.getDescription():"");
+            NamedArea country = gatheringEvent.getCountry();
+            fieldUnitDTO.setCountry(country!=null?country.getDescription():null);
             //Collection
-            final AgentBase collector = gatheringEvent.getCollector();
-            final String fieldNumber = fieldUnit.getFieldNumber();
-            fieldUnitDTO.setCollection(((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:"")).trim());
+            AgentBase collector = gatheringEvent.getCollector();
+            String fieldNumber = fieldUnit.getFieldNumber();
+            String collectionString = "";
+            if(collector!=null || fieldNumber!=null){
+                collectionString += collector!=null?collector:"";
+                if(!collectionString.isEmpty()){
+                    collectionString += " ";
+                }
+                collectionString += (fieldNumber!=null?fieldNumber:"");
+                collectionString.trim();
+            }
+            fieldUnitDTO.setCollection(collectionString);
             //Date
-            final Partial gatheringDate = gatheringEvent.getGatheringDate();
-            fieldUnitDTO.setDate(gatheringDate!=null?gatheringDate.toString():"");
+            Partial gatheringDate = gatheringEvent.getGatheringDate();
+            fieldUnitDTO.setDate(gatheringDate!=null?gatheringDate.toString():null);
         }
 
         //Taxon Name
         fieldUnitDTO.setTaxonName(associatedTaxon.getName().getFullTitleCache());
-
 
         //Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
@@ -381,6 +389,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
+                if(derivedUnit.getAccessionNumber()!=null){
+                    preservedSpecimenAccessionNumbers.add(derivedUnit.getAccessionNumber());
+                }
                 if(derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)){
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
                     fieldUnitDTO.addPreservedSpecimenDTO(preservedSpecimenDTO);
@@ -397,7 +408,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         final String separator = ", ";
         //assemble citation
         String citation = "";
-        citation += !fieldUnitDTO.getCountry().isEmpty()?fieldUnitDTO.getCountry()+separator:"";
+        citation += fieldUnitDTO.getCountry()!=null?fieldUnitDTO.getCountry()+separator:"";
         if(fieldUnit.getGatheringEvent()!=null){
             if(fieldUnit.getGatheringEvent().getLocality()!=null){
                 citation += fieldUnit.getGatheringEvent().getLocality().getText();
@@ -412,7 +423,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 citation += separator;
             }
         }
-        citation += !fieldUnitDTO.getCollection().isEmpty()?fieldUnitDTO.getCollection():"";
+        citation += fieldUnitDTO.getCollection()!=null?fieldUnitDTO.getCollection():"";
         if(!preservedSpecimenAccessionNumbers.isEmpty()){
             citation += " (";
             for(String accessionNumber:preservedSpecimenAccessionNumbers){
@@ -453,6 +464,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO hierarchyDTO){
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
         preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
+        preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
         //character state data
         Collection<DescriptionElementBase> characterDataForSpecimen = getCharacterDataForSpecimen(derivedUnit);

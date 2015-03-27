@@ -21,6 +21,7 @@ import java.util.List;
 public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
+    private String uuid;
     private List<String> types;
 
     /**
@@ -34,6 +35,18 @@ public class PreservedSpecimenDTO extends DerivateDTO{
      */
     public void setAccessionNumber(String accessionNumber) {
         this.accessionNumber = accessionNumber;
+    }
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
     /**
      * @return the types
