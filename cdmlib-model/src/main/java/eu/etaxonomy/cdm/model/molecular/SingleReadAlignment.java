@@ -138,7 +138,7 @@ public class SingleReadAlignment extends VersionableEntity {
 	
 	//shifts
 	public Shift[] getShifts() {
-		return shifts;
+		return shifts == null ? new Shift[0] : shifts;
 	}
 	public void setShifts(Shift[] shifts) {
 		this.shifts = shifts;
