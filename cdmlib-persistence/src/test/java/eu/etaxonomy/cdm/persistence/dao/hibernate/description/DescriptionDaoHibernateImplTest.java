@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -615,8 +616,24 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     @DataSet
     public void testListNamedAreasInUse(){
-        List<NamedArea> list = descriptionDao.listNamedAreasInUse(null, null, null);
+
+        List<TermDto> list = null;
+
+        list = descriptionDao.listNamedAreasInUse(false, null, null);
         Assert.assertEquals(3, list.size());
+
+    }
+
+    @Test
+    @DataSet
+    // @Ignore // the first query in listNamedAreasInUse is for some reason not working with h2
+    public void testListNamedAreasInUseWithParents(){
+
+        List<TermDto> list = null;
+
+        list = descriptionDao.listNamedAreasInUse(true, null, null);
+        Assert.assertEquals(3, list.size());
+
     }
 
 
@@ -626,7 +643,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 

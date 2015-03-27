@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -279,11 +280,11 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
     /**
      * Method to list all {@link NamedAreas} instances which are currently used
      * by {@link Distribution} elements.
-     *
+     * @param includeAllParents if set to true all parent areas will be included in the result set
      * @param pageSize
      * @param pageNumber
-     * @param propertyPaths
+     *
      * @return
      */
-    List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber);
 }

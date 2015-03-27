@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -459,7 +460,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
     	}
-    	
+
         return dao.delete(description);
     }
     @Override
@@ -656,11 +657,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
     @Override
-    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths){
+    public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
+            Integer pageNumber){
 
-        List<NamedArea> results = dao.listNamedAreasInUse(pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<NamedArea>(pageNumber, results.size(), pageSize, results);
+        List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, pageSize, pageNumber);
+        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, results);
     }
 
 }

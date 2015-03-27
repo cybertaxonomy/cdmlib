@@ -12,9 +12,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -45,6 +48,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -864,24 +868,86 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listNamedAreasInUse(java.lang.Integer, java.lang.Integer, java.util.List)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
-        String queryString = "select distinct d.area from Distribution as d";
-        Query query = getSession().createQuery(queryString);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
+        StringBuilder queryString = new StringBuilder(
+                // TODO use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) ....
+                "SELECT DISTINCT a.id, a.partOf.id"
+                + " FROM Distribution AS d LEFT JOIN d.area AS a");
+        Query query = getSession().createQuery(queryString.toString());
+
+        List<Object[]> areasInUse = query.list();
+        Set<Object> allAreaIds = new HashSet<Object>(areasInUse.size());
+
+        if(includeAllParents) {
+            // find all parent nodes
+            String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
+            query = getSession().createQuery(allAreasQueryStr);
+            List<Object[]> allAreasResult = query.list();
+            Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
+
+            Set<Object> parents = new HashSet<Object>();
+
+            for(Object[] leaf : areasInUse) {
+                allAreaIds.add(leaf[0]);
+                Object parentId = leaf[1];
+                while (parentId != null) {
+                    if(parents.contains(parentId)) {
+                        // break if the parent already is in the set
+                        break;
+                    }
+                    parents.add(parentId);
+                    parentId = allAreasMap.get(parentId);
+                }
+            }
+            allAreaIds.addAll(parents);
+        } else {
+            // only add the ids found so far
+            for(Object[] leaf : areasInUse) {
+                allAreaIds.add(leaf[0]);
+            }
+        }
+
+        String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
+                + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+                + "where a.id in (:allAreaIds) order by a.id";
+        query = getSession().createQuery(parentAreasQueryStr);
+        query.setParameterList("allAreaIds", allAreaIds);
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
                 query.setFirstResult(pageNumber * pageSize);
             }
         }
+        List<Object[]> parentResults = query.list();
+        List<TermDto> dtoList = termDtoListFrom(parentResults);
 
-        List<NamedArea> results = query.list();
 
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return dtoList;
+    }
 
-        return results;
+    /**
+     * @param results
+     * @return
+     */
+    private List<TermDto> termDtoListFrom(List<Object[]> results) {
+        List<TermDto> dtoList = new ArrayList<TermDto>(results.size());
+        for (Object[] elements : results) {
+            Set<Representation> representations;
+            if(elements[1] instanceof Representation) {
+                representations = new HashSet<Representation>(1);
+                representations.add((Representation)elements[1]);
+            } else {
+                representations = (Set<Representation>)elements[1];
+            }
+
+            dtoList.add(new TermDto((UUID)elements[0], representations, (UUID)elements[2], (UUID)elements[3]));
+        }
+        return dtoList;
     }
 
 
