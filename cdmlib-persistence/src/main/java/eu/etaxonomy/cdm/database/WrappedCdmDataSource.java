@@ -30,9 +30,14 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * which represents a connection to a database such as transaction handling and
  * sending queries.
  * Those methods which are not supported by this wrapper class will throw an xxx
- * exception.  
+ * exception.
+ * 
+ *  
  * @author a.mueller
  */
+ 
+//FIXME this class replicates lots of code in CdmDataSourceBase, we may want to merge it
+//in a common helper class to avoid redundant code
 public class WrappedCdmDataSource implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(WrappedCdmDataSource.class);
 
