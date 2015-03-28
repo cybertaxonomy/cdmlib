@@ -2438,6 +2438,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplT
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTestUtf8Constants.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserAndGroupServiceImplTest.java -text
