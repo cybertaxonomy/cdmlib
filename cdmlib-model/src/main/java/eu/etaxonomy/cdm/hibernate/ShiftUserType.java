@@ -83,18 +83,28 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 			return null;
 		} else {
             try {
-            	String[] splits = val.split(SHIFT_SEPARATOR);
-            	Shift[] result = new Shift[splits.length];
-            	for (int i = 0; i< splits.length ; i++){
-            		result[i] = new Shift();
-            		String[] split = splits[i].split(ATTR_SEPARATOR);
-            		result[i].position = Integer.valueOf(split[0]);
-            		result[i].shift = Integer.valueOf(split[1]);
-            	}
+            	Shift[] result = nullSafeGet(val);
 			    return result;
 		    } catch (IllegalArgumentException e) {
 			    throw new HibernateException(e);
 		    }
+		}
+	}
+
+
+	protected Shift[] nullSafeGet(String val) {
+		if (val.length() == 0){
+			return new Shift[0];
+		}else{
+			String[] splits = val.split(SHIFT_SEPARATOR);
+			Shift[] result = new Shift[splits.length];
+			for (int i = 0; i< splits.length ; i++){
+				result[i] = new Shift();
+				String[] split = splits[i].split(ATTR_SEPARATOR);
+				result[i].position = Integer.valueOf(split[0]);
+				result[i].shift = Integer.valueOf(split[1]);
+			}
+			return result;
 		}
 	}
 
@@ -110,7 +120,7 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return Shift[].class;
 	}
 

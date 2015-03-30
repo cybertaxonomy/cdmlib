@@ -1147,6 +1147,7 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/BigDecimalUserTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/hibernate/ShiftUsertTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
@@ -1287,6 +1288,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/NomenclaturalCodeAwar
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PermissionDeniedException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PersistentTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/UpdatableRoutingDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/WrappedCdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/H2DatabaseType.java -text
@@ -1497,6 +1499,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/Taxo
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityConstraintViolationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityValidationCrud.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IEntityValidationDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dto/ITermRepresentation_L10n.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dto/TermDto.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeEvent.java -text
@@ -1822,9 +1826,11 @@ cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/input.xml -text
 cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml -text
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
+cdmlib-remote-webapp/ide/eclipse/Jetty[!!-~]Launcher/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
+cdmlib-remote-webapp/ide/eclipse/Jetty[!!-~]Launcher/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
+cdmlib-remote-webapp/ide/eclipse/RunJettyRun/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
+cdmlib-remote-webapp/ide/eclipse/RunJettyRun/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-~]8000.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/CdmSpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
@@ -2318,10 +2324,13 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionC
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineDistribution.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DerivateHierarchyDTO.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DerivateDTO.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DerivateDataDTO.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DistributionInfoDTO.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/FieldUnitDTO.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/FindByIdentifierDTO.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/IncludedTaxaDTO.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/PreservedSpecimenDTO.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
@@ -2429,6 +2438,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplT
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTestUtf8Constants.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserAndGroupServiceImplTest.java -text

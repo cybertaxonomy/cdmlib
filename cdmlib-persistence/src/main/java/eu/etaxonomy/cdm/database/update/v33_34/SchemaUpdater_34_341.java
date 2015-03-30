@@ -320,7 +320,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
-		return SchemaUpdater_34_341.NewInstance();
+		return SchemaUpdater_331_34.NewInstance();
 	}
 
 }

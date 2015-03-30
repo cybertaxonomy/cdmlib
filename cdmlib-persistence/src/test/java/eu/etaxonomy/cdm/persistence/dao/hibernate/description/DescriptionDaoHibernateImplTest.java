@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +32,11 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -48,6 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -615,8 +619,29 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     @DataSet
     public void testListNamedAreasInUse(){
-        List<NamedArea> list = descriptionDao.listNamedAreasInUse(null, null, null);
+
+        Collection<TermDto> list = null;
+
+        DefinedTermBase antarctica = definedTermDao.load(antarcticaUuid);
+        antarctica.getRepresentations().add(Representation.NewInstance("Antarktis", "Antarktis", "An", Language.GERMAN()));
+        definedTermDao.saveOrUpdate(antarctica);
+        commitAndStartNewTransaction(null);
+
+        list = descriptionDao.listNamedAreasInUse(false, null, null);
         Assert.assertEquals(3, list.size());
+
+    }
+
+    @Test
+    @DataSet
+    // @Ignore // the first query in listNamedAreasInUse is for some reason not working with h2
+    public void testListNamedAreasInUseWithParents(){
+
+        Collection<TermDto> list = null;
+
+        list = descriptionDao.listNamedAreasInUse(true, null, null);
+        Assert.assertEquals(3, list.size());
+
     }
 
 
@@ -626,7 +651,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 

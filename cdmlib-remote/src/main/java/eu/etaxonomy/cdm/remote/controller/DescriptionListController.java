@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -279,7 +280,8 @@ public class DescriptionListController extends IdentifiableListController<Descri
     }
 
     @RequestMapping(value = "namedAreasInUse", method = RequestMethod.GET)
-    public Pager<NamedArea> doPageNamedAreasInUse(
+    public Pager<TermDto> doPageNamedAreasInUse(
+            @RequestParam(value = "includeAllParents", required = false) boolean includeAllParents,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -289,7 +291,9 @@ public class DescriptionListController extends IdentifiableListController<Descri
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        Pager<NamedArea> pager = service.pageNamedAreasInUse(pageSize, pageNumber, getInitializationStrategy());
+        Pager<TermDto> pager = service.pageNamedAreasInUse(includeAllParents, pageSize, pageNumber);
+
+        localizeTerms(pager);
 
         return pager;
     }

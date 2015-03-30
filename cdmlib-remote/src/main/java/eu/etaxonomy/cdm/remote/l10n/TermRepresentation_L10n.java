@@ -10,56 +10,45 @@
 package eu.etaxonomy.cdm.remote.l10n;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 
 /**
  * @author l.morris & a.kohlbecker
  * @date Feb 22, 2013
  *
  */
-public class TermRepresentation_L10n {
+public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     public static final Logger logger = Logger.getLogger(TermRepresentation_L10n.class);
 
     String label = null;
     String abbreviatedLabel = null;
 
-    /**
-     * @return the label
-     */
-    public String getLabel() {
-        return label;
-    }
+    public TermRepresentation_L10n() {
 
-    /**
-     * @param label the label to set
-     */
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    /**
-     * @return the abbreviatedLabel
-     */
-    public String getAbbreviatedLabel() {
-        return abbreviatedLabel;
-    }
-
-    /**
-     * @param abbreviatedLabel the abbreviatedLabel to set
-     */
-    public void setAbbreviatedLabel(String abbreviatedLabel) {
-        this.abbreviatedLabel = abbreviatedLabel;
     }
 
     public TermRepresentation_L10n(TermBase term, boolean useInverseRepresentation) {
+
+        localize(term, useInverseRepresentation);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#localize(eu.etaxonomy.cdm.model.common.TermBase, boolean)
+     */
+    @Override
+    public void localize(TermBase term, boolean useInverseRepresentation) {
 
         List<Language> languages = LocaleContext.getLanguages();
 
@@ -80,7 +69,16 @@ public class TermRepresentation_L10n {
                 logger.debug("representations of term not initialized  " + term.getUuid().toString());
             }
         }
+    }
 
+    @Override
+    public void localize(Set<Representation> representations) {
+        DefinedTerm tmpTerm = DefinedTerm.NewInstance(TermType.Unknown, null, null, null);
+        tmpTerm.getRepresentations().clear(); // removes the null representation added throught the constructor
+        tmpTerm.getRepresentations().addAll(representations);
+        List<Language> languages = LocaleContext.getLanguages();
+        Representation representation = tmpTerm.getPreferredRepresentation(languages);
+        setRepresentations(representation);
     }
 
     /**
@@ -99,5 +97,37 @@ public class TermRepresentation_L10n {
             abbreviatedLabel = representation.getAbbreviatedLabel();
         }
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getLabel()
+     */
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * @param label the label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getAbbreviatedLabel()
+     */
+    @Override
+    public String getAbbreviatedLabel() {
+        return abbreviatedLabel;
+    }
+
+    /**
+     * @param abbreviatedLabel the abbreviatedLabel to set
+     */
+    public void setAbbreviatedLabel(String abbreviatedLabel) {
+        this.abbreviatedLabel = abbreviatedLabel;
+    }
+
+
 
 }

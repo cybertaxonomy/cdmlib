@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.util.Collection;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -8,7 +9,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author andreas
  * @date Jul 2, 2012
- *
  */
 public interface ICdmMassIndexer {
 
@@ -19,7 +19,7 @@ public interface ICdmMassIndexer {
      * @param types TODO
      * @param monitor TODO
      */
-    public abstract void reindex(Set<Class<? extends CdmBase>> types, IProgressMonitor monitor);
+    public abstract void reindex(Collection<Class<? extends CdmBase>> types, IProgressMonitor monitor);
 
     /**
      * This will wipe out the index.
@@ -41,5 +41,4 @@ public interface ICdmMassIndexer {
     public abstract void createDictionary(IProgressMonitor monitor);
 
     public Class[] dictionaryClasses();
-
 }

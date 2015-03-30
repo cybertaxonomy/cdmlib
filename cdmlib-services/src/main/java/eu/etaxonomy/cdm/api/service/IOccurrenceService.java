@@ -23,7 +23,9 @@ import org.hibernate.search.spatial.impl.Rectangle;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -323,14 +326,21 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
     /**
-     * Assembles a {@link DerivateHierarchyDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
+     * Assembles a {@link FieldUnitDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
      * <br>
      * For the meaning of "associated" see also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      * @param fieldUnit
      * @param associatedTaxonUuid
-     * @return
+     * @return a DTO with all the assembled information
      */
-    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+
+    /**
+     * Assembles a {@link PreservedSpecimenDTO} for the given derived unit.
+     * @param derivedUnit
+     * @return a DTO with all the assembled information
+     */
+    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
 
     /**
      * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
@@ -389,4 +399,29 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return collection of all descriptions with the given described specimen
      */
     public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Gets all description elements that are used for describing the character
+     * states of the given specimen
+     *
+     * @param specimen
+     *            the specimen for which the character state description
+     *            elements should be retrieved
+     * @return a collection of all character state description elements for this
+     *         specimen
+     */
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Gets all description elements that are used for describing the character
+     * states of the given specimen
+     *
+     * @param specimenUuid
+     *            the specimen {@link UUID} for which the character state description
+     *            elements should be retrieved
+     * @return a collection of all character state description elements for this
+     *         specimen
+     */
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(UUID specimenUuid);
+
 }
