@@ -130,4 +130,8 @@ public class FieldUnitDTO extends DerivateDTO{
         preservedSpecimenDTOs.add(preservedSpecimenDTO);
     }
 
+    public void setPreservedSpecimenDTOs(List<PreservedSpecimenDTO> preservedSpecimenDTOs) {
+        this.preservedSpecimenDTOs = preservedSpecimenDTOs;
+    }
+
 }
