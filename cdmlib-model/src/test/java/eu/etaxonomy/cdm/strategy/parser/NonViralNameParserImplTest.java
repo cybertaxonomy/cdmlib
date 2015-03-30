@@ -1162,6 +1162,14 @@ public class NonViralNameParserImplTest {
 		//del author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
 		testParsable = "Aphelocoma unicolor subsp. griscomi del Rossem, 1928"; 
 		assertTrue("Author with 'del' should be parsable", isParsable(testParsable, ICZN));
+		
+		//O' author (see https://dev.e-taxonomy.eu/trac/ticket/4759)
+		testParsable = "Aphelocoma unicolor subsp. griscomi O'Connor, 1928"; 
+		assertTrue("Author with 'O'' should be parsable", isParsable(testParsable, ICZN));
+		
+		//del author (see https://dev.e-taxonomy.eu/trac/ticket/4759)
+		testParsable = "Aphelocoma unicolor subsp. griscomi zur Strassen, 1928"; 
+		assertTrue("Author with 'zur' should be parsable", isParsable(testParsable, ICZN));
 
 	}	
 	
