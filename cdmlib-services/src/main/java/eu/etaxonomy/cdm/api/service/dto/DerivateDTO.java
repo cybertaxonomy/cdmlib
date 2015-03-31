@@ -21,11 +21,13 @@ import org.hibernate.envers.tools.Pair;
  */
 public abstract class DerivateDTO {
 
-    private boolean hasDna;
-    private boolean hasDetailImage;
-    private boolean hasCharacterData;
     private List<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
+    protected String taxonName;
+    protected String citation;
+    protected boolean hasDetailImage;
+    private boolean hasCharacterData;
+    private boolean hasDna;
     private boolean hasSpecimenScan;
 
     /**
@@ -57,6 +59,20 @@ public abstract class DerivateDTO {
     }
 
     /**
+     * @return the hasCharacterData
+     */
+    public boolean isHasCharacterData() {
+        return hasCharacterData;
+    }
+
+    /**
+     * @param hasCharacterData the hasCharacterData to set
+     */
+    public void setHasCharacterData(boolean hasCharacterData) {
+        this.hasCharacterData = hasCharacterData;
+    }
+
+    /**
      * @return the hasDna
      */
     public boolean isHasDna() {
@@ -85,20 +101,6 @@ public abstract class DerivateDTO {
     }
 
     /**
-     * @return the hasCharacterData
-     */
-    public boolean isHasCharacterData() {
-        return hasCharacterData;
-    }
-
-    /**
-     * @param hasCharacterData the hasCharacterData to set
-     */
-    public void setHasCharacterData(boolean hasCharacterData) {
-        this.hasCharacterData = hasCharacterData;
-    }
-
-    /**
      * @return the hasSpecimenScan
      */
     public boolean isHasSpecimenScan() {
@@ -110,6 +112,18 @@ public abstract class DerivateDTO {
      */
     public void setHasSpecimenScan(boolean hasSpecimenScan) {
         this.hasSpecimenScan = hasSpecimenScan;
+    }
+    /**
+     * @return the citation
+     */
+    public String getCitation() {
+        return citation;
+    }
+    /**
+     * @param citation the citation to set
+     */
+    public void setCitation(String citation) {
+        this.citation = citation;
     }
 
 

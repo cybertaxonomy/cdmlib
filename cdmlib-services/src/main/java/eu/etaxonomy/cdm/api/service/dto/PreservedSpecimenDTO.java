@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -22,43 +24,44 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
     private String uuid;
-    private List<String> types;
+    private List<String> associatedTaxa;
+    private Map<String, List<String>> types;
 
-    /**
-     * @return the accessionNumber
-     */
     public String getAccessionNumber() {
         return accessionNumber;
     }
-    /**
-     * @param accessionNumber the accessionNumber to set
-     */
     public void setAccessionNumber(String accessionNumber) {
         this.accessionNumber = accessionNumber;
     }
-    /**
-     * @return the uuid
-     */
+
     public String getUuid() {
         return uuid;
     }
-    /**
-     * @param uuid the uuid to set
-     */
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
     /**
      * @return the types
      */
-    public List<String> getTypes() {
+    public Map<String, List<String>> getTypes() {
         return types;
     }
-    public void addType(String typeStatus){
+    public void addTypes(String typeStatus, List<String> typedTaxa){
         if(types==null){
-            types = new ArrayList<String>();
+            types = new HashMap<String, List<String>>();
         }
-        types.add(typeStatus);
+        types.put(typeStatus, typedTaxa);
+    }
+
+    public List<String> getAssociatedTaxa() {
+        return associatedTaxa;
+    }
+    public void addAssociatedTaxon(String taxonName){
+        if(associatedTaxa==null){
+            associatedTaxa = new ArrayList<String>();
+        }
+        associatedTaxa.add(taxonName);
     }
 
 }

@@ -137,6 +137,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
 
+    private static final String SEPARATOR_STRING = ", ";
+
     public OccurrenceServiceImpl() {
         logger.debug("Load OccurrenceService Bean");
     }
@@ -415,36 +417,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //assemble derivate data DTO
         assembleDerivateDataDTO(fieldUnitDTO, fieldUnit);
 
-        final String separator = ", ";
         //assemble citation
-        String citation = "";
-        citation += fieldUnitDTO.getCountry()!=null?fieldUnitDTO.getCountry()+separator:"";
-        if(fieldUnit.getGatheringEvent()!=null){
-            if(fieldUnit.getGatheringEvent().getLocality()!=null){
-                citation += fieldUnit.getGatheringEvent().getLocality().getText();
-                citation += separator;
-            }
-            if(fieldUnit.getGatheringEvent().getExactLocation()!=null
-                    && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
-                    && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
-                citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
-                citation += separator;
-                citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
-                citation += separator;
-            }
-        }
-        citation += fieldUnitDTO.getCollection()!=null?fieldUnitDTO.getCollection():"";
+        String citation = assembleCitation(fieldUnit);
         if(!preservedSpecimenAccessionNumbers.isEmpty()){
             citation += " (";
             for(String accessionNumber:preservedSpecimenAccessionNumbers){
                 if(!accessionNumber.isEmpty()){
-                    citation += accessionNumber+separator;
+                    citation += accessionNumber+SEPARATOR_STRING;
                 }
             }
-            citation = removeTail(citation, separator);
+            citation = removeTail(citation, SEPARATOR_STRING);
             citation += ")";
         }
-        citation = removeTail(citation, separator);
         fieldUnitDTO.setCitation(citation);
 
         //assemble herbaria string
@@ -457,12 +441,59 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(e.getValue()>1){
                 herbariaString += "("+e.getValue()+")";
             }
-            herbariaString += separator;
+            herbariaString += SEPARATOR_STRING;
         }
-        herbariaString = removeTail(herbariaString, separator);
+        herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
         fieldUnitDTO.setHerbarium(herbariaString);
 
         return fieldUnitDTO;
+    }
+
+
+    /**
+     * @param fieldUnit
+     * @param fieldUnitDTO
+     * @param preservedSpecimenAccessionNumbers
+     * @param SEPARATOR_STRING
+     * @return
+     */
+    private String assembleCitation(FieldUnit fieldUnit) {
+        String citation = "";
+        if(fieldUnit.getGatheringEvent()!=null){
+            //Country
+            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+            NamedArea country = gatheringEvent.getCountry();
+            String countryString = country!=null?country.getDescription():null;
+            citation += countryString+SEPARATOR_STRING;
+
+            //Collection
+            AgentBase collector = gatheringEvent.getCollector();
+            String fieldNumber = fieldUnit.getFieldNumber();
+            String collectionString = "";
+            if(collector!=null || fieldNumber!=null){
+                collectionString += collector!=null?collector:"";
+                if(!collectionString.isEmpty()){
+                    collectionString += " ";
+                }
+                collectionString += (fieldNumber!=null?fieldNumber:"");
+                collectionString.trim();
+            }
+            citation += collectionString;
+            if(fieldUnit.getGatheringEvent().getLocality()!=null){
+                citation += fieldUnit.getGatheringEvent().getLocality().getText();
+                citation += SEPARATOR_STRING;
+            }
+            if(fieldUnit.getGatheringEvent().getExactLocation()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
+                citation += SEPARATOR_STRING;
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
+                citation += SEPARATOR_STRING;
+            }
+        }
+        citation = removeTail(citation, SEPARATOR_STRING);
+        return citation;
     }
 
 
@@ -471,11 +502,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return assemblePreservedSpecimenDTO(derivedUnit, null);
     }
 
-    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO hierarchyDTO){
+    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO fieldUnitDTO){
         if(!getSession().contains(derivedUnit)){
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
+
         //check identifiers in priority order accNo>barCode>catalogNumber
         if(derivedUnit.getAccessionNumber()!=null && !derivedUnit.getAccessionNumber().isEmpty()){
             preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
@@ -488,11 +520,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
+        //citation
+        Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
+        if(fieldUnits.size()==1){
+            preservedSpecimenDTO.setCitation(assembleCitation(fieldUnits.iterator().next()));
+        }
+        else{
+            preservedSpecimenDTO.setCitation("No Citation available. This specimen either has no or multiple field units.");
+        }
+
         //character state data
         Collection<DescriptionElementBase> characterDataForSpecimen = getCharacterDataForSpecimen(derivedUnit);
         if(!characterDataForSpecimen.isEmpty()){
-            if(hierarchyDTO!=null){
-                hierarchyDTO.setHasCharacterData(true);
+            if(fieldUnitDTO!=null){
+                fieldUnitDTO.setHasCharacterData(true);
             }
         }
         for (DescriptionElementBase descriptionElementBase : characterDataForSpecimen) {
@@ -511,15 +552,35 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 preservedSpecimenDTO.addCharacterData(character, state);
             }
         }
-        //check if derived unit is a type
+        //check type designations
         Collection<SpecimenTypeDesignation> specimenTypeDesignations = listTypeDesignations(derivedUnit, null, null, null, null);
         for (SpecimenTypeDesignation specimenTypeDesignation : specimenTypeDesignations) {
-            if(hierarchyDTO!=null){
-                hierarchyDTO.setHasType(true);
+            if(fieldUnitDTO!=null){
+                fieldUnitDTO.setHasType(true);
             }
             TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
             if(typeStatus!=null){
-                preservedSpecimenDTO.addType(typeStatus.getLabel());
+                List<String> typedTaxaNames = new ArrayList<String>();
+                String label = typeStatus.getLabel();
+                Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+                for (TaxonNameBase taxonNameBase : typifiedNames) {
+                    typedTaxaNames.add(taxonNameBase.getFullTitleCache());
+                }
+                preservedSpecimenDTO.addTypes(label, typedTaxaNames);
+            }
+        }
+
+        //individuals associations
+        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
+        for (IndividualsAssociation individualsAssociation : individualsAssociations) {
+            if(individualsAssociation.getInDescription()!=null){
+                if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
+                    TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                    Taxon taxon = taxonDescription.getTaxon();
+                    if(taxon!=null && taxon.getName()!=null){
+                        preservedSpecimenDTO.addAssociatedTaxon(taxon.getName().getFullTitleCache());
+                    }
+                }
             }
         }
         //assemble sub derivates

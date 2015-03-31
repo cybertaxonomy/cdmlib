@@ -12,13 +12,9 @@ public class FieldUnitDTO extends DerivateDTO{
 	private String date;
 	private String herbarium;
 	private boolean hasType;
-	//Detail pop-down
-	private String taxonName;
-	private String citation;
 	private String protologue;
 
 	private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
-
     /**
      * @return the country
      */
@@ -102,18 +98,6 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public void setProtologue(String protologue) {
         this.protologue = protologue;
-    }
-    /**
-     * @return the citation
-     */
-    public String getCitation() {
-        return citation;
-    }
-    /**
-     * @param citation the citation to set
-     */
-    public void setCitation(String citation) {
-        this.citation = citation;
     }
 
     /**
