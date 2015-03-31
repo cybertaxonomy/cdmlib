@@ -476,7 +476,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
-        preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
+        //check identifiers in priority order accNo>barCode>catalogNumber
+        if(derivedUnit.getAccessionNumber()!=null && !derivedUnit.getAccessionNumber().isEmpty()){
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
+        }
+        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getBarcode());
+        }
+        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getCatalogNumber());
+        }
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
         //character state data
@@ -527,14 +536,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
         Collection<DerivedUnit> childDerivates = getDerivedUnitsFor(specimenOrObservation);
         for (DerivedUnit childDerivate : childDerivates) {
-            //current accession number
-            String currentAccessionNumber = childDerivate.getAccessionNumber()!=null?childDerivate.getAccessionNumber():"";
-            //current herbarium
-            String currentHerbarium = "";
-            eu.etaxonomy.cdm.model.occurrence.Collection collection = childDerivate.getCollection();
-            if(collection!=null){
-                currentHerbarium = collection.getCode()!=null?collection.getCode():"";
-            }
             //assemble molecular data
             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
             if(childDerivate.isInstanceOf(DnaSample.class)){
@@ -585,8 +586,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     //specimen scan
                     if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
                         derivateDTO.setHasSpecimenScan(true);
-                        final String imageLinkText = currentHerbarium+" "+currentAccessionNumber;
-                        derivateDataDTO.addSpecimenScan(mediaUriString==null?"":mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
+                        String imageLinkText = "scan";
+                        if(derivateDTO instanceof PreservedSpecimenDTO && ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber()!=null){
+                            imageLinkText = ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber();
+                        }
+                        derivateDataDTO.addSpecimenScan(mediaUriString==null?"":mediaUriString, imageLinkText);
                     }
                     //detail image
                     else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
