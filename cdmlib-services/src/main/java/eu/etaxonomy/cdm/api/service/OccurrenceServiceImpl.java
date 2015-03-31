@@ -92,6 +92,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -389,8 +390,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
+                //collect accession numbers for citation
                 if(derivedUnit.getAccessionNumber()!=null){
                     preservedSpecimenAccessionNumbers.add(derivedUnit.getAccessionNumber());
+                }
+                //collect collections for herbaria column
+                if(derivedUnit.getCollection()!=null){
+                    Integer herbariumCount = collectionToCountMap.get(derivedUnit.getCollection());
+                    if(herbariumCount==null){
+                        herbariumCount = 0;
+                    }
+                    collectionToCountMap.put(derivedUnit.getCollection(), herbariumCount+1);
                 }
                 if(derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)){
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
@@ -498,7 +508,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(hierarchyDTO!=null){
                 hierarchyDTO.setHasType(true);
             }
-            preservedSpecimenDTO.addType(specimenTypeDesignation.getTypeStatus().getLabel());
+            TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
+            if(typeStatus!=null){
+                preservedSpecimenDTO.addType(typeStatus.getLabel());
+            }
         }
         //assemble sub derivates
         preservedSpecimenDTO.setDerivateDataDTO(assembleDerivateDataDTO(preservedSpecimenDTO, derivedUnit));
