@@ -423,4 +423,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(UUID specimenUuid);
 
+    /**
+     * Returns the most significant identifier for the given {@link DerivedUnit}.
+     * @param derivedUnit the derived unit to check
+     * @return the identifier string
+     */
+    public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
+
 }

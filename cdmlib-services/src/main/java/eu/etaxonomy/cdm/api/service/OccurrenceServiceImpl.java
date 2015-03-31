@@ -393,8 +393,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
                 //collect accession numbers for citation
-                if(derivedUnit.getAccessionNumber()!=null){
-                    preservedSpecimenAccessionNumbers.add(derivedUnit.getAccessionNumber());
+                String mostSignificantIdentifier = getMostSignificantIdentifier(derivedUnit);
+                if(mostSignificantIdentifier!=null){
+                    preservedSpecimenAccessionNumbers.add(mostSignificantIdentifier);
                 }
                 //collect collections for herbaria column
                 if(derivedUnit.getCollection()!=null){
@@ -407,10 +408,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if(derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)){
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
                     fieldUnitDTO.addPreservedSpecimenDTO(preservedSpecimenDTO);
-                    fieldUnitDTO.setHasCharacterData(preservedSpecimenDTO.isHasCharacterData());
-                    fieldUnitDTO.setHasDetailImage(preservedSpecimenDTO.isHasDetailImage());
-                    fieldUnitDTO.setHasDna(preservedSpecimenDTO.isHasDna());
-                    fieldUnitDTO.setHasSpecimenScan(preservedSpecimenDTO.isHasSpecimenScan());
+                    fieldUnitDTO.setHasCharacterData(fieldUnitDTO.isHasCharacterData()||preservedSpecimenDTO.isHasCharacterData());
+                    fieldUnitDTO.setHasDetailImage(fieldUnitDTO.isHasDetailImage()||preservedSpecimenDTO.isHasDetailImage());
+                    fieldUnitDTO.setHasDna(fieldUnitDTO.isHasDna()||preservedSpecimenDTO.isHasDna());
+                    fieldUnitDTO.setHasSpecimenScan(fieldUnitDTO.isHasSpecimenScan()||preservedSpecimenDTO.isHasSpecimenScan());
                 }
             }
         }
@@ -500,6 +501,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit){
         return assemblePreservedSpecimenDTO(derivedUnit, null);
+    }
+
+    @Override
+    public String getMostSignificantIdentifier(DerivedUnit derivedUnit){
+        if(derivedUnit.getAccessionNumber()!=null && !derivedUnit.getAccessionNumber().isEmpty()){
+            return derivedUnit.getAccessionNumber();
+        }
+        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
+            return derivedUnit.getBarcode();
+        }
+        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
+            return derivedUnit.getCatalogNumber();
+        }
+        return null;
     }
 
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO fieldUnitDTO){
