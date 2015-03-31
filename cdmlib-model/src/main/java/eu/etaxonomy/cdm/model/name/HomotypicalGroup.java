@@ -131,12 +131,24 @@ public class HomotypicalGroup extends AnnotatableEntity {
 			typifiedName.setHomotypicalGroup(this);
 		}
 	}
+	
+	/**
+	 * @see #removeTypifiedName(TaxonNameBase, boolean)
+	 * @param typifiedName
+	 */
+	public void removeTypifiedName(TaxonNameBase typifiedName) {
+		removeTypifiedName(typifiedName, false);
+	}
+
+	
 	/** 
 	 * Removes one element from the set of {@link TaxonNameBase taxon names}
 	 * that belong to <i>this</i> homotypical group.
 	 *
-	 * @param  taxonBase	the taxon name which should be removed from the corresponding set
-	 * @see    				#addTypifiedName(TaxonNameBase)
+	 * @param  typifiedName	the taxon name which should be removed from the corresponding set
+	 * @param  removeGroup  if <code>true</code> the typified name is given a new 
+	 * 						homotypical group 
+	 * @see    #addTypifiedName(TaxonNameBase)
 	 */
 	public void removeTypifiedName(TaxonNameBase typifiedName, boolean removeGroup) {
 		if (removeGroup){

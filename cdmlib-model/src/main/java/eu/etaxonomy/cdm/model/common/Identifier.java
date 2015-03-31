@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
-public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEntity {
+public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEntity implements Cloneable {
 	private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Identifier.class);
@@ -126,6 +126,25 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 	}
 	protected void setIdentifiedObj(T identifiedObj) {
 		this.identifiedObj = identifiedObj;
+	}
+	
+	//****************** CLONE ************************************************/
+	 
+		@Override
+		public Object clone() throws CloneNotSupportedException{
+			Identifier<?> result = (Identifier<?>)super.clone();	
+			//no changes to: type, value
+			return result;
+		}
+	
+	/**
+	 * Clones this extension and sets the clone's extended object to 'extendedObject'
+	 * @see java.lang.Object#clone()
+	 */
+	public <T extends IdentifiableEntity<?>> Identifier<T> clone(T identifiedObject) throws CloneNotSupportedException{
+		Identifier<T> result = (Identifier<T>)clone();
+		result.setIdentifiedObj(identifiedObject);
+		return result;
 	}
 	
 }

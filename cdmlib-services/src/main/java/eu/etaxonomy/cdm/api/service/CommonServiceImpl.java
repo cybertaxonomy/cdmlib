@@ -318,4 +318,10 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     	return (Map)originalSourceDao.saveAll((Collection)newInstances);
     }
 
+
+	@Override
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
+		return genericDao.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
+	}
+
 }

@@ -62,12 +62,15 @@ public interface ICdmGenericDao {
 	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
 
 	/**
-	 * Returns all CDM classes. If includeAbstractClasses is false the abstract classes
-	 * will not be in the resultset.
-	 * @param includeAbstractClasses
+	 * Returns all classes that are persisted via the persisting framework.
+	 * E.g. in hibernate these are all classes registered in the session factory 
+	 * (via e.g. hibernate.cfg.xml)
+	 * <BR>
+	 * @param includeAbstractClasses if <code>false</code> the abstract classes
+	 * will not be in the result set.
 	 * @return
 	 */
-	public Set<Class<? extends CdmBase>> getAllCdmClasses(boolean includeAbstractClasses);
+	public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses);
 
 	/**
 	 * Returns all CdmBase objects that reference the referencedCdmBase.
@@ -82,7 +85,6 @@ public interface ICdmGenericDao {
 	/**
 	 * Merges cdmBase2 into cdmBase2 and rearranges all reference to cdmBase2 by letting them point to
 	 * cdmBase1. If the merge strategy is not defined (<code>null</code>)  the default merge strategy is taken instead.
-	 * @param <T>
 	 * @param cdmBase1
 	 * @param cdmBase2
 	 * @param mergeStrategy
@@ -92,6 +94,26 @@ public interface ICdmGenericDao {
 	 */
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
 
+	/**
+	 * Computes if cdmBase2 can be merged into cdmBase1. This is usually the case when both
+	 * objects are of the same class.
+	 * If they are not they must have a common super class and all links to CdmBase2 must be
+	 * re-referenceable to cdmBase1.
+	 * This is not the case if cdmBase2 is linked by a property which does not support class of cdmBase1.
+	 * E.g. User.person requires a person so if user u1 exists with u1.person = person1 and we want to
+	 * merge person1 into team1 this is not possible because team1 is not a valid replacement for person1
+	 * within the user1.person context.
+	 * @param cdmBase1
+	 * @param cdmBase2
+	 * @param mergeStrategy
+	 * @return true if objects are mergeable
+	 * @throws IllegalArgumentException
+	 * @throws NullPointerException
+	 * @throws MergeException
+	 */
+	public <T extends CdmBase> boolean  isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+
+	
 	/**
 	 * Returns a List of matching persistent objects according to the match strategy
 	 * @param <T>

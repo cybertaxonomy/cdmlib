@@ -85,6 +85,28 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
 
+	
+	/**
+	 * Tests if cdmBase2 can be merged into cdmBase1. This is usually the case when both
+	 * objects are of the same class.
+	 * If they are not they must have a common super class and all links to CdmBase2 must be
+	 * re-referenceable to cdmBase1.
+	 * This is not the case if cdmBase2 is linked by a property which does not support class of cdmBase1.
+	 * E.g. User.person requires a person so if user u1 exists with u1.person = person1 and we want to
+	 * merge person1 into team1 this is not possible because team1 is not a valid replacement for person1
+	 * within the user1.person context.
+	 * <BR>
+	 * This method is not expensive if classes are equal but may become more expensive if not, because
+	 * in this concrete references to cdmBases2 need to be evaluated. 
+	 * @param cdmBase1
+	 * @param cdmBase2
+	 * @param mergeStrategy
+	 * @return
+	 * @throws MergeException
+	 */
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+
+	
 	/**
 	 * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
 	 * to merge first. If no merge strategy is defined (null), the DefaultMergeStrategy will be taken as default.

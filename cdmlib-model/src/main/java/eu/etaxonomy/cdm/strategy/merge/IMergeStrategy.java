@@ -57,4 +57,24 @@ public interface IMergeStrategy {
 	 */
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException;
 
+	/**
+	 * If set to true the merge will only reallocate all references that point
+	 * to the second entity to the first entity. All data attached to the 
+	 * second entity will be completely lost. All data attached to the first 
+	 * entity will be saved as it is. All other {@link MergeMode} information will
+	 * be neglected.<BR>
+	 * The second entity will finally be deleted.
+	 * 
+	 * #see {@link #setOnlyReallocateLinks(boolean)}
+	 */
+	 public boolean isOnlyReallocateReferences(); 
+	
+	/**
+	 * Sets the onlyReallocateReferences parameter. See {@link #isOnlyReallocateReferences()}
+	 * for the parameters semantics.
+	 * @see #isOnlyReallocateReferences()
+	 * @param onlyReallocateReferences
+	 */
+	public void setOnlyReallocateLinks(boolean onlyReallocateReferences);
+	
 }

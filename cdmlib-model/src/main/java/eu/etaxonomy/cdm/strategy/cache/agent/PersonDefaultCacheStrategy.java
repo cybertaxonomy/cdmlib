@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  */
 public class PersonDefaultCacheStrategy extends StrategyBase implements
 		INomenclaturalAuthorCacheStrategy<Person> {
+	private static final long serialVersionUID = -6184639515553953112L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategy.class);
 

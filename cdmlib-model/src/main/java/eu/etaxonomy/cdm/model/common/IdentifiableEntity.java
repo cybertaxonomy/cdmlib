@@ -673,13 +673,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     @Override
     public Object clone() throws CloneNotSupportedException{
-        IdentifiableEntity result = (IdentifiableEntity)super.clone();
+        IdentifiableEntity<?> result = (IdentifiableEntity<?>)super.clone();
 
         //Extensions
         result.extensions = new HashSet<Extension>();
         for (Extension extension : getExtensions() ){
             Extension newExtension = (Extension)extension.clone();
             result.addExtension(newExtension);
+        }
+        
+        //Identifier
+        result.identifiers = new ArrayList<Identifier>();
+        for (Identifier<?> identifier : getIdentifiers() ){
+        	Identifier<?> newIdentifier = (Identifier<?>)identifier.clone();
+            result.addIdentifier(newIdentifier);
         }
 
         //OriginalSources

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -225,15 +226,26 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 
 //****************** CLONE ************************************************/
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Annotation result = (Annotation)super.clone();
+		//TODO do we really need this, it should not change anything
 		result.setCommentator(this.getCommentator());
+		//TODO do we really need this, it should not change anything
 		result.setAnnotationType(this.getAnnotationType());
-		result.setLinkbackUri(this.linkbackUri);
+
+		try {
+			result.setLinkbackUri(this.linkbackUri == null ? null : new URI(this.linkbackUri.toString()));
+		} catch (URISyntaxException e) {
+			//do nothing
+		}
+		//IntextReferences
+		result.intextReferences = new HashSet<IntextReference>();
+		for (IntextReference intextReference : getIntextReferences()){
+			IntextReference newIntextReference = (IntextReference)intextReference.clone();
+			result.addIntextReference(newIntextReference);
+		}
+		
 		return result;
 	}
 
