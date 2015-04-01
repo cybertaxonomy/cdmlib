@@ -30,40 +30,40 @@ public class CdmTypeScanner<T> extends ClassPathScanningCandidateComponentProvid
     boolean includeAbstract;
     boolean includeInterfaces;
 
-        public CdmTypeScanner(boolean considerAbstract, boolean considerInterfaces) {
-            super(false);
-            this.includeAbstract = considerAbstract;
-            this.includeInterfaces = considerInterfaces;
-        }
+    public CdmTypeScanner(boolean considerAbstract, boolean considerInterfaces) {
+        super(false);
+        this.includeAbstract = considerAbstract;
+        this.includeInterfaces = considerInterfaces;
+    }
 
-        public final Collection<Class<? extends T>> scanTypesIn(String basePackage) {
-            String _basePackage = basePackage == null ? defaultBasePackage : basePackage;
-            List<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
-            for (BeanDefinition candidate : findCandidateComponents(_basePackage)) {
-                    Class cls = ClassUtils.resolveClassName(candidate.getBeanClassName(),
-                            ClassUtils.getDefaultClassLoader());
-                    classes.add(cls);
-            }
-            return classes;
+    public final Collection<Class<? extends T>> scanTypesIn(String basePackage) {
+        String _basePackage = basePackage == null ? defaultBasePackage : basePackage;
+        List<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
+        for (BeanDefinition candidate : findCandidateComponents(_basePackage)) {
+                Class cls = ClassUtils.resolveClassName(candidate.getBeanClassName(),
+                        ClassUtils.getDefaultClassLoader());
+                classes.add(cls);
         }
+        return classes;
+    }
 
-        /**
-         * Determine whether the given bean definition qualifies as candidate.
-         * <p>The special implementation checks whether the class is concrete
-         * or abstract or an interface. The latter two conditions depend on
-         * the state of the two boolean fields includeAnstract, includeInterface.
-         *
-         * @param beanDefinition the bean definition to check
-         * @return whether the bean definition qualifies as a candidate component
-         */
-        @Override
-        protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-            return (beanDefinition.getMetadata().isIndependent()
-                    && (beanDefinition.getMetadata().isConcrete()
-                      || (includeAbstract && beanDefinition.getMetadata().isAbstract())
-                      || (includeInterfaces && beanDefinition.getMetadata().isInterface())
-                     )
-                    );
-        }
+    /**
+     * Determine whether the given bean definition qualifies as candidate.
+     * <p>The special implementation checks whether the class is concrete
+     * or abstract or an interface. The latter two conditions depend on
+     * the state of the two boolean fields includeAnstract, includeInterface.
+     *
+     * @param beanDefinition the bean definition to check
+     * @return whether the bean definition qualifies as a candidate component
+     */
+    @Override
+    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+        return (beanDefinition.getMetadata().isIndependent()
+                && (beanDefinition.getMetadata().isConcrete()
+                  || (includeAbstract && beanDefinition.getMetadata().isAbstract())
+                  || (includeInterfaces && beanDefinition.getMetadata().isInterface())
+                 )
+                );
+    }
 
     }
