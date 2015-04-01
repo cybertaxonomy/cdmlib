@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -43,6 +42,13 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
+
+	@Autowired
+	protected void setDao(IAgentDao dao) {
+		assert dao != null;
+		this.dao = dao;
+	}
+    
  	/**
 	 * Constructor
 	 */
@@ -50,14 +56,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		if (logger.isDebugEnabled()) { logger.debug("Load AgentService Bean"); }
 	}
 	
-	public List<Institution> searchInstitutionByCode(String code) {
-		return dao.getInstitutionByCode(code);
-	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
@@ -66,13 +65,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-
-	@Autowired
-	protected void setDao(IAgentDao dao) {
-		assert dao != null;
-		this.dao = dao;
+	
+	@Override
+	public List<Institution> searchInstitutionByCode(String code) {
+		return dao.getInstitutionByCode(code);
 	}
 
+	@Override
 	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countInstitutionalMemberships(person);
 		
@@ -84,6 +83,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return new DefaultPagerImpl<InstitutionalMembership>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber) {
 		Integer numberOfResults = dao.countMembers(team);
 			
@@ -95,6 +95,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return new DefaultPagerImpl<Person>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber) {
 		Integer numberOfResults = dao.countAddresses(agent);
 		
@@ -106,9 +107,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return new DefaultPagerImpl<Address>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getTeamOrPersonBaseUuidAndNomenclaturalTitle()
-	 */
+	@Override
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
 		return dao.getTeamUuidAndNomenclaturalTitle();
 	}
@@ -123,9 +122,6 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return dao.getTeamUuidAndTitleCache();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getInstitutionUuidAndTitleCache()
-	 */
 	@Override
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
 		return dao.getInstitutionUuidAndTitleCache();
@@ -154,7 +150,6 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			
 		}
 		
-		return result;
-    		
-    	}
+		return result;		
+    }
 }
