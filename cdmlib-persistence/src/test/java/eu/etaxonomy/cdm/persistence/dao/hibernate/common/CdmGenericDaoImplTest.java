@@ -863,12 +863,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
 		}
 		//next exception
-		try {
-			cdmGenericDao.merge(name1, zooName1, null);
-			Assert.fail("Merging of 2 objects of different types must throw an exception");
-		} catch (MergeException e) {
-			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
-		}
+		//for names this is not the case anymore
+//		try {
+//			cdmGenericDao.merge(name1, zooName1, null);
+//			Assert.fail("Merging of 2 objects of different types must throw an exception");
+//		} catch (MergeException e) {
+//			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+//		}
 	}
 	
 	@Test
