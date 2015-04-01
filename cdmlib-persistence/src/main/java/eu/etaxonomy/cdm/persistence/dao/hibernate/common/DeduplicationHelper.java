@@ -166,21 +166,16 @@ public class DeduplicationHelper {
 
 		
 		if (cdmBase1.getClass() != cdmBase2.getClass()){
-			if (strategy.isOnlyReallocateReferences()){
-				boolean reallocationPossible = testOnlyReallocationAllowed(cdmBase1.getClass(), cdmBase2.getClass());
-				if (! reallocationPossible){
-					String msg = "Merge not possible for objects of type %s and type %s";
-					msg = String.format(msg, cdmBase1.getClass().getSimpleName(), cdmBase2.getClass().getSimpleName());
-					throw new IllegalArgumentException("Merge not possible for objects of type %s and type %s");
-				}else{
-					if (! testInstancesMergeable(cdmBase1, cdmBase2, strategy)){
-						throw new IllegalArgumentException("Object can not be merged into new object as it is referenced in a way that does not allow merging");
-					}
-				}
+			boolean reallocationPossible = testOnlyReallocationAllowed(cdmBase1.getClass(), cdmBase2.getClass());
+			if (! reallocationPossible){
+				String msg = "Merge not possible for objects of type %s and type %s";
+				msg = String.format(msg, cdmBase1.getClass().getSimpleName(), cdmBase2.getClass().getSimpleName());
+				throw new IllegalArgumentException("Merge not possible for objects of type %s and type %s");
 			}else{
-				throw new IllegalArgumentException("Merge arguments must be of same type");
-			}
-			
+				if (! testInstancesMergeable(cdmBase1, cdmBase2, strategy)){
+					throw new IllegalArgumentException("Object can not be merged into new object as it is referenced in a way that does not allow merging");
+				}
+			}			
 		}
 	}
 	
