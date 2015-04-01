@@ -69,12 +69,13 @@ public interface IMergeStrategy {
 	 */
 	 public boolean isOnlyReallocateReferences(); 
 	
-	/**
-	 * Sets the onlyReallocateReferences parameter. See {@link #isOnlyReallocateReferences()}
-	 * for the parameters semantics.
-	 * @see #isOnlyReallocateReferences()
-	 * @param onlyReallocateReferences
-	 */
-	public void setOnlyReallocateLinks(boolean onlyReallocateReferences);
+//	 Removed as this is not yet implemented in underlying classes
+//	/**
+//	 * Sets the onlyReallocateReferences parameter. See {@link #isOnlyReallocateReferences()}
+//	 * for the parameters semantics.
+//	 * @see #isOnlyReallocateReferences()
+//	 * @param onlyReallocateReferences
+//	 */
+//	public void setOnlyReallocateLinks(boolean onlyReallocateReferences);
 	
 }

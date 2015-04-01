@@ -798,7 +798,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("Name1 should have person1 as combination author", person1, name1.getCombinationAuthorTeam());
 		
 		DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
-		strategy.setOnlyReallocateLinks(true);
+//		strategy.setOnlyReallocateLinks(true);
 			
 		FieldUnit fieldUnit1 = FieldUnit.NewInstance();
 		fieldUnit1.setPrimaryCollector(person1);

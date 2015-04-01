@@ -48,7 +48,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		return new DefaultMergeStrategy(mergeClazz);
 	}
 
-	private boolean onlyReallocateReferences;
+	private boolean onlyReallocateReferences = false;
 	
 	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
 	protected MergeMode defaultMergeMode = MergeMode.FIRST;
@@ -76,10 +76,10 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		return this.onlyReallocateReferences;
 	}
 
-	@Override
-	public void setOnlyReallocateLinks(boolean onlyReallocateReferences) {
-		this.onlyReallocateReferences = onlyReallocateReferences; 
-	}
+//	@Override
+//	public void setOnlyReallocateLinks(boolean onlyReallocateReferences) {
+//		this.onlyReallocateReferences = onlyReallocateReferences; 
+//	}
 
 	
 	/**
