@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.merge;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -32,6 +31,21 @@ public interface IMergeStrategy {
 	 * @throws MergeException 
 	 */
 	public void setMergeMode(String propertyName, MergeMode mergeMode) throws MergeException;
+	
+	/**
+	 * Sets the default merge mode for all properties.
+	 * The default merge mode is used if no more specific merge mode is defined for a certain property.
+	 * @param mergeMode
+	 */
+	public void setDefaultMergeMode(MergeMode defaultMergeMode);
+	
+	/**
+	 * Sets the default merge mode for all collection properties.
+	 * The default collection merge mode is used if no specific merge mode is defined for a certain collection property.
+	 * @param mergeMode
+	 */
+	public void setDefaultCollectionMergeMode(MergeMode defaultCollectionMergeMode);
+
 	
 	/**
 	 * Merges mergeSecond into mergeFirst.

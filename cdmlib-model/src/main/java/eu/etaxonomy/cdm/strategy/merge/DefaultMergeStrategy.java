@@ -50,10 +50,10 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 
 	private boolean onlyReallocateReferences = false;
 	
-	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
 	protected MergeMode defaultMergeMode = MergeMode.FIRST;
 	protected MergeMode defaultCollectionMergeMode = MergeMode.ADD;
 	
+	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
 	protected Class<? extends CdmBase> mergeClass;
 	protected Map<String, Field> mergeFields;
 	
@@ -142,6 +142,19 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			throw new MergeException("The class " + mergeClass.getName() + " does not contain a field with name " + propertyName);
 		}
 	}
+	
+	
+	@Override
+	public void setDefaultMergeMode(MergeMode defaultMergeMode) {
+		this.defaultMergeMode = defaultMergeMode;
+	}
+
+
+	@Override
+	public void setDefaultCollectionMergeMode(MergeMode defaultCollectionMergeMode) {
+		this.defaultCollectionMergeMode = defaultCollectionMergeMode;
+	}
+
 
 	/**
 	 * Tests if a property is an identifier property

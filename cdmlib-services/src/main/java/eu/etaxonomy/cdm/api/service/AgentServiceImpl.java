@@ -27,9 +27,16 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 
 
@@ -42,6 +49,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
+    @Autowired
+    ICdmGenericDao genericDao;
 
 	@Autowired
 	protected void setDao(IAgentDao dao) {
@@ -152,4 +161,52 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		
 		return result;		
     }
+
+	@Override
+	public Person convertTeam2Person(Team team) throws MergeException {
+		Person result = null;
+		team = CdmBase.deproxy(team, Team.class);
+		if (team.getTeamMembers().size() > 1){
+			throw new IllegalArgumentException("Team must not have more than 1 member to be convertable into a person");
+		}else if (team.getTeamMembers().size() == 1){
+			result = team.getTeamMembers().get(0);
+			IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
+			strategy.setDefaultCollectionMergeMode(MergeMode.FIRST);
+			genericDao.merge(result, team, strategy);
+		}else if (team.getTeamMembers().isEmpty()){
+			result = Person.NewInstance();
+			genericDao.save(result);
+			IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
+			strategy.setDefaultMergeMode(MergeMode.SECOND);
+			strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
+			genericDao.merge(result, team, strategy);
+		}else{
+			throw new IllegalStateException("Unhandled state of team members collection");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
+		Team team = Team.NewInstance();
+		IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
+		strategy.setDefaultMergeMode(MergeMode.SECOND);
+		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
+		
+		if (! genericDao.isMergeable(team, person, strategy)){
+			throw new MergeException("Person can not be transformed into team.");
+		}
+		try {
+			this.save(team);
+			team.setProtectedNomenclaturalTitleCache(true);
+			genericDao.merge(team, person, strategy);
+//			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
+		} catch (Exception e) {
+			throw new MergeException("Unhandled merge exception", e);
+		}
+		return team;
+	}
+	
+	
 }
