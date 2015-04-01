@@ -162,16 +162,21 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 	 */
 	private String replaceMicroRefToken(String microReference, String string) {
 		int index = string.indexOf(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
-		String before = string.substring(0, index);
-		String after = string.substring(index + INomenclaturalReference.MICRO_REFERENCE_TOKEN.length() );
-		microReference = microReference.trim();   //needed ?
-		if (after.length() > 0){
-			if (  ("".equals(microReference) && before.endsWith(after.substring(0,1)) || microReference.endsWith(after.substring(0,1)))){
-				after = after.substring(1);
+	
+		if (index > -1){
+			String before = string.substring(0, index);
+			String after = string.substring(index + INomenclaturalReference.MICRO_REFERENCE_TOKEN.length() );
+			microReference = microReference.trim();   //needed ?
+			if (after.length() > 0){
+				if (  ("".equals(microReference) && before.endsWith(after.substring(0,1)) || microReference.endsWith(after.substring(0,1)))){
+					after = after.substring(1);
+				}
 			}
+			String result = before + microReference + after;
+			return result;
+		}else{
+			return string;
 		}
-		String result = before + microReference + after;
-		return result;
 	}
 
 	/**
