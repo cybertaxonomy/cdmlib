@@ -376,7 +376,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             fieldUnitDTO.setCollection(collectionString);
             //Date
             Partial gatheringDate = gatheringEvent.getGatheringDate();
-            fieldUnitDTO.setDate(gatheringDate!=null?gatheringDate.toString():null);
+            String dateString = null;
+            if(gatheringDate!=null){
+                gatheringDate.toString();
+            }
+            else if(gatheringEvent.getTimeperiod().getFreeText()!=null){
+                dateString = gatheringEvent.getTimeperiod().getFreeText();
+            }
+            fieldUnitDTO.setDate(dateString);
         }
 
         //Taxon Name
