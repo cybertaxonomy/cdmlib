@@ -380,7 +380,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(gatheringDate!=null){
                 gatheringDate.toString();
             }
-            else if(gatheringEvent.getTimeperiod().getFreeText()!=null){
+            else if(gatheringEvent.getTimeperiod()!=null && gatheringEvent.getTimeperiod().getFreeText()!=null){
                 dateString = gatheringEvent.getTimeperiod().getFreeText();
             }
             fieldUnitDTO.setDate(dateString);
