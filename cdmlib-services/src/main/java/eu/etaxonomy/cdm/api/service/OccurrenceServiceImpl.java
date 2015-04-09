@@ -387,7 +387,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
 
         //Taxon Name
-        fieldUnitDTO.setTaxonName(associatedTaxon.getName().getFullTitleCache());
+        fieldUnitDTO.setTaxonName(associatedTaxon.getName().getTitleCache());
 
         //Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
@@ -447,7 +447,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 herbariaString += collection.getCode();
             }
             if(e.getValue()>1){
-                herbariaString += "("+e.getValue()+")";
+                herbariaString += " ("+e.getValue()+")";
             }
             herbariaString += SEPARATOR_STRING;
         }
