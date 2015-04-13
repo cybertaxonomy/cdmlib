@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.database.update.v34_35;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
+import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
@@ -210,7 +210,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_35_36.NewInstance();
 	}
 
 	@Override
