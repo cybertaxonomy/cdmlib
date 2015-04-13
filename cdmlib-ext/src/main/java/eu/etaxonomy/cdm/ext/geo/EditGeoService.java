@@ -190,7 +190,7 @@ public class EditGeoService implements IEditGeoService {
      * int, java.lang.String, java.lang.String)
      */
     @Override
-    public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
+    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
         List<Point> fieldUnitPoints = new ArrayList<Point>();
