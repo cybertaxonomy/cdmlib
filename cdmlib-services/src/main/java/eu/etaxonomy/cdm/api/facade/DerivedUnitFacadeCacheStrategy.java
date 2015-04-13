@@ -72,21 +72,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 			//Herbarium & identifier
 			String code = getCode(facade);
-			String identifier = null;
-//			IOccurrenceService occurrenceService = config.getOccurrenceService();
-//			if(occurrenceService!=null){
-//			    identifier = occurrenceService.getMostSignificantIdentifier(derivedUnit);
-			    //FIXME: copy & pasted; use service call here
-		        if(derivedUnit.getAccessionNumber()!=null && !derivedUnit.getAccessionNumber().isEmpty()){
-		            identifier = derivedUnit.getAccessionNumber();
-		        }
-		        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
-		            identifier = derivedUnit.getBarcode();
-		        }
-		        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
-		            identifier = derivedUnit.getCatalogNumber();
-		        }
-//			}
+			String identifier = facade.getAccessionNumber();
             String collectionData = CdmUtils.concat(" ", code, identifier);
 			if (StringUtils.isNotBlank(collectionData)) {
 				result = (result + " (" +  collectionData + ")").trim();
