@@ -118,13 +118,9 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		referringObjectMetadataFactory.get(BotanicalName.class);
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
+        // TODO Auto-generated method stub  
     }
 }
 
