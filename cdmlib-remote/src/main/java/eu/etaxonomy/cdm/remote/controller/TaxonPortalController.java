@@ -746,10 +746,12 @@ public class TaxonPortalController extends TaxonController
             Taxon childTaxon;
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
+                if(childTaxon != null) {
                 childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
-                returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
-                        includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                        type, mimeTypes, widthOrDuration, height, size));
+                    returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
+                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                            type, mimeTypes, widthOrDuration, height, size));
+                }
             }
         }
         return returnMedia;
