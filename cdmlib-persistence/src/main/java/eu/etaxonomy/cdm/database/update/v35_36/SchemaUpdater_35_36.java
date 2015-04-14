@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -62,19 +63,12 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
-		
-//		//IntextReference
-//		//#4706
-//		stepName = "Add IntextReference table";
-//		tableName = "IntextReference";
-//		columnNames = new String[]{"startpos","endpos","agent_id","annotation_id",
-//				"languagestring_id","media_id","occurrence_id","reference_id","taxon_id","taxonname_id"};
-//		referencedTables = new String[]{null, null, "AgentBase","Annotation","LanguageString","Media",
-//				"SpecimenOrObservationBase","Reference","TaxonBase","TaxonNameBase"};
-//		columnTypes = new String[]{"int","int","int","int","int","int","int","int","int","int"};
-//		step = TableCreator.NewVersionableInstance(stepName, tableName, columnNames, 
-//				columnTypes, referencedTables, INCLUDE_AUDIT);
-//		stepList.add(step);
+		//add hasMoreMembers
+		stepName = "Add hasMoreMembers to Team";
+		tableName = "AgentBase";
+		newColumnName = "hasMoreMembers";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+		stepList.add(step);
 		
 		return stepList;
 	}
