@@ -195,7 +195,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
     	  
-          this.idInVocabulary = idInVocabulary == "" ? null : idInVocabulary;
+          this.idInVocabulary = StringUtils.isBlank(idInVocabulary)? null : idInVocabulary;
       }
 
       @Override
