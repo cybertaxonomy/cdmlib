@@ -936,5 +936,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     	
     }
 
+    @Override
+    public List<HashMap<String,String>> getNameRecords(){
+    	
+		return dao.getNameRecords();
+    	
+    }
 
 }

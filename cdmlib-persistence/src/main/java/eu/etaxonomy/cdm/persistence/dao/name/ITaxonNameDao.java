@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.name;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -317,4 +318,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
+
+	List<HashMap<String, String>> getNameRecords();
 }
