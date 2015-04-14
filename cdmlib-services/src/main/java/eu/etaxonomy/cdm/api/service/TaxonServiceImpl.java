@@ -3319,10 +3319,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
-
+	@Override
 	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
-		// TODO Auto-generated method stub
+		
 		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
 		return moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
 	}
