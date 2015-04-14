@@ -917,7 +917,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         // rows for a term with multiple representations
         String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
                 + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
-                + "where a.id in (:allAreaIds) order by a.id";
+                + "where a.id in (:allAreaIds) order by a.idInVocabulary";
         query = getSession().createQuery(parentAreasQueryStr);
         query.setParameterList("allAreaIds", allAreaIds);
         if(pageSize != null) {
