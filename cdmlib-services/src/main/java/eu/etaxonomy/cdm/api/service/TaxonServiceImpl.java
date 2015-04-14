@@ -1189,7 +1189,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         if (name != null && config.isDeleteNameIfPossible()){
                         	nameResult = nameService.delete(name, config.getNameDeletionConfig());
                         }
-                        
+
                         if (nameResult.isError()){
                         	//result.setError();
                         	result.addRelatedObject(name);
@@ -1753,10 +1753,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // ---- search criteria
         luceneSearch.setCdmTypRestriction(clazz);
 
-        textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-        textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        if(!queryString.isEmpty() && !queryString.equals("*") && !queryString.equals("?") ) {
+            textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        }
 
-        finalQuery.add(textQuery, Occur.MUST);
+        if(textQuery.getClauses().length > 0) {
+            finalQuery.add(textQuery, Occur.MUST);
+        }
+
 
         if(classification != null){
             finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
@@ -3290,7 +3295,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
-    
+
 	@Override
 	@Transactional(readOnly = true)
 	public <S extends TaxonBase> Pager<FindByIdentifierDTO<S>> findByIdentifier(
@@ -3300,20 +3305,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (subtreeFilter == null){
 			return findByIdentifier(clazz, identifier, identifierType, matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
 		}
-		
+
 		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
         List<Object[]> daoResults = new ArrayList<Object[]>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType, subtreeFilter,
     				matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
         }
-        
+
         List<FindByIdentifierDTO<S>> result = new ArrayList<FindByIdentifierDTO<S>>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
         		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));	
+        		result.add(new FindByIdentifierDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3]));
         	}
         }
 		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
