@@ -23,35 +23,35 @@ import java.util.UUID;
 public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
 	private static Map<Class<? extends IEnumTerm<?>>,EnumeratedTermVoc<?>> vocsMap= new HashMap<Class<? extends IEnumTerm<?>>, EnumeratedTermVoc<?>>();
-	
+
 	private final Map<T,SingleEnumTerm<T>> lookup = new HashMap<T, SingleEnumTerm<T>>();
-	
+
 //	public interface EnumTerm<R extends EnumTerm<?>> extends ISimpleTerm<R>{
 //		public String getKey();
 //	}
-	
+
 	private class SingleEnumTerm<S extends T> implements IEnumTerm<T>{
-		private S term;
-		private String label;
-		private UUID uuid;
-		private String key;
-		private Set<S> children = new HashSet<S>();
-		private S parent;
+		private final S term;
+		private final String label;
+		private final UUID uuid;
+		private final String key;
+		private final Set<S> children = new HashSet<S>();
+		private final S parent;
 
 
-		
+
 		private	SingleEnumTerm(S term, UUID uuid, String defaultString, String key, S parent){
 			this.term = term;
 			this.label = defaultString;
 			this.key = key;
 			this.uuid = uuid;
 			this.parent = parent;
-			SingleEnumTerm<T> parentSingleEnum = lookup.get(parent); 
+			SingleEnumTerm<T> parentSingleEnum = lookup.get(parent);
 			if (parentSingleEnum != null){
 				parentSingleEnum.children.add(term);
 			}
 		}
-		
+
 		@Override
 		public UUID getUuid() {	return uuid;}
 		@Override
@@ -68,7 +68,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 			//TODO make multi-lingual
 			return label;
 		}
-		
+
 		@Override
 		public Set<T> getGeneralizationOf() {
 //			return Collections.unmodifiableSet( children );   //TODO creates stack overflow
@@ -92,7 +92,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 			result.addAll(this.children);
 			if (recursive){
 				for (T child : this.children){
-					result.addAll(child.getGeneralizationOf());
+					result.addAll(child.getGeneralizationOf(recursive));
 				}
 			}
 			return result;
@@ -105,14 +105,14 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 	public String getKey(T term) {return lookup.get(term).getKey();}
 
 	public UUID getUuid(T term) {return lookup.get(term).getUuid();}
-	
+
 	public T getKindOf(T term) {return lookup.get(term).getKindOf();}
 
 	public Set<T> getGeneralizationOf(T term) {return lookup.get(term).getGeneralizationOf();}
 
 //******************* DELEGATE CLASS NETHODS ************************
 
-	
+
 	public static <S extends IEnumTerm<?>> IEnumTerm addTerm(Class<? extends IEnumTerm<?>> clazz, S term, UUID uuid, String defaultString, String key, S parent){
 		if (vocsMap.get(clazz) == null){
 			vocsMap.put(clazz, new EnumeratedTermVoc());
@@ -120,7 +120,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		IEnumTerm myTerm = vocsMap.get(clazz).add(term, uuid, defaultString, key, parent);
 		return myTerm;
 	}
-	
+
 	private  SingleEnumTerm<T> add(ISimpleTerm<?> term, UUID uuid, String defaultString, String key, ISimpleTerm<?> parent) {
 		SingleEnumTerm<T> singleTerm = new SingleEnumTerm<T>((T)term, uuid, defaultString, key, (T)parent);
 		if (containsKey(lookup, key)){
@@ -161,7 +161,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		return voc == null? null:voc.getByUuid(uuid);
 	}
 
-	
+
 	public T getByKey(String key) {
 		for (SingleEnumTerm<T> term : lookup.values()){
 			if (term.getKey().equals(key)){
@@ -170,7 +170,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		}
 		return null;
 	}
-	
+
 	public T getByUuid(UUID uuid) {
 		for (SingleEnumTerm<T> term : lookup.values()){
 			if (term.getUuid().equals(uuid)){
@@ -186,6 +186,6 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
 
 
-	
+
 
 }
