@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -48,6 +50,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -315,6 +318,128 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#list(java.
+     * lang.String, java.lang.Class,
+     * eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType,
+     * eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer,
+     * java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
+            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, recordBasis, associatedTaxon, matchmode,
+                limit, start, orderHints, propertyPaths);
+
+        if(criteria!=null){
+
+            if(limit != null) {
+                if(start != null) {
+                    criteria.setFirstResult(start);
+                } else {
+                    criteria.setFirstResult(0);
+                }
+                criteria.setMaxResults(limit);
+            }
+
+            if(orderHints!=null){
+                addOrder(criteria,orderHints);
+            }
+
+            List<T> results = criteria.list();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return results;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param recordBasis
+     * @param associatedTaxon
+     * @param matchmode
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
+            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Criteria criteria = null;
+
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type);
+        } else {
+            criteria = getSession().createCriteria(clazz);
+        }
+
+        //queryString
+        if (queryString != null) {
+            if(matchmode == null) {
+                matchmode = MatchMode.ANYWHERE;
+                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+            } else if(matchmode == MatchMode.BEGINNING) {
+                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.START));
+            } else if(matchmode == MatchMode.END) {
+                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.END));
+            } else if(matchmode == MatchMode.EXACT) {
+                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.EXACT));
+            } else {
+                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE));
+            }
+        }
+
+        //recordBasis/SpecimenOrObservationType
+        if(recordBasis!=null){
+            Set<SpecimenOrObservationType> typeAndSubtypes = recordBasis.getGeneralizationOf(true);
+            typeAndSubtypes.add(recordBasis);
+            criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
+        }
+
+        //taxon associations
+        if(associatedTaxon!=null){
+            List<UUID> associatedTaxonUuids = new ArrayList<UUID>();
+            List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxon(clazz!=null?clazz:type, associatedTaxon, limit, start, orderHints, propertyPaths);
+            if(associatedTaxaList!=null){
+                for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
+                    associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
+                }
+            }
+            if(!associatedTaxonUuids.isEmpty()){
+                criteria.add(Restrictions.in("uuid", associatedTaxonUuids));
+            }
+            else{
+                return null;
+            }
+        }
+
+        return criteria;
+    }
+
+
+    @Override
+    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, recordBasis, associatedTaxon, matchmode, limit, start, orderHints, propertyPaths);
+
+        if(criteria!=null){
+
+            criteria.setProjection(Projections.rowCount());
+
+            return ((Number)criteria.uniqueResult()).intValue();
+        }
+        return 0;
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDerivedUnitUuidAndTitleCache()
      */
@@ -432,6 +557,39 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
 
         List<T> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    @Override
+    public Collection<SpecimenTypeDesignation> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        String queryString = "FROM SpecimenOrObservationBase specimens WHERE specimens.recordBasis = :type";
+
+        if(orderHints != null && orderHints.size() > 0){
+            queryString += " order by ";
+            String orderStr = "";
+            for(OrderHint orderHint : orderHints){
+                if(orderStr.length() > 0){
+                    orderStr += ", ";
+                }
+                queryString += "specimens." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+            }
+            queryString += orderStr;
+        }
+
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("type", type);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

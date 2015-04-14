@@ -2316,6 +2316,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/CreateHierarchyForClassificationConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteConfiguratorBase.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindOccurrencesConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindTaxaAndNamesConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IFindTaxaAndNamesConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
@@ -2509,6 +2510,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServic
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceDeepDeleteTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testFindOcurrences.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithChildren.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml -text
