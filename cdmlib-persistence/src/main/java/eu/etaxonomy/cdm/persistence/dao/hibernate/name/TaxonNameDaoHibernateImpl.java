@@ -796,95 +796,35 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 @Override
 public List<HashMap<String,String>> getNameRecords(){
-    	String sql= "SET SESSION group_concat_max_len = 1000000; "+
-
-"SELECT unionTable.* "+
-"FROM (SELECT DISTINCT cl.titleCache as classification, familyTb.titleCache familyTaxon, familyTnb.titleCache familyName, GROUP_CONCAT(DISTINCT langStringFam.text SEPARATOR '\n') as descriptionsFam, myTaxon.titleCache genusTaxon, mySec.titleCache  as secRef, myName.titleCache genusName, myName.id as nameId, myName.namecache as nameCache, myName.titleCache as titleName,  genusNomRef.titleCache as NomRefTitleCache,CONCAT(myName.nameCache, ' ', genusNomRef.titleCache) as fullName, myName.fullTitleCache, "+
-"CASE WHEN typeName.titleCache IS NULL THEN 'not desit.' ELSE CONCAT('<i>',typeName.nameCache, '</i> ', typeName.authorshipcache)  END as typeName, "+
-"GROUP_CONCAT( DISTINCT case when synName_homotypic.fullTitleCache is NULL then CONCAT('<i>',synName_homotypic.nameCache, '</i> ', synName_homotypicRef.titleCache) else REPLACE(synName_homotypic.fulltitleCache, synName_homotypic.nameCache,CONCAT('<i>', synName_homotypic.namecache, '</i>')) end ORDER BY synName_homotypicRef.datepublished_start SEPARATOR '<homonym> ') as synonyms_homotypic, "+
-"GROUP_CONCAT(DISTINCT heterotypic_syns.homotypicalNames order by published SEPARATOR ' <heterotypic>') as synonyms_heterotypic, "+
-"statusTerm.titleCache status, relatedName.fullTitleCache relatedName, relatedNameType.titleCache nameRelType, GROUP_CONCAT(DISTINCT langString.text SEPARATOR '\n') as descriptions "+
-
-"FROM Classification cl "+
-"LEFT OUTER JOIN TaxonNode familyNode ON familyNode.classification_id = cl.id "+
-"LEFT OUTER JOIN TaxonBase familyTb ON familyTb.id = familyNode.taxon_id "+
-"LEFT OUTER JOIN TaxonNameBase familyTnb ON familyTnb.id = familyTb.name_id "+
-"LEFT OUTER JOIN DescriptionBase descrBaseFam ON descrBaseFam.taxon_id = familyTb.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBaseFam ON descrElBaseFam.indescription_id = descrBaseFam.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_lFam ON descrElBase_lFam.DescriptionElementBase_id = descrElBaseFam.id "+
-"LEFT OUTER JOIN LanguageString langStringFam ON descrElBase_lFam.multilanguagetext_id = langStringFam.id "+
-
-"LEFT OUTER JOIN TaxonNode myNode ON myNode.parent_id = familyNode.id "+
-"LEFT OUTER JOIN TaxonBase myTaxon ON myTaxon.id = myNode.taxon_id "+
-"LEFT OUTER JOIN Reference mySec ON myTaxon.sec_id = mySec.id "+
-"LEFT OUTER JOIN TaxonNameBase myName ON myTaxon.name_id = myName.id "+
-"LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase genusTypeMN ON genusTypeMN.TaxonNameBase_id = myName.id "+
-"LEFT OUTER JOIN TypeDesignationBase genusTypeDesig ON genusTypeDesig.id = genusTypeMN.typedesignations_id "+
-"LEFT OUTER JOIN TaxonNameBase typeName ON genusTypeDesig.typename_id = typeName.id "+
-"LEFT OUTER JOIN Reference genusNomRef ON genusNomRef.id = myName.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_homotypic ON sr_homotypic.relatedto_id = myTaxon.id and sr_homotypic.type_id = 871 "+
-"LEFT OUTER JOIN TaxonBase syn_homotypic ON syn_homotypic.id = sr_homotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_homotypic ON synName_homotypic.id = syn_homotypic.name_id "+
-"LEFT OUTER JOIN Reference synName_homotypicRef ON synName_homotypicRef.id = synName_homotypic.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_heterotypic ON sr_heterotypic.relatedto_id = myTaxon.id  and sr_heterotypic.type_id = 870 "+
-"LEFT OUTER JOIN TaxonBase syn_heterotypic ON syn_heterotypic.id = sr_heterotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_heterotypic  ON synName_heterotypic.id = syn_heterotypic.name_id "+ 
-"LEFT OUTER JOIN (SELECT GROUP_CONCAT( case when synName_heterotypic.fullTitleCache is NULL then CONCAT('<i>',synName_heterotypic.nameCache, '</i> ', r.titleCache) else REPLACE(synName_heterotypic.fulltitleCache, synName_heterotypic.nameCache,CONCAT('<i>', synName_heterotypic.namecache, '</i>')) end order by r.datepublished_start SEPARATOR ' <homonym>') as homotypicalNames, synName_heterotypic.homotypicalgroup_id, synName_heterotypic.namecache, r.titleCache, r.datepublished_start as published, sr.relatedto_id as taxon_id , sr.type_id as type_id "+
-"FROM TaxonNameBase synName_heterotypic, Reference r, TaxonBase syn_heterotypic, SynonymRelationship sr  where synName_heterotypic.id = syn_heterotypic.name_id and  synName_heterotypic.nomenclaturalreference_id = r.id and sr.relatedfrom_id = syn_heterotypic.id and sr.type_id = 870 GROUP BY synName_heterotypic.homotypicalgroup_id) as heterotypic_syns ON heterotypic_syns.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN Reference synName_heterotypicRef ON synName_heterotypic.nomenclaturalreference_id = synName_heterotypicRef.id "+
-"LEFT OUTER JOIN TaxonNameBase_NomenclaturalStatus statusMN ON myName.id = statusMN.TaxonNameBase_id "+
-"LEFT OUTER JOIN NomenclaturalStatus status ON status.id = statusMN.status_id "+
-"LEFT OUTER JOIN DefinedTermBase statusTerm ON status.type_id = statusTerm.id "+
-"LEFT OUTER JOIN NameRelationship nameRel ON myName.id = nameRel.relatedto_id "+
-"LEFT OUTER JOIN TaxonNameBase relatedName ON relatedName.id = nameRel.relatedfrom_id "+
-"LEFT OUTER JOIN DefinedTermBase relatedNameType ON relatedNameType.id = nameRel.type_id "+
-"LEFT OUTER JOIN DescriptionBase descrBase ON descrBase.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBase ON descrElBase.indescription_id = descrBase.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_l ON descrElBase_l.DescriptionElementBase_id = descrElBase.id "+
-"LEFT OUTER JOIN LanguageString langString ON descrElBase_l.multilanguagetext_id = langString.id "+
-
-"WHERE familyNode.parent_id = 1986 "+
-"GROUP BY classification, familyTaxon, familyName, genusTaxon, genusName, nameId, fullName, NomRefTitleCache, typeName, status, relatedName, nameRelType "+
-
-
-"UNION "+
-
-"SELECT  cl.titleCache as classification, myTaxon.titleCache familyTaxon, myName.titleCache familyName, '' as descriptionsFam, '' genusTaxon,'' secRef, '' genusName, myName.id as nameId, myName.namecache as nameCache, myName.titleCache as titleName, myName.fullTitleCache fullName,  myName.fullTitleCache,genusNomRef.titleCache as NomRefTitleCache, "+
-"CASE WHEN genusTypeDesig.notdesignated = 1 THEN 'not desit.' ELSE typeName.titleCache  END as typeName, GROUP_CONCAT(DISTINCT synName_homotypic.fullTitleCache SEPARATOR '; ' ) as synonyms_homotypic, GROUP_CONCAT(DISTINCT synName_heterotypic.fullTitleCache SEPARATOR '; <homonym>' ) as synonyms_heterotypic, statusTerm.titleCache status, relatedName.fullTitleCache relatedName, relatedNameType.titleCache nameRelType, GROUP_CONCAT(DISTINCT langString.text SEPARATOR '\n') as descriptions "+
-
-"FROM Classification cl "+
-"LEFT OUTER JOIN TaxonNode myNode ON myNode.classification_id = cl.id "+
-"LEFT OUTER JOIN TaxonBase myTaxon ON myTaxon.id = myNode.taxon_id "+
-"LEFT OUTER JOIN TaxonNameBase myName ON myName.id = myTaxon.name_id "+
-"LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase genusTypeMN ON genusTypeMN.TaxonNameBase_id = myName.id "+
-"LEFT OUTER JOIN TypeDesignationBase genusTypeDesig ON genusTypeDesig.id = genusTypeMN.typedesignations_id "+
-"LEFT OUTER JOIN TaxonNameBase typeName ON genusTypeDesig.typename_id = typeName.id "+
-"LEFT OUTER JOIN Reference genusNomRef ON genusNomRef.id = myName.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_homotypic ON sr_homotypic.relatedto_id = myTaxon.id and sr_homotypic.type_id = 871 "+
-"LEFT OUTER JOIN TaxonBase syn_homotypic ON syn_homotypic.id = sr_homotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_homotypic ON synName_homotypic.id = syn_homotypic.name_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_heterotypic ON sr_heterotypic.relatedto_id = myTaxon.id and sr_heterotypic.type_id = 870 "+
-"LEFT OUTER JOIN TaxonBase syn_heterotypic ON syn_heterotypic.id = sr_heterotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_heterotypic ON synName_heterotypic.id = syn_heterotypic.name_id "+
-"LEFT OUTER JOIN TaxonNameBase_NomenclaturalStatus statusMN ON myName.id = statusMN.TaxonNameBase_id "+
-"LEFT OUTER JOIN NomenclaturalStatus status ON status.id = statusMN.status_id "+
-"LEFT OUTER JOIN DefinedTermBase statusTerm ON status.type_id = statusTerm.id "+
-"LEFT OUTER JOIN NameRelationship nameRel ON myName.id = nameRel.relatedto_id "+
-"LEFT OUTER JOIN TaxonNameBase relatedName ON relatedName.id = nameRel.relatedfrom_id "+
-"LEFT OUTER JOIN DefinedTermBase relatedNameType ON relatedNameType.id = nameRel.type_id "+
-"LEFT OUTER JOIN DescriptionBase descrBase ON descrBase.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBase ON descrElBase.indescription_id = descrBase.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_l ON descrElBase_l.DescriptionElementBase_id = descrElBase.id "+
-"LEFT OUTER JOIN LanguageString langString ON descrElBase_l.multilanguagetext_id = langString.id "+
-
-
-
-"WHERE myNode.parent_id is null "+
-"GROUP BY classification, familyTaxon, familyName, genusTaxon, genusName, nameId, fullName, NomRefTitleCache, typeName, status, relatedName, nameRelType "+
-
-") as unionTable "+
-
-"ORDER BY familyTaxon, genusTaxon";
+    	String sql= "SELECT"
+    			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
+    			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id"
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tn.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as famName, "
+    			+ " (SELECT famName.namecache FROM TaxonNode famNode "
+    			+ " LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id "
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id "
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tnAcc.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as accFamName,tb.DTYPE, tb.id as TaxonID ,tb.titleCache taxonTitle,  tnb.rank_id as RankID, tnb.id as NameID,"
+    			+ " tnb.namecache as name, tnb.titleCache as nameAuthor, tnb.fullTitleCache nameAndNomRef,"
+    			+ "	r.titleCache as nomRef, r.abbrevTitle nomRefAbbrevTitle, r.title nomRefTitle, r.datepublished_start nomRefPublishedStart, r.datepublished_end nomRefPublishedEnd, r.pages nomRefPages, inRef.abbrevTitle inRefAbbrevTitle,tnb.nomenclaturalmicroreference as detail,"
+    			+ "	nameType.namecache nameType, nameType.titleCache nameTypeAuthor, nameType.fullTitleCache nameTypeFullTitle, nameTypeRef.titleCache nameTypeRef, inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
+    			+ " FROM TaxonBase tb"
+    			+ " LEFT OUTER JOIN TaxonNameBase tnb ON tb.name_id = tnb.id"
+    			+ "	LEFT OUTER JOIN Reference r ON tnb.nomenclaturalreference_id = r.id"
+    			+ "	LEFT OUTER JOIN TaxonNode tn ON tn.taxon_id = tb.id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase typeMN ON typeMN.TaxonNameBase_id = tnb.id"
+    			+ " LEFT OUTER JOIN TypeDesignationBase tdb ON tdb.id = typeMN.typedesignations_id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase nameType ON tdb.typename_id = nameType.id"
+    			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
+    			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
+    			+ "	LEFT OUTER JOIN SynonymRelationship sr ON tb.id = sr.relatedfrom_id"
+    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
+    			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
+    			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
+    	
+    	
     	SQLQuery query = getSession().createSQLQuery(sql);
     	List result = query.list();
     	 //Delimiter used in CSV file
