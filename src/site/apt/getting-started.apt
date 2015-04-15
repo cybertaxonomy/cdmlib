@@ -21,7 +21,7 @@ Developing with the CDM Library
 ---
 <dependency>
 	<groupId>eu.etaxonomy</groupId>
-	<artifactId>cdmlib-service</artifactId>
+	<artifactId>cdmlib-services</artifactId>
 	<version>x.x</version>
 </dependency>
 ---
