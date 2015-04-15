@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Index;
@@ -103,7 +104,7 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 
 
 	public void setIdentifier(String identifier) {
-		this.identifier = identifier == "" ? null : identifier;
+		this.identifier = StringUtils.isBlank(identifier) ? null : identifier;
 	}
 
 

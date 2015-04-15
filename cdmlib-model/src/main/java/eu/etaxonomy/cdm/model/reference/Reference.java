@@ -432,7 +432,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
 	public void setAbbrevTitle(String abbrevTitle) {
-		this.abbrevTitle = abbrevTitle;
+		this.abbrevTitle = StringUtils.isBlank(abbrevTitle) ? null : abbrevTitle;
 	}
 
 
