@@ -273,7 +273,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
             }
         }
 
-        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features.asSet(), type, pageSize,
+        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
                 pageNumber, getInitializationStrategy());
 
         return pager;
