@@ -332,7 +332,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		if (rs.next()){
 			int count = rs.getMetaData().getColumnCount();
 			if (count > 0){
-				return rs.getObject(0);
+				return rs.getObject(1);
 			}
 		}
 		return null;
