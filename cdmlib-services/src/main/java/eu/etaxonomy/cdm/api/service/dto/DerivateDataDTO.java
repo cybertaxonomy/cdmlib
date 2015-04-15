@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.envers.tools.Pair;
 
@@ -25,6 +26,7 @@ public class DerivateDataDTO {
     private List<Pair<String, String>> specimenScans;
     private List<MolecularData> molecularDataList;
     private List<Pair<String, String>> detailImages;
+    private List<UUID> imageUuids;
 
     /**
      * @return the molecularData
@@ -68,6 +70,20 @@ public class DerivateDataDTO {
             detailImages = new ArrayList<Pair<String,String>>();
         }
         detailImages.add(new Pair<String, String>(uri, motif));
+    }
+
+    /**
+     * @return the imageUuids
+     */
+    public List<UUID> getImageUuids() {
+        return imageUuids;
+    }
+
+    public void addImageUuid(UUID imageUuid){
+        if(imageUuids==null){
+            imageUuids = new ArrayList<UUID>();
+        }
+        imageUuids.add(imageUuid);
     }
 
     public class MolecularData{

@@ -615,8 +615,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             // assemble media data
             else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
-
                 MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
+                derivateDataDTO.addImageUuid(media.getMediaSpecimen().getUuid());
+
                 String mediaUriString = getMediaUriString(media);
                 if (media.getKindOfUnit() != null) {
                     // specimen scan
