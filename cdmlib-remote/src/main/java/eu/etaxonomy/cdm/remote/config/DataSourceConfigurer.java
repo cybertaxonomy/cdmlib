@@ -36,6 +36,8 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
+import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 
@@ -199,21 +201,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         String forceSchemaUpdate = findProperty(ATTRIBUTE_FORCE_SCHEMA_UPDATE, false);
         if(forceSchemaUpdate != null){
-            logger.error("Unable to update data source due to #3910 (eu.etaxonomy.cdm.database.ICdmDataSource is not compatible to javax.sql.DataSource)");
-/*
- *          DISABLED due to #3910 (eu.etaxonomy.cdm.database.ICdmDataSource is not compatible to javax.sql.DataSource)
- *          CdmUpdater updater = CdmUpdater.NewInstance();
-            String hiernateDialectName = inferHibernateDialectName(dataSource);
-            DatabaseTypeEnum dbType = null;
-            if(hiernateDialectName.equals(MySQL5MyISAMUtf8Dialect.class.getName())) {
-                dbType = DatabaseTypeEnum.MySQL;
-            }
-            RuntimeException re =   new RuntimeException("Unable to update data source, CdmUpdater.updateToCurrentVersion() cannot use javax.sql.DataSource or javax.sql.DataSource");
+            logger.info("Update of data source requested by property '" + ATTRIBUTE_FORCE_SCHEMA_UPDATE + "'");
 
-            CdmDataSource cdmDataSource = CdmDataSource.NewInstance(dbType, dataSource.ge, database, username, password)
-            updater.updateToCurrentVersion(dataSource, null);
-*/
-
+            CdmUpdater updater = CdmUpdater.NewInstance();
+            WrappedCdmDataSource cdmDataSource = new WrappedCdmDataSource(dataSource);
+            updater.updateToCurrentVersion(cdmDataSource, null);
         }
 
         return dataSource;
