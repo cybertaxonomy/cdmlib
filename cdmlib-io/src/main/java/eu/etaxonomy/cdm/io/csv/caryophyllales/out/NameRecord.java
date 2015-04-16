@@ -4,12 +4,16 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
+
 public class NameRecord {
 	private HashMap<String,String> record;
 	private boolean isFirst;
+	
+	
+	
 
-
-	public NameRecord(HashMap<String,String> record, boolean isFirst){
+public NameRecord(HashMap<String, String> record, boolean isFirst) {
 		this.record = record;
 		this.isFirst = isFirst;
 	}
@@ -19,32 +23,36 @@ protected void print(PrintWriter writer, CsvNameExportConfigurator config) {
 	String strToPrint ="";
 	if (isFirst){
 		for (String valueName:record.keySet()){
-			strToPrint+=valueName;
+			strToPrint+=config.getFieldsEnclosedBy() + valueName + config.getFieldsEnclosedBy()+ config.getFieldsTerminatedBy();
 		}
-		strToPrint.concat(config.getLinesTerminatedBy());
+		writer.println(strToPrint);
 	}
+	strToPrint = "";
 	if (!record.isEmpty() ){
 		//Replace quotes by double quotes
 		String value ;
 		Iterator<String> it = record.values().iterator();
 			while (it.hasNext()){
 				value = it.next();
-				value = value.replace("\"", "\"\"");
-
-				value = value.replace(config.getLinesTerminatedBy(), "\\r");
-
-				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
-				value = value.replace("\r\n", "\\r");
-				value = value.replace("\r", "\\r");
-				value = value.replace("\n", "\\r");
-
-				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
+				if (value != null){
+					value = value.replace("\"", "\"\"");
+				
+					value = value.replace(config.getLinesTerminatedBy(), "\\r");
+					
+					//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
+					value = value.replace("\r\n", "\\r");
+					value = value.replace("\r", "\\r");
+					value = value.replace("\n", "\\r");
+				} else{
+					value = "";
+				}
+				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy() + config.getFieldsTerminatedBy();
 		}
-			strToPrint.concat(config.getLinesTerminatedBy());
-			writer.print(strToPrint);
+			//strToPrint.concat(config.getLinesTerminatedBy());
+			writer.println(strToPrint);
 	}
-
-
+	
+	
 }
 
 

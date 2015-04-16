@@ -6,8 +6,7 @@ import java.io.File;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExport;
-import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExportState;
+
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
 	
@@ -26,6 +25,10 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	private ByteArrayOutputStream byteOutputStream;
 	
 	public ByteArrayOutputStream getByteOutputStream() {
+		if (byteOutputStream == null){
+			byteOutputStream = new ByteArrayOutputStream();
+		}
+			
 		return byteOutputStream;
 	}
 

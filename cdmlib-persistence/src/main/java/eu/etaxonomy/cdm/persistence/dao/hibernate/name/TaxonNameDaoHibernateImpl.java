@@ -834,35 +834,35 @@ public List<HashMap<String,String>> getNameRecords(){
 		HashMap<String,String> nameRecord = new HashMap<String,String>();
 		for(Object object : result)
          {
-			Map row = (Map)object;
+			Object[] row = (Object[])object;
 			nameRecord = new HashMap<String,String>();
-			nameRecord.put("famName",(String)row.get("famName"));
-			nameRecord.put("accFamName",(String)row.get("accFamName"));
+			nameRecord.put("famName",(String)row[0]);
+			nameRecord.put("accFamName",(String)row[1]);
           
-			nameRecord.put("DTYPE",(String)row.get("DTYPE"));
-			nameRecord.put("TaxonID",(String)row.get("TaxonID"));
-			nameRecord.put("taxonTitle",(String)row.get("taxonTitle"));
-            nameRecord.put("RankID",(String)row.get("RankID"));
-            nameRecord.put("NameID",(String)row.get("NameID"));
-            nameRecord.put("name",(String)row.get("name"));
-            nameRecord.put("nameAuthor",(String)row.get("nameAuthor"));
-            nameRecord.put("nameAndNomRef",(String)row.get("nameAndNomRef"));
-            nameRecord.put("nomRef",(String)row.get("nomRef"));
-            nameRecord.put("nomRefAbbrevTitle",(String)row.get("nomRefAbbrevTitle"));
-            nameRecord.put("nomRefTitle",(String)row.get("nomRefTitle"));
-            nameRecord.put("nomRefPublishedStart",(String) row.get("nomRefPublishedStart"));
-            nameRecord.put("nomRefPublishedEnd",(String)row.get("nomRefPublishedEnd"));
-            nameRecord.put("nomRefPages",(String)row.get("nomRefPages"));
-            nameRecord.put("inRefAbbrevTitle",(String)row.get("inRefAbbrevTitle"));
-            nameRecord.put("detail",(String)row.get("detail"));
-            nameRecord.put("nameType",(String) row.get("nameType"));
-            nameRecord.put("nameTypeAuthor",(String)row.get("nameTypeAuthor"));
-            nameRecord.put("nameTypeFullTitle",(String)row.get("nameTypeFullTitle"));
-            nameRecord.put("nameTypeRef",(String)row.get("nameTypeRef"));
-            nameRecord.put("inRefSeries",(String)row.get("inRefSeries"));
-            nameRecord.put("inRefPublishedStart",(String)row.get("inRefPublishedStart"));
-            nameRecord.put("inRefPublishedEnd",(String) row.get("inRefPublishedEnd"));
-            nameRecord.put("inRefVolume",(String)row.get("inRefVolume"));
+			nameRecord.put("DTYPE",(String)row[2]);
+			nameRecord.put("TaxonID",String.valueOf(row[3]));
+			nameRecord.put("taxonTitle",(String)row[4]);
+            nameRecord.put("RankID",String.valueOf(row[5]));
+            nameRecord.put("NameID",String.valueOf(row[6]));
+            nameRecord.put("name",(String)row[7]);
+            nameRecord.put("nameAuthor",(String)row[8]);
+            nameRecord.put("nameAndNomRef",(String)row[9]);
+            nameRecord.put("nomRef",(String)row[10]);
+            nameRecord.put("nomRefAbbrevTitle",(String)row[11]);
+            nameRecord.put("nomRefTitle",(String)row[12]);
+            nameRecord.put("nomRefPublishedStart",(String)row[13]);
+            nameRecord.put("nomRefPublishedEnd",(String)row[14]);
+            nameRecord.put("nomRefPages",(String)row[15]);
+            nameRecord.put("inRefAbbrevTitle",(String)row[16]);
+            nameRecord.put("detail",(String)row[17]);
+            nameRecord.put("nameType",(String)row[18]);
+            nameRecord.put("nameTypeAuthor",(String)row[19]);
+            nameRecord.put("nameTypeFullTitle",(String)row[20]);
+            nameRecord.put("nameTypeRef",(String)row[21]);
+            nameRecord.put("inRefSeries",(String)row[22]);
+            nameRecord.put("inRefPublishedStart",(String)row[23]);
+            nameRecord.put("inRefPublishedEnd",(String)row[24]);
+            nameRecord.put("inRefVolume",(String)row[25]);
             nameRecords.add(nameRecord);
 	   }
 			
@@ -871,5 +871,7 @@ public List<HashMap<String,String>> getNameRecords(){
 		
     		
     }
+
+
 
 }
