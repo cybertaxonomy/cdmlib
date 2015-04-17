@@ -835,13 +835,13 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.3.1</version>
+        <version>3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
-        <version>1.4</version>
+        <version>1.6</version>
         <scope>test</scope>
       </dependency>
       <dependency>
