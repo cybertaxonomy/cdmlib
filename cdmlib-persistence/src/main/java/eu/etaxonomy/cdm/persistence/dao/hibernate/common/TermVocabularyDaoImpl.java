@@ -232,8 +232,10 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	}
 	
 	@Override
-	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested, 
-			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse, Map<UUID, TermVocabulary<?>> vocabularyResponse){
+	public void missingTermUuids(
+			Map<UUID, Set<UUID>> uuidsRequested, 
+			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse, 
+			Map<UUID, TermVocabulary<?>> vocabularyResponse){
 		
 		Set<UUID> missingTermCandidateUuids = new HashSet<UUID>();
 		
@@ -241,22 +243,24 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
 		}
 		
- 		//search persisted subset of required (usuallay all 
+ 		//search persisted subset of required (usually all) 
 		String hql = " SELECT terms.uuid " +
 				" FROM TermVocabulary voc join voc.terms terms  " +
 				" WHERE terms.uuid IN (:uuids) " +
 				" ORDER BY voc.uuid ";
 		Query query = getSession().createQuery(hql);
-		query.setParameterList("uuids",missingTermCandidateUuids);
+		query.setParameterList("uuids", missingTermCandidateUuids);
 		List<?> persistedUuids = query.list();
 
 		
  		//fully load and initialize vocabularies if required
 		if (vocabularyResponse != null){
-			String hql2 = " SELECT voc " +
-					" FROM TermVocabulary voc left join fetch voc.terms terms left join fetch terms.representations representations " +
-						" left join fetch voc.representations vocReps " +
-					" WHERE terms.uuid IN (:termUuids) OR  (  voc.uuid IN (:vocUuids) AND voc.terms is empty ) " +
+			String hql2 = " SELECT DISTINCT voc " +
+					" FROM TermVocabulary voc " +
+						" LEFT JOIN FETCH voc.terms terms " +
+						" LEFT JOIN FETCH terms.representations representations " +
+						" LEFT JOIN FETCH voc.representations vocReps " +
+					" WHERE terms.uuid IN (:termUuids) OR  (  voc.uuid IN (:vocUuids)  ) " +  //was: AND voc.terms is empty, but did not load originally empty vocabularies with user defined terms added
 //					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
 					" ORDER BY voc.uuid ";
 			query = getSession().createQuery(hql2);
@@ -273,22 +277,20 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			missingTermCandidateUuids.clear();
 		}else{
 			missingTermCandidateUuids.removeAll(persistedUuids);
-		}
-		
-		//add missing terms to response
-		for (UUID vocUUID : uuidsRequested.keySet()){
-			for (UUID termUuid : uuidsRequested.get(vocUUID)){
-				if (missingTermCandidateUuids.contains(termUuid)){
-					Set<UUID> r = uuidMissingTermsRepsonse.get(vocUUID);
-					if (r == null){
-						r = new HashSet<UUID>();
-						uuidMissingTermsRepsonse.put(vocUUID, r);
+			//add missing terms to response
+			for (UUID vocUUID : uuidsRequested.keySet()){
+				for (UUID termUuid : uuidsRequested.get(vocUUID)){
+					if (missingTermCandidateUuids.contains(termUuid)){
+						Set<UUID> r = uuidMissingTermsRepsonse.get(vocUUID);
+						if (r == null){
+							r = new HashSet<UUID>();
+							uuidMissingTermsRepsonse.put(vocUUID, r);
+						}
+						r.add(termUuid);
 					}
-					r.add(termUuid);
 				}
 			}
 		}
-
 
 		return;
 	}

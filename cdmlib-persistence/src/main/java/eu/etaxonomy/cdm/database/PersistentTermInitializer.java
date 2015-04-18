@@ -127,7 +127,8 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             Map<UUID, Set<UUID>> missingTermUuids = new HashMap<UUID, Set<UUID>>();
             
             vocabularyDao.missingTermUuids(uuidMap, missingTermUuids, vocabularyMap);
-            for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {   //required to keep the order (language must be the first vocabulary to load) 
+            
+            for( VocabularyEnum vocabularyType : VocabularyEnum.values()) {   //required to keep the order (language must be the first vocabulary to load) 
             	UUID vocUuid = vocabularyType.getUuid();
             	if (missingTermUuids.keySet().contains(vocabularyType.getUuid())  || vocabularyMap.get(vocUuid) == null ){
 	            	
@@ -174,7 +175,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
        
         if (logger.isDebugEnabled()){ logger.debug("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
 
-        TermVocabulary<?> persistedVocabulary;
+        TermVocabulary<? extends DefinedTermBase> persistedVocabulary;
         if (vocabularyMap == null || vocabularyMap.get(vocabularyUuid) == null ){
         	persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
         }else{
@@ -184,9 +185,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         if (logger.isDebugEnabled()){ logger.debug("Initializing terms in vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
         //not really needed anymore as we do term initializing from the beginning now
         if (persistedVocabulary != null){
-            for(Object object : persistedVocabulary.getTerms()) {
-                DefinedTermBase<?> definedTermBase = (DefinedTermBase) object;
-                Hibernate.initialize(definedTermBase.getRepresentations());
+            for(DefinedTermBase<?> definedTermBase : persistedVocabulary.getTerms()) {
+                
+            	Hibernate.initialize(definedTermBase.getRepresentations());
                 for(Representation r : definedTermBase.getRepresentations()) {
                     Hibernate.initialize(r.getLanguage());
                 }
