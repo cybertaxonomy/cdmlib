@@ -425,6 +425,8 @@ public class NonViralNameParserImplTest {
 		assertNull("Name must not have a specific eptithet", name1.getSpecificEpithet());
 		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
+		name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
+		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
 		//x-sign
 		hybridCache = "Abies alba x Pinus bus";

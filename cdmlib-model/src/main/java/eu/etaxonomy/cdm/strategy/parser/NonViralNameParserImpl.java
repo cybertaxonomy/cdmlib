@@ -175,8 +175,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalFullName(NonViralName<?> nameToBeFilled){
-		nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilled, NonViralName.class);
+	private String getLocalFullName(NonViralName<?> nameToBeFilledOrig){
+	    NonViralName<?> nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilledOrig, NonViralName.class);
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
 		}else if (nameToBeFilled instanceof BotanicalName) {
@@ -216,9 +216,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	@Override
-    public void parseReferencedName(NonViralName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+    public void parseReferencedName(NonViralName nameToBeFilled, String fullReferenceStringOrig, Rank rank, boolean makeEmpty) {
 		//standardize
-		fullReferenceString = standardize(nameToBeFilled, fullReferenceString, makeEmpty);
+		String fullReferenceString = standardize(nameToBeFilled, fullReferenceStringOrig, makeEmpty);
 		if (fullReferenceString == null){
 			return;
 		}
@@ -239,11 +239,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparator, fullReferenceString);
 
 		Matcher onlyNameMatcher = getMatcher (localFullName, fullReferenceString);
+		Matcher hybridMatcher = hybridFormulaPattern.matcher(fullReferenceString);
 		Matcher onlySimpleNameMatcher = getMatcher (localSimpleName, fullReferenceString);
 
 		if (nameAndRefSeparatorMatcher.find()){
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
-		}else if (onlyNameMatcher.matches()){
+		}else if (onlyNameMatcher.matches() || hybridMatcher.matches() ){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
 		}else if (onlySimpleNameMatcher.matches()){
