@@ -26,7 +26,8 @@ public class DerivateDataDTO {
     private List<Pair<String, String>> specimenScans;
     private List<MolecularData> molecularDataList;
     private List<Pair<String, String>> detailImages;
-    private List<UUID> imageUuids;
+    private List<UUID> specimenScanUuids;
+    private List<UUID> detailImageUuids;
 
     /**
      * @return the molecularData
@@ -73,17 +74,31 @@ public class DerivateDataDTO {
     }
 
     /**
-     * @return the imageUuids
+     * @return the specimenScanUuids
      */
-    public List<UUID> getImageUuids() {
-        return imageUuids;
+    public List<UUID> getSpecimenScanUuids() {
+        return specimenScanUuids;
     }
 
-    public void addImageUuid(UUID imageUuid){
-        if(imageUuids==null){
-            imageUuids = new ArrayList<UUID>();
+    public void addSpecimenScanUuid(UUID uuid){
+        if(specimenScanUuids==null){
+            specimenScanUuids = new ArrayList<UUID>();
         }
-        imageUuids.add(imageUuid);
+        specimenScanUuids.add(uuid);
+    }
+
+    /**
+     * @return the detailImageUuids
+     */
+    public List<UUID> getDetailImageUuids() {
+        return detailImageUuids;
+    }
+
+    public void addDetailImageUuid(UUID uuid){
+        if(detailImageUuids==null){
+            detailImageUuids = new ArrayList<UUID>();
+        }
+        detailImageUuids.add(uuid);
     }
 
     public class MolecularData{

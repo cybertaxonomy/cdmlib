@@ -616,12 +616,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             // assemble media data
             else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
                 MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
-                derivateDataDTO.addImageUuid(media.getMediaSpecimen().getUuid());
 
                 String mediaUriString = getMediaUriString(media);
                 if (media.getKindOfUnit() != null) {
                     // specimen scan
                     if (media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))) {
+                        derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
                         derivateDTO.setHasSpecimenScan(true);
                         String imageLinkText = "scan";
                         if (derivateDTO instanceof PreservedSpecimenDTO && ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber() != null) {
@@ -631,6 +631,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     }
                     // detail image
                     else if (media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))) {
+                        derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
                         derivateDTO.setHasDetailImage(true);
                         String motif = "";
                         if (media.getMediaSpecimen() != null && media.getMediaSpecimen().getTitle() != null) {
