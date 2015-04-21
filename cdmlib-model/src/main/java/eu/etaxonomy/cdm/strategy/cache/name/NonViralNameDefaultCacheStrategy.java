@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
  */
-public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
+public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = -6577757501563212669L;
 
@@ -349,7 +349,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
     }
 
     /**
-     * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorshipfield.
+     * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorship field.
      * @throws NullPointerException if nonViralName is null.
      * @param nonViralName
      * @return
@@ -718,7 +718,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<T> nonViralName){
+    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<?> nonViralName){
         Rank rank = nonViralName.getRank();
         if (rank != null && rank.isSpeciesAggregate() && isBlank(nonViralName.getAuthorshipCache())){
             return getSpeciesAggregateTaggedCache(nonViralName);
@@ -758,7 +758,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 * @param tags
 	 * @param infraGenericMarker
 	 */
-	protected void addInfraGenericPart(NonViralName<T> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+	protected void addInfraGenericPart(NonViralName<?> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
 		//add marker
 		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
 

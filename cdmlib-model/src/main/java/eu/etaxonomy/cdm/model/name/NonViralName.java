@@ -1116,21 +1116,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     }
 
     /**
-     * Returns the set of all {@link HybridRelationship hybrid relationships}
-     * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
-     * @see 	#getHybridParentRelations()
-     * @see    	#getHybridRelationships()
-     * @see    	#getChildRelationships()
-     * @see    	HybridRelationshipType
-     * @deprecated use {@link #getHybridParentRelations()} instead. Will be removed in higher versions.
-     */
-    @Deprecated
-    @Transient
-    public Set<HybridRelationship> getParentRelationships() {
-        return getHybridParentRelations();
-    }
-
-    /**
      * Returns the hybrid child relationships ordered by relationship type, or if equal
      * by title cache of the related names.
      * @see #getHybridParentRelations()
@@ -1145,16 +1130,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     }
 
-
-    /**
-     * @see #getHybridChildRelations()
-     * @deprecated use {@link #getHybridChildRelations()} instead. Will be removed in higher versions.
-     */
-    @Transient
-    @Deprecated
-    public Set<HybridRelationship> getChildRelationships() {
-        return this.getHybridChildRelations();
-    }
 
     /**
      * Adds the given {@link HybridRelationship hybrid relationship} to the set
@@ -1287,8 +1262,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     public void removeHybridChild(NonViralName child) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
-        hybridRelationships.addAll(this.getChildRelationships());
-        hybridRelationships.addAll(this.getParentRelationships());
+        hybridRelationships.addAll(this.getHybridChildRelations());
+        hybridRelationships.addAll(this.getHybridParentRelations());
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(this) && hybridRelationship.getHybridName().equals(child)) {
@@ -1299,8 +1274,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     public void removeHybridParent(NonViralName parent) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
-        hybridRelationships.addAll(this.getChildRelationships());
-        hybridRelationships.addAll(this.getParentRelationships());
+        hybridRelationships.addAll(this.getHybridChildRelations());
+        hybridRelationships.addAll(this.getHybridParentRelations());
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(parent) && hybridRelationship.getHybridName().equals(this)) {

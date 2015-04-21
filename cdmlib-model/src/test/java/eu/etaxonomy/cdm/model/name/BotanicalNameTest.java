@@ -1,12 +1,12 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
@@ -32,10 +32,10 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class BotanicalNameTest extends EntityTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicalNameTest.class);
-	
+
 	private BotanicalName botanicalName1;
 	private BotanicalName botanicalName2;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -47,9 +47,9 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1 = new BotanicalName();
 		botanicalName2 = new BotanicalName();
 	}
-	
+
 /****** TESTS *******************************/
-	
+
 	@Test
 	public final void testPARSED_NAME() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
@@ -101,7 +101,7 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Test
 	public final void testGetParentRelationships() {
-		assertEquals(0, botanicalName1.getParentRelationships().size());
+		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		logger.warn("Not yet implemented"); // TODO
 	}
 
@@ -154,7 +154,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setAnamorphic(false);
 		assertFalse(botanicalName1.isAnamorphic());
 	}
-	
+
 	@Test
 	public void testClone(){
 		botanicalName1.setGenusOrUninomial("Aus");
@@ -165,7 +165,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setAnamorphic(false);
 		clone = (BotanicalName)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
-		
+
 	}
 
 }
