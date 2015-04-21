@@ -75,6 +75,11 @@ public class DescriptionListController extends IdentifiableListController<Descri
     @Autowired
     public ProgressMonitorController progressMonitorController;
 
+    protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "multilanguageText",
+    });
+
     /**
      * There should only be one longtime processes
      * therefore the according progress monitor uuid is stored in
@@ -274,8 +279,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
         }
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageNumber, getInitializationStrategy());
-
+                pageNumber, DESCRIPTION_ELEMENT_INIT_STRATEGY);
         return pager;
     }
 
