@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.WebPageDefaultCacheStrategy;
  * When changing the type of a reference one must be careful with handling attached information.
  * E.g. changing the type of a reference from article to book section requires to either exchange
  * the in reference or to change the type of the in reference which may have further consequences.
- * 
+ *
  * @author a.mueller
  * @created 20.09.2009
  */
@@ -51,15 +51,15 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 
 
 	/**
-	 * A reference of type section is a part-of another reference. Section is a generalized type for all 
-	 * references which are expected to be part of another reference (e.g. an article which is part of a journal, 
-	 * a book section which is part of a book) or which may have an in-reference  
+	 * A reference of type section is a part-of another reference. Section is a generalized type for all
+	 * references which are expected to be part of another reference (e.g. an article which is part of a journal,
+	 * a book section which is part of a book) or which may have an in-reference
 	 * such as books which may be part of a print series or websites which may be part of other websites.
 	 * <BR>
 	 * However, section as concrete type should only be used if no more specific type is available.
-	 * This is usually the case for parts of other sections such parts of articles, parts of book sections, or 
+	 * This is usually the case for parts of other sections such parts of articles, parts of book sections, or
 	 * similar cases).
-	 * 
+	 *
 	 * @see ISectionBase
 	 */
 	@XmlEnumValue("Section")
@@ -67,8 +67,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 
 	//0
 	/**
-	 * Article in a journal. 
-	 * Article is a specialization of {@link #Section}. 
+	 * Article in a journal.
+	 * Article is a specialization of {@link #Section}.
 	 */
 	@XmlEnumValue("Article")
 	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", "ART", Section, ArticleDefaultCacheStrategy.class),
@@ -78,7 +78,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	//2
 	/**
 	 * A part in a book, e.g. a chapter.
-	 * BookSection is a specialization of {@link #Section}  
+	 * BookSection is a specialization of {@link #Section}
 	 */
 	@XmlEnumValue("Book Section")
 	BookSection(UUID.fromString("b197435d-deec-46fa-9c66-e0e6c44c57fb"), "Book Section", "BS", Section, BookSectionDefaultCacheStrategy.class),
@@ -187,8 +187,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 		return (this == Book || this == Proceedings);
 	}
 
-	
-	
+
+
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
 	 * {@link ISection}) and therefore may have an in-reference and pages.
@@ -196,33 +196,33 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	public boolean isSection(){
 //		return (this == BookSection || this == InProceedings
 //				|| isPrintedUnit() || this == Article );
-		return isKindOf(Section);
+		return this == Section || isKindOf(Section);
 	}
 
-// *************************** DELEGATE **************************************/	
-	
+// *************************** DELEGATE **************************************/
+
 	private static EnumeratedTermVoc<ReferenceType> delegateVoc;
 	private IEnumTerm<ReferenceType> delegateVocTerm;
 
 	static {
 		delegateVoc = EnumeratedTermVoc.getVoc(ReferenceType.class);
 	}
-	
+
 	@Override
 	public String getKey(){return delegateVocTerm.getKey();}
-	
+
 	@Override
     public String getMessage(){return delegateVocTerm.getMessage();}
 
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-		
+
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 	@Override
     public ReferenceType getKindOf() {return delegateVocTerm.getKindOf();}
-	
+
 	@Override
     public Set<ReferenceType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
