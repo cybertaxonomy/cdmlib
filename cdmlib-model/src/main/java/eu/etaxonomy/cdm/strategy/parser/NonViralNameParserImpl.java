@@ -1440,12 +1440,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			zoologicalName.setBreed(null);
 			zoologicalName.setOriginalPublicationYear(null);
 		}
+
 		//nom status handled in nom status parser, otherwise we loose additional information like reference etc.
-//		Set<NomenclaturalStatus> status =new HashSet<NomenclaturalStatus>() ;
-//		status.addAll(nameToBeFilled.getStatus());
-//		for (NomenclaturalStatus st : status){
-//			nameToBeFilled.removeStatus(st);
-//		}
+		//hybrid relationships handled in hybrid formula and at end of fullNameParser
 	}
 
 
