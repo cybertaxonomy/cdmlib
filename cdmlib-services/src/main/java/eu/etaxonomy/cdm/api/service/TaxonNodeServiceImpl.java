@@ -360,6 +360,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
 
     }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
+    	TaxonNode node = dao.load(nodeUUID);
+    	return deleteTaxonNode(node, config);
+    }
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
      */

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -9,6 +10,15 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
+	
+	private ByteArrayOutputStream byteOutputStream;
+	private String encoding = "UTF-8";
+	private String linesTerminatedBy = "\r\n";
+	private String fieldsEnclosedBy = "\"";
+	private boolean hasHeaderLines = true;
+	private String fieldsTerminatedBy=";";
+	private boolean namesOnly = true;
+	private UUID classificationUUID;
 	
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
@@ -22,7 +32,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 		
 	}
 	
-	private ByteArrayOutputStream byteOutputStream;
+	
 	
 	public ByteArrayOutputStream getByteOutputStream() {
 		if (byteOutputStream == null){
@@ -36,7 +46,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 		this.byteOutputStream = byteOutputStream;
 	}
 
-	private String encoding = "UTF-8";
+	
 	public String getEncoding() {
 		return encoding;
 	}
@@ -67,10 +77,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
 		this.fieldsTerminatedBy = fieldsTerminatedBy;
 	}
-	private String linesTerminatedBy = "\r\n";
-	private String fieldsEnclosedBy = "\"";
-	private boolean hasHeaderLines = true;
-	private String fieldsTerminatedBy=";";
+	
 	@Override
 	public CsvNameExportState getNewState() {
 		return new CsvNameExportState(this);
@@ -81,6 +88,22 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 		ioClassList = new Class[] {
 				CsvNameExportBase.class
 		};
+	}
+
+	public boolean isNamesOnly() {
+		return namesOnly;
+	}
+
+	public void setNamesOnly(boolean namesOnly) {
+		this.namesOnly = namesOnly;
+	}
+
+	public UUID getClassificationUUID() {
+		return classificationUUID;
+	}
+
+	public void setClassificationUUID(UUID classificationUUID) {
+		this.classificationUUID = classificationUUID;
 	}
 
 }
