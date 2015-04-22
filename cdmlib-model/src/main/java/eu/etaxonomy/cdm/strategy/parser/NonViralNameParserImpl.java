@@ -244,10 +244,15 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 		if (nameAndRefSeparatorMatcher.find()){
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
-		}else if (onlyNameMatcher.matches() || hybridMatcher.matches() ){
+		}else if (onlyNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
-		}else if (onlySimpleNameMatcher.matches()){
+		}else if (hybridMatcher.matches() ){
+		    //I do not remember why we need makeEmpty = false for onlyNameMatcher,
+		    //but for hybridMatcher we need to remove old Hybrid Relationships if necessary, therefore
+		    //I removed it from here
+            parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
+        }else if (onlySimpleNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);	//simpleName not yet implemented
 		}else{

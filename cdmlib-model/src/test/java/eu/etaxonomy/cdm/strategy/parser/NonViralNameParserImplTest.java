@@ -428,6 +428,7 @@ public class NonViralNameParserImplTest {
 		name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
 		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
+
 		//x-sign
 		hybridCache = "Abies alba x Pinus bus";
 		name1 = parser.parseFullName(hybridCache, botanicCode, null);
@@ -492,6 +493,25 @@ public class NonViralNameParserImplTest {
         assertTrue("", name1.getHybridChildRelations().isEmpty());
         assertFalse("Name must not have parsing problems", name1.hasProblem());
 
+
+        //AND the same for reference parsing
+        hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
+        name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+        assertTrue("", name1.getHybridChildRelations().size() == 2);
+
+        hybridCache = "Abieta albana "+UTF8.HYBRID+" Pinuta custa";
+        makeEmpty = true;
+        parser.parseReferencedName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertEquals("After parsing another string there should still be 2 parents, but different ones", 2, name1.getHybridChildRelations().size());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+
+
+        hybridCache = "Calendula arvensis Mill.";
+        makeEmpty = true;
+        parser.parseReferencedName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertTrue("", name1.getHybridChildRelations().isEmpty());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
 	}
 
 
