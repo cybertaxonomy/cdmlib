@@ -877,7 +877,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"
-                + " FROM Distribution AS d LEFT JOIN d.area AS a");
+                + " FROM Distribution AS d JOIN d.area AS a");
         Query query = getSession().createQuery(queryString.toString());
 
         List<Object[]> areasInUse = query.list();
