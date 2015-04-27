@@ -74,7 +74,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true)
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
@@ -130,6 +130,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
         return this.stateData;
     }
 
+    @Deprecated
     protected void setStateData(List<StateData> stateData){
         this.stateData = stateData;
     }
@@ -143,6 +144,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      */
     public void addStateData(StateData stateData){
         this.stateData.add(stateData);
+        stateData.setCategoricalData(this);
     }
 
     /**
@@ -153,7 +155,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      */
     public void addStateData(State state){
         StateData stateData = StateData.NewInstance(state);
-        this.stateData.add(stateData);
+        addStateData(stateData);
     }
 
 
@@ -167,6 +169,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      */
     public void removeStateData(StateData stateData){
         this.stateData.remove(stateData);
+        stateData.setState(null);
     }
 
     //rename to isStateSequenceIntentional ??

@@ -17,6 +17,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
@@ -83,6 +85,19 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @IndexedEmbedded(depth=1)
     private State state;
 
+    @XmlElement(name = "CategoricalData")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY )
+    @JoinTable(
+            name = "DescriptionElementBase_StateData"
+          , joinColumns = @JoinColumn(name = "statedata_id")
+          , inverseJoinColumns = @JoinColumn(name = "DescriptionElementBase_id")
+
+        )
+    @IndexedEmbedded(depth=1)
+    private CategoricalData categoricalData;
+
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
@@ -144,6 +159,19 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      */
     public void setState(State state){
         this.state = state;
+    }
+
+    /**
+     * Returns the {@link CategoricalData state term} <i>this</i> state data
+     * belongs to.
+     */
+    public CategoricalData getCategoricalData(){
+        return this.categoricalData;
+    }
+    //for bidirectional use only
+    @Deprecated
+    protected void setCategoricalData(CategoricalData categoricalData) {
+        this.categoricalData = categoricalData;
     }
 
 
