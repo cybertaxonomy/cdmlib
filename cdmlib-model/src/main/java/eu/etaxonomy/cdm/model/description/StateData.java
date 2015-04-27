@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
     "state",
+    "categoricalData",
     "modifiers",
     "modifyingText"
 })
