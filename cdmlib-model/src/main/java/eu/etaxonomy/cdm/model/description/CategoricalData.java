@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -74,9 +74,8 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
-    //TODO shouldn't we change the relationship tpye here? see #3382
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<StateData>();

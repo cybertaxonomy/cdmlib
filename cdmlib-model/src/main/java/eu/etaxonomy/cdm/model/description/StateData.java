@@ -21,7 +21,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -40,10 +39,10 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -152,6 +151,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * Returns the set of {@link Modifier modifiers} used to qualify the validity
      * of <i>this</i> state data. This is only metainformation.
      */
+    @Override
     public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
@@ -163,6 +163,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @param modifier	the modifier to be added to <i>this</i> state data
      * @see    	   		#getModifiers()
      */
+    @Override
     public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
@@ -174,6 +175,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
+    @Override
     public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
