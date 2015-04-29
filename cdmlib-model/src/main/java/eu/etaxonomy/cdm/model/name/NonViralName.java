@@ -1244,19 +1244,21 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         NonViralName<?> parent = hybridRelation.getParentName();
         NonViralName<?> child = hybridRelation.getHybridName();
 
-        hybridRelation.setHybridName(null);
-        hybridRelation.setParentName(null);
+        if (this.equals(parent) || this.equals(child)){
+            hybridRelation.setHybridName(null);
+            hybridRelation.setParentName(null);
 
-        if (parent != null) {
-            parent.removeHybridRelationship(hybridRelation);
+            if (parent != null) {
+                parent.removeHybridRelationship(hybridRelation);
+            }
+
+            if (child != null) {
+                child.removeHybridRelationship(hybridRelation);
+            }
+
+            this.hybridChildRelations.remove(hybridRelation);
+            this.hybridParentRelations.remove(hybridRelation);
         }
-
-        if (child != null) {
-            child.removeHybridRelationship(hybridRelation);
-        }
-
-        this.hybridChildRelations.remove(hybridRelation);
-        this.hybridParentRelations.remove(hybridRelation);
     }
 
 
