@@ -271,7 +271,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
     public List<TaxonNode> getAllNodes();
 
-	public Classification createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
+	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
 
 
 }

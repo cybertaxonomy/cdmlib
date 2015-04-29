@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -44,7 +45,7 @@ public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTes
 
     @SpringBeanByType
     IClassificationService service;
-    
+
     @SpringBeanByType
     ITaxonNodeService taxonNodeService;
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -58,19 +59,19 @@ public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTes
     private Comparator<? super TaxonNode> taxonNodeComparator;
 
 
-    
+
 
     @Test
     @DataSet
     public final void testFixHierarchy(){
         Classification classification = service.find(UUID.fromString("52b41b07-5500-43ae-82e6-ea2fd328c3d5"));
-        
+
         Set<TaxonNode> taxonNodes = classification.getAllNodes();//= taxonNodeService.listAllNodesForClassification(classification, 0, null);
         for (TaxonNode node: taxonNodes){
             taxonNodeService.load(node.getUuid(), NODE_INIT_STRATEGY);
         }
-        Classification classification2 = service.createHierarchyInClassification(classification, null);
-        
+        UpdateResult result = service.createHierarchyInClassification(classification, null);
+        Classification classification2 = CdmBase.deproxy(result.getCdmEntity(), Classification.class);
         //creating the classification was succesful
         Assert.assertNotNull(classification2);
         for(TaxonNode node: classification2.getAllNodes()){
@@ -102,16 +103,16 @@ public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTes
         Assert.assertNotEquals(taxonNodes.size(), taxonNodes2.size());
     }
 
-  
+
 
     @Override
     @Test
     @Ignore
     public void createTestDataSet() throws FileNotFoundException {
-    	
+
     	String[] stringTaxonNames= new String[]{"Griftus grifatus subsp. fikus", "Griftus", "Genus genus subsp. tri", "Genus genus subsp. alt" ,
     			"Genus genus", "Garstig alter subsp. ekel", "Garstig", "Genus genus subsp. genus"};
-    	
+
     	Classification classification = Classification.NewInstance("New Classification");
     	classification.setUuid(UUID.fromString("52b41b07-5500-43ae-82e6-ea2fd328c3d5"));
 
@@ -136,33 +137,33 @@ public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTes
     	TaxonNode p3 = classification.addChildTaxon(tp3, null, null);
     	TaxonNode p4 = classification.addChildTaxon(tp4, null, null);
 
-    	
+
     	taxonNodeService.saveOrUpdate(p1);
     	taxonNodeService.saveOrUpdate(p2);
     	taxonNodeService.saveOrUpdate(p3);
     	taxonNodeService.saveOrUpdate(p4);
     	service.saveOrUpdate(classification);
-    	
-    	
+
+
     	//create children
     	Taxon tc1 = map.get("Garstig alter subsp. ekel");
     	Taxon tc2 = map.get("Genus genus subsp. alt");
     	Taxon tc3 = map.get("Genus genus subsp. tri");
     	Taxon tc4 = map.get("Genus genus subsp. genus");
-    	
+
     	//add to parent node
     	taxonNodeService.saveOrUpdate(p1.addChildTaxon(tc1, null, null));
     	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc2, null, null));
     	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc3, null, null));
     	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc4, null, null));
-    	
+
     	//save classification
     	service.saveOrUpdate(classification);
         commitAndStartNewTransaction(null);
 
         setComplete();
         endTransaction();
-    	
+
         try {
             writeDbUnitDataSetFile(new String[] {
                     "Classification",

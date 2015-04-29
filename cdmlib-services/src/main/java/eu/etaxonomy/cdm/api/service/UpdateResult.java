@@ -29,10 +29,11 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 	 *
 	 */
 public class UpdateResult implements Serializable{
-	
-	
 
-		@SuppressWarnings("unused")
+
+        private static final long serialVersionUID = 1L;
+
+        @SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(UpdateResult.class);
 
 		private Status status = Status.OK;
@@ -40,8 +41,10 @@ public class UpdateResult implements Serializable{
 		private final List<Exception> exceptions = new ArrayList<Exception>();
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
-		
-		private CdmBase cdmEntity;
+
+		private final Set<CdmBase> unchangedObjects = new HashSet<CdmBase>();
+
+        private CdmBase cdmEntity;
 
 //		private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
 	//
@@ -211,10 +214,23 @@ public class UpdateResult implements Serializable{
 		}
 		public void setCdmEntity(CdmBase cdmBase) {
 			this.cdmEntity = cdmBase;
-			
+
 		}
 
+		public CdmBase getCdmEntity(){
+		    return cdmEntity;
+		}
 
-	
+		public Set<CdmBase> getUnchangedObjects() {
+            return unchangedObjects;
+        }
+
+		public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
+		    this.unchangedObjects.addAll(unchangedObjects);
+		}
+		public void addUnChangedObject(CdmBase unchangedObject) {
+		    this.unchangedObjects.add(unchangedObject);
+		}
+
 
 }
