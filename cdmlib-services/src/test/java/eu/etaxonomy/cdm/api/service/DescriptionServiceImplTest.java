@@ -119,7 +119,11 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         //test for #4806
         service.moveDescriptionElementsToDescription(tmpSet, descLoaded2, false);
-        commitAndStartNewTransaction(null);
+        try {
+            commitAndStartNewTransaction(null);
+        } catch (Exception e) {
+            Assert.fail("Moving description element should not throw an exception. Exception is " + e.getMessage());
+        }
 
 
     }
