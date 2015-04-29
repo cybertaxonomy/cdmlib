@@ -261,11 +261,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
-		this.catalogNumber = catalogNumber;
+		this.catalogNumber = StringUtils.iBlank(catalogNumber)?null:catalogNumber;
 	}
 
 	public void setBarcode(String barcode) {
-		this.barcode = barcode;
+		this.barcode = StringUtils.isBlank(barcode) null : barcode;
 	}
 	public String getBarcode() {
 		return barcode;
@@ -281,7 +281,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
+		this.accessionNumber = StringUtils.isBlank(accessionNumber)? null : accessionNumber;
 	}
 	
 
@@ -320,7 +320,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 */
 	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
-		this.collectorsNumber = collectorsNumber;
+		this.collectorsNumber = StringUtils.isBlank(collectorsNumber) null : collectorsNumber;
 	}
 
 	public TaxonNameBase getStoredUnder() {
@@ -364,7 +364,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setExsiccatum(String exsiccatum) {
-		this.exsiccatum = exsiccatum;
+		this.exsiccatum = StringUtils.isBlank(exsiccatum)? null : exsiccatum;
 	}
 
 	public String getExsiccatum() {

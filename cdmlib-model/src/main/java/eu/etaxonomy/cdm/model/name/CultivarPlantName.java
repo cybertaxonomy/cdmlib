@@ -153,7 +153,7 @@ public class CultivarPlantName extends BotanicalName implements Cloneable{
 	 * @see  #getCultivarName()
 	 */
 	public void setCultivarName(String cultivarName){
-		this.cultivarName = cultivarName;
+		this.cultivarName = StringUtils.isBlank(cultivarName) ? null : cultivarName;
 	}
 	
 	

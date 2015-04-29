@@ -863,7 +863,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getAppendedPhrase()
      */
     public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = appendedPhrase;
+        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     /**
@@ -882,7 +882,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getNomenclaturalMicroReference()
      */
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+        this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference): null : nomenclauturalMicroReference;
     }
 
     /* (non-Javadoc)

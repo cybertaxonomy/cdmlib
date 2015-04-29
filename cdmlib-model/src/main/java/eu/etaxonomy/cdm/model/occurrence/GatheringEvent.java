@@ -306,7 +306,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	}
 
 	public void setCollectingMethod(String collectingMethod) {
-		this.collectingMethod = collectingMethod;
+		this.collectingMethod = StringUtils.isBlank(collectingMethod)? null : collectionMethod;
 	}
 
 	public Integer getAbsoluteElevation() {

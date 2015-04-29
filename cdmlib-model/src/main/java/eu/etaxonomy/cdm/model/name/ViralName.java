@@ -126,7 +126,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see  #getAcronym()
 	 */
 	public void setAcronym(String acronym){
-		this.acronym = acronym;
+		this.acronym = StringUtils.isBlank(acronym):null : acronym;
 	}
 
 	/**

@@ -145,7 +145,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	}
 
 	public void setFieldNumber(String fieldNumber) {
-		this.fieldNumber = fieldNumber;
+		this.fieldNumber = StringUtils.isBlank(fieldNumber)? null : fieldNumber;
 	}
 
 
@@ -168,7 +168,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	}
 
 	public void setFieldNotes(String fieldNotes) {
-		this.fieldNotes = fieldNotes;
+		this.fieldNotes = StringUtils.isBlank(fieldNotes)? null : fieldNotes;
 	}
 
 	// *********** Listener *****************************/
