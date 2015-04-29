@@ -644,7 +644,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getInfraGenericEpithet()
      */
     public void setInfraGenericEpithet(String infraGenericEpithet){
-        this.infraGenericEpithet = infraGenericEpithet;
+        this.infraGenericEpithet = StringUtils.isBlank(infraGenericEpithet)? null : infraGenericEpithet;
     }
 
     /**
@@ -663,7 +663,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getSpecificEpithet()
      */
     public void setSpecificEpithet(String specificEpithet){
-        this.specificEpithet = specificEpithet;
+        this.specificEpithet = StringUtils.isBlank(specificEpithet) ? null : specificEpithet;
     }
 
     /**
@@ -683,7 +683,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getInfraSpecificEpithet()
      */
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
-        this.infraSpecificEpithet = infraSpecificEpithet;
+        this.infraSpecificEpithet = StringUtils.isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
     }
 
     /**
