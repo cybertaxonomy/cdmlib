@@ -66,7 +66,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //	@Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
-	
+
 	/**
 	 * Factory method.
 	 * @param text
@@ -125,9 +125,9 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	@Type(type="uriUserType")
 	private URI linkbackUri;
 
-	
+
 // *********** CONSTRUCTOR **************************************/
-	
+
 	protected Annotation(){
 		super();
 	}
@@ -141,8 +141,8 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 		super(text, language);
 	}
 
-//******************** GETTER /SETTER *************************/	
-	
+//******************** GETTER /SETTER *************************/
+
 
 	/**
 	 * Currently envers does not support @Any
@@ -151,7 +151,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-	
+
 	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	/**
 	 *
@@ -185,21 +185,24 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	public void setLinkbackUri(URI linkbackUri) {
 		this.linkbackUri = linkbackUri;
 	}
-	
-	
+
+
 	//*************** INTEXT REFERENCE **********************************************
-	
-	public Set<IntextReference> getIntextReferences(){		
+
+	@Override
+    public Set<IntextReference> getIntextReferences(){
 		return this.intextReferences;
 	}
-	public void addIntextReference(IntextReference intextReference){
+	@Override
+    public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
 			intextReference.setAnnotation(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
-	
-	public void removeIntextReference(IntextReference intextReference){
+
+	@Override
+    public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
 			intextReference.setAnnotation((Annotation)null);
@@ -245,7 +248,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 			IntextReference newIntextReference = (IntextReference)intextReference.clone();
 			result.addIntextReference(newIntextReference);
 		}
-		
+
 		return result;
 	}
 
@@ -257,6 +260,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	public Annotation clone(AnnotatableEntity annotatedObject) throws CloneNotSupportedException{
 		Annotation result = (Annotation)clone();
 		result.setAnnotatedObj(annotatedObject);
+
 		return result;
 	}
 }

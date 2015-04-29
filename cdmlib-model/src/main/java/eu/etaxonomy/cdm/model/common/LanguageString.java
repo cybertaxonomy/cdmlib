@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -27,9 +27,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * This class is an instantiatable class for the base class {@link LanguageStringBase}.
@@ -56,46 +53,52 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //	@Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
-	
+
 	//*************** INTEXT REFERENCE **********************************************
-	
-	public Set<IntextReference> getIntextReferences(){		
+
+	@Override
+    public Set<IntextReference> getIntextReferences(){
 		return this.intextReferences;
 	}
-	public void addIntextReference(IntextReference intextReference){
+    private void setIntextReferences(Set<IntextReference> intextReferences){
+        this.intextReferences = intextReferences;
+    }
+	@Override
+    public void addIntextReference(IntextReference intextReference){
 		if (intextReference != null){
 			intextReference.setLanguageString(this);
 			getIntextReferences().add(intextReference);
 		}
 	}
-	
-	public void removeIntextReference(IntextReference intextReference){
+
+	@Override
+    public void removeIntextReference(IntextReference intextReference){
 		if(getIntextReferences().contains(intextReference)) {
 			getIntextReferences().remove(intextReference);
 			intextReference.setLanguageString(null);
 		}
 	}
 
-    
-	
-//********************* FACTORY *******************************************/	
-	
+
+
+//********************* FACTORY *******************************************/
+
 	public static LanguageString NewInstance(String text, Language language){
 		return new LanguageString(text, language);
 	}
 
-// ********************* CONSTRUCTOR ********************************/	
-	
+// ********************* CONSTRUCTOR ********************************/
+
 	protected LanguageString() {
 		super();
 	}
-	
+
 	protected LanguageString(String text, Language language) {
 		super(text, language);
 	}
 
 
-//*************** TO STRING ***********************************/	
+//*************** TO STRING ***********************************/
 	@Override
 	public String toString() {
 		if (text == null){
@@ -113,11 +116,18 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 		}
 	}
 
-// ************************ CLONE ********************************/	
+// ************************ CLONE ********************************/
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		LanguageString result = (LanguageString)super.clone();
+		result.setIntextReferences(new HashSet<IntextReference>());
+
+		for (IntextReference ref : this.intextReferences) {
+		    IntextReference newRef = (IntextReference)ref.clone();
+		    result.addIntextReference(newRef);
+		}
+
 		return result;
 	}
-	
+
 }
