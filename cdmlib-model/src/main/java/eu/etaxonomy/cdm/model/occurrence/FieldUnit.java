@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -40,11 +41,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
- * 
+ *
  * In situ observation of a taxon in the field. If a specimen exists,
- * in most cases a parallel field unit object should be instantiated and the specimen then 
+ * in most cases a parallel field unit object should be instantiated and the specimen then
  * is "derived" from the field unit via derivation type "accessioning" or any other.
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:40
  */

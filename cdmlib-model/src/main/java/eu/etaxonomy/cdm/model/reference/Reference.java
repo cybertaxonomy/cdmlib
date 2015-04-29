@@ -560,7 +560,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setPlacePublished(String placePublished) {
-		this.placePublished = StringUtils.isBlank(placePublished)? null placePublshed;
+		this.placePublished = StringUtils.isBlank(placePublished)? null: placePublished;
 	}
 
 	@Override
