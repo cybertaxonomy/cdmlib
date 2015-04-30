@@ -98,3 +98,4 @@ cdmlib-services/testTaxonNodeByNameComparator-dump.xml
 /latestChanges.patch
 /target
 /testANTLR
+.settings/
