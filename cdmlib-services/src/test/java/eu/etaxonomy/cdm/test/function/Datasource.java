@@ -20,7 +20,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -28,28 +27,29 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.validation.ValidationManager;
 import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -64,7 +64,7 @@ public class Datasource {
 
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
@@ -74,7 +74,8 @@ public class Datasource {
 
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
-		database = "cdm_test";
+		database = "testCategoricalData";
+		database = "350_editor_test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -104,19 +105,19 @@ public class Datasource {
 //
 		//H2
 //		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-    	String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
-		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+//    	String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
+//		username = "sa";
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
- 		try {
-			CdmUpdater updater = new CdmUpdater();
-			if (schema == DbSchemaValidation.VALIDATE){
-				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+// 		try {
+//			CdmUpdater updater = new CdmUpdater();
+//			if (schema == DbSchemaValidation.VALIDATE){
+//				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
@@ -124,15 +125,21 @@ public class Datasource {
 
 //		appCtr.getCommonService().createFullSampleData();
 
-		HibernateTransactionManager transMan = (HibernateTransactionManager)appCtr.getBean("transactionManager");
+//		ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
+//		valMan.registerValidationListeners();
 
-		ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
-		valMan.registerValidationListeners();
+		State state = State.NewInstance();
+		Taxon taxon = Taxon.NewInstance(null, null);
+		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+//		CategoricalData catData = CategoricalData.NewInstance(state, Feature.HABITAT());
+		QuantitativeData quantData = QuantitativeData.NewInstance(Feature.ANATOMY());
+		StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.AVERAGE(), 2);
+		quantData.addStatisticalValue(statisticalValue);
+		desc.addElement(quantData);
 
-		Reference<?> ref = ReferenceFactory.newDatabase();
-		ref.setIsbn("1234");
-		appCtr.getReferenceService().save(ref);
+		appCtr.getTermService().saveOrUpdate(state);
 
+		appCtr.getTaxonService().save(taxon);
 
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
@@ -275,7 +282,7 @@ public class Datasource {
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 			appCtr = CdmApplicationController.NewInstance(ds);
-			List l = appCtr.getNameService().list(null,5, 1,null,null);
+			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
 			System.out.println(l);
 			//Agent agent = new Agent();
 			//appCtr.getAgentService().saveAgent(agent);
@@ -283,7 +290,9 @@ public class Datasource {
 		} catch (RuntimeException e) {
 			logger.error("Runtime Exception");
 			e.printStackTrace();
-			appCtr.close();
+			if (appCtr != null){
+			    appCtr.close();
+			}
 
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Runtime Exception");
