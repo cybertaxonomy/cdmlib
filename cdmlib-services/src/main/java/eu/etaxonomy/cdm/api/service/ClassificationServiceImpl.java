@@ -478,6 +478,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     			//TODO: addchildNode without citation and references
 //    			TaxonNode taxonNode = parentNode.addChildNode(clone, classification.getCitation(), classification.getMicroReference());
     			TaxonNode taxonNode = parentNode.addChildNode(clone, clone.getReference(), clone.getMicroReference());
+    			result.addUnChangedObject(clone);
     			if(tn.hasChildNodes()){
     				//save hierarchy in new classification
     				List<TaxonNode> copyAllChildrenToTaxonNode = copyAllChildrenToTaxonNode(tn, taxonNode, result);
