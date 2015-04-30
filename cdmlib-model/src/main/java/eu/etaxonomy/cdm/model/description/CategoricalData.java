@@ -142,6 +142,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * @param state	the state to be added to <i>this</i> categorical data
      * @see    	   	#getStateData()
      */
+    @SuppressWarnings("deprecation")
     public void addStateData(StateData stateData){
         this.stateData.add(stateData);
         stateData.setCategoricalData(this);
@@ -167,9 +168,10 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * @see     		#getStateData()
      * @see     		#addStateData(State)
      */
+    @SuppressWarnings("deprecation")
     public void removeStateData(StateData stateData){
         this.stateData.remove(stateData);
-        stateData.setState(null);
+        stateData.setCategoricalData(null);
     }
 
     //rename to isStateSequenceIntentional ??
