@@ -98,6 +98,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config);
 
 
+	UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid,
+			boolean moveToParent);
+
+
 
 
 

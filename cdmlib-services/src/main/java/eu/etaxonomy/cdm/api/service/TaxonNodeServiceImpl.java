@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
@@ -234,7 +235,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
-        	result.isOk();
+        	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteTaxon(false);
         	conf.setTaxonNodeConfig(config);
@@ -385,6 +386,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		return taxonService.deleteTaxon(taxon, config, node.getClassification());
     	} else{
     		DeleteResult result = new DeleteResult();
+    		result.setCdmEntity(node);
     		boolean success = taxon.removeTaxonNode(node);
     		if (success){
     			if (!dao.delete(node).equals(null)){
@@ -419,6 +421,26 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
     
+    @Override
+    @Transactional
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean moveToParent){
+    	UpdateResult result = new UpdateResult();
+    	if (moveToParent){
+    	   return moveTaxonNode(taxonNodeUuid, targetNodeUuid);
+       }else{
+    	   
+    	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
+    	   TaxonNode targetNode = dao.load(targetNodeUuid);
+    	   Integer sortIndex = taxonNode.getSortIndex();
+    	   TaxonNode parent = targetNode.getParent();
+    	   result.addUpdatedObject(parent);
+           result.addUpdatedObject(taxonNode.getParent());
+           result.setCdmEntity(taxonNode);
+    	   parent.addChildNode(taxonNode, sortIndex+1, taxonNode.getReference(),  taxonNode.getMicroReference());
+       }
+
+        return result;
+    }
     
     @Override
     @Transactional

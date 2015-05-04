@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -160,11 +162,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
-		Synonym syn;
+		DeleteResult result;
 		//Taxon can't be deleted because of the polytomous key node
 
-		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-		if (syn == null){
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		if (result.isError() || result.isAbort()){
 			Assert.fail();
 		}
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
@@ -176,19 +178,32 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 
-		synUUID = syn.getUuid();
-		syn = (Synonym)taxonService.find(synUUID);
-		synonym = (Synonym)taxonService.find(uuidSynonym);
-		assertNotNull(syn);
-		assertNotNull(synonym);
+		Set<CdmBase> updatedObjects = result.getUpdatedObjects();
+		Iterator<CdmBase> it = updatedObjects.iterator();
+		Taxon taxon;
+		if (it.hasNext()) {
+			CdmBase updatedObject = it.next();
+			if(updatedObject.isInstanceOf(Taxon.class)){
+				taxon = HibernateProxyHelper.deproxy(updatedObject, Taxon.class);
+				Set<Synonym> syns =  taxon.getSynonyms();
+				assertNotNull(syns);
+				assertEquals(3,syns.size());
+				
+				Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
+				assertEquals(typifiedNames.size(),3);
+				assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
 
-		Taxon tax = syn.getAcceptedTaxa().iterator().next();
-		assertEquals(syn.getName().getHomotypicalGroup(), synonym.getName().getHomotypicalGroup());
-		assertTrue(tax.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
+				assertEquals(taxon, t2);
+				
+			} else{
+				Assert.fail();
+			}
+			
+			
+		}
+		
 
-		assertEquals(tax, t2);
-		TaxonNameBase name = syn.getName();
-		assertEquals(name, nameT1);
+		
 	}
 
 	/**
@@ -219,9 +234,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		polKeyService.save(polKey);
 
 		//nameRelations
-
+		
 		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
-
+		TaxonNameBase name1 = t1.getName();
+		UUID name1UUID = name1.getUuid();
 		//taxonRelations
 		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
@@ -235,16 +251,19 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
-		Synonym syn;
-
-		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-		synUUID = syn.getUuid();
+		DeleteResult result;
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		
+		if (!result.getUpdatedObjects().iterator().hasNext()){
+			Assert.fail();
+		}
+		Taxon newAcceptedTaxon = (Taxon)result.getUpdatedObjects().iterator().next();
 		assertNotNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
 
-		syn = (Synonym)taxonService.find(synUUID);
+		
 		synonym = (Synonym)taxonService.find(uuidSynonym);
-		assertNotNull(syn);
+		
 		assertNotNull(synonym);
 		keyNode.setTaxon(null);
 		polKeyNodeService.saveOrUpdate(keyNode);
@@ -263,20 +282,24 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(3,t2.getSynonyms().size());
 		assertEquals(2, t2.getDescriptions().size());
 
-		taxonService.deleteTaxon(t1, null, null);
+		result = taxonService.deleteTaxon(t1, null, null);
+		if (result.isAbort() || result.isError()){
+			Assert.fail();
+		}
 		assertNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
-		syn = (Synonym)taxonService.find(synUUID);
+		name1 = nameService.find(name1UUID);
 		synonym = (Synonym)taxonService.find(uuidSynonym);
-		assertNotNull(syn);
+		assertNotNull(name1);
+		assertEquals(1, name1.getTaxonBases().size());
 		assertNotNull(synonym);
 
-		Taxon tax = syn.getAcceptedTaxa().iterator().next();
+		Synonym syn =(Synonym) name1.getTaxonBases().iterator().next();
 
 		assertEquals(syn.getName().getHomotypicalGroup(), synonym.getName().getHomotypicalGroup());
-		assertFalse(tax.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
+		assertFalse(newAcceptedTaxon.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
 
-		assertEquals(tax, t2);
+		assertEquals(newAcceptedTaxon, t2);
 		TaxonNameBase name = syn.getName();
 		assertEquals(name, nameT1);
 	}
