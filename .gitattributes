@@ -892,6 +892,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BotanicalName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/CultivarPlantName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroup.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroupComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ITypeDesignation.java -text
