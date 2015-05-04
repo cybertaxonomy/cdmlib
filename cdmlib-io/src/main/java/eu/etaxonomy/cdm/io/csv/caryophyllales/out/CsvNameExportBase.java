@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+
 @Component
 public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, CsvNameExportState, IExportTransformer> implements ICdmExport<CsvNameExportConfigurator, CsvNameExportState>{
 	private static final Logger logger = Logger.getLogger(CsvNameExportBase.class);
