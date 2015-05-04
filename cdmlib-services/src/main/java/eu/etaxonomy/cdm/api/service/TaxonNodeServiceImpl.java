@@ -100,7 +100,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -225,6 +225,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         oldTaxon.clearDescriptions();
         
         taxonService.update(newAcceptedTaxon);
+        
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
@@ -233,14 +234,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
+        	result.isOk();
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteTaxon(false);
         	conf.setTaxonNodeConfig(config);
-        	result = deleteTaxonNode(oldTaxonNode, conf);
+        	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
+        result.addUpdatedObject(newAcceptedTaxon);
 
         //oldTaxonNode.delete();
-        return synonmyRelationship.getSynonym();
+        return result;
     }
 
     /* (non-Javadoc)
