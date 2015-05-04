@@ -21,7 +21,7 @@
     <module>cdmlib-remote-webapp</module>
   </modules>
   <properties>
-    <cdm-vaadin.version>3.5.1-SNAPSHOT</cdm-vaadin.version><!-- should be ${project.version} but this breaks the maven release:prepare phase --> 
+    <cdm-vaadin.version>3.5.2-SNAPSHOT</cdm-vaadin.version><!-- should be ${project.version} but this breaks the maven release:prepare phase --> 
     <java.codelevel>1.6</java.codelevel>
     <spring.version>3.2.2.RELEASE</spring.version>
     <spring-security.version>3.1.3.RELEASE</spring-security.version>
