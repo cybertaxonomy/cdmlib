@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
 
 /**
@@ -62,17 +63,36 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 //		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		
+
 		//add hasMoreMembers
 		stepName = "Add hasMoreMembers to Team";
 		tableName = "AgentBase";
 		newColumnName = "hasMoreMembers";
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 		stepList.add(step);
-		
+
+        //#4843  TODO test
+        //Allow NULL for DefinedTermBase_SupportedCategoricalEnumeration
+		//.supportedcategoricalenumerations_id
+        stepName = "Remove NOT NULL from supportedcategoricalenumerations_id";
+        tableName = "DefinedTermBase_SupportedCategoricalEnumeration";
+        oldColumnName = "supportedcategoricalenumerations_id";
+        step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, !INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#4843  TODO test
+        //Allow NULL for DefinedTermBase_RecommendedModifierEnumeration
+        //.recommendedmodifierenumeration_id
+        stepName = "Remove NOT NULL from recommendedmodifierenumeration_id";
+        tableName = "DefinedTermBase_RecommendedModifierEnumeration";
+        oldColumnName = "recommendedmodifierenumeration_id";
+        step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+
 		return stepList;
 	}
-	
+
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
