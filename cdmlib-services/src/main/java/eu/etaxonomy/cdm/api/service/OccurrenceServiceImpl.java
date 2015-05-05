@@ -594,19 +594,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
                         MolecularData molecularData = derivateDataDTO.addProviderLink(boldUri != null ? boldUri : null, dnaMarker != null ? dnaMarker.getLabel() : "[no marker]");
 
-                        //contig file FIXME show primer although contig not present?
+                        //contig file
+                        ContigFile contigFile = null;
                         if (sequence.getContigFile() != null) {
                             MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
                             if (contigMediaRepresentationPart != null) {
-                                ContigFile contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
-                                // primer files
-                                if (sequence.getSingleReads() != null) {
-                                    for (SingleRead singleRead : sequence.getSingleReads()) {
-                                        MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
-                                        if (pherogramMediaRepresentationPart != null) {
-                                            contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "primer");
-                                        }
-                                    }
+                                contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
+                            }
+                        }
+                        if(contigFile==null){
+                            contigFile = molecularData.addContigFile(null, "[no contig]");
+                        }
+                        // primer files
+                        if (sequence.getSingleReads() != null) {
+                            for (SingleRead singleRead : sequence.getSingleReads()) {
+                                MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
+                                if (pherogramMediaRepresentationPart != null) {
+                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "primer");
                                 }
                             }
                         }
