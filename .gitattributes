@@ -1592,6 +1592,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/PersistentTermInitializerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializer.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/WrappedCdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/ODBCDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/OracleDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseTypeTest.java -text
