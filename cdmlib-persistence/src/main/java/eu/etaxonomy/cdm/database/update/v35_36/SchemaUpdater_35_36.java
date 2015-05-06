@@ -89,6 +89,27 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, ! INCLUDE_AUDIT);
         stepList.add(step);
 
+        //SingleReadAlignment firstSeqPosition
+        stepName = "Add firstSeqPosition";
+        tableName = "SingleReadAlignment";
+        newColumnName = "firstSeqPosition";
+        Integer defaultValue = null;
+        boolean notNull = false;
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+
+        //SingleReadAlignment leftCutPosition
+        stepName = "Add firstSeqPosition";
+        tableName = "SingleReadAlignment";
+        newColumnName = "leftCutPosition";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+
+
+        //SingleReadAlignment leftCutPosition
+        stepName = "Add firstSeqPosition";
+        tableName = "SingleReadAlignment";
+        newColumnName = "rightCutPosition";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+
 
 		return stepList;
 	}

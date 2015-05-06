@@ -31,7 +31,10 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 	"singleRead",
 	"shifts",
 	"editedSequence",
-	"reverseComplement"
+	"reverseComplement",
+	"firstSeqPosition",
+	"leftCutPosition",
+	"rightCutPosition"
 })
 @XmlRootElement(name = "SingleReadAlignment")
 @Entity
@@ -58,7 +61,6 @@ public class SingleReadAlignment extends VersionableEntity {
 	//TODO XML mapping / user type
 	@Type(type="shiftUserType")
     private Shift[] shifts = new Shift[0];
-
 
 	private Integer firstSeqPosition;
 
