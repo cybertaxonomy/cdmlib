@@ -607,10 +607,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         }
                         // primer files
                         if (sequence.getSingleReads() != null) {
+                            int readCount = 1;
                             for (SingleRead singleRead : sequence.getSingleReads()) {
                                 MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
                                 if (pherogramMediaRepresentationPart != null) {
-                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "primer");
+                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "read"+readCount++);
                                 }
                             }
                         }
