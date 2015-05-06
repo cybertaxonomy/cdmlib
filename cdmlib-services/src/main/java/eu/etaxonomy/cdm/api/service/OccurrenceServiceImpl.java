@@ -1073,7 +1073,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     else if(!specimenDeleteConfigurator.isDeleteChildren()){
                         //if not and children should not be deleted then it is undeletable
                         deleteResult.setAbort();
-                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
+                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivative still has child derivatives."));
                         deleteResult.addRelatedObject(cdmBase);
                         break;
                     }
