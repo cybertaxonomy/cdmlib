@@ -1614,32 +1614,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
-    public class UuidAndTitleCacheOfAcceptedTaxon{
-        UUID uuid;
-
-        String titleCache;
-
-        public UuidAndTitleCacheOfAcceptedTaxon(UUID uuid, String titleCache){
-            this.uuid = uuid;
-            this.titleCache = titleCache;
-        }
-
-        public UUID getUuid() {
-            return uuid;
-        }
-
-        public void setUuid(UUID uuid) {
-            this.uuid = uuid;
-        }
-
-        public String getTitleCache() {
-            return titleCache;
-        }
-
-        public void setTitleCache(String titleCache) {
-            this.titleCache = titleCache;
-        }
-    }
+    
 
     @Override
     public TaxonBase find(LSID lsid) {
