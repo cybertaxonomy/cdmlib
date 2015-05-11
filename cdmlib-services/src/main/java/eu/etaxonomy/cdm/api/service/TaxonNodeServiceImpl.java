@@ -431,7 +431,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	   
     	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
     	   TaxonNode targetNode = dao.load(targetNodeUuid);
-    	   Integer sortIndex = taxonNode.getSortIndex();
+    	   Integer sortIndex = targetNode.getSortIndex();
     	   TaxonNode parent = targetNode.getParent();
     	   result.addUpdatedObject(parent);
            result.addUpdatedObject(taxonNode.getParent());
