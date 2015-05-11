@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,29 +24,29 @@ import org.apache.log4j.Logger;
 
 public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3446993458279371682L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger	.getLogger(UuidAndTitleCache.class);
-	
-	Class<T> type;
-	UUID uuid;
-	String titleCache;
-	boolean isOrphaned;
-	
+
+	private Class<T> type;
+	private UUID uuid;
+	private String titleCache;
+	private boolean isOrphaned;
+
 	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache) {
 		this(uuid, titleCache);
 		this.type = type;
 		this.isOrphaned = false;
 	}
-	
+
 	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache, Boolean isOrphaned) {
-		this(type, uuid, titleCache);		
+		this(type, uuid, titleCache);
 		this.isOrphaned = isOrphaned;
 	}
-	
+
 	/**
 	 * @param uuid2
 	 * @param string
@@ -62,20 +62,20 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	public String getTitleCache() {
 		return titleCache;
 	}
-	
+
 	/**
 	 * @return the uuid
 	 */
 	public UUID getUuid() {
 		return uuid;
 	}
-	
+
 	public Class<T> getType(){
 		return type;
 	}
-	
+
 	public boolean getIsOrphaned() {
 		return this.isOrphaned;
 	}
-	
+
 }
