@@ -24,6 +24,13 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;
     private boolean isDetermined;
+    private String significantIdentifier;
+    public String getSignificantIdentifier() {
+        return significantIdentifier;
+    }
+    public void setSignificantIdentifier(String significantIdentifier) {
+        this.significantIdentifier = significantIdentifier;
+    }
     /**
      * @return the specimenType
      */

@@ -803,10 +803,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
 //        derivedUnit.setTitleCache("testUnit1");
+//        derivedUnit.setAccessionNumber("ACC1");
 //        DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 //        derivedUnit2.setTitleCache("testUnit2");
+//        derivedUnit2.setBarcode("ACC2");
 //        DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
 //        dnaSample.setTitleCache("dna");
+//        dnaSample.setCatalogNumber("ACC1");
 //        DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
 //        tissue.setTitleCache("tissue");
 //
@@ -904,6 +907,30 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(derivedUnits.contains(tissue));
         assertTrue(derivedUnits.contains(dnaSample));
 
+        //significant identifier search
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setSignificantIdentifier("ACC1");
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> accessionedUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, accessionedUnits.size());
+        assertTrue(accessionedUnits.contains(derivedUnit1));
+        assertFalse(accessionedUnits.contains(derivedUnit2));
+        assertFalse(accessionedUnits.contains(tissue));
+        assertTrue(accessionedUnits.contains(dnaSample));
+
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setSignificantIdentifier("ACC2");
+        assertEquals(1, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> barcodedUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(1, barcodedUnits.size());
+        assertFalse(barcodedUnits.contains(derivedUnit1));
+        assertTrue(barcodedUnits.contains(derivedUnit2));
+        assertFalse(barcodedUnits.contains(tissue));
+        assertFalse(barcodedUnits.contains(dnaSample));
+
+
         //recordBasis search => 1 Fossil
         config = new FindOccurrencesConfigurator();
         config.setSpecimenType(SpecimenOrObservationType.Fossil);
@@ -947,10 +974,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
         derivedUnit.setTitleCache("testUnit1");
+        derivedUnit.setAccessionNumber("ACC1");
         DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         derivedUnit2.setTitleCache("testUnit2");
+        derivedUnit2.setBarcode("ACC2");
         DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
         dnaSample.setTitleCache("dna");
+        dnaSample.setCatalogNumber("ACC1");
         DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
         tissue.setTitleCache("tissue");
 

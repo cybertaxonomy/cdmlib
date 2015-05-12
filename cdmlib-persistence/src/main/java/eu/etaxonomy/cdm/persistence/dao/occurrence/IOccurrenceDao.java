@@ -66,26 +66,35 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 */
 	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	/**
-	 * Queries the database for specimens which match the given criteria
-	 * @param clazz the class to match
-	 * @param queryString the queryString to match
-	 * @param type the {@link SpecimenOrObservationType} to match
-     * @param associatedTaxon the taxon these specimens are in any way associated to via
-     * determination, type designations, individuals associations, etc.
-	 * @param matchmode determines how the query string should be matched
-	 * @param limit
+	    /**
+     * Queries the database for specimens which match the given criteria
+     *
+     * @param clazz
+     *            the class to match
+     * @param queryString
+     *            the queryString to match
+     * @param type
+     *            the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon
+     *            the taxon these specimens are in any way associated to via
+     *            determination, type designations, individuals associations,
+     *            etc.
+     * @param matchmode
+     *            determines how the query string should be matched
+     * @param limit
      *            the maximum number of entities returned (can be null to return
      *            all entities)
-	 * @param start
-	 * @param orderHints
-	 *            Supports path like <code>orderHints.propertyNames</code> which
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
      *            authorTeam.persistentTitleCache
-	 * @param propertyPaths
-	 * @return a list of specimens that match the given parameters
-	 */
-	public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString, SpecimenOrObservationType type, Taxon determinedAs, MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+     * @param propertyPaths
+     * @return a list of specimens that match the given parameters
+     */
+    public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs, MatchMode matchmode,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Returns the number of specimens that match the given parameters
@@ -105,9 +114,9 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            authorTeam.persistentTitleCache
 	 * @return the number of found specimens
 	 */
-	public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
-            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
+            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Returns a count of Media that are associated with a given occurence

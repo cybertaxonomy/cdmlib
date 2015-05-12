@@ -1335,8 +1335,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
-            occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSpecimenType(),
-                    taxon, occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+            occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getSpecimenType(), taxon, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
             return new DefaultPagerImpl<SpecimenOrObservationBase>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
         }
         return super.findByTitle(config);
@@ -1353,8 +1355,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
-            return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSpecimenType(),
-                    taxon, occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+            return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(),
+                    occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon,
+                    occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(),
+                    occurrenceConfig.getPropertyPaths());
         }
         return super.countByTitle(config);
     }

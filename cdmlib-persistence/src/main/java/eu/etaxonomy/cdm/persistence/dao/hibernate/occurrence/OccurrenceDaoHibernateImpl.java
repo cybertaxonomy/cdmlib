@@ -330,11 +330,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      */
     @Override
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
-            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
+            MatchMode matchmode, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, recordBasis, associatedTaxon, matchmode,
-                limit, start, orderHints, propertyPaths);
+        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
+                associatedTaxon, matchmode, limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
 
@@ -371,7 +372,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      * @return
      */
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
-            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
 
@@ -395,6 +396,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             } else {
                 criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE));
             }
+        }
+
+        //significant identifier
+        if (significantIdentifier != null) {
+            criteria.add(Restrictions.or(Restrictions.ilike("accessionNumber", significantIdentifier),
+                    Restrictions.ilike("catalogNumber", significantIdentifier), Restrictions.ilike("barcode", significantIdentifier)));
         }
 
         //recordBasis/SpecimenOrObservationType
@@ -427,9 +434,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
     @Override
     public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
-            SpecimenOrObservationType recordBasis, Taxon associatedTaxon, MatchMode matchmode, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, recordBasis, associatedTaxon, matchmode, limit, start, orderHints, propertyPaths);
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
+            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
+                associatedTaxon, matchmode, limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
 
