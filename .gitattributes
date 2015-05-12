@@ -451,7 +451,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportRep
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206XMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Identification.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd21/ggbn/AbcdGgbnParser.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ggbn/AbcdGgbnParser.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExtensionTypeExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevelExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevellRow.java -text

@@ -99,3 +99,4 @@ cdmlib-services/testTaxonNodeByNameComparator-dump.xml
 /target
 /testANTLR
 .settings/
+!cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ggbn/.settings

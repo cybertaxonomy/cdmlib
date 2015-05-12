@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -39,8 +40,9 @@ public class Abcd206ImportReport {
 
 
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
-    private final Map<Taxon, List<DerivedUnit>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<DerivedUnit>>();
-    private final Map<DerivedUnit, List<DerivedUnit>> derivateMap = new HashMap<DerivedUnit, List<DerivedUnit>>();
+    private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
+    private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
+    private final List<UnitIdSpecimen> ignoredImports = new ArrayList<Abcd206ImportReport.UnitIdSpecimen>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
@@ -57,32 +59,45 @@ public class Abcd206ImportReport {
         createdTaxonNodes.add(taxonNode);
     }
 
-    public void addDerivate(DerivedUnit parent){
-        addDerivate(parent, null);
+    public void addDerivate(String parentUnitId, DerivedUnit parent){
+        addDerivate(parentUnitId, parent, null, null);
     }
 
-    public void addDerivate(DerivedUnit parent, DerivedUnit child){
-        List<DerivedUnit> children = derivateMap.get(parent);
+    public void addDerivate(String parentUnitId, SpecimenOrObservationBase<?> parent, String childUnitId, DerivedUnit child){
+        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(parentUnitId, parent);
+        List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
-            children = new ArrayList<DerivedUnit>();
+            children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(child);
+            children.add(new UnitIdSpecimen(childUnitId, child));
         }
-        derivateMap.put(parent, children);
+        derivateMap.put(parentUnitIdSpecimen, children);
     }
 
     /**
      * @param taxon
      * @param derivedUnitBase
      */
-    public void addIndividualAssociation(Taxon taxon, DerivedUnit derivedUnitBase) {
-        List<DerivedUnit> associatedSpecimens = taxonToAssociatedSpecimens.get(taxon);
+    public void addIndividualAssociation(Taxon taxon, String derivedUnitId, DerivedUnit derivedUnitBase) {
+        UnitIdSpecimen derivedUnitIdSpecimen = new UnitIdSpecimen(derivedUnitId, derivedUnitBase);
+        List<UnitIdSpecimen> associatedSpecimens = taxonToAssociatedSpecimens.get(taxon);
         if(associatedSpecimens==null){
-            associatedSpecimens = new ArrayList<DerivedUnit>();
+            associatedSpecimens = new ArrayList<UnitIdSpecimen>();
         }
-        associatedSpecimens.add(derivedUnitBase);
+        associatedSpecimens.add(derivedUnitIdSpecimen);
         taxonToAssociatedSpecimens.put(taxon, associatedSpecimens);
+    }
+
+    public void addIgnoredImport(String unitId, DerivedUnit derivedUnit){
+        ignoredImports.add(new UnitIdSpecimen(unitId, derivedUnit));
+    }
+
+    /**
+     * @param message
+     */
+    public void addInfoMessage(String message) {
+        infoMessages.add(message);
     }
 
     public void printReport(URI reportUri) {
@@ -125,22 +140,27 @@ public class Abcd206ImportReport {
         }
         out.println("\n");
         out.println("---Taxa with associated specimens---");
-        for(Entry<Taxon, List<DerivedUnit>> entry:taxonToAssociatedSpecimens.entrySet()){
+        for(Entry<Taxon, List<UnitIdSpecimen>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
-            List<DerivedUnit> specimens = entry.getValue();
+            List<UnitIdSpecimen> specimens = entry.getValue();
             out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
-            for (DerivedUnit derivedUnit : specimens) {
-                out.println("\t- ["+derivedUnit.getRecordBasis()+"] "+derivedUnit.getTitleCache());
+            for (UnitIdSpecimen derivedUnit : specimens) {
+                out.println("\t- "+formatSpecimen(derivedUnit));
                 //check for derivates
-                List<DerivedUnit> list = derivateMap.get(derivedUnit);
-                for (DerivedUnit derivate : list) {
-                    out.println("\t\t- ["+derivate.getRecordBasis()+"] "+derivate.getTitleCache());
+                List<UnitIdSpecimen> list = derivateMap.get(derivedUnit);
+                for (UnitIdSpecimen derivate : list) {
+                    out.println("\t\t- "+formatSpecimen(derivate));
                 }
             }
         }
+        out.println("\n");
+        out.println("---Not imported---");
+        for(UnitIdSpecimen specimen:ignoredImports){
+            out.println(formatSpecimen(specimen));
+        }
         //all specimens
-        Set<DerivedUnit> allSpecimens = new HashSet<DerivedUnit>();
-        for (Entry<DerivedUnit, List<DerivedUnit>> entry : derivateMap.entrySet()) {
+        Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
+        for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
             allSpecimens.add(entry.getKey());
             allSpecimens.addAll(entry.getValue());
         }
@@ -153,11 +173,63 @@ public class Abcd206ImportReport {
         out.close();
     }
 
-    /**
-     * @param message
-     */
-    public void addInfoMessage(String message) {
-        infoMessages.add(message);
+    private String formatSpecimen(UnitIdSpecimen specimen){
+        return "("+specimen.getUnitId()+") ["+specimen.getSpecimen().getRecordBasis()+"] "+specimen.getSpecimen().getTitleCache();
+    }
+
+    private class UnitIdSpecimen{
+        private final String unitId;
+        private final SpecimenOrObservationBase<?> specimen;
+
+
+        public UnitIdSpecimen(String unitId, SpecimenOrObservationBase<?> specimen) {
+            super();
+            this.unitId = unitId;
+            this.specimen = specimen;
+        }
+        public String getUnitId() {
+            return unitId;
+        }
+        public SpecimenOrObservationBase<?> getSpecimen() {
+            return specimen;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((specimen == null) ? 0 : specimen.hashCode());
+            result = prime * result + ((unitId == null) ? 0 : unitId.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            UnitIdSpecimen other = (UnitIdSpecimen) obj;
+            if (specimen == null) {
+                if (other.specimen != null) {
+                    return false;
+                }
+            } else if (!specimen.equals(other.specimen)) {
+                return false;
+            }
+            if (unitId == null) {
+                if (other.unitId != null) {
+                    return false;
+                }
+            } else if (!unitId.equals(other.unitId)) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }
