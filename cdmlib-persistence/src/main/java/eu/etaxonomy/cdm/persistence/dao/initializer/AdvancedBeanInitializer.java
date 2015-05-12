@@ -329,10 +329,10 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             invokePropertyAutoInitializers(bean);
         }
 
-		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection, 
+		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
 				BeanInitNode node, String param) {
 			Collection<?> collection;
-			
+
 			if (persistedCollection  instanceof Collection) {
 				collection = (Collection<?>) persistedCollection;
 			}else if (persistedCollection instanceof Map) {
@@ -344,16 +344,16 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 				preparePropertyValueForBulkLoadOrStore(node, null, param, value);
 			}
 		}
-		
+
 		private void bulkLoadLazies(BeanInitNode node) {
-			
+
 			if (logger.isTraceEnabled()){logger.trace("bulk load " +  node);}
-			
+
 			//beans
 			for (Class<?> clazz : node.getLazyBeans().keySet()){
 				Set<Serializable> idSet = node.getLazyBeans().get(clazz);
 				if (idSet != null && ! idSet.isEmpty()){
-					
+
 					if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
 					//TODO use entity name
 					String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
@@ -362,7 +362,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					Query query = genericDao.getHqlQuery(hql);
 					query.setParameterList("idSet", idSet);
 					List<Object> list = query.list();
-					
+
 					if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
 					for (Object object : list){
 						if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
@@ -372,10 +372,10 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						node.addBean(object);
 					}
 					if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
-				}	
+				}
 			}
 			node.resetLazyBeans();
-			
+
 			//collections
 			for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
 				Map<String, Set<Serializable>> lazyParams = node.getLazyCollections().get(ownerClazz);
@@ -383,19 +383,19 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					Set<Serializable> idSet = lazyParams.get(param);
 					if (idSet != null && ! idSet.isEmpty()){
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections ; ownerClass=" +  ownerClazz.getSimpleName() + " ; param = " + param);}
-						
+
 						//TODO use entity name ??
 						//get from repository
 						List<Object[]> list;
-						String hql = "SELECT oc, oc.%s " +
-								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s " +
+						String hql = "SELECT oc " +
+								" FROM %s as oc JOIN FETCH oc.%s as col %s " +
 								" WHERE oc.id IN (:idSet) ";
-						
+
 //						String hql = "SELECT oc.%s " +
 //								" FROM %s as oc WHERE oc.id IN (:idSet) ";
-						hql = String.format(hql, param, ownerClazz.getSimpleName(), param,
+						hql = String.format(hql, ownerClazz.getSimpleName(), param,
 								"" /*addAutoinitFetchLoading(clazz, "col")*/);
-						
+
 						try {
 							if (logger.isTraceEnabled()){logger.trace(hql);}
 							Query query = genericDao.getHqlQuery(hql);
@@ -405,34 +405,46 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 							e.printStackTrace();
 							throw e;
 						}
-						
+
 						//getTarget and add to child node
 						if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded " + node + " collections - DONE");}
-						for (Object[] listItems : list){
-							Object newBean = listItems[1];
-							if (newBean == null){
-								System.out.println("Collection is null");
-							}
-							if (newBean instanceof HibernateProxy){
-								newBean = initializeInstance(newBean);
-							}
-							autoinitializeBean(newBean);
-							node.addBean(newBean);
+						for (Object parentBean : list){
+							Object newBean;
+                            try {
+							    newBean = PropertyUtils.getProperty(
+							            parentBean,
+							            mapFieldToPropertyName(param, parentBean.getClass().getSimpleName())
+							          );
+
+    							if (newBean == null){
+    								System.out.println("Collection is null");
+    							}else {
+    							}
+    							if (newBean instanceof HibernateProxy){
+    								newBean = initializeInstance(newBean);
+    							}
+    							autoinitializeBean(newBean);
+    							node.addBean(newBean);
+                            } catch (Exception e) {
+                                // IGNORE
+
+                                logger.error("error while geting collection property", e);
+                            }
 						}
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections - DONE");}
-					}	
+					}
 				}
 			}
 			for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
-				if (! collection.wasInitialized()){  //should not happen anymore  
+				if (! collection.wasInitialized()){  //should not happen anymore
 					collection.forceInitialization();
 				}
 			}
-			
+
 			node.resetLazyCollections();
-			
+
 			if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
-			
+
 		}
 
 
@@ -462,12 +474,10 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
          * @param ownerClass
          * @return
          */
-        private String workAroundBeanInconsistency(String param, String ownerClass) {
-            if (ownerClass.contains("Description") && param.equals("elements")){
-                //DescriptionBase.descriptionElements -> elements
-                return "descriptionElements";
-            }else if(ownerClass.equals("Classification") && param.equals("childNodes")){
-                return "rootNodes";
+        private String mapFieldToPropertyName(String param, String ownerClass) {
+            if (ownerClass.contains("Description") && param.equals("descriptionElements")){
+                //DescriptionBase.elements -> descriptionElements
+                return "elements";
             }else{
                 return param;
             }

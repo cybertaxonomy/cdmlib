@@ -822,6 +822,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
+    //    logger.setLevel(Level.TRACE);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
         logger.trace("listMedia() - START");
 
         Set<Taxon> taxa = new HashSet<Taxon>();
