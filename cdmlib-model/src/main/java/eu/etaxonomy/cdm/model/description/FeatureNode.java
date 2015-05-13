@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * may have several child nodes. Parent/child relations are bidirectional:
  * a node N1 is the parent of a node N2 if and only if the node N2 is a child of
  * the node N1.
- * 
+ *
  * @author  m.doering
  * @created 08-Nov-2007 13:06:16
  */
@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Table(appliesTo="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnNames = { "treeIndex" }) })
 public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureNode>, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
-	
+
     //This is the main key a node belongs to. Although other keys may also reference
 	//<code>this</code> node, a node usually belongs to a given key.
 	@XmlElement(name = "FeatureTree")
@@ -85,13 +85,13 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 //TODO Val #3379
 //    @NotNull
 	private FeatureTree featureTree;
-	
+
 	@XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private Feature feature;
-    
+
     @XmlElement(name = "Parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -99,16 +99,16 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
     @Cascade(CascadeType.SAVE_UPDATE)
 	@JoinColumn(name="parent_id")
 	private FeatureNode parent;
-    
-    
+
+
     @XmlElement(name = "treeIndex")
     @Size(max=255)
     private String treeIndex;
-    
+
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
-    @OrderColumn(name="sortIndex") 
+    @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
@@ -116,7 +116,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
-    
+
 	@XmlElementWrapper(name = "OnlyApplicableIf")
 	@XmlElement(name = "OnlyApplicableIf")
 	@XmlIDREF
@@ -124,7 +124,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@JoinTable(name="FeatureNode_DefinedTermBase_OnlyApplicable")
-	private Set<State> onlyApplicableIf = new HashSet<State>();
+	private final Set<State> onlyApplicableIf = new HashSet<State>();
 
 	@XmlElementWrapper(name = "InapplicableIf")
 	@XmlElement(name = "InapplicableIf")
@@ -133,24 +133,24 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
-	private Set<State> inapplicableIf = new HashSet<State>();
+	private final Set<State> inapplicableIf = new HashSet<State>();
 
 // ***************************** FACTORY *********************************/
-	
-	/** 
+
+	/**
 	 * Creates a new empty feature node instance.
-	 * 
+	 *
 	 * @see #NewInstance(Feature)
 	 */
 	public static FeatureNode NewInstance(){
 		return new FeatureNode();
 	}
 
-	/** 
+	/**
 	 * Creates a new feature node instance only with the given {@link Feature feature}
 	 * (without parent and children).
-	 * 
-	 * @param	feature	the feature assigned to the new feature node 
+	 *
+	 * @param	feature	the feature assigned to the new feature node
 	 * @see 			#NewInstance()
 	 */
 	public static FeatureNode NewInstance(Feature feature){
@@ -158,19 +158,19 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		result.setFeature(feature);
 		return result;
 	}
-	
+
 // ******************** CONSTRUCTOR ***************************************/
 
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
 	protected FeatureNode() {
 		super();
 	}
 
-	
-//*************************** TREE ************************************/	
+
+//*************************** TREE ************************************/
 
 	public FeatureTree getFeatureTree() {
 		return featureTree;
@@ -179,17 +179,17 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	protected void setFeatureTree(FeatureTree featureTree) {
 		this.featureTree = featureTree;
 	}
-	
+
 //** ********************** FEATURE ******************************/
 
-	/** 
+	/**
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
 	 */
 	public Feature getFeature() {
 		return feature;
 	}
 	/**
-	 * @see	#getFeature() 
+	 * @see	#getFeature()
 	 */
 	public void setFeature(Feature feature) {
 		this.feature = feature;
@@ -197,42 +197,45 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 
 //** ********************** PARENT ******************************/
 
-	/** 
+	/**
 	 * Returns the feature node <i>this</i> feature node is a child of.
-	 * 
+	 *
 	 * @see	#getChildNodes()
 	 */
-	public FeatureNode getParent() {
+	@Override
+    public FeatureNode getParent() {
 		return parent;
 	}
 	/**
 	 * Assigns the given feature node as the parent of <i>this</i> feature node.
 	 * Due to bidirectionality this method must also add <i>this</i> feature node
 	 * to the list of children of the given parent.
-	 * 
-	 * @param	parent	the feature node to be set as parent 
-	 * @see				#getParent() 
+	 *
+	 * @param	parent	the feature node to be set as parent
+	 * @see				#getParent()
 	 */
 	protected void setParent(FeatureNode parent) {
 		this.parent = parent;
 	}
-	
+
 //** ********************** CHILDREN ******************************/
 
-	
+
 	/**
 	 * @deprecated for internal use only.
 	 */
 	//see #4278 , #4200
-	protected void setSortIndex(Integer sortIndex) {
+	@Deprecated
+    protected void setSortIndex(Integer sortIndex) {
 		this.sortIndex = sortIndex;
 	}
 
-	/** 
+	/**
 	 * Returns the (ordered) list of feature nodes which are children nodes of
 	 * <i>this</i> feature node.
 	 */
-	public List<FeatureNode> getChildNodes() {
+	@Override
+    public List<FeatureNode> getChildNodes() {
 		return children;
 	}
 
@@ -240,13 +243,13 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * Adds the given feature node at the end of the list of children of
 	 * <i>this</i> feature node. Due to bidirectionality this method must also
 	 * assign <i>this</i> feature node as the parent of the given child.
-	 * 
-	 * @param	child	the feature node to be added 
-	 * @see				#getChildNodes() 
+	 *
+	 * @param	child	the feature node to be added
+	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(FeatureNode, int) 
+	 * @see				#addChild(FeatureNode, int)
 	 * @see				#removeChild(FeatureNode)
-	 * @see				#removeChild(int) 
+	 * @see				#removeChild(int)
 	 */
 	public void addChild(FeatureNode child){
 		addChild(child, children.size());
@@ -257,15 +260,15 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * an exception will arise.<BR>
 	 * Due to bidirectionality this method must also assign <i>this</i> feature node
 	 * as the parent of the given child.
-	 * 
-	 * @param	child	the feature node to be added 
+	 *
+	 * @param	child	the feature node to be added
 	 * @param	index	the integer indicating the position at which the child
-	 * 					should be added 
-	 * @see				#getChildNodes() 
+	 * 					should be added
+	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(FeatureNode) 
+	 * @see				#addChild(FeatureNode)
 	 * @see				#removeChild(FeatureNode)
-	 * @see				#removeChild(int) 
+	 * @see				#removeChild(int)
 	 */
 	public void addChild(FeatureNode child, int index){
 		if (index < 0 || index > children.size() + 1){
@@ -283,15 +286,15 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		}
 		child.setSortIndex(index);
 	}
-	/** 
+	/**
 	 * Removes the given feature node from the list of {@link #getChildNodes() children}
 	 * of <i>this</i> feature node.
 	 *
 	 * @param  child	the feature node which should be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(FeatureNode, int) 
-	 * @see				#addChild(FeatureNode) 
-	 * @see				#removeChild(int) 
+	 * @see				#addChild(FeatureNode, int)
+	 * @see				#addChild(FeatureNode)
+	 * @see				#removeChild(int)
 	 */
 	public void removeChild(FeatureNode child){
 		int index = children.indexOf(child);
@@ -299,17 +302,17 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 			removeChild(index);
 		}
 	}
-	/** 
+	/**
 	 * Removes the feature node placed at the given (index + 1) position from
 	 * the list of {@link #getChildNodes() children} of <i>this</i> feature node.
-	 * If the given index is out of bounds no child will be removed. 
+	 * If the given index is out of bounds no child will be removed.
 	 *
 	 * @param  index	the integer indicating the position of the feature node to
 	 * 					be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(FeatureNode, int) 
-	 * @see				#addChild(FeatureNode) 
-	 * @see				#removeChild(FeatureNode) 
+	 * @see				#addChild(FeatureNode, int)
+	 * @see				#addChild(FeatureNode)
+	 * @see				#removeChild(FeatureNode)
 	 */
 	public void removeChild(int index){
 		FeatureNode child = children.get(index);
@@ -325,23 +328,23 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		}
 	}
 
-	/** 
+	/**
 	 * Returns the feature node placed at the given (childIndex + 1) position
 	 * within the list of {@link #getChildNodes() children} of <i>this</i> feature node.
-	 * If the given index is out of bounds no child will be returned. 
-	 * 
+	 * If the given index is out of bounds no child will be returned.
+	 *
 	 * @param  childIndex	the integer indicating the position of the feature node
 	 * @see     			#getChildNodes()
-	 * @see					#addChild(FeatureNode, int) 
-	 * @see					#removeChild(int) 
+	 * @see					#addChild(FeatureNode, int)
+	 * @see					#removeChild(int)
 	 */
 	public FeatureNode getChildAt(int childIndex) {
 			return children.get(childIndex);
 	}
 
-	/** 
+	/**
 	 * Returns the number of children nodes of <i>this</i> feature node.
-	 * 
+	 *
 	 * @see	#getChildNodes()
 	 */
 	@Transient
@@ -349,14 +352,14 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		return children.size();
 	}
 
-	/** 
+	/**
 	 * Returns the integer indicating the position of the given feature node
 	 * within the list of {@link #getChildNodes() children} of <i>this</i> feature node.
-	 * If the list does not contain this node then -1 will be returned. 
-	 * 
+	 * If the list does not contain this node then -1 will be returned.
+	 *
 	 * @param  node	the feature node the position of which is being searched
-	 * @see			#addChild(FeatureNode, int) 
-	 * @see			#removeChild(int) 
+	 * @see			#addChild(FeatureNode, int)
+	 * @see			#removeChild(int)
 	 */
 	public int getIndex(FeatureNode node) {
 		if (! children.contains(node)){
@@ -366,11 +369,11 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		}
 	}
 
-	/** 
+	/**
 	 * Returns the boolean value indicating if <i>this</i> feature node has
 	 * children (false) or not (true). A node without children is at the
 	 * bottommost level of a tree and is called a leaf.
-	 * 
+	 *
 	 * @see	#getChildNodes()
 	 * @see	#getChildCount()
 	 */
@@ -378,10 +381,10 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	public boolean isLeaf() {
 		return children.size() < 1;
 	}
-	
+
 	/**
 	 * Whether <code>this</code> node is the root node of the associated {@link FeatureTree feature tree}.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>this</code> is the feature trees root node, <code>false</code> if not
 	 */
 	@Transient
@@ -403,7 +406,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * This attribute is not equivalent to onlyApplicableIf in SDD as it is
 	 * attached directly to the child feature rather than the parent, which
 	 * allow having different applicable states for each child feature.
-	 * 
+	 *
 	 * @see    #addApplicableState(State)
 	 * @see    #removeApplicableState(State)
 	 */
@@ -415,7 +418,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * Adds an existing {@link State applicable state} to the set of
 	 * {@link #getOnlyApplicableIf() applicable states} described in
 	 * <i>this</i> feature node.<BR>
-	 * 
+	 *
 	 * @param applicableState	the applicable state to be added to <i>this</i> feature node
 	 * @see    	   								#getApplicableState()
 	 */
@@ -423,7 +426,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		this.onlyApplicableIf.add(applicableState);
 	}
 
-	/** 
+	/**
 	 * Removes one element from the set of
 	 * {@link #getOnlyApplicableIf() applicable states} described in
 	 * <i>this</i> feature node.<BR>
@@ -446,7 +449,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * This attribute is not equivalent to inapplicableIf in SDD as it is
 	 * attached directly to the child feature rather than the parent, which
 	 * allow having different inapplicability rules for each child feature.
-	 * 
+	 *
 	 * @see    #addInapplicableState(State)
 	 * @see    #removeInapplicableState(State)
 	 */
@@ -458,7 +461,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * Adds an existing {@link State inapplicable state} to the set of
 	 * {@link #getInapplicableIf() inapplicable states} described in
 	 * <i>this</i> feature node.<BR>
-	 * 
+	 *
 	 * @param inapplicableState	the inapplicable state to be added to <i>this</i> feature node
 	 * @see    	   								#getInapplicableState()
 	 */
@@ -466,7 +469,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		this.inapplicableIf.add(inapplicableState);
 	}
 
-	/** 
+	/**
 	 * Removes one element from the set of
 	 * {@link #getInapplicableIf() inapplicable states} described in
 	 * <i>this</i> feature node.<BR>
@@ -478,13 +481,13 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	public void removeInapplicableState(State inapplicableState) {
 		this.inapplicableIf.remove(inapplicableState);
 	}
-	
+
 //	//** ********************** QUESTIONS ******************************/
 //
-//	/** 
+//	/**
 //	 * Returns the {@link Representation question} formulation that
 //	 * corresponds to <i>this</i> feature node and the corresponding
-//	 * {@link Feature feature} in case it is part of a 
+//	 * {@link Feature feature} in case it is part of a
 //	 * {@link PolytomousKey polytomous key}.
 //	 */
 //	public Set<Representation> getQuestions() {
@@ -509,10 +512,10 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 //		}
 //		return null;
 //	}
-	
+
 	/**
 	 * Returns all features that are contained in this node or a child node
-	 * 
+	 *
 	 * @param featureNode
 	 * @param features
 	 * @return
@@ -520,40 +523,40 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@Transient
 	public Set<Feature> getDistinctFeaturesRecursive(Set<Feature> features){
 		Feature feature = this.getFeature();
-		
+
 		features.add(feature);
-		
+
 		for(FeatureNode childNode : this.getChildNodes()){
 			features.addAll(childNode.getDistinctFeaturesRecursive(features));
 		}
-		
+
 		return features;
 	}
-	
+
 	public FeatureNode cloneDescendants(){
 		FeatureNode clone = (FeatureNode)this.clone();
 		FeatureNode childClone;
-				
+
 		for(FeatureNode childNode : this.getChildNodes()){
 			childClone = (FeatureNode) childNode.clone();
 			for (FeatureNode childChild:childNode.getChildNodes()){
 				childClone.addChild(childChild.cloneDescendants());
 			}
 			clone.addChild(childClone);
-						
-		}		
+
+		}
 		return clone;
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> FeatureNode. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> FeatureNode by
 	 * modifying only some of the attributes.
 	 * The parent, the feature and the featureTree are the are the same as for the original feature node
 	 * the children are removed
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -569,20 +572,20 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 			e.printStackTrace();
 			return null;
 		}
-		
-		
-		
+
+
+
 	}
 
 // ********************** TREE NODE METHODS ******************************/
-	
+
 	@Override
 	public String treeIndex() {
 		return this.treeIndex;
 	}
 
 	@Override
-	@Deprecated 
+	@Deprecated
 	public void setTreeIndex(String newTreeIndex) {
 		this.treeIndex = newTreeIndex;
 	}

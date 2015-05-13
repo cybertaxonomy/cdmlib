@@ -222,7 +222,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 //new
                 for (Object parentBean : parentBeans){
                     try{
-                        Object propertyValue = PropertyUtils.getProperty(parentBean, property);
+                        Object propertyValue = PropertyUtils.getProperty(parentBean, mapFieldToPropertyName(property, parentBean.getClass().getSimpleName()));
                         preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
                     } catch (IllegalAccessException e) {
                         logger.error("Illegal access on property " + property);
@@ -409,26 +409,26 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						//getTarget and add to child node
 						if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded " + node + " collections - DONE");}
 						for (Object parentBean : list){
-							Object newBean;
                             try {
-							    newBean = PropertyUtils.getProperty(
+							    Object propValue = PropertyUtils.getProperty(
 							            parentBean,
 							            mapFieldToPropertyName(param, parentBean.getClass().getSimpleName())
 							          );
 
-    							if (newBean == null){
-    								System.out.println("Collection is null");
+    							if (propValue == null){
+    							    logger.trace("Collection is null");
     							}else {
+    							    for(Object newBean : (Collection<Object>)propValue ) {
+    							        if (newBean instanceof HibernateProxy){
+    							            newBean = initializeInstance(newBean);
+    							        }
+    							        autoinitializeBean(newBean);
+    							        node.addBean(newBean);
+    							    }
     							}
-    							if (newBean instanceof HibernateProxy){
-    								newBean = initializeInstance(newBean);
-    							}
-    							autoinitializeBean(newBean);
-    							node.addBean(newBean);
                             } catch (Exception e) {
-                                // IGNORE
-
-                                logger.error("error while geting collection property", e);
+                                // TODO better throw an exception ?
+                                logger.error("error while getting collection property", e);
                             }
 						}
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections - DONE");}
@@ -468,7 +468,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         }
 
         /**
-         * Rename bean attributes to hibernate (field) attribute, due to bean inconsistencies
+         * Rename hibernate (field) attribute to Bean property name, due to bean inconsistencies
          * #3841
          * @param param
          * @param ownerClass
@@ -476,9 +476,12 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
          */
         private String mapFieldToPropertyName(String param, String ownerClass) {
             if (ownerClass.contains("Description") && param.equals("descriptionElements")){
-                //DescriptionBase.elements -> descriptionElements
                 return "elements";
-            }else{
+            }
+            if (ownerClass.startsWith("FeatureNode") && param.equals("children")) {
+                return "childNodes";
+            }
+            else{
                 return param;
             }
         }
