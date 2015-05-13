@@ -813,6 +813,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //        DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
 //        tissue.setTitleCache("tissue");
 //
+//        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+//
 //        derivedUnit.setUuid(derivedUnit1Uuid);
 //        derivedUnit2.setUuid(derivedUnit2Uuid);
 //        dnaSample.setUuid(dnaSampleUuid);
@@ -843,6 +845,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 //            writeDbUnitDataSetFile(new String[] {
 //                    "SpecimenOrObservationBase",
 //                    "SpecimenOrObservationBase_DerivationEvent",
+//                    "DerivationEvent",
 //                    "DescriptionElementBase",
 //                    "DescriptionBase",
 //                    "TaxonBase",
@@ -949,6 +952,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(associatedSpecimens.contains(derivedUnit1));
         assertTrue(associatedSpecimens.contains(tissue));
 
+        //taxon determination search (indirectly associated) => 3 associated specimens
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setAssociatedTaxonUuid(taxon.getUuid());
+        config.setRetrieveIndirectlyAssociatedSpecimens(true);
+        assertEquals(3, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> indirectlyAssociatedSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(3, indirectlyAssociatedSpecimens.size());
+        assertTrue(indirectlyAssociatedSpecimens.contains(derivedUnit1));
+        assertTrue(indirectlyAssociatedSpecimens.contains(dnaSample));
+        assertTrue(indirectlyAssociatedSpecimens.contains(tissue));
+
         //using the super class will lead to 0 results because listByAssociatedTaxon does type matching which obviously does not understand inheritance
         config = new FindOccurrencesConfigurator();
         config.setClazz(SpecimenOrObservationBase.class);
@@ -973,16 +988,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID taxonUuid = UUID.fromString("dfca7629-8a60-4d51-998d-371897f725e9");
 
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-        derivedUnit.setTitleCache("testUnit1");
         derivedUnit.setAccessionNumber("ACC1");
+        derivedUnit.setTitleCache("testUnit1", true);
         DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-        derivedUnit2.setTitleCache("testUnit2");
         derivedUnit2.setBarcode("ACC2");
+        derivedUnit2.setTitleCache("testUnit2", true);
         DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
-        dnaSample.setTitleCache("dna");
+        dnaSample.setTitleCache("dna", true);
         dnaSample.setCatalogNumber("ACC1");
         DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
-        tissue.setTitleCache("tissue");
+        tissue.setTitleCache("tissue", true);
+
+        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         derivedUnit.setUuid(derivedUnit1Uuid);
         derivedUnit2.setUuid(derivedUnit2Uuid);
@@ -1014,6 +1031,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
             writeDbUnitDataSetFile(new String[] {
                     "SpecimenOrObservationBase",
                     "SpecimenOrObservationBase_DerivationEvent",
+                    "DerivationEvent",
                     "DescriptionElementBase",
                     "DescriptionBase",
                     "TaxonBase",

@@ -25,6 +25,7 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     private UUID associatedTaxonUuid;
     private boolean isDetermined;
     private String significantIdentifier;
+    private boolean retrieveIndirectlyAssociatedSpecimens;
     public String getSignificantIdentifier() {
         return significantIdentifier;
     }
@@ -66,6 +67,12 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
      */
     public synchronized void setDetermined(boolean isDetermined) {
         this.isDetermined = isDetermined;
+    }
+    public boolean isRetrieveIndirectlyAssociatedSpecimens() {
+        return retrieveIndirectlyAssociatedSpecimens;
+    }
+    public void setRetrieveIndirectlyAssociatedSpecimens(boolean retrieveIndirectlyAssociatedSpecimens) {
+        this.retrieveIndirectlyAssociatedSpecimens = retrieveIndirectlyAssociatedSpecimens;
     }
 
 }

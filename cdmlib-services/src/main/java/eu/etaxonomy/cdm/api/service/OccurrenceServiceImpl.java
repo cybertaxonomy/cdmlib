@@ -1339,9 +1339,52 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+            // indirectly associated specimens
+            List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                for (SpecimenOrObservationBase specimen : occurrences) {
+                    List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivates(specimen);
+                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
+                        if(!occurrences.contains(specimenOrObservationBase)){
+                            indirectlyAssociatedOccurrences.add(specimenOrObservationBase);
+                        }
+                    }
+                }
+                occurrences = indirectlyAssociatedOccurrences;
+            }
+
             return new DefaultPagerImpl<SpecimenOrObservationBase>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
         }
         return super.findByTitle(config);
+    }
+
+    private List<SpecimenOrObservationBase<?>> getAllHierarchyDerivates(SpecimenOrObservationBase<?> specimen){
+        List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<SpecimenOrObservationBase<?>>();
+        Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid());
+        if(fieldUnits.isEmpty()){
+            allHierarchyDerivatives.add(specimen);
+            allHierarchyDerivatives.addAll(getAllChildDerivates(specimen));
+        }
+        else{
+            for (FieldUnit fieldUnit : fieldUnits) {
+                allHierarchyDerivatives.add(fieldUnit);
+                allHierarchyDerivatives.addAll(getAllChildDerivates(fieldUnit));
+            }
+        }
+        return allHierarchyDerivatives;
+    }
+
+    private List<DerivedUnit> getAllChildDerivates(SpecimenOrObservationBase<?> specimen){
+        List<DerivedUnit> childDerivate = new ArrayList<DerivedUnit>();
+        Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+        for (DerivationEvent derivationEvent : derivationEvents) {
+            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+            for (DerivedUnit derivedUnit : derivatives) {
+                childDerivate.add(derivedUnit);
+                childDerivate.addAll(getAllChildDerivates(derivedUnit));
+            }
+        }
+        return childDerivate;
     }
 
     @Override
@@ -1354,6 +1397,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if(taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
+            }
+            // indirectly associated specimens
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                return findByTitle(config).getRecords().size();
             }
             return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(),
                     occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon,
