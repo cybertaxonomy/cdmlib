@@ -1343,7 +1343,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
                 for (SpecimenOrObservationBase specimen : occurrences) {
-                    List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivates(specimen);
+                    List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
                     for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
                         if(!occurrences.contains(specimenOrObservationBase)){
                             indirectlyAssociatedOccurrences.add(specimenOrObservationBase);
@@ -1358,30 +1358,32 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return super.findByTitle(config);
     }
 
-    private List<SpecimenOrObservationBase<?>> getAllHierarchyDerivates(SpecimenOrObservationBase<?> specimen){
+    @Override
+    public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen){
         List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<SpecimenOrObservationBase<?>>();
         Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid());
         if(fieldUnits.isEmpty()){
             allHierarchyDerivatives.add(specimen);
-            allHierarchyDerivatives.addAll(getAllChildDerivates(specimen));
+            allHierarchyDerivatives.addAll(getAllChildDerivatives(specimen));
         }
         else{
             for (FieldUnit fieldUnit : fieldUnits) {
                 allHierarchyDerivatives.add(fieldUnit);
-                allHierarchyDerivatives.addAll(getAllChildDerivates(fieldUnit));
+                allHierarchyDerivatives.addAll(getAllChildDerivatives(fieldUnit));
             }
         }
         return allHierarchyDerivatives;
     }
 
-    private List<DerivedUnit> getAllChildDerivates(SpecimenOrObservationBase<?> specimen){
+    @Override
+    public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
         List<DerivedUnit> childDerivate = new ArrayList<DerivedUnit>();
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
                 childDerivate.add(derivedUnit);
-                childDerivate.addAll(getAllChildDerivates(derivedUnit));
+                childDerivate.addAll(getAllChildDerivatives(derivedUnit));
             }
         }
         return childDerivate;

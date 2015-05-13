@@ -452,5 +452,23 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
 
+    /**
+     * Return the all {@link SpecimenOrObservationBase}s of the complete
+     * derivative hierarchy i.e. all parent and child derivatives and the given
+     * specimen itself.
+     *
+     * @param specimen
+     *            a specimen or observation
+     * @return the derivative hierarchy as an unordered list of all specimens or observation
+     */
+    public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Returns all child derivatives of the given specimen.
+     * @param specimen a specimen or observation
+     * @return an unordered list of all child derivatives
+     */
+    public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
+
 
 }
