@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.validation;
 import static org.junit.Assert.fail;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -75,7 +77,8 @@ public class ValidationExecutorTest {
 				pool.execute(task);
 			}
 			// Make sure the test case waits long enough for the queue to actually overflow.
-			for (WeakReference<EntityValidationThread> thread : pool.threads) {
+			List<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(pool.threads);
+			for (WeakReference<EntityValidationThread> thread : threads) {
 				if (thread.get() != null) {
 					thread.get().join();
 				}
