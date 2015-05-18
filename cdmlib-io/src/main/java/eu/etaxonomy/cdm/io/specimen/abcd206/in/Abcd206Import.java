@@ -244,7 +244,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (classification == null) {
                 String name = NB(state.getConfig().getClassificationName());
                 for (Classification classif : classificationList){
-                    if (classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(ref)) {
+                    if (classif.getTitleCache() != null && classif.getCitation() != null
+                            && classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(ref)) {
                         classification=classif;
                         //                        System.out.println("FIND SAME CLASSIF");
                     }
