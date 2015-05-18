@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.specimen;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author p.kelbert
@@ -90,25 +91,20 @@ public class UnitsGatheringArea {
         HashSet<String> areaToAdd= new HashSet<String>();
         HashSet<UUID> areaSet = new HashSet<UUID>();
 
-        HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
+        HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
         for (String namedAreaStr : namedAreas){
-            for (DefinedTermBase na:termsList){
-            	if (na != null && namedAreas != null){
-	                if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
-	                    if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-	                        matchingTerms.put(na.getTitleCache()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
-	                    }
-	                }
-            	}else{
-            		logger.debug("This should not happen.");
-            	}
+            Pager<DefinedTermBase> matchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.ANYWHERE, null, null, null, null, null);
+            for (DefinedTermBase matchingTerm : matchingTerms.getRecords()) {
+                matchingTermsToUuid
+                        .put(matchingTerm.getTitleCache() + " ("
+                                + matchingTerm.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1] + ")",
+                                matchingTerm.getUuid());
             }
-            //            logger.info("matchingterms: "+matchingTerms.keySet().toString());
             UUID areaUUID = null;
             areaUUID = getNamedAreaDecision(namedAreaStr,config);
 
             if (areaUUID == null && config.isInteractWithUser()){
-                areaUUID = askForArea(namedAreaStr, matchingTerms, "area");
+                areaUUID = askForArea(namedAreaStr, matchingTermsToUuid, "area");
             }
             if (DEBUG) {
                 logger.info("selected area: "+areaUUID);
@@ -138,7 +134,7 @@ public class UnitsGatheringArea {
 
     private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){
 //        matchingTerms.put("Nothing matches, create a new area",null);
-        
+
         //FIXME names with same label will not make it to the map
         JTextArea textArea = new JTextArea("Several CDM-areas could match the current '"+namedAreaStr+"'");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -148,7 +144,7 @@ public class UnitsGatheringArea {
         String s=null;
         List<String> list = new ArrayList<String>(matchingTerms.keySet());
         list.add("Nothing matches, create a new area");
-        
+
         if (list.size() <= 1){
         	return null;
         }
@@ -177,8 +173,8 @@ public class UnitsGatheringArea {
      */
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
             IOccurrenceService occurrenceService){
-  
-       
+
+
         if (!StringUtils.isEmpty(iso)){
             wbc = occurrenceService.getCountryByIso(iso);
         }
@@ -190,11 +186,11 @@ public class UnitsGatheringArea {
                 UUID areaUUID = null;
                 //TODO Critical, should be a country decision
                 areaUUID = getNamedAreaDecision(fullName,config);
-                 
+
                 if (areaUUID == null){
                 	List<UUID> countryUuids = new ArrayList<UUID>();
                 	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
-                		 
+
                 	List<Country> countryList = termService.list(Country.class, 0, 0, null, null);
                 	for (NamedArea na:countryList){
 	                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
@@ -206,7 +202,7 @@ public class UnitsGatheringArea {
 	                }
                 	if (countryUuids.isEmpty()){
                 		List<NamedArea> namedAreaList = termService.list(NamedArea.class,0,0,null,null);
-                		
+
                 		for (NamedArea na:namedAreaList){
                 			if (! na.getClass().isAssignableFrom(Country.class) && na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
                 				matchingTerms.put(na.getTitleCache()+" ("+na.getType().getLabel() + ")",na.getUuid());
@@ -223,7 +219,7 @@ public class UnitsGatheringArea {
                     		logger.warn("Non interaction not yet implemented correctly");
                     	}
                 	}
-                    
+
                 }
                 if (areaUUID == null){
                     NamedArea ar = NamedArea.NewInstance();
