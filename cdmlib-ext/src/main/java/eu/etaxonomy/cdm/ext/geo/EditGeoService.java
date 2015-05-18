@@ -333,7 +333,7 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if(parts.contains(InfoPart.tree)) {
-            dto.setTree(DescriptionUtility.orderDistributions(omitLevels, filteredDistributions));
+            dto.setTree(DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions));
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {

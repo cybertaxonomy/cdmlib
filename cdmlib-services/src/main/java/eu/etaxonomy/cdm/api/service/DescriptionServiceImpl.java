@@ -345,7 +345,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        return DescriptionUtility.orderDistributions(omitLevels, distList);
+        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList);
     }
 
 

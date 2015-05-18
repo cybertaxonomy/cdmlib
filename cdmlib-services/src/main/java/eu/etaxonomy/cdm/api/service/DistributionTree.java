@@ -18,13 +18,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.HibernateProxyHelper;
 
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
  * TODO javadoc.
@@ -35,11 +36,14 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
     public static final Logger logger = Logger.getLogger(DistributionTree.class);
 
-    public DistributionTree(){
+    private final IDefinedTermDao termDao;
+
+    public DistributionTree(IDefinedTermDao termDao){
         TreeNode<Set<Distribution>, NamedArea> rootElement = new TreeNode<Set<Distribution>, NamedArea>();
         List<TreeNode<Set<Distribution>, NamedArea>> children = new ArrayList<TreeNode<Set<Distribution>, NamedArea>>();
         rootElement.setChildren(children);
         setRootElement(rootElement);
+        this.termDao = termDao;
     }
 
     /**
@@ -75,10 +79,45 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      */
     public void orderAsTree(Collection<Distribution> distList, Set<NamedAreaLevel> omitLevels){
 
+        Set<NamedArea> areas = new HashSet<NamedArea>(distList.size());
+        for (Distribution distribution : distList) {
+            areas.add(distribution.getArea());
+        }
+        loadAllParentAreas(areas);
+
+        Set<Integer> omitLevelIds = new HashSet<Integer>(omitLevels.size());
+        for(NamedAreaLevel level : omitLevels) {
+            omitLevelIds.add(level.getId());
+        }
+
         for (Distribution distribution : distList) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevels);
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds);
             addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
+        }
+    }
+
+    /**
+     * This method will cause all parent areas to be loaded into the session cache to that
+     * all initialization of the NamedArea term instances in nessecary. This improves the
+     * performance of the tree building
+     */
+    private void loadAllParentAreas(Set<NamedArea> areas) {
+
+        List<NamedArea> parentAreas = null;
+        Set<NamedArea> childAreas = new HashSet<NamedArea>(areas.size());
+        for(NamedArea areaProxy : areas) {
+            NamedArea deproxied = HibernateProxyHelper.deproxy(areaProxy, NamedArea.class);
+            childAreas.add(deproxied);
+        }
+
+        while(true) {
+            parentAreas = termDao.getPartOf(childAreas, null, null, null);
+            if(parentAreas.size() == 0) {
+                break;
+            }
+            childAreas.clear();
+            childAreas.addAll(parentAreas);
         }
     }
 
@@ -155,9 +194,9 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @param omitLevels
      * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<NamedAreaLevel> omitLevels){
+    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds){
         List<NamedArea> result = new ArrayList<NamedArea>();
-        if (omitLevels == null || !omitLevels.contains(area.getLevel())){
+        if (!matchesLevels(area, omitLevelIds)){
             result.add(area);
         }
         // logging special case in order to help solving ticket #3891 (ordered distributions provided by portal/description/${uuid}/DistributionTree randomly broken)
@@ -172,12 +211,23 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         }
         while (area.getPartOf() != null) {
             area = area.getPartOf();
-            if (omitLevels == null || !omitLevels.contains(area.getLevel())){
+            if (!matchesLevels(area, omitLevelIds)){
                 result.add(0, area);
             }
         }
 
-
         return result;
     }
+
+    /**
+     * @param area
+     * @param levels
+     * @return
+     */
+    private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
+        return omitLevelIds.isEmpty() || ! omitLevelIds.contains(HibernateProxyHelper.getIdentifierOf(area.getLevel()));
+    }
+
+
+
 }
