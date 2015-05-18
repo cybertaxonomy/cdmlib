@@ -320,7 +320,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(unitExtensions.item(i) instanceof Element){
                 Element unitExtension = (Element) unitExtensions.item(i);
                 NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
-                if(ggbn.getLength()<0){
+                if(ggbn.getLength()>0){
                     AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
                     DnaSample dnaSample = ggbnParser.parse(ggbn);
                     String specimenUnitID;
@@ -458,7 +458,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // other areas
             unitsGatheringArea = new UnitsGatheringArea();
             //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), cdmAppController.getTermService());
+            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), cdmAppController.getTermService(), cdmAppController.getVocabularyService());
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
@@ -1790,9 +1790,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
     private boolean hasTaxonNodeInClassification(Taxon taxon, Classification classification){
-        for (TaxonNode node : taxon.getTaxonNodes()){
-            if(node.getClassification().equals(classification)){
-                return true;
+        if(taxon.getTaxonNodes()!=null){
+            for (TaxonNode node : taxon.getTaxonNodes()){
+                if(node.getClassification().equals(classification)){
+                    return true;
+                }
             }
         }
         return false;

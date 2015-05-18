@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class Abcd206DataHolder {
     //per unit
     protected List<Identification> identificationList;
     protected List<HashMap<String, String>> atomisedIdentificationList;
-    protected List<String> namedAreaList;
+    protected Map<String, String> namedAreaList;
     protected List<String[]> referenceList;
     protected List<String> multimediaObjects;
     protected List<String> docSources;
@@ -89,7 +90,7 @@ public class Abcd206DataHolder {
 
         identificationList = new ArrayList<Identification>();
         atomisedIdentificationList = new ArrayList<HashMap<String, String>>();
-        namedAreaList = new ArrayList<String>();
+        namedAreaList = new HashMap<String, String>();
         referenceList = new ArrayList<String[]>();
         multimediaObjects = new ArrayList<String>();
         docSources = new ArrayList<String>();

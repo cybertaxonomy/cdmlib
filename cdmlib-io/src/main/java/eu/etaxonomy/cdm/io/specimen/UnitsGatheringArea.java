@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.JOptionPane;
@@ -25,12 +27,15 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -63,8 +68,8 @@ public class UnitsGatheringArea {
      * Constructor
      * Set a list of NamedAreas
      */
-    public void setAreas(List<String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService ){
-        this.setAreaNames(namedAreaList, config, termService);
+    public void setAreas(Map<String, String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService, IVocabularyService vocabularyService){
+        this.setAreaNames(namedAreaList, config, termService, vocabularyService);
     }
 
 
@@ -80,7 +85,7 @@ public class UnitsGatheringArea {
      * @param namedAreas
      */
     @SuppressWarnings("rawtypes")
-    public void setAreaNames(List<String> namedAreas, ImportConfiguratorBase<?, ?> config, ITermService termService){
+    public void setAreaNames(Map<String, String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService, IVocabularyService vocabularyService){
         List<NamedArea> termsList = termService.list(NamedArea.class,0,0,null,null);
         termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
@@ -92,18 +97,39 @@ public class UnitsGatheringArea {
         HashSet<UUID> areaSet = new HashSet<UUID>();
 
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
-        for (String namedAreaStr : namedAreas){
-            Pager<DefinedTermBase> matchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.ANYWHERE, null, null, null, null, null);
-            for (DefinedTermBase matchingTerm : matchingTerms.getRecords()) {
-                matchingTermsToUuid
-                        .put(matchingTerm.getTitleCache() + " ("
-                                + matchingTerm.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1] + ")",
-                                matchingTerm.getUuid());
-            }
+        for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
+            String namedAreaStr = entry.getKey();
+            String namedAreaClass = entry.getValue();
             UUID areaUUID = null;
             areaUUID = getNamedAreaDecision(namedAreaStr,config);
-
+            //first, check if there is an exact match
+            List<DefinedTermBase> exactMatchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.EXACT, null, null, null, null, null).getRecords();
+            if(!exactMatchingTerms.isEmpty()){
+                //check for continents
+                List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<DefinedTermBase>();
+                if(namedAreaClass!=null && namedAreaClass.equalsIgnoreCase("continent")){
+                   TermVocabulary continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
+                   Set terms = continentVocabulary.getTerms();
+                   for (Object object : terms) {
+                       if(object instanceof DefinedTermBase && exactMatchingTerms.contains(object)){
+                           exactMatchingContinentTerms.add(HibernateProxyHelper.deproxy(object, DefinedTermBase.class));
+                       }
+                   }
+                   if(exactMatchingContinentTerms.size()==1){
+                       areaUUID = exactMatchingContinentTerms.iterator().next().getUuid();
+                   }
+                }
+            }
             if (areaUUID == null && config.isInteractWithUser()){
+                Pager<DefinedTermBase> matchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.ANYWHERE, null, null, null, null, null);
+                String packagePrefix = "eu.etaxonomy.cdm.model.location.";
+                for (DefinedTermBase matchingTerm : matchingTerms.getRecords()) {
+                    String termLabel = matchingTerm.getTitleCache();
+                    if(matchingTerm.getClass().toString().contains(packagePrefix)){
+                        termLabel += " ("+matchingTerm.getClass().toString().split(packagePrefix)[1] + ")";
+                    }
+                    matchingTermsToUuid.put(termLabel, matchingTerm.getUuid());
+                }
                 areaUUID = askForArea(namedAreaStr, matchingTermsToUuid, "area");
             }
             if (DEBUG) {
