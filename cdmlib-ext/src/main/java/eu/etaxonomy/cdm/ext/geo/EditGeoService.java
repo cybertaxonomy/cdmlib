@@ -305,8 +305,27 @@ public class EditGeoService implements IEditGeoService {
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
+        // Adding default initStrategies to improve the performance of this method
+        // adding 'status' and 'area.parentOf' has a good positive effect:
+        // filterDistributions() only takes 21% of the total method time (before it was 46%)
+        // at the same time the cost of the getDescriptionElementForTaxon is not increased at all!
+        //
+        // adding 'markers.markerType' is not improving the performance since it only
+        // moved the load from the filter method to the getDescriptionElementForTaxon()
+        // method.
+        // overall improvement by this means is by 42% (from 77,711 ms to 44,868 ms)
+        ArrayList<String> initStrategy = new ArrayList<String>(propertyPaths);
+        if(!initStrategy.contains("status")) {
+            initStrategy.add("status");
+        }
+        if(!initStrategy.contains("area.parentOf")) {
+            initStrategy.add("area.parentOf");
+        }
+        if(!initStrategy.contains("markers.markerType")) {
+            initStrategy.add("markers.markerType");
+        }
 
-        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, propertyPaths);
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         if(parts.contains(InfoPart.elements)) {
