@@ -24,13 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -48,29 +42,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	private INameService nameService;
-
-	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
 
-	@SpringBeanByType
-	private ITermService termService;
-
-	@SpringBeanByType
-	private ICommonService commonService;
-
-	@SpringBeanByType
-	private ITaxonNodeService taxonNodeService;
-
-	@SpringBeanByType
-	private IAgentService agentService;
-
-	@SpringBeanByType
-	private IReferenceService referenceService;
-
-
 	@Test
-	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
@@ -94,14 +68,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
 
         assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
-//        assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonNameBase.class));
-//        /*
-//         * Classification
-//         * - Campanula
-//         *   - Campanula patula
-//         *      - Campanula patula subsp. abietina
-//         */
-//        assertEquals("Number of TaxonNodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
 	}
 
     /* (non-Javadoc)

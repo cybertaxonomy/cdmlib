@@ -155,9 +155,6 @@
                 <abcd:GatheringAgentsText>Blablabla blabla</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>localité</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
