@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -225,7 +226,8 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @return
      */
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
-        return omitLevelIds.isEmpty() || ! omitLevelIds.contains(HibernateProxyHelper.getIdentifierOf(area.getLevel()));
+        Serializable areaLevelId = HibernateProxyHelper.getIdentifierOf(area.getLevel());
+        return omitLevelIds.isEmpty() || omitLevelIds.contains(areaLevelId);
     }
 
 
