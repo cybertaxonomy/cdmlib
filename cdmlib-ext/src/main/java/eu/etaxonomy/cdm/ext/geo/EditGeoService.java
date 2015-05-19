@@ -306,7 +306,7 @@ public class EditGeoService implements IEditGeoService {
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
         // Adding default initStrategies to improve the performance of this method
-        // adding 'status' and 'area.parentOf' has a good positive effect:
+        // adding 'status' and 'area' has a good positive effect:
         // filterDistributions() only takes 21% of the total method time (before it was 46%)
         // at the same time the cost of the getDescriptionElementForTaxon is not increased at all!
         //
@@ -318,8 +318,8 @@ public class EditGeoService implements IEditGeoService {
         if(!initStrategy.contains("status")) {
             initStrategy.add("status");
         }
-        if(!initStrategy.contains("area.parentOf")) {
-            initStrategy.add("area.parentOf");
+        if(!initStrategy.contains("area")) {
+            initStrategy.add("area");
         }
         if(!initStrategy.contains("markers.markerType")) {
             initStrategy.add("markers.markerType");

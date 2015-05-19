@@ -6,6 +6,8 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -221,15 +223,16 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 }
                 //new
                 for (Object parentBean : parentBeans){
+                    String propertyName = mapFieldToPropertyName(property, parentBean.getClass().getSimpleName());
                     try{
-                        Object propertyValue = PropertyUtils.getProperty(parentBean, mapFieldToPropertyName(property, parentBean.getClass().getSimpleName()));
+                        Object propertyValue = PropertyUtils.getProperty(parentBean, propertyName);
                         preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
                     } catch (IllegalAccessException e) {
                         logger.error("Illegal access on property " + property);
                     } catch (InvocationTargetException e) {
                         logger.error("Cannot invoke property " + property + " not found");
                     } catch (NoSuchMethodException e) {
-                        if (logger.isDebugEnabled()){logger.debug("Property " + property + " not found for class " + parentClazz);}
+                        if (logger.isDebugEnabled()){logger.debug("Property " + propertyName + " not found for class " + parentClazz);}
                     }
                 }
 
@@ -384,23 +387,31 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					if (idSet != null && ! idSet.isEmpty()){
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections ; ownerClass=" +  ownerClazz.getSimpleName() + " ; param = " + param);}
 
+						Type collectionEntitiyType = null;
+						PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(ownerClazz);
+						for(PropertyDescriptor d : descriptors) {
+						    if(d.getName().equals(param)) {
+                                ParameterizedType pt = (ParameterizedType) d.getReadMethod().getGenericReturnType();
+                                collectionEntitiyType = pt.getActualTypeArguments()[0];
+						    }
+						}
+
 						//TODO use entity name ??
 						//get from repository
 						List<Object[]> list;
 						String hql = "SELECT oc " +
-								" FROM %s as oc JOIN FETCH oc.%s as col %s " +
+								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s" +
 								" WHERE oc.id IN (:idSet) ";
 
-//						String hql = "SELECT oc.%s " +
-//								" FROM %s as oc WHERE oc.id IN (:idSet) ";
 						hql = String.format(hql, ownerClazz.getSimpleName(), param,
-								"" /*addAutoinitFetchLoading(clazz, "col")*/);
+						        addAutoinitFetchLoading((Class)collectionEntitiyType, "col"));
 
 						try {
 							if (logger.isTraceEnabled()){logger.trace(hql);}
 							Query query = genericDao.getHqlQuery(hql);
 							query.setParameterList("idSet", idSet);
 							list = query.list();
+							if (logger.isTraceEnabled()){logger.trace("size of retrieved list is " + list.size());}
 						} catch (HibernateException e) {
 							e.printStackTrace();
 							throw e;
@@ -422,7 +433,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     							        if (newBean instanceof HibernateProxy){
     							            newBean = initializeInstance(newBean);
     							        }
-    							        autoinitializeBean(newBean);
+    							        // no longer needed since the hql is getting the AutoinitFetchLoading statements
+//    							        autoinitializeBean(newBean);
     							        node.addBean(newBean);
     							    }
     							}
@@ -438,6 +450,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
 				if (! collection.wasInitialized()){  //should not happen anymore
 					collection.forceInitialization();
+					if (logger.isTraceEnabled()){logger.trace("forceInitialization of collection " + collection);}
+				} else {
+				    if (logger.isTraceEnabled()){logger.trace("collection " + collection + " is initialized - OK!");}
 				}
 			}
 

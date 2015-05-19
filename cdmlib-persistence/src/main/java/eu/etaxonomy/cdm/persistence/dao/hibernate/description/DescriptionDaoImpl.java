@@ -698,6 +698,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
         Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
@@ -705,6 +707,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize - DONE");}
+
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return results;
     }
 
