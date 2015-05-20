@@ -41,20 +41,17 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
         super(Amplification.class);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao#getDerivedUnitUuidAndTitleCache()
-     */
     @Override
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache() {
         List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
         Session session = getSession();
 
-        Query query = session.createQuery("select uuid, labelCache from Amplification");
+        Query query = session.createQuery("select uuid, id, labelCache from Amplification");
 
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<Amplification>(Amplification.class, (UUID) object[0], (String) object[1]));
+            list.add(new UuidAndTitleCache<Amplification>(Amplification.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
         }
 
         return list;

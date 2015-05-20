@@ -41,20 +41,17 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         super(Primer.class);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao#getDerivedUnitUuidAndTitleCache()
-     */
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
         List<UuidAndTitleCache<Primer>> list = new ArrayList<UuidAndTitleCache<Primer>>();
         Session session = getSession();
 
-        Query query = session.createQuery("select uuid, label from Primer");
+        Query query = session.createQuery("select uuid, id, label from Primer");
 
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0], (String) object[1]));
+            list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
         }
 
         return list;

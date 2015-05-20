@@ -9,16 +9,9 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -76,7 +69,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     @Autowired
     private ITaxonDao taxonDao;
-    
+
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
 
@@ -707,8 +700,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
      */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
-        String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
+        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase";
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = getSession().createSQLQuery(queryString).list();
 
         if(result.size() == 0){
@@ -721,9 +715,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
                 Object[] objectArray = (Object[]) object;
 
                 UUID uuid = UUID.fromString((String) objectArray[0]);
-                String titleCache = (String) objectArray[1];
+                Integer id = (Integer) objectArray[1];
+                String titleCache = (String) objectArray[2];
 
-                list.add(new UuidAndTitleCache(type, uuid, titleCache));
+                list.add(new UuidAndTitleCache(type, uuid, id, titleCache));
             }
 
             return list;
@@ -743,7 +738,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
-        
+
         if (persistentObject == null){
             logger.warn(type.getName() + " was 'null'");
             return null;
@@ -753,7 +748,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
         getSession().delete(persistentObject);
-               
+
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
@@ -823,13 +818,13 @@ public List<HashMap<String,String>> getNameRecords(){
     			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
     			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
     			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
-    	
-    	
+
+
     	SQLQuery query = getSession().createSQLQuery(sql);
     	List result = query.list();
     	 //Delimiter used in CSV file
-    	 		 
-    
+
+
 		List<HashMap<String,String>> nameRecords = new ArrayList();
 		HashMap<String,String> nameRecord = new HashMap<String,String>();
 		for(Object object : result)
@@ -838,7 +833,7 @@ public List<HashMap<String,String>> getNameRecords(){
 			nameRecord = new HashMap<String,String>();
 			nameRecord.put("famName",(String)row[0]);
 			nameRecord.put("accFamName",(String)row[1]);
-          
+
 			nameRecord.put("DTYPE",(String)row[2]);
 			nameRecord.put("TaxonID",String.valueOf(row[3]));
 			nameRecord.put("taxonTitle",(String)row[4]);
@@ -865,11 +860,11 @@ public List<HashMap<String,String>> getNameRecords(){
             nameRecord.put("inRefVolume",(String)row[25]);
             nameRecords.add(nameRecord);
 	   }
-			
-		return nameRecords;	
-		
-		
-    		
+
+		return nameRecords;
+
+
+
     }
 
 
