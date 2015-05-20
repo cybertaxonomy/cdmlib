@@ -468,10 +468,13 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 
         private String addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
-            Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
+
             String result = "";
-            for (AutoPropertyInitializer<CdmBase> init: inits){
-                result +=init.hibernateFetchJoin(clazz, beanAlias);
+            if(clazz != null) {
+                Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
+                for (AutoPropertyInitializer<CdmBase> init: inits){
+                    result +=init.hibernateFetchJoin(clazz, beanAlias);
+                }
             }
             return result;
         }
