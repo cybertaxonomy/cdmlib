@@ -283,15 +283,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
                     if (result[2].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[1], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[1], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                 }else if (doTaxa){
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[1], new Boolean(result[4].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[1], new Boolean(result[4].toString())));
+                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                 }
             }
 
@@ -786,10 +786,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-
             return query;
-
-
     }
 
 
@@ -892,30 +889,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
     }
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode)
-//	 */
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {
-//		return countTaxaByName(queryString, matchMode, selectMode, null);
-//	}
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference)
-//	 */
-//	public Integer countTaxaByName(String queryString,
-//			MatchMode matchMode, SelectMode selectMode, Reference sec) {
-//
-//		Long count = countTaxaByName(queryString, matchMode, selectMode, sec, null);
-//		return count.intValue();
-//
-//	}
-
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
-//
-//		SelectMode selectMode = (accepted ? SelectMode.TAXA : SelectMode.SYNONYMS);
-//		Long count = countTaxaByName(queryString, matchMode, selectMode, null, null);
-//		return count.intValue();
-//	}
 
     @Override
     public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
@@ -1704,10 +1677,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return countAllRelationships(null);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
-     */
+
     //FIXME add to interface or make private
     public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
         if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
@@ -2252,12 +2222,4 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return results;
 	}
-
-
-	public static void main(String[] args){
-
-		System.out.println(String.format("%%", "Hallo"));
-	}
-
-
 }
