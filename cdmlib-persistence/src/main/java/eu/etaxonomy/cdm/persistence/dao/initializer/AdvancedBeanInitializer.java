@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -393,6 +394,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						    if(d.getName().equals(param)) {
                                 ParameterizedType pt = (ParameterizedType) d.getReadMethod().getGenericReturnType();
                                 collectionEntitiyType = pt.getActualTypeArguments()[0];
+                                if(collectionEntitiyType instanceof TypeVariable) {
+                                    collectionEntitiyType = ((TypeVariable)collectionEntitiyType).getBounds()[0];
+                                }
 						    }
 						}
 
