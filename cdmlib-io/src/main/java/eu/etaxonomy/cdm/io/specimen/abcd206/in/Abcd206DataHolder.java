@@ -41,12 +41,14 @@ public class Abcd206DataHolder {
     protected List<String[]> referenceList;
     protected List<String> multimediaObjects;
     protected List<String> docSources;
+    protected List<String> associatedUnitIds;
 
     protected String nomenclatureCode;
     protected String institutionCode;
     protected String collectionCode;
     protected String unitID;
     protected String recordBasis;
+    protected String kindOfUnit;
     protected String accessionNumber;
     protected String fieldNumber;
     protected Double longitude;
@@ -64,6 +66,7 @@ public class Abcd206DataHolder {
     protected String gatheringElevationMin;
     protected String gatheringElevationUnit;
 
+
     public void reset() {
 
         nomenclatureCode = null;
@@ -71,6 +74,7 @@ public class Abcd206DataHolder {
         collectionCode = null;
         unitID = null;
         recordBasis = null;
+        kindOfUnit = null;
         accessionNumber = null;
         fieldNumber = null;
         longitude = null;
@@ -94,6 +98,7 @@ public class Abcd206DataHolder {
         referenceList = new ArrayList<String[]>();
         multimediaObjects = new ArrayList<String>();
         docSources = new ArrayList<String>();
+        associatedUnitIds = new ArrayList<String>();
     }
 
 }

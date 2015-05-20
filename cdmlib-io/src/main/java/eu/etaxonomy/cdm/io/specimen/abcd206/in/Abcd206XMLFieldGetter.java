@@ -408,6 +408,20 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getKindOfUnit(Element root) {
+        NodeList group;
+        try {
+            group = root.getElementsByTagName(prefix + "KindOfUnit");
+            path = group.item(0).getNodeName();
+            getHierarchie(group.item(0));
+            dataHolder.knownABCDelements.add(path);
+            path = "";
+            dataHolder.kindOfUnit = group.item(0).getTextContent();
+        } catch (NullPointerException e) {
+            dataHolder.kindOfUnit = "";
+        }
+    }
+
     /**
      * getNumbers : getAccessionNumber, collector number ...
      * @param root
@@ -608,8 +622,36 @@ public class Abcd206XMLFieldGetter {
                         for (int k = 0; k < multimedia.getLength(); k++) {
                             if (multimedia.item(k).getNodeName().equals(prefix + "FileURI")) {
                                 dataHolder.multimediaObjects.add(multimedia.item(k).getTextContent());
-                                path = multimedia.item(k).getNodeName();getHierarchie(multimedia.item(k));
-                                dataHolder.knownABCDelements.add(path);path = "";
+                                path = multimedia.item(k).getNodeName();
+                                getHierarchie(multimedia.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            logger.info(e);
+        }
+    }
+
+    protected void getAssociatedUnitIds(Element root) {
+        NodeList associations, childrenAssociations, childrenUnitAssociations;
+        try {
+            associations = root.getElementsByTagName(prefix + "Associations");
+            for (int i = 0; i < associations.getLength(); i++) {
+                childrenAssociations = associations.item(i).getChildNodes();
+                for (int j = 0; j < childrenAssociations.getLength(); j++) {
+                    if (childrenAssociations.item(j).getNodeName().equals(prefix + "UnitAssociation")) {
+                        childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
+                        for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
+                            if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
+                                dataHolder.associatedUnitIds.add(childrenUnitAssociations.item(k).getTextContent());
+                                path = childrenUnitAssociations.item(k).getNodeName();
+                                getHierarchie(childrenUnitAssociations.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
                             }
                         }
                     }

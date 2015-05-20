@@ -19,7 +19,6 @@ import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 29.01.2009
  * @version 1.0
  */
-@Ignore
 public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName

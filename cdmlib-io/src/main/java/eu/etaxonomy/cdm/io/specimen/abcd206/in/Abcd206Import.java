@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -289,7 +290,25 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 Element item = (Element) unitsList.item(i);
                 this.setUnitPropertiesXML( item, abcdFieldGetter, state);
                 updateProgress(state, "Importing data for unit "+dataHolder.unitID+" ("+i+"/"+unitsList.getLength()+")");
-                this.handleSingleUnit(state);
+                //check if unit is DNA and associated to a specimen
+                SpecimenOrObservationBase<?> existingAssociatedSpecimen = null;
+                if(dataHolder.kindOfUnit!=null && dataHolder.kindOfUnit.equalsIgnoreCase("dna") && dataHolder.associatedUnitIds.size()==1){
+                    String unitId = dataHolder.associatedUnitIds.iterator().next();
+                    existingAssociatedSpecimen = findExistingSpecimen(unitId, state);
+                }
+                if(existingAssociatedSpecimen!=null && existingAssociatedSpecimen.isInstanceOf(DerivedUnit.class)){
+                    derivedUnitBase = HibernateProxyHelper.deproxy(existingAssociatedSpecimen, DerivedUnit.class);
+                    DerivedUnitFacade facade;
+                    try {
+                        facade = DerivedUnitFacade.NewInstance(derivedUnitBase);
+                        fieldUnit = facade.innerFieldUnit();
+                    } catch (DerivedUnitFacadeNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    this.handleSingleUnit(state);
+                }
 
                 checkForUnitExtensions(item, derivedUnitBase, state);
 
@@ -316,6 +335,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     private void checkForUnitExtensions(Element item, DerivedUnit parent, Abcd206ImportState state) {
+        ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+        if(cdmAppController==null){
+            cdmAppController = this;
+        }
         NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtension");
         for(int i=0;i<unitExtensions.getLength();i++){
             if(unitExtensions.item(i) instanceof Element){
@@ -324,26 +347,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if(ggbn.getLength()>0){
                     AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
                     DnaSample dnaSample = ggbnParser.parse(ggbn);
-                    String specimenUnitID;
+                    save(dnaSample, state);
+                    String specimenUnitID = null;
                     SpecimenOrObservationBase<?> parentSpecimen = parent;
                     if(parent==null){
                         //create an empty field unit as parent
                         DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit);
                         parentSpecimen = facade.innerFieldUnit();
-                        specimenUnitID = null;
                     }
-                    else if(state.getConfig().isMapUnitIdToAccessionNumber()){
-                        specimenUnitID = parent.getAccessionNumber();
-                    }
-                    else if(state.getConfig().isMapUnitIdToBarcode()){
-                        specimenUnitID = parent.getBarcode();
-                    }
-                    else{
-                        specimenUnitID = parent.getCatalogNumber();
+                    else if(parentSpecimen.isInstanceOf(DerivedUnit.class)){
+                        specimenUnitID = cdmAppController.getOccurrenceService().getMostSignificantIdentifier(HibernateProxyHelper.deproxy(parentSpecimen, DerivedUnit.class));
                     }
                     //add dna sample derivate to specimenOrObservation
                     DerivationEvent.NewSimpleInstance(parentSpecimen, dnaSample, DerivationEventType.DNA_EXTRACTION());
-                    save(dnaSample, state);
+                    save(parentSpecimen, state);
                     report.addDerivate(specimenUnitID, parentSpecimen, dataHolder.unitID, dnaSample);
                 }
             }
@@ -402,20 +419,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(cdmAppController==null){
                 cdmAppController = this;
             }
+            //check if unit already exists
             DerivedUnitFacade derivedUnitFacade = null;
-            FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
-            config.setSignificantIdentifier(dataHolder.unitID);
             if(state.getConfig().isIgnoreImportOfExistingSpecimens()){
-                Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
-                if(!existingSpecimens.getRecords().isEmpty()){
-                    if(existingSpecimens.getRecords().size()==1){
-                        SpecimenOrObservationBase existingSpecimen = existingSpecimens.getRecords().iterator().next();
-                        if(existingSpecimen.isInstanceOf(DerivedUnit.class)){
-                            derivedUnitBase = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
-                            derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnitBase);
-                            fieldUnit = derivedUnitFacade.getFieldUnit(true);
-                        }
-                    }
+                SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(dataHolder.unitID, state);
+                if(existingSpecimen!=null && existingSpecimen.isInstanceOf(DerivedUnit.class)){
+                    derivedUnitBase = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
                     return;
                 }
                 // create facade
@@ -637,6 +646,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         return;
+    }
+
+    private SpecimenOrObservationBase findExistingSpecimen(String unitId, Abcd206ImportState state){
+        ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+        if(cdmAppController==null){
+            cdmAppController = this;
+        }
+        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setSignificantIdentifier(unitId);
+        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
+        if(!existingSpecimens.getRecords().isEmpty()){
+            if(existingSpecimens.getRecords().size()==1){
+                return existingSpecimens.getRecords().iterator().next();
+            }
+        }
+        return null;
     }
 
     /**
@@ -902,12 +927,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             abcdFieldGetter.getIDs(root);
             abcdFieldGetter.getRecordBasis(root);
+            abcdFieldGetter.getKindOfUnit(root);
             abcdFieldGetter.getMultimedia(root);
             abcdFieldGetter.getNumbers(root);
             abcdFieldGetter.getGeolocation(root, state);
             abcdFieldGetter.getGatheringPeople(root);
             abcdFieldGetter.getGatheringDate(root);
             abcdFieldGetter.getGatheringElevation(root);
+            abcdFieldGetter.getAssociatedUnitIds(root);
             boolean referencefound = abcdFieldGetter.getReferences(root);
             if (!referencefound) {
                 String[]a = {ref.getTitleCache(),"",""};
