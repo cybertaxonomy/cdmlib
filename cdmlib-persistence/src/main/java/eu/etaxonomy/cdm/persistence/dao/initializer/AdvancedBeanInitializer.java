@@ -333,6 +333,12 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             invokePropertyAutoInitializers(bean);
         }
 
+        private void autoinitializeBean(CdmBase bean, AutoInit autoInit) {
+            for(AutoPropertyInitializer<CdmBase> init : autoInit.initlializers) {
+                init.initialize(bean);
+            }
+        }
+
 		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
 				BeanInitNode node, String param) {
 			Collection<?> collection;
@@ -361,7 +367,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
 					//TODO use entity name
 					String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
-					hql = String.format(hql, clazz.getSimpleName(), addAutoinitFetchLoading(clazz, "c"));
+					AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
+                    hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
 					if (logger.isTraceEnabled()){logger.trace(hql);}
 					Query query = genericDao.getHqlQuery(hql);
 					query.setParameterList("idSet", idSet);
@@ -372,7 +379,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
 							object = initializeInstance(object);
 						}
-						autoinitializeBean(object);
+						autoinitializeBean((CdmBase)object, autoInit);
 						node.addBean(object);
 					}
 					if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
@@ -407,8 +414,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s" +
 								" WHERE oc.id IN (:idSet) ";
 
-						hql = String.format(hql, ownerClazz.getSimpleName(), param,
-						        addAutoinitFetchLoading((Class)collectionEntitiyType, "col"));
+						AutoInit autoInit = addAutoinitFetchLoading((Class)collectionEntitiyType, "col");
+                        hql = String.format(hql, ownerClazz.getSimpleName(), param,
+						        autoInit.leftJoinFetch);
 
 						try {
 							if (logger.isTraceEnabled()){logger.trace(hql);}
@@ -437,8 +445,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     							        if (newBean instanceof HibernateProxy){
     							            newBean = initializeInstance(newBean);
     							        }
-    							        // no longer needed since the hql is getting the AutoinitFetchLoading statements
-//    							        autoinitializeBean(newBean);
+
+    							        autoinitializeBean((CdmBase)newBean, autoInit);
     							        node.addBean(newBean);
     							    }
     							}
@@ -467,16 +475,23 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		}
 
 
-        private String addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
+        private AutoInit addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
 
-            String result = "";
+            AutoInit autoInit = new AutoInit();
             if(clazz != null) {
                 Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
                 for (AutoPropertyInitializer<CdmBase> init: inits){
-                    result +=init.hibernateFetchJoin(clazz, beanAlias);
+                    try {
+                        autoInit.leftJoinFetch +=init.hibernateFetchJoin(clazz, beanAlias);
+                    } catch (Exception e) {
+                        // the AutoPropertyInitializer is not supporting LEFT JOIN FETCH so it needs to be
+                        // used explicitly
+                        autoInit.initlializers.add(init);
+                    }
+
                 }
             }
-            return result;
+            return autoInit;
         }
 
         private Set<AutoPropertyInitializer<CdmBase>> getAutoInitializers(Class<?> clazz) {
@@ -542,6 +557,19 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 // nested bean
                 node.addBean(unwrappedPropertyBean);
                 setProperty(bean, property, unwrappedPropertyBean);
+            }
+        }
+
+        private class AutoInit{
+
+            String leftJoinFetch = "";
+            Set<AutoPropertyInitializer<CdmBase>> initlializers = new HashSet<AutoPropertyInitializer<CdmBase>>();
+
+            /**
+             * @param leftJoinFetch
+             * @param initlializers
+             */
+            public AutoInit() {
             }
         }
 

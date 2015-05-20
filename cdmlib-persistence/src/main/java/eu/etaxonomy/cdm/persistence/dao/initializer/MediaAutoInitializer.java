@@ -29,7 +29,7 @@ public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {
     
     
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
     	return String.format(" LEFT JOIN FETCH %s.representations r LEFT JOIN FETCH r.mediaRepresentationParts ", beanAlias); 
     }
 }
