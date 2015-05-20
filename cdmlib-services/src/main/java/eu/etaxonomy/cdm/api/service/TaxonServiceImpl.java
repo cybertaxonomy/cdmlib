@@ -1369,7 +1369,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 this.saveOrUpdate(relatedTaxon);
             }
             this.saveOrUpdate(synonym);
-
+            result.addUpdatedObject(taxon);
             //TODO remove name from homotypical group?
 
             //remove synonym (if necessary)
@@ -1386,7 +1386,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         DeleteResult nameDeleteresult = nameService.delete(name, config.getNameDeletionConfig());
                         if (nameDeleteresult.isAbort()){
                         	result.addExceptions(nameDeleteresult.getExceptions());
-                        	result.addUpdatedObject(name);
                         }
 
                 }

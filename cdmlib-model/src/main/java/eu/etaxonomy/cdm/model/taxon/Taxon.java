@@ -193,7 +193,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @param  sec				the reference using the taxon name
      * @see    					#Taxon(TaxonNameBase, Reference)
      */
-    public static Taxon NewUnknownStatusInstance(NonViralName name, Reference sec){
+    public static Taxon NewUnknownStatusInstance(TaxonNameBase name, Reference sec){
         Taxon result = new Taxon(name, sec);
         result.setTaxonStatusUnknown(true);
         return result;

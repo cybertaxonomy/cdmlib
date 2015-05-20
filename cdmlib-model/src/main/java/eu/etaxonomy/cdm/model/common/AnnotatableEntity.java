@@ -1,8 +1,8 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -53,46 +53,49 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	protected Set<Marker> markers;
-	
+	protected Set<Marker> markers = new HashSet<Marker>();
+
 	@XmlElementWrapper(name = "Annotations", nillable = true)
 	@XmlElement(name = "Annotation")
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	protected Set<Annotation> annotations = new HashSet<Annotation>();;
-	
+	protected Set<Annotation> annotations = new HashSet<Annotation>();
+
 	protected AnnotatableEntity() {
 		super();
 	}
 
 //*************** MARKER **********************************************
-	
-	
-	public Set<Marker> getMarkers(){
-		if(markers == null) {
-			this.markers = new HashSet<Marker>();
-		}
+
+
+	@Override
+    public Set<Marker> getMarkers(){
 		return this.markers;
 	}
-	public void addMarker(Marker marker){
+
+	@Override
+    public void addMarker(Marker marker){
 		if (marker != null){
 			marker.setMarkedObj(this);
 			getMarkers().add(marker);
 		}
 	}
-	public void removeMarker(Marker marker){
+	@Override
+    public void removeMarker(Marker marker){
 		if(getMarkers().contains(marker)) {
 			getMarkers().remove(marker);
 		    marker.setMarkedObj(null);
 		}
 	}
-	
-	public boolean hasMarker(MarkerType type, boolean value){
+
+	@Override
+    public boolean hasMarker(MarkerType type, boolean value){
 		return hasMarker(type.getUuid(), value);
 	}
-	
-	public boolean hasMarker(UUID uuidMarkerType, boolean value){
+
+	@Override
+    public boolean hasMarker(UUID uuidMarkerType, boolean value){
 		for (Marker marker: getMarkers()){
 			if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
 				if (marker.getFlag() == value){
@@ -104,24 +107,27 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	}
 
 //*************** ANNOTATIONS **********************************************
-	
-	public Set<Annotation> getAnnotations(){		
+
+	@Override
+    public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}
-	public void addAnnotation(Annotation annotation){
+	@Override
+    public void addAnnotation(Annotation annotation){
 		if (annotation != null){
 			annotation.setAnnotatedObj(this);
 			getAnnotations().add(annotation);
 		}
 	}
-	
-	public void removeAnnotation(Annotation annotation){
+
+	@Override
+    public void removeAnnotation(Annotation annotation){
 		if(getAnnotations().contains(annotation)) {
 			getAnnotations().remove(annotation);
 		    annotation.setAnnotatedObj(null);
 		}
 	}
-	
+
 //********************** CLONE *****************************************/
 
 	/* (non-Javadoc)
@@ -130,21 +136,21 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		AnnotatableEntity result = (AnnotatableEntity)super.clone();
-		
+
 		//Annotations
 		result.annotations = new HashSet<Annotation>();
 		for (Annotation annotation : getAnnotations()){
 			Annotation newAnnotation = (Annotation)annotation.clone();
 			result.addAnnotation(newAnnotation);
 		}
-		
+
 		//Markers
 		result.markers = new HashSet<Marker>();
 		for (Marker marker : getMarkers()){
 			Marker newMarker = (Marker)marker.clone();
 			result.addMarker(newMarker);
 		}
-		
+
 		//no changes to: -
 		return result;
 	}
