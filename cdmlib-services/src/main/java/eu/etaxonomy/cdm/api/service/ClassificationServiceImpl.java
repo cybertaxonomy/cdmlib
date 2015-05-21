@@ -214,6 +214,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     @Override
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
             Integer pageIndex, List<String> propertyPaths){
+
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
