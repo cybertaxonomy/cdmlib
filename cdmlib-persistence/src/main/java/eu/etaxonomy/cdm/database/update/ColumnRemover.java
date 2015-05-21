@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,19 +22,17 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnRemover.class);
-	
-	private String oldColumnName;
-	
+
+	private final String oldColumnName;
+
 	public static final ColumnRemover NewInstance(String stepName, String tableName, String oldColumnName, boolean includeAudTable){
 		return new ColumnRemover(stepName, tableName, oldColumnName, includeAudTable);
 	}
 
-	
+
 	protected ColumnRemover(String stepName, String tableName, String oldColumnName, boolean includeAudTable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.oldColumnName = oldColumnName;
-		this.includeAudTable = includeAudTable;
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> i
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		
+
 		updateQuery = "ALTER TABLE @tableName DROP COLUMN @columnName";
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
@@ -69,7 +67,7 @@ public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> i
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@columnName", oldColumnName);
-		
+
 		return updateQuery;
 	}
 

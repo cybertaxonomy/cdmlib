@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,20 +24,18 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndexDropper> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(UniqueIndexDropper.class);
-	
-	private String indexColumn;
-	
+
+	private final String indexColumn;
+
 	public static final UniqueIndexDropper NewInstance(String tableName, String indexColumn, boolean includeAudTable){
 		String stepName = "Drop index " + tableName + "-" + indexColumn;
 		return new UniqueIndexDropper(stepName, tableName, indexColumn, includeAudTable);
 	}
 
-	
+
 	protected UniqueIndexDropper(String stepName, String tableName, String indexColumn, boolean includeAudTable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.indexColumn = indexColumn;
-		this.includeAudTable = includeAudTable;
 	}
 
 	@Override
@@ -57,7 +55,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 	private boolean checkExists(ICdmDataSource datasource) throws SQLException, DatabaseTypeNotSupportedException {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		if (type.equals(DatabaseTypeEnum.MySQL)){
-			String sql = "SELECT count(*)	FROM information_schema.TABLE_CONSTRAINTS " + 
+			String sql = "SELECT count(*)	FROM information_schema.TABLE_CONSTRAINTS " +
 					" WHERE table_name ='@tableName' AND CONSTRAINT_SCHEMA = '@dbName' AND CONSTRAINT_TYPE = 'UNIQUE' ";
 			sql = sql.replace("@tableName", tableName);
 			sql = sql.replace("@columnName", indexColumn);
@@ -82,7 +80,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String indexName = getIndexName(datasource);
-		
+
 //		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
 //			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
@@ -91,7 +89,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT IF EXISTS @indexName";
 		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
 //			updateQuery = "DROP INDEX IF EXISTS @indexName";  // does not work because index is used in the constraint
-//			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT IF EXISTS @indexName"; //"if exists" does not work (version 8.4) 
+//			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT IF EXISTS @indexName"; //"if exists" does not work (version 8.4)
 			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT @indexName";
 		}else if (type.equals(DatabaseTypeEnum.MySQL)){
 			updateQuery = "ALTER TABLE @tableName DROP INDEX @indexName";
@@ -103,7 +101,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@indexName", indexName);
-		
+
 		return updateQuery;
 	}
 
@@ -116,12 +114,12 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 		}else if (type.equals(DatabaseTypeEnum.MySQL)){
 			result = this.indexColumn;
 		}else if (type.equals(DatabaseTypeEnum.H2) ){
-//			String sql = "SELECT INDEX_NAME FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME = @tableName AND INDEX_TYPE_NAME = 'UNIQUE INDEX'"; 
-			String sql = "SELECT CONSTRAINT_NAME " + 
+//			String sql = "SELECT INDEX_NAME FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME = @tableName AND INDEX_TYPE_NAME = 'UNIQUE INDEX'";
+			String sql = "SELECT CONSTRAINT_NAME " +
 					" FROM INFORMATION_SCHEMA.CONSTRAINTS "+
 					" WHERE CONSTRAINT_CATALOG = '@dbName' AND "+
-					" TABLE_NAME = '@tableName' AND CONSTRAINT_TYPE = 'UNIQUE' AND "+ 
-					" COLUMN_LIST = '@columnName'"; 
+					" TABLE_NAME = '@tableName' AND CONSTRAINT_TYPE = 'UNIQUE' AND "+
+					" COLUMN_LIST = '@columnName'";
 			sql = sql.replace("@tableName", tableName.toUpperCase());
 			sql = sql.replace("@columnName", indexColumn.toUpperCase());
 			sql = sql.replace("@dbName", datasource.getDatabase().toUpperCase());
@@ -134,7 +132,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 			throw new DatabaseTypeNotSupportedException(type.toString());
 		}
 		return result;
-		
+
 	}
 
 
