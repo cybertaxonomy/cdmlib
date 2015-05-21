@@ -26,7 +26,6 @@ import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
@@ -359,12 +358,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return results.get(0);
         }
     }
-    
+
     @Override
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException{
-    	Session session = getSession();    	
+    	Session session = getSession();
     	FlushMode currentFlushMode = session.getFlushMode();
-    	try {    		
+    	try {
     		// set flush mode to manual so that the session does not flush
     		// when before performing the query
     		session.setFlushMode(FlushMode.MANUAL);
@@ -382,7 +381,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     			return results.get(0);
     		}
     	} finally {
-    		// set back the session flush mode 
+    		// set back the session flush mode
     		if(currentFlushMode != null) {
     			session.setFlushMode(currentFlushMode);
     		}
@@ -410,7 +409,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     @Override
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
-       Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
+        Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
 
         @SuppressWarnings("unchecked")
 		List<T> result = criteria.list();

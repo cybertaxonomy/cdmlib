@@ -664,29 +664,35 @@ public class EditGeoServiceUtilities {
      *  &od=1%3A44.29481%2C6.82161|44.29252%2C6.822873|44.29247%2C6.82346|44.29279%2C6.823678|44.29269%2C6.82394|44.28482%2C6.887252|44.11469%2C7.287144|44.11468%2C7.289168
      *  &os=1%3Ac%2FFFD700%2F10%2FAporrectodea caliginosa
      */
-    public static String getOccurrenceServiceRequestParameterString(
-                List<Point> fieldUnitPoints,
-                List<Point> derivedUnitPoints,
-                Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
+    public static OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
+            List<Point> fieldUnitPoints,
+            List<Point> derivedUnitPoints,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
+        OccurrenceServiceRequestParameterDto dto = new OccurrenceServiceRequestParameterDto();
 
-            specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
-            Map<String, String> parameters = new HashMap<String, String>();
-            parameters.put("legend", "0");
+        specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
-            Map<String, String> styleAndData = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("legend", "0");
 
-            addToStyleAndData(fieldUnitPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
-            addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
+        Map<String, String> styleAndData = new HashMap<String, String>();
 
-            parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
-            parameters.put("od", StringUtils.join(styleAndData.values().iterator(), "||"));
+        addToStyleAndData(fieldUnitPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
+        addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
 
-            String queryString = makeQueryString(parameters);
+        parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
+        parameters.put("od", StringUtils.join(styleAndData.values().iterator(), "||"));
 
-            logger.info(queryString);
+        String queryString = makeQueryString(parameters);
 
-        return queryString;
+        dto.setFieldUnitPoints(fieldUnitPoints);
+        dto.setDerivedUnitPoints(derivedUnitPoints);
+        dto.setOccurrenceQuery(queryString);
+
+        logger.info(queryString);
+
+        return dto;
     }
 
     /**

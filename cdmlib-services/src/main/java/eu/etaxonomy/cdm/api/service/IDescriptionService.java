@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
@@ -558,8 +559,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a Pager for all NamedAreas instances which are currently in use.
      *
      */
-    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths);
+    public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
+            Integer pageNumber);
 
 	public DeleteResult deleteDescription(DescriptionBase description);
 

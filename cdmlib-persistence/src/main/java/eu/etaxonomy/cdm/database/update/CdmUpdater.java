@@ -18,9 +18,8 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_331_34;
-import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
-import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
+import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
+import eu.etaxonomy.cdm.database.update.v34_35.TermUpdater_34_35;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -74,6 +73,19 @@ public class CdmUpdater {
 
     public static CdmUpdater NewInstance(){
         return new CdmUpdater();
+    }
+    
+
+    private ITermUpdater getCurrentTermUpdater() {
+        return TermUpdater_34_35.NewInstance();
+    }
+
+    /**
+     * Returns the current CDM updater
+     * @return
+     */
+    private ISchemaUpdater getCurrentSchemaUpdater() {
+        return SchemaUpdater_341_35.NewInstance();
     }
 
     /**
@@ -214,17 +226,6 @@ public class CdmUpdater {
     }
 
 
-    private ITermUpdater getCurrentTermUpdater() {
-        return TermUpdater_33_34.NewInstance();
-    }
-
-    /**
-     * Returns the current CDM updater
-     * @return
-     */
-    private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_34_341.NewInstance();
-    }
 
     /**
      *

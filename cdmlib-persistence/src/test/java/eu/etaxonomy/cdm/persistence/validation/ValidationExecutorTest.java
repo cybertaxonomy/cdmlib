@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.validation;
 import static org.junit.Assert.fail;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -49,10 +51,11 @@ public class ValidationExecutorTest {
 
 
 	/**
-	 * Test behaviour when the ValidationExecutor's task queue fills up. Make sure task queue
+	 * Test behavior when the ValidationExecutor's task queue fills up. Make sure task queue
 	 * overruns do not throw an exception. To test this, we rapidly fill the queue with tasks
 	 * that we know will take some time to complete. See {@link LongRunningCheckCaseValidator}.
 	 */
+	//TODO does this work already?
 	@Test
 	public void testRejectedExecution(){
 		try {
@@ -70,11 +73,12 @@ public class ValidationExecutorTest {
 			System.out.println("************************************************************");
 			for (int i = 0; i < taskQueueSize * 2; ++i) { // Force a task queue overrun
 				emp = new EmployeeWithLongRunningValidation();
-				task = new Level2ValidationTask(emp);
+				task = new Level2ValidationTask(emp, null);
 				pool.execute(task);
 			}
 			// Make sure the test case waits long enough for the queue to actually overflow.
-			for (WeakReference<EntityValidationThread> thread : pool.threads) {
+			List<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(pool.threads);
+			for (WeakReference<EntityValidationThread> thread : threads) {
 				if (thread.get() != null) {
 					thread.get().join();
 				}

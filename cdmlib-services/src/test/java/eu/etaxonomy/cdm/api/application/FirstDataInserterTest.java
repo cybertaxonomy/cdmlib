@@ -9,12 +9,11 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
-
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -30,14 +29,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -66,10 +58,10 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IClassificationService classificationService;
-    
+
     @SpringBeanByType
     private IDescriptionService descriptionService;
-    
+
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
     @ExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
@@ -78,7 +70,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
 //        printDataSet(System.err, tableNames);
     }
-    
+
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
     public void testInsertData(){
@@ -86,8 +78,8 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     	TaxonGenerator.getTestTaxon();
     	Taxon newTaxon = 	TaxonGenerator.getTestTaxon();
     	UUID taxonUUID = taxonService.save(newTaxon);
-    	
-    	
+
+
     	TaxonDescription description = TaxonGenerator.getTestDescription(1);
     	newTaxon.addDescription(description);
     	Set<TaxonDescription> descriptions = newTaxon.getDescriptions();
@@ -96,20 +88,12 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     	newTaxon = (Taxon)taxonService.find(taxonUUID);
     	descriptions = newTaxon.getDescriptions();
     	assertEquals(2, descriptions.size());
-    	
-    	
-    	
-    	
-    	
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
     }
 
 }

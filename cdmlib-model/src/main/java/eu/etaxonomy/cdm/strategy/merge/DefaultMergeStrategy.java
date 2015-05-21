@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
  * @created 31.07.2009
- * @version 1.0
  */
 public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy  {
 	private static final long serialVersionUID = -8513956338156791995L;
@@ -49,10 +48,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		return new DefaultMergeStrategy(mergeClazz);
 	}
 
-	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
+	private boolean onlyReallocateReferences = false;
+	
 	protected MergeMode defaultMergeMode = MergeMode.FIRST;
 	protected MergeMode defaultCollectionMergeMode = MergeMode.ADD;
 	
+	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
 	protected Class<? extends CdmBase> mergeClass;
 	protected Map<String, Field> mergeFields;
 	
@@ -69,7 +70,17 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		initMergeModeMap();
 	}
 
-	
+
+	@Override
+	public boolean isOnlyReallocateReferences() {
+		return this.onlyReallocateReferences;
+	}
+
+//	@Override
+//	public void setOnlyReallocateLinks(boolean onlyReallocateReferences) {
+//		this.onlyReallocateReferences = onlyReallocateReferences; 
+//	}
+
 	
 	/**
 	 * 
@@ -85,17 +96,10 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
-	
-	
 	
 	/**
 	 * @return the merge class
@@ -114,10 +118,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.merge.IMergeStragegy#getMergeMode(java.lang.String)
-	 */
+	@Override
 	public MergeMode getMergeMode(String propertyName){
 		MergeMode result = mergeModeMap.get(propertyName);
 		if (result == null){
@@ -132,6 +133,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 	
+	@Override
 	public void setMergeMode(String propertyName, MergeMode mergeMode) throws MergeException{
 		if (mergeFields.containsKey(propertyName)){
 			checkIdentifier(propertyName, mergeMode);
@@ -140,6 +142,19 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			throw new MergeException("The class " + mergeClass.getName() + " does not contain a field with name " + propertyName);
 		}
 	}
+	
+	
+	@Override
+	public void setDefaultMergeMode(MergeMode defaultMergeMode) {
+		this.defaultMergeMode = defaultMergeMode;
+	}
+
+
+	@Override
+	public void setDefaultCollectionMergeMode(MergeMode defaultCollectionMergeMode) {
+		this.defaultCollectionMergeMode = defaultCollectionMergeMode;
+	}
+
 
 	/**
 	 * Tests if a property is an identifier property
@@ -155,13 +170,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 
+	@Override
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException {
 		return this.invoke(mergeFirst, mergeSecond, null);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.merge.IMergeStragegy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)
-	 */
+	@Override
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException {
 		Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
 		if (clonedObjects == null){
@@ -300,7 +314,6 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
-		
 	}
 
 	private <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
@@ -385,7 +398,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	
 	public static Method getAddMethod(Field field, boolean remove) throws MergeException{
 		Method result;
-		Class parameterClass = getCollectionType(field);
+		Class<?> parameterClass = getCollectionType(field);
 		String fieldName = field.getName();
 		String firstCapital = fieldName.substring(0, 1).toUpperCase();
 		String rest = fieldName.substring(1);
@@ -518,7 +531,5 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			throw new MergeException("Collection has no generic type of type ParameterizedTypeImpl. Unsupport case.");
 		}
 	}
-	
-	
-	
+
 }

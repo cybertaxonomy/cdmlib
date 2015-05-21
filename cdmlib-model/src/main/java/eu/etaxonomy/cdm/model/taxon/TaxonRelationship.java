@@ -30,10 +30,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.validation.Level3;
-import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
-import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
-import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 
 /**
  * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}.
@@ -59,9 +55,6 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonRelationship")
-@ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
-@ChildTaxaMustNotSkipRanks(groups = Level3.class)
-@ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
     private static final long serialVersionUID = 1378437971941534653L;
     static private final Logger logger = Logger.getLogger(TaxonRelationship.class);

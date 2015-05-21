@@ -25,7 +25,6 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 
 /**
@@ -38,7 +37,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {
-    "nomenclaturalTitle"
+    "nomenclaturalTitle",
+    "collectorTitle"
 })
 @Entity
 @Audited
@@ -55,6 +55,13 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 //    @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
+    
+    //under construction #4311
+    @XmlElement(name="CollectorTitle")
+    @Field(index=Index.YES)
+    @Size(max = 255)
+    protected String collectorTitle;
+    
 
     @Transient
     @XmlTransient
@@ -81,7 +88,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      */
     @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = nomenclaturalTitle;
+        this.nomenclaturalTitle = StringUtils.isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
 
     /* (non-Javadoc)

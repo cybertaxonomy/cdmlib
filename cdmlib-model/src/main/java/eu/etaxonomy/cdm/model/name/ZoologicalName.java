@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -299,7 +300,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * @see  #getBreed()
 	 */
 	public void setBreed(String breed){
-		this.breed = breed;
+		this.breed = StringUtils.isBlank(breed) ? null : breed;
 	}
 
 	/**

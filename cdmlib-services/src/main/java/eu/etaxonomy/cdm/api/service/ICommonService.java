@@ -14,16 +14,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.Session;
 import org.hibernate.collection.spi.PersistentCollection;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -33,7 +34,9 @@ import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
-public interface ICommonService extends IService<OriginalSourceBase>{
+
+public interface ICommonService /*extends IService<OriginalSourceBase>*/{
+
 //
 //	/** find cdmBase by UUID**/
 //	public abstract CdmBase getCdmBaseByUuid(UUID uuid);
@@ -85,6 +88,29 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
 
+
+
+	/**
+	 * Tests if cdmBase2 can be merged into cdmBase1. This is usually the case when both
+	 * objects are of the same class.
+	 * If they are not they must have a common super class and all links to CdmBase2 must be
+	 * re-referenceable to cdmBase1.
+	 * This is not the case if cdmBase2 is linked by a property which does not support class of cdmBase1.
+	 * E.g. User.person requires a person so if user u1 exists with u1.person = person1 and we want to
+	 * merge person1 into team1 this is not possible because team1 is not a valid replacement for person1
+	 * within the user1.person context.
+	 * <BR>
+	 * This method is not expensive if classes are equal but may become more expensive if not, because
+	 * in this concrete references to cdmBases2 need to be evaluated.
+	 * @param cdmBase1
+	 * @param cdmBase2
+	 * @param mergeStrategy
+	 * @return
+	 * @throws MergeException
+	 */
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+
+
 	/**
 	 * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
 	 * to merge first. If no merge strategy is defined (null), the DefaultMergeStrategy will be taken as default.
@@ -106,6 +132,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @throws MatchException
 	 */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
+
 
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
@@ -191,5 +218,42 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	@Deprecated
 	public void createFullSampleData();
 
+
+    /**
+     * Returns the number of objects that belong to a certain class.
+     * @param type the CdmBase class
+     * @return the number of objects in the database
+     */
+    public <S extends CdmBase> int count(Class<S> type);
+
+
+    /**
+     * Generic method to retrieve a list of objects. Use only if no specific service class
+     * can be used.
+     * @param type
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @see IService#list(Class, Integer, Integer, List, List)
+     * @return
+     */
+    public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Save a new entity (persists the entity)
+     * @param newInstance the new entity to be persisted
+     * @return A generated UUID for the new persistent entity
+     */
+    public UUID save(CdmBase newInstance);
+
+
+    /**
+     * Save a collection containing new entities (persists the entities)
+     * @param newInstances the new entities to be persisted
+     * @return A Map containing the new entities, keyed using the generated UUID's
+     *         of those entities
+     */
+    public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
 
 }

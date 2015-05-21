@@ -359,7 +359,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         // Switch groups
-        oldHomotypicalGroup.removeTypifiedName(synonymName);
+        oldHomotypicalGroup.removeTypifiedName(synonymName, false);
         newHomotypicalGroup.addTypifiedName(synonymName);
 
         //remove existing basionym relationships
@@ -836,6 +836,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
+    //    logger.setLevel(Level.TRACE);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
         logger.trace("listMedia() - START");
 
         Set<Taxon> taxa = new HashSet<Taxon>();
@@ -1207,12 +1210,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         //remove name if possible (and required)
                         if (name != null && config.isDeleteNameIfPossible()){
-
                         	nameResult = nameService.delete(name, config.getNameDeletionConfig());
-
                         }
-
-
 
                         if (nameResult.isError()){
                         	//result.setError();
@@ -1364,7 +1363,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 taxonSet.addAll(synonym.getAcceptedTaxa());
             }
             for (Taxon relatedTaxon : taxonSet){
-    //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
+            	relatedTaxon = HibernateProxyHelper.deproxy(relatedTaxon, Taxon.class);
                 relatedTaxon.removeSynonym(synonym, false);
                 this.saveOrUpdate(relatedTaxon);
             }
@@ -1374,11 +1373,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             //remove synonym (if necessary)
 
-            UUID uuid = null;
             if (synonym.getSynonymRelations().isEmpty()){
                 TaxonNameBase<?,?> name = synonym.getName();
                 synonym.setName(null);
-                uuid = dao.delete(synonym);
+                dao.delete(synonym);
 
                 //remove name if possible (and required)
                 if (name != null && config.isDeleteNameIfPossible()){
@@ -1386,6 +1384,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         DeleteResult nameDeleteresult = nameService.delete(name, config.getNameDeletionConfig());
                         if (nameDeleteresult.isAbort()){
                         	result.addExceptions(nameDeleteresult.getExceptions());
+                        	result.addUpdatedObject(name);
                         }
 
                 }
@@ -1782,10 +1781,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // ---- search criteria
         luceneSearch.setCdmTypRestriction(clazz);
 
-        textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-        textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        if(!queryString.isEmpty() && !queryString.equals("*") && !queryString.equals("?") ) {
+            textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        }
 
-        finalQuery.add(textQuery, Occur.MUST);
+        if(textQuery.getClauses().length > 0) {
+            finalQuery.add(textQuery, Occur.MUST);
+        }
+
 
         if(classification != null){
             finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
@@ -3348,5 +3352,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<FindByIdentifierDTO<S>>(pageNumber, numberOfResults, pageSize, result);
 	}
 
+	@Override
+	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
+            SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
 
+		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
+		return moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
+	}
 }

@@ -2,11 +2,12 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>3.5.2-SNAPSHOT</version>
   <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
+  <version>3.5.2-SNAPSHOT</version>
   <name>CDM Domain Model</name>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
@@ -115,11 +116,6 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
-<!--     Part of hibernate-core since 3.6 -->
-<!--     <dependency> -->
-<!--       <groupId>org.hibernate</groupId> -->
-<!--       <artifactId>hibernate-annotations</artifactId> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
@@ -132,57 +128,6 @@
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-core</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-database</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-dbunit</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--      <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-easymock</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-mock</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-inject</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--      <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-orm</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--       <exclusions> -->
-<!--      	<exclusion> -->
-<!--      		<groupId>javax.persistence</groupId> -->
-<!--       		<artifactId>persistence-api</artifactId> -->
-<!--      	</exclusion> -->
-<!--       </exclusions> -->
-<!--     </dependency> -->
-<!--      <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-spring</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>org.springframework.jdbc</artifactId>

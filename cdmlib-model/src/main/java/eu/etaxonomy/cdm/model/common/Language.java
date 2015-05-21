@@ -1167,7 +1167,7 @@ public class Language extends DefinedTermBase<Language> {
             if(iso639_1.length() > 2){
                 logger.warn("Iso639-1: "+iso639_1+" too long");
             }
-            this.iso639_1 = iso639_1;
+            this.iso639_1 = iso639_1 == "" ? null : iso639_1;
         }
     }
 

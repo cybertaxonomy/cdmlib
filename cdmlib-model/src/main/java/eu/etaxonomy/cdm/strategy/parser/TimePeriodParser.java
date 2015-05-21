@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -42,6 +43,7 @@ public class TimePeriodParser {
 	private static final String strDotDate = "[0-3]?\\d\\.[01]?\\d\\.\\d{4,4}";
 	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strDotDate, strDotDate);
 	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
+	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 
 
 	public static TimePeriod parseString(TimePeriod timePeriod, String periodString){
@@ -81,6 +83,8 @@ public class TimePeriodParser {
 			}
 		}else if (dotDatePattern.matcher(periodString).matches()){
 			parseDotDatePattern(periodString, result);
+		}else if (lifeSpanPattern.matcher(periodString).matches()){
+			parseLifeSpanPattern(periodString, result);
 		}else if (standardPattern.matcher(periodString).matches()){
 			parseStandardPattern(periodString, result);
 //TODO first check ambiguity of parser results e.g. for 7/12/11
@@ -160,12 +164,12 @@ public class TimePeriodParser {
 		}else {
 			try {
 				//start
-				if (! CdmUtils.isEmpty(dates[0])){
+				if (! StringUtils.isBlank(dates[0])){
 					dtStart = parseSingleDotDate(dates[0].trim());
 				}
 
 				//end
-				if (dates.length >= 2 && ! CdmUtils.isEmpty(dates[1])){
+				if (dates.length >= 2 && ! StringUtils.isBlank(dates[1])){
 					dtEnd = parseSingleDotDate(dates[1].trim());
 				}
 
@@ -175,6 +179,21 @@ public class TimePeriodParser {
 				//logger.warn(e.getMessage());
 				result.setFreeText(periodString);
 			}
+		}
+	}
+	
+	private static void parseLifeSpanPattern(String periodString, TimePeriod result) {
+		
+		try{
+			String[] years = periodString.split("--");
+			String start = years[0];
+			String end = years[1];
+			
+			result.setStartYear(Integer.valueOf(start));
+			result.setEndYear(Integer.valueOf(end));
+		} catch (Exception e) {
+			//logger.warn(e.getMessage());
+			result.setFreeText(periodString);
 		}
 	}
 

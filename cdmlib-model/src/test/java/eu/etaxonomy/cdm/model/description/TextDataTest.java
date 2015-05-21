@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,13 +37,13 @@ public class TextDataTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TextDataTest.class);
 
-	
+
 	private TextData textDataLeer;
-	private TextData textData1; 
+	private TextData textData1;
 	private TextFormat format1;
 	private LanguageString languageString1;
-	
-	
+
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -57,12 +57,12 @@ public class TextDataTest {
 	public void setUp() throws Exception {
 		textDataLeer = TextData.NewInstance();
 		format1 = TextFormat.NewInstance();
-		textData1 = TextData.NewInstance("testText", Language.DEFAULT(), format1); 
+		textData1 = TextData.NewInstance("testText", Language.DEFAULT(), format1);
 		languageString1 = LanguageString.NewInstance("langText", Language.GERMAN());
 	}
 
 /* ************************** TESTS **********************************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#NewInstance()}.
 	 */
@@ -88,8 +88,8 @@ public class TextDataTest {
 		assertNotNull(textData1.getFormat());
 		assertSame(format1, textData1.getFormat());
 	}
-	
-	
+
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#TextData()}.
 	 */
@@ -123,11 +123,11 @@ public class TextDataTest {
 //		assertNull(textDataLeer.getMultilanguageText().getText(Language.DEFAULT()));
 		assertEquals(0, textDataLeer.getMultilanguageText().size());
 	}
-	
+
 	/**
-	 * This test reproduces a bug in java runtime. 
-	 * The HashMap used to implement the MultilanguageText fails in jre1.6_11 b03 win32 to 
-	 * to find existing Language keys. 
+	 * This test reproduces a bug in java runtime.
+	 * The HashMap used to implement the MultilanguageText fails in jre1.6_11 b03 win32 to
+	 * to find existing Language keys.
 	 * FIXME this test fails to reproduce the bug -> integration test needed?
 	 */
 	@Test
@@ -136,9 +136,9 @@ public class TextDataTest {
 		List<Language> preferredLanguages = Arrays.asList(new Language[]{Language.DEFAULT()});
 		assertNotNull(textData1.getPreferredLanguageString(preferredLanguages));
 	}
-	
+
 //	/**
-//	 * 
+//	 *
 //	Test method for {@link eu.etaxonomy.cdm.model.description.TextData#setMultilanguageText()}.
 //	 */
 //	@Test
@@ -152,14 +152,14 @@ public class TextDataTest {
 //		assertNotNull(textData1.getMultilanguageText());
 //		assertEquals(0, textData1.getMultilanguageText().size());
 //	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#addText(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
 	 */
 	@Test
 	public void testPutTextStringLanguage() {
 		textDataLeer.putText(Language.GERMAN(), "xx");
-		assertNull(textDataLeer.putText(Language.FRENCH(), "francais"));
+		assertEquals(textDataLeer.putText(Language.FRENCH(), "francais").getLanguage(), Language.FRENCH());
 		textDataLeer.putText(null, "nothing");
 		textDataLeer.putText(Language.CHINESE(), null);
 		assertEquals(4 , textDataLeer.size());
@@ -219,9 +219,9 @@ public class TextDataTest {
 		textDataLeer.setFormat(format1);
 		assertSame(format1, textDataLeer.getFormat());
 		textDataLeer.setFormat(null);
-		assertNull(textDataLeer.getFormat());	
+		assertNull(textDataLeer.getFormat());
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#countLanguages()}.
 	 */
@@ -236,9 +236,9 @@ public class TextDataTest {
 		assertEquals(1, textData1.countLanguages());
 		textData1.removeText(Language.DEFAULT());
 		assertEquals(0, textData1.countLanguages());
-		
-	}	
-	
+
+	}
+
 	@Test
 	public void testClone(){
 		TextData clone = (TextData) textData1.clone();
@@ -247,7 +247,7 @@ public class TextDataTest {
 		assertEquals(langStringClone.getText(), langString.getText());
 		//assertEquals();
 	}
-	
+
 	@Test
 	public void testCloneMultiLanguageText() {
 		MultilanguageText test = MultilanguageText.NewInstance();

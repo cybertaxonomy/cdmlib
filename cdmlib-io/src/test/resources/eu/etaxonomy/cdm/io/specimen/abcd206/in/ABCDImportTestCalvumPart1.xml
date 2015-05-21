@@ -155,9 +155,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 3915: Bockhorst</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -217,9 +214,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 3916: Halle  (Westfalen)</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -279,9 +273,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 5628: Bad K&#xF6;nigshofen im Grabfeld</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -341,9 +332,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 5634: Teuschnitz</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -403,9 +391,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 5635: Nordhalben</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -465,9 +450,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 5728: Oberlauringen</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -527,9 +509,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 6132: Buttenheim</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -589,9 +568,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 6232: Forchheim</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -651,9 +627,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 6235: Pegnitz</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>
@@ -713,9 +686,6 @@
                 <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
               </abcd:Agents>
               <abcd:LocalityText>MTB 7032: Bieswang</abcd:LocalityText>
-              <abcd:Country>
-                <abcd:Name language="German">Deutschland</abcd:Name>
-              </abcd:Country>
               <abcd:SiteCoordinateSets>
                 <abcd:SiteCoordinates>
                   <abcd:CoordinatesGrid>

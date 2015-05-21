@@ -37,9 +37,10 @@ public class EntityValidationTaskQueueTest {
 		emp2.setFirstName("John");
 		emp2.setLastName("Smith");
 
-		evt1 = new Level2ValidationTask(emp1);
-		evt2 = new Level2ValidationTask(emp2);
-		evt3 = new Level2ValidationTask(emp1);
+		//TODO dao
+		evt1 = new Level2ValidationTask(emp1, null);
+		evt2 = new Level2ValidationTask(emp2, null);
+		evt3 = new Level2ValidationTask(emp1, null);
 
 	}
 

@@ -8,9 +8,9 @@
 	* The contents of this file are subject to the Mozilla Public License Version 1.1
 	* See LICENSE.TXT at the top of this package for the full license terms.
 	*/
-	package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.api.service;
 
-	import java.io.Serializable;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 	 */
 public class UpdateResult implements Serializable{
 
+        private static final long serialVersionUID = 1L;
 
-
-		@SuppressWarnings("unused")
+        @SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(UpdateResult.class);
 
 		private Status status = Status.OK;
@@ -41,7 +41,10 @@ public class UpdateResult implements Serializable{
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
 
-		private CdmBase cdmEntity;
+		private final Set<CdmBase> unchangedObjects = new HashSet<CdmBase>();
+
+        private CdmBase cdmEntity;
+
 
 //		private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
 	//
@@ -209,14 +212,26 @@ public class UpdateResult implements Serializable{
 							"Exceptions: " + exceptionString+"\n" +
 									"Related Objects: "+relatedObjectString;
 		}
+		public void setCdmEntity(CdmBase cdmBase) {
+			this.cdmEntity = cdmBase;
 
-        public CdmBase getCdmEntity() {
-            return cdmEntity;
-        }
-        public void setCdmEntity(CdmBase cdmEntity) {
-            this.cdmEntity = cdmEntity;
+		}
+
+
+		public CdmBase getCdmEntity(){
+		    return cdmEntity;
+		}
+
+		public Set<CdmBase> getUnchangedObjects() {
+            return unchangedObjects;
         }
 
+		public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
+		    this.unchangedObjects.addAll(unchangedObjects);
+		}
+		public void addUnChangedObject(CdmBase unchangedObject) {
+		    this.unchangedObjects.add(unchangedObject);
+		}
 
 
 

@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 @Constraint(validatedBy = InReferenceValidator.class)
 @Documented
 public @interface InReference {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level3.class
 }

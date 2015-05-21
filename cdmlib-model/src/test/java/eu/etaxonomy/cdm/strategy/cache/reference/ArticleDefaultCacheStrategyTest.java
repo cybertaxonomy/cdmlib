@@ -135,7 +135,6 @@ public class ArticleDefaultCacheStrategyTest {
 		Assert.assertEquals("in M. J. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		article1.setSeriesPart("ser. 11");
 		Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		
 	}
 
 	/**

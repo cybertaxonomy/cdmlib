@@ -19,7 +19,6 @@ import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.config.ICdmSource;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 public interface ICdmDataSource  extends DataSource,ICdmSource {
 
@@ -145,7 +144,5 @@ public interface ICdmDataSource  extends DataSource,ICdmSource {
 	 * @return
 	 */
 	public DatabaseMetaData getMetaData();
-	
-
 
 }

@@ -165,6 +165,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
+    //TODO Val #3379, #4245
+//  @NullOrNotEmpty
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
 
 
@@ -194,7 +196,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
-          this.idInVocabulary = idInVocabulary;
+
+          this.idInVocabulary = StringUtils.isBlank(idInVocabulary)? null : idInVocabulary;
       }
 
       @Override
@@ -477,6 +480,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
     // Currently the CDM Caching mechanism is only used for caching terms
     private static ICdmUuidCacher cacher;
+
 
     /**
      * Gets the CDM cacher object

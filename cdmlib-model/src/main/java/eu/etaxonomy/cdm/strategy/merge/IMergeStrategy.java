@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.merge;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 
@@ -32,6 +31,21 @@ public interface IMergeStrategy {
 	 * @throws MergeException 
 	 */
 	public void setMergeMode(String propertyName, MergeMode mergeMode) throws MergeException;
+	
+	/**
+	 * Sets the default merge mode for all properties.
+	 * The default merge mode is used if no more specific merge mode is defined for a certain property.
+	 * @param mergeMode
+	 */
+	public void setDefaultMergeMode(MergeMode defaultMergeMode);
+	
+	/**
+	 * Sets the default merge mode for all collection properties.
+	 * The default collection merge mode is used if no specific merge mode is defined for a certain collection property.
+	 * @param mergeMode
+	 */
+	public void setDefaultCollectionMergeMode(MergeMode defaultCollectionMergeMode);
+
 	
 	/**
 	 * Merges mergeSecond into mergeFirst.
@@ -57,4 +71,25 @@ public interface IMergeStrategy {
 	 */
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException;
 
+	/**
+	 * If set to true the merge will only reallocate all references that point
+	 * to the second entity to the first entity. All data attached to the 
+	 * second entity will be completely lost. All data attached to the first 
+	 * entity will be saved as it is. All other {@link MergeMode} information will
+	 * be neglected.<BR>
+	 * The second entity will finally be deleted.
+	 * 
+	 * #see {@link #setOnlyReallocateLinks(boolean)}
+	 */
+	 public boolean isOnlyReallocateReferences(); 
+	
+//	 Removed as this is not yet implemented in underlying classes
+//	/**
+//	 * Sets the onlyReallocateReferences parameter. See {@link #isOnlyReallocateReferences()}
+//	 * for the parameters semantics.
+//	 * @see #isOnlyReallocateReferences()
+//	 * @param onlyReallocateReferences
+//	 */
+//	public void setOnlyReallocateLinks(boolean onlyReallocateReferences);
+	
 }

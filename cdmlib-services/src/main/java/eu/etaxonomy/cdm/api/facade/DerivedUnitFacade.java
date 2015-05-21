@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -2202,7 +2203,7 @@ public class DerivedUnitFacade {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the original label information of the derived unit.
 	 * @return
@@ -2245,6 +2246,22 @@ public class DerivedUnitFacade {
 
 	public void removeSource(IdentifiableSource source) {
 		this.baseUnit().removeSource(source);
+	}
+
+	//*** identifiers ***/
+
+
+    public void addIdentifier(Identifier identifier) {
+        this.baseUnit().addIdentifier(identifier);
+    }
+
+	@Transient
+	public List<Identifier> getIdentifiers() {
+	    return baseUnit().getIdentifiers();
+	}
+
+	public void removeIdentifier(Identifier identifier) {
+	    this.baseUnit().removeIdentifier(identifier);
 	}
 
 	@Transient

@@ -17,10 +17,10 @@ import eu.etaxonomy.cdm.validation.constraint.ChildTaxaMustNotSkipRanksValidator
 @Constraint(validatedBy = ChildTaxaMustNotSkipRanksValidator.class)
 @Documented
 public @interface ChildTaxaMustNotSkipRanks {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level3.class
 }

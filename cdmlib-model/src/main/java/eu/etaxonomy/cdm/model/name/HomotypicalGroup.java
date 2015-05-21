@@ -127,19 +127,35 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	public void addTypifiedName(TaxonNameBase typifiedName) {
 		if (typifiedName != null){
 			typifiedNames.add(typifiedName);
+			//if (typifiedName.getHomotypicalGroup() != null && !typifiedName.getHomotypicalGroup().equals(this))
 			typifiedName.setHomotypicalGroup(this);
 		}
 	}
+	
+	/**
+	 * @see #removeTypifiedName(TaxonNameBase, boolean)
+	 * @param typifiedName
+	 */
+	public void removeTypifiedName(TaxonNameBase typifiedName) {
+		removeTypifiedName(typifiedName, false);
+	}
+
+	
 	/** 
 	 * Removes one element from the set of {@link TaxonNameBase taxon names}
 	 * that belong to <i>this</i> homotypical group.
 	 *
-	 * @param  taxonBase	the taxon name which should be removed from the corresponding set
-	 * @see    				#addTypifiedName(TaxonNameBase)
+	 * @param  typifiedName	the taxon name which should be removed from the corresponding set
+	 * @param  removeGroup  if <code>true</code> the typified name is given a new 
+	 * 						homotypical group 
+	 * @see    #addTypifiedName(TaxonNameBase)
 	 */
-	public void removeTypifiedName(TaxonNameBase typifiedName) {
-		HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
-		typifiedName.setHomotypicalGroup(newHomotypicalGroup);
+	public void removeTypifiedName(TaxonNameBase typifiedName, boolean removeGroup) {
+		if (removeGroup){
+			HomotypicalGroup newHomotypicalGroup = HomotypicalGroup.NewInstance();
+			typifiedName.setHomotypicalGroup(newHomotypicalGroup);
+		}
+		
 		typifiedNames.remove(typifiedName);	
 	}
 
@@ -406,11 +422,16 @@ public class HomotypicalGroup extends AnnotatableEntity {
         if (typifiedNames.size() < 2){return;}
 //        
     	//Add new relations
-        for (TaxonNameBase name : typifiedNames) {
+        Set<TaxonNameBase> typified = new HashSet<TaxonNameBase>();
+        for (TaxonNameBase name : typifiedNames){
+        	typified.add(name);
+        }
+        for (TaxonNameBase name : typified) {
     		if (!name.equals(basionymName)) {
 		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered);
 			}
     	}
+        typifiedNames= typified;
     }
     
     /**

@@ -81,12 +81,12 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
+		Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName());
 
 		List<Object[]> result = query.list();
 
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (String) object[1]));
+			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (Integer)object[1], (String) object[2]));
 		}
 
 		return list;
@@ -97,20 +97,20 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select " +
-				"r.uuid, r.titleCache, ab.titleCache from " + type.getSimpleName() + " as r left outer join r.authorship as ab ");//"select uuid, titleCache from " + type.getSimpleName());
+		Query query = session.createQuery("SELECT " +
+				"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
 
-		List<Object[]> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
 
 		for(Object[] object : result){
-			UuidAndTitleCache<Reference> uuidAndTitleCache;
-			String referenceTitle = (String) object[1];
+			String referenceTitle = (String) object[2];
 
 			if(referenceTitle != null){
-				String teamTitle = (String) object[2];
+				String teamTitle = (String) object[3];
 				referenceTitle = ReferenceDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
 
-				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0], referenceTitle));
+				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0],(Integer)object[1], referenceTitle));
 			}else{
 				logger.error("title cache of reference is null. UUID: " + object[0]);
 			}
@@ -121,7 +121,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
     public List<Reference> getAllReferencesForPublishing(){
-		List<Reference> references = getSession().createQuery("Select r from Reference r "+
+		@SuppressWarnings("unchecked")
+        List<Reference> references = getSession().createQuery("Select r from Reference r "+
 				"where r.id IN "+
 					"(Select m.markedObj.id from Marker m where "+
 						"m.markerType.id = "+
@@ -132,11 +133,13 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	@Override
     public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
 
-		List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+		@SuppressWarnings("unchecked")
+        List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
 		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
 		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
 		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
-		List<Reference> resultRefernces =referenceQuery.list();
+		@SuppressWarnings("unchecked")
+        List<Reference> resultRefernces =referenceQuery.list();
 
 		return resultRefernces;
 	}

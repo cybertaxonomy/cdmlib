@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.ext.geo.OccurrenceServiceRequestParameterDto;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -218,9 +219,9 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
                 null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
 
-        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
+        OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
                 specimenOrObservationTypeColors );
-        mv.addObject(uriParams);
+        mv.addObject(dto);
         return mv;
     }
 

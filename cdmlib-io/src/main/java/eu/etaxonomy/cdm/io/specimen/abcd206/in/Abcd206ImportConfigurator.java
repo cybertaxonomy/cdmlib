@@ -38,6 +38,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 
     private static String sourceReferenceTitle = null;
+    @Deprecated
+    //FIXME what does this do?
     private boolean parseNameAutomatically = false;
     private boolean reuseExistingMetadata = true;
     private String taxonReference = null;
@@ -53,7 +55,16 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean determinationOnFieldUnitLevel = false;
     private boolean deduplicateReferences = false;
     private boolean deduplicateClassifications = false;
+    private boolean ignoreAuthorship = false;
+    private boolean removeCountryFromLocalityText = false;
+    private boolean moveNewTaxaToDefaultClassification = true;
 
+    private boolean mapUnitIdToCatalogNumber = true;
+    private boolean mapUnitIdToAccessionNumber = false;
+    private boolean mapUnitIdToBarcode = false;
+
+    private boolean overwriteExistingSpecimens = false;
+    private boolean ignoreImportOfExistingSpecimens = true;
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
@@ -200,11 +211,11 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         }
         return sourceReference;
     }
-
+    @Deprecated
     public void setParseNameAutomatically(boolean doParsing){
         this.parseNameAutomatically=doParsing;
     }
-
+    @Deprecated
     public boolean isParseNameAutomatically(){
         return this.parseNameAutomatically;
     }
@@ -372,4 +383,67 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return reportUri;
     }
 
+    public void setIgnoreAuthorship(boolean ignoreAuthorship) {
+        this.ignoreAuthorship = ignoreAuthorship;
+    }
+
+    public boolean isIgnoreAuthorship() {
+        return ignoreAuthorship;
+    }
+
+    public boolean isMapUnitIdToAccessionNumber() {
+        return mapUnitIdToAccessionNumber;
+    }
+
+    public boolean isMapUnitIdToBarcode() {
+        return mapUnitIdToBarcode;
+    }
+
+    public boolean isMapUnitIdToCatalogNumber() {
+        return mapUnitIdToCatalogNumber;
+    }
+
+    public void setMapUnitIdToAccessionNumber(boolean mapUnitIdToAccessionNumber) {
+        this.mapUnitIdToAccessionNumber = mapUnitIdToAccessionNumber;
+    }
+
+    public void setMapUnitIdToBarcode(boolean mapUnitIdToBarcode) {
+        this.mapUnitIdToBarcode = mapUnitIdToBarcode;
+    }
+
+    public void setMapUnitIdToCatalogNumber(boolean mapUnitIdToCatalogNumber) {
+        this.mapUnitIdToCatalogNumber = mapUnitIdToCatalogNumber;
+    }
+
+    public void setRemoveCountryFromLocalityText(boolean removeCountryFromLocalityText) {
+        this.removeCountryFromLocalityText = removeCountryFromLocalityText;
+    }
+
+    public boolean isRemoveCountryFromLocalityText() {
+        return removeCountryFromLocalityText;
+    }
+
+    public boolean isMoveNewTaxaToDefaultClassification() {
+        return moveNewTaxaToDefaultClassification;
+    }
+
+    public void setMoveNewTaxaToDefaultClassification(boolean moveNewTaxaToDefaultClassification) {
+        this.moveNewTaxaToDefaultClassification = moveNewTaxaToDefaultClassification;
+    }
+
+    public boolean isOverwriteExistingSpecimens() {
+        return overwriteExistingSpecimens;
+    }
+
+    public void setOverwriteExistingSpecimens(boolean overwriteExistingSpecimens) {
+        this.overwriteExistingSpecimens = overwriteExistingSpecimens;
+    }
+
+    public boolean isIgnoreImportOfExistingSpecimens() {
+        return ignoreImportOfExistingSpecimens;
+    }
+
+    public void setIgnoreImportOfExistingSpecimens(boolean ignoreImportOfExistingSpecimens) {
+        this.ignoreImportOfExistingSpecimens = ignoreImportOfExistingSpecimens;
+    }
 }

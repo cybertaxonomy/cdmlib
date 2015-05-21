@@ -7,9 +7,6 @@
     <session-factory>
 
       <property name="connection.release_mode">after_transaction</property>
-	  <property name="show_sql">true</property>
-		<property name="format_sql">true</property>
-		<property name="use_sql_comments">true</property>
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
@@ -67,6 +64,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Identifier"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.IntextReference"/>
       <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Group"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Language"/>
@@ -193,7 +191,7 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
       
       <!-- Validation Package -->
-      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidationResult"/>
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidation"/>
       <mapping class="eu.etaxonomy.cdm.model.validation.EntityConstraintViolation"/>
       
       <!-- View Package -->

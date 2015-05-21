@@ -277,9 +277,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 		text = text.trim();
 		//neglect known redundant strings
-		if (isNameType && text.matches("(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type\\:$")){
+		if (isNameType && (text.matches("(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type\\:$") 
+							|| charIsSimpleType(text) )){
 			return;
 		}//neglect meaningless punctuation
+		else if (isPunctuation(text)){
+			return;	
+		}//neglect mea
 		else if (isPunctuation(text)){
 			return;	
 		}else{
@@ -311,32 +315,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
-	/**
-	 * @param state
-	 * @param reader
-	 * @param name
-	 * @param next
-	 * @throws XMLStreamException
-	 */
-	private void handleFullName(MarkupImportState state, XMLEventReader reader,
-			NonViralName<?> name, XMLEvent next) throws XMLStreamException {
-		String fullNameStr;
-		Map<String, Attribute> attrs = getAttributes(next);
-		String rankStr = getAndRemoveRequiredAttributeValue(next,
-				attrs, "rank");
-		Rank rank = makeRank(state, rankStr, false);
-		name.setRank(rank);
-		if (rank == null) {
-			String message = "Rank was computed as null. This must not be.";
-			fireWarningEvent(message, next, 6);
-			name.setRank(Rank.UNKNOWN_RANK());
-		}
-		if (!attrs.isEmpty()) {
-			handleUnexpectedAttributes(next.getLocation(), attrs);
-		}
-		fullNameStr = getCData(state, reader, next);
-		name.setTitleCache(fullNameStr, true);
-	}
+
 
 	private void handleName(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, Map<String, String> nameMap)

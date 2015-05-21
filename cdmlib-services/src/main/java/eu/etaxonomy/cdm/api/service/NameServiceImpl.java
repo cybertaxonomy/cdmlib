@@ -158,11 +158,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
            //remove name from homotypical group
             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
             if (homotypicalGroup != null){
-                homotypicalGroup.removeTypifiedName(name);
+                homotypicalGroup.removeTypifiedName(name, false);
             }
-            if (homotypicalGroup.getTypifiedNames().isEmpty()){
-            	homotypicalGroupDao.delete(homotypicalGroup);
-            }
+            
              //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
 	//		//type designations
@@ -174,6 +172,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 	        try{
 	        UUID nameUuid = dao.delete(name);
+	        
 	        }catch(Exception e){
 	        	result.addException(e);
 	        	result.setError();
@@ -842,7 +841,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
-    	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
+    	name = this.load(name.getUuid());
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;
@@ -853,7 +852,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     	}
 
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
-    		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+    		HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
+    		
+    		if (!nameConfig.isIgnoreIsBasionymFor() && homotypicalGroup.getBasionyms().contains(name)){
        		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
        		 	result.setAbort();
             }
@@ -945,5 +946,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return result;
     }
 
+    @Override
+    public List<HashMap<String,String>> getNameRecords(){
+    	
+		return dao.getNameRecords();
+    	
+    }
 
 }

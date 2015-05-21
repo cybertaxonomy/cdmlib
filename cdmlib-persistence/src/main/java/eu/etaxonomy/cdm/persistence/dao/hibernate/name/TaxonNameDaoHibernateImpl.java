@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -33,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -48,6 +51,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -65,6 +69,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     @Autowired
     private ITaxonDao taxonDao;
+
+    @Autowired
+    private IHomotypicalGroupDao homotypicalGroupDao;
 
     public TaxonNameDaoHibernateImpl() {
         super(TaxonNameBase.class);
@@ -693,8 +700,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
      */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
-        String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
+        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase";
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = getSession().createSQLQuery(queryString).list();
 
         if(result.size() == 0){
@@ -707,9 +715,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
                 Object[] objectArray = (Object[]) object;
 
                 UUID uuid = UUID.fromString((String) objectArray[0]);
-                String titleCache = (String) objectArray[1];
+                Integer id = (Integer) objectArray[1];
+                String titleCache = (String) objectArray[2];
 
-                list.add(new UuidAndTitleCache(type, uuid, titleCache));
+                list.add(new UuidAndTitleCache(type, uuid, id, titleCache));
             }
 
             return list;
@@ -729,11 +738,25 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
-      
-        super.delete(persistentObject);
+
+        if (persistentObject == null){
+            logger.warn(type.getName() + " was 'null'");
+            return null;
+        }
+        getSession().saveOrUpdate(persistentObject);
+        UUID persUuid = persistentObject.getUuid();
+        persistentObject = this.load(persUuid);
+        UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
+        getSession().delete(persistentObject);
 
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
+        }
+        HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
+        if (homotypicalGroup != null){
+        	if (homotypicalGroup.getTypifiedNames().isEmpty()){
+        		homotypicalGroupDao.delete(homotypicalGroup);
+        	}
         }
         return persistentObject.getUuid();
     }
@@ -766,5 +789,84 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         return null;
     }
+@Override
+public List<HashMap<String,String>> getNameRecords(){
+    	String sql= "SELECT"
+    			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
+    			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id"
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tn.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as famName, "
+    			+ " (SELECT famName.namecache FROM TaxonNode famNode "
+    			+ " LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id "
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id "
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tnAcc.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as accFamName,tb.DTYPE, tb.id as TaxonID ,tb.titleCache taxonTitle,  tnb.rank_id as RankID, tnb.id as NameID,"
+    			+ " tnb.namecache as name, tnb.titleCache as nameAuthor, tnb.fullTitleCache nameAndNomRef,"
+    			+ "	r.titleCache as nomRef, r.abbrevTitle nomRefAbbrevTitle, r.title nomRefTitle, r.datepublished_start nomRefPublishedStart, r.datepublished_end nomRefPublishedEnd, r.pages nomRefPages, inRef.abbrevTitle inRefAbbrevTitle,tnb.nomenclaturalmicroreference as detail,"
+    			+ "	nameType.namecache nameType, nameType.titleCache nameTypeAuthor, nameType.fullTitleCache nameTypeFullTitle, nameTypeRef.titleCache nameTypeRef, inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
+    			+ " FROM TaxonBase tb"
+    			+ " LEFT OUTER JOIN TaxonNameBase tnb ON tb.name_id = tnb.id"
+    			+ "	LEFT OUTER JOIN Reference r ON tnb.nomenclaturalreference_id = r.id"
+    			+ "	LEFT OUTER JOIN TaxonNode tn ON tn.taxon_id = tb.id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase typeMN ON typeMN.TaxonNameBase_id = tnb.id"
+    			+ " LEFT OUTER JOIN TypeDesignationBase tdb ON tdb.id = typeMN.typedesignations_id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase nameType ON tdb.typename_id = nameType.id"
+    			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
+    			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
+    			+ "	LEFT OUTER JOIN SynonymRelationship sr ON tb.id = sr.relatedfrom_id"
+    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
+    			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
+    			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
+
+
+    	SQLQuery query = getSession().createSQLQuery(sql);
+    	List result = query.list();
+    	 //Delimiter used in CSV file
+
+
+		List<HashMap<String,String>> nameRecords = new ArrayList();
+		HashMap<String,String> nameRecord = new HashMap<String,String>();
+		for(Object object : result)
+         {
+			Object[] row = (Object[])object;
+			nameRecord = new HashMap<String,String>();
+			nameRecord.put("famName",(String)row[0]);
+			nameRecord.put("accFamName",(String)row[1]);
+
+			nameRecord.put("DTYPE",(String)row[2]);
+			nameRecord.put("TaxonID",String.valueOf(row[3]));
+			nameRecord.put("taxonTitle",(String)row[4]);
+            nameRecord.put("RankID",String.valueOf(row[5]));
+            nameRecord.put("NameID",String.valueOf(row[6]));
+            nameRecord.put("name",(String)row[7]);
+            nameRecord.put("nameAuthor",(String)row[8]);
+            nameRecord.put("nameAndNomRef",(String)row[9]);
+            nameRecord.put("nomRef",(String)row[10]);
+            nameRecord.put("nomRefAbbrevTitle",(String)row[11]);
+            nameRecord.put("nomRefTitle",(String)row[12]);
+            nameRecord.put("nomRefPublishedStart",(String)row[13]);
+            nameRecord.put("nomRefPublishedEnd",(String)row[14]);
+            nameRecord.put("nomRefPages",(String)row[15]);
+            nameRecord.put("inRefAbbrevTitle",(String)row[16]);
+            nameRecord.put("detail",(String)row[17]);
+            nameRecord.put("nameType",(String)row[18]);
+            nameRecord.put("nameTypeAuthor",(String)row[19]);
+            nameRecord.put("nameTypeFullTitle",(String)row[20]);
+            nameRecord.put("nameTypeRef",(String)row[21]);
+            nameRecord.put("inRefSeries",(String)row[22]);
+            nameRecord.put("inRefPublishedStart",(String)row[23]);
+            nameRecord.put("inRefPublishedEnd",(String)row[24]);
+            nameRecord.put("inRefVolume",(String)row[25]);
+            nameRecords.add(nameRecord);
+	   }
+
+		return nameRecords;
+
+
+
+    }
+
+
 
 }

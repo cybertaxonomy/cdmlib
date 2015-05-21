@@ -132,7 +132,7 @@ public interface IEditGeoService {
             List<Language> langs);
 
 
-    public String getOccurrenceServiceRequestParameterString(
+    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
             List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors
             );

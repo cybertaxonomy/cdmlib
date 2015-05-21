@@ -15,9 +15,8 @@ import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -168,6 +167,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

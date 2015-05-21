@@ -179,7 +179,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         unrankedName.setSpecificEpithet(null);
         unrankedName.setInfraGenericEpithet("Infrageneric");
         unrankedCache = strategy.getNameCache(unrankedName);
-        Assert.assertEquals("Correct unranked cache expected", "Genus [infragen.] Infrageneric", unrankedCache);
+        Assert.assertEquals("Correct unranked cache expected", "Genus [unranked] Infrageneric", unrankedCache);
 
         //bot. specific ranks
         botName = BotanicalName.NewInstance(Rank.SECTION_BOTANY());

@@ -82,7 +82,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
-
 /**
  * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
@@ -227,6 +226,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
+         
+         configurator.setTitleSearchString("silver fir");
+         configurator.setMatchMode(MatchMode.BEGINNING);
+         configurator.setDoTaxa(false);
+         configurator.setDoSynonyms(false);
+         configurator.setDoNamesWithoutTaxa(true);
+         configurator.setDoTaxaByCommonNames(true);
+
+         list = taxonService.findTaxaAndNamesForEditor(configurator);
+
+         Assert.assertEquals("Expecting one entity", 1, list.size());
+         
     }
 
     @SuppressWarnings("rawtypes")
@@ -631,7 +642,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(descriptionElementUuidStr[0]));
 
         ((TextData)textData).removeText(Language.GERMAN());
-        ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto balsÃ¡mico");
+        ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto bals"+UTF8.SMALL_A_ACUTE+"mico");
 
         descriptionService.saveDescriptionElement(textData);
         commitAndStartNewTransaction(null);
@@ -643,9 +654,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("The german 'Balsam-Tanne' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
-        Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto balsÃ¡mico'", Integer.valueOf(1), pager.getCount());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsÃ¡mico", null, null, null, false, null, null, null, null);
-        Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto balsÃ¡mico'", Integer.valueOf(1), pager.getCount());
+        Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico'", Integer.valueOf(1), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "bals"+UTF8.SMALL_A_ACUTE+"mico", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico'", Integer.valueOf(1), pager.getCount());
 
         //
         // modify the DescriptionElement via the Description object
@@ -654,15 +665,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         for( DescriptionElementBase elm : elements){
             if(elm.getUuid().toString().equals(descriptionElementUuidStr[0])){
                 ((TextData)elm).removeText(Language.SPANISH_CASTILIAN());
-                ((TextData)elm).putText(Language.POLISH(), "JodÅ‚a balsamiczna");
+                ((TextData)elm).putText(Language.POLISH(), "Jod"+UTF8.POLISH_L+"a balsamiczna");
             }
         }
         descriptionService.saveOrUpdate(description);
         commitAndStartNewTransaction(null);
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
-        Assert.assertEquals("The spanish 'abeto balsÃ¡mico' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
+        Assert.assertEquals("The spanish 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsamiczna", null, null, Arrays.asList(new Language[]{Language.POLISH()}), false, null, null, null, null);
-        Assert.assertEquals("expecting to find the POLISH 'JodÅ‚a balsamiczna'", Integer.valueOf(1), pager.getCount());
+        Assert.assertEquals("expecting to find the POLISH 'Jod"+UTF8.POLISH_L+"a balsamiczna'", Integer.valueOf(1), pager.getCount());
     }
 
     @SuppressWarnings("rawtypes")
@@ -696,7 +707,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         d_abies_balsamea_new
                 .addElement(TextData
                         .NewInstance(
-                                "Die Balsamtanne ist mit bis zu 30 m HÃ¶he ein mittelgro"+UTF8.SHARP_S+"er Baum und kann bis zu 200 Jahre alt werden",
+                                "Die Balsamtanne ist mit bis zu 30 m Höhe ein mittelgro"+UTF8.SHARP_S+"er Baum und kann bis zu 200 Jahre alt werden",
                                 Language.GERMAN(), null));
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
         // set authorshipCache to null to avoid validation exception,
@@ -1173,7 +1184,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //        createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 //
 //        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
-//        configurator.setTitleSearchString("WeiÃŸ%");
+//        configurator.setTitleSearchString("Wei"+UTF8.SHARP_S+"%");
 //        configurator.setMatchMode(MatchMode.BEGINNING);
 //        configurator.setDoTaxa(false);
 //        configurator.setDoSynonyms(false);
@@ -1368,12 +1379,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         d_abies_balsamea
                 .addElement(TextData
                         .NewInstance(
-                                "Ð‘Ð°Ð»ÑŒÐ·Ð°Ð¼ Ð½ÑŒÑ‹Ð² (Ð»Ð°Ñ‚. Abies balsamea) â€“ Ð±Ñ‹Ð´Ð¼Ð°Ñ�Ñ�Ñ�Ð·Ð»Ó§Ð½ Ð¿Ð¾Ð¶ÑƒÐ¼ ÐºÐ¾Ñ‚Ñ‹Ñ€Ð¸Ñ�ÑŒ Ð½ÑŒÑ‹Ð² ÑƒÐ²Ñ‚Ñ‹Ñ€Ñ‹Ð½ Ñ‚Ð¾Ñ€ÑŒÑ� Ð²Ð¸Ð´. Ð�ÑŒÑ‹Ð²Ð¿ÑƒÑ‹Ñ� Ð±Ñ‹Ð´Ð¼Ó§ 14â€“20 Ð¼ÐµÑ‚Ñ€Ð° Ð²Ñ‹Ð»Ñ‹Ð½Ð° Ð´Ð° Ð¾Ð²Ð»Ó§ 10â€“60 Ñ�Ð¼ ÐºÑ‹Ð·Ð° Ð´Ð¸Ð°Ð¼ÐµÑ‚Ñ€Ñ‹Ð½. Ð�ÑŒÑ‹Ð²Ð¿Ñƒ Ð¿Ð°Ð½Ñ‚Ð°Ñ�ÑŒÓ§ ÐžÐ¹Ð²Ñ‹Ð² Ð�Ð¼ÐµÑ€Ð¸ÐºÐ°Ñ‹Ð½.",
+                        		TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_LONG,
                                 Language.RUSSIAN(), null));
         d_abies_balsamea
         .addElement(CommonTaxonName
                 .NewInstance(
-                        "Ð‘Ð°Ð»ÑŒÐ·Ð°Ð¼ Ð½ÑŒÑ‹Ð²",
+                		TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_SHORT,
                         Language.RUSSIAN(), null));
         descriptionService.saveOrUpdate(d_abies_balsamea);
 

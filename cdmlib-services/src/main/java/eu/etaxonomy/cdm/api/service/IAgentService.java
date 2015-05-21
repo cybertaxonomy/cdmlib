@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 		
@@ -103,5 +104,34 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache();
+	
+	/**
+	 * If the given {@link Team} is a single member team all links to the team are redirected to the
+	 * single member and the team itself is deleted.
+	 * <BR>
+	 * If the given {@link Team} has no members (protected caches) a new {@link Person} is created
+	 * and all links to the team are redirected to the new person and the team itself is deleted.
+	 * <BR>
+	 * Otherwise, an {@link IllegalArgumentException} is thrown.
+	 * 
+	 * @param team the team to be converted
+	 * @return the existing or new person that replaces the given team
+	 * @throws IllegalArgumentException if team has > 1 members
+	 * @throws MergeException if anything else goes wrong during merge
+	 */
+	public Person convertTeam2Person(Team team) throws MergeException, IllegalArgumentException;
+	
+	/**
+	 * If possible replaces the given person by a new {@link Team}. 
+	 * <BR>This is only possible if the person is at no place used in person only mode, which 
+	 * is the case e.g. at User.person or FieldUnit.primaryCollector.
+	 * <BR>
+	 * If the person can not be replaced a {@link MergeException} is thrown.
+	 * 
+	 * @param person the {@link Person} to be converted
+	 * @return the new team that replaces the given person
+	 * @throws MergeException if anything else goes wrong during merge
+	 */
+	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 	
 }

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.search;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -266,7 +267,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
      */
     @Override
-    public void reindex(Set<Class<? extends CdmBase>> types, IProgressMonitor monitor){
+    public void reindex(Collection<Class<? extends CdmBase>> types, IProgressMonitor monitor){
 
         if(monitor == null){
             monitor = new NullProgressMonitor();
@@ -411,7 +412,5 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 NonViralName.class
                 };
     }
-
-
 
 }

@@ -130,9 +130,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 
 //********************** CLONE *****************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
-	 */
+
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		AnnotatableEntity result = (AnnotatableEntity)super.clone();

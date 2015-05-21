@@ -186,6 +186,9 @@ public class Contact implements Serializable, Cloneable {
 			mergeList(this.getUrls(), contact2.getUrls());
 			for (Address address : contact2.getAddresses()){
 				try {
+					if (this.addresses == null){
+						this.addresses = new HashSet<Address>(); 
+					}
 					this.addresses.add((Address)address.clone());
 				} catch (CloneNotSupportedException e) {
 					throw new MergeException("Address must implement Cloneable");

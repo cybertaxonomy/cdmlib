@@ -22,8 +22,10 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -45,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -323,14 +327,21 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
     /**
-     * Assembles a {@link DerivateHierarchyDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
+     * Assembles a {@link FieldUnitDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
      * <br>
      * For the meaning of "associated" see also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      * @param fieldUnit
      * @param associatedTaxonUuid
-     * @return
+     * @return a DTO with all the assembled information
      */
-    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+
+    /**
+     * Assembles a {@link PreservedSpecimenDTO} for the given derived unit.
+     * @param derivedUnit
+     * @return a DTO with all the assembled information
+     */
+    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
 
     /**
      * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
@@ -389,4 +400,75 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return collection of all descriptions with the given described specimen
      */
     public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Gets all description elements that are used for describing the character
+     * states of the given specimen
+     *
+     * @param specimen
+     *            the specimen for which the character state description
+     *            elements should be retrieved
+     * @return a collection of all character state description elements for this
+     *         specimen
+     */
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Gets all description elements that are used for describing the character
+     * states of the given specimen
+     *
+     * @param specimenUuid
+     *            the specimen {@link UUID} for which the character state description
+     *            elements should be retrieved
+     * @return a collection of all character state description elements for this
+     *         specimen
+     */
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(UUID specimenUuid);
+
+    /**
+     * Returns the most significant identifier for the given {@link DerivedUnit}.
+     * @param derivedUnit the derived unit to check
+     * @return the identifier string
+     */
+    public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
+
+    /**
+     * Returns the number of specimens that match the given parameters
+     * @param clazz the class to match
+     * @param queryString the queryString to match
+     * @param type the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon the taxon these specimens are in any way associated to via
+     * determination, type designations, individuals associations, etc.
+     * @param matchmode determines how the query string should be matched
+     * @param limit
+     *            the maximum number of entities returned (can be null to return
+     *            all entities)
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return the number of found specimens
+     */
+    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+
+    /**
+     * Return the all {@link SpecimenOrObservationBase}s of the complete
+     * derivative hierarchy i.e. all parent and child derivatives and the given
+     * specimen itself.
+     *
+     * @param specimen
+     *            a specimen or observation
+     * @return the derivative hierarchy as an unordered list of all specimens or observation
+     */
+    public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Returns all child derivatives of the given specimen.
+     * @param specimen a specimen or observation
+     * @return an unordered list of all child derivatives
+     */
+    public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
+
+
 }

@@ -15,8 +15,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
 
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.GeneralParser;
 import eu.etaxonomy.cdm.model.agent.Institution;

@@ -11,15 +11,19 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -45,15 +49,23 @@ import eu.etaxonomy.cdm.model.agent.Person;
     "commentator",
     "annotatedObj",
     "annotationType",
-    "linkbackUri"
+    "linkbackUri",
+    "intextReferences"
 })
 @Entity
 @Audited
-public class Annotation extends LanguageStringBase implements Cloneable {
+public class Annotation extends LanguageStringBase implements Cloneable, IIntextReferencable {
 	private static final long serialVersionUID = -4484677078599520233L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
 
+	//TODO do we need to add it to JAXB? #4706
+	@XmlElementWrapper(name = "IntextReferences", nillable = true)
+	@XmlElement(name = "IntextReference")
+	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+//	@Merge(MergeMode.ADD_CLONE)
+    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
 
 	/**
 	 * Factory method.
@@ -113,9 +125,9 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@Type(type="uriUserType")
 	private URI linkbackUri;
 
-	
+
 // *********** CONSTRUCTOR **************************************/
-	
+
 	protected Annotation(){
 		super();
 	}
@@ -129,8 +141,8 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		super(text, language);
 	}
 
-//******************** GETTER /SETTER *************************/	
-	
+//******************** GETTER /SETTER *************************/
+
 
 	/**
 	 * Currently envers does not support @Any
@@ -139,7 +151,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-	
+
 	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	/**
 	 *
@@ -175,6 +187,29 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	}
 
 
+	//*************** INTEXT REFERENCE **********************************************
+
+	@Override
+    public Set<IntextReference> getIntextReferences(){
+		return this.intextReferences;
+	}
+	@Override
+    public void addIntextReference(IntextReference intextReference){
+		if (intextReference != null){
+			intextReference.setAnnotation(this);
+			getIntextReferences().add(intextReference);
+		}
+	}
+
+	@Override
+    public void removeIntextReference(IntextReference intextReference){
+		if(getIntextReferences().contains(intextReference)) {
+			getIntextReferences().remove(intextReference);
+			intextReference.setAnnotation((Annotation)null);
+		}
+	}
+
+
 // ***************************** TO STRING ***********************************
 
 
@@ -194,15 +229,26 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 
 //****************** CLONE ************************************************/
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Annotation result = (Annotation)super.clone();
+		//TODO do we really need this, it should not change anything
 		result.setCommentator(this.getCommentator());
+		//TODO do we really need this, it should not change anything
 		result.setAnnotationType(this.getAnnotationType());
-		result.setLinkbackUri(this.linkbackUri);
+
+		try {
+			result.setLinkbackUri(this.linkbackUri == null ? null : new URI(this.linkbackUri.toString()));
+		} catch (URISyntaxException e) {
+			//do nothing
+		}
+		//IntextReferences
+		result.intextReferences = new HashSet<IntextReference>();
+		for (IntextReference intextReference : getIntextReferences()){
+			IntextReference newIntextReference = (IntextReference)intextReference.clone();
+			result.addIntextReference(newIntextReference);
+		}
+
 		return result;
 	}
 
@@ -214,6 +260,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public Annotation clone(AnnotatableEntity annotatedObject) throws CloneNotSupportedException{
 		Annotation result = (Annotation)clone();
 		result.setAnnotatedObj(annotatedObject);
+
 		return result;
 	}
 }

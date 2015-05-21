@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Team", propOrder = {
 	"protectedNomenclaturalTitleCache",
+	"protectedCollectorTitleCache",
     "teamMembers"
 })
 @XmlRootElement(name = "Team")
@@ -75,6 +76,10 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;
 
+    //under construction #4311
+    @XmlElement(name = "ProtectedCollectorTitleCache")
+	private boolean protectedCollectorTitleCache = false;
+    
 	//An abbreviated name for the team (e. g. in case of nomenclatural authorteams). 
     //A non abbreviated name for the team (e. g.
 	//in case of some bibliographical references)
@@ -270,7 +275,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
 		firePropertyChange("nomenclaturalTitle", this.nomenclaturalTitle, nomenclaturalTitle);
-		this.nomenclaturalTitle = nomenclaturalTitle;
+		this.nomenclaturalTitle = nomenclaturalTitle == "" ? null: nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 

@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.model.molecular;
 
+import java.util.Arrays;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -57,7 +59,7 @@ public class SingleReadAlignment extends VersionableEntity {
 	
 	//TODO XML mapping / user type
 	@Type(type="shiftUserType")
-    private Shift[] shifts;
+    private Shift[] shifts = new Shift[0];
 	
 	@XmlElement(name = "EditedSequence")
     @Lob
@@ -67,7 +69,7 @@ public class SingleReadAlignment extends VersionableEntity {
     private boolean reverseComplement;
 	
 	
-	public static class Shift{
+	public static class Shift implements Cloneable{
 		public int position;
 		public int shift;
 		
@@ -80,6 +82,10 @@ public class SingleReadAlignment extends VersionableEntity {
 		@Override
 		public String toString(){
 			return String.valueOf(position) + "," + String.valueOf(shift);
+		}
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			return super.clone();
 		}
 	}
 	
@@ -138,10 +144,13 @@ public class SingleReadAlignment extends VersionableEntity {
 	
 	//shifts
 	public Shift[] getShifts() {
-		return shifts;
+		return shifts == null ? new Shift[0] : shifts;
 	}
 	public void setShifts(Shift[] shifts) {
 		this.shifts = shifts;
+		if (shifts == null){
+			shifts = new Shift[0];
+		}
 	}
 
 	//edited sequence
@@ -168,8 +177,19 @@ public class SingleReadAlignment extends VersionableEntity {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		//all objects can be reused
-		return super.clone();
+		SingleReadAlignment result = (SingleReadAlignment)super.clone();
+		
+		//deep copy shifts
+		Shift[] oldShifts = this.getShifts();
+		int shiftLength = oldShifts.length;
+		Shift[] newShift = new Shift[shiftLength];
+		for (int i = 0; i< shiftLength; i++){
+			Shift oldShift = oldShifts[i];
+			newShift[0] = (Shift)oldShift.clone();
+		}
+		
+		//all other objects can be reused
+		return result;
 	}
 
 }

@@ -697,10 +697,17 @@ public class BerlinModelTransformer {
 			
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
 			
-			case 43: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_TO();
-			case 48: isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDED_OR_INCLUDES();
-			case 51: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_OVERLAPS();
+			//how to implement this, what is a purely doubtful relationship ??
+//			case 42: isDoubtful.setValue(true); return TaxonRelationshipType.();
 			
+			case 43: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_TO();
+			case 44: isInverse.setValue(true);isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDES();
+			case 46: isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDES();
+			case 48: isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDED_OR_INCLUDES();
+			case 50: isDoubtful.setValue(true); return TaxonRelationshipType.OVERLAPS();
+			case 51: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_OVERLAPS();
+			case 58: isDoubtful.setValue(true); return TaxonRelationshipType.EXCLUDES();
+
 			
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(relTaxonTypeId).toString() + ")");

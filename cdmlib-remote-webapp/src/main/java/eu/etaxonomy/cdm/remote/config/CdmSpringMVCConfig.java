@@ -300,7 +300,6 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
                    + "<ul>"
                    + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-name-catalogue.html\">Name Catalogue REST API</a>"
                    + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-occurrence-catalogue.html\">Occurrence Catalogue REST API</a>"
-                   + "<li><a href=\"doc/?group=Catalogue+Services\">Catalogue Services</a>"
                    + "</ul>"
                    ))
            .includePatterns("/name_catalogue.*", "/occurrence_catalogue.*")

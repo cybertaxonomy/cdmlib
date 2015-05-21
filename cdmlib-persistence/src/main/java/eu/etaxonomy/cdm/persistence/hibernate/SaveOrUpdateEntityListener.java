@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 
 
 @SuppressWarnings("serial")
@@ -56,6 +57,13 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 				ITreeNode<?> node = (ITreeNode<?>)entity;
 				reindex(event, node);
 				
+			}
+			
+			if (entity instanceof DeterminationEvent) {
+				DeterminationEvent detEv = (DeterminationEvent)entity;
+				if (detEv.getTaxon() != null && detEv.getTaxonName() == null && detEv.getTaxon().getName() != null){
+					detEv.setTaxonName(detEv.getTaxon().getName());
+				}
 			}
 		}
 	}

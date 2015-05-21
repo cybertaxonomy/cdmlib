@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
@@ -133,7 +133,7 @@ public class ReferenceFactory {
 		return refBase;
 	}
 
-	public static Reference newBookSection(Reference book, Person partAuthor,
+	public static Reference newBookSection(Reference book, TeamOrPersonBase partAuthor,
 			String sectionTitle, String pages) {
 		Reference<?> bookSection = newBookSection();
 		bookSection.setAuthorship(partAuthor);
@@ -142,7 +142,7 @@ public class ReferenceFactory {
 		return bookSection;
 	}
 
-	public static Reference newArticle(Reference inJournal, Person partAuthor,
+	public static Reference newArticle(Reference inJournal, TeamOrPersonBase partAuthor,
 			String title, String pages, String series, String volume, TimePeriod datePublished) {
 		Reference<?> article = newArticle();
 		article.setInReference(inJournal);

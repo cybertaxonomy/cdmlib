@@ -243,13 +243,13 @@
     </property>
   </bean>
 
-  <bean id="httpEntityValidationResultService"
+  <bean id="httpEntityValidationService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
-      <ref bean="entityValidationResultServiceImpl" />
+      <ref bean="entityValidationServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IEntityValidationResultService
+      <value>eu.etaxonomy.cdm.api.service.IEntityValidationService
       </value>
     </property>
   </bean>

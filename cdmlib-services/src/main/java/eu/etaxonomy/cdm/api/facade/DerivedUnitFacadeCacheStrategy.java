@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,7 +32,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
 	 */
@@ -43,7 +43,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
@@ -53,14 +53,14 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
 		String result = "";
-		
+
 		DerivedUnitFacade facade;
 		try {
 			DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 			result += fieldStrategy.getFieldData(facade);
-			
+
 			//Exsiccatum
 			String exsiccatum = null;
 			try {
@@ -69,23 +69,24 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 				//NO exsiccatum if this facade doe not represent a specimen
 			}
 			result = CdmUtils.concat("; ", result, exsiccatum);
-			
-			//Herbarium & accession number
+
+			//Herbarium & identifier
 			String code = getCode(facade);
-			String collectionData = CdmUtils.concat(" ", code, facade.getAccessionNumber());
+			String identifier = facade.getAccessionNumber();
+            String collectionData = CdmUtils.concat(" ", code, identifier);
 			if (StringUtils.isNotBlank(collectionData)) {
 				result = (result + " (" +  collectionData + ")").trim();
 			}
-			
+
 			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
 
-			
+
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return result;
 	}
 
@@ -95,7 +96,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 */
 	private String getCode(DerivedUnitFacade facade) {
 		String code = "";
-		if(facade.getCollection() != null){			
+		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
 			if (StringUtils.isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
@@ -109,12 +110,12 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 					}
 				}
 			}
-		} 
+		}
 		return code;
 	}
-	
+
 // ************************** GETTER / SETTER ******************************************************
-	
+
 	public boolean isIncludeSeconds() {
 		return includeEmptySeconds;
 	}
@@ -137,5 +138,5 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		return includeReferenceSystem;
 	}
 
-	
+
 }

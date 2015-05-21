@@ -29,7 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -118,9 +119,31 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof FieldUnit){
-            final DerivateHierarchyDTO assembleDerivateHierarchyDTO = service.assembleDerivateHierarchyDTO((FieldUnit)sob, taxonUuid);
-            if(assembleDerivateHierarchyDTO!=null){
-                mv.addObject(assembleDerivateHierarchyDTO);
+            final DerivateDTO fieldUnitDTO = service.assembleFieldUnitDTO((FieldUnit)sob, taxonUuid);
+            if(fieldUnitDTO!=null){
+                mv.addObject(fieldUnitDTO);
+            }
+        }
+        return mv;
+    }
+
+    @RequestMapping(value = { "specimenDerivates" }, method = RequestMethod.GET)
+    public ModelAndView doGetSpecimenDerivates(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetSpecimenDerivates() " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+
+        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
+
+        SpecimenOrObservationBase sob = service.load(uuid);
+        if(sob instanceof DerivedUnit){
+            PreservedSpecimenDTO specimenDTO = service.assemblePreservedSpecimenDTO((DerivedUnit) sob);
+            if(specimenDTO!=null){
+                mv.addObject(specimenDTO);
             }
         }
         return mv;

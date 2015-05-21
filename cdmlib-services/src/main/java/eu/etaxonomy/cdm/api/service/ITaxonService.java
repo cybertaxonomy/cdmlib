@@ -951,6 +951,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
 
+
     /**
      * @param synonymUuid
      * @param taxonUuid
@@ -973,6 +974,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
+
+	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
+			UUID newTaxonUUID, boolean moveHomotypicGroup,
+			SynonymRelationshipType newSynonymRelationshipType,
+			Reference reference, String referenceDetail, boolean keepReference)
+			throws HomotypicalGroupChangeException;
+
 
 
 

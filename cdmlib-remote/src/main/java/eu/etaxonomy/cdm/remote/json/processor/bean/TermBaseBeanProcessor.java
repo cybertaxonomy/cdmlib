@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 
 /**
@@ -76,7 +77,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
             }
         }
 
-        TermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
+        ITermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
         if (representation_L10n.getLabel() != null) {
             json.element("representation_L10n",representation_L10n.getLabel());
         }
@@ -90,7 +91,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         // add additional representation for RelationShipBase
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
-            TermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
+            ITermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
             if (inverseRepresentation_L10n.getLabel() != null) {
                 json.element("inverseRepresentation_L10n", inverseRepresentation_L10n.getLabel());
             }

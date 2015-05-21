@@ -25,6 +25,11 @@
 
   <bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>
 
+<!-- 
+  <bean id="validationManager" class="eu.etaxonomy.cdm.api.validation.ValidationManager"/>
+  <bean id="batchValidator" class="eu.etaxonomy.cdm.api.validation.batch.BatchValidator"/>
+ -->
+
   <!-- TODO move to io -->
   <context:component-scan base-package="eu/etaxonomy/cdm/io">
     <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />

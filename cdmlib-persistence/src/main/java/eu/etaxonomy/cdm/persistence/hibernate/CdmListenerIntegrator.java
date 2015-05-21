@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
@@ -12,12 +12,10 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
-import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
-
 /**
  * @author a.mueller
  * @created 30.03.2013
- * 
+ *
  */
 public class CdmListenerIntegrator implements Integrator {
 	private static final Logger logger = Logger.getLogger(CdmListenerIntegrator.class);
@@ -25,7 +23,7 @@ public class CdmListenerIntegrator implements Integrator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.hibernate.integrator.spi.Integrator#integrate(org.hibernate.cfg.Configuration,
 	 * org.hibernate.engine.spi.SessionFactoryImplementor,
 	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
@@ -35,17 +33,17 @@ public class CdmListenerIntegrator implements Integrator {
 		if (logger.isInfoEnabled()) {
 			logger.info("Registering event listeners");
 		}
-		
+
 		final EventListenerRegistry eventRegistry = serviceRegistry.getService(EventListenerRegistry.class);
 
 		//duplication strategy
 		eventRegistry.addDuplicationStrategy(CdmListenerDuplicationStrategy.NewInstance);
-		
-		ValidationExecutor validationExecutor = new ValidationExecutor();
-		Level2ValidationEventListener l2Listener = new Level2ValidationEventListener();
-		l2Listener.setValidationExecutor(validationExecutor);
-		Level3ValidationEventListener l3Listener = new Level3ValidationEventListener();
-		l3Listener.setValidationExecutor(validationExecutor);
+
+//		ValidationExecutor validationExecutor = new ValidationExecutor();
+//		Level2ValidationEventListener l2Listener = new Level2ValidationEventListener();
+//		l2Listener.setValidationExecutor(validationExecutor);
+//		Level3ValidationEventListener l3Listener = new Level3ValidationEventListener();
+//		l3Listener.setValidationExecutor(validationExecutor);
 
 		// prepend to register before or append to register after
 		// this example will register a persist event listener
@@ -67,7 +65,7 @@ public class CdmListenerIntegrator implements Integrator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.hibernate.integrator.spi.Integrator#integrate(org.hibernate.metamodel.source.
 	 * MetadataImplementor, org.hibernate.engine.spi.SessionFactoryImplementor,
 	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
@@ -81,7 +79,7 @@ public class CdmListenerIntegrator implements Integrator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.hibernate.integrator.spi.Integrator#disintegrate(org.hibernate.engine.spi.
 	 * SessionFactoryImplementor, org.hibernate.service.spi.SessionFactoryServiceRegistry)
 	 */

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+	<!-- ********************* -->
+	<!-- Validation results -->
+	<!-- ********************* -->
+	<ENTITYVALIDATION ID="1" CREATED="2008-12-10 09:56:07.0" UUID="dae5b090-30e8-45bc-9460-2eb2028d3c18"
+		VALIDATEDENTITYID="100" VALIDATEDENTITYUUID="f8de74c6-aa56-4de3-931e-87b61da0218c" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.media.Media" />
+	<ENTITYVALIDATION ID="3" CREATED="2008-12-10 09:56:07.0" UUID="c28aa49a-7751-461b-b2e4-868c252028ad"
+		VALIDATEDENTITYID="300" VALIDATEDENTITYUUID="676aa309-2e30-4652-84eb-b1e46c626a1b" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.occurrence.GatheringEvent" />
+	<ENTITYVALIDATION ID="4" CREATED="2008-12-10 09:56:07.0" UUID="a9ce0fff-f3fc-4c28-8f02-0b3206dc8662"
+		VALIDATEDENTITYID="301" VALIDATEDENTITYUUID="1fcae92b-5fc2-4396-81d6-37bad9508214" VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.model.occurrence.GatheringEvent" />
+	<!-- ********************* -->
+	<!-- Constraint violations -->
+	<!-- ********************* -->
+	<ENTITYCONSTRAINTVIOLATION ID="1" CREATED="2008-12-10 09:56:07.0" UUID="358da71f-b646-4b79-b00e-dcb68b6425ba"
+		ENTITYVALIDATION_ID="1" PROPERTYPATH="titleCache" INVALIDVALUE="Foo" SEVERITY="Error"
+		MESSAGE="You did something wrong with the title cache" VALIDATOR="com.example.TitleCacheValidator" />
+	<ENTITYCONSTRAINTVIOLATION ID="4" CREATED="2008-12-10 09:56:07.0" UUID="78cdd994-da45-4a50-928f-70b256731f89"
+		ENTITYVALIDATION_ID="3" PROPERTYPATH="distanceToGround" INVALIDVALUE="120305" SEVERITY="Warning"
+		MESSAGE="Distance to ground exceeds height of Mount Everest" VALIDATOR="com.example.DistanceToGroundValidator" />
+	<ENTITYCONSTRAINTVIOLATION ID="5" CREATED="2008-12-10 09:56:07.0" UUID="6b2fbe30-82ea-438a-9545-f2b2c3ae01d6"
+		ENTITYVALIDATION_ID="3" PROPERTYPATH="distanceToWaterSurface" INVALIDVALUE="0" SEVERITY="Notice"
+		MESSAGE="That's OK, but not impressive" VALIDATOR="com.example.DistanceToWaterSurfaceValidator" />
+	<ENTITYCONSTRAINTVIOLATION ID="6" CREATED="2008-12-10 09:56:07.0" UUID="94808148-ad14-4c96-963d-397d83a0e576"
+		ENTITYVALIDATION_ID="3" PROPERTYPATH="country" INVALIDVALUE="Foo" SEVERITY="Error" MESSAGE="No such country: Foo"
+		VALIDATOR="com.example.CountryValidator" />
+	<ENTITYCONSTRAINTVIOLATION ID="7" CREATED="2008-12-10 09:56:07.0" UUID="2f8e5c30-f3e9-4c73-a2bb-7610d05bec95"
+		ENTITYVALIDATION_ID="4" PROPERTYPATH="country" INVALIDVALUE="Bar" SEVERITY="Error" MESSAGE="No such country: Bar"
+		VALIDATOR="com.example.CountryValidator" />
+</dataset>

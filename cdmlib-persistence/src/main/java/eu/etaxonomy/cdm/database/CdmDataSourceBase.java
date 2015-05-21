@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
  */
 abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
-
     private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
 
@@ -114,7 +113,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 		} catch (SQLException e) {
 			throw new CdmSourceException(e.getMessage());	
 		}
-		
 	}
 	
 	@Override
@@ -167,7 +165,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 		String dbSchemaVersion = (String) getDbSchemaVersion();
 		
 		return (dbSchemaVersion == null || dbSchemaVersion.equals(""));
-
 	}
     /**
      * Executes a query and returns the ResultSet.

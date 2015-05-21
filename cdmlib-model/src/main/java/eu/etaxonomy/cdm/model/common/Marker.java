@@ -30,6 +30,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
+import eu.etaxonomy.cdm.validation.Level2;
+
 /**
  * This class aims to make available some "flags" for identifiable entities in a
  * flexible way. Application developers (and even users) can define their own
@@ -55,7 +57,7 @@ public class Marker extends VersionableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
+    @NotNull(groups=Level2.class)   //removed from Level1 for now, see #4588
 	private MarkerType markerType;
     
     @XmlElement(name = "MarkedObject")

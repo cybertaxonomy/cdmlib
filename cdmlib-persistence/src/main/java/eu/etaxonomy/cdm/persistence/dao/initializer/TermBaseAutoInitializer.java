@@ -24,7 +24,7 @@ public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
     }
     
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
     	return String.format(" LEFT JOIN FETCH %s.representations ", beanAlias); 
     }
 

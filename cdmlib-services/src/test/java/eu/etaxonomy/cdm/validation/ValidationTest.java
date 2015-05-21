@@ -91,7 +91,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	public final void testDefaultValidationWithInValidName() {
 		name.setGenusOrUninomial("");
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name);
-        assertFalse("There should be a constraint violation as this name is invalid at the default level",constraintViolations.isEmpty());
+        assertTrue("There should not be a constraint violation as this name is invalid at the default level because the setter checks for the empty string",constraintViolations.isEmpty());
 	}
 
 	/**

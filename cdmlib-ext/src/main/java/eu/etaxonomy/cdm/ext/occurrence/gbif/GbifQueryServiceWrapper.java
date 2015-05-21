@@ -20,7 +20,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -47,7 +46,7 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
 
     /**
      * Queries the GBIF API with the given {@link OccurenceQuery}.
-     * @return The response as a collection of {@link DerivedUnitFacade} or <code>null</code>
+     * @return The response as a collection of {@link GbifResponse}s or <code>null</code>
      * if no connection could be established
      */
     public Collection<GbifResponse> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{

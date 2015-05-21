@@ -11,17 +11,16 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAuthorsValidator;
-import eu.etaxonomy.cdm.validation.constraint.NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator;
 
 @Target( { TYPE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = BasionymsMustShareEpithetsAndAuthorsValidator.class)
 @Documented
 public @interface BasionymsMustShareEpithetsAndAuthors {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level3.class
 }

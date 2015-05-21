@@ -28,6 +28,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
 import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
 
 /**
@@ -55,7 +56,8 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 })
 @Entity
 @Audited
-@NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = {Level3.class})
+@NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
+@BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> implements Cloneable{
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);

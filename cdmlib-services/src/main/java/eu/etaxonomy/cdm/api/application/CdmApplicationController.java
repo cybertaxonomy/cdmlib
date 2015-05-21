@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -76,7 +76,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
 
 /**
  * @author a.mueller
- * 
  */
 public class CdmApplicationController implements ICdmApplicationConfiguration {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
@@ -94,11 +93,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
-	 * 
+	 *
 	 * @throws DataSourceNotFoundException
 	 */
-	public static CdmApplicationController NewInstance() throws DataSourceNotFoundException
-	{
+	public static CdmApplicationController NewInstance() throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
@@ -108,13 +106,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
-	 * 
+	 *
 	 * @param dbSchemaValidation
 	 *            validation type for database schema
 	 * @throws DataSourceNotFoundException
 	 */
-	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException
-	{
+	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
@@ -124,37 +121,30 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * Constructor, opens an spring ApplicationContext by using the according data source
 	 * and the default database schema validation type
-	 * 
+	 *
 	 * @param dataSource
 	 */
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource)
-	{
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource){
 		return CdmApplicationController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
 	}
 
 
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation)
-	{
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 
 
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-	{
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
 	}
 
-
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource,
-			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-	{
+			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		return CdmApplicationController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, null);
 	}
 
-
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource,
-			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor)
-	{
+			DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
 		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
 	}
 
@@ -167,8 +157,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * @return
 	 */
-	protected static ClassPathResource getClasspathResource()
-	{
+	protected static ClassPathResource getClasspathResource(){
 		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 	}
 
@@ -177,20 +166,18 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	 * @return
 	 * @throws DataSourceNotFoundException
 	 */
-	protected static CdmPersistentDataSource getDefaultDatasource() throws DataSourceNotFoundException
-	{
+	protected static CdmPersistentDataSource getDefaultDatasource() throws DataSourceNotFoundException{
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		return dataSource;
 	}
 
 
 	/**
-	 * 
+	 *
 	 * FIXME:Remoting this constructor is added only to allow extension of this cntroller
 	 * class. and should be removed after refactoring
 	 */
-	protected CdmApplicationController()
-	{
+	protected CdmApplicationController(){
 		applicationContextResource = null;
 		progressMonitor = null;
 	}
@@ -199,14 +186,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data
 	 * source
-	 * 
+	 *
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
 	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation,
-			boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners)
-	{
+			boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 
 		if (dbSchemaValidation == null) {
@@ -222,12 +208,11 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the
 	 * according data source and initializes the Controller.
-	 * 
+	 *
 	 * @param dataSource
 	 */
 	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading,
-			List<ApplicationListener> listeners)
-	{
+			List<ApplicationListener> listeners){
 
 		if (dbSchemaValidation == null) {
 			dbSchemaValidation = defaultDbSchemaValidation;
@@ -291,11 +276,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Tests if some DefinedTermsAreMissing.
-	 * 
+	 *
 	 * @return true, if at least one is missing, else false
 	 */
-	public boolean testDefinedTermsAreMissing()
-	{
+	public boolean testDefinedTermsAreMissing(){
 		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		DefinedTermBase<?> english = this.getTermService().load(englishUuid);
 		if (english == null || !english.getUuid().equals(englishUuid)) {
@@ -309,11 +293,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Changes the ApplicationContext to the new dataSource
-	 * 
+	 *
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource)
-	{
+	public boolean changeDataSource(ICdmDataSource dataSource){
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false, null);
 	}
@@ -321,12 +304,11 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Changes the ApplicationContext to the new dataSource
-	 * 
+	 *
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation)
-	{
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, false, null);
 	}
@@ -334,13 +316,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Changes the ApplicationContext to the new dataSource
-	 * 
+	 *
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-	{
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, null);
 	}
@@ -348,14 +329,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Changes the ApplicationContext to the new dataSource
-	 * 
+	 *
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading,
-			List<ApplicationListener> listeners)
-	{
+			List<ApplicationListener> listeners){
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
 	}
@@ -363,11 +343,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/**
 	 * Sets a new application Context.
-	 * 
+	 *
 	 * @param ac
 	 */
-	public void setApplicationContext(AbstractApplicationContext ac)
-	{
+	public void setApplicationContext(AbstractApplicationContext ac){
 		closeApplicationContext(); //closes old application context if necessary
 		applicationContext = ac;
 		applicationContext.registerShutdownHook();
@@ -377,12 +356,11 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#finalize()
 	 */
 	@Override
-	public void finalize()
-	{
+	public void finalize(){
 		close();
 	}
 
@@ -390,8 +368,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * closes the application
 	 */
-	public void close()
-	{
+	public void close(){
 		closeApplicationContext();
 	}
 
@@ -399,8 +376,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * closes the application context
 	 */
-	protected void closeApplicationContext()
-	{
+	protected void closeApplicationContext(){
 		if (applicationContext != null) {
 			logger.info("Close ApplicationContext");
 			applicationContext.close();
@@ -408,8 +384,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	}
 
 
-	protected void init()
-	{
+	protected void init(){
 		logger.debug("Init " + this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()) {
 			for (String beanName : applicationContext.getBeanDefinitionNames()) {
@@ -437,231 +412,185 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/* ****** Services ******** */
 	@Override
-	public final INameService getNameService()
-	{
+	public final INameService getNameService(){
 		return configuration.getNameService();
 	}
 
 
 	@Override
-	public final ITaxonService getTaxonService()
-	{
+	public final ITaxonService getTaxonService(){
 		return configuration.getTaxonService();
 	}
 
 
 	@Override
-	public final IClassificationService getClassificationService()
-	{
+	public final IClassificationService getClassificationService(){
 		return configuration.getClassificationService();
 	}
 
 
 	@Override
-	public final ITaxonNodeService getTaxonNodeService()
-	{
+	public final ITaxonNodeService getTaxonNodeService(){
 		return configuration.getTaxonNodeService();
 	}
 
 
 	@Override
-	public final IReferenceService getReferenceService()
-	{
+	public final IReferenceService getReferenceService(){
 		return configuration.getReferenceService();
 	}
 
 
 	@Override
-	public final IAgentService getAgentService()
-	{
+	public final IAgentService getAgentService(){
 		return configuration.getAgentService();
 	}
 
 
 	@Override
-	public final IDatabaseService getDatabaseService()
-	{
+	public final IDatabaseService getDatabaseService(){
 		return configuration.getDatabaseService();
 	}
 
 
 	@Override
-	public final ITermService getTermService()
-	{
+	public final ITermService getTermService(){
 		return configuration.getTermService();
 	}
 
 
 	@Override
-	public final IDescriptionService getDescriptionService()
-	{
+	public final IDescriptionService getDescriptionService(){
 		return configuration.getDescriptionService();
 	}
 
 
 	@Override
-	public final IOccurrenceService getOccurrenceService()
-	{
+	public final IOccurrenceService getOccurrenceService(){
 		return configuration.getOccurrenceService();
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService
-	 * ()
-	 */
 	@Override
-	public IAmplificationService getAmplificationService()
-	{
+	public IAmplificationService getAmplificationService(){
 		return configuration.getAmplificationService();
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
-	 */
 	@Override
-	public ISequenceService getSequenceService()
-	{
+	public ISequenceService getSequenceService(){
 		return configuration.getSequenceService();
 	}
 
 
 	@Override
-	public final IPrimerService getPrimerService()
-	{
+	public final IPrimerService getPrimerService(){
 		return configuration.getPrimerService();
 	}
 
 
 	@Override
-	public final IMediaService getMediaService()
-	{
+	public final IMediaService getMediaService(){
 		return configuration.getMediaService();
 	}
 
 
 	@Override
-	public final ICommonService getCommonService()
-	{
+	public final ICommonService getCommonService(){
 		return configuration.getCommonService();
 	}
 
 
 	@Override
-	public final ILocationService getLocationService()
-	{
+	public final ILocationService getLocationService(){
 		return configuration.getLocationService();
 	}
 
 
 	@Override
-	public final IUserService getUserService()
-	{
+	public final IUserService getUserService(){
 		return configuration.getUserService();
 	}
 
 
 	@Override
-	public final IGrantedAuthorityService getGrantedAuthorityService()
-	{
+	public final IGrantedAuthorityService getGrantedAuthorityService(){
 		return configuration.getGrantedAuthorityService();
 	}
 
 
 	@Override
-	public IGroupService getGroupService()
-	{
+	public IGroupService getGroupService(){
 		return configuration.getGroupService();
 	}
 
 
 	@Override
-	public final ICollectionService getCollectionService()
-	{
+	public final ICollectionService getCollectionService(){
 		return configuration.getCollectionService();
 	}
 
 
 	@Override
-	public final IFeatureTreeService getFeatureTreeService()
-	{
+	public final IFeatureTreeService getFeatureTreeService(){
 		return configuration.getFeatureTreeService();
 	}
 
 
 	@Override
-	public final IFeatureNodeService getFeatureNodeService()
-	{
+	public final IFeatureNodeService getFeatureNodeService(){
 		return configuration.getFeatureNodeService();
 	}
 
 
 	@Override
-	public final IVocabularyService getVocabularyService()
-	{
+	public final IVocabularyService getVocabularyService(){
 		return configuration.getVocabularyService();
 	}
 
 
 	@Override
-	public final IIdentificationKeyService getIdentificationKeyService()
-	{
+	public final IIdentificationKeyService getIdentificationKeyService(){
 		return configuration.getIdentificationKeyService();
 	}
 
 
 	@Override
-	public final IPolytomousKeyService getPolytomousKeyService()
-	{
+	public final IPolytomousKeyService getPolytomousKeyService(){
 		return configuration.getPolytomousKeyService();
 	}
 
 
 	@Override
-	public final IPolytomousKeyNodeService getPolytomousKeyNodeService()
-	{
+	public final IPolytomousKeyNodeService getPolytomousKeyNodeService(){
 		return configuration.getPolytomousKeyNodeService();
 	}
 
 
 	@Override
-	public IEntityValidationResultService getEntityValidationResultService()
-	{
-		return configuration.getEntityValidationResultService();
+	public IEntityValidationService getEntityValidationService(){
+		return configuration.getEntityValidationService();
 	}
 
 
 	@Override
-	public IEntityConstraintViolationService getEntityConstraintViolationService()
-	{
+	public IEntityConstraintViolationService getEntityConstraintViolationService(){
 		return configuration.getEntityConstraintViolationService();
 	}
 
 
 	@Override
-	public final IService<CdmBase> getMainService()
-	{
+	public final IService<CdmBase> getMainService(){
 		return configuration.getMainService();
 	}
 
 
 	@Override
-	public final IWorkingSetService getWorkingSetService()
-	{
+	public final IWorkingSetService getWorkingSetService(){
 		return configuration.getWorkingSetService();
 	}
 
 
 	@Override
-	public final ConversationHolder NewConversation()
-	{
+	public final ConversationHolder NewConversation(){
 		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
 		return configuration.NewConversation();
 	}
@@ -669,40 +598,22 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/* **** Security ***** */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java
-	 * .lang.String, java.lang.String)
-	 */
 	@Override
-	public void authenticate(String username, String password)
-	{
+	public void authenticate(String username, String password){
 		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
 		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager
-	 * ()
-	 */
 	@Override
-	public final ProviderManager getAuthenticationManager()
-	{
+	public final ProviderManager getAuthenticationManager(){
 		return configuration.getAuthenticationManager();
 	}
 
 
 	@Override
-	public ICdmPermissionEvaluator getPermissionEvaluator()
-	{
+	public ICdmPermissionEvaluator getPermissionEvaluator(){
 		return configuration.getPermissionEvaluator();
 	}
 
@@ -710,28 +621,25 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	/**
 	 * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication,
 	 *      java.lang.Object, java.lang.Object)
-	 * 
+	 *
 	 * @param targetDomainObject
 	 * @param permission
 	 * @return
 	 */
-	public boolean currentAuthentiationHasPermissions(CdmBase targetDomainObject, EnumSet<CRUD> permission)
-	{
+	public boolean currentAuthentiationHasPermissions(CdmBase targetDomainObject, EnumSet<CRUD> permission){
 		SecurityContext context = SecurityContextHolder.getContext();
 		return getPermissionEvaluator().hasPermission(context.getAuthentication(), targetDomainObject, permission);
 	}
 
 
 	@Override
-	public final PlatformTransactionManager getTransactionManager()
-	{
+	public final PlatformTransactionManager getTransactionManager(){
 		return configuration.getTransactionManager();
 	}
 
 
 	@Override
-	public final Object getBean(String name)
-	{
+	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
 	}
 
@@ -741,39 +649,32 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	 */
 
 	/* **** flush ********** */
-	public void flush()
-	{
+	public void flush(){
 		SessionFactory sf = (SessionFactory) applicationContext.getBean("sessionFactory");
 		sf.getCurrentSession().flush();
 	}
 
 
-	public SessionFactory getSessionFactory()
-	{
+	public SessionFactory getSessionFactory(){
 		return (SessionFactory) applicationContext.getBean("sessionFactory");
 	}
 
 
 	@Override
-	public TransactionStatus startTransaction()
-	{
+	public TransactionStatus startTransaction(){
 		return startTransaction(false);
 	}
 
 
 	@Override
-	public TransactionStatus startTransaction(Boolean readOnly)
-	{
+	public TransactionStatus startTransaction(Boolean readOnly){
 		return configuration.startTransaction(readOnly);
 	}
 
-
 	@Override
-	public void commitTransaction(TransactionStatus txStatus)
-	{
+	public void commitTransaction(TransactionStatus txStatus){
 		PlatformTransactionManager txManager = configuration.getTransactionManager();
 		txManager.commit(txStatus);
 		return;
 	}
-
 }

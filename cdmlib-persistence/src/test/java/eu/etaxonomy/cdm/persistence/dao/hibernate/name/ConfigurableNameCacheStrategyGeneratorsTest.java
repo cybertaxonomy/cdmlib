@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
@@ -33,18 +33,18 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 @DataSet("TaxonNameDaoHibernateImplTest.xml")
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-testWithConfigurableNameCacheStrategyGenerators.xml")
 public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationTest {
-	
+
 	@SpringBeanByType
 	ITaxonNameDao taxonNameDao;
-	
+
 	@SpringBeanByType
 	ITaxonDao taxonDao;
-	
+
 	private UUID cryptocoryneGriffithiiUuid;
 	private UUID acherontiaLachesisUuid;
 	private UUID acherontiaLachesisConceptUuid;
 	private UUID cryptocoryneGriffithiiConceptUuid;
-	
+
 	@Before
 	public void setUp() {
 		cryptocoryneGriffithiiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
@@ -52,35 +52,35 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
 	    acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
 	    acherontiaLachesisConceptUuid = UUID.fromString("258e28a3-c4e5-4b87-823e-2963c7831ce3");
 	}
-	
+
 	@Test
 	public void testPersistentEntities() {
 		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
-		
+
 		TaxonNameBase cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
 		INameCacheStrategy botanicalStrategy = (INameCacheStrategy)cryptocoryneGriffithii.getCacheStrategy();
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
 	}
-	
+
 	@Test
 	public void testHibernateProxyEntities() {
 		TaxonNameBase acherontiaLachesis = taxonDao.findByUuid(acherontiaLachesisConceptUuid).getName();
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
-		
+
 		TaxonNameBase cryptocoryneGriffithii = taxonDao.findByUuid(cryptocoryneGriffithiiConceptUuid).getName();
 		INameCacheStrategy botanicalStrategy = (INameCacheStrategy)cryptocoryneGriffithii.getCacheStrategy();
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
 	}
-	
+
 	@Test
 	public void testNewEntities() {
 		TaxonNameBase acherontiaLachesis = ZoologicalName.NewInstance(null);
 		INameCacheStrategy zoologicalStrategy = (INameCacheStrategy)acherontiaLachesis.getCacheStrategy();
 		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
-		
+
 		TaxonNameBase cryptocoryneGriffithii = BotanicalName.NewInstance(null);
 		INameCacheStrategy botanicalStrategy = (INameCacheStrategy)cryptocoryneGriffithii.getCacheStrategy();
 		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
@@ -92,6 +92,6 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmIntegrationT
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

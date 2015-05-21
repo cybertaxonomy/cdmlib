@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation.constraint;
 
@@ -16,8 +16,10 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 public class NullOrNotEmptyValidator implements ConstraintValidator<NullOrNotEmpty, String> {
 
-	public void initialize(NullOrNotEmpty nullOrNotEmpty) { }
+    @Override
+    public void initialize(NullOrNotEmpty nullOrNotEmpty) { }
 
+    @Override
 	public boolean isValid(String string, ConstraintValidatorContext constraintContext) {
 		boolean isValid = false;
 		if(string == null) {
@@ -25,7 +27,7 @@ public class NullOrNotEmptyValidator implements ConstraintValidator<NullOrNotEmp
 		} else if(string.trim().length() > 0) {
 			isValid =  true;
 		}
-		
+
 		return isValid;
 	}
 }

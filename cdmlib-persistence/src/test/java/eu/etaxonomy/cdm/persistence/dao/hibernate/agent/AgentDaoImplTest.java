@@ -30,9 +30,12 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -45,6 +48,9 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IAgentDao agentDao;
+    
+    @SpringBeanByType
+	IReferenceDao referenceDao;
 
     private UUID uuid;
     private UUID personUuid;
@@ -159,6 +165,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testDelete() throws Exception {
         Person person = (Person)agentDao.findByUuid(personUuid);
         agentDao.delete(person);
+        
         commitAndStartNewTransaction(null);
     }
 
@@ -254,12 +261,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

@@ -225,7 +225,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         TaxonBase<?> tb = service.load(uuid);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
-        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+        orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
         if(tb instanceof Taxon){
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
@@ -267,14 +267,13 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 
     @RequestMapping(value = { "includedTaxa" }, method = { RequestMethod.GET })
     public ModelAndView doGetIncludedTaxa(
-            @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
+            @PathVariable("uuid") UUID uuid,
             @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
             @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
             @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
             ModelAndView mv = new ModelAndView();
-            UUID taxonUuid = UUID.fromString(taxonUUIDString);
             /**
              * List<UUID> classificationFilter,
              * boolean includeDoubtful,
@@ -288,7 +287,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
                 }
             }
             final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
-            IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(taxonUuid, configuration);
+            IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
             mv.addObject(listIncludedTaxa);
             return mv;
     }

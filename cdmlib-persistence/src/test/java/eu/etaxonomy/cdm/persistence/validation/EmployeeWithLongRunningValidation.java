@@ -38,6 +38,7 @@ public class EmployeeWithLongRunningValidation extends CdmBase {
 	 * to accomplish this is to just let the equals() method simply return false. See
 	 * {@link EntityValidationTaskBase#equals(Object)}.
 	 */
+	@Override
 	public boolean equals(Object obj){
 		return false;
 	}

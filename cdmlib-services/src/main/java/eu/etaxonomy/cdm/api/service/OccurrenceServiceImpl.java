@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +44,15 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.ContigFile;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO.MolecularData;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.ContigFile;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.MolecularData;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -68,9 +75,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -108,7 +117,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase,IOccurrenceDao> implements IOccurrenceService {
+public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao> implements IOccurrenceService {
 
     static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
 
@@ -130,6 +139,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
 
+    private static final String SEPARATOR_STRING = ", ";
+
     public OccurrenceServiceImpl() {
         logger.debug("Load OccurrenceService Bean");
     }
@@ -141,12 +152,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
-        if (clazz == null){
+        if (clazz == null) {
             clazz = SpecimenOrObservationBase.class;
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
-
 
     /**
      * FIXME Candidate for harmonization
@@ -164,10 +174,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public List<Country> getCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null) ;
+        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null);
         List<Country> countries = new ArrayList<Country>();
-        for (int i=0;i<terms.size();i++){
-            countries.add((Country)terms.get(i));
+        for (int i = 0; i < terms.size(); i++) {
+            countries.add((Country) terms.get(i));
         }
         return countries;
     }
@@ -179,12 +189,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+    public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDerivationEvents(occurence);
 
         List<DerivationEvent> results = new ArrayList<DerivationEvent>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDerivationEvents(occurence, pageSize, pageNumber,propertyPaths);
+            results = dao.getDerivationEvents(occurence, pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
@@ -199,19 +209,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 
         List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDeterminations(occurrence,taxonBase, pageSize, pageNumber, propertyPaths);
+            results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public Pager<Media> getMedia(SpecimenOrObservationBase occurence,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMedia(occurence);
 
         List<Media> results = new ArrayList<Media>();
@@ -227,12 +237,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(type,determinedAs);
+        Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
-            results = dao.list(type,determinedAs, pageSize, start, orderHints,propertyPaths);
+            results = dao.list(type, determinedAs, pageSize, start, orderHints, propertyPaths);
         }
         return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
     }
@@ -252,7 +262,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
-        derivedUnit = (DerivedUnit)dao.load(derivedUnit.getUuid(), null);
+        derivedUnit = (DerivedUnit) dao.load(derivedUnit.getUuid(), null);
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
@@ -271,16 +281,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         IndividualsAssociation tempIndividualsAssociation;
         SpecimenOrObservationBase tempSpecimenOrObservationBase;
         List<DescriptionElementBase> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
-        for(DescriptionElementBase element : elements){
-            if(element.isInstanceOf(IndividualsAssociation.class)){
+        for (DescriptionElementBase element : elements) {
+            if (element.isInstanceOf(IndividualsAssociation.class)) {
                 tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
-                if(tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null){
+                if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
                     tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                    if(tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)){
+                    if (tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)) {
                         try {
                             derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
                         } catch (DerivedUnitFacadeNotSupportedException e) {
-                            logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " +e.getMessage());
+                            logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " + e.getMessage());
                         }
                     }
                 }
@@ -320,14 +330,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
-        if(!getSession().contains(associatedTaxon)){
+        if (!getSession().contains(associatedTaxon)) {
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
-        //gather the IDs of all relevant field units
+        // gather the IDs of all relevant field units
         Set<Integer> fieldUnitIds = new HashSet<Integer>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
-        for(SpecimenOrObservationBase<?> specimen:records){
+        for (SpecimenOrObservationBase<?> specimen : records) {
             for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
                 fieldUnitIds.add(fieldUnit.getId());
             }
@@ -338,93 +348,243 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid){
+    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid) {
 
-        if(!getSession().contains(fieldUnit)){
+        if (!getSession().contains(fieldUnit)) {
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
         }
         TaxonBase associatedTaxon = taxonService.load(associatedTaxonUuid);
 
-        DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
-        Map<UUID, TypeDesignationStatusBase> typeSpecimenUUIDtoTypeDesignationStatus = new HashMap<UUID, TypeDesignationStatusBase>();
+        FieldUnitDTO fieldUnitDTO = new FieldUnitDTO();
 
-        //gather types for this taxon name
-        TaxonNameBase<?,?> name = associatedTaxon.getName();
-        Set<?> typeDesignations = name.getSpecimenTypeDesignations();
-        for (Object object : typeDesignations) {
-            if(object instanceof CdmBase && ((CdmBase)object).isInstanceOf(SpecimenTypeDesignation.class)){
-                SpecimenTypeDesignation specimenTypeDesignation = HibernateProxyHelper.deproxy(object, SpecimenTypeDesignation.class);
-                DerivedUnit typeSpecimen = specimenTypeDesignation.getTypeSpecimen();
-                final TypeDesignationStatusBase typeStatus = specimenTypeDesignation.getTypeStatus();
-                typeSpecimenUUIDtoTypeDesignationStatus.put(typeSpecimen.getUuid(), typeStatus);
-            }
-        }
-
-        if(fieldUnit.getGatheringEvent()!=null){
+        if (fieldUnit.getGatheringEvent() != null) {
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-            //Country
-            final NamedArea country = gatheringEvent.getCountry();
-            dto.setCountry(country!=null?country.getDescription():"");
-            //Collection
-            final AgentBase collector = gatheringEvent.getCollector();
-            final String fieldNumber = fieldUnit.getFieldNumber();
-            dto.setCollection(((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:"")).trim());
-            //Date
-            final Partial gatheringDate = gatheringEvent.getGatheringDate();
-            dto.setDate(gatheringDate!=null?gatheringDate.toString():"");
+            // Country
+            NamedArea country = gatheringEvent.getCountry();
+            fieldUnitDTO.setCountry(country != null ? country.getDescription() : null);
+            // Collection
+            AgentBase collector = gatheringEvent.getCollector();
+            String fieldNumber = fieldUnit.getFieldNumber();
+            String collectionString = "";
+            if (collector != null || fieldNumber != null) {
+                collectionString += collector != null ? collector : "";
+                if (!collectionString.isEmpty()) {
+                    collectionString += " ";
+                }
+                collectionString += (fieldNumber != null ? fieldNumber : "");
+                collectionString.trim();
+            }
+            fieldUnitDTO.setCollection(collectionString);
+            // Date
+            Partial gatheringDate = gatheringEvent.getGatheringDate();
+            String dateString = null;
+            if (gatheringDate != null) {
+                gatheringDate.toString();
+            }
+            else if(gatheringEvent.getTimeperiod()!=null && gatheringEvent.getTimeperiod().getFreeText()!=null){
+                dateString = gatheringEvent.getTimeperiod().getFreeText();
+            }
+            fieldUnitDTO.setDate(dateString);
         }
 
-        //Taxon Name
-        dto.setTaxonName(associatedTaxon.getName().getFullTitleCache());
+        // Taxon Name
+        fieldUnitDTO.setTaxonName(associatedTaxon.getName().getTitleCache());
 
-
-        Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
-        getDerivedUnitsFor(fieldUnit, derivedUnits);
-
-        //Herbaria map
+        // Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
-        //List of accession numbers for citation
+        // List of accession numbers for citation
         List<String> preservedSpecimenAccessionNumbers = new ArrayList<String>();
 
-        //iterate over sub derivates
-        for (DerivedUnit derivedUnit : derivedUnits) {
-            //current accession number
-            String currentAccessionNumber = derivedUnit.getAccessionNumber()!=null?derivedUnit.getAccessionNumber():"";
-            //current herbarium
-            String currentHerbarium = "";
-            eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
-            if(collection!=null){
-                currentHerbarium = collection.getCode()!=null?collection.getCode():"";
-                //count herbaria
-                Integer count = collectionToCountMap.get(collection);
-                if(count==null){
-                    count = 1;
+        // assemble preserved specimen DTOs
+        Set<DerivationEvent> derivationEvents = fieldUnit.getDerivationEvents();
+        for (DerivationEvent derivationEvent : derivationEvents) {
+            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+            for (DerivedUnit derivedUnit : derivatives) {
+                // collect accession numbers for citation
+                String mostSignificantIdentifier = getMostSignificantIdentifier(derivedUnit);
+                if (mostSignificantIdentifier != null) {
+                    preservedSpecimenAccessionNumbers.add(mostSignificantIdentifier);
                 }
-                else{
-                    count++;
-                }
-                collectionToCountMap.put(collection, count);
-            }
-            //check if derived unit is a type
-            if(typeSpecimenUUIDtoTypeDesignationStatus.keySet().contains(derivedUnit.getUuid())){
-                dto.setHasType(true);
-                TypeDesignationStatusBase typeDesignationStatus = typeSpecimenUUIDtoTypeDesignationStatus.get(derivedUnit.getUuid());
-                String typeStatus = typeDesignationStatus.getLabel();
-                dto.addTypes(typeStatus, currentAccessionNumber);
-            }
-            //assemble molecular data
-            //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
-            if(derivedUnit.isInstanceOf(DnaSample.class)){
-                if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.TissueSample){
-                    //TODO implement TissueSample assembly for web service
-                }
-                if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.DnaSample){
-
-                    DnaSample dna = HibernateProxyHelper.deproxy(derivedUnit, DnaSample.class);
-                    if(!dna.getSequences().isEmpty()){
-                        dto.setHasDna(true);
+                // collect collections for herbaria column
+                if (derivedUnit.getCollection() != null) {
+                    Integer herbariumCount = collectionToCountMap.get(derivedUnit.getCollection());
+                    if (herbariumCount == null) {
+                        herbariumCount = 0;
                     }
-                    for(Sequence sequence:dna.getSequences()){
+                    collectionToCountMap.put(derivedUnit.getCollection(), herbariumCount + 1);
+                }
+                if (derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)) {
+                    PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
+                    fieldUnitDTO.addPreservedSpecimenDTO(preservedSpecimenDTO);
+                    fieldUnitDTO.setHasCharacterData(fieldUnitDTO.isHasCharacterData() || preservedSpecimenDTO.isHasCharacterData());
+                    fieldUnitDTO.setHasDetailImage(fieldUnitDTO.isHasDetailImage() || preservedSpecimenDTO.isHasDetailImage());
+                    fieldUnitDTO.setHasDna(fieldUnitDTO.isHasDna() || preservedSpecimenDTO.isHasDna());
+                    fieldUnitDTO.setHasSpecimenScan(fieldUnitDTO.isHasSpecimenScan() || preservedSpecimenDTO.isHasSpecimenScan());
+                }
+            }
+        }
+        // assemble derivate data DTO
+        assembleDerivateDataDTO(fieldUnitDTO, fieldUnit);
+
+        // assemble citation
+        String citation = fieldUnit.getTitleCache();
+        if (!preservedSpecimenAccessionNumbers.isEmpty()) {
+            citation += " (";
+            for (String accessionNumber : preservedSpecimenAccessionNumbers) {
+                if (!accessionNumber.isEmpty()) {
+                    citation += accessionNumber + SEPARATOR_STRING;
+                }
+            }
+            citation = removeTail(citation, SEPARATOR_STRING);
+            citation += ")";
+        }
+        fieldUnitDTO.setCitation(citation);
+
+        // assemble herbaria string
+        String herbariaString = "";
+        for (Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e : collectionToCountMap.entrySet()) {
+            eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
+            if (collection.getCode() != null) {
+                herbariaString += collection.getCode();
+            }
+            if (e.getValue() > 1) {
+                herbariaString += "(" + e.getValue() + ")";
+            }
+            herbariaString += SEPARATOR_STRING;
+        }
+        herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
+        fieldUnitDTO.setHerbarium(herbariaString);
+
+        return fieldUnitDTO;
+    }
+
+    @Override
+    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit) {
+        return assemblePreservedSpecimenDTO(derivedUnit, null);
+    }
+
+    @Override
+    public String getMostSignificantIdentifier(DerivedUnit derivedUnit) {
+        if (derivedUnit.getAccessionNumber() != null && !derivedUnit.getAccessionNumber().isEmpty()) {
+            return derivedUnit.getAccessionNumber();
+        }
+        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
+            return derivedUnit.getBarcode();
+        }
+        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
+            return derivedUnit.getCatalogNumber();
+        }
+        return null;
+    }
+
+    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit, FieldUnitDTO fieldUnitDTO) {
+        if (!getSession().contains(derivedUnit)) {
+            derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
+        }
+        PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
+
+        // check identifiers in priority order accNo>barCode>catalogNumber
+        if (derivedUnit.getAccessionNumber() != null && !derivedUnit.getAccessionNumber().isEmpty()) {
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
+        }
+        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getBarcode());
+        }
+        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
+            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getCatalogNumber());
+        }
+        preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
+
+        // citation
+        Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
+        if (fieldUnits.size() == 1) {
+            preservedSpecimenDTO.setCitation(fieldUnits.iterator().next().getTitleCache());
+        }
+        else{
+            preservedSpecimenDTO.setCitation("No Citation available. This specimen either has no or multiple field units.");
+        }
+
+        // character state data
+        Collection<DescriptionElementBase> characterDataForSpecimen = getCharacterDataForSpecimen(derivedUnit);
+        if (!characterDataForSpecimen.isEmpty()) {
+            if (fieldUnitDTO != null) {
+                fieldUnitDTO.setHasCharacterData(true);
+            }
+        }
+        for (DescriptionElementBase descriptionElementBase : characterDataForSpecimen) {
+            String character = descriptionElementBase.getFeature().getLabel();
+            ArrayList<Language> languages = new ArrayList<Language>(Collections.singleton(Language.DEFAULT()));
+            if (descriptionElementBase instanceof QuantitativeData) {
+                QuantitativeData quantitativeData = (QuantitativeData) descriptionElementBase;
+                DefaultQuantitativeDescriptionBuilder builder = new DefaultQuantitativeDescriptionBuilder();
+                String state = builder.build(quantitativeData, languages).getText(Language.DEFAULT());
+                preservedSpecimenDTO.addCharacterData(character, state);
+            }
+            else if(descriptionElementBase instanceof CategoricalData){
+                CategoricalData categoricalData = (CategoricalData) descriptionElementBase;
+                DefaultCategoricalDescriptionBuilder builder = new DefaultCategoricalDescriptionBuilder();
+                String state = builder.build(categoricalData, languages).getText(Language.DEFAULT());
+                preservedSpecimenDTO.addCharacterData(character, state);
+            }
+        }
+        // check type designations
+        Collection<SpecimenTypeDesignation> specimenTypeDesignations = listTypeDesignations(derivedUnit, null, null, null, null);
+        for (SpecimenTypeDesignation specimenTypeDesignation : specimenTypeDesignations) {
+            if (fieldUnitDTO != null) {
+                fieldUnitDTO.setHasType(true);
+            }
+            TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
+            if (typeStatus != null) {
+                List<String> typedTaxaNames = new ArrayList<String>();
+                String label = typeStatus.getLabel();
+                Set<TaxonNameBase> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+                for (TaxonNameBase taxonNameBase : typifiedNames) {
+                    typedTaxaNames.add(taxonNameBase.getFullTitleCache());
+                }
+                preservedSpecimenDTO.addTypes(label, typedTaxaNames);
+            }
+        }
+
+        // individuals associations
+        Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
+        for (IndividualsAssociation individualsAssociation : individualsAssociations) {
+            if (individualsAssociation.getInDescription() != null) {
+                if (individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)) {
+                    TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                    Taxon taxon = taxonDescription.getTaxon();
+                    if (taxon != null && taxon.getName() != null) {
+                        preservedSpecimenDTO.addAssociatedTaxon(taxon.getName().getTitleCache());
+                    }
+                }
+            }
+        }
+        // assemble sub derivates
+        preservedSpecimenDTO.setDerivateDataDTO(assembleDerivateDataDTO(preservedSpecimenDTO, derivedUnit));
+        return preservedSpecimenDTO;
+    }
+
+    /**
+     * @param derivedUnit
+     * @param derivateDataDTO
+     * @return
+     */
+    private DerivateDataDTO assembleDerivateDataDTO(DerivateDTO derivateDTO, SpecimenOrObservationBase<?> specimenOrObservation) {
+        DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
+        Collection<DerivedUnit> childDerivates = getDerivedUnitsFor(specimenOrObservation);
+        for (DerivedUnit childDerivate : childDerivates) {
+            // assemble molecular data
+            //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
+            if (childDerivate.isInstanceOf(DnaSample.class)) {
+                if (childDerivate.getRecordBasis() == SpecimenOrObservationType.TissueSample) {
+                    // TODO implement TissueSample assembly for web service
+                }
+                if (childDerivate.getRecordBasis() == SpecimenOrObservationType.DnaSample) {
+
+                    DnaSample dna = HibernateProxyHelper.deproxy(childDerivate, DnaSample.class);
+                    if (!dna.getSequences().isEmpty()) {
+                        derivateDTO.setHasDna(true);
+                    }
+                    for (Sequence sequence : dna.getSequences()) {
                         URI boldUri = null;
                         try {
                             boldUri = sequence.getBoldUri();
@@ -432,108 +592,63 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             logger.error("Could not create BOLD URI", e1);
                         }
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
-                        MolecularData molecularData = dto.addProviderLink(boldUri!=null?boldUri:null,dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
+                        MolecularData molecularData = derivateDataDTO.addProviderLink(boldUri != null ? boldUri : null, dnaMarker != null ? dnaMarker.getLabel() : "[no marker]");
 
-                        //contig file FIXME show primer although contig not present?
-                        if(sequence.getContigFile()!=null){
+                        //contig file
+                        ContigFile contigFile = null;
+                        if (sequence.getContigFile() != null) {
                             MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
-                            if(contigMediaRepresentationPart!=null){
-                                ContigFile contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
-                                //primer files
-                                if(sequence.getSingleReads()!=null){
-                                    for (SingleRead singleRead : sequence.getSingleReads()) {
-                                        MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
-                                        if(pherogramMediaRepresentationPart!=null){
-                                            contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "primer");
-                                        }
-                                    }
+                            if (contigMediaRepresentationPart != null) {
+                                contigFile = molecularData.addContigFile(contigMediaRepresentationPart.getUri(), "contig");
+                            }
+                        }
+                        if(contigFile==null){
+                            contigFile = molecularData.addContigFile(null, "[no contig]");
+                        }
+                        // primer files
+                        if (sequence.getSingleReads() != null) {
+                            int readCount = 1;
+                            for (SingleRead singleRead : sequence.getSingleReads()) {
+                                MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
+                                if (pherogramMediaRepresentationPart != null) {
+                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "read"+readCount++);
                                 }
                             }
                         }
                     }
                 }
             }
-            //assemble media data
-            else if(derivedUnit.isInstanceOf(MediaSpecimen.class)){
+            // assemble media data
+            else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
+                MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
 
-                MediaSpecimen media = HibernateProxyHelper.deproxy(derivedUnit, MediaSpecimen.class);
                 String mediaUriString = getMediaUriString(media);
-                if(media.getKindOfUnit()!=null){
-                    //specimen scan
-                    if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
-                        dto.setHasSpecimenScan(true);
-                            final String imageLinkText = currentHerbarium+" "+currentAccessionNumber;
-                            dto.addSpecimenScan(mediaUriString==null?"":mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
+                if (media.getKindOfUnit() != null) {
+                    // specimen scan
+                    if (media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))) {
+                        derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
+                        derivateDTO.setHasSpecimenScan(true);
+                        String imageLinkText = "scan";
+                        if (derivateDTO instanceof PreservedSpecimenDTO && ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber() != null) {
+                            imageLinkText = ((PreservedSpecimenDTO) derivateDTO).getAccessionNumber();
+                        }
+                        derivateDataDTO.addSpecimenScan(mediaUriString == null ? "" : mediaUriString, imageLinkText);
                     }
-                    //detail image
-                    else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
-                        dto.setHasDetailImage(true);
+                    // detail image
+                    else if (media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))) {
+                        derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
+                        derivateDTO.setHasDetailImage(true);
                         String motif = "";
-                        if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle()!=null){
+                        if (media.getMediaSpecimen() != null && media.getMediaSpecimen().getTitle() != null) {
                             motif = media.getMediaSpecimen().getTitle().getText();
                         }
-                        dto.addDetailImage(mediaUriString==null?"":mediaUriString, motif!=null?motif:"[no motif]");
+                        derivateDataDTO.addDetailImage(mediaUriString == null ? "" : mediaUriString, motif != null ? motif : "[no motif]");
                     }
                 }
             }
-            //assemble preserved specimen data
-            else if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.PreservedSpecimen){
-                if(!currentAccessionNumber.isEmpty()){
-                    preservedSpecimenAccessionNumbers.add(currentAccessionNumber);
-                }
-            }
         }
-
-        final String separator = ", ";
-        //assemble citation
-        String citation = "";
-        citation += !dto.getCountry().isEmpty()?dto.getCountry()+separator:"";
-        if(fieldUnit.getGatheringEvent()!=null){
-            if(fieldUnit.getGatheringEvent().getLocality()!=null){
-                citation += fieldUnit.getGatheringEvent().getLocality().getText();
-                citation += separator;
-            }
-            if(fieldUnit.getGatheringEvent().getExactLocation()!=null
-                    && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
-                    && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
-                citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
-                citation += separator;
-                citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
-                citation += separator;
-            }
-        }
-        citation += !dto.getCollection().isEmpty()?dto.getCollection():"";
-        if(!preservedSpecimenAccessionNumbers.isEmpty()){
-            citation += " (";
-            for(String accessionNumber:preservedSpecimenAccessionNumbers){
-                if(!accessionNumber.isEmpty()){
-                    citation += accessionNumber+separator;
-                }
-            }
-            citation = removeTail(citation, separator);
-            citation += ")";
-        }
-        citation = removeTail(citation, separator);
-        dto.setCitation(citation);
-
-        //assemble herbaria string
-        String herbariaString = "";
-        for(Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e:collectionToCountMap.entrySet()){
-            eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
-            if(collection.getCode()!=null){
-                herbariaString += collection.getCode();
-            }
-            if(e.getValue()>1){
-                herbariaString += "("+e.getValue()+")";
-            }
-            herbariaString += separator;
-        }
-        herbariaString = removeTail(herbariaString, separator);
-        dto.setHerbarium(herbariaString);
-
-        return dto;
+        return derivateDataDTO;
     }
-
 
     /**
      * @param string
@@ -541,20 +656,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @return
      */
     private String removeTail(String string, final String tail) {
-        if(string.endsWith(tail)){
-            string = string.substring(0, string.length()-tail.length());
+        if (string.endsWith(tail)) {
+            string = string.substring(0, string.length() - tail.length());
         }
         return string;
     }
 
-    private String getMediaUriString(MediaSpecimen mediaSpecimen){
+    private String getMediaUriString(MediaSpecimen mediaSpecimen) {
         String mediaUri = null;
         Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
-        if(mediaRepresentations!=null && !mediaRepresentations.isEmpty()){
+        if (mediaRepresentations != null && !mediaRepresentations.isEmpty()) {
             Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
-            if(mediaRepresentationParts!=null && !mediaRepresentationParts.isEmpty()){
+            if (mediaRepresentationParts != null && !mediaRepresentationParts.isEmpty()) {
                 MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
-                if(part.getUri()!=null){
+                if (part.getUri() != null) {
                     mediaUri = part.getUri().toASCIIString();
                 }
             }
@@ -562,13 +677,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return mediaUri;
     }
 
-    private void getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen, Collection<DerivedUnit> derivedUnits){
-        for(DerivationEvent derivationEvent:specimen.getDerivationEvents()){
-            for(DerivedUnit derivative:derivationEvent.getDerivatives()){
+    private Collection<DerivedUnit> getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen) {
+        Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
+        for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
+            for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 derivedUnits.add(derivative);
-                getDerivedUnitsFor(derivative, derivedUnits);
+                derivedUnits.addAll(getDerivedUnitsFor(derivative));
             }
         }
+        return derivedUnits;
     }
 
 
@@ -584,14 +701,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<Integer> occurrenceIds = new HashSet<Integer>();
         List<T> occurrences = new ArrayList<T>();
 
-//        Integer limit = PagerUtils.limitFor(pageSize);
-//        Integer start = PagerUtils.startFor(pageSize, pageNumber);
+        // Integer limit = PagerUtils.limitFor(pageSize);
+        // Integer start = PagerUtils.startFor(pageSize, pageNumber);
 
-        if(!getSession().contains(associatedTaxon)){
+        if (!getSession().contains(associatedTaxon)) {
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
-        if(includeRelationships != null) {
+        if (includeRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, null, null, propertyPaths);
         }
 
@@ -609,19 +726,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         UUID uuid = UUID.fromString(taxonUUID);
         Taxon tax = (Taxon) taxonService.load(uuid);
-       //TODO REMOVE NULL STATEMENT
-        type=null;
-        return pageByAssociatedTaxon( type,includeRelationships,tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths );
+        // TODO REMOVE NULL STATEMENT
+        type = null;
+        return pageByAssociatedTaxon(type, includeRelationships, tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
 
     }
-
 
     @Override
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
@@ -650,7 +765,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-
     /**
      * @param clazz
      * @param queryString
@@ -669,23 +783,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         // --- criteria
         luceneSearch.setCdmTypRestriction(clazz);
-        if(queryString != null){
+        if (queryString != null) {
             textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
             finalQuery.add(textQuery, Occur.MUST);
         }
 
         // --- spacial query
-        if(bbox != null){
+        if (bbox != null) {
             finalQuery.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
         }
 
         luceneSearch.setQuery(finalQuery);
 
         // --- sorting
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false)};
+        SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false) };
         luceneSearch.setSortFields(sortFields);
 
-        if(highlightFragments){
+        if (highlightFragments) {
             luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
@@ -700,12 +814,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
-        //FIXME: use HQL queries to increase performance
+        // FIXME: use HQL queries to increase performance
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
 
-        if(specimen.isInstanceOf(FieldUnit.class)){
+        if (specimen.isInstanceOf(FieldUnit.class)) {
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }
         else if(specimen.isInstanceOf(DerivedUnit.class)){
@@ -714,7 +828,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return fieldUnits;
     }
 
-
     /**
      * @param original
      * @param fieldUnits
@@ -722,9 +835,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
         Collection<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
-        if(originals!=null && !originals.isEmpty()){
-            for(SpecimenOrObservationBase<?> original:originals){
-                if(original.isInstanceOf(FieldUnit.class)){
+        if (originals != null && !originals.isEmpty()) {
+            for (SpecimenOrObservationBase<?> original : originals) {
+                if (original.isInstanceOf(FieldUnit.class)) {
                     fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
                 }
                 else if(original.isInstanceOf(DerivedUnit.class)){
@@ -740,12 +853,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
-        //reload specimens to avoid session conflicts
+        // reload specimens to avoid session conflicts
         from = (DnaSample) load(from.getUuid());
         to = (DnaSample) load(to.getUuid());
         sequence = sequenceService.load(sequence.getUuid());
 
-        if(from==null || to==null || sequence==null){
+        if (from == null || to == null || sequence == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
                     "Operation was move "+sequence+ " from "+from+" to "+to);
         }
@@ -761,34 +874,34 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
-        //reload specimens to avoid session conflicts
+        // reload specimens to avoid session conflicts
         from = load(from.getUuid());
         to = load(to.getUuid());
         derivate = (DerivedUnit) load(derivate.getUuid());
 
-        if(from==null || to==null || derivate==null){
+        if (from == null || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
             		"Operation was move "+derivate+ " from "+from+" to "+to);
         }
 
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();
         SpecimenOrObservationType toType = to.getRecordBasis();
-        //check if type is a sub derivate type
+        // check if type is a sub derivate type
         if(toType==SpecimenOrObservationType.FieldUnit //moving to FieldUnit always works
                 || derivateType==SpecimenOrObservationType.Media //moving media always works
                 || (derivateType.isKindOf(toType) && toType!=derivateType)){ //moving only to parent derivate type
-            //remove derivation event from parent specimen of dragged object
+            // remove derivation event from parent specimen of dragged object
             DerivationEvent eventToRemove = null;
-            for(DerivationEvent event:from.getDerivationEvents()){
-                if(event.getDerivatives().contains(derivate)){
+            for (DerivationEvent event : from.getDerivationEvents()) {
+                if (event.getDerivatives().contains(derivate)) {
                     eventToRemove = event;
                     break;
                 }
             }
             from.removeDerivationEvent(eventToRemove);
             saveOrUpdate(from);
-            //add new derivation event to target
-            DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, eventToRemove==null?null:eventToRemove.getType());
+            // add new derivation event to target
+            DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, eventToRemove == null ? null : eventToRemove.getType());
             to.addDerivationEvent(derivedFromNewOriginalEvent);
             derivate.setDerivedFrom(derivedFromNewOriginalEvent);
             saveOrUpdate(to);
@@ -798,8 +911,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen){
-        //potential fields that are not persisted cascadingly
+    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen) {
+        // potential fields that are not persisted cascadingly
         /*
          * SOOB
         -DescriptionBase
@@ -821,22 +934,22 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         -preservationMethod
         --medium TERM
         -storedUnder CDM TaxonNameBase
-        */
+         */
 
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
 
         //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
 
-        //FieldUnit
-        if(specimen.isInstanceOf(FieldUnit.class)){
+        // FieldUnit
+        if (specimen.isInstanceOf(FieldUnit.class)) {
             nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(HibernateProxyHelper.deproxy(specimen, FieldUnit.class)));
         }
-        //DerivedUnit
-        else if(specimen.isInstanceOf(DerivedUnit.class)){
+        // DerivedUnit
+        else if (specimen.isInstanceOf(DerivedUnit.class)) {
             DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(specimen, DerivedUnit.class);
-            if(derivedUnit.getDerivedFrom()!=null){
+            if (derivedUnit.getDerivedFrom() != null) {
                 Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
-                for(FieldUnit fieldUnit:fieldUnits){
+                for (FieldUnit fieldUnit : fieldUnits) {
                     nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
                 }
             }
@@ -844,18 +957,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return nonCascadedCdmEntities;
     }
 
-    private Collection<ICdmBase> getFieldUnitNonCascadedAssociatedElements(FieldUnit fieldUnit){
-        //get non cascaded element on SpecimenOrObservationBase level
+    private Collection<ICdmBase> getFieldUnitNonCascadedAssociatedElements(FieldUnit fieldUnit) {
+        // get non cascaded element on SpecimenOrObservationBase level
         Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(fieldUnit);
 
-        //get FieldUnit specific elements
+        // get FieldUnit specific elements
         GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-        if(gatheringEvent!=null){
-            //country
-            if(gatheringEvent.getCountry()!=null){
+        if (gatheringEvent != null) {
+            // country
+            if (gatheringEvent.getCountry() != null) {
                 nonCascadedCdmEntities.add(gatheringEvent.getCountry());
             }
-            //collecting areas
+            // collecting areas
             for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
                 nonCascadedCdmEntities.add(namedArea);
             }
@@ -868,20 +981,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return nonCascadedCdmEntities;
     }
 
-    private Collection<ICdmBase> getDerivedUnitNonCascadedAssociatedElements(DerivedUnit derivedUnit){
-        //get non cascaded element on SpecimenOrObservationBase level
+    private Collection<ICdmBase> getDerivedUnitNonCascadedAssociatedElements(DerivedUnit derivedUnit) {
+        // get non cascaded element on SpecimenOrObservationBase level
         Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(derivedUnit);
 
-        //get DerivedUnit specific elements
-        if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+        // get DerivedUnit specific elements
+        if (derivedUnit.getCollection() != null && derivedUnit.getCollection().getInstitute() != null) {
             for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
                 nonCascadedCdmEntities.add(type);
             }
         }
-        if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
+        if (derivedUnit.getPreservation() != null && derivedUnit.getPreservation().getMedium() != null) {
             nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
         }
-        if(derivedUnit.getStoredUnder()!=null){
+        if (derivedUnit.getStoredUnder() != null) {
             nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
         }
         return nonCascadedCdmEntities;
@@ -894,23 +1007,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private Collection<ICdmBase> getSpecimenOrObservationNonCascadedAssociatedElements(
             SpecimenOrObservationBase<?> specimen) {
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
-        //scan SpecimenOrObservationBase
-        for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
-            //modifier
-            if(determinationEvent.getModifier()!=null){
+        // scan SpecimenOrObservationBase
+        for (DeterminationEvent determinationEvent : specimen.getDeterminations()) {
+            // modifier
+            if (determinationEvent.getModifier() != null) {
                 nonCascadedCdmEntities.add(determinationEvent.getModifier());
             }
         }
-        //kindOfUnit
-        if(specimen.getKindOfUnit()!=null){
+        // kindOfUnit
+        if (specimen.getKindOfUnit() != null) {
             nonCascadedCdmEntities.add(specimen.getKindOfUnit());
         }
-        //lifeStage
-        if(specimen.getLifeStage()!=null){
+        // lifeStage
+        if (specimen.getLifeStage() != null) {
             nonCascadedCdmEntities.add(specimen.getLifeStage());
         }
-        //sex
-        if(specimen.getSex()!=null){
+        // sex
+        if (specimen.getSex() != null) {
             nonCascadedCdmEntities.add(specimen.getSex());
         }
         return nonCascadedCdmEntities;
@@ -922,26 +1035,26 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = new DeleteResult();
-        SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator)config;
+        SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator) config;
 
-        //check elements found by super method
+        // check elements found by super method
         Set<CdmBase> relatedObjects = super.isDeletable(specimen, config).getRelatedObjects();
         for (CdmBase cdmBase : relatedObjects) {
-            //check for type designation
-            if(cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()){
+            // check for type designation
+            if (cdmBase.isInstanceOf(SpecimenTypeDesignation.class) && !specimenDeleteConfigurator.isDeleteFromTypeDesignation()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is a type specimen."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            //check for IndividualsAssociations
-            else if(cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()){
+            // check for IndividualsAssociations
+            else if (cdmBase.isInstanceOf(IndividualsAssociation.class) && !specimenDeleteConfigurator.isDeleteFromIndividualsAssociation()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still associated via IndividualsAssociations"));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            //check for specimen/taxon description
+            // check for specimen/taxon description
             else if((cdmBase.isInstanceOf(SpecimenDescription.class) || cdmBase.isInstanceOf(TaxonDescription.class))
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
                 deleteResult.setAbort();
@@ -949,30 +1062,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            //check for children and parents (derivation events)
-            else if(cdmBase.isInstanceOf(DerivationEvent.class)){
+            // check for children and parents (derivation events)
+            else if (cdmBase.isInstanceOf(DerivationEvent.class)) {
                 DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(cdmBase, DerivationEvent.class);
-                //check if derivation event is empty
-                if(!derivationEvent.getDerivatives().isEmpty()){
-                    if(derivationEvent.getDerivatives().size()==1 && derivationEvent.getDerivatives().contains(specimen)){
+                // check if derivation event is empty
+                if (!derivationEvent.getDerivatives().isEmpty()) {
+                    if (derivationEvent.getDerivatives().size() == 1 && derivationEvent.getDerivatives().contains(specimen)) {
                         //if it is the parent event with only one derivate then the specimen is still deletable
                         continue;
                     }
                     else if(!specimenDeleteConfigurator.isDeleteChildren()){
                         //if not and children should not be deleted then it is undeletable
                         deleteResult.setAbort();
-                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivate still has child derivates."));
+                        deleteResult.addException(new ReferencedObjectUndeletableException("Derivative still has child derivatives."));
                         deleteResult.addRelatedObject(cdmBase);
                         break;
                     }
                     else{
-                        //check all children if they can be deleted
+                        // check all children if they can be deleted
                         Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
                         DeleteResult childResult = new DeleteResult();
                         for (DerivedUnit derivedUnit : derivatives) {
                             childResult.includeResult(isDeletable(derivedUnit, specimenDeleteConfigurator));
                         }
-                        if(!childResult.isOk()){
+                        if (!childResult.isOk()) {
                             deleteResult.setAbort();
                             deleteResult.includeResult(childResult);
                             deleteResult.addRelatedObject(cdmBase);
@@ -981,22 +1094,22 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     }
                 }
             }
-            //check for amplification
-            else if(cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
+            // check for amplification
+            else if (cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in amplification results."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            //check for sequence
-            else if(cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()){
+            // check for sequence
+            else if (cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in sequences."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
         }
-        if(deleteResult.isOk()){
+        if (deleteResult.isOk()) {
             //add all related object if deletion is OK so they can be handled by the delete() method
             deleteResult.addRelatedObjects(relatedObjects);
         }
@@ -1010,7 +1123,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
 
-        if(config.isDeleteChildren()){
+        if (config.isDeleteChildren()) {
             Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
             for (DerivationEvent derivationEvent : derivationEvents) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
@@ -1021,16 +1134,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
 
         DeleteResult deleteResult = isDeletable(specimen, config);
-        if(!deleteResult.isOk()){
+        if (!deleteResult.isOk()) {
             return deleteResult;
         }
 
-        //check related objects
+        // check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
 
         for (CdmBase relatedObject : relatedObjects) {
-            //check for TypeDesignations
-            if(relatedObject.isInstanceOf(SpecimenTypeDesignation.class)){
+            // check for TypeDesignations
+            if (relatedObject.isInstanceOf(SpecimenTypeDesignation.class)) {
                 SpecimenTypeDesignation designation = HibernateProxyHelper.deproxy(relatedObject, SpecimenTypeDesignation.class);
                 designation.setTypeSpecimen(null);
                 Set<TaxonNameBase> typifiedNames = designation.getTypifiedNames();
@@ -1038,46 +1151,46 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxonNameBase.removeTypeDesignation(designation);
                 }
             }
-            //delete IndividualsAssociation
-            if(relatedObject.isInstanceOf(IndividualsAssociation.class)){
+            // delete IndividualsAssociation
+            if (relatedObject.isInstanceOf(IndividualsAssociation.class)) {
                 IndividualsAssociation assciation = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
                 assciation.setAssociatedSpecimenOrObservation(null);
                 assciation.getInDescription().removeElement(assciation);
             }
-            //check for taxon description
-            if(relatedObject.isInstanceOf(TaxonDescription.class)){
+            // check for taxon description
+            if (relatedObject.isInstanceOf(TaxonDescription.class)) {
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(relatedObject, TaxonDescription.class);
                 taxonDescription.setDescribedSpecimenOrObservation(null);
             }
-            //check for specimen description
-            if(relatedObject.isInstanceOf(SpecimenDescription.class)){
+            // check for specimen description
+            if (relatedObject.isInstanceOf(SpecimenDescription.class)) {
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(relatedObject, SpecimenDescription.class);
-                //check if specimen is "described" specimen
-                if(specimenDescription.getDescribedSpecimenOrObservation().equals(specimen)){
+                // check if specimen is "described" specimen
+                if (specimenDescription.getDescribedSpecimenOrObservation().equals(specimen)) {
                     specimenDescription.setDescribedSpecimenOrObservation(null);
                 }
-                //check if description is a description of the given specimen
-                if(specimen.getDescriptions().contains(specimenDescription)){
+                // check if description is a description of the given specimen
+                if (specimen.getDescriptions().contains(specimenDescription)) {
                     specimen.removeDescription(specimenDescription);
                 }
             }
-            //check for amplification
-            if(relatedObject.isInstanceOf(AmplificationResult.class)){
+            // check for amplification
+            if (relatedObject.isInstanceOf(AmplificationResult.class)) {
                 AmplificationResult amplificationResult = HibernateProxyHelper.deproxy(relatedObject, AmplificationResult.class);
                 amplificationResult.getDnaSample().removeAmplificationResult(amplificationResult);
             }
-            //check for sequence
-            if(relatedObject.isInstanceOf(Sequence.class)){
+            // check for sequence
+            if (relatedObject.isInstanceOf(Sequence.class)) {
                 Sequence sequence = HibernateProxyHelper.deproxy(relatedObject, Sequence.class);
                 sequence.getDnaSample().removeSequence(sequence);
             }
-            //check for children and parents (derivation events)
-            if(relatedObject.isInstanceOf(DerivationEvent.class)){
+            // check for children and parents (derivation events)
+            if (relatedObject.isInstanceOf(DerivationEvent.class)) {
                 DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(relatedObject, DerivationEvent.class);
-                //parent derivation event (derivedFrom)
-                if(derivationEvent.getDerivatives().contains(specimen) && specimen.isInstanceOf(DerivedUnit.class)){
+                // parent derivation event (derivedFrom)
+                if (derivationEvent.getDerivatives().contains(specimen) && specimen.isInstanceOf(DerivedUnit.class)) {
                     derivationEvent.removeDerivative(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
-                    if(derivationEvent.getDerivatives().isEmpty()){
+                    if (derivationEvent.getDerivatives().isEmpty()) {
                         Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
                         for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
@@ -1100,8 +1213,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
-        if(from.isInstanceOf(Sequence.class)){
-            if(!config.isDeleteMolecularData()){
+        if (from.isInstanceOf(Sequence.class)) {
+            if (!config.isDeleteMolecularData()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
                 return deleteResult;
@@ -1111,7 +1224,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             deleteResult = sequenceService.delete(sequence);
         }
         else if(from.isInstanceOf(SingleRead.class))  {
-            if(!config.isDeleteMolecularData()){
+            if (!config.isDeleteMolecularData()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
                 return deleteResult;
@@ -1127,18 +1240,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 //    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
-//        Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
-//        for (DerivationEvent derivationEvent : derivationEvents) {
-//            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-//            for (DerivedUnit derivedUnit : derivatives) {
-//                DeleteResult deleteResult = deepDelete(derivedUnit, config);
-//                if(!deleteResult.isOk()){
-//                    return deleteResult;
-//                }
-//            }
-//        }
-//        return delete(entity, config);
-//    }
+    // Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
+    // for (DerivationEvent derivationEvent : derivationEvents) {
+    // Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+    // for (DerivedUnit derivedUnit : derivatives) {
+    // DeleteResult deleteResult = deepDelete(derivedUnit, config);
+    // if(!deleteResult.isOk()){
+    // return deleteResult;
+    // }
+    // }
+    // }
+    // return delete(entity, config);
+    // }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
@@ -1165,6 +1278,138 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         return dao.listDescriptionsWithDescriptionSpecimen(specimen, limit, start, orderHints, propertyPaths);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getStatesForSpecimen(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+     */
+    @Override
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen) {
+        Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
+        if (specimen != null) {
+            Set<DescriptionBase> descriptions = specimen.getDescriptions();
+            for (DescriptionBase<?> descriptionBase : descriptions) {
+                if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
+                    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
+                    Set<DescriptionElementBase> elements = specimenDescription.getElements();
+                    for (DescriptionElementBase descriptionElementBase : elements) {
+                        if(descriptionElementBase.getFeature().isSupportsCategoricalData()
+                                ||descriptionElementBase.getFeature().isSupportsQuantitativeData()){
+                            states.add(descriptionElementBase);
+                        }
+                    }
+                }
+            }
+        }
+        return states;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getStatesForSpecimen(java.util.UUID)
+     */
+    @Override
+    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(UUID specimenUuid) {
+        SpecimenOrObservationBase<?> specimen = load(specimenUuid);
+        if (specimen != null) {
+            return getCharacterDataForSpecimen(specimen);
+        }
+        else{
+            throw new DataRetrievalFailureException("Specimen with the given uuid not found in the data base");
+        }
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IdentifiableServiceBase#findByTitle(eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator)
+     */
+    @Override
+    public Pager<SpecimenOrObservationBase> findByTitle(
+            IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
+        if (config instanceof FindOccurrencesConfigurator) {
+            FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
+            List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
+            Taxon taxon = null;
+            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                if(taxonBase.isInstanceOf(Taxon.class)){
+                    taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                }
+            }
+            occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getSpecimenType(), taxon, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+            // indirectly associated specimens
+            List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                for (SpecimenOrObservationBase specimen : occurrences) {
+                    List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
+                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
+                        if(!occurrences.contains(specimenOrObservationBase)){
+                            indirectlyAssociatedOccurrences.add(specimenOrObservationBase);
+                        }
+                    }
+                }
+                occurrences = indirectlyAssociatedOccurrences;
+            }
+
+            return new DefaultPagerImpl<SpecimenOrObservationBase>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+        }
+        return super.findByTitle(config);
+    }
+
+    @Override
+    public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen){
+        List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<SpecimenOrObservationBase<?>>();
+        Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid());
+        if(fieldUnits.isEmpty()){
+            allHierarchyDerivatives.add(specimen);
+            allHierarchyDerivatives.addAll(getAllChildDerivatives(specimen));
+        }
+        else{
+            for (FieldUnit fieldUnit : fieldUnits) {
+                allHierarchyDerivatives.add(fieldUnit);
+                allHierarchyDerivatives.addAll(getAllChildDerivatives(fieldUnit));
+            }
+        }
+        return allHierarchyDerivatives;
+    }
+
+    @Override
+    public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
+        List<DerivedUnit> childDerivate = new ArrayList<DerivedUnit>();
+        Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
+        for (DerivationEvent derivationEvent : derivationEvents) {
+            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
+            for (DerivedUnit derivedUnit : derivatives) {
+                childDerivate.add(derivedUnit);
+                childDerivate.addAll(getAllChildDerivatives(derivedUnit));
+            }
+        }
+        return childDerivate;
+    }
+
+    @Override
+    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+        if (config instanceof FindOccurrencesConfigurator) {
+            FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
+            Taxon taxon = null;
+            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                if(taxonBase.isInstanceOf(Taxon.class)){
+                    taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                }
+            }
+            // indirectly associated specimens
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
+                return findByTitle(config).getRecords().size();
+            }
+            return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(),
+                    occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon,
+                    occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(),
+                    occurrenceConfig.getPropertyPaths());
+        }
+        return super.countByTitle(config);
     }
 
 }

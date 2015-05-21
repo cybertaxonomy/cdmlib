@@ -194,7 +194,7 @@ public class LSIDAuthority extends CdmBase {
 	 * @param server The server to set
 	 */
 	public void setServer(String server) {
-		this.server = server;
+		this.server = server == "" ? null : server;
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class LSIDAuthority extends CdmBase {
 	 * @param server The server to set
 	 */
 	public void setUrl(String url) {
-		this.url = url;
+		this.url = url == "" ? null : url;
 	}
 	
 	/**

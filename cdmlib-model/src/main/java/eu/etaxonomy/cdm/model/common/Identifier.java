@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Index;
@@ -45,7 +46,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
-public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEntity {
+public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEntity implements Cloneable {
 	private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Identifier.class);
@@ -103,7 +104,7 @@ public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEnti
 
 
 	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+		this.identifier = StringUtils.isBlank(identifier) ? null : identifier;
 	}
 
 
@@ -126,6 +127,25 @@ public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEnti
 	}
 	protected void setIdentifiedObj(T identifiedObj) {
 		this.identifiedObj = identifiedObj;
+	}
+	
+	//****************** CLONE ************************************************/
+	 
+		@Override
+		public Object clone() throws CloneNotSupportedException{
+			Identifier<?> result = (Identifier<?>)super.clone();	
+			//no changes to: type, value
+			return result;
+		}
+	
+	/**
+	 * Clones this extension and sets the clone's extended object to 'extendedObject'
+	 * @see java.lang.Object#clone()
+	 */
+	public <T extends IdentifiableEntity<?>> Identifier<T> clone(T identifiedObject) throws CloneNotSupportedException{
+		Identifier<T> result = (Identifier<T>)clone();
+		result.setIdentifiedObj(identifiedObject);
+		return result;
 	}
 	
 }

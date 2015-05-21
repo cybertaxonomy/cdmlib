@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation.constraint;
 
@@ -25,9 +25,9 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 public class NoDuplicateNamesValidator implements
 		ConstraintValidator<NoDuplicateNames,NonViralName> {
-	
+
 	private static Set<String> includeProperties;
-	
+
 	static {
 		includeProperties = new HashSet<String>();
 		includeProperties.add("genusOrUninomial");
@@ -42,16 +42,18 @@ public class NoDuplicateNamesValidator implements
 		includeProperties.add("combinationAuthorTeam");
 		includeProperties.add("exCombinationAuthorTeam");
 	}
-	
+
 	private INameService nameService;
-	
+
 	@Autowired
 	public void setNameService(INameService nameService) {
 		this.nameService = nameService;
 	}
 
+	@Override
 	public void initialize(NoDuplicateNames noDuplicateNames) { }
 
+    @Override
 	public boolean isValid(NonViralName name, ConstraintValidatorContext constraintContext) {
 		if(name == null) {
 			return true;

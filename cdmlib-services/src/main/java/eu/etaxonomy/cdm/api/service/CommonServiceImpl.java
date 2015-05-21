@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.collection.spi.PersistentCollection;
@@ -26,11 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -45,22 +46,18 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalSourceDao> implements ICommonService {
+public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/ implements ICommonService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
-	@Autowired
-	IOriginalSourceDao originalSourceDao;
 
 	@Autowired
-	ICdmGenericDao genericDao;
+	private IOriginalSourceDao originalSourceDao;
 
 
-	@Override
-    @Autowired
-	protected void setDao(IOriginalSourceDao dao) {
-		this.dao = dao;
-	}
+	@Autowired
+	private ICdmGenericDao genericDao;
+
 
 	@Override
 	public CdmBase find(Class<? extends CdmBase> clazz, int id){
@@ -236,6 +233,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 
 
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ICommonService#findMatching(eu.etaxonomy.cdm.strategy.match.IMatchable, eu.etaxonomy.cdm.strategy.match.MatchStrategyConfigurator.MatchStrategy)
      */
@@ -254,6 +252,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		logger.warn("Not yet implemented");
 //		return null;
 //	}
+
 
 	@Transactional(readOnly = false)
 	@Override
@@ -317,6 +316,39 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	@Transactional(readOnly = false)
 	public void createFullSampleData() {
 		genericDao.createFullSampleData();
+	}
+
+
+
+    @Override
+    public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
+        return genericDao.list(type,limit, start, orderHints,propertyPaths);
+    }
+
+    @Override
+    public <S extends CdmBase> int count(Class<S> type) {
+        return genericDao.count(type);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UUID save(CdmBase newInstance) {
+        return genericDao.save(newInstance);
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
+        //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
+    	//and generally the saveAll method should work for other CdmBase types with generics removed
+    	return (Map)originalSourceDao.saveAll((Collection)newInstances);
+    }
+
+
+	@Override
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
+		return genericDao.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
 	}
 
 }

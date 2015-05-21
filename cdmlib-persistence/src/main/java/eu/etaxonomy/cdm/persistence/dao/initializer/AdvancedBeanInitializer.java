@@ -6,6 +6,9 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -221,15 +224,16 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 }
                 //new
                 for (Object parentBean : parentBeans){
+                    String propertyName = mapFieldToPropertyName(property, parentBean.getClass().getSimpleName());
                     try{
-                        Object propertyValue = PropertyUtils.getProperty(parentBean, property);
+                        Object propertyValue = PropertyUtils.getProperty(parentBean, propertyName);
                         preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
                     } catch (IllegalAccessException e) {
                         logger.error("Illegal access on property " + property);
                     } catch (InvocationTargetException e) {
                         logger.error("Cannot invoke property " + property + " not found");
                     } catch (NoSuchMethodException e) {
-                        if (logger.isDebugEnabled()){logger.debug("Property " + property + " not found for class " + parentClazz);}
+                        if (logger.isDebugEnabled()){logger.debug("Property " + propertyName + " not found for class " + parentClazz);}
                     }
                 }
 
@@ -329,10 +333,16 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             invokePropertyAutoInitializers(bean);
         }
 
-		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection, 
+        private void autoinitializeBean(CdmBase bean, AutoInit autoInit) {
+            for(AutoPropertyInitializer<CdmBase> init : autoInit.initlializers) {
+                init.initialize(bean);
+            }
+        }
+
+		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
 				BeanInitNode node, String param) {
 			Collection<?> collection;
-			
+
 			if (persistedCollection  instanceof Collection) {
 				collection = (Collection<?>) persistedCollection;
 			}else if (persistedCollection instanceof Map) {
@@ -344,38 +354,39 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 				preparePropertyValueForBulkLoadOrStore(node, null, param, value);
 			}
 		}
-		
+
 		private void bulkLoadLazies(BeanInitNode node) {
-			
+
 			if (logger.isTraceEnabled()){logger.trace("bulk load " +  node);}
-			
+
 			//beans
 			for (Class<?> clazz : node.getLazyBeans().keySet()){
 				Set<Serializable> idSet = node.getLazyBeans().get(clazz);
 				if (idSet != null && ! idSet.isEmpty()){
-					
+
 					if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
 					//TODO use entity name
 					String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
-					hql = String.format(hql, clazz.getSimpleName(), addAutoinitFetchLoading(clazz, "c"));
+					AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
+                    hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
 					if (logger.isTraceEnabled()){logger.trace(hql);}
 					Query query = genericDao.getHqlQuery(hql);
 					query.setParameterList("idSet", idSet);
 					List<Object> list = query.list();
-					
+
 					if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
 					for (Object object : list){
 						if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
 							object = initializeInstance(object);
 						}
-						autoinitializeBean(object);
+						autoinitializeBean((CdmBase)object, autoInit);
 						node.addBean(object);
 					}
 					if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
-				}	
+				}
 			}
 			node.resetLazyBeans();
-			
+
 			//collections
 			for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
 				Map<String, Set<Serializable>> lazyParams = node.getLazyCollections().get(ownerClazz);
@@ -383,66 +394,104 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					Set<Serializable> idSet = lazyParams.get(param);
 					if (idSet != null && ! idSet.isEmpty()){
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections ; ownerClass=" +  ownerClazz.getSimpleName() + " ; param = " + param);}
-						
+
+						Type collectionEntitiyType = null;
+						PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(ownerClazz);
+						for(PropertyDescriptor d : descriptors) {
+						    if(d.getName().equals(param)) {
+                                ParameterizedType pt = (ParameterizedType) d.getReadMethod().getGenericReturnType();
+                                collectionEntitiyType = pt.getActualTypeArguments()[0];
+                                if(collectionEntitiyType instanceof TypeVariable) {
+                                    collectionEntitiyType = ((TypeVariable)collectionEntitiyType).getBounds()[0];
+                                }
+						    }
+						}
+
 						//TODO use entity name ??
 						//get from repository
 						List<Object[]> list;
-						String hql = "SELECT oc, oc.%s " +
-								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s " +
+						String hql = "SELECT oc " +
+								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s" +
 								" WHERE oc.id IN (:idSet) ";
-						
-//						String hql = "SELECT oc.%s " +
-//								" FROM %s as oc WHERE oc.id IN (:idSet) ";
-						hql = String.format(hql, param, ownerClazz.getSimpleName(), param,
-								"" /*addAutoinitFetchLoading(clazz, "col")*/);
-						
+
+						AutoInit autoInit = addAutoinitFetchLoading((Class)collectionEntitiyType, "col");
+                        hql = String.format(hql, ownerClazz.getSimpleName(), param,
+						        autoInit.leftJoinFetch);
+
 						try {
 							if (logger.isTraceEnabled()){logger.trace(hql);}
 							Query query = genericDao.getHqlQuery(hql);
 							query.setParameterList("idSet", idSet);
 							list = query.list();
+							if (logger.isTraceEnabled()){logger.trace("size of retrieved list is " + list.size());}
 						} catch (HibernateException e) {
 							e.printStackTrace();
 							throw e;
 						}
-						
+
 						//getTarget and add to child node
 						if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded " + node + " collections - DONE");}
-						for (Object[] listItems : list){
-							Object newBean = listItems[1];
-							if (newBean == null){
-								System.out.println("Collection is null");
-							}
-							if (newBean instanceof HibernateProxy){
-								newBean = initializeInstance(newBean);
-							}
-							autoinitializeBean(newBean);
-							node.addBean(newBean);
+						for (Object parentBean : list){
+                            try {
+							    Object propValue = PropertyUtils.getProperty(
+							            parentBean,
+							            mapFieldToPropertyName(param, parentBean.getClass().getSimpleName())
+							          );
+
+    							if (propValue == null){
+    							    logger.trace("Collection is null");
+    							}else {
+    							    for(Object newBean : (Collection<Object>)propValue ) {
+    							        if (newBean instanceof HibernateProxy){
+    							            newBean = initializeInstance(newBean);
+    							        }
+
+    							        autoinitializeBean((CdmBase)newBean, autoInit);
+    							        node.addBean(newBean);
+    							    }
+    							}
+                            } catch (Exception e) {
+                                // TODO better throw an exception ?
+                                logger.error("error while getting collection property", e);
+                            }
 						}
 						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections - DONE");}
-					}	
+					}
 				}
 			}
 			for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
-				if (! collection.wasInitialized()){  //should not happen anymore  
+				if (! collection.wasInitialized()){  //should not happen anymore
 					collection.forceInitialization();
+					if (logger.isTraceEnabled()){logger.trace("forceInitialization of collection " + collection);}
+				} else {
+				    if (logger.isTraceEnabled()){logger.trace("collection " + collection + " is initialized - OK!");}
 				}
 			}
-			
+
 			node.resetLazyCollections();
-			
+
 			if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
-			
+
 		}
 
 
-        private String addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
-            Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
-            String result = "";
-            for (AutoPropertyInitializer<CdmBase> init: inits){
-                result +=init.hibernateFetchJoin(clazz, beanAlias);
+        private AutoInit addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
+
+            AutoInit autoInit = new AutoInit();
+            if(clazz != null) {
+                Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
+                for (AutoPropertyInitializer<CdmBase> init: inits){
+                    try {
+                        autoInit.leftJoinFetch +=init.hibernateFetchJoin(clazz, beanAlias);
+                    } catch (Exception e) {
+                        // the AutoPropertyInitializer is not supporting LEFT JOIN FETCH so it needs to be
+                        // used explicitly
+                        autoInit.initlializers.add(init);
+                    }
+
+                }
             }
-            return result;
+            return autoInit;
         }
 
         private Set<AutoPropertyInitializer<CdmBase>> getAutoInitializers(Class<?> clazz) {
@@ -456,19 +505,20 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         }
 
         /**
-         * Rename bean attributes to hibernate (field) attribute, due to bean inconsistencies
+         * Rename hibernate (field) attribute to Bean property name, due to bean inconsistencies
          * #3841
          * @param param
          * @param ownerClass
          * @return
          */
-        private String workAroundBeanInconsistency(String param, String ownerClass) {
-            if (ownerClass.contains("Description") && param.equals("elements")){
-                //DescriptionBase.descriptionElements -> elements
-                return "descriptionElements";
-            }else if(ownerClass.equals("Classification") && param.equals("childNodes")){
-                return "rootNodes";
-            }else{
+        private String mapFieldToPropertyName(String param, String ownerClass) {
+            if (ownerClass.contains("Description") && param.equals("descriptionElements")){
+                return "elements";
+            }
+            if (ownerClass.startsWith("FeatureNode") && param.equals("children")) {
+                return "childNodes";
+            }
+            else{
                 return param;
             }
         }
@@ -507,6 +557,19 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 // nested bean
                 node.addBean(unwrappedPropertyBean);
                 setProperty(bean, property, unwrappedPropertyBean);
+            }
+        }
+
+        private class AutoInit{
+
+            String leftJoinFetch = "";
+            Set<AutoPropertyInitializer<CdmBase>> initlializers = new HashSet<AutoPropertyInitializer<CdmBase>>();
+
+            /**
+             * @param leftJoinFetch
+             * @param initlializers
+             */
+            public AutoInit() {
             }
         }
 

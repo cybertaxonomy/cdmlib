@@ -35,6 +35,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -216,6 +217,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
             logger.debug("editMapServiceUri: " + requestUrl);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.connect();
+//            connection.setReadTimeout(10000);  //timeout after 10 sec, does not seem to work
             assertTrue(connection.getResponseCode() == 200);
             InputStream contentStream = connection.getInputStream();
             String content = StreamUtils.readToString(contentStream);

@@ -824,7 +824,7 @@ public class Rank extends OrderedTermBase<Rank> {
                 rankName = "(null)";  //see NPE above
             }
             if (useUnknown){
-                logger.info("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
+                if (logger.isInfoEnabled()){logger.info("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");}
                 return Rank.UNKNOWN_RANK();
             }else{
                 throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
@@ -881,7 +881,7 @@ public class Rank extends OrderedTermBase<Rank> {
                 rankName = "(null)";
             }
             if (useUnknown){
-                logger.info("Unknown rank name: " + rankName + ". Rank 'UNKNOWN_RANK' created instead");
+                if (logger.isInfoEnabled()){logger.info("Unknown rank name: " + rankName + ". Rank 'UNKNOWN_RANK' created instead");}
                 return Rank.UNKNOWN_RANK();
             }else{
                 throw new UnknownCdmTypeException("Unknown rank: " + rankName);
@@ -912,7 +912,7 @@ public class Rank extends OrderedTermBase<Rank> {
         Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
         String result = this.getRepresentation(language).getAbbreviatedLabel();
         if (result== null) {
-            logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
+             logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
             return "no abbreviation available.";
         }else{
             return result;
@@ -979,7 +979,7 @@ public class Rank extends OrderedTermBase<Rank> {
         labelMap.put(label.toLowerCase(), rank.getUuid());
         //add to map
         if (StringUtils.isBlank(abbrevLabel)){
-            logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));
+            if (logger.isDebugEnabled()){logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));}
         }else{
             idInVocMap.put(abbrevLabel, rank.getUuid());
         }

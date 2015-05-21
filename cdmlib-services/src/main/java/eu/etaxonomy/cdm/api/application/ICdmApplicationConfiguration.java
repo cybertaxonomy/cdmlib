@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -53,15 +53,14 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  * @author a.mueller
  * @created 21.05.2008
  */
-public interface ICdmApplicationConfiguration {
-
-	public TransactionStatus startTransaction();
+public interface ICdmApplicationConfiguration{
 
 
-	public TransactionStatus startTransaction(Boolean readOnly);
+    public TransactionStatus startTransaction();
 
+    public TransactionStatus startTransaction(Boolean readOnly);
 
-	public void commitTransaction(TransactionStatus tx);
+    public void commitTransaction(TransactionStatus tx);
 
 
 	public Object getBean(String string);
@@ -86,7 +85,7 @@ public interface ICdmApplicationConfiguration {
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public ITaxonNodeService getTaxonNodeService();
@@ -159,28 +158,28 @@ public interface ICdmApplicationConfiguration {
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public ILocationService getLocationService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IUserService getUserService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IGroupService getGroupService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IGrantedAuthorityService getGrantedAuthorityService();
@@ -205,7 +204,7 @@ public interface ICdmApplicationConfiguration {
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public ProviderManager getAuthenticationManager();
@@ -218,28 +217,28 @@ public interface ICdmApplicationConfiguration {
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public ICollectionService getCollectionService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IFeatureTreeService getFeatureTreeService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IFeatureNodeService getFeatureNodeService();
 
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public IVocabularyService getVocabularyService();
@@ -266,7 +265,7 @@ public interface ICdmApplicationConfiguration {
 	/**
 	 * @return
 	 */
-	public IEntityValidationResultService getEntityValidationResultService();
+	public IEntityValidationService getEntityValidationService();
 
 
 	/**

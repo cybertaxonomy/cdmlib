@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -478,4 +479,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
      * @return
      */
     public UpdateResult setAsGroupsBasionym(UUID nameUuid);
+
+	public List<HashMap<String, String>> getNameRecords();
+
 }

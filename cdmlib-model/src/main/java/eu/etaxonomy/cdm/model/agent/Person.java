@@ -17,7 +17,6 @@ import javassist.compiler.ast.Keyword;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -242,7 +241,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
-		this.prefix = prefix;
+		this.prefix = StringUtils.isBlank(prefix) ? null : prefix;
 	}
 
 
@@ -260,7 +259,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
-		this.firstname = firstname;
+		this.firstname = StringUtils.isBlank(firstname) ? null : firstname;
 	}
 
 
@@ -277,7 +276,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
-		this.lastname = lastname;
+		this.lastname = StringUtils.isBlank(lastname) ? null : lastname;
 	}
 
 
@@ -292,7 +291,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
-		this.suffix = suffix;
+		this.suffix = StringUtils.isBlank(suffix) ? null: suffix;
 	}
 
 

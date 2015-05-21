@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -206,11 +207,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next, Boolean isFreetext) throws XMLStreamException {
 		
 		//for specimen only
-		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED())){
+		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED()) 
+				|| feature.getUuid().equals(MarkupTransformer.uuidWoodSpecimens)){
 			
-			List<DescriptionElementBase> specimens = specimenImport.handleMaterialsExamined(state, reader, next, feature);
+			List<DescriptionElementBase> specimens = specimenImport.handleMaterialsExamined(state, reader, next, feature, taxonDescription);
 			for (DescriptionElementBase specimen : specimens){
-				taxonDescription.addElement(specimen);
+				if (specimen.getInDescription() == null){
+					taxonDescription.addElement(specimen);
+				}
 				lastDescriptionElement = specimen;
 			}
 			state.setCurrentCollector(null);
@@ -637,10 +641,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
+				state.removeCurrentAreas();
 				return result;
 			} else if (isStartingElement(next, VERNACULAR_NAME)) {
 				List<CommonTaxonName> names = makeSingleVernacularName(state, reader, next);
 				result.addAll(names);
+			} else if (isStartingElement(next, SUB_HEADING)) {
+				makeVernacularNamesSubHeading(state, reader, next);
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -649,6 +656,50 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		
 	}
 	
+	private void makeVernacularNamesSubHeading(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (StringUtils.isNotBlank(text)){
+					NamedArea area = getCommonNameArea(text);
+					if (area != null){
+						state.removeCurrentAreas();
+						state.addCurrentArea(area);
+					}else{
+						fireWarningEvent("Vernacular subheading not recognized", next, 8);
+					}
+				}
+				
+				return ;
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("closing tag is missing");
+		
+	}
+
+	private NamedArea getCommonNameArea(String text) {
+		if (text.endsWith(":")){
+			text = text.substring(0, text.length()-1);
+		}
+		
+		// for now we do it hardcoded
+		if (text.equalsIgnoreCase("Guyana")){
+			return Country.GUYANAREPUBLICOF();
+		}else if (text.equalsIgnoreCase("Suriname")){
+			return Country.SURINAMEREPUBLICOF();
+		}else if (text.equalsIgnoreCase("French Guiana")){
+			return Country.FRENCHGUIANA();
+		}
+		return null;
+	}
+
 	private List<CommonTaxonName> makeSingleVernacularName(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
 		checkNoAttributes(parentEvent);
 		List<CommonTaxonName> result = new ArrayList<CommonTaxonName>();
@@ -714,6 +765,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		//
 		String text = getCData(state, reader, parentEvent, false);
 		CommonTaxonName name = CommonTaxonName.NewInstance(text, null);
+		if (! state.getCurrentAreas().isEmpty()){
+			if (state.getCurrentAreas().size() > 1){
+				fireWarningEvent("Multiple areas for common name not yet covered by CDM", parentEvent , 8);
+			}else{
+				name.setArea(state.getCurrentAreas().iterator().next());
+			}
+		}
 		return name;
 	}
 

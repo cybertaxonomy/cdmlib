@@ -68,7 +68,7 @@ public class ExcelSpecimenImportExampleTest extends
 			e.printStackTrace();
 			Assert.fail("xsl configurator could not be created");
 		}
-		
+
 		//xslx
 		try {
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx";
@@ -81,10 +81,10 @@ public class ExcelSpecimenImportExampleTest extends
 			e.printStackTrace();
 			Assert.fail("Xslx configurator could not be created");
 		}
-		
-		
-		
-		
+
+
+
+
 
 	}
 
@@ -108,9 +108,9 @@ public class ExcelSpecimenImportExampleTest extends
 
 //		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 	 }
-	 
+
 	 @Test
-	 @Ignore //does not run together with testResultSet or others 
+	 @Ignore //does not run together with testResultSet or others
 	 public void testDoInvokeXslx() {
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -119,7 +119,7 @@ public class ExcelSpecimenImportExampleTest extends
 		 assertEquals("Number of field units should be 3", 3,
 		 occurrenceService.count(FieldUnit.class));
 		 this.rollback();
-		 
+
 //		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 	 }
 
@@ -131,6 +131,9 @@ public class ExcelSpecimenImportExampleTest extends
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field units should be 3", 3, occurrenceService.count(FieldUnit.class));
+
+//		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","DESCRIPTIONELEMENTBASE","DEFINEDTERMBASE"});
+//
 
 //		try {
 //			String filePath = System.getProperty("java.io.tmpdir")
@@ -157,7 +160,6 @@ public class ExcelSpecimenImportExampleTest extends
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
     }
 
 }

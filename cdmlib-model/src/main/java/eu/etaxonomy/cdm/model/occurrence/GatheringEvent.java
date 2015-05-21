@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -88,6 +90,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 	@XmlElement(name = "ExactLocation")
 	@IndexedEmbedded
+	@Valid
 	private Point exactLocation;
 
 
@@ -304,7 +307,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	}
 
 	public void setCollectingMethod(String collectingMethod) {
-		this.collectingMethod = collectingMethod;
+		this.collectingMethod = StringUtils.isBlank(collectingMethod)? null : collectingMethod;
 	}
 
 	public Integer getAbsoluteElevation() {

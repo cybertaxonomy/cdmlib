@@ -140,7 +140,7 @@
         <class>eu.etaxonomy.cdm.model.view.AuditEvent</class>
         <class>eu.etaxonomy.cdm.model.common</class>
         <!-- Validation Package -->
-        <class>eu.etaxonomy.cdm.model.validation.EntityValidationResult</class>
+        <class>eu.etaxonomy.cdm.model.validation.EntityValidation</class>
         <class>eu.etaxonomy.cdm.model.validation.EntityConstraintViolation</class>
         
         

@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -74,9 +74,8 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
-    //TODO shouldn't we change the relationship tpye here? see #3382
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true)
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<StateData>();
@@ -131,6 +130,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
         return this.stateData;
     }
 
+    @Deprecated
     protected void setStateData(List<StateData> stateData){
         this.stateData = stateData;
     }
@@ -142,8 +142,10 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * @param state	the state to be added to <i>this</i> categorical data
      * @see    	   	#getStateData()
      */
+    @SuppressWarnings("deprecation")
     public void addStateData(StateData stateData){
         this.stateData.add(stateData);
+        stateData.setCategoricalData(this);
     }
 
     /**
@@ -154,7 +156,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      */
     public void addStateData(State state){
         StateData stateData = StateData.NewInstance(state);
-        this.stateData.add(stateData);
+        addStateData(stateData);
     }
 
 
@@ -166,8 +168,10 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * @see     		#getStateData()
      * @see     		#addStateData(State)
      */
+    @SuppressWarnings("deprecation")
     public void removeStateData(StateData stateData){
         this.stateData.remove(stateData);
+        stateData.setCategoricalData(null);
     }
 
     //rename to isStateSequenceIntentional ??

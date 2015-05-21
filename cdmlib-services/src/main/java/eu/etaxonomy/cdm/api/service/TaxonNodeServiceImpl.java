@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
@@ -101,11 +102,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode,
-            TaxonNode newAcceptedTaxonNode,
-            SynonymRelationshipType synonymRelationshipType,
-            Reference citation,
-            String citationMicroReference)  {
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
+
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -183,7 +181,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
-            for(TaxonNode childNode : oldTaxonNode.getChildNodes()){
+        	List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+        	for (TaxonNode childNode : oldTaxonNode.getChildNodes()){
+        		childNodes.add(childNode);
+        	}
+            for(TaxonNode childNode :childNodes){
                 newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference()); // childNode.getSynonymToBeUsed()
             }
         }
@@ -226,6 +228,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         oldTaxon.clearDescriptions();
 
         taxonService.update(newAcceptedTaxon);
+
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
@@ -234,14 +237,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
+        	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteTaxon(false);
         	conf.setTaxonNodeConfig(config);
-        	result = deleteTaxonNode(oldTaxonNode, conf);
+        	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
+        result.addUpdatedObject(newAcceptedTaxon);
 
         //oldTaxonNode.delete();
-        return synonmyRelationship.getSynonym();
+        return result;
     }
 
 
@@ -256,18 +261,17 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             Reference citation,
             String citationMicroReference) {
 
-        UpdateResult result = new UpdateResult();
         TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
         TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
-        result.addUpdatedObject(oldTaxonParentNode);
         TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
-        result.addUpdatedObject(newTaxonNode);
 
-        Synonym synonym = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
+        UpdateResult result = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
                 newTaxonNode,
                 synonymRelationshipType,
                 citation,
                 citationMicroReference);
+        result.addUpdatedObject(oldTaxonParentNode);
+        result.addUpdatedObject(newTaxonNode);
         result.setCdmEntity(oldTaxonParentNode);
         return result;
     }
@@ -396,6 +400,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     }
 
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config) {
@@ -404,6 +409,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             nodes.add(dao.load(nodeUuid));
         }
         return deleteTaxonNodes(nodes, config);
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
+    	TaxonNode node = dao.load(nodeUUID);
+    	return deleteTaxonNode(node, config);
     }
 
     /* (non-Javadoc)
@@ -418,14 +431,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
-    	DeleteResult result;
+    	DeleteResult result = new DeleteResult();
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
     	    result = taxonService.deleteTaxon(taxon, config, node.getClassification());
     	    result.addUpdatedObject(parent);
     	    result.setCdmEntity(node);
     		return result;
     	} else{
-    		result = new DeleteResult();
+    		result.setCdmEntity(node);
     		boolean success = taxon.removeTaxonNode(node);
     		if (success) {
     		    result.addUpdatedObject(parent);
@@ -446,13 +459,43 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
+     */
     @Override
-    @Transactional(readOnly = false)
-    public DeleteResult deleteTaxonNode(UUID nodeUuid, TaxonDeletionConfigurator config) {
-        DeleteResult dr = deleteTaxonNode(dao.load(nodeUuid), config);
-        return dr;
+    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
+        return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#countAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification)
+     */
+    @Override
+    public int countAllNodesForClassification(Classification classification) {
+        return dao.countTaxonOfAcceptedTaxaByClassification(classification);
+    }
+
+
+    @Override
+    @Transactional
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean moveToParent){
+    	UpdateResult result = new UpdateResult();
+    	if (moveToParent){
+    	   return moveTaxonNode(taxonNodeUuid, targetNodeUuid);
+       }else{
+
+    	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
+    	   TaxonNode targetNode = dao.load(targetNodeUuid);
+    	   Integer sortIndex = targetNode.getSortIndex();
+    	   TaxonNode parent = targetNode.getParent();
+    	   result.addUpdatedObject(parent);
+           result.addUpdatedObject(taxonNode.getParent());
+           result.setCdmEntity(taxonNode);
+    	   parent.addChildNode(taxonNode, sortIndex+1, taxonNode.getReference(),  taxonNode.getMicroReference());
+       }
+
+        return result;
+    }
 
     @Override
     @Transactional
@@ -475,25 +518,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
 
     }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
-     */
-    @Override
-    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
-        return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#countAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification)
-     */
-    @Override
-    public int countAllNodesForClassification(Classification classification) {
-        return dao.countTaxonOfAcceptedTaxaByClassification(classification);
-    }
-
-
-
 
 
 }

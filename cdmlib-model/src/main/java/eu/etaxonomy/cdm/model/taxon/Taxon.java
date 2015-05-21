@@ -122,7 +122,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    @Valid
+//    @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
     // all taxa relations with rel.toTaxon==this
@@ -133,7 +133,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    @Valid
+//    @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
     @XmlAttribute(name= "taxonStatusUnknown")
@@ -281,8 +281,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, null);
-
-
         descriptions.remove(description);
     }
 
@@ -476,7 +474,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
             if(removeSynonymNameFromHomotypicalGroup){
                 HomotypicalGroup synHG = synonym.getName().getHomotypicalGroup();
                 if (synHG.getTypifiedNames().size() > 1){
-                    synHG.removeTypifiedName(synonym.getName());
+                    synHG.removeTypifiedName(synonym.getName(), false);
                 }
             }
         }
@@ -1848,10 +1846,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 
     }
 
-	public void clearDescriptions() {
+    public void clearDescriptions() {
 		this.descriptions = new HashSet<TaxonDescription>();
-
 	}
-
 
 }

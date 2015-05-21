@@ -40,6 +40,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import com.mchange.util.AssertException;
+
 import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
@@ -923,8 +925,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
         RuntimeException securityException = null;
 
         Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        UUID name_acherontia_lachesis_uuid = t_acherontia_lachesis.getName().getUuid();
         Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
-
+        int countSynsBefore = t_acherontia_styx.getSynonyms().size();
 
         TaxonNode n_acherontia_lachesis = t_acherontia_lachesis.getTaxonNodes().iterator().next();
         TaxonNode n_acherontia_styx = t_acherontia_styx.getTaxonNodes().iterator().next();
@@ -932,12 +935,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         int numOfSynonymsBefore_styx = t_acherontia_styx.getSynonyms().size();
         int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
 
-        UUID synonymUuid = null; // UUID.randomUUID();
-
+       
         try {
-            Synonym synonym = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
-            synonymUuid = synonym.getUuid();
-            taxonService.saveOrUpdate(synonym);
+            DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
+//            synonymUuid = synonym.getUuid();
+//            taxonService.saveOrUpdate(synonym);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -956,8 +958,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         // reload from db and check assertions
         t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
-        Assert.assertEquals("Acherontia styx now must have a synonym", numOfSynonymsBefore_styx + numOfSynonymsBefore_lachesis +  1, t_acherontia_styx.getSynonyms().size());
-        Assert.assertTrue("Acherontia lachesis now must be a synonym", taxonService.load(synonymUuid) instanceof Synonym);
+        Assert.assertEquals(numOfSynonymsBefore_styx +1 + numOfSynonymsBefore_lachesis, t_acherontia_styx.getSynonyms().size());
+        
+        Assert.assertNotNull(nameService.load(name_acherontia_lachesis_uuid) );
         Assert.assertNull("The old TaxonNode should no longer exist", taxonNodeService.find(n_acherontia_lachesis.getUuid()));
     }
 

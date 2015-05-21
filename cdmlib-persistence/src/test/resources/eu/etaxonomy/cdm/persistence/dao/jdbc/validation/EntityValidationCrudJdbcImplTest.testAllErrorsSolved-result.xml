@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../dataset.xsd">
+
+  <!-- ********************* -->
+  <!-- Validation results    -->
+  <!-- ********************* -->
+  <ENTITYVALIDATION ID="1" CREATED="2014-01-01 00:00:00.0"
+    UUID="dae5b090-30e8-45bc-9460-2eb2028d3c18" VALIDATEDENTITYID="100"
+    VALIDATEDENTITYUUID="f8de74c6-aa56-4de3-931e-87b61da0218c"
+    VALIDATEDENTITYCLASS="eu.etaxonomy.cdm.persistence.validation.Employee"
+    VALIDATIONCOUNT="6"
+   />
+
+</dataset>

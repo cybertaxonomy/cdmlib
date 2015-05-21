@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation;
 
@@ -15,12 +15,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 
 import org.apache.log4j.Logger;
+import org.hibernate.validator.internal.constraintvalidators.PatternValidator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,30 +30,24 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 
 /**
- * NOTE: In this test, the words "valid" and "invalid", loaded though 
+ * NOTE: In this test, the words "valid" and "invalid", loaded though
  * these terms are when applied to taxonomic names, only mean "passes the
  * rules of this validator" or not and should not be confused with the strict
  * nomenclatural and taxonomic sense of these words.
- * 
+ *
  * @author ben.clark
  *
  */
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 @SuppressWarnings("unused")
-public class NameValidCharactersTest  {
+public class NameValidCharactersTest extends ValidationTestBase  {
 	private static final Logger logger = Logger.getLogger(NameValidCharactersTest.class);
-	
 
-	private Validator validator;
-	
 	private BotanicalName name;
-	
+
 	@Before
 	public void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
@@ -63,10 +56,10 @@ public class NameValidCharactersTest  {
 		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
 	}
-	
-	
+
+
 /****************** TESTS *****************************/
-	
+
 	/**
 	 * Test validation at level2 with an invalid name - this should pass as there
 	 * are international characters that are not allowed - grave and acute are forbidden
@@ -74,15 +67,15 @@ public class NameValidCharactersTest  {
 	@Test
 	public final void testForbiddenAccents() {
 		name.setSpecificEpithet("bals�me�");
-		
-		
+
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
-       
+
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, but contains a letter with a grave and an acute",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at level2 with an valid name - this should pass the
 	 * diaeresis is allowed under the botanical code.
@@ -91,41 +84,64 @@ public class NameValidCharactersTest  {
 	@Ignore // setting this to ignore because the character is not showsn correctly in mac os.
 	public final void testAllowedAccents() {
 		name.setSpecificEpithet("bals�mea");
-				
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
-       
+
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at both levels, despite containing a diaeresis",constraintViolations.isEmpty());
 	}
-	
+
 	/**
-	 * Test validation at level2 with an invalid name - this should pass as the genus part 
+	 * Test validation at level2 with an invalid name - this should pass as the genus part
 	 * does not have a capitalized first letter
 	 */
 	@Test
 	public final void testWithoutCapitalizedUninomial() {
-		name.setGenusOrUninomial("abies");		
-		
+		name.setGenusOrUninomial("abies");
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
-       
+
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, the first letter of the genus part is not capitalized",constraintViolations.isEmpty());
 	}
-	
+
 	/**
-	 * Test validation at level2 with an invalid name - this should pass as the genus part 
+	 * Test validation at level2 with an invalid name - this should pass as the genus part
 	 * does not have a capitalized first letter
 	 */
 	@Test
 	public final void testWithCapitalizedNonFirstLetterInUninomial() {
-		name.setGenusOrUninomial("ABies");		
-		
+		name.setGenusOrUninomial("ABies");
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
-       
+
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, the second letter of the genus part is capitalized",constraintViolations.isEmpty());
 	}
+
+	/**
+     * Test validation at level2 with an invalid name - this should pass as the genus part
+     * does not have a capitalized first letter
+     */
+    @Test
+    public final void testAuthorship() {
+        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertNoConstraintOnValidator((Set)constraintViolations, Pattern.class);
+
+        name.setAuthorshipCache("", true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertHasConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+        name.setAuthorshipCache(null, true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertNoConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+        name.setAuthorshipCache("L\\u05EB", true);
+        constraintViolations  = validator.validate(name, Level2.class);
+        assertHasConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
+
+    }
 }

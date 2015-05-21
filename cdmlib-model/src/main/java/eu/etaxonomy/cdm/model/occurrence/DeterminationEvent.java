@@ -129,6 +129,14 @@ public class DeterminationEvent extends EventBase {
 		identifiedUnit.addDetermination(result);
 		return result;
 	}
+	
+	public static DeterminationEvent NewInstance(TaxonNameBase name, SpecimenOrObservationBase identifiedUnit ){
+		DeterminationEvent result = new DeterminationEvent();
+		result.setTaxonName(name);
+		result.setIdentifiedUnit(identifiedUnit);
+		identifiedUnit.addDetermination(result);
+		return result;
+	}
 
 	/**
 	 * Constructor

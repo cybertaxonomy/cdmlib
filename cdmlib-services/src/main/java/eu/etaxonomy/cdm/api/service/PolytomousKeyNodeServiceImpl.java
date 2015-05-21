@@ -41,9 +41,9 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 		UUID uuid = node.getUuid();
 		node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
 		List<PolytomousKeyNode> children = node.getChildren();
-
+		PolytomousKeyNode parent = node.getParent();
 		if(!deleteChildren){
-			PolytomousKeyNode parent = node.getParent();
+
 			for (PolytomousKeyNode child: children){
 				parent.addChild(child);
 				parent.removeChild(node);
@@ -59,6 +59,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 			node.getKey().setRoot(null);
 		}
 		dao.delete(node);
+		dao.saveOrUpdate(parent);
 		return uuid;
 
 	}

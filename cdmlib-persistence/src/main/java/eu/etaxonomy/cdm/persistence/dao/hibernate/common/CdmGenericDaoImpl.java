@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,14 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.Reference;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.UnhandledException;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -39,15 +33,9 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.persister.collection.CollectionPersister;
-import org.hibernate.persister.collection.OneToManyPersister;
-import org.hibernate.persister.entity.AbstractEntityPersister;
-import org.hibernate.stat.Statistics;
-import org.hibernate.type.AnyType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -59,7 +47,6 @@ import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.MaterializedClobType;
 import org.hibernate.type.SerializableType;
-import org.hibernate.type.SetType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
@@ -76,17 +63,9 @@ import eu.etaxonomy.cdm.hibernate.PartialUserType;
 import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
@@ -96,8 +75,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Matching;
-import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
-import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
@@ -105,48 +82,51 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdmGenericDao{
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
 
-	
+
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
-	private Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
-	
-	private class ReferenceHolder{
+	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
+
+
+	protected class ReferenceHolder{
 		String propertyName;
 		Class<? extends CdmBase> otherClass;
-		Class<? extends CdmBase> itemClass;
+		Class<?> itemClass;
+		Class<?> targetClass;  //new as item class is used for isCollection we have a duplicate here
 		public boolean isCollection(){return itemClass != null;};
-		public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
+		@Override
+        public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
 	}
 
-	
 	public CdmGenericDaoImpl() {
 		super(CdmBase.class);
 	}
-	
+
 	@Override
 	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
 		Session session = super.getSession();
-	
+
 		Criteria criteria = session.createCriteria(clazz);
 		criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
 		return criteria.list();
 	}
-	
+
 	@Override
 	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item){
 		Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
-		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " + 
+		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
 			" WHERE this = :referencedObject AND this member of other."+propertyName ;
 		Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
+		@SuppressWarnings("unchecked")
 		List<CdmBase> result = query.list();
 		return result;
 	}
-	
+
 	@Override
-	public Set<Class<? extends CdmBase>> getAllCdmClasses(boolean includeAbstractClasses){
+	public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses){
 		Set<Class<? extends CdmBase>> result = new HashSet<Class<? extends CdmBase>>();
-		
+
 		SessionFactory sessionFactory = getSession().getSessionFactory();
 		Map<?,?> allClassMetadata = sessionFactory.getAllClassMetadata();
 		Collection<?> keys = allClassMetadata.keySet();
@@ -170,29 +150,41 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return result;
 	}
-	
+
 	@Override
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		Set<CdmBase> result = new HashSet<CdmBase>();
+		if (referencedCdmBase == null) {
+			return null;
+		}
 		try {
+			
 			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
-			
-			Set<ReferenceHolder> holderSet = referenceMap.get(referencedClass);
-			if (holderSet == null){
-				holderSet = makeHolderSet(referencedClass);
-				referenceMap.put(referencedClass, holderSet);
-			}
+
+			Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
 			for (ReferenceHolder refHolder: holderSet){
 				handleReferenceHolder(referencedCdmBase, result, refHolder);
 			}
-			return result;	
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		
+
 	}
+
+	protected Set<ReferenceHolder> getOrMakeHolderSet(
+			Class<? extends CdmBase> referencedClass)
+			throws ClassNotFoundException, NoSuchFieldException {
+		Set<ReferenceHolder> holderSet = referenceMap.get(referencedClass);
+		if (holderSet == null){
+			holderSet = makeHolderSet(referencedClass);
+			referenceMap.put(referencedClass, holderSet);
+		}
+		return holderSet;
+	}
+	
 	@Override
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
 		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
@@ -207,13 +199,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				handleReferenceHolder(referencedCdmBase, resultIdentifiableEntity, refHolder);
 			}
 			result.removeAll(resultIdentifiableEntity);
-			
+
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	/**
@@ -231,24 +223,24 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 	}
 
-	
+
 	/**
 	 * @param referencedClass
 	 * @return
-	 * @throws NoSuchFieldException 
-	 * @throws ClassNotFoundException 
+	 * @throws NoSuchFieldException
+	 * @throws ClassNotFoundException
 	 */
-	private Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
+	protected Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
 		Set<ReferenceHolder> result = new HashSet<ReferenceHolder>();
-		
+
 		//init
 		if (allCdmClasses == null){
-			allCdmClasses = getAllCdmClasses(false); //findAllCdmClasses();
+			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
 		//referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-		
-		
+
+
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
 			Type[] propertyTypes = classMetadata.getPropertyTypes();
@@ -258,7 +250,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				makePropertyType(result, referencedClass, sessionFactory, cdmClass, propertyType, propertyName, false);
 				propertyNr++;
 			}
-			
+
 		}
 		return result;
 	}
@@ -281,8 +273,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			SessionFactory sessionFactory, Class<? extends CdmBase> cdmClass,
 			Type propertyType, String propertyName, boolean isCollection)
 				throws ClassNotFoundException, NoSuchFieldException {
-		
-		
+
+
 		if (propertyType.isEntityType()){
 			EntityType entityType = (EntityType)propertyType;
 			String associatedEntityName = entityType.getAssociatedEntityName();
@@ -319,7 +311,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				if (!isNoDoType(subType)){
 					logger.warn("SubType not yet handled: " + subType);
 				}
-//				handlePropertyType(referencedCdmBase, result, referencedClass, 
+//				handlePropertyType(referencedCdmBase, result, referencedClass,
 //						sessionFactory, cdmClass, subType, subPropertyName, isCollection);
 				propertyNr++;
 			}
@@ -328,9 +320,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}else{
 			logger.warn("propertyType not yet handled: " + propertyType.getName());
 		}
-		//OLD: 
+		//OLD:
 				//		if (! type.isInterface()){
-		//		if (referencedClass.isAssignableFrom(type)|| 
+		//		if (referencedClass.isAssignableFrom(type)||
 		//				type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
 		//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
 		//		}
@@ -339,17 +331,19 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
 
 	}
-	
-	private boolean makeSingleProperty(Class itemClass, Class<?> type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
-			String fieldName = StringUtils.rightPad(propertyName, 30);
-			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
-			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
-			
+
+	private boolean makeSingleProperty(Class<?> itemClass, Class<?> type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
+//			String fieldName = StringUtils.rightPad(propertyName, 30);
+//			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
+//			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
+
 //			logger.debug(fieldName +   "\t\t" + className + "\t\t" + returnTypeName);
 			ReferenceHolder refHolder = new ReferenceHolder();
 			refHolder.propertyName = propertyName;
 			refHolder.otherClass = cdmClass;
 			refHolder.itemClass = (isCollection ? itemClass : null) ;
+			refHolder.targetClass = type ;
+			
 			result.add(refHolder);
 		return true;
 	}
@@ -358,16 +352,16 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 * @param propertyType
 	 * @return
 	 */
-	private boolean isNoDoType(Type propertyType) {
+	protected static boolean isNoDoType(Type propertyType) {
 		boolean result = false;
 		Class<?>[] classes = new Class[]{
-				PersistentDateTime.class, 
+				PersistentDateTime.class,
 				WSDLDefinitionUserType.class,
-				UUIDUserType.class, 
+				UUIDUserType.class,
 				PartialUserType.class,
 				StringType.class,
-				BooleanType.class, 
-				IntegerType.class, 
+				BooleanType.class,
+				IntegerType.class,
 				MaterializedClobType.class,
 				LongType.class,
 				FloatType.class,
@@ -398,495 +392,28 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		List<CdmBase> result = query.list();
 		return result;
 	}
-	
+
 	@Override
 	public Query getHqlQuery(String hqlQuery){
 		Query query = getSession().createQuery(hqlQuery);
 		return query;
 	}
-	
+
 	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
-		Class<T> clazz = (Class<T>)cdmBase1.getClass();
 		SessionImpl session = (SessionImpl) getSession();
-		SessionFactory sessionFactory = session.getSessionFactory();
-		if (mergeStrategy == null){
-			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
-		}
-		try {
-			//test null and types
-			testMergeValid(cdmBase1, cdmBase2);
-			
-			//merge objects
-			//externel impl
-			//internal impl
-			session.flush();
-			Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
-			Set<ICdmBase> cloneSet = new HashSet<ICdmBase>();
-			if (cdmBase1 instanceof IMergable){
-				IMergable mergable1 = (IMergable)cdmBase1;
-				IMergable mergable2 = (IMergable)cdmBase2;
-				deleteSet = mergeStrategy.invoke(mergable1, mergable2, cloneSet);
-				//session.saveOrUpdate(mergable1);
-
-				session.flush();
-				//((IMergable)cdmBase1).mergeInto(cdmBase2, DefaultMergeStrategy.NewInstance(cdmBase1.getClass()));
-			}else{
-				mergeExternal(cdmBase1, cdmBase2, clazz, session);
-			}
-			
-			
-			if (cdmBase2.getId() > 0){
-				session.saveOrUpdate(cdmBase2);
-				//rearrange references to cdmBase2
-				reallocateReferences(cdmBase1, cdmBase2, sessionFactory, clazz, cloneSet);
-			}
-			
-			//remove deleted objects 
-			
-			//session.delete(null, mergable2, true, null);
-			session.delete(cdmBase2);
-			for (ICdmBase toBeDeleted : deleteSet){
-				logger.debug("Delete " + toBeDeleted);
-				if (toBeDeleted != cdmBase2){
-					session.delete(toBeDeleted);
-				}
-				
-			}
-			
-			//flush
-			session.flush();
-			
-		} catch (Exception e) {
-			throw new MergeException(e);
-		} 
-	}
-
-	
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param clazz
-	 * @param sessionFactory
-	 * @throws MergeException 
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchFieldException
-	 */
-	private <T extends CdmBase> void mergeExternal(T cdmBase1, T cdmBase2, Class<T> clazz,
-			Session session) throws MergeException {
-//		handleAnnotations
-		logger.warn("Merge external");
-		handleAnnotationsEtc(cdmBase1, cdmBase2, session);
-		
-		SessionFactoryImpl sessionFactory = (SessionFactoryImpl) session.getSessionFactory();
-		
-		Map<String, ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
-		
-		//TODO cast
-		getCollectionRoles(clazz, sessionFactory);
-		
-		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		name1.getTaxonBases();
-		
-		Type propType = sessionFactory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "taxonBases");
-		Map collMetadata = sessionFactory.getAllCollectionMetadata();
-		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
-		CollectionPersister collPersister;
-		try {
-			collPersister = sessionFactory.getCollectionPersister(TaxonNameBase.class.getCanonicalName()+".annotations");
-		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		Statistics statistics = sessionFactory.getStatistics();
-		logger.debug("");
-		ClassMetadata taxonMetaData = sessionFactory.getClassMetadata(Taxon.class);
-		String ename = taxonMetaData.getEntityName();
-		try {
-			Reference ref = sessionFactory.getReference();
-			logger.debug("");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		//sessionFactory.get
-		ClassMetadata classMetadata = getSession().getSessionFactory().getClassMetadata(clazz);
-		Type[] propertyTypes = classMetadata.getPropertyTypes();
-		int propertyNr = 0;
-		for (Type propertyType: propertyTypes){
-			String propertyName = classMetadata.getPropertyNames()[propertyNr];
-			logger.debug(propertyName);
-			makeMergeProperty(cdmBase1, cdmBase2, propertyType, propertyName, sessionFactory, false);
-			propertyNr++;
-		}
-		Set<String> collectionRoles;
-		if (classMetadata instanceof AbstractEntityPersister){
-			AbstractEntityPersister persister = (AbstractEntityPersister)classMetadata;
-			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getCollectionRolesByEntityParticipant(rootName);
-			for (String collectionRole : collectionRoles){
-				CollectionMetadata collMetadata2 = sessionFactory.getCollectionMetadata(collectionRole);
-				String role = collMetadata2.getRole();
-				Type elType = collMetadata2.getElementType();
-				logger.debug(role);
-			}
-		}
-	}
-
-	/**
-	 * @param <T>
-	 * @param clazz
-	 * @param sessionFactory
-	 */
-	private <T> Set<String> getCollectionRoles(Class<T> clazz,
-			SessionFactoryImpl sessionFactory) {
-		Set<String> collectionRoles = null;
-		ClassMetadata classMetaData = sessionFactory.getClassMetadata(clazz);
-		if (classMetaData instanceof AbstractEntityPersister){
-			AbstractEntityPersister persister = (AbstractEntityPersister)classMetaData;
-			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getCollectionRolesByEntityParticipant(rootName);
-			for (String collectionRole : collectionRoles){
-				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
-				CollectionPersister collPersister = sessionFactory.getCollectionPersister(collectionRole);
-				logger.debug("");
-			}
-		}else{
-			logger.warn("Class metadata is not of type AbstractEntityPersister");
-			throw new UnhandledException("Class metadata is not of type AbstractEntityPersister", null);
-		}
-		return collectionRoles;
-	}
-	
-	
-	private <T extends CdmBase> void makeMergeProperty(T cdmBase1, T cdmBase2, Type propertyType, String propertyName, SessionFactoryImpl sessionFactory, boolean isCollection) throws MergeException
-			 {
-	
-		try {
-			Class<T> clazz = (Class<T>)cdmBase1.getClass();
-			if (isNoDoType(propertyType)){
-						//do nothing 
-			}else if (propertyType.isEntityType()){
-				//Field field = clazz.getField(propertyName);	
-				EntityType entityType = (EntityType)propertyType;
-				String associatedEntityName = entityType.getAssociatedEntityName();
-				Class entityClass = Class.forName(associatedEntityName);
-//				 Type refPropType = sessionFactory.getReferencedPropertyType(entityClass.getCanonicalName(), propertyName);
-				Set<String> collectionRoles = getCollectionRoles(clazz, sessionFactory);
-				for (String collectionRole : collectionRoles){
-					CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
-					String role = collMetadata.getRole();
-					logger.debug(role);
-					
-				}
-				
-//				if (entityClass.isInterface()){
-//					logger.debug("So ein interface");
-//				}
-//				if (entityClass.isAssignableFrom(clazz)){
-//					makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
-//				}
-			}else if (propertyType.isCollectionType()){
-				CollectionType collectionType = (CollectionType)propertyType;
-				String role = collectionType.getRole();
-				Type elType = collectionType.getElementType((SessionFactoryImplementor)sessionFactory);
-				String n = collectionType.getAssociatedEntityName(sessionFactory);
-				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(role);
-				if (collMetadata instanceof OneToManyPersister){
-					OneToManyPersister oneManyPersister = (OneToManyPersister)collMetadata;
-					String className = oneManyPersister.getOwnerEntityName();
-					Class<?> myClass = Class.forName(className);
-					Field field = myClass.getDeclaredField(propertyName);
-					field.setAccessible(true);
-					try {
-						if (collectionType instanceof SetType){
-							Set set2 = (Set)field.get(cdmBase2);
-							Set<Object> set1 = (Set<Object>)field.get(cdmBase1);
-							for (Object obj2: set2){
-								set1.add(obj2);
-							}
-						}
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-				logger.debug("");
-				
-//			makePropertyType(result, referencedClass, sessionFactory, cdmClass, elType, propertyName, true);
-			}else if (propertyType.isAnyType()){
-				AnyType anyType = (AnyType)propertyType;
-				Field field = clazz.getDeclaredField(propertyName);
-				Class returnType = field.getType();
-//			if (returnType.isInterface()){
-//				logger.debug("So ein interface");
-//			}
-//			if (returnType.isAssignableFrom(referencedClass)){
-//				makeSingleProperty(referencedClass, returnType, propertyName, cdmClass, result, isCollection);
-//			}
-			}else if (propertyType.isComponentType()){
-				ComponentType componentType = (ComponentType)propertyType;
-				Type[] subTypes = componentType.getSubtypes();
-//		Field field = cdmClass.getDeclaredField(propertyName);
-//		Class returnType = field.getType();
-				int propertyNr = 0;
-				for (Type subType: subTypes){
-					String subPropertyName = componentType.getPropertyNames()[propertyNr];
-					if (!isNoDoType(subType)){
-						logger.warn("SubType not yet handled: " + subType);
-					}
-//					handlePropertyType(referencedCdmBase, result, referencedClass, 
-//					sessionFactory, cdmClass, subType, subPropertyName, isCollection);
-					propertyNr++;
-				}
-			}else{
-				logger.warn("propertyType not yet handled: " + propertyType.getName());
-			}
-			//OLD: 
-					//		if (! type.isInterface()){
-			//		if (referencedClass.isAssignableFrom(type)|| 
-			//				type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
-			//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
-			//		}
-			//	//interface
-			//	}else if (type.isAssignableFrom(referencedClass)){
-			//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
-		} catch (Exception e) {
-			throw new MergeException(e);
-		}
+		DeduplicationHelper helper = new DeduplicationHelper(session, this);
+		helper.merge(cdmBase1, cdmBase2, mergeStrategy);
 	}
 
 
-		
-		
-	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, SessionFactory sessionFactory, Class clazz, Set<ICdmBase> cloneSet){
-		try {
-			Set<ReferenceHolder> holderSet = referenceMap.get(clazz);
-			if (holderSet == null){
-				holderSet = makeHolderSet(clazz);
-				referenceMap.put(clazz, holderSet);
-			}
-			for (ReferenceHolder refHolder: holderSet){
-				reallocateByHolder(cdmBase1, cdmBase2, refHolder, cloneSet);
-			}
-			return;	
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/**
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param refHolder
-	 * @throws MergeException 
-	 */
-	private void reallocateByHolder(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws MergeException {
-		try {
-			if (refHolder.isCollection()){
-				reallocateCollection(cdmBase1, cdmBase2, refHolder, cloneSet);
-			}else{
-				reallocateSingleItem(cdmBase1, cdmBase2, refHolder, cloneSet);
-			}
-		} catch (Exception e) {
-			throw new MergeException("Error during reallocation of references to merge object: " + cdmBase2, e);
-		}
-		
+	@Override
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
+		SessionImpl session = (SessionImpl) getSession();
+		DeduplicationHelper helper = new DeduplicationHelper(session, this);
+		return helper.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
 	}
 
-	/**
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param refHolder
-	 * @param cloneSet
-	 * @throws MergeException 
-	 * @throws NoSuchFieldException 
-	 * @throws SecurityException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * @throws InvocationTargetException 
-	 */
-	private void reallocateCollection(CdmBase cdmBase1, CdmBase cdmBase2,
-			ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws MergeException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		List<CdmBase> list = getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2);
-		for (CdmBase referencingObject : list){
-			Field referencingField = getFieldRecursive(refHolder.otherClass, refHolder.propertyName);
-			referencingField.setAccessible(true);
-			Object collection = referencingField.get(referencingObject);
-			if (! (collection instanceof Collection)){
-				throw new MergeException ("Reallocation of collections for collection other than set and list not yet implemented");
-			}
-			Method addMethod = DefaultMergeStrategy.getAddMethod(referencingField, false);
-			Method removeMethod = DefaultMergeStrategy.getAddMethod(referencingField, true);
-			addMethod.invoke(referencingObject, cdmBase1);
-			removeMethod.invoke(referencingObject, cdmBase2);
-		}
-	}
-	
-	private Field getFieldRecursive(Class clazz, String propertyName) throws NoSuchFieldException{
-		try {
-			return clazz.getDeclaredField(propertyName);
-		} catch (NoSuchFieldException e) {
-			Class superClass = clazz.getSuperclass();
-			if (CdmBase.class.isAssignableFrom(superClass)){
-				return getFieldRecursive(superClass, propertyName);
-			}else{
-				throw e;
-			}
-		}
-	}
-
-	/**
-	 * @throws NoSuchFieldException 
-	 * @throws SecurityException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * 
-	 */
-	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2);
-		for (CdmBase referencingObject : referencingObjects){
-			Field referencingField = refHolder.otherClass.getDeclaredField(refHolder.propertyName);
-			referencingField.setAccessible(true);
-			Object test = referencingField.get(referencingObject);
-			assert(test.equals(cdmBase2));
-			referencingField.set(referencingObject, cdmBase1);
-		}
-	}
-
-	private void reallocateSingleItem(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2);
-		Session session = getSession(); 
-		for (CdmBase referencingObject : referencingObjects){
-			if (!cloneSet.contains(referencingObject)){
-		        String className = refHolder.otherClass.getSimpleName();
-	            String propertyName = refHolder.propertyName;
-		        String hql = "update " + className + " c set c."+propertyName+" = :newValue where c.id = :id";
-		        Query query = session.createQuery(hql);
-		        query.setEntity("newValue", cdmBase1);
-		        query.setInteger("id",referencingObject.getId());
-		        int rowCount = query.executeUpdate();
-		        logger.debug("Rows affected: " + rowCount);
-		        session.refresh(referencingObject);
-	        }
-	    }
-		session.flush();
-	}
-	
-
-
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param session
-	 */
-	private <T> void handleAnnotationsEtc(T cdmBase1, T cdmBase2, Session session) {
-		//when handling annotations and other elements linked via @Any an JDBC errors occurs
-		//due to the unique column constraint in the association table on the column referencing
-		//the annotation.
-		//For some reason not delete command is executed for the old collection
-		// Hibernate bug ??
-		session.flush();  //for debugging
-		if (cdmBase1 instanceof AnnotatableEntity){
-			AnnotatableEntity annotatableEntity1 = (AnnotatableEntity)cdmBase1;
-			AnnotatableEntity annotatableEntity2 = (AnnotatableEntity)cdmBase2;
-			//annotations
-			List<Annotation> removeListAnnotation = new ArrayList<Annotation>();
-			for (Annotation annotation : annotatableEntity2.getAnnotations()){
-				Annotation clone = null;
-				try {
-					clone = annotation.clone(annotatableEntity1);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-				annotatableEntity1.addAnnotation(clone);
-				removeListAnnotation.add(annotation);
-			}
-			for (Annotation annotation : removeListAnnotation){
-				annotatableEntity2.removeAnnotation(annotation);
-				getSession().delete(annotation);
-			}
-			//marker
-			List<Marker> removeListMarker = new ArrayList<Marker>();
-			for (Marker marker : annotatableEntity2.getMarkers()){
-				Marker clone = null;
-				try {
-					clone = marker.clone(annotatableEntity1);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-				annotatableEntity1.addMarker(clone);
-				removeListMarker.add(marker);
-			}
-			for (Marker marker : removeListMarker){
-				annotatableEntity2.removeMarker(marker);
-				getSession().delete(marker);
-			}
-		}
-		if (cdmBase1 instanceof IdentifiableEntity){
-			IdentifiableEntity identifiableEntity1 = (IdentifiableEntity)cdmBase1;
-			IdentifiableEntity identifiableEntity2 = (IdentifiableEntity)cdmBase2;
-			//annotations
-			List<Extension> removeListExtension = new ArrayList<Extension>();
-			for (Extension changeObject : (Set<Extension>)identifiableEntity2.getExtensions()){
-				try {
-					Extension clone = changeObject.clone(identifiableEntity1);
-					identifiableEntity1.addExtension(clone);
-					removeListExtension.add(changeObject);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-				
-			}
-			for (Extension removeObject : removeListExtension){
-				identifiableEntity2.removeExtension(removeObject);
-				getSession().delete(removeObject);
-			}
-		}
-		
-		session.saveOrUpdate(cdmBase1);
-		session.saveOrUpdate(cdmBase2);
-		session.flush();
-	}
-	
-	private <T extends CdmBase> void testMergeValid(T cdmBase1, T cdmBase2)throws IllegalArgumentException, NullPointerException{
-		if (cdmBase1 == null || cdmBase2 == null){
-			throw new NullPointerException("Merge arguments must not be (null)");
-		}
-		cdmBase1 = (T)HibernateProxyHelper.deproxy(cdmBase1);
-		cdmBase2 = (T)HibernateProxyHelper.deproxy(cdmBase2);
-		
-		if (cdmBase1.getClass() != cdmBase2.getClass()){
-			throw new IllegalArgumentException("Merge arguments must be of same type");
-		}
-	}
-	
-	//TODO Move to test classes if still needed
-	private void test() {
-		SessionFactoryImpl factory = (SessionFactoryImpl)getSession().getSessionFactory();
-		Type propType = factory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "titleCache");
-		Map collMetadata = factory.getAllCollectionMetadata();
-		Object roles = factory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
-		CollectionPersister collPersister;
-		try {
-			collPersister = factory.getCollectionPersister(TaxonNameBase.class.getCanonicalName()+".annotations");
-		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Statistics statistics = factory.getStatistics();
-		Map allClassMetadata = factory.getAllClassMetadata();
-		logger.debug("");
-		
-	}
 
 	@Override
 	public <T extends CdmBase> T find(Class<T> clazz, int id){
@@ -900,6 +427,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
 			IMatchStrategy matchStrategy) throws MatchException {
+		
+		getSession().flush();
 		try {
 			List<T> result = new ArrayList<T>();
 			if(objectToMatch == null){
@@ -916,7 +445,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			throw new MatchException(e);
 		}
 	}
-	
+
 	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
 		List<T> result = new ArrayList<T>();
 		Session session = getSession();
@@ -965,7 +494,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				}else{
 					criteria.add(Restrictions.eq(cacheMatcher.getPropertyName(), cacheValue));
 					criteria.add(Restrictions.eq(cacheMatcher.getProtectedPropertyName(), cacheProtected));
-					
+
 					List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
 					for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
 						String propertyName = replacementMode.getFirstResult();
@@ -989,7 +518,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			if (replaceMatchers.get(propertyName) != null){
 				matchModes.addAll(replaceMatchers.get(propertyName));
 			}
-			
+
 			boolean isIgnore = false;
 			for (MatchMode matchMode : matchModes){
 				isIgnore |= matchMode.isIgnore(value);
@@ -1025,7 +554,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			if (requiresSecondNull){
 				criteria.add(Restrictions.isNull(propertyName));
 			}else{
-				//TODO 
+				//TODO
 				logger.warn("Component type not yet implemented for (null) value: " + propertyName);
 				throw new MatchException("Component type not yet fully implemented for (null) value. Property: " + propertyName);
 			}
@@ -1053,7 +582,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}else{
 			if (isMatch(matchModes)){
 				if (propertyType.isCollectionType()){
-					//TODO collection not yet handled for match	
+					//TODO collection not yet handled for match
 				}else{
 					int joinType = CriteriaSpecification.INNER_JOIN;
 					if (! requiresSecondValue(matchModes,value)){
@@ -1062,9 +591,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
 					Class matchClass = value.getClass();
 					if (IMatchable.class.isAssignableFrom(matchClass)){
-						IMatchStrategy valueMatchStrategy = DefaultMatchStrategy.NewInstance((Class<IMatchable>)matchClass);
+						IMatchStrategy valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
-						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria); 
+						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
 						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");
@@ -1078,7 +607,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return noMatch;
 	}
-	
+
 	/**
 	 * @param criteria
 	 * @param propertyName
@@ -1101,12 +630,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		//return finalRestriction;
 		criteria.add(finalRestriction);
 	}
-	
+
 	/**
 	 * @param matchModes
 	 * @param value
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean requiresSecondNull(List<MatchMode> matchModes, Object value) throws MatchException {
 		boolean result = true;
@@ -1115,12 +644,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @param matchModes
 	 * @param value
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) throws MatchException {
 		boolean result = true;
@@ -1129,12 +658,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @param matchModes
 	 * @param value
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean isRequired(List<MatchMode> matchModes) throws MatchException {
 		boolean result = true;
@@ -1143,13 +672,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns true if at least one match mode is of typ MATCH_XXX
 	 * @param matchModes
 	 * @param value
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean isMatch(List<MatchMode> matchModes) throws MatchException {
 		boolean result = false;
@@ -1164,7 +693,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 * @param matchModes
 	 * @param value
 	 * @return
-	 * @throws MatchException 
+	 * @throws MatchException
 	 */
 	private boolean isEqual(List<MatchMode> matchModes) throws MatchException {
 		boolean result = false;
@@ -1177,82 +706,84 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#saveMetaData(eu.etaxonomy.cdm.model.common.CdmMetaData)
 	 */
-	public void saveMetaData(CdmMetaData cdmMetaData) {
+	@Override
+    public void saveMetaData(CdmMetaData cdmMetaData) {
 		getSession().saveOrUpdate(cdmMetaData);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#getMetaData()
 	 */
-	public List<CdmMetaData> getMetaData() {
+	@Override
+    public List<CdmMetaData> getMetaData() {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(CdmMetaData.class);
 		List<CdmMetaData> results = crit.list();
 		return results;
 	}
-	
+
     @Override
     public PersistentCollection initializeCollection(PersistentCollection col) {
             Session session = getSession();
             col.setCurrentSession((SessionImplementor) session);
-            
+
             if(!((SessionImplementor)session).getPersistenceContext().getCollectionEntries().containsKey(col)) {
                     ((SessionImplementor)session).getPersistenceContext().addUninitializedDetachedCollection(
                                     ((SessionImplementor)session).getFactory().getCollectionPersister( col.getRole() ),col);
             }
-            col.forceInitialization();    
+            col.forceInitialization();
             logger.debug("initialising persistent collection with with role : " + col.getRole() + " and key : " + col.getKey());
             return col;
     }
-    
+
     @Override
     public boolean isEmpty(PersistentCollection col) {
     	return initializeCollection(col).empty();
     }
-    
+
     @Override
     public int size(PersistentCollection col) {
     	logger.debug("remote size() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);   
+    	initializeCollection(col);
     	SessionImplementor session = (SessionImplementor)getSession();
     	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
 
     	if ( entry != null ) {
-    		
-    		CollectionPersister persister = entry.getLoadedPersister();			
+
+    		CollectionPersister persister = entry.getLoadedPersister();
     		return persister.getSize( entry.getLoadedKey(), session );
     	}
     	return -1;
     }
-    
+
     @Override
     public Object get(PersistentCollection col, int index) {
     	logger.debug("remote get() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);    
+    	initializeCollection(col);
     	SessionImplementor session = (SessionImplementor)getSession();
     	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
-    	
+
     	if ( entry != null ) {
-    		
-    		CollectionPersister persister = entry.getLoadedPersister();		    		
+
+    		CollectionPersister persister = entry.getLoadedPersister();
     		return persister.getElementByIndex(entry.getLoadedKey(), index, session, col);
-    		
+
     	}
     	//FIXME:Remoting Should we not be throwing an exception here ?
     	return null;
     }
-    
+
     @Override
     public boolean contains(PersistentCollection col, Object element) {
     	logger.debug("remote contains() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);    
+    	initializeCollection(col);
     	SessionImplementor session = (SessionImplementor)getSession();
     	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
-    	
+
     	if ( entry != null ) {
-    		
-    		CollectionPersister persister = entry.getLoadedPersister();		
-    		return persister.elementExists(entry.getLoadedKey(), element, session);    		    		
+
+    		CollectionPersister persister = entry.getLoadedPersister();
+    		return persister.elementExists(entry.getLoadedKey(), element, session);
     	}
     	//FIXME:Remoting Should we not be throwing an exception here ?
     	return false;
@@ -1261,26 +792,26 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     @Override
     public boolean containsKey(PersistentCollection col, Object key) {
     	logger.debug("remote containsKey() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);    
+    	initializeCollection(col);
     	SessionImplementor session = (SessionImplementor)getSession();
     	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
-    	
+
     	if ( entry != null ) {
-    		
-    		CollectionPersister persister = entry.getLoadedPersister();		
-    		return persister.indexExists(entry.getLoadedKey(), key, session);    		    		
+
+    		CollectionPersister persister = entry.getLoadedPersister();
+    		return persister.indexExists(entry.getLoadedKey(), key, session);
     	}
     	//FIXME:Remoting Should we not be throwing an exception here ?
     	return false;
-    	
+
     }
-    
+
     @Override
-    public boolean containsValue(PersistentCollection col, Object element) {    	
+    public boolean containsValue(PersistentCollection col, Object element) {
     	return contains(col, element);
     }
 
-	@Override
+    @Override
 	public void createFullSampleData() {
 //		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
 //		dataGenerator.fillWithData(getSession());

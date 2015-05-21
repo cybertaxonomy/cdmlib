@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
-import eu.etaxonomy.cdm.api.service.IEntityValidationResultService;
+import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -150,7 +150,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
 	@Autowired
-	private IEntityValidationResultService entityValidationResultService;
+	private IEntityValidationService entityValidationService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -169,507 +169,221 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	/**
 	 * Constructor
 	 */
-	protected CdmApplicationDefaultConfiguration()
-	{
-	}
+	protected CdmApplicationDefaultConfiguration(){}
 
 
 	// ****************************** APPLICATION CONTEXT *************************************************/
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.
-	 * springframework.context.ApplicationContext)
-	 */
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-	{
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
 		this.applicationContext = applicationContext;
 	}
-
 
 	// ****************************** GETTER *************************************************/
 
 	@Override
-	public final Object getBean(String name)
-	{
+	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAgentService()
-	 */
 	@Override
-	public IAgentService getAgentService()
-	{
+	public IAgentService getAgentService(){
 		return this.agentService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDatabaseService()
-	 */
 	@Override
-	public IDatabaseService getDatabaseService()
-	{
+	public IDatabaseService getDatabaseService(){
 		return this.databaseService;
 	}
 
 
 	@Autowired
-	public void setDataSource(DataSource dataSource)
-	{
+	public void setDataSource(DataSource dataSource){
 		this.dataSource = dataSource;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getNameService()
-	 */
 	@Override
-	public INameService getNameService()
-	{
+	public INameService getNameService(){
 		return this.nameService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getReferenceService()
-	 */
 	@Override
-	public IReferenceService getReferenceService()
-	{
+	public IReferenceService getReferenceService(){
 		return this.referenceService;
 	}
 
-
 	@Autowired
-	public void setSessionFactory(SessionFactory sessionFactory)
-	{
+	public void setSessionFactory(SessionFactory sessionFactory){
 		this.sessionFactory = sessionFactory;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonService()
-	 */
 	@Override
-	public ITaxonService getTaxonService()
-	{
+	public ITaxonService getTaxonService(){
 		return this.taxonService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getClassificationService
-	 * ()
-	 */
 	@Override
-	public IClassificationService getClassificationService()
-	{
+	public IClassificationService getClassificationService(){
 		return this.classificationService;
 	}
 
-
 	@Override
-	public ITaxonNodeService getTaxonNodeService()
-	{
+	public ITaxonNodeService getTaxonNodeService(){
 		return this.taxonNodeService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDescriptionService
-	 * ()
-	 */
 	@Override
-	public IDescriptionService getDescriptionService()
-	{
+	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService
-	 * ()
-	 */
 	@Override
-	public IOccurrenceService getOccurrenceService()
-	{
+	public IOccurrenceService getOccurrenceService(){
 		return this.occurrenceService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService
-	 * ()
-	 */
 	@Override
-	public IPrimerService getPrimerService()
-	{
+	public IPrimerService getPrimerService(){
 		return this.primerService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService
-	 * ()
-	 */
 	@Override
-	public IAmplificationService getAmplificationService()
-	{
+	public IAmplificationService getAmplificationService(){
 		return this.amplificationService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
-	 */
 	@Override
-	public ISequenceService getSequenceService()
-	{
+	public ISequenceService getSequenceService(){
 		return this.sequenceService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getMediaService()
-	 */
 	@Override
-	public IMediaService getMediaService()
-	{
+	public IMediaService getMediaService(){
 		return this.mediaService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTermService()
-	 */
 	@Override
-	public ITermService getTermService()
-	{
+	public ITermService getTermService(){
 		return this.termService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
-	 */
 	@Override
-	public ICommonService getCommonService()
-	{
+	public ICommonService getCommonService(){
 		return this.commonService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getLocationService()
-	 */
 	@Override
-	public ILocationService getLocationService()
-	{
+	public ILocationService getLocationService(){
 		return this.locationService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
-	 */
 	@Override
-	public IUserService getUserService()
-	{
+	public IUserService getUserService(){
 		return this.userService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
-	 */
 	@Override
-	public IGrantedAuthorityService getGrantedAuthorityService()
-	{
+	public IGrantedAuthorityService getGrantedAuthorityService(){
 		return this.grantedAuthorityService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
-	 */
 	@Override
-	public IService<CdmBase> getMainService()
-	{
+	public IService<CdmBase> getMainService(){
 		return this.mainService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTransactionManager
-	 * ()
-	 */
 	@Override
-	public PlatformTransactionManager getTransactionManager()
-	{
+	public PlatformTransactionManager getTransactionManager(){
 		return this.transactionManager;
 	}
 
 
 	@Autowired
-	public void setTransactionManager(PlatformTransactionManager transactionManager)
-	{
+	public void setTransactionManager(PlatformTransactionManager transactionManager){
 		this.transactionManager = (HibernateTransactionManager) transactionManager;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager
-	 * ()
-	 */
 	@Override
-	public ProviderManager getAuthenticationManager()
-	{
+	public ProviderManager getAuthenticationManager(){
 		return this.authenticationManager;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
-	 */
 	@Override
-	public ConversationHolder NewConversation()
-	{
+	public ConversationHolder NewConversation(){
 		// TODO make this a prototype
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCollectionService
-	 * ()
-	 */
 	@Override
-	public ICollectionService getCollectionService()
-	{
+	public ICollectionService getCollectionService(){
 		return collectionService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureTreeService
-	 * ()
-	 */
 	@Override
-	public IFeatureTreeService getFeatureTreeService()
-	{
+	public IFeatureTreeService getFeatureTreeService(){
 		return featureTreeService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureNodeService
-	 * ()
-	 */
 	@Override
-	public IFeatureNodeService getFeatureNodeService()
-	{
+	public IFeatureNodeService getFeatureNodeService(){
 		return featureNodeService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getVocabularyService
-	 * ()
-	 */
 	@Override
-	public IVocabularyService getVocabularyService()
-	{
+	public IVocabularyService getVocabularyService(){
 		return vocabularyService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#
-	 * getIdentificationKeyService()
-	 */
 	@Override
-	public IIdentificationKeyService getIdentificationKeyService()
-	{
+	public IIdentificationKeyService getIdentificationKeyService(){
 		return identificationKeyService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPolytomousKeyService
-	 * ()
-	 */
 	@Override
-	public IPolytomousKeyService getPolytomousKeyService()
-	{
+	public IPolytomousKeyService getPolytomousKeyService(){
 		return polytomousKeyService;
 	}
 
 
 	@Override
-	public IPolytomousKeyNodeService getPolytomousKeyNodeService()
-	{
+	public IPolytomousKeyNodeService getPolytomousKeyNodeService(){
 		return polytomousKeyNodeService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getWorkingSetService
-	 * ()
-	 */
 	@Override
-	public IWorkingSetService getWorkingSetService()
-	{
+	public IWorkingSetService getWorkingSetService(){
 		return workingSetService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getGroupService()
-	 */
 	@Override
-	public IGroupService getGroupService()
-	{
+	public IGroupService getGroupService(){
 		return groupService;
 	}
 
 
 	@Override
-	public IEntityValidationResultService getEntityValidationResultService()
-	{
-		return entityValidationResultService;
+	public IEntityValidationService getEntityValidationService(){
+		return entityValidationService;
 	}
 
 
 	@Override
-	public IEntityConstraintViolationService getEntityConstraintViolationService()
-	{
+	public IEntityConstraintViolationService getEntityConstraintViolationService(){
 		return entityConstraintViolationService;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPermissionEvaluator
-	 * ()
-	 */
 	@Override
-	public ICdmPermissionEvaluator getPermissionEvaluator()
-	{
+	public ICdmPermissionEvaluator getPermissionEvaluator(){
 		return permissionEvaluator;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#startTransaction()
-	 */
 	@Override
-	public TransactionStatus startTransaction()
-	{
+	public TransactionStatus startTransaction(){
 		return startTransaction(false);
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#startTransaction()
-	 */
 	@Override
-	public TransactionStatus startTransaction(Boolean readOnly)
-	{
+	public TransactionStatus startTransaction(Boolean readOnly){
 
 		PlatformTransactionManager txManager = getTransactionManager();
 
@@ -695,24 +409,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 
 	@Override
-	public void commitTransaction(TransactionStatus txStatus)
-	{
+	public void commitTransaction(TransactionStatus txStatus){
 		PlatformTransactionManager txManager = getTransactionManager();
 		txManager.commit(txStatus);
 		return;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java
-	 * .lang.String, java.lang.String)
-	 */
 	@Override
-	public void authenticate(String username, String password)
-	{
+	public void authenticate(String username, String password){
 		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
 		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
 		SecurityContext context = SecurityContextHolder.getContext();

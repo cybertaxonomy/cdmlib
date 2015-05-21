@@ -59,8 +59,12 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
 	
-	public static final TableCreator NewNonVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, false, false, true);
+	public static final TableCreator NewNonVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
+		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), false, true, false, false, true);
+	}
+	
+	public static final TableCreator NewVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, false, false, false);
 	}
 	
 	public static final TableCreator NewAnnotatableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
@@ -92,7 +96,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		this.includeIdentifiableEntity = includeIdentifiableEntity;
 		this.excludeVersionableAttributes = excludeVersionableAttributes;
 		makeColumnAdders();
-		makeMnTables();
+		makeMnTables(mnTablesStepList, this.tableName, this.includeAnnotatableEntity, this.includeIdentifiableEntity);
 	}
 
 
@@ -147,49 +151,59 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 	
 	/**
 	 * fills the mnTablesStepList
+	 * @param mnTablesStepList, String tableName 
 	 */
-	private void makeMnTables() {
+	public static void makeMnTables(List<ISchemaUpdaterStep> mnTablesStepList, String tableName, boolean includeAnnotatable, boolean includeIdentifiable) {
 		TableCreator tableCreator;
-
-		if (this.includeAnnotatableEntity){
+		String stepName;
+		
+		if (includeAnnotatable){
 			//annotations
 			stepName= "Add @tableName annotations";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
 
 			//marker
 			stepName= "Add @tableName marker";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
 			
 		}
 		
-		if (this.includeIdentifiableEntity){
+		if (includeIdentifiable){
 
 			//credits
 			stepName= "Add @tableName credits";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, null, "Credit", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Credit", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
 			mnTablesStepList.add(tableCreator);
+			
+			
+			//identifier
+			stepName= "Add @tableName identifiers";
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Identifier", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
+			mnTablesStepList.add(tableCreator);
+
 			
 			//extensions
 			stepName= "Add @tableName extensions";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
 			
 			//OriginalSourceBase
 			stepName= "Add @tableName sources";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, null, "OriginalSourceBase", "sources", SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "OriginalSourceBase", "sources", SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
 			mnTablesStepList.add(tableCreator);
 
 			//Rights
 			stepName= "Add @tableName rights";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT);
+			stepName = stepName.replace("@tableName", tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
 		}
 	}

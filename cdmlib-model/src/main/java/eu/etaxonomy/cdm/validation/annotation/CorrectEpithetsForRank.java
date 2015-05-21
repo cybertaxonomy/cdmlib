@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation.annotation;
 
@@ -26,10 +26,10 @@ import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
 @Constraint(validatedBy = CorrectEpithetsForRankValidator.class)
 @Documented
 public @interface CorrectEpithetsForRank {
-	
+
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.message}";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
-	Class<?>[] groups() default {};
+
+	Class<?>[] groups() default {};  //Level2
 }

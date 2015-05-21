@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
 
 /**
  * @author a.mueller
@@ -96,7 +97,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
-		//TaxonName for DeterminationEvent
+		//TaxonName for DeterminationEvent #3448, #4203, #4518
 		stepName = "Add foreign key for DeterminationEvent.taxonName";
 		tableName = "DnaQuality";
 		newColumnName = "typedPurificationMethod_id";
@@ -105,20 +106,15 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		
-		
-		//FIXME H2, SQL Server, PostGres
-		//update DerivationEvent.taxonname_id
+		//update DerivationEvent.taxonname_id #3448, #4203, #4518
 		stepName = "Update taxon name in derivation event";
-		query = "UPDATE DeterminationEvent dev " +
-				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = dev.taxon_id) " + 
+		query = "UPDATE DeterminationEvent " +
+				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " + 
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
 		stepList.add(step);
  		
-		
-		
-
 		mergePresenceAbsenceVocs(stepList);
 	
 		
@@ -319,7 +315,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_341_35.NewInstance();
 	}
 
 	@Override

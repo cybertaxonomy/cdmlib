@@ -10,11 +10,15 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -45,6 +50,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -692,6 +698,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
         Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
@@ -699,6 +707,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize - DONE");}
+
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return results;
     }
 
@@ -864,24 +874,95 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listNamedAreasInUse(java.lang.Integer, java.lang.Integer, java.util.List)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
-        String queryString = "select distinct d.area from Distribution as d";
-        Query query = getSession().createQuery(queryString);
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+        StringBuilder queryString = new StringBuilder(
+                "SELECT DISTINCT a.id, a.partOf.id"
+                + " FROM Distribution AS d JOIN d.area AS a");
+        Query query = getSession().createQuery(queryString.toString());
+
+        List<Object[]> areasInUse = query.list();
+        List<Object[]> parentResults = new ArrayList<Object[]>();
+
+        if(!areasInUse.isEmpty()) {
+            Set<Object> allAreaIds = new HashSet<Object>(areasInUse.size());
+
+            if(includeAllParents) {
+                // find all parent nodes
+                String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
+                query = getSession().createQuery(allAreasQueryStr);
+                List<Object[]> allAreasResult = query.list();
+                Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
+
+                Set<Object> parents = new HashSet<Object>();
+
+                for(Object[] leaf : areasInUse) {
+                    allAreaIds.add(leaf[0]);
+                    Object parentId = leaf[1];
+                    while (parentId != null) {
+                        if(parents.contains(parentId)) {
+                            // break if the parent already is in the set
+                            break;
+                        }
+                        parents.add(parentId);
+                        parentId = allAreasMap.get(parentId);
+                    }
+                }
+                allAreaIds.addAll(parents);
+            } else {
+                // only add the ids found so far
+                for(Object[] leaf : areasInUse) {
+                    allAreaIds.add(leaf[0]);
+                }
+            }
+
+
+            // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
+            // rows for a term with multiple representations
+            String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
+                    + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+                    + "where a.id in (:allAreaIds) order by a.idInVocabulary";
+            query = getSession().createQuery(parentAreasQueryStr);
+            query.setParameterList("allAreaIds", allAreaIds);
+            if(pageSize != null) {
+                query.setMaxResults(pageSize);
+                if(pageNumber != null) {
+                    query.setFirstResult(pageNumber * pageSize);
+                }
+            }
+            parentResults = query.list();
+        }
+        List<TermDto> dtoList = termDtoListFrom(parentResults);
+
+        return dtoList;
+    }
+
+    /**
+     * @param results
+     * @return
+     */
+    private List<TermDto> termDtoListFrom(List<Object[]> results) {
+        Map<UUID, TermDto> dtoMap = new HashMap<UUID, TermDto>(results.size());
+        for (Object[] elements : results) {
+            UUID uuid = (UUID)elements[0];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            } else {
+                Set<Representation> representations;
+                if(elements[1] instanceof Representation) {
+                    representations = new HashSet<Representation>(1);
+                    representations.add((Representation)elements[1]);
+                } else {
+                    representations = (Set<Representation>)elements[1];
+                }
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3]));
             }
         }
-
-        List<NamedArea> results = query.list();
-
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-        return results;
+        return new ArrayList<TermDto>(dtoMap.values());
     }
 
 

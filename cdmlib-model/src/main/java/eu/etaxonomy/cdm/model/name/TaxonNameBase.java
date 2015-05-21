@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -71,6 +72,8 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -860,7 +863,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getAppendedPhrase()
      */
     public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = appendedPhrase;
+        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     /**
@@ -879,7 +882,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getNomenclaturalMicroReference()
      */
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+        this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
     }
 
     /* (non-Javadoc)
@@ -1229,9 +1232,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         if (homotypicalGroup == null){
             throw new IllegalArgumentException("HomotypicalGroup of name should never be null but was set to 'null'");
         }
+        /*if (this.homotypicalGroup != null){
+        	this.homotypicalGroup.removeTypifiedName(this, false);
+        }*/
         this.homotypicalGroup = homotypicalGroup;
-        if (! homotypicalGroup.typifiedNames.contains(this)){
-            homotypicalGroup.addTypifiedName(this);
+        if (!this.homotypicalGroup.typifiedNames.contains(this)){
+        	 this.homotypicalGroup.addTypifiedName(this);
         }
     }
 
@@ -1272,6 +1278,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see		eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear()
      */
     @Transient
+    @ValidTaxonomicYear(groups=Level3.class)
     public String getReferenceYear(){
         if (this.getNomenclaturalReference() != null ){
             return this.getNomenclaturalReference().getYear();
@@ -1694,6 +1701,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
         HomotypicalGroup homotypicalGroup = this.getHomotypicalGroup();
 
+
         if (homotypicalGroup == null) {
             return;
         }
@@ -1858,8 +1866,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
             //homotypicalGroup
             //TODO still needs to be discussed
-            homotypicalGroup = HomotypicalGroup.NewInstance();
-            homotypicalGroup.addTypifiedName(this);
+            result.homotypicalGroup = HomotypicalGroup.NewInstance();
+            result.homotypicalGroup.addTypifiedName(this);
 
             //no changes to: appendedPharse, nomenclaturalReference,
             //nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
