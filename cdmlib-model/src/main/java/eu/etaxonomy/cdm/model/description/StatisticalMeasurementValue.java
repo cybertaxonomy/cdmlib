@@ -15,8 +15,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -81,11 +79,6 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY )
-    @JoinTable(
-         name = "DescriptionElementBase_StatisticalMeasurementValue"
-             , joinColumns = @JoinColumn(name = "statisticalvalues_id")
-             , inverseJoinColumns = @JoinColumn(name = "DescriptionElementBase_id")
-    )
     @IndexedEmbedded(depth=1)
 	private QuantitativeData quantitativeData;
 

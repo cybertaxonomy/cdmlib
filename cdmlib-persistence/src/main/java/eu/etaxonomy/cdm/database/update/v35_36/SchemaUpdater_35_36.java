@@ -117,7 +117,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         newColumnName = "rightCutPosition";
         step = MnTableRemover.NewInstance(stepName,
                 tableName,
-                "descriptionElementBase_id",
+                "categoricaldata_id",
                 "DescriptionElementBase_id",
                 "statedata_id",
                 "DescriptionElementBase",
