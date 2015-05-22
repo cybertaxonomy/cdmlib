@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Updates the base type of a class.
  * E.g. if a class is VersionableEntity it may be upgraded to AnnotatableEntity
- * @Annota
  * @date 2015-03-20
  * @author a.mueller
  */
@@ -113,8 +112,8 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase<ClassBase
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 			this.columnAdderStepList.add(adder);
 		}
-
 	}
+
 	@Override
 	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
 		//we only do have inner steps here
