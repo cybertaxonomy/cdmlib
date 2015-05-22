@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,18 +31,18 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
-	
+
 	protected String stepName;
 
 	private boolean ignoreErrors;
-		
-	
+
+
 //************************ CONSTRUCTOR ***********************************/
 
 	protected SchemaUpdaterStepBase(String stepName){
 		this.setStepName(stepName);
 	}
-	
+
 
 	@Override
 	public abstract Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
@@ -57,9 +57,9 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	public String getStepName() {
 		return stepName;
 	}
-	
+
 	protected String getBoolean(boolean value, ICdmDataSource datasource) {
-		
+
 		String result;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		//TODO use
@@ -79,7 +79,7 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 		}
 		return result;
 	}
-	
+
 	protected Integer getEnglishLanguageId(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		return getLanguageId(Language.uuidEnglish, datasource, monitor, caseType);
 	}
@@ -92,7 +92,7 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	 * @throws SQLException
 	 */
 	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		
+
 		ResultSet rs;
 		Integer langId = null;
 		String sqlLangId = " SELECT id FROM %s WHERE uuid = '%s'";
@@ -107,25 +107,28 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 		return langId;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<ISchemaUpdaterStep>();
 	}
-	
+
 	@Override
 	public boolean isIgnoreErrors() {
 		return ignoreErrors;
 	}
-	
-	
+
+
 	@Override
 	public void setIgnoreErrors(boolean ignoreErrors) {
 		this.ignoreErrors = ignoreErrors;
 	}
-	
+
 
 	/**
-	 * Returns a time string with date and time (without millis) that 
+	 * Returns a time string with date and time (without millis) that
 	 * can be used as a time string for database insert and update
 	 * @return
 	 */
@@ -141,5 +144,5 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 			return super.toString();
 		}
 	}
-	
+
 }
