@@ -9,16 +9,9 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -76,7 +69,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     @Autowired
     private ITaxonDao taxonDao;
-    
+
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
 
@@ -707,8 +700,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
      */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
-        String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
+        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase";
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = getSession().createSQLQuery(queryString).list();
 
         if(result.size() == 0){
@@ -721,9 +715,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
                 Object[] objectArray = (Object[]) object;
 
                 UUID uuid = UUID.fromString((String) objectArray[0]);
-                String titleCache = (String) objectArray[1];
+                Integer id = (Integer) objectArray[1];
+                String titleCache = (String) objectArray[2];
 
-                list.add(new UuidAndTitleCache(type, uuid, titleCache));
+                list.add(new UuidAndTitleCache(type, uuid, id, titleCache));
             }
 
             return list;
@@ -743,7 +738,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
-        
+
         if (persistentObject == null){
             logger.warn(type.getName() + " was 'null'");
             return null;
@@ -753,7 +748,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
         getSession().delete(persistentObject);
-               
+
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
@@ -796,140 +791,82 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 @Override
 public List<HashMap<String,String>> getNameRecords(){
-    	String sql= "SET SESSION group_concat_max_len = 1000000; "+
-
-"SELECT unionTable.* "+
-"FROM (SELECT DISTINCT cl.titleCache as classification, familyTb.titleCache familyTaxon, familyTnb.titleCache familyName, GROUP_CONCAT(DISTINCT langStringFam.text SEPARATOR '\n') as descriptionsFam, myTaxon.titleCache genusTaxon, mySec.titleCache  as secRef, myName.titleCache genusName, myName.id as nameId, myName.namecache as nameCache, myName.titleCache as titleName,  genusNomRef.titleCache as NomRefTitleCache,CONCAT(myName.nameCache, ' ', genusNomRef.titleCache) as fullName, myName.fullTitleCache, "+
-"CASE WHEN typeName.titleCache IS NULL THEN 'not desit.' ELSE CONCAT('<i>',typeName.nameCache, '</i> ', typeName.authorshipcache)  END as typeName, "+
-"GROUP_CONCAT( DISTINCT case when synName_homotypic.fullTitleCache is NULL then CONCAT('<i>',synName_homotypic.nameCache, '</i> ', synName_homotypicRef.titleCache) else REPLACE(synName_homotypic.fulltitleCache, synName_homotypic.nameCache,CONCAT('<i>', synName_homotypic.namecache, '</i>')) end ORDER BY synName_homotypicRef.datepublished_start SEPARATOR '<homonym> ') as synonyms_homotypic, "+
-"GROUP_CONCAT(DISTINCT heterotypic_syns.homotypicalNames order by published SEPARATOR ' <heterotypic>') as synonyms_heterotypic, "+
-"statusTerm.titleCache status, relatedName.fullTitleCache relatedName, relatedNameType.titleCache nameRelType, GROUP_CONCAT(DISTINCT langString.text SEPARATOR '\n') as descriptions "+
-
-"FROM Classification cl "+
-"LEFT OUTER JOIN TaxonNode familyNode ON familyNode.classification_id = cl.id "+
-"LEFT OUTER JOIN TaxonBase familyTb ON familyTb.id = familyNode.taxon_id "+
-"LEFT OUTER JOIN TaxonNameBase familyTnb ON familyTnb.id = familyTb.name_id "+
-"LEFT OUTER JOIN DescriptionBase descrBaseFam ON descrBaseFam.taxon_id = familyTb.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBaseFam ON descrElBaseFam.indescription_id = descrBaseFam.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_lFam ON descrElBase_lFam.DescriptionElementBase_id = descrElBaseFam.id "+
-"LEFT OUTER JOIN LanguageString langStringFam ON descrElBase_lFam.multilanguagetext_id = langStringFam.id "+
-
-"LEFT OUTER JOIN TaxonNode myNode ON myNode.parent_id = familyNode.id "+
-"LEFT OUTER JOIN TaxonBase myTaxon ON myTaxon.id = myNode.taxon_id "+
-"LEFT OUTER JOIN Reference mySec ON myTaxon.sec_id = mySec.id "+
-"LEFT OUTER JOIN TaxonNameBase myName ON myTaxon.name_id = myName.id "+
-"LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase genusTypeMN ON genusTypeMN.TaxonNameBase_id = myName.id "+
-"LEFT OUTER JOIN TypeDesignationBase genusTypeDesig ON genusTypeDesig.id = genusTypeMN.typedesignations_id "+
-"LEFT OUTER JOIN TaxonNameBase typeName ON genusTypeDesig.typename_id = typeName.id "+
-"LEFT OUTER JOIN Reference genusNomRef ON genusNomRef.id = myName.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_homotypic ON sr_homotypic.relatedto_id = myTaxon.id and sr_homotypic.type_id = 871 "+
-"LEFT OUTER JOIN TaxonBase syn_homotypic ON syn_homotypic.id = sr_homotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_homotypic ON synName_homotypic.id = syn_homotypic.name_id "+
-"LEFT OUTER JOIN Reference synName_homotypicRef ON synName_homotypicRef.id = synName_homotypic.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_heterotypic ON sr_heterotypic.relatedto_id = myTaxon.id  and sr_heterotypic.type_id = 870 "+
-"LEFT OUTER JOIN TaxonBase syn_heterotypic ON syn_heterotypic.id = sr_heterotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_heterotypic  ON synName_heterotypic.id = syn_heterotypic.name_id "+ 
-"LEFT OUTER JOIN (SELECT GROUP_CONCAT( case when synName_heterotypic.fullTitleCache is NULL then CONCAT('<i>',synName_heterotypic.nameCache, '</i> ', r.titleCache) else REPLACE(synName_heterotypic.fulltitleCache, synName_heterotypic.nameCache,CONCAT('<i>', synName_heterotypic.namecache, '</i>')) end order by r.datepublished_start SEPARATOR ' <homonym>') as homotypicalNames, synName_heterotypic.homotypicalgroup_id, synName_heterotypic.namecache, r.titleCache, r.datepublished_start as published, sr.relatedto_id as taxon_id , sr.type_id as type_id "+
-"FROM TaxonNameBase synName_heterotypic, Reference r, TaxonBase syn_heterotypic, SynonymRelationship sr  where synName_heterotypic.id = syn_heterotypic.name_id and  synName_heterotypic.nomenclaturalreference_id = r.id and sr.relatedfrom_id = syn_heterotypic.id and sr.type_id = 870 GROUP BY synName_heterotypic.homotypicalgroup_id) as heterotypic_syns ON heterotypic_syns.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN Reference synName_heterotypicRef ON synName_heterotypic.nomenclaturalreference_id = synName_heterotypicRef.id "+
-"LEFT OUTER JOIN TaxonNameBase_NomenclaturalStatus statusMN ON myName.id = statusMN.TaxonNameBase_id "+
-"LEFT OUTER JOIN NomenclaturalStatus status ON status.id = statusMN.status_id "+
-"LEFT OUTER JOIN DefinedTermBase statusTerm ON status.type_id = statusTerm.id "+
-"LEFT OUTER JOIN NameRelationship nameRel ON myName.id = nameRel.relatedto_id "+
-"LEFT OUTER JOIN TaxonNameBase relatedName ON relatedName.id = nameRel.relatedfrom_id "+
-"LEFT OUTER JOIN DefinedTermBase relatedNameType ON relatedNameType.id = nameRel.type_id "+
-"LEFT OUTER JOIN DescriptionBase descrBase ON descrBase.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBase ON descrElBase.indescription_id = descrBase.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_l ON descrElBase_l.DescriptionElementBase_id = descrElBase.id "+
-"LEFT OUTER JOIN LanguageString langString ON descrElBase_l.multilanguagetext_id = langString.id "+
-
-"WHERE familyNode.parent_id = 1986 "+
-"GROUP BY classification, familyTaxon, familyName, genusTaxon, genusName, nameId, fullName, NomRefTitleCache, typeName, status, relatedName, nameRelType "+
+    	String sql= "SELECT"
+    			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
+    			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id"
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tn.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as famName, "
+    			+ " (SELECT famName.namecache FROM TaxonNode famNode "
+    			+ " LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id "
+    			+ " LEFT OUTER JOIN TaxonNameBase famName ON famTax.name_id = famName.id "
+    			+ " WHERE famName.rank_id = 795 AND famNode.treeIndex = SUBSTRING(tnAcc.treeIndex, 1, length(famNode.treeIndex))"
+    			+ "	) as accFamName,tb.DTYPE, tb.id as TaxonID ,tb.titleCache taxonTitle,  tnb.rank_id as RankID, tnb.id as NameID,"
+    			+ " tnb.namecache as name, tnb.titleCache as nameAuthor, tnb.fullTitleCache nameAndNomRef,"
+    			+ "	r.titleCache as nomRef, r.abbrevTitle nomRefAbbrevTitle, r.title nomRefTitle, r.datepublished_start nomRefPublishedStart, r.datepublished_end nomRefPublishedEnd, r.pages nomRefPages, inRef.abbrevTitle inRefAbbrevTitle,tnb.nomenclaturalmicroreference as detail,"
+    			+ "	nameType.namecache nameType, nameType.titleCache nameTypeAuthor, nameType.fullTitleCache nameTypeFullTitle, nameTypeRef.titleCache nameTypeRef, inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
+    			+ " FROM TaxonBase tb"
+    			+ " LEFT OUTER JOIN TaxonNameBase tnb ON tb.name_id = tnb.id"
+    			+ "	LEFT OUTER JOIN Reference r ON tnb.nomenclaturalreference_id = r.id"
+    			+ "	LEFT OUTER JOIN TaxonNode tn ON tn.taxon_id = tb.id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase typeMN ON typeMN.TaxonNameBase_id = tnb.id"
+    			+ " LEFT OUTER JOIN TypeDesignationBase tdb ON tdb.id = typeMN.typedesignations_id"
+    			+ "	LEFT OUTER JOIN TaxonNameBase nameType ON tdb.typename_id = nameType.id"
+    			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
+    			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
+    			+ "	LEFT OUTER JOIN SynonymRelationship sr ON tb.id = sr.relatedfrom_id"
+    			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = sr.relatedto_id"
+    			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
+    			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
 
 
-"UNION "+
-
-"SELECT  cl.titleCache as classification, myTaxon.titleCache familyTaxon, myName.titleCache familyName, '' as descriptionsFam, '' genusTaxon,'' secRef, '' genusName, myName.id as nameId, myName.namecache as nameCache, myName.titleCache as titleName, myName.fullTitleCache fullName,  myName.fullTitleCache,genusNomRef.titleCache as NomRefTitleCache, "+
-"CASE WHEN genusTypeDesig.notdesignated = 1 THEN 'not desit.' ELSE typeName.titleCache  END as typeName, GROUP_CONCAT(DISTINCT synName_homotypic.fullTitleCache SEPARATOR '; ' ) as synonyms_homotypic, GROUP_CONCAT(DISTINCT synName_heterotypic.fullTitleCache SEPARATOR '; <homonym>' ) as synonyms_heterotypic, statusTerm.titleCache status, relatedName.fullTitleCache relatedName, relatedNameType.titleCache nameRelType, GROUP_CONCAT(DISTINCT langString.text SEPARATOR '\n') as descriptions "+
-
-"FROM Classification cl "+
-"LEFT OUTER JOIN TaxonNode myNode ON myNode.classification_id = cl.id "+
-"LEFT OUTER JOIN TaxonBase myTaxon ON myTaxon.id = myNode.taxon_id "+
-"LEFT OUTER JOIN TaxonNameBase myName ON myName.id = myTaxon.name_id "+
-"LEFT OUTER JOIN TaxonNameBase_TypeDesignationBase genusTypeMN ON genusTypeMN.TaxonNameBase_id = myName.id "+
-"LEFT OUTER JOIN TypeDesignationBase genusTypeDesig ON genusTypeDesig.id = genusTypeMN.typedesignations_id "+
-"LEFT OUTER JOIN TaxonNameBase typeName ON genusTypeDesig.typename_id = typeName.id "+
-"LEFT OUTER JOIN Reference genusNomRef ON genusNomRef.id = myName.nomenclaturalreference_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_homotypic ON sr_homotypic.relatedto_id = myTaxon.id and sr_homotypic.type_id = 871 "+
-"LEFT OUTER JOIN TaxonBase syn_homotypic ON syn_homotypic.id = sr_homotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_homotypic ON synName_homotypic.id = syn_homotypic.name_id "+
-"LEFT OUTER JOIN SynonymRelationship sr_heterotypic ON sr_heterotypic.relatedto_id = myTaxon.id and sr_heterotypic.type_id = 870 "+
-"LEFT OUTER JOIN TaxonBase syn_heterotypic ON syn_heterotypic.id = sr_heterotypic.relatedfrom_id "+
-"LEFT OUTER JOIN TaxonNameBase synName_heterotypic ON synName_heterotypic.id = syn_heterotypic.name_id "+
-"LEFT OUTER JOIN TaxonNameBase_NomenclaturalStatus statusMN ON myName.id = statusMN.TaxonNameBase_id "+
-"LEFT OUTER JOIN NomenclaturalStatus status ON status.id = statusMN.status_id "+
-"LEFT OUTER JOIN DefinedTermBase statusTerm ON status.type_id = statusTerm.id "+
-"LEFT OUTER JOIN NameRelationship nameRel ON myName.id = nameRel.relatedto_id "+
-"LEFT OUTER JOIN TaxonNameBase relatedName ON relatedName.id = nameRel.relatedfrom_id "+
-"LEFT OUTER JOIN DefinedTermBase relatedNameType ON relatedNameType.id = nameRel.type_id "+
-"LEFT OUTER JOIN DescriptionBase descrBase ON descrBase.taxon_id = myTaxon.id "+
-"LEFT OUTER JOIN DescriptionElementBase descrElBase ON descrElBase.indescription_id = descrBase.id "+
-"LEFT OUTER JOIN DescriptionElementBase_LanguageString descrElBase_l ON descrElBase_l.DescriptionElementBase_id = descrElBase.id "+
-"LEFT OUTER JOIN LanguageString langString ON descrElBase_l.multilanguagetext_id = langString.id "+
-
-
-
-"WHERE myNode.parent_id is null "+
-"GROUP BY classification, familyTaxon, familyName, genusTaxon, genusName, nameId, fullName, NomRefTitleCache, typeName, status, relatedName, nameRelType "+
-
-") as unionTable "+
-
-"ORDER BY familyTaxon, genusTaxon";
     	SQLQuery query = getSession().createSQLQuery(sql);
     	List result = query.list();
     	 //Delimiter used in CSV file
-    	 		 
-    
+
+
 		List<HashMap<String,String>> nameRecords = new ArrayList();
 		HashMap<String,String> nameRecord = new HashMap<String,String>();
 		for(Object object : result)
          {
-			Map row = (Map)object;
+			Object[] row = (Object[])object;
 			nameRecord = new HashMap<String,String>();
-			nameRecord.put("famName",(String)row.get("famName"));
-			nameRecord.put("accFamName",(String)row.get("accFamName"));
-          
-			nameRecord.put("DTYPE",(String)row.get("DTYPE"));
-			nameRecord.put("TaxonID",(String)row.get("TaxonID"));
-			nameRecord.put("taxonTitle",(String)row.get("taxonTitle"));
-            nameRecord.put("RankID",(String)row.get("RankID"));
-            nameRecord.put("NameID",(String)row.get("NameID"));
-            nameRecord.put("name",(String)row.get("name"));
-            nameRecord.put("nameAuthor",(String)row.get("nameAuthor"));
-            nameRecord.put("nameAndNomRef",(String)row.get("nameAndNomRef"));
-            nameRecord.put("nomRef",(String)row.get("nomRef"));
-            nameRecord.put("nomRefAbbrevTitle",(String)row.get("nomRefAbbrevTitle"));
-            nameRecord.put("nomRefTitle",(String)row.get("nomRefTitle"));
-            nameRecord.put("nomRefPublishedStart",(String) row.get("nomRefPublishedStart"));
-            nameRecord.put("nomRefPublishedEnd",(String)row.get("nomRefPublishedEnd"));
-            nameRecord.put("nomRefPages",(String)row.get("nomRefPages"));
-            nameRecord.put("inRefAbbrevTitle",(String)row.get("inRefAbbrevTitle"));
-            nameRecord.put("detail",(String)row.get("detail"));
-            nameRecord.put("nameType",(String) row.get("nameType"));
-            nameRecord.put("nameTypeAuthor",(String)row.get("nameTypeAuthor"));
-            nameRecord.put("nameTypeFullTitle",(String)row.get("nameTypeFullTitle"));
-            nameRecord.put("nameTypeRef",(String)row.get("nameTypeRef"));
-            nameRecord.put("inRefSeries",(String)row.get("inRefSeries"));
-            nameRecord.put("inRefPublishedStart",(String)row.get("inRefPublishedStart"));
-            nameRecord.put("inRefPublishedEnd",(String) row.get("inRefPublishedEnd"));
-            nameRecord.put("inRefVolume",(String)row.get("inRefVolume"));
+			nameRecord.put("famName",(String)row[0]);
+			nameRecord.put("accFamName",(String)row[1]);
+
+			nameRecord.put("DTYPE",(String)row[2]);
+			nameRecord.put("TaxonID",String.valueOf(row[3]));
+			nameRecord.put("taxonTitle",(String)row[4]);
+            nameRecord.put("RankID",String.valueOf(row[5]));
+            nameRecord.put("NameID",String.valueOf(row[6]));
+            nameRecord.put("name",(String)row[7]);
+            nameRecord.put("nameAuthor",(String)row[8]);
+            nameRecord.put("nameAndNomRef",(String)row[9]);
+            nameRecord.put("nomRef",(String)row[10]);
+            nameRecord.put("nomRefAbbrevTitle",(String)row[11]);
+            nameRecord.put("nomRefTitle",(String)row[12]);
+            nameRecord.put("nomRefPublishedStart",(String)row[13]);
+            nameRecord.put("nomRefPublishedEnd",(String)row[14]);
+            nameRecord.put("nomRefPages",(String)row[15]);
+            nameRecord.put("inRefAbbrevTitle",(String)row[16]);
+            nameRecord.put("detail",(String)row[17]);
+            nameRecord.put("nameType",(String)row[18]);
+            nameRecord.put("nameTypeAuthor",(String)row[19]);
+            nameRecord.put("nameTypeFullTitle",(String)row[20]);
+            nameRecord.put("nameTypeRef",(String)row[21]);
+            nameRecord.put("inRefSeries",(String)row[22]);
+            nameRecord.put("inRefPublishedStart",(String)row[23]);
+            nameRecord.put("inRefPublishedEnd",(String)row[24]);
+            nameRecord.put("inRefVolume",(String)row[25]);
             nameRecords.add(nameRecord);
 	   }
-			
-		return nameRecords;	
-		
-		
-    		
+
+		return nameRecords;
+
+
+
     }
+
+
 
 }

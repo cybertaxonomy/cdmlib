@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.database;
 
@@ -24,29 +24,29 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * This class is a wrapper class to wrap an {@link javax.sql.DataSource} to an
- * {@link ICdmDataSource}. As the former is a very limited interface it is not possible 
+ * {@link ICdmDataSource}. As the former is a very limited interface it is not possible
  * to implement all methods of {@link ICdmDataSource}. However, the aim is
  * to implement all those methods which are usually needed to work with a datasource
  * which represents a connection to a database such as transaction handling and
  * sending queries.
  * Those methods which are not supported by this wrapper class will throw an xxx
  * exception.
- * 
- *  
+ *
+ *
  * @author a.mueller
  */
- 
+
 //FIXME this class replicates lots of code in CdmDataSourceBase, we may want to merge it
 //in a common helper class to avoid redundant code
 public class WrappedCdmDataSource implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(WrappedCdmDataSource.class);
 
 
-	private DataSource datasource;
-	
+	private final DataSource datasource;
+
 	private Connection connection;
-	
-	
+
+
 	public WrappedCdmDataSource(DataSource datasource) {
 		if (datasource == null){
 			throw new NullPointerException("datasource must not be null for WrappedCdmDataSource");
@@ -63,7 +63,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 			return datasource.getConnection();
 		}
 	}
-	
+
 	public Connection getExistingConnection(){
 		return this.connection;
 	}
@@ -161,7 +161,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		try {
 			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());	
+			throw new CdmSourceException(e.getMessage());
 		}
 	}
 
@@ -169,7 +169,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	@Override
 	public boolean isDbEmpty() throws CdmSourceException {
 		// Any CDM DB should have a schema version
-		String dbSchemaVersion = (String) getDbSchemaVersion();
+		String dbSchemaVersion = getDbSchemaVersion();
 		return (dbSchemaVersion == null || dbSchemaVersion.equals(""));
 	}
 
@@ -178,9 +178,9 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		try {
 			return testConnection();
 		} catch (ClassNotFoundException e) {
-			throw new CdmSourceException(e.getMessage());			
+			throw new CdmSourceException(e.getMessage());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());	
+			throw new CdmSourceException(e.getMessage());
 		}
 	}
 
@@ -226,7 +226,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
 	@Override
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, 
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 			Boolean showSql, Boolean formatSql, Boolean registerSearchListener,
 			Class<? extends RegionFactory> cacheProviderClass) {
 		//TODO is it possible/required to build a properties bean here?
@@ -279,13 +279,42 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		throw new UnsupportedOperationException("setDatabase(String) not supported by WrappedCdmDataSource");
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getDatabaseType()
-	 */
 	@Override
 	public DatabaseTypeEnum getDatabaseType() {
-		// TODO is it possible to retrieve this data from connection MetaData?
-		throw new UnsupportedOperationException("getDatabaseType(String) not supported by WrappedCdmDataSource");
+	    if (this.datasource instanceof ICdmDataSource){
+	        return ((ICdmDataSource)this.datasource).getDatabaseType();
+	    }
+
+	    try {
+            getConnection();
+        } catch (SQLException e1) {
+            throw new RuntimeException("SQL Exception while trying to establish connection to datasource");
+        }
+
+	    String driverName = null;
+        if (connection != null){
+            DatabaseMetaData metaData = null;
+            try {
+                metaData = connection.getMetaData();
+            } catch (SQLException e) {
+                throw new RuntimeException("SQL Exception while trying to read datasource metadata");
+            }
+
+            try {
+                driverName = metaData != null ? metaData.getDriverName() : null;
+            } catch (SQLException e) {
+                //throw exception at end
+            }
+            if (metaData != null){
+                DatabaseTypeEnum type = DatabaseTypeEnum.byDatabaseMetaData(metaData);
+                if (type != null){
+                    return type;
+                }
+            }
+            throw new IllegalStateException("datasource type (MySQL, SQL Server, ...) could not be retrieved from generic datasource");
+
+        }
+		throw new IllegalStateException("datasource type (MySQL, SQL Server, ...) could not be retrieved from generic datasource");
 	}
 
 	@Override
@@ -332,7 +361,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		if (rs.next()){
 			int count = rs.getMetaData().getColumnCount();
 			if (count > 0){
-				return rs.getObject(0);
+				return rs.getObject(1);
 			}
 		}
 		return null;

@@ -22,6 +22,7 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -429,5 +431,44 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return the identifier string
      */
     public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
+
+    /**
+     * Returns the number of specimens that match the given parameters
+     * @param clazz the class to match
+     * @param queryString the queryString to match
+     * @param type the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon the taxon these specimens are in any way associated to via
+     * determination, type designations, individuals associations, etc.
+     * @param matchmode determines how the query string should be matched
+     * @param limit
+     *            the maximum number of entities returned (can be null to return
+     *            all entities)
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return the number of found specimens
+     */
+    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+
+    /**
+     * Return the all {@link SpecimenOrObservationBase}s of the complete
+     * derivative hierarchy i.e. all parent and child derivatives and the given
+     * specimen itself.
+     *
+     * @param specimen
+     *            a specimen or observation
+     * @return the derivative hierarchy as an unordered list of all specimens or observation
+     */
+    public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Returns all child derivatives of the given specimen.
+     * @param specimen a specimen or observation
+     * @return an unordered list of all child derivatives
+     */
+    public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
+
 
 }

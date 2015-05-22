@@ -165,8 +165,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
+    //TODO Val #3379, #4245
+//  @NullOrNotEmpty
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
-    
+
 
 
 //***************************** CONSTRUCTOR *******************************************/
@@ -194,8 +196,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
-    	  
-          this.idInVocabulary = idInVocabulary == "" ? null : idInVocabulary;
+
+          this.idInVocabulary = StringUtils.isBlank(idInVocabulary)? null : idInVocabulary;
       }
 
       @Override
@@ -254,8 +256,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
       public void setPartOf(T partOf){
           this.partOf = partOf;
       }
-      
-      
+
+
     //TODO Comparable implemented only for fixing failing JAXB imports, may be removed when this is fixed
   	@Override
   	@Deprecated //for inner use only
@@ -478,10 +480,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
     // Currently the CDM Caching mechanism is only used for caching terms
     private static ICdmCacher cacher;
-    
+
     /**
      * Gets the CDM cacher object
-     *      
+     *
      * @return the CDM cacher object
      */
     public static ICdmCacher getCacher() {
@@ -490,7 +492,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 	/**
 	 * Sets the CDM cacher object
-	 * 
+	 *
 	 * @param cacher the CDM cacher object
 	 */
 	public static void setCacher(ICdmCacher cacher) {

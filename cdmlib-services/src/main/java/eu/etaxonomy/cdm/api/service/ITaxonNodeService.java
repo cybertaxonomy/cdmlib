@@ -52,7 +52,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 *
 	 */
-	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) ;
+	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) ;
 
 	/**
 	 * deletes the given taxon nodes
@@ -94,6 +94,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent);
 
 	public UpdateResult moveTaxonNode(UUID taxonNodeUUID, UUID newParentUUID);
+
+	public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config);
+
+
+	UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid,
+			boolean moveToParent);
 
 
 

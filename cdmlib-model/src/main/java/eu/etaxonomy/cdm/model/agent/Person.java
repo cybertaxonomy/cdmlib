@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -240,7 +241,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
-		this.prefix = prefix == "" ? null : prefix;
+		this.prefix = StringUtils.isBlank(prefix) ? null : prefix;
 	}
 
 
@@ -258,7 +259,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
-		this.firstname = firstname == "" ? null : firstname;
+		this.firstname = StringUtils.isBlank(firstname) ? null : firstname;
 	}
 
 
@@ -275,7 +276,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
-		this.lastname = lastname == "" ? null : lastname;
+		this.lastname = StringUtils.isBlank(lastname) ? null : lastname;
 	}
 
 
@@ -290,7 +291,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
-		this.suffix = suffix == "" ? null: suffix;
+		this.suffix = StringUtils.isBlank(suffix) ? null: suffix;
 	}
 
 

@@ -32,7 +32,9 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -47,13 +49,21 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	IDescriptionElementDao descriptionElementDao;
 
 	@SpringBeanByType
+    IDescriptionDao descriptionDao;
+
+
+	@SpringBeanByType
 	IDefinedTermDao termDao;
 
+	@SpringBeanByType
+	ITaxonDao taxonDao;
 
-	private UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
-	private UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
 
-	private boolean printDatasets = false;
+
+	private final UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
+	private final UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
+
+	private final boolean printDatasets = false;
 
 	/**
 	 * @throws java.lang.Exception
@@ -277,13 +287,9 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 //		commitAndStartNewTransaction(new String[]{"Hibernate_sequences","DescriptionElementBase","DescriptionElementBase_StateData","StateData_DefinedTermBase", "StateData", "StateData_LanguageString", "LanguageString"});
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
+
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

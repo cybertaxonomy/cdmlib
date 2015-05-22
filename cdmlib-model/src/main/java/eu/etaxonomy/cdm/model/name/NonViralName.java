@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -623,7 +624,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getGenusOrUninomial()
      */
     public void setGenusOrUninomial(String genusOrUninomial) {
-        this.genusOrUninomial = genusOrUninomial;
+        this.genusOrUninomial = StringUtils.isBlank(genusOrUninomial) ? null : genusOrUninomial;
     }
 
     /**
@@ -643,7 +644,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getInfraGenericEpithet()
      */
     public void setInfraGenericEpithet(String infraGenericEpithet){
-        this.infraGenericEpithet = infraGenericEpithet;
+        this.infraGenericEpithet = StringUtils.isBlank(infraGenericEpithet)? null : infraGenericEpithet;
     }
 
     /**
@@ -662,7 +663,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getSpecificEpithet()
      */
     public void setSpecificEpithet(String specificEpithet){
-        this.specificEpithet = specificEpithet;
+        this.specificEpithet = StringUtils.isBlank(specificEpithet) ? null : specificEpithet;
     }
 
     /**
@@ -682,7 +683,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see  #getInfraSpecificEpithet()
      */
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
-        this.infraSpecificEpithet = infraSpecificEpithet;
+        this.infraSpecificEpithet = StringUtils.isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
     }
 
     /**
@@ -1115,21 +1116,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     }
 
     /**
-     * Returns the set of all {@link HybridRelationship hybrid relationships}
-     * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
-     * @see 	#getHybridParentRelations()
-     * @see    	#getHybridRelationships()
-     * @see    	#getChildRelationships()
-     * @see    	HybridRelationshipType
-     * @deprecated use {@link #getHybridParentRelations()} instead. Will be removed in higher versions.
-     */
-    @Deprecated
-    @Transient
-    public Set<HybridRelationship> getParentRelationships() {
-        return getHybridParentRelations();
-    }
-
-    /**
      * Returns the hybrid child relationships ordered by relationship type, or if equal
      * by title cache of the related names.
      * @see #getHybridParentRelations()
@@ -1144,16 +1130,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     }
 
-
-    /**
-     * @see #getHybridChildRelations()
-     * @deprecated use {@link #getHybridChildRelations()} instead. Will be removed in higher versions.
-     */
-    @Transient
-    @Deprecated
-    public Set<HybridRelationship> getChildRelationships() {
-        return this.getHybridChildRelations();
-    }
 
     /**
      * Adds the given {@link HybridRelationship hybrid relationship} to the set
@@ -1268,26 +1244,28 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         NonViralName<?> parent = hybridRelation.getParentName();
         NonViralName<?> child = hybridRelation.getHybridName();
 
-        hybridRelation.setHybridName(null);
-        hybridRelation.setParentName(null);
+        if (this.equals(parent) || this.equals(child)){
+            hybridRelation.setHybridName(null);
+            hybridRelation.setParentName(null);
 
-        if (parent != null) {
-            parent.removeHybridRelationship(hybridRelation);
+            if (parent != null) {
+                parent.removeHybridRelationship(hybridRelation);
+            }
+
+            if (child != null) {
+                child.removeHybridRelationship(hybridRelation);
+            }
+
+            this.hybridChildRelations.remove(hybridRelation);
+            this.hybridParentRelations.remove(hybridRelation);
         }
-
-        if (child != null) {
-            child.removeHybridRelationship(hybridRelation);
-        }
-
-        this.hybridChildRelations.remove(hybridRelation);
-        this.hybridParentRelations.remove(hybridRelation);
     }
 
 
     public void removeHybridChild(NonViralName child) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
-        hybridRelationships.addAll(this.getChildRelationships());
-        hybridRelationships.addAll(this.getParentRelationships());
+        hybridRelationships.addAll(this.getHybridChildRelations());
+        hybridRelationships.addAll(this.getHybridParentRelations());
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(this) && hybridRelationship.getHybridName().equals(child)) {
@@ -1298,8 +1276,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     public void removeHybridParent(NonViralName parent) {
         Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
-        hybridRelationships.addAll(this.getChildRelationships());
-        hybridRelationships.addAll(this.getParentRelationships());
+        hybridRelationships.addAll(this.getHybridChildRelations());
+        hybridRelationships.addAll(this.getHybridParentRelations());
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(parent) && hybridRelationship.getHybridName().equals(this)) {

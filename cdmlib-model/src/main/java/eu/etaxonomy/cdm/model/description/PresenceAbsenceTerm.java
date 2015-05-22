@@ -22,10 +22,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.springframework.util.StringUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This class represents terms describing the {@link AbsenceTerm absence}
- * (like "extinct") or the {@link PresenceTerm presence} (like "cultivated") of a 
+ * (like "extinct") or the {@link PresenceTerm presence} (like "cultivated") of a
  * {@link Taxon taxon} in a {@link NamedArea named area}. These terms are only
  * used for {@link Distribution distributions}.
 
@@ -58,12 +58,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final long serialVersionUID = 1036807546935584396L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTerm.class);
-    
-	
+
+
 	//presence base
 	private static final UUID uuidP=UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
 	private static final UUID uuidPD=UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
-	
+
 	//presence
 	private static final UUID uuidN=UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
 	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
@@ -79,8 +79,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 	private static final UUID uuidNA=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
-	
-	//absence	
+
+	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
 	private static final UUID uuidNF=UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
 	private static final UUID uuidIF=UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
@@ -89,29 +89,29 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidIE=UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 
 
-	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;	
+	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
 
     private String defaultColor = "000000";
-    
+
     @XmlAttribute(name = "absenceTerm")
     private boolean absenceTerm = false;
 
 	//********* METHODS **************************************/
-	/** 
+	/**
 	 * Creates a new empty presence term.
-	 * 
+	 *
 	 * @see #NewInstance(String, String, String)
 	 */
 	public static PresenceAbsenceTerm NewInstance(){
 		return new PresenceAbsenceTerm();
 	}
 
-	/** 
+	/**
 	 * Creates a new presence term with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new presence term to be created 
+	 * 						 new presence term to be created
 	 * @param	label  		 the string identifying the new presence term to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new presence term to be created
@@ -120,13 +120,13 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static PresenceAbsenceTerm NewPresenceInstance(String term, String label, String labelAbbrev){
 		return new PresenceAbsenceTerm(term, label, labelAbbrev, false);
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new absence term with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new presence term to be created 
+	 * 						 new presence term to be created
 	 * @param	label  		 the string identifying the new presence term to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new presence term to be created
@@ -135,8 +135,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static PresenceAbsenceTerm NewAbsenceInstance(String term, String label, String labelAbbrev){
 		return new PresenceAbsenceTerm(term, label, labelAbbrev, true);
 	}
-    
-    
+
+
 //********************************** Constructor *******************************************************************/
 
   	//for hibernate use only
@@ -161,10 +161,10 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
         super(TermType.PresenceAbsenceTerm, term, label, labelAbbrev);
         this.setAbsenceTerm(isAbsenceTerm);
     }
-    
-    
+
+
   //******************************* STATIC METHODS *****************************************
-	
+
   	protected static PresenceAbsenceTerm getTermByUuid(UUID uuid){
   		if (termMap == null){
   			return null;
@@ -174,7 +174,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
   	}
 
    	//TODO read from label(abbrevs) like in TDWGArea
-  	public static PresenceAbsenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev) { 
+  	public static PresenceAbsenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev) {
   		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
   		} else if (abbrev.equalsIgnoreCase("c"))  { return PresenceAbsenceTerm.CULTIVATED();
   		} else if (abbrev.equalsIgnoreCase("e"))  { return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
@@ -202,8 +202,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 			return null;
 		}
   	}
-  	
-    
+
+
 	public static final PresenceAbsenceTerm PRESENT(){
 		return getTermByUuid(uuidP);
 	}
@@ -250,27 +250,27 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static final PresenceAbsenceTerm NATIVE_DOUBTFULLY_NATIVE(){
 		return getTermByUuid(uuidND);
 	}
-	
+
 	public static final PresenceAbsenceTerm NATIVE_PRESENCE_QUESTIONABLE(){
 		return getTermByUuid(uuidNQ);
 	}
-	
+
 	public static final PresenceAbsenceTerm INVASIVE(){
 		return getTermByUuid(uuidIV);
 	}
-	
+
 	public static final PresenceAbsenceTerm NATURALISED(){
 		return getTermByUuid(uuidNA);
 	}
-	
+
 	public static final PresenceAbsenceTerm ABSENT(){
 		return getTermByUuid(uuidAbsence);
 	}
-	
+
 	public static final PresenceAbsenceTerm NATIVE_REPORTED_IN_ERROR(){
 		return getTermByUuid(uuidNF);
 	}
-	
+
 	public static final PresenceAbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
 		return getTermByUuid(uuidCF);
 	}
@@ -294,7 +294,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public void resetTerms(){
 		termMap = null;
 	}
-	
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<PresenceAbsenceTerm> termVocabulary) {
 		termMap = new HashMap<UUID, PresenceAbsenceTerm>();
@@ -317,7 +317,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		}
         boolean isAbsence = csvLine.get(6).equals("1") ? true : false;
         newInstance.setAbsenceTerm(isAbsence);
-        
+
         newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
         return newInstance;
     }
@@ -331,7 +331,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
     /**
      * @param defaultColor the defaultColor to set
-     * @throws ParseException 
+     * @throws ParseException
      */
     //TODO make format checking a hibernate validation rule
     public void setDefaultColor(String defaultColor) throws ParseException  {
@@ -368,8 +368,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     	PresenceAbsenceTerm presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm, PresenceAbsenceTerm.class);
         if(! skipVocabularyCheck){
             if (this.vocabulary == null || presenceAbsenceTermLocal.vocabulary == null){
-                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + 
-                		presenceAbsenceTermLocal.toString() + ") of class " + this.getClass() + " or " + 
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " +
+                		presenceAbsenceTermLocal.toString() + ") of class " + this.getClass() + " or " +
                 		presenceAbsenceTermLocal.getClass() + " does not belong to a vocabulary and therefore "
                 		+ "can not be compared");
             }

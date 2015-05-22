@@ -238,7 +238,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public DatabaseTypeEnum getDatabaseType(){
 		String strDriverClass = getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS);
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.getDatabaseEnumByDriverClass(strDriverClass);
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.byDriverClass(strDriverClass);
 		return dbType;
 	}
 		
@@ -256,7 +256,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public BeanDefinition getDatasourceBean(){
 		DatabaseTypeEnum dbtype = 
-				DatabaseTypeEnum.getDatabaseEnumByDriverClass(getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
+				DatabaseTypeEnum.byDriverClass(getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 		
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDataSourceClass());
 		//attributes

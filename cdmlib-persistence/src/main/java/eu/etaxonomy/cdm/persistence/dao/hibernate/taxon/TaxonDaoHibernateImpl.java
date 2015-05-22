@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -68,7 +67,6 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.name.HomotypicalGroupDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -253,17 +251,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas) {
-        long zstVorher;
-        long zstNachher;
-        
+//        long zstVorher;
+//        long zstNachher;
+
         boolean doCount = false;
         List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
         if (doNamesWithoutTaxa){
         	List<? extends TaxonNameBase<?,?>> nameResult = taxonNameDao.findByName(queryString,matchMode, null, null, null, null);
-        	
+
         	for (TaxonNameBase name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache<IdentifiableEntity>(name.getUuid(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache<IdentifiableEntity>(name.getUuid(), name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa){
@@ -279,28 +277,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             Object[] result;
             for(int i = 0; i<results.size();i++){
                 result = results.get(i);
-                
+
                 //differentiate taxa and synonyms
                 // new Boolean(result[3].toString()) is due to the fact that result[3] could be a Boolean ora String
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
                     if (result[2].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                 }else if (doTaxa){
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
+                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                 }
             }
 
             return resultObjects;
 
         }
-       
+
         return new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
 
     }
@@ -360,7 +358,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             String hqlQueryString = matchMode.queryStringFrom(queryString);
             String selectWhat;
             if (doNotReturnFullEntities){
-                selectWhat = "t.uuid, t.titleCache ";
+                selectWhat = "t.uuid, t.id, t.titleCache ";
             }else {
                 selectWhat = (doCount ? "count(t)": "t");
             }
@@ -788,10 +786,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-
             return query;
-
-
     }
 
 
@@ -829,7 +824,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         String what = "select";
         if (doNotReturnFullEntities){
-        	what += " t.uuid, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+        	what += " t.uuid, t.id, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
         }else {
         	what += (doCount ? " count(t)": " t");
         }
@@ -894,30 +889,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
     }
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode)
-//	 */
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {
-//		return countTaxaByName(queryString, matchMode, selectMode, null);
-//	}
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference)
-//	 */
-//	public Integer countTaxaByName(String queryString,
-//			MatchMode matchMode, SelectMode selectMode, Reference sec) {
-//
-//		Long count = countTaxaByName(queryString, matchMode, selectMode, sec, null);
-//		return count.intValue();
-//
-//	}
-
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
-//
-//		SelectMode selectMode = (accepted ? SelectMode.TAXA : SelectMode.SYNONYMS);
-//		Long count = countTaxaByName(queryString, matchMode, selectMode, null, null);
-//		return count.intValue();
-//	}
 
     @Override
     public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
@@ -1002,9 +973,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
         getSession().merge(taxonBase);
-        
+
         taxonBase.removeSources();
-        
+
         if (taxonBase instanceof Taxon){ //	is Taxon
             for (Iterator<TaxonRelationship> iterator = ((Taxon)taxonBase).getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
                 TaxonRelationship relationFromThisTaxon = iterator.next();
@@ -1018,9 +989,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
         }
-       
+
        return super.delete(taxonBase);
-      
+
     }
 
     @Override
@@ -1590,8 +1561,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         int classificationId = classification.getId();
 
-        String queryString = "SELECT nodes.uuid, taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+        String queryString = "SELECT nodes.uuid, nodes.id, taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = getSession().createSQLQuery(queryString).list();
 
         if(result.size() == 0){
@@ -1604,42 +1576,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 Object[] objectArray = (Object[]) object;
 
                 UUID uuid = UUID.fromString((String) objectArray[0]);
-                String titleCache = (String) objectArray[1];
+                Integer id = (Integer) objectArray[1];
+                String titleCache = (String) objectArray[2];
 
-                list.add(new UuidAndTitleCache(TaxonNode.class, uuid, titleCache));
+                list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
             }
 
             return list;
         }
     }
 
-
-    public class UuidAndTitleCacheOfAcceptedTaxon{
-        UUID uuid;
-
-        String titleCache;
-
-        public UuidAndTitleCacheOfAcceptedTaxon(UUID uuid, String titleCache){
-            this.uuid = uuid;
-            this.titleCache = titleCache;
-        }
-
-        public UUID getUuid() {
-            return uuid;
-        }
-
-        public void setUuid(UUID uuid) {
-            this.uuid = uuid;
-        }
-
-        public String getTitleCache() {
-            return titleCache;
-        }
-
-        public void setTitleCache(String titleCache) {
-            this.titleCache = titleCache;
-        }
-    }
 
     @Override
     public TaxonBase find(LSID lsid) {
@@ -1731,10 +1677,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return countAllRelationships(null);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
-     */
+
     //FIXME add to interface or make private
     public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
         if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
@@ -2004,12 +1947,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getUuidAndTitleCacheTaxon()
-     */
     @Override
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        String queryString = String.format("select uuid, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
+        String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
         Query query = getSession().createQuery(queryString);
 
         List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
@@ -2019,7 +1959,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     @Override
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
-        String queryString = String.format("select uuid, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Synonym.class.getSimpleName());
+        String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Synonym.class.getSimpleName());
         Query query = getSession().createQuery(queryString);
 
         List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
@@ -2151,24 +2091,23 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set namedAreas) {
-		List<Object> resultArray = new ArrayList<Object>();
-		 Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
-	        if (query != null){
-	            resultArray = query.list();
-	            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>() ;
-	            Object[] result;
-	            for(int i = 0; i<resultArray.size();i++){
-	            	result = (Object[]) resultArray.get(i);
-	            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
-	            }
-	            return returnResult;
-	        }
-	       
-		
+	    List<Object> resultArray = new ArrayList<Object>();
+		Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
+        if (query != null){
+            resultArray = query.list();
+            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>() ;
+            Object[] result;
+            for(int i = 0; i<resultArray.size();i++){
+            	result = (Object[]) resultArray.get(i);
+            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString())));
+            }
+            return returnResult;
+        }
+
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countByIdentifier(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.common.DefinedTerm, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.persistence.query.MatchMode)
@@ -2179,28 +2118,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (subtreeFilter == null){
 			return countByIdentifier(clazz, identifier, identifierType, matchmode);
 		}
-		
+
 		Class<?> clazzParam = clazz == null ? type : clazz;
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, TaxonNode subMatchMode matchmode)");
-		
+
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
-		
+
 		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
 		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
 		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
-		
+
 		String queryString = "SELECT count(*)  FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 accTreeJoin +
-                synTreeJoin + 
+                synTreeJoin +
                 " WHERE (1=1) " +
                 	"  AND ( " + accWhere + " OR " + synWhere + ")";
 		queryString = String.format(queryString, clazzParam.getSimpleName());
-		
+
 		if (identifier != null){
 			if (matchmode == null || matchmode == MatchMode.EXACT){
 				queryString += " AND ids.identifier = '"  + identifier + "'";
@@ -2211,25 +2150,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (identifierType != null){
         	queryString += " AND ids.type = :type";
         }
-		
+
 		Query query = getSession().createQuery(queryString);
         if (identifierType != null){
         	query.setEntity("type", identifierType);
         }
-        
+
 		Long c = (Long)query.uniqueResult();
         return c.intValue();
 	}
-	
+
 	@Override
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
-			MatchMode matchmode, boolean includeEntity, 
+			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        
+
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		
+
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
 		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
@@ -2238,16 +2177,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.synonymRelations sr LEFT  JOIN sr.relatedTo as acc LEFT JOIN acc.taxonNodes synTn  " : "";
 		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
 		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
-		
+
 		String queryString = "SELECT ids.type, ids.identifier, %s " +
 				" FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 accTreeJoin +
-				synTreeJoin + 
+				synTreeJoin +
                 " WHERE (1=1) " +
                 	" AND ( " + accWhere + " OR " + synWhere + ")";
 		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
-		
+
 		//Matchmode and identifier
 		if (identifier != null){
 			if (matchmode == null || matchmode == MatchMode.EXACT){
@@ -2261,18 +2200,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
-		    
+
 		Query query = getSession().createQuery(queryString);
-        
+
 		//parameters
 		if (identifierType != null){
         	query.setEntity("type", identifierType);
         }
-        
+
         //paging
         setPagingParameter(query, pageSize, pageNumber);
-        
-        List<Object[]> results = (List<Object[]>)query.list();
+
+        List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
         	List<S> entities = new ArrayList<S>();
@@ -2283,12 +2222,4 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
         return results;
 	}
-	
-	
-	public static void main(String[] args){
-		
-		System.out.println(String.format("%%", "Hallo"));
-	}
-
-
 }

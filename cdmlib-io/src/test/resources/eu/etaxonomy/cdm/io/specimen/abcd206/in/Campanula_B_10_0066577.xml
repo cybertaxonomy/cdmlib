@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd:DataSets>
+      <abcd:DataSet>
+        <abcd:Units>
+          <abcd:Unit>
+            <abcd:UnitGUID>http://herbarium.bgbm.org/object/B100365469</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0066577</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Plantae</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula versicolor var. tomentella Hal.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>versicolor</abcd:FirstEpithet>
+                          <abcd:InfraspecificEpithet>tomentella</abcd:InfraspecificEpithet>
+                          <abcd:Rank>var.</abcd:Rank>
+                          <abcd:AuthorTeam>Hal.</abcd:AuthorTeam>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:SpecimenUnit>
+              <abcd:NomenclaturalTypeDesignations>
+                <abcd:NomenclaturalTypeDesignation>
+                  <abcd:TypeStatus>type</abcd:TypeStatus>
+                </abcd:NomenclaturalTypeDesignation>
+              </abcd:NomenclaturalTypeDesignations>
+            </abcd:SpecimenUnit>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/03/65/46/b_10_0365469.jpg</abcd:FileURI>
+                <abcd:ProductURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=101077</abcd:ProductURI>
+                <abcd:Format>image/jpeg</abcd:Format>
+                <abcd:IPR>
+                  <abcd:Licenses>
+                    <abcd:License abcd:language="en">
+                      <abcd:Text>Partial images provided by this server are released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a format or resolution which is not provided here, please contact us (d.roepert[at]bgbm.org).</abcd:Text>
+                      <abcd:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd:URI>
+                    </abcd:License>
+                  </abcd:Licenses>
+                </abcd:IPR>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>07.09.1891</abcd:DateText>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>P. E. E. Sintenis &amp; J. F. N. Bornmüller</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>Macedonia; Litachori (am Olymp); Fels an den Schluchten n. Megarema.</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name>Greece</abcd:Name>
+                <abcd:ISO3166Code>GR</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaClass language="en">Continent</abcd:AreaClass>
+                  <abcd:AreaName language="en">Europe</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+            </abcd:Gathering>
+            <abcd:CollectorsFieldNumber>1354</abcd:CollectorsFieldNumber>
+            <abcd:RecordURI>http://herbarium.bgbm.org/object/B100365469</abcd:RecordURI>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>

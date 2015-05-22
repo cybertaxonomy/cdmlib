@@ -698,6 +698,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
         Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
@@ -705,6 +707,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize - DONE");}
+
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return results;
     }
 
@@ -878,55 +882,60 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"
-                + " FROM Distribution AS d LEFT JOIN d.area AS a");
+                + " FROM Distribution AS d JOIN d.area AS a");
         Query query = getSession().createQuery(queryString.toString());
 
         List<Object[]> areasInUse = query.list();
-        Set<Object> allAreaIds = new HashSet<Object>(areasInUse.size());
+        List<Object[]> parentResults = new ArrayList<Object[]>();
 
-        if(includeAllParents) {
-            // find all parent nodes
-            String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
-            query = getSession().createQuery(allAreasQueryStr);
-            List<Object[]> allAreasResult = query.list();
-            Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
+        if(!areasInUse.isEmpty()) {
+            Set<Object> allAreaIds = new HashSet<Object>(areasInUse.size());
 
-            Set<Object> parents = new HashSet<Object>();
+            if(includeAllParents) {
+                // find all parent nodes
+                String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
+                query = getSession().createQuery(allAreasQueryStr);
+                List<Object[]> allAreasResult = query.list();
+                Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
 
-            for(Object[] leaf : areasInUse) {
-                allAreaIds.add(leaf[0]);
-                Object parentId = leaf[1];
-                while (parentId != null) {
-                    if(parents.contains(parentId)) {
-                        // break if the parent already is in the set
-                        break;
+                Set<Object> parents = new HashSet<Object>();
+
+                for(Object[] leaf : areasInUse) {
+                    allAreaIds.add(leaf[0]);
+                    Object parentId = leaf[1];
+                    while (parentId != null) {
+                        if(parents.contains(parentId)) {
+                            // break if the parent already is in the set
+                            break;
+                        }
+                        parents.add(parentId);
+                        parentId = allAreasMap.get(parentId);
                     }
-                    parents.add(parentId);
-                    parentId = allAreasMap.get(parentId);
+                }
+                allAreaIds.addAll(parents);
+            } else {
+                // only add the ids found so far
+                for(Object[] leaf : areasInUse) {
+                    allAreaIds.add(leaf[0]);
                 }
             }
-            allAreaIds.addAll(parents);
-        } else {
-            // only add the ids found so far
-            for(Object[] leaf : areasInUse) {
-                allAreaIds.add(leaf[0]);
-            }
-        }
 
-        // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
-        // rows for a term with multiple representations
-        String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
-                + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
-                + "where a.id in (:allAreaIds) order by a.id";
-        query = getSession().createQuery(parentAreasQueryStr);
-        query.setParameterList("allAreaIds", allAreaIds);
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+
+            // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
+            // rows for a term with multiple representations
+            String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid "
+                    + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+                    + "where a.id in (:allAreaIds) order by a.idInVocabulary";
+            query = getSession().createQuery(parentAreasQueryStr);
+            query.setParameterList("allAreaIds", allAreaIds);
+            if(pageSize != null) {
+                query.setMaxResults(pageSize);
+                if(pageNumber != null) {
+                    query.setFirstResult(pageNumber * pageSize);
+                }
             }
+            parentResults = query.list();
         }
-        List<Object[]> parentResults = query.list();
         List<TermDto> dtoList = termDtoListFrom(parentResults);
 
         return dtoList;

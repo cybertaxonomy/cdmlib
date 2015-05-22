@@ -451,7 +451,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportRep
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206ImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206XMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Identification.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd21/ggbn/AbcdGgbnParser.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ggbn/AbcdGgbnParser.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExtensionTypeExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevelExcelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/NamedAreaLevellRow.java -text
@@ -651,8 +651,11 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample_mo
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/wrongSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.cgi -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
@@ -892,6 +895,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BotanicalName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/CultivarPlantName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroup.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroupComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ITypeDesignation.java -text
@@ -970,6 +974,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Taxon.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNaturalComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
@@ -1594,6 +1599,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/PersistentTermInitializerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializer.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/WrappedCdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/ODBCDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/OracleDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseTypeTest.java -text
@@ -2319,6 +2325,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/CreateHierarchyForClassificationConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteConfiguratorBase.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindOccurrencesConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindTaxaAndNamesConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IFindTaxaAndNamesConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
@@ -2512,6 +2519,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServic
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceDeepDeleteTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testFindOcurrences.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithChildren.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml -text

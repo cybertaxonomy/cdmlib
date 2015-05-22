@@ -366,13 +366,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
             //TODO handle exceptioin;
         }
     }
-    
 
+    @Transient
 	@Override
 	public String getUserFriendlyTypeName(){
 		return getClass().getSimpleName();
 	}
 
+	@Transient
 	@Override
 	public String getUserFriendlyDescription(){
 		return toString();

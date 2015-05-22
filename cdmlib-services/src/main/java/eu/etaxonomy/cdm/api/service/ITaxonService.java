@@ -952,6 +952,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
 
+	SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
+			UUID newTaxonUUID, boolean moveHomotypicGroup,
+			SynonymRelationshipType newSynonymRelationshipType,
+			Reference reference, String referenceDetail, boolean keepReference)
+			throws HomotypicalGroupChangeException;
+
 
 
 

@@ -61,7 +61,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
     								//+ "(" + month + ")?)" ;                 // optional month
 
-    //seperator
     protected static String yearSeperator = "\\." + oWs;
     protected static String detailSeparator = ":" + oWs;
     protected static String referenceSeparator1 = "," + oWs ;
@@ -202,16 +201,12 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pArticleReference = pVolRefTitle;
     protected static String pSoftArticleReference = softVolNoAuthorRefTitle;
 
-
     protected static String pReferenceSineDetail = "(" + pArticleReference + "|" + pBookSectionReference + "|" + pBookReference + ")";
-
 
     protected static String pReference = pReferenceSineDetail + detailSeparator + detail +
 					yearSeperator + yearPhrase + "(" + referenceEnd + ")?";
 
     //static String strictBook = referenc
-
-
 
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);

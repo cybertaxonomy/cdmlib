@@ -89,7 +89,9 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     }
 
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
+
+
         String result = "";
         if (TaxonNameBase.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
@@ -101,7 +103,12 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                 result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorTeam ", beanAlias);
             }
         }
-        return result;
+
+        // throw an exception since LEFT JOIN FETCH is not really working for titleCaches
+        // TODO test if the LEFT JOIN FETCHes are at least working for TaxonNameBase and NonViralName
+        throw new Exception();
+
+//        return result;
     }
 
 

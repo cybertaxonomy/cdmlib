@@ -9,8 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import org.hibernate.envers.tools.Pair;
 
@@ -21,7 +21,7 @@ import org.hibernate.envers.tools.Pair;
  */
 public abstract class DerivateDTO {
 
-    private List<Pair<String, String>> characterData;
+    private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
     protected String citation;
@@ -47,13 +47,28 @@ public abstract class DerivateDTO {
     /**
      * @return the characterData
      */
-    public List<Pair<String, String>> getCharacterData() {
+    public TreeSet<Pair<String, String>> getCharacterData() {
         return characterData;
     }
 
     public void addCharacterData(String character, String state){
       if(characterData==null){
-          characterData = new ArrayList<Pair<String,String>>();
+          characterData = new TreeSet<Pair<String,String>>(new Comparator<Pair<String,String>>() {
+
+            @Override
+            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
+                if(o1==null && o2!=null){
+                    return -1;
+                }
+                if(o1!=null && o2==null){
+                    return 1;
+                }
+                if(o1!=null && o2!=null){
+                    return o1.getFirst().compareTo(o2.getFirst());
+                }
+                return 0;
+            }
+        });
       }
       characterData.add(new Pair<String, String>(character, state));
     }

@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -49,7 +50,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -863,7 +863,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getAppendedPhrase()
      */
     public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = appendedPhrase;
+        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     /**
@@ -882,7 +882,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see  #getNomenclaturalMicroReference()
      */
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+        this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
     }
 
     /* (non-Javadoc)
@@ -1700,7 +1700,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
         HomotypicalGroup homotypicalGroup = this.getHomotypicalGroup();
-        
+
 
         if (homotypicalGroup == null) {
             return;

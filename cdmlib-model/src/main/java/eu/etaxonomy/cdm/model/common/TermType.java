@@ -74,7 +74,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * we find an appropriate usage in future.
      */
     @XmlEnumValue("Unknown")
-    Unknown(UUID.fromString("b2836c89-3b1d-4758-ba6d-568ef8d6fbc4"), "Unknown term type","UNK", null),
+    Unknown(UUID.fromString("b2836c89-3b1d-4758-ba6d-568ef8d6fbc4"), "Unknown Term Type","UNK", null),
 
     //1
     /**
@@ -88,7 +88,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * Term type for areas.
      */
     @XmlEnumValue("NamedArea")
-    NamedArea(UUID.fromString("8c9a0bc9-da91-478d-bc8b-44b11565e160"), "Named area", "NA", null),
+    NamedArea(UUID.fromString("8c9a0bc9-da91-478d-bc8b-44b11565e160"), "Named Area", "NA", null),
 
     //3
     /**
@@ -111,7 +111,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Annotation
      */
     @XmlEnumValue("AnnotationType")
-    AnnotationType(UUID.fromString("c3aabb64-6174-4152-95b1-7cec57e485cf"), "Annotation type", "ANT", null),
+    AnnotationType(UUID.fromString("c3aabb64-6174-4152-95b1-7cec57e485cf"), "Annotation Type", "ANT", null),
 
     //6
     /**
@@ -119,7 +119,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Marker
      */
     @XmlEnumValue("MarkerType")
-    MarkerType(UUID.fromString("d28a1bf8-95ed-483a-8f02-3515b14998e0"), "MarkerType", "MKT", null),
+    MarkerType(UUID.fromString("d28a1bf8-95ed-483a-8f02-3515b14998e0"), "Marker Type", "MKT", null),
 
     //7
     /**
@@ -135,7 +135,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see DerivationEvent
      */
     @XmlEnumValue("DerivationEventType")
-    DerivationEventType(UUID.fromString("ba8e4b10-c792-42e7-a3f5-874708f10094"), "Derivation event type", "DET", null),
+    DerivationEventType(UUID.fromString("ba8e4b10-c792-42e7-a3f5-874708f10094"), "Derivation Event Type", "DET", null),
 
     //9
     /**
@@ -143,7 +143,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Distribution
      */
     @XmlEnumValue("PresenceAbsenceTerm")
-    PresenceAbsenceTerm(UUID.fromString("f6b80f88-c8c5-456b-bbd6-d63ecf35606e"), "Presence or absence term", "PAT", null),
+    PresenceAbsenceTerm(UUID.fromString("f6b80f88-c8c5-456b-bbd6-d63ecf35606e"), "Presence or Absence Term", "PAT", null),
 
     //10
     /**
@@ -151,7 +151,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see NomenclaturalStatus
      */
     @XmlEnumValue("NomenclaturalStatusType")
-    NomenclaturalStatusType(UUID.fromString("c1acb71a-1d11-4305-8818-c2268d341742"), "Nomenclatural status type", "NST", null),
+    NomenclaturalStatusType(UUID.fromString("c1acb71a-1d11-4305-8818-c2268d341742"), "Nomenclatural Status Type", "NST", null),
 
     //11
     /**
@@ -159,7 +159,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see NameRelationship
      */
     @XmlEnumValue("NameRelationshipType")
-    NameRelationshipType(UUID.fromString("acd8189a-23b9-4a53-8f48-1d2aa270a6ba"), "Name relationship type", "NRT"),
+    NameRelationshipType(UUID.fromString("acd8189a-23b9-4a53-8f48-1d2aa270a6ba"), "Name Relationship Type", "NRT"),
 
     //12
     /**
@@ -167,7 +167,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see HybridRelationship
      */
     @XmlEnumValue("HybridRelationshipType")
-    HybridRelationshipType(UUID.fromString("aade9e61-eaa1-40fe-9eb1-40f9e8ae1114"), "Hybrid relationship type", "HRT"),
+    HybridRelationshipType(UUID.fromString("aade9e61-eaa1-40fe-9eb1-40f9e8ae1114"), "Hybrid Relationship Type", "HRT"),
 
     //13
     /**
@@ -177,7 +177,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see TaxonBase
      */
     @XmlEnumValue("SynonymRelationshipType")
-    SynonymRelationshipType(UUID.fromString("1eb4fee0-7716-4531-a9ed-a95327f1f4bb"), "Synonym relationship type", "SRT"),
+    SynonymRelationshipType(UUID.fromString("1eb4fee0-7716-4531-a9ed-a95327f1f4bb"), "Synonym Relationship Type", "SRT"),
 
     //14
     /**
@@ -187,7 +187,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Taxon
      */
     @XmlEnumValue("TaxonRelationshipType")
-    TaxonRelationshipType(UUID.fromString("2d4b281c-142e-42c5-8eb5-1747592b54d8"), "Taxon relationship type", "TRT"),
+    TaxonRelationshipType(UUID.fromString("2d4b281c-142e-42c5-8eb5-1747592b54d8"), "Taxon Relationship Type", "TRT"),
 
     //15
     /**
@@ -197,7 +197,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see NameTypeDesignation
      */
     @XmlEnumValue("NameTypeDesignationStatus")
-    NameTypeDesignationStatus(UUID.fromString("d3860be6-8a08-4fff-984a-6ee8b42937c9"), "Name type designation status", "NTD"),
+    NameTypeDesignationStatus(UUID.fromString("d3860be6-8a08-4fff-984a-6ee8b42937c9"), "Name Type Designation Status", "NTD"),
 
     //16
     /**
@@ -207,7 +207,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see SpecimenTypeDesignation
      */
     @XmlEnumValue("SpecimenTypeDesignationStatus")
-    SpecimenTypeDesignationStatus(UUID.fromString("4014d7d4-f2dd-4328-8015-357a1a77c1ed"), "Specimen type designation status", "STD"),
+    SpecimenTypeDesignationStatus(UUID.fromString("4014d7d4-f2dd-4328-8015-357a1a77c1ed"), "Specimen Type Designation Status", "STD"),
 
     //17
     /**
@@ -215,7 +215,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Institution
      */
     @XmlEnumValue("InstitutionType")
-    InstitutionType(UUID.fromString("09d78265-18b5-4352-b154-d2f39e84d3f3"), "Institution type", "IT", null),
+    InstitutionType(UUID.fromString("09d78265-18b5-4352-b154-d2f39e84d3f3"), "Institution Type", "IT", null),
 
     //18
     /**
@@ -224,7 +224,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see eu.etaxonomy.cdm.model.location.NamedAreaType
      */
     @XmlEnumValue("NamedAreaType")
-    NamedAreaType(UUID.fromString("6a9aba35-6272-4373-8386-000cf95b729e"), "Named area type", "NAT", null),
+    NamedAreaType(UUID.fromString("6a9aba35-6272-4373-8386-000cf95b729e"), "Named Area Type", "NAT", null),
 
     //19
     /**
@@ -233,7 +233,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see eu.etaxonomy.cdm.model.location.NamedAreaLevel
      */
     @XmlEnumValue("NamedAreaLevel")
-    NamedAreaLevel(UUID.fromString("62c16c74-dc79-4970-9031-bb1504be46f5"), "Named area level", "NAL", null),
+    NamedAreaLevel(UUID.fromString("62c16c74-dc79-4970-9031-bb1504be46f5"), "Named Area Level", "NAL", null),
 
     //20
     /**
@@ -241,7 +241,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Rights
      */
     @XmlEnumValue("RightsType")
-    RightsType(UUID.fromString("80e06b04-8d0d-4bd5-bcd6-d35f73c24d55"), "Rights type", "RT", null),
+    RightsType(UUID.fromString("80e06b04-8d0d-4bd5-bcd6-d35f73c24d55"), "Rights Type", "RT", null),
 
     //21
     /**
@@ -249,7 +249,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see MeasurementUnit
      */
     @XmlEnumValue("MeasurementUnit")
-    MeasurementUnit(UUID.fromString("f9e6c44f-f0d6-428b-9bc0-bb00a6514883"), "Measurement unit", "MU", null),
+    MeasurementUnit(UUID.fromString("f9e6c44f-f0d6-428b-9bc0-bb00a6514883"), "Measurement Unit", "MU", null),
 
     //22
     /**
@@ -258,7 +258,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see StatisticalMeasurementValue
      */
     @XmlEnumValue("StatisticalMeasure")
-    StatisticalMeasure(UUID.fromString("a22d19cd-a342-4af2-b156-d688a7aa8a6b"), "Statistical measure", "SM", null),
+    StatisticalMeasure(UUID.fromString("a22d19cd-a342-4af2-b156-d688a7aa8a6b"), "Statistical Measure", "SM", null),
 
     //23
     @XmlEnumValue("MaterialOrMethod")
@@ -376,7 +376,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see Point#getReferenceSystem()
      */
     @XmlEnumValue("ReferenceSystem")
-    ReferenceSystem(UUID.fromString("b8cfa986-ef90-465e-9609-1dadae2a0f5b"), "Reference system", "RS", null),
+    ReferenceSystem(UUID.fromString("b8cfa986-ef90-465e-9609-1dadae2a0f5b"), "Reference System", "RS", null),
 
     //29
     /**
@@ -392,7 +392,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * Term type representing a natural language term.
      */
     @XmlEnumValue("NaturalLanguageTerm")
-    NaturalLanguageTerm(UUID.fromString("9a42ac4e-c175-4633-8b31-74ba8203566a"), "Natural language term", "NLT", null),
+    NaturalLanguageTerm(UUID.fromString("9a42ac4e-c175-4633-8b31-74ba8203566a"), "Natural Language Term", "NLT", null),
 
 
     //31
@@ -401,7 +401,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * @see TextData
      */
     @XmlEnumValue("TextFormat")
-    TextFormat(UUID.fromString("d26cfdb4-baeb-43d0-a51b-a3428d838790"), "Text format", "TF", null),
+    TextFormat(UUID.fromString("d26cfdb4-baeb-43d0-a51b-a3428d838790"), "Text Format", "TF", null),
 
     //32
     /**
@@ -410,7 +410,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      * Determination modifier is a specialization of {@link #Modifier}.
      */
     @XmlEnumValue("DeterminationModifier")
-    DeterminationModifier(UUID.fromString("ce910516-bc5d-4ac5-be4d-f3c14c27dd85"), "Determination modifier", "DMO", Modifier),
+    DeterminationModifier(UUID.fromString("ce910516-bc5d-4ac5-be4d-f3c14c27dd85"), "Determination Modifier", "DMO", Modifier),
 
     //33
     /**
@@ -428,30 +428,30 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      */
     @XmlEnumValue("DnaMarker")
     DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "DMA", null),
-    
-  //34  
+
+  //34
     /**
      * An Identifier Type which can be used as a type in {@link Identifier#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
-     * But also local identifier types such Sample Designation, Catalog Number, 
+     * But also local identifier types such Sample Designation, Catalog Number,
      * Accession Number, ... are allowed.
      * {@link Identifier#type}
      */
     @XmlEnumValue("IdentifierType")
     IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier Type", "IDE", null),
- 
-    //35    
+
+    //35
     /**
      * DNA Quality levels link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
-     * But also local identifier types such Sample Designation, Catalog Number, 
+     * But also local identifier types such Sample Designation, Catalog Number,
      * Accession Number, ... are allowed.
      * {@link DnaQu}
      */
     @XmlEnumValue("DnaQualityType")
     DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
- 
+
     ;
-    
-    
+
+
 // **************** END ENUM **********************/
 
     @SuppressWarnings("unused")

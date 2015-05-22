@@ -24,10 +24,12 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -63,6 +65,58 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @throws DataAccessException
 	 */
 	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	    /**
+     * Queries the database for specimens which match the given criteria
+     *
+     * @param clazz
+     *            the class to match
+     * @param queryString
+     *            the queryString to match
+     * @param type
+     *            the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon
+     *            the taxon these specimens are in any way associated to via
+     *            determination, type designations, individuals associations,
+     *            etc.
+     * @param matchmode
+     *            determines how the query string should be matched
+     * @param limit
+     *            the maximum number of entities returned (can be null to return
+     *            all entities)
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     * @return a list of specimens that match the given parameters
+     */
+    public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs, MatchMode matchmode,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Returns the number of specimens that match the given parameters
+	 * @param clazz the class to match
+     * @param queryString the queryString to match
+     * @param type the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon the taxon these specimens are in any way associated to via
+     * determination, type designations, individuals associations, etc.
+     * @param matchmode determines how the query string should be matched
+     * @param limit
+     *            the maximum number of entities returned (can be null to return
+     *            all entities)
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+	 * @return the number of found specimens
+	 */
+    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
+            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Returns a count of Media that are associated with a given occurence
@@ -190,4 +244,15 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return collection of all descriptions with the given described specimen
      */
     public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link SpecimenOrObservationBase}s that have the given {@link SpecimenOrObservationType}.
+     * @param type
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return collection of specimen with the given type
+     */
+    public Collection<SpecimenTypeDesignation> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

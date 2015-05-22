@@ -170,7 +170,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 * @param code the code
 	 */
 	public void setCode(String code){
-		this.code = code;
+		this.code = StringUtils.isBlank(code)? null : code;
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 * @param codeStandard    codeStandard
 	 */
 	public void setCodeStandard(String codeStandard){
-		this.codeStandard = codeStandard;
+		this.codeStandard = StringUtils.isBlank(codeStandard)? null : codeStandard;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 * @param name    name
 	 */
 	public void setName(String name){
-		this.name = name;
+		this.name = StringUtils.isBlank(name)? null : name;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 * @param townOrLocation    townOrLocation
 	 */
 	public void setTownOrLocation(String townOrLocation){
-		this.townOrLocation = townOrLocation;
+		this.townOrLocation = StringUtils.isBlank(townOrLocation)? null : townOrLocation;
 	}
 
 	/**

@@ -132,6 +132,9 @@ public class ExcelSpecimenImportExampleTest extends
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field units should be 3", 3, occurrenceService.count(FieldUnit.class));
 
+//		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","DESCRIPTIONELEMENTBASE","DEFINEDTERMBASE"});
+//
+
 //		try {
 //			String filePath = System.getProperty("java.io.tmpdir")
 //					+ File.separator + "excelSpecimenOutput.xml";
@@ -157,7 +160,6 @@ public class ExcelSpecimenImportExampleTest extends
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-
     }
 
 }

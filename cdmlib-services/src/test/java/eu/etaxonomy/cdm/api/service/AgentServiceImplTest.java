@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -43,8 +42,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @SpringBeanByType
     private INameService nameSerivce;
- 
-    
+
+
     @Test
     public void testConvertPerson2Team(){
     	String fullAuthor = "Original author";
@@ -56,10 +55,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
     	name.setCombinationAuthorTeam(person);
     	person.addAnnotation(annotation);
-    	
+
     	service.save(person);
     	nameSerivce.save(name);
-    	
+
     	Team team = null;
 		try {
 			team = service.convertPerson2Team(person);
@@ -72,16 +71,16 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
        	Assert.assertNotNull("Contact must be copied too", team.getContact());
     	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorTeam());
-    	
+
     }
-    
+
     private Contact getContact(){
     	URI uri = URI.create("a");
     	Contact contact = Contact.NewInstance("My street", "12345", null, null, null, "region", "a@bc.de", "030-445566", "030-12345", uri, Point.NewInstance(2d, 5d, null, null));
     	return contact;
     }
-    
-    
+
+
     @Test
     public void testConvertTeam2Person(){
     	String fullAuthor = "Original author";
@@ -92,10 +91,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	team.setContact(getContact());
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
     	name.setCombinationAuthorTeam(team);
-    	
+
     	service.save(team);
     	nameSerivce.save(name);
-    	
+
     	Person person = null;
 		try {
 			person = service.convertTeam2Person(team);
@@ -111,8 +110,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertNotNull("Contact must be copied too", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorTeam());
     }
-    
-    
+
+
     @Test
     public void testConvertTeam2PersonWithMember(){
     	String fullAuthor = "Original author";
@@ -130,11 +129,11 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
     	member.addAnnotation(annotation3);
     	team.addTeamMember(member);
-    	
+
     	service.save(team);
-    	
+
     	nameSerivce.save(name);
-    	
+
     	Person person = null;
 		try {
 			person = service.convertTeam2Person(team);
@@ -155,7 +154,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 //    	Assert.assertNull("Contact must not be copied", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorTeam());
     }
-    
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

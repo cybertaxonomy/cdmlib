@@ -432,7 +432,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
 	public void setAbbrevTitle(String abbrevTitle) {
-		this.abbrevTitle = abbrevTitle;
+		this.abbrevTitle = StringUtils.isBlank(abbrevTitle) ? null : abbrevTitle;
 	}
 
 
@@ -444,7 +444,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setEditor(String editor) {
-		this.editor = editor;
+		this.editor = StringUtils.isBlank(editor)? null : editor;
 	}
 
 //	@Override
@@ -464,7 +464,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setVolume(String volume) {
-		this.volume = volume;
+		this.volume = StringUtils.isBlank(volume)? null : volume;
 	}
 
 	@Override
@@ -474,7 +474,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setPages(String pages) {
-		this.pages = pages;
+		this.pages = StringUtils.isBlank(pages)? null : pages;
 	}
 
 	@Override
@@ -484,7 +484,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setEdition(String edition) {
-		this.edition = edition;
+		this.edition = StringUtils.isBlank(edition)? null : edition;
 	}
 
 	@Override
@@ -494,7 +494,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setIsbn(String isbn) {
-		this.isbn = isbn;
+		this.isbn = StringUtils.isBlank(isbn)? null : isbn;
 	}
 
 	@Override
@@ -504,7 +504,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setIssn(String issn) {
-		this.issn = issn;
+		this.issn = StringUtils.isBlank(issn)? null : issn;
 	}
 
     @Override
@@ -524,7 +524,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setSeriesPart(String seriesPart) {
-		this.seriesPart = seriesPart;
+		this.seriesPart = StringUtils.isBlank(seriesPart)? null : seriesPart;
 	}
 
 	@Override
@@ -534,7 +534,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setOrganization(String organization) {
-		this.organization = organization;
+		this.organization = StringUtils.isBlank(organization)? null : organization;
 	}
 
 	@Override
@@ -544,7 +544,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setPublisher(String publisher) {
-		this.publisher = publisher;
+		this.publisher = StringUtils.isBlank(publisher)? null : publisher;
 	}
 
 	@Override
@@ -560,7 +560,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setPlacePublished(String placePublished) {
-		this.placePublished = placePublished;
+		this.placePublished = StringUtils.isBlank(placePublished)? null: placePublished;
 	}
 
 	@Override
@@ -635,7 +635,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 */
 	@Override
     public void setTitle(String title){
-		this.title = title;
+		this.title = StringUtils.isBlank(title)? null : title;
 	}
 
 	/**
@@ -711,7 +711,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 */
 	@Override
     public void setReferenceAbstract(String referenceAbstract) {
-		this.referenceAbstract = referenceAbstract;
+		this.referenceAbstract = StringUtils.isBlank(referenceAbstract)? null : referenceAbstract;
 	}
 
 

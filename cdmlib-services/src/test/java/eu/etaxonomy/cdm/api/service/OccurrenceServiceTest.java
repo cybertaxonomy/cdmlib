@@ -12,9 +12,11 @@ package eu.etaxonomy.cdm.api.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -41,10 +44,8 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -790,58 +791,235 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
     }
 
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testFindOcurrences.xml")
+    public void testFindOccurrences(){
+        UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
+        UUID derivedUnit2Uuid = UUID.fromString("40cd9cb1-7c74-4e7d-a1f8-8a1e0314e940");
+        UUID dnaSampleUuid = UUID.fromString("364969a6-2457-4e2e-ae1e-29a6fcaa741a");
+        UUID tissueUuid = UUID.fromString("b608613c-1b5a-4882-8b14-d643b6fc5998");
+
+        UUID taxonUuid = UUID.fromString("dfca7629-8a60-4d51-998d-371897f725e9");
+
+//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+//        derivedUnit.setTitleCache("testUnit1");
+//        derivedUnit.setAccessionNumber("ACC1");
+//        DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+//        derivedUnit2.setTitleCache("testUnit2");
+//        derivedUnit2.setBarcode("ACC2");
+//        DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
+//        dnaSample.setTitleCache("dna");
+//        dnaSample.setCatalogNumber("ACC1");
+//        DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+//        tissue.setTitleCache("tissue");
+//
+//        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+//
+//        derivedUnit.setUuid(derivedUnit1Uuid);
+//        derivedUnit2.setUuid(derivedUnit2Uuid);
+//        dnaSample.setUuid(dnaSampleUuid);
+//        tissue.setUuid(tissueUuid);
+//
+//        occurrenceService.save(derivedUnit);
+//        occurrenceService.save(derivedUnit2);
+//        occurrenceService.save(dnaSample);
+//        occurrenceService.save(tissue);
+//
+//        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual"), null);
+//        taxon.setUuid(taxonUuid);
+//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+//        taxonDescription.setUuid(UUID.fromString("272d4d28-662c-468e-94d8-16993fab91ba"));
+//        //add voucher
+//        taxonDescription.addElement(IndividualsAssociation.NewInstance(derivedUnit));
+//        taxonDescription.addElement(IndividualsAssociation.NewInstance(tissue));
+//        taxon.addDescription(taxonDescription);
+//        taxonService.saveOrUpdate(taxon);
+//
+//        commitAndStartNewTransaction(null);
+//
+//        setComplete();
+//        endTransaction();
+//
+//
+//        try {
+//            writeDbUnitDataSetFile(new String[] {
+//                    "SpecimenOrObservationBase",
+//                    "SpecimenOrObservationBase_DerivationEvent",
+//                    "DerivationEvent",
+//                    "DescriptionElementBase",
+//                    "DescriptionBase",
+//                    "TaxonBase",
+//                    "TypeDesignationBase",
+//                    "TaxonNameBase",
+//                    "TaxonNameBase_TypeDesignationBase",
+//                    "HomotypicalGroup",
+//                    "TeamOrPersonBase"
+//            }, "testFindOcurrences");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+        SpecimenOrObservationBase derivedUnit1 = occurrenceService.load(derivedUnit1Uuid);
+        SpecimenOrObservationBase derivedUnit2 = occurrenceService.load(derivedUnit2Uuid);
+        SpecimenOrObservationBase tissue = occurrenceService.load(tissueUuid);
+        SpecimenOrObservationBase dnaSample = occurrenceService.load(dnaSampleUuid);
+        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+
+        assertNotNull(derivedUnit1);
+        assertNotNull(derivedUnit2);
+        assertNotNull(tissue);
+        assertNotNull(dnaSample);
+        assertNotNull(taxon);
+
+        //wildcard search => all derivates
+        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setTitleSearchString("*");
+        assertEquals(4, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> allDerivates = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(4, allDerivates.size());
+        assertTrue(allDerivates.contains(derivedUnit1));
+        assertTrue(allDerivates.contains(derivedUnit2));
+        assertTrue(allDerivates.contains(tissue));
+        assertTrue(allDerivates.contains(dnaSample));
+
+        //queryString search => 2 derivates
+        config = new FindOccurrencesConfigurator();
+        config.setTitleSearchString("test*");
+//        config.setClazz(SpecimenOrObservationBase.class);
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> queryStringDerivates = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, queryStringDerivates.size());
+        assertTrue(queryStringDerivates.contains(derivedUnit1));
+        assertTrue(queryStringDerivates.contains(derivedUnit2));
+
+        //class search => 0 results
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(FieldUnit.class);
+        assertEquals(0, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> fieldUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(0, fieldUnits.size());
+
+        //class search => 4 results
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        assertEquals(4, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> derivedUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(4, derivedUnits.size());
+        assertTrue(derivedUnits.contains(derivedUnit1));
+        assertTrue(derivedUnits.contains(derivedUnit2));
+        assertTrue(derivedUnits.contains(tissue));
+        assertTrue(derivedUnits.contains(dnaSample));
+
+        //significant identifier search
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setSignificantIdentifier("ACC1");
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> accessionedUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, accessionedUnits.size());
+        assertTrue(accessionedUnits.contains(derivedUnit1));
+        assertFalse(accessionedUnits.contains(derivedUnit2));
+        assertFalse(accessionedUnits.contains(tissue));
+        assertTrue(accessionedUnits.contains(dnaSample));
+
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setSignificantIdentifier("ACC2");
+        assertEquals(1, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> barcodedUnits = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(1, barcodedUnits.size());
+        assertFalse(barcodedUnits.contains(derivedUnit1));
+        assertTrue(barcodedUnits.contains(derivedUnit2));
+        assertFalse(barcodedUnits.contains(tissue));
+        assertFalse(barcodedUnits.contains(dnaSample));
+
+
+        //recordBasis search => 1 Fossil
+        config = new FindOccurrencesConfigurator();
+        config.setSpecimenType(SpecimenOrObservationType.Fossil);
+        assertEquals(1, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> fossils = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(1, fossils.size());
+        assertTrue(fossils.contains(derivedUnit1));
+
+        //taxon determination search => 2 associated specimens
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setAssociatedTaxonUuid(taxon.getUuid());
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> associatedSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, associatedSpecimens.size());
+        assertTrue(associatedSpecimens.contains(derivedUnit1));
+        assertTrue(associatedSpecimens.contains(tissue));
+
+        //taxon determination search (indirectly associated) => 3 associated specimens
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(DerivedUnit.class);
+        config.setAssociatedTaxonUuid(taxon.getUuid());
+        config.setRetrieveIndirectlyAssociatedSpecimens(true);
+        assertEquals(3, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> indirectlyAssociatedSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(3, indirectlyAssociatedSpecimens.size());
+        assertTrue(indirectlyAssociatedSpecimens.contains(derivedUnit1));
+        assertTrue(indirectlyAssociatedSpecimens.contains(dnaSample));
+        assertTrue(indirectlyAssociatedSpecimens.contains(tissue));
+
+        //using the super class will lead to 0 results because listByAssociatedTaxon does type matching which obviously does not understand inheritance
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(SpecimenOrObservationBase.class);
+        config.setAssociatedTaxonUuid(taxon.getUuid());
+        assertEquals(0, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> specimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(0, specimens.size());
+
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
-        //how the XML was generated
-        FieldUnit fieldUnit = FieldUnit.NewInstance();
-//        fieldUnit.setUuid(FIELD_UNIT_UUID);
-        //sub derivates (DerivedUnit, DnaSample)
-        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setUuid(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = DnaSample.NewInstance();
-//        dnaSample.setUuid(DNA_SAMPLE_UUID);
+        UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
+        UUID derivedUnit2Uuid = UUID.fromString("40cd9cb1-7c74-4e7d-a1f8-8a1e0314e940");
+        UUID dnaSampleUuid = UUID.fromString("364969a6-2457-4e2e-ae1e-29a6fcaa741a");
+        UUID tissueUuid = UUID.fromString("b608613c-1b5a-4882-8b14-d643b6fc5998");
 
-        //derivation events
-        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+        UUID taxonUuid = UUID.fromString("dfca7629-8a60-4d51-998d-371897f725e9");
+
+        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+        derivedUnit.setAccessionNumber("ACC1");
+        derivedUnit.setTitleCache("testUnit1", true);
+        DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        derivedUnit2.setBarcode("ACC2");
+        derivedUnit2.setTitleCache("testUnit2", true);
+        DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
+        dnaSample.setTitleCache("dna", true);
+        dnaSample.setCatalogNumber("ACC1");
+        DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+        tissue.setTitleCache("tissue", true);
+
         DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
-        //DNA (Sequence, SingleRead, Amplification)
-        Sequence sequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-//        sequence.setUuid(SEQUENCE_UUID);
-        SingleRead singleRead = SingleRead.NewInstance();
-        sequence.addSingleRead(singleRead);
-        dnaSample.addSequence(sequence);
-        AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample);
-        amplificationResult.addSingleRead(singleRead);
-        occurrenceService.save(fieldUnit);
+        derivedUnit.setUuid(derivedUnit1Uuid);
+        derivedUnit2.setUuid(derivedUnit2Uuid);
+        dnaSample.setUuid(dnaSampleUuid);
+        tissue.setUuid(tissueUuid);
+
         occurrenceService.save(derivedUnit);
+        occurrenceService.save(derivedUnit2);
         occurrenceService.save(dnaSample);
+        occurrenceService.save(tissue);
 
-        //create name with type specimen
-        BotanicalName name = BotanicalName.PARSED_NAME("Campanula patual sec L.");
-//        name.setUuid(BOTANICAL_NAME_UUID);
-        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
-        typeDesignation.setTypeSpecimen(derivedUnit);
-        //add type designation to name
-        name.addTypeDesignation(typeDesignation, false);
-
-        // create taxon with name and two taxon descriptions (one with
-        // IndividualsAssociations and a "described" voucher specimen, and an
-        // empty one)
-        Taxon taxon = Taxon.NewInstance(name, null);
-//        taxon.setUuid(TAXON_UUID);
+        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual"), null);
+        taxon.setUuid(taxonUuid);
         TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-//        taxonDescription.setUuid(TAXON_DESCRIPTION_UUID);
+        taxonDescription.setUuid(UUID.fromString("272d4d28-662c-468e-94d8-16993fab91ba"));
         //add voucher
-        taxonDescription.addElement(IndividualsAssociation.NewInstance(fieldUnit));
+        taxonDescription.addElement(IndividualsAssociation.NewInstance(derivedUnit));
+        taxonDescription.addElement(IndividualsAssociation.NewInstance(tissue));
         taxon.addDescription(taxonDescription);
-        //add another taxon description to taxon which is not associated with a specimen thus should not be taken into account
-        taxon.addDescription(TaxonDescription.NewInstance());
         taxonService.saveOrUpdate(taxon);
-
 
         commitAndStartNewTransaction(null);
 
@@ -849,22 +1027,23 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         endTransaction();
 
 
-        writeDbUnitDataSetFile(new String[] {
-                "SpecimenOrObservationBase",
-                "SpecimenOrObservationBase_DerivationEvent",
-                "DerivationEvent",
-                "Sequence",
-                "Sequence_SingleRead",
-                "SingleRead",
-                "AmplificationResult",
-                "DescriptionElementBase",
-                "DescriptionBase",
-                "TaxonBase",
-                "TypeDesignationBase",
-                "TaxonNameBase",
-                "TaxonNameBase_TypeDesignationBase",
-                "HomotypicalGroup"
-        }, "testIsDeletableWithChildren");
+        try {
+            writeDbUnitDataSetFile(new String[] {
+                    "SpecimenOrObservationBase",
+                    "SpecimenOrObservationBase_DerivationEvent",
+                    "DerivationEvent",
+                    "DescriptionElementBase",
+                    "DescriptionBase",
+                    "TaxonBase",
+                    "TypeDesignationBase",
+                    "TaxonNameBase",
+                    "TaxonNameBase_TypeDesignationBase",
+                    "HomotypicalGroup",
+                    "TeamOrPersonBase"
+            }, "testFindOcurrences");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }

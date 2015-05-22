@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
@@ -100,7 +101,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -225,6 +226,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         oldTaxon.clearDescriptions();
         
         taxonService.update(newAcceptedTaxon);
+        
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
@@ -233,14 +235,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
+        	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteTaxon(false);
         	conf.setTaxonNodeConfig(config);
-        	result = deleteTaxonNode(oldTaxonNode, conf);
+        	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
+        result.addUpdatedObject(newAcceptedTaxon);
 
         //oldTaxonNode.delete();
-        return synonmyRelationship.getSynonym();
+        return result;
     }
 
     /* (non-Javadoc)
@@ -360,6 +364,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
 
     }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
+    	TaxonNode node = dao.load(nodeUUID);
+    	return deleteTaxonNode(node, config);
+    }
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
      */
@@ -374,6 +386,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		return taxonService.deleteTaxon(taxon, config, node.getClassification());
     	} else{
     		DeleteResult result = new DeleteResult();
+    		result.setCdmEntity(node);
     		boolean success = taxon.removeTaxonNode(node);
     		if (success){
     			if (!dao.delete(node).equals(null)){
@@ -408,6 +421,26 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
     
+    @Override
+    @Transactional
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean moveToParent){
+    	UpdateResult result = new UpdateResult();
+    	if (moveToParent){
+    	   return moveTaxonNode(taxonNodeUuid, targetNodeUuid);
+       }else{
+    	   
+    	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
+    	   TaxonNode targetNode = dao.load(targetNodeUuid);
+    	   Integer sortIndex = targetNode.getSortIndex();
+    	   TaxonNode parent = targetNode.getParent();
+    	   result.addUpdatedObject(parent);
+           result.addUpdatedObject(taxonNode.getParent());
+           result.setCdmEntity(taxonNode);
+    	   parent.addChildNode(taxonNode, sortIndex+1, taxonNode.getReference(),  taxonNode.getMicroReference());
+       }
+
+        return result;
+    }
     
     @Override
     @Transactional

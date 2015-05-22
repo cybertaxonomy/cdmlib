@@ -225,7 +225,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         TaxonBase<?> tb = service.load(uuid);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
-        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+        orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
         if(tb instanceof Taxon){
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);

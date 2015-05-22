@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -14,18 +14,13 @@ import java.util.Date;
 
 import javax.wsdl.WSDLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
-import com.ibm.lsid.ExpiringResponse;
-
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.LSIDException;
-
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDServiceConfig;
 import com.ibm.lsid.wsdl.HTTPLocation;
@@ -40,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 /**
- * 
+ *
  * @author Ben Szekely (<a href="mailto:bhszekel@us.ibm.com">bhszekel@us.ibm.com</a>)
  * @author ben
  *
@@ -48,12 +43,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 @Service("lsidAuthorityService")
 @Transactional
 public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
-	private static Log log = LogFactory.getLog(LsidAuthorityServiceImpl.class);
+	@SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(LsidAuthorityServiceImpl.class);
 	private String lsidDomain;
 	private Integer lsidPort;
 	private LSIDRegistry lsidRegistry;
 	private LSIDWSDLWrapperFactory lsidWSDLWrapperFactory;
-	
+
 	public void setLsidDomain(String lsidDomain) {
 		this.lsidDomain = lsidDomain;
 	}
@@ -77,7 +73,7 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		}
-		    
+
 		try {
 			if(identfiableDAO.find(lsid) == null) { // we have a mapping for lsids with this authority and namespace, but no lsid stored
 				throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
@@ -96,7 +92,8 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 		};
 	}
 
-	public void initService(LSIDServiceConfig arg0) throws LSIDServerException {
+	@Override
+    public void initService(LSIDServiceConfig arg0) throws LSIDServerException {
 
 	}
 
@@ -108,8 +105,9 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 	protected Date getExpiration() {
 		return null;
 	}
-	
-	public ExpiringResponse getAvailableServices(LSID lsid) throws LSIDServerException {
+
+	@Override
+    public ExpiringResponse getAvailableServices(LSID lsid) throws LSIDServerException {
 		try {
 			LSIDWSDLWrapper wsdl = lsidWSDLWrapperFactory.getLSIDWSDLWrapper(lsid);
 
@@ -120,28 +118,31 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 		    for (LSIDMetadataPort lsidMetadataPort : getMetadataLocations(lsid)) {
 		    	wsdl.setMetadataLocation(lsidMetadataPort);
 			}
-		    
-		    
+
+
 			return new ExpiringResponse(wsdl.getWSDLSource(), getExpiration());
 		} catch (LSIDException e) {
 			throw new LSIDServerException(e, e.getErrorCode(), "LSIDAuthorityServiceImpl Error in getAvailableOperations");
 		} catch (WSDLException e) {
 			throw new LSIDServerException(e, LSIDServerException.INTERNAL_PROCESSING_ERROR, "LSIDAuthorityServiceImpl Error in getAvailableOperations");
-		} 
+		}
 	}
 
-	public void notifyForeignAuthority(LSID lsid, LSIDAuthority arg1) throws LSIDServerException {
+	@Override
+    public void notifyForeignAuthority(LSID lsid, LSIDAuthority arg1) throws LSIDServerException {
 		throw new LSIDServerException(LSIDServerException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 	}
 
-	public void revokeNotificationForeignAuthority(LSID lsid, LSIDAuthority arg1) throws LSIDServerException {
+	@Override
+    public void revokeNotificationForeignAuthority(LSID lsid, LSIDAuthority arg1) throws LSIDServerException {
 		throw new LSIDServerException(LSIDServerException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 	}
 
-	public ExpiringResponse getAuthorityWSDL() throws LSIDServerException {
+	@Override
+    public ExpiringResponse getAuthorityWSDL() throws LSIDServerException {
 		LSID lsid = null;
 		LSIDWSDLWrapper wsdl = lsidWSDLWrapperFactory.getLSIDWSDLWrapper(lsid);
-		
+
 		try {
 			wsdl.setAuthorityLocation(new HTTPLocation("AuthorityServiceHTTP", "HTTPPort", lsidDomain, lsidPort, null));
 			//lsidWSDLWrapperFactory.setAuthorityLocation(new SOAPLocation("AuthorityServiceSOAP", "SOAPPort", "http://" + lsidDomain	+ ":" + lsidPort + "/authority/soap/"), wsdl);
@@ -150,8 +151,8 @@ public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 			throw new LSIDServerException(e, e.getErrorCode(), "LSIDAuthorityServiceImpl Error in getAuthorityWSDL");
 		} catch (WSDLException e) {
 			throw new LSIDServerException(e, LSIDServerException.INTERNAL_PROCESSING_ERROR, "LSIDAuthorityServiceImpl Error in getAuthorityWSDL");
-		} 
-		
-		
+		}
+
+
 	}
 }

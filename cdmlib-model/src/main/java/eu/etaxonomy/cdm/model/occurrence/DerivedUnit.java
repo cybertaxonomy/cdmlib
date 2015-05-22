@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -133,7 +134,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
-	
+
 	@XmlElement(name = "OriginalLabelInfo")
 	@Lob
     private String originalLabelInfo;
@@ -261,11 +262,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
-		this.catalogNumber = catalogNumber;
+		this.catalogNumber = StringUtils.isBlank(catalogNumber)?null:catalogNumber;
 	}
 
 	public void setBarcode(String barcode) {
-		this.barcode = barcode;
+		this.barcode = StringUtils.isBlank(barcode)? null : barcode;
 	}
 	public String getBarcode() {
 		return barcode;
@@ -281,9 +282,9 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
+		this.accessionNumber = StringUtils.isBlank(accessionNumber)? null : accessionNumber;
 	}
-	
+
 
 	/**
 	 * Original label information may present the exact original text
@@ -320,7 +321,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 */
 	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
-		this.collectorsNumber = collectorsNumber;
+		this.collectorsNumber = StringUtils.isBlank(collectorsNumber)? null : collectorsNumber;
 	}
 
 	public TaxonNameBase getStoredUnder() {
@@ -364,7 +365,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setExsiccatum(String exsiccatum) {
-		this.exsiccatum = exsiccatum;
+		this.exsiccatum = StringUtils.isBlank(exsiccatum)? null : exsiccatum;
 	}
 
 	public String getExsiccatum() {

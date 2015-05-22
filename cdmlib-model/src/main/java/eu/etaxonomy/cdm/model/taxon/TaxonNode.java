@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
@@ -668,7 +669,24 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
         return nodeSet;
     }
-
+    public TaxonNode getAncestorOfRank(Rank rank){
+        Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+       // nodeSet.add(this);
+        TaxonBase taxon = CdmBase.deproxy(this.getTaxon(), Taxon.class);
+        TaxonNameBase name = CdmBase.deproxy(taxon.getName(), TaxonNameBase.class);
+        if (name.getRank().isHigher(rank)){
+        	return null;
+        }
+        if (name.getRank().equals(rank)){
+        	return this;
+        }
+        if(this.getParent() != null ){
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+            return parent.getAncestorOfRank(rank);
+        }
+		return null;
+        
+    }
 
     /**
      * Whether this TaxonNode is a direct child of the classification TreeNode

@@ -1,14 +1,16 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.database;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,12 +46,12 @@ public enum DatabaseTypeEnum {
 	;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final String P6SPY_DRIVER_CLASS_NAME = "com.p6spy.engine.spy.P6SpyDriver";
 	private boolean useP6Spy = false;
-	
-	
+
+
 	/**
 	 * @return the useP6Spy
 	 */
@@ -93,35 +95,35 @@ public enum DatabaseTypeEnum {
                 //TODO Exception
         }
 	}
-	
+
 	public IDatabaseType getDatabaseType(){
 		return dbType;
 	}
-	
+
  	//Logger
 	private static final Logger logger = Logger.getLogger(DatabaseTypeEnum.class);
 	protected IDatabaseType dbType;
-	
-	   
+
+
     /**
      * @return
      */
     public String getName(){
     	return dbType.getName();
     }
-    
+
 	/**
 	 * @return
 	 */
 	public String getDriverClassName(){
 		if(useP6Spy){
 			return P6SPY_DRIVER_CLASS_NAME;
-			
+
 		} else {
-			return dbType.getClassString();			
+			return dbType.getClassString();
 		}
 	}
-    
+
 	/**
 	 * Returns the DataSource class that the datasource needs to create a spring bean
 	 * @return the DataSource class
@@ -129,21 +131,21 @@ public enum DatabaseTypeEnum {
 	public Class<? extends DataSource> getDataSourceClass(){
 		return dbType.getDataSourceClass();
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public String getUrl(){
 		return dbType.getUrlString();
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public String getHibernateDialectCanonicalName(){
 		return dbType.getHibernateDialectCanonicalName();
 	}
-	   
+
     /**
      * @return
      */
@@ -152,7 +154,7 @@ public enum DatabaseTypeEnum {
     }
 
 	/**
-     * returns the connection string 
+     * returns the connection string
      * @param server the server, e.g. IP-Address
      * @param database the database name on the server (e.g. "testDB")
      * @param port the port number
@@ -160,10 +162,10 @@ public enum DatabaseTypeEnum {
      */
     public String getConnectionString(ICdmDataSource cdmDataSource){
     	String result = dbType.getConnectionString(cdmDataSource);
-    	logger.debug("Connection String: " + result);	
+    	logger.debug("Connection String: " + result);
         return result;
     }
-	
+
     /**
      * Returns the {@link Dialect hibernate dialect} used for this database type.
 	 * @return hibernate dialect
@@ -179,20 +181,20 @@ public enum DatabaseTypeEnum {
 	 */
     public String getInitMethod(){
     	String result = dbType.getInitMethod();
-    	logger.debug("InitMethod: " + result);	
+    	logger.debug("InitMethod: " + result);
         return result;
     }
-    
+
 	/**
 	 * Returns the Name of the destroying method to be used when a hibernate datasource representing this database is destroyed
 	 * @return String name of the destroy method
 	 */
     public String getDestroyMethod(){
     	String result = dbType.getDestroyMethod();
-    	logger.debug("DestroyMethod: " + result);	
+    	logger.debug("DestroyMethod: " + result);
         return result;
     }
-    
+
     /**
      * Returns a List of all available DatabaseEnums.
      * @return List of DatabaseEnums
@@ -210,18 +212,74 @@ public enum DatabaseTypeEnum {
      * @param strDriverClass
      * @return the according DatabaseTypeEnum. Null if the driver class does not exist.
      */
-    public static DatabaseTypeEnum getDatabaseEnumByDriverClass(String strDriverClass){
-    	for (DatabaseTypeEnum dbEnum : DatabaseTypeEnum.values()){
+    public static DatabaseTypeEnum byDriverClass(String strDriverClass){
+    	if (strDriverClass == null){
+    	    return null;
+    	}
+        for (DatabaseTypeEnum dbEnum : DatabaseTypeEnum.values()){
     		if (dbEnum.getDriverClassName().equals(strDriverClass)){
     			return dbEnum;
     		}
     	}
-    	logger.warn("Unknown driver class " + strDriverClass==null ? "null" : strDriverClass);
+    	logger.info("Unknown driver class: " + strDriverClass);
     	return null;
     }
-    
-    
 
- 
+    /**
+     * @param metaData
+     * @return
+     */
+    public static DatabaseTypeEnum byDatabaseMetaData(DatabaseMetaData metaData) {
+        if (metaData == null){
+            return null;
+        }
+
+        //driver
+        String driver = null;
+        try {
+            driver = metaData.getDriverName();
+        } catch (SQLException e) {
+            //do nothing
+        }
+        DatabaseTypeEnum result = byDriverClass(driver);
+        if (result != null){
+            return result;
+        }
+
+        //product
+        String product = null;
+        try {
+            product = metaData.getDatabaseProductName();
+        } catch (SQLException e) {
+            //do nothing
+        }
+        if (product == null){
+            return null;
+        }
+        if (product.toLowerCase().matches("\\.*mysql\\.*")){
+            return MySQL;
+        }else if (product.toLowerCase().matches("\\.*hsqldb\\.*")) {
+            return HSqlDb;
+        }else if (product.toLowerCase().matches("\\.*oracle\\.*")) {
+            return Oracle;
+        }else if (product.toLowerCase().matches("\\.*sybase\\.*")) {
+            return Sybase;
+        }else if (product.toLowerCase().matches("\\.*odbc\\.*")) {
+            return ODBC;
+        }else if (product.toLowerCase().matches("\\.*postgresql\\.*")) {
+            return PostgreSQL;
+        }else if (product.toLowerCase().matches("\\.*sqlserver\\.*")) {
+            //TODO we need to distinguish versions here once we have sql server 2008 database enum
+//            metaData.getDatabaseProductVersion()
+            return SqlServer2005;
+        }else if (product.toLowerCase().matches("\\.*h2\\.*")) {
+            return H2;
+        }
+        return null;
+    }
+
+
+
+
 }
 

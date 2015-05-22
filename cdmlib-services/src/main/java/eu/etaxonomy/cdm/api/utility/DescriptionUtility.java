@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
  * @author a.kohlbecker
@@ -203,13 +204,14 @@ public class DescriptionUtility {
     /**
      * Orders the given Distribution elements in a hierarchical structure.
      * This method will not filter out any of the Distribution elements.
+     * @param termDao
      * @param omitLevels
      * @param distList
      * @return
      */
-    public static DistributionTree orderDistributions(Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
+    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
 
-        DistributionTree tree = new DistributionTree();
+        DistributionTree tree = new DistributionTree(termDao);
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas

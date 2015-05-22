@@ -4,13 +4,13 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-remote</artifactId>
-  <version>3.5.1-SNAPSHOT</version>
+  <version>3.5.2-SNAPSHOT</version>
   <properties>
     <!-- custom property to hold the patch version number shouldn't this
       be set in the parent pom? -->
@@ -203,10 +203,6 @@
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
     </dependency>
 
     <dependency>

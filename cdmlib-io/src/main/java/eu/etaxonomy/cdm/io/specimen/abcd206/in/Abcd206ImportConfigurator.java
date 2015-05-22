@@ -63,6 +63,9 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private boolean mapUnitIdToAccessionNumber = false;
     private boolean mapUnitIdToBarcode = false;
 
+    private boolean overwriteExistingSpecimens = false;
+    private boolean ignoreImportOfExistingSpecimens = true;
+
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
@@ -428,4 +431,19 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.moveNewTaxaToDefaultClassification = moveNewTaxaToDefaultClassification;
     }
 
+    public boolean isOverwriteExistingSpecimens() {
+        return overwriteExistingSpecimens;
+    }
+
+    public void setOverwriteExistingSpecimens(boolean overwriteExistingSpecimens) {
+        this.overwriteExistingSpecimens = overwriteExistingSpecimens;
+    }
+
+    public boolean isIgnoreImportOfExistingSpecimens() {
+        return ignoreImportOfExistingSpecimens;
+    }
+
+    public void setIgnoreImportOfExistingSpecimens(boolean ignoreImportOfExistingSpecimens) {
+        this.ignoreImportOfExistingSpecimens = ignoreImportOfExistingSpecimens;
+    }
 }

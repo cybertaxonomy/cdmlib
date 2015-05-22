@@ -21,7 +21,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -116,10 +115,8 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	private boolean supportsCommonTaxonName;
 
-	/*
-	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
-	 */
-	@OneToMany(fetch = FetchType.LAZY)
+    /* for M:M see #4843 */
+	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
 	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
 
@@ -128,10 +125,8 @@ public class Feature extends DefinedTermBase<Feature> {
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 
-	/*
-	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique state enums?
-	 */
-	@OneToMany(fetch = FetchType.LAZY)
+	/* for M:M see #4843 */
+	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 

@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -409,6 +408,20 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getKindOfUnit(Element root) {
+        NodeList group;
+        try {
+            group = root.getElementsByTagName(prefix + "KindOfUnit");
+            path = group.item(0).getNodeName();
+            getHierarchie(group.item(0));
+            dataHolder.knownABCDelements.add(path);
+            path = "";
+            dataHolder.kindOfUnit = group.item(0).getTextContent();
+        } catch (NullPointerException e) {
+            dataHolder.kindOfUnit = "";
+        }
+    }
+
     /**
      * getNumbers : getAccessionNumber, collector number ...
      * @param root
@@ -451,7 +464,7 @@ public class Abcd206XMLFieldGetter {
     /**
      * getGeolocation : get locality
      * @param root
-     * @param state 
+     * @param state
      */
     protected void getGeolocation(Element root, Abcd206ImportState state) {
         NodeList group, childs;
@@ -551,29 +564,41 @@ public class Abcd206XMLFieldGetter {
 
         try {
             group = root.getElementsByTagName(prefix + "NamedArea");
-            dataHolder.namedAreaList = new ArrayList<String>();
+            dataHolder.namedAreaList = new HashMap<String, String>();
             for (int i = 0; i < group.getLength(); i++) {
                 childs = group.item(i).getChildNodes();
+                String currentArea = null;
                 for (int j = 0; j < childs.getLength(); j++) {
                     if (childs.item(j).getNodeName() .equals(prefix + "AreaName")) {
                         path = childs.item(j).getNodeName();
                         getHierarchie(childs.item(j));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
-                        dataHolder.namedAreaList.add(childs.item(j).getTextContent());
+                        currentArea = childs.item(j).getTextContent();
+                        dataHolder.namedAreaList.put(currentArea, null);
+                    }
+                }
+                if(currentArea!=null){
+                    for (int j = 0; j < childs.getLength(); j++) {
+                        if (childs.item(j).getNodeName() .equals(prefix + "AreaClass")) {
+                            path = childs.item(j).getNodeName();
+                            getHierarchie(childs.item(j));
+                            dataHolder.knownABCDelements.add(path);
+                            path = "";
+                            dataHolder.namedAreaList.put(currentArea, childs.item(j).getTextContent());
+                        }
                     }
                 }
             }
         } catch (NullPointerException e) {
-            dataHolder.namedAreaList = new ArrayList<String>();
+            dataHolder.namedAreaList = new HashMap<String, String>();
         }
 
         if(state.getConfig().isRemoveCountryFromLocalityText()){
             if(dataHolder.locality.startsWith(dataHolder.country)){
                 dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
             }
-            List<String> namedAreaList = dataHolder.namedAreaList;
-            for (String namedArea : namedAreaList) {
+            for (String namedArea : ((HashMap<String, String>) dataHolder.namedAreaList).keySet()) {
                 if(dataHolder.locality.startsWith(namedArea)){
                     dataHolder.locality = dataHolder.locality.replaceFirst(namedArea+"[\\W]", "");
                 }
@@ -597,8 +622,36 @@ public class Abcd206XMLFieldGetter {
                         for (int k = 0; k < multimedia.getLength(); k++) {
                             if (multimedia.item(k).getNodeName().equals(prefix + "FileURI")) {
                                 dataHolder.multimediaObjects.add(multimedia.item(k).getTextContent());
-                                path = multimedia.item(k).getNodeName();getHierarchie(multimedia.item(k));
-                                dataHolder.knownABCDelements.add(path);path = "";
+                                path = multimedia.item(k).getNodeName();
+                                getHierarchie(multimedia.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            logger.info(e);
+        }
+    }
+
+    protected void getAssociatedUnitIds(Element root) {
+        NodeList associations, childrenAssociations, childrenUnitAssociations;
+        try {
+            associations = root.getElementsByTagName(prefix + "Associations");
+            for (int i = 0; i < associations.getLength(); i++) {
+                childrenAssociations = associations.item(i).getChildNodes();
+                for (int j = 0; j < childrenAssociations.getLength(); j++) {
+                    if (childrenAssociations.item(j).getNodeName().equals(prefix + "UnitAssociation")) {
+                        childrenUnitAssociations = childrenAssociations.item(j).getChildNodes();
+                        for (int k = 0; k < childrenUnitAssociations.getLength(); k++) {
+                            if (childrenUnitAssociations.item(k).getNodeName().equals(prefix + "UnitID")) {
+                                dataHolder.associatedUnitIds.add(childrenUnitAssociations.item(k).getTextContent());
+                                path = childrenUnitAssociations.item(k).getNodeName();
+                                getHierarchie(childrenUnitAssociations.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
                             }
                         }
                     }

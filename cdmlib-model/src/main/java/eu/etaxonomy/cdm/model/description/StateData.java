@@ -17,11 +17,12 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -40,10 +41,10 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
     "state",
+    "categoricalData",
     "modifiers",
     "modifyingText"
 })
@@ -83,6 +85,19 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded(depth=1)
     private State state;
+
+    @XmlElement(name = "CategoricalData")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY )
+    @JoinTable(
+            name = "DescriptionElementBase_StateData"
+          , joinColumns = @JoinColumn(name = "statedata_id")
+          , inverseJoinColumns = @JoinColumn(name = "DescriptionElementBase_id")
+
+        )
+    @IndexedEmbedded(depth=1)
+    private CategoricalData categoricalData;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
@@ -147,11 +162,25 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
         this.state = state;
     }
 
+    /**
+     * Returns the {@link CategoricalData state term} <i>this</i> state data
+     * belongs to.
+     */
+    public CategoricalData getCategoricalData(){
+        return this.categoricalData;
+    }
+    //for bidirectional use only
+    @Deprecated
+    protected void setCategoricalData(CategoricalData categoricalData) {
+        this.categoricalData = categoricalData;
+    }
+
 
     /**
      * Returns the set of {@link Modifier modifiers} used to qualify the validity
      * of <i>this</i> state data. This is only metainformation.
      */
+    @Override
     public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
@@ -163,6 +192,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @param modifier	the modifier to be added to <i>this</i> state data
      * @see    	   		#getModifiers()
      */
+    @Override
     public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
@@ -174,6 +204,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
+    @Override
     public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }

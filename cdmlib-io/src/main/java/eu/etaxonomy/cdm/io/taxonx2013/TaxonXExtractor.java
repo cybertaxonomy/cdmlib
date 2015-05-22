@@ -316,7 +316,7 @@ public class TaxonXExtractor {
             }
             derivedUnitFacade = getFacade(type.replaceAll(";",""), defaultAssociation);
             SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
-            
+
             if (typifiableName != null){
             	typifiableName.addTypeDesignation(designation, true);
             }else{
@@ -357,11 +357,11 @@ public class TaxonXExtractor {
         unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService());
         //TODO other areas
         if (StringUtils.isNotBlank(stateprov)){
-        	ArrayList<String> namedAreas = new ArrayList<String>();
-        	namedAreas.add(stateprov);
-            unitsGatheringArea.setAreaNames(namedAreas, state2.getConfig(), importer.getTermService());
+        	Map<String, String> namedAreas = new HashMap<String, String>();
+        	namedAreas.put(stateprov, null);
+            unitsGatheringArea.setAreaNames(namedAreas, state2.getConfig(), importer.getTermService(), importer.getVocabularyService());
         }
-        
+
         areaCountry =  unitsGatheringArea.getCountry();
 
         //                         // other areas
@@ -378,7 +378,7 @@ public class TaxonXExtractor {
         derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
         derivedUnitFacade.setCollector(gatheringEvent.getCollector());
         derivedUnitFacade.setCountry((NamedArea)areaCountry);
-        
+
         for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
             derivedUnitFacade.addCollectingArea((NamedArea) area);
         }
@@ -1193,7 +1193,7 @@ public class TaxonXExtractor {
             return false;
         }
     }
-    
+
     /**
      * Tries to match the status string against any new name status
      * and returns the status if it matches. Returns <code>null</code> otherwise.
@@ -1202,19 +1202,19 @@ public class TaxonXExtractor {
      */
     protected String newNameStatus(String status){
     	String pattern = "(" + "((sp|spec|gen|comb|)\\.\\s*nov.)" +
-    				"|(new\\s*(species|combination))" + 
+    				"|(new\\s*(species|combination))" +
     				"|(n\\.\\s*sp\\.)" +
     				"|(sp\\.\\s*n\\.)" +
     				")";
     	if (status.trim().matches(pattern)){
-    		//FIXME 
-    		return null; 
+    		//FIXME
+    		return null;
 //    		return status;
     	}else{
     		return null;
     	}
     }
-    
+
 
     /** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
      */

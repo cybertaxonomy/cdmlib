@@ -51,8 +51,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     protected String defaultField = "titleCache_tokenized";
     protected Class<? extends T> indexedClasses[];
 
-    
-    
+
+
     public IdentifiableDaoBase(Class<T> type) {
         super(type);
     }
@@ -96,7 +96,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
                 pageNumber, matchMode, false);
-        List<T> result = (List<T>)query.list();
+        List<T> result = query.list();
         return result;
     }
 
@@ -202,7 +202,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
-        List<Rights> results = (List<Rights>)query.list();
+        List<Rights> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
@@ -213,7 +213,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         Query query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
-        return (List<Credit>)query.list();
+        return query.list();
     }
 
     @Override
@@ -223,7 +223,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         query.setParameter("id",identifiableEntity.getId());
         query.setParameter("class",identifiableEntity.getClass().getName());
         setPagingParameter(query, pageSize, pageNumber);
-        List<IdentifiableSource> results = (List<IdentifiableSource>)query.list();
+        List<IdentifiableSource> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
@@ -240,7 +240,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         query.setString("idInSource", idInSource);
         query.setString("idNamespace", idNamespace);
         //TODO integrate reference in where
-        return (List<T>)query.list();
+        return query.list();
     }
 
     @Override
@@ -271,7 +271,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
             query.addOrder(AuditEntity.revisionNumber().asc());
             query.setMaxResults(1);
             query.setFirstResult(0);
-            List<Object[]> objs = (List<Object[]>)query.getResultList();
+            List<Object[]> objs = query.getResultList();
             if(objs.isEmpty()) {
                 return null;
             } else {
@@ -283,7 +283,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
         Session session = getSession();
-        Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
+        Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName());
         return getUuidAndTitleCache(query);
     }
 
@@ -293,7 +293,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<E>((UUID) object[0], (String) object[1]));
+            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
 
         return list;
@@ -393,7 +393,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
                 }
             }
 
-            List<T> result = (List<T>)fullTextQuery.list();
+            List<T> result = fullTextQuery.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
 
@@ -446,13 +446,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         Integer result = ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         return result;
     }
-    
+
 
 	@Override
 	public <S extends T> int countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, MatchMode matchmode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
-        
+
 		Class<?> clazzParam = clazz == null ? type : clazz;
 		String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
 	                "INNER JOIN c.identifiers as ids " +
@@ -467,30 +467,30 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		if (identifierType != null){
         	queryString += " AND ids.type = :type";
         }
-		
+
 		Query query = getSession().createQuery(queryString);
         if (identifierType != null){
         	query.setEntity("type", identifierType);
         }
-        
+
 		Long c = (Long)query.uniqueResult();
         return c.intValue();
 	}
-    
+
 	@Override
 	public <S extends T> List<Object[]> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType,
-			MatchMode matchmode, boolean includeEntity, 
+			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        
+
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-        
+
 		Class<?> clazzParam = clazz == null ? type : clazz;
 		String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 " WHERE (1=1) ";
 		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
-		
+
 		//Matchmode and identifier
 		if (identifier != null){
 			if (matchmode == null || matchmode == MatchMode.EXACT){
@@ -504,18 +504,18 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         }
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
-		    
+
 		Query query = getSession().createQuery(queryString);
-        
+
 		//parameters
 		if (identifierType != null){
         	query.setEntity("type", identifierType);
         }
-        
+
         //paging
         setPagingParameter(query, pageSize, pageNumber);
-        
-        List<Object[]> results = (List<Object[]>)query.list();
+
+        List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
         	List<S> entities = new ArrayList<S>();

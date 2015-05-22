@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -30,7 +31,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The taxon name class for viral taxa. The scientific name will be stored
@@ -126,7 +126,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see  #getAcronym()
 	 */
 	public void setAcronym(String acronym){
-		this.acronym = acronym;
+		this.acronym = StringUtils.isBlank(acronym)? null : acronym;
 	}
 
 	/**

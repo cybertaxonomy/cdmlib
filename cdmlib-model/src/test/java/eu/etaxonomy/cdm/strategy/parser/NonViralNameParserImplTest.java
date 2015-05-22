@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -334,7 +335,6 @@ public class NonViralNameParserImplTest {
         assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorTeam()).isHasMoreMembers()  );
 	}
 
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
@@ -419,7 +419,7 @@ public class NonViralNameParserImplTest {
 		}
 
 		//Species hybrid
-		String hybridCache = "Abies alba \u00D7 Pinus bus";
+		String hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
 		NonViralName<?> name1 = parser.parseFullName(hybridCache, botanicCode, null);
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
 		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
@@ -433,19 +433,24 @@ public class NonViralNameParserImplTest {
 		assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
 		assertNull("Name must not have a genus eptithet", name1.getGenusOrUninomial());
 		assertNull("Name must not have a specific eptithet", name1.getSpecificEpithet());
+		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
+		name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
+		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
 		//x-sign
 		hybridCache = "Abies alba x Pinus bus";
 		name1 = parser.parseFullName(hybridCache, botanicCode, null);
 		assertFalse("Name must be parsable", name1.hasProblem());
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		assertFalse("Name must not have parsing problems", name1.hasProblem());
+
 
 		//Subspecies first hybrid
-		name1 = parser.parseFullName("Abies alba subsp. beta \u00D7 Pinus bus", botanicCode, null);
+		name1 = parser.parseFullName("Abies alba subsp. beta "+UTF8.HYBRID+" Pinus bus", botanicCode, null);
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
 		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
-		assertEquals("Title cache must be correct", "Abies alba subsp. beta \u00D7 Pinus bus", name1.getTitleCache());
+		assertEquals("Title cache must be correct", "Abies alba subsp. beta "+UTF8.HYBRID+" Pinus bus", name1.getTitleCache());
 		orderedRels = name1.getOrderedChildRelationships();
 		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
 		firstParent = orderedRels.get(0).getParentName();
@@ -476,6 +481,48 @@ public class NonViralNameParserImplTest {
 
 	}
 
+	@Test
+    public final void testHybridsRemoval(){
+	    //if the parser input already has hybridrelationships they need to be removed
+	    //Create input
+        String hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
+        NonViralName<?> name1 = parser.parseFullName(hybridCache, botanicCode, null);
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+        assertTrue("", name1.getHybridChildRelations().size() == 2);
+
+        hybridCache = "Abieta albana "+UTF8.HYBRID+" Pinuta custa";
+        boolean makeEmpty = true;
+        parser.parseFullName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertEquals("After parsing another string there should still be 2 parents, but different ones", 2, name1.getHybridChildRelations().size());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+
+
+        hybridCache = "Calendula arvensis Mill.";
+        makeEmpty = true;
+        parser.parseFullName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertTrue("", name1.getHybridChildRelations().isEmpty());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+
+
+        //AND the same for reference parsing
+        hybridCache = "Abies alba "+UTF8.HYBRID+" Pinus bus";
+        name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+        assertTrue("", name1.getHybridChildRelations().size() == 2);
+
+        hybridCache = "Abieta albana "+UTF8.HYBRID+" Pinuta custa";
+        makeEmpty = true;
+        parser.parseReferencedName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertEquals("After parsing another string there should still be 2 parents, but different ones", 2, name1.getHybridChildRelations().size());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+
+
+        hybridCache = "Calendula arvensis Mill.";
+        makeEmpty = true;
+        parser.parseReferencedName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
+        assertTrue("", name1.getHybridChildRelations().isEmpty());
+        assertFalse("Name must not have parsing problems", name1.hasProblem());
+	}
 
 	private void testName_StringNomcodeRank(Method parseMethod)
 			throws InvocationTargetException, IllegalAccessException  {
@@ -1326,6 +1373,7 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
         Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
         Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
+
 	}
 
 	/**

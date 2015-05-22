@@ -345,7 +345,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        return DescriptionUtility.orderDistributions(omitLevels, distList);
+        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList);
     }
 
 
@@ -615,21 +615,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return naturalLanguageDescription.toString();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#hasStructuredData(eu.etaxonomy.cdm.model.description.DescriptionBase)
-     */
+
     @Override
     public boolean hasStructuredData(DescriptionBase<?> description) {
         return load(description.getUuid()).hasStructuredData();
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#moveDescriptionElementsToDescription(java.util.Collection, eu.etaxonomy.cdm.model.description.DescriptionBase, boolean)
-     */
     @Override
-    public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements,
-                                                    DescriptionBase targetDescription, boolean isCopy) {
+    public void moveDescriptionElementsToDescription(
+            Collection<DescriptionElementBase> descriptionElements,
+            DescriptionBase targetDescription,
+            boolean isCopy) {
 
         if (descriptionElements.isEmpty() ){
             return ;
@@ -642,12 +639,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 //			descriptionElements = descriptionElementsTmp;
         }
         for (DescriptionElementBase element : descriptionElements){
-            DescriptionBase description = element.getInDescription();
+            DescriptionBase<?> description = element.getInDescription();
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 targetDescription.addElement(newElement);
             } catch (CloneNotSupportedException e) {
-                new RuntimeException ("Clone not yet implemented for class " + element.getClass().getName(), e);
+                throw new RuntimeException ("Clone not yet implemented for class " + element.getClass().getName(), e);
             }
             if (! isCopy){
                 description.removeElement(element);

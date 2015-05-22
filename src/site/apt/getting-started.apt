@@ -15,13 +15,13 @@ Developing with the CDM Library
 * Integrating the CDM Library into a maven project
 
 	To integrate the CDM Library into your personal maven project pelase add our maven repository to your POM:
-	{{http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/}}. To use the <cdmlib-service> package add the following
+	{{http://cybertaxonomy.eu/mavenrepo/}}. To use the <cdmlib-service> package add the following
 	dependency to you POM (adapt the right version number !!):
 
 ---
 <dependency>
 	<groupId>eu.etaxonomy</groupId>
-	<artifactId>cdmlib-service</artifactId>
+	<artifactId>cdmlib-services</artifactId>
 	<version>x.x</version>
 </dependency>
 ---

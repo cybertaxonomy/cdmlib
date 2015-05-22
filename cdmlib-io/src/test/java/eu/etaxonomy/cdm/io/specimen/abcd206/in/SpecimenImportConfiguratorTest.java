@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -93,7 +95,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
             e.printStackTrace();
             Assert.fail();
         }
-        assertNotNull("Configurator2 could not be created", configurator);
+        assertNotNull("Configurator could not be created", configurator);
 
         //test2
         String inputFile2 = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
@@ -105,7 +107,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 			e.printStackTrace();
 			Assert.fail();
 		}
-		assertNotNull("Configurator could not be created", configurator2);
+		assertNotNull("Configurator2 could not be created", configurator2);
 	}
 
 	@Test
@@ -122,7 +124,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator);
@@ -143,7 +144,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 
 	@Test
-	@Ignore
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2);
@@ -197,7 +197,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@Ignore
 	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportVariety() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
@@ -219,10 +218,11 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    /*
 	     * Classification
 	     *  - Campanula
+	     *   - Campanula versicolor
 	     *   - Campanula versicolor var. tomentella Hal.
 	     */
-	    assertEquals(3, taxonNodeService.count(TaxonNode.class));
-	    assertEquals(2, nameService.count(TaxonNameBase.class));
+	    assertEquals(4, taxonNodeService.count(TaxonNode.class));
+	    assertEquals(3, nameService.count(TaxonNameBase.class));
 	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
 	    boolean varietyFound = false;
 	    for(TaxonNameBase<?, ?> name:nameService.list(TaxonNameBase.class, null, null, null, null)){
@@ -234,7 +234,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@Ignore
 	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testMultipleIdentificationsPreferredFlag() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
@@ -265,7 +264,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(3, taxonNodeService.count(TaxonNode.class));
 	    assertEquals(1, occurrenceService.count(DerivedUnit.class));
 	    DerivedUnit derivedUnit = occurrenceService.list(DerivedUnit.class, null, null, null, null).get(0);
-	    assertEquals(2, derivedUnit.getDeterminations());
+	    assertEquals(2, derivedUnit.getDeterminations().size());
 	    for(DeterminationEvent determinationEvent:derivedUnit.getDeterminations()){
 	        if(determinationEvent.getPreferredFlag()){
 	            assertEquals(preferredNameCache,((NonViralName<?>) determinationEvent.getTaxonName()).getNameCache());
@@ -276,6 +275,153 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    }
 
 	}
+
+	@Test
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportForm() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+    }
+
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testMapUnitIDAsBarcode() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    importConfigurator.setMapUnitIdToBarcode(true);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    for (DerivedUnit derivedUnit : list) {
+            assertTrue(derivedUnit.getBarcode()!=null);
+        }
+	}
+
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testMapUnitIDAsAccessionNumber() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    importConfigurator.setMapUnitIdToAccessionNumber(true);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    for (DerivedUnit derivedUnit : list) {
+	        assertTrue(derivedUnit.getAccessionNumber()!=null);
+	    }
+	}
+
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testMapUnitIDAsCatalogNumber() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    importConfigurator.setMapUnitIdToCatalogNumber(true);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    for (DerivedUnit derivedUnit : list) {
+	        assertTrue(derivedUnit.getCatalogNumber()!=null);
+	    }
+	}
+
+	@Test
+    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testIgnoreExistingSpecimens(){
+        UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
+
+//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+//        derivedUnit.setAccessionNumber("B 10 0066577");
+//        derivedUnit.setTitleCache("testUnit1", true);
+//
+//        derivedUnit.setUuid(derivedUnit1Uuid );
+//
+//        occurrenceService.save(derivedUnit);
+//
+//        commitAndStartNewTransaction(null);
+//
+//        setComplete();
+//        endTransaction();
+//
+//
+//        try {
+//            writeDbUnitDataSetFile(new String[] {
+//                    "SpecimenOrObservationBase",
+//            }, "testAttachDnaSampleToDerivedUnit");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+        assertEquals("Number of derived units is incorrect", 1, derivedUnits.size());
+
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
+        assertTrue(derivedUnits.contains(derivedUnit));
+
+    }
 
 	@Test
 	@Ignore
