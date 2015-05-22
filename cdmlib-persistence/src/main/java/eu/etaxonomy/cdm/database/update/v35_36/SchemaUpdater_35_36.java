@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableRemover;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
@@ -109,6 +110,19 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         tableName = "SingleReadAlignment";
         newColumnName = "rightCutPosition";
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+
+        //DescriptionElementBase_StateData
+        stepName = "Simplify DescriptionElementBase_StateData";
+        tableName = "DescriptionElementBase_StateData";
+        newColumnName = "rightCutPosition";
+        step = MnTableRemover.NewInstance(stepName,
+                tableName,
+                "descriptionElementBase_id",
+                "DescriptionElementBase_id",
+                "statedata_id",
+                "DescriptionElementBase",
+                "StateData",
+                INCLUDE_AUDIT);
 
 
 		return stepList;
