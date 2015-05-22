@@ -1325,6 +1325,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdaterSt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/IUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MapTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableCreator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableRemover.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
