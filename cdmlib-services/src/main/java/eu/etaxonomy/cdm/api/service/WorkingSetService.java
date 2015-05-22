@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -16,7 +15,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.WorkingSet;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.description.IWorkingSetDao;
 
 @Service
@@ -30,7 +28,8 @@ public class WorkingSetService extends
 		this.dao = dao;
 	}
 
-	public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,
+	@Override
+    public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(WorkingSet workingSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,
 			List<String> propertyPaths) {
 		return dao.getDescriptionElements(workingSet, features, pageSize, pageNumber, propertyPaths);
 	}
