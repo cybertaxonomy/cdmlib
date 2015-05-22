@@ -92,9 +92,9 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase<TableCreator> i
         String mnTable = "@@" + mnTableName + "@@";
         String sql = ""
                 + " UPDATE " + childTable
-                + " SET " + mnChildFkColumnName + " = "
-                +       " (SELECT " + fkColumnName
-                        + " FROM " + mnTable
+                + " SET " + fkColumnName + " = "
+                +       " (SELECT " + mnParentFkColumnName
+                        + " FROM " + mnTable + " MN "
                         + " WHERE MN." + mnChildFkColumnName + " = c.id) ";
         SimpleSchemaUpdaterStep dataUpdateStep = SimpleSchemaUpdaterStep.NewAuditedInstance(sql, sql, mnTableName, 99);
         innerStepList.add(dataUpdateStep);

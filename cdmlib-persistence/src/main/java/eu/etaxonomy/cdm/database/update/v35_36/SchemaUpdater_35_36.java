@@ -97,33 +97,49 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         Integer defaultValue = null;
         boolean notNull = false;
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+        stepList.add(step);
 
         //SingleReadAlignment leftCutPosition
-        stepName = "Add firstSeqPosition";
+        stepName = "Add leftCutPosition";
         tableName = "SingleReadAlignment";
         newColumnName = "leftCutPosition";
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+        stepList.add(step);
 
-
-        //SingleReadAlignment leftCutPosition
-        stepName = "Add firstSeqPosition";
+        //SingleReadAlignment rightCutPosition
+        stepName = "Add rightCutPosition";
         tableName = "SingleReadAlignment";
         newColumnName = "rightCutPosition";
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
+        stepList.add(step);
 
         //DescriptionElementBase_StateData
         stepName = "Simplify DescriptionElementBase_StateData";
         tableName = "DescriptionElementBase_StateData";
-        newColumnName = "rightCutPosition";
+        newColumnName = "categoricaldata_id";
         step = MnTableRemover.NewInstance(stepName,
                 tableName,
-                "categoricaldata_id",
+                newColumnName,
                 "DescriptionElementBase_id",
                 "statedata_id",
                 "DescriptionElementBase",
                 "StateData",
                 INCLUDE_AUDIT);
+        stepList.add(step);
 
+        //DescriptionElementBase_StatisticalMeasurementValue
+        stepName = "Simplify DescriptionElementBase_StatisticalMeasurementValue";
+        tableName = "DescriptionElementBase_StatisticalMeasurementValue";
+        newColumnName = "quantitativedata_id";
+        step = MnTableRemover.NewInstance(stepName,
+                tableName,
+                newColumnName,
+                "DescriptionElementBase_id",
+                "statisticalvalues_id",
+                "DescriptionElementBase",
+                "StatisticalMeasurementValue",
+                INCLUDE_AUDIT);
+        stepList.add(step);
 
 		return stepList;
 	}
