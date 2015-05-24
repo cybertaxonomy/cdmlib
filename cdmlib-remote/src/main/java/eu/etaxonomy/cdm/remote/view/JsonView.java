@@ -113,6 +113,9 @@ public class JsonView extends BaseView implements View{
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
         }
 
+        // option to skip json processing for debugging purposes, see #4925
+        if(System.getProperty("SkipJSON") == null) {
+
         // create JSON Object
         boolean isCollectionType = false;
         JSON jsonObj;
@@ -164,6 +167,11 @@ public class JsonView extends BaseView implements View{
             }
         }
         //TODO resp.setContentType(type);
+
+        } else {
+            writer.append("SkipJSON mode detected, this is for debugging only! Please contact the adminitrator.");
+            // END SkipJSON
+        }
         writer.flush();
     }
 
