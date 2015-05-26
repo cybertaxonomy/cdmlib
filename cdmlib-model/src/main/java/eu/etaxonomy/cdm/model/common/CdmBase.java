@@ -13,6 +13,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
@@ -194,6 +196,34 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
     public void firePropertyChange(PropertyChangeEvent evt) {
         propertyChangeSupport.firePropertyChange(evt);
+    }
+
+    /**
+     * Adds an item to a set of <code>this</code> object and fires the according
+     * {@link PropertyChangeEvent}. Workaround as long as add and remove is not yet
+     * implemented in aspectJ.
+     * @param set the set the new item is added to
+     * @param newItem the new item to be added to the set
+     * @param propertyName the name of the set as property in <code>this</code> object
+     */
+    protected <T extends CdmBase> void addToSetWithChangeEvent(Set<T> set, T newItem, String propertyName ){
+        Set<T> oldValue = new HashSet<T>(set);
+        set.add(newItem);
+        firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, set));
+    }
+
+    /**
+     * Removes an item from a set of <code>this</code> object and fires the according
+     * {@link PropertyChangeEvent}. Workaround as long as add and remove is not yet
+     * implemented in aspectJ.
+     * @param set the set the item is to be removed from
+     * @param itemToRemove the item to be removed from the set
+     * @param propertyName the name of the set as property in <code>this</code> object
+     */
+    protected <T extends CdmBase> void removeFromSetWithChangeEvent(Set<T> set, T itemToRemove, String propertyName ){
+        Set<T> oldValue = new HashSet<T>(set);
+        set.remove(itemToRemove);
+        firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, set));
     }
 
     @Override

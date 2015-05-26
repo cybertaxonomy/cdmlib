@@ -123,15 +123,14 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     }
 
     public void addRepresentation(Representation representation) {
-        this.representations.add(representation);
-        //reset titleCache
-        this.titleCache = null;
+//        this.representations.add(representation);
+        this.addToSetWithChangeEvent(this.representations, representation, "representations");
+
     }
 
     public void removeRepresentation(Representation representation) {
-        this.representations.remove(representation);
-      //reset titlecache
-        this.titleCache = null;
+//        this.representations.remove(representation);
+        this.removeFromSetWithChangeEvent(this.representations, representation, "representations");
     }
 
     public Representation getRepresentation(Language lang) {
