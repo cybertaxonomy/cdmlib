@@ -203,9 +203,6 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         this.uri = uri;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel()
-     */
     @Transient
     public String getLabel() {
         if(getLabel(Language.DEFAULT())!=null){
@@ -219,9 +216,6 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         return super.getUuid().toString();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel(eu.etaxonomy.cdm.model.common.Language)
-     */
     public String getLabel(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null : repr.getLabel();
@@ -244,17 +238,11 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription()
-     */
     @Transient
     public String getDescription() {
         return this.getDescription(Language.DEFAULT());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription(eu.etaxonomy.cdm.model.common.Language)
-     */
     public String getDescription(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null :repr.getDescription();
