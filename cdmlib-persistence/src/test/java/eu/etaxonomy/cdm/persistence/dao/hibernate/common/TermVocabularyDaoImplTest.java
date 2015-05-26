@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,12 +21,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -55,24 +58,24 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		List<TermVocabulary<? extends Rank>> rankVocabularies = dao.listByTermClass(Rank.class, false, false, null, null, null, null);
 		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
 		assertEquals("There should be only one vocabulary containing terms of class Rank",1,rankVocabularies.size());
-		
-		
+
+
 		rankVocabularies = dao.listByTermClass(Rank.class, true, false, null, null, null, null);
 		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
 		assertEquals("There should be only one vocabulary containing terms of class Rank",1,rankVocabularies.size());
-		
+
 		//with subclasses
 		List<TermVocabulary<? extends NamedArea>> namedAreaVocabularies = dao.listByTermClass(NamedArea.class, true, false, null, null, null, null);
 		int subclassedSize = namedAreaVocabularies.size();
 		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 4, subclassedSize);
-		
+
 		List<TermVocabulary<? extends NamedArea>> namedAreaOnlyVocabularies = dao.listByTermClass(NamedArea.class, false, false, null, null, null, null);
 		List<TermVocabulary<? extends Country>> countryVocabularies = dao.listByTermClass(Country.class, false, false, null, null, null, null);
 		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + countryVocabularies.size();
 		assertEquals("number of NamedArea and subclasses should be same as sum of all single vocabularies", subclassedSize, sumOfSingleSizes);
 
 	}
-	
+
 	@Test
 	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
 	public void testListVocabularyByClassEmpty() {
@@ -82,8 +85,8 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 
 		List<TermVocabulary<? extends Language>> languageVocabulariesAndEmpty = dao.listByTermClass(Language.class, true, true, null, null, null, null);
 		assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
-	}	
-	
+	}
+
 	@Test
 	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
 	public void testListVocabularyEmpty() {
@@ -94,9 +97,9 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		UUID uuidEmptyVoc = UUID.fromString("f253962f-d787-4b16-b2d2-e645da73ae4f");
 		assertEquals("The empty vocabulary should be the one defined", uuidEmptyVoc, emptyVocs.get(0).getUuid());
 	}
-	
+
 	@Test
-	public void testmissingTermUuids() {
+	public void testMissingTermUuids() {
 		Set<UUID> uuidSet = new HashSet<UUID>();
 		uuidSet.add(Language.uuidEnglish);
 		uuidSet.add(Language.uuidFrench);
@@ -106,9 +109,9 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		uuidVocs.put( Language.uuidLanguageVocabulary, uuidSet);
 		Map<UUID, Set<UUID>> notExisting = new HashMap<UUID, Set<UUID>>();
 		Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<UUID, TermVocabulary<?>>();
-        
+
 		dao.missingTermUuids(uuidVocs, notExisting, vocabularyMap);
-		
+
 		//assert missing terms
 		assertEquals(Integer.valueOf(1), Integer.valueOf(notExisting.keySet().size()));
 		assertEquals(Language.uuidLanguageVocabulary, notExisting.keySet().iterator().next());
@@ -117,13 +120,47 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		assertEquals(uuidNotExisting, missingLanguageTerms.iterator().next());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+	@Test
+    public void testTitleCacheCreation() {
+
+	    //prepare
+	    UUID vocUuid = UUID.fromString("a7a2fbe4-3a35-4ec0-b2b2-2298c3ebdf57");
+	    TermVocabulary<?> newVoc = TermVocabulary.NewInstance(TermType.Modifier);
+	    newVoc.setUuid(vocUuid);
+
+	    //default titleCache
+	    dao.save(newVoc);
+	    newVoc.setProtectedTitleCache(true);  //make sure we use the title cache created during save by listeners
+	    String emptyLabel = newVoc.getTitleCache();
+	    //this value may need to be changed when the default cache generation changes
+	    Assert.assertEquals("TitleCache should use default title generation", "TermVocabulary<a7a2fbe4-3a35-4ec0-b2b2-2298c3ebdf57>", emptyLabel);
+
+	    //only German
+	    newVoc.setProtectedTitleCache(false);
+	    Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutsches Label", "Abk.", Language.GERMAN());
+	    newVoc.addRepresentation(newRepresentation);
+	    dao.saveOrUpdate(newVoc);
+	    newVoc.setProtectedTitleCache(true);
+	    Assert.assertEquals("German Label should be new title cache", "Deutsches Label", newVoc.getTitleCache());
+
+	    //German and English
+	    newVoc.setProtectedTitleCache(false);
+        Representation englishRepresentation = Representation.NewInstance("Description", "English Label", "Abbrev.", Language.DEFAULT());
+        newVoc.addRepresentation(englishRepresentation);
+        dao.saveOrUpdate(newVoc);
+        newVoc.setProtectedTitleCache(true);
+        Assert.assertEquals("English Label should be new title cache", "English Label", newVoc.getTitleCache());
+
+        //Remove English
+        newVoc.setProtectedTitleCache(false);
+        newVoc.removeRepresentation(englishRepresentation);
+        dao.saveOrUpdate(newVoc);
+        newVoc.setProtectedTitleCache(true);
+        Assert.assertEquals("German Label should be new title cache again as English representation is not there anymore", "Deutsches Label", newVoc.getTitleCache());
+
+	}
+
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
-	
+    public void createTestDataSet() throws FileNotFoundException {}
+
 }
