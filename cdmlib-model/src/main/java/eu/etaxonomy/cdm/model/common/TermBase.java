@@ -125,7 +125,6 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     public void addRepresentation(Representation representation) {
 //        this.representations.add(representation);
         this.addToSetWithChangeEvent(this.representations, representation, "representations");
-
     }
 
     public void removeRepresentation(Representation representation) {

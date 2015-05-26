@@ -656,9 +656,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //****************** CLONE ************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
-     */
     @Override
     public Object clone() throws CloneNotSupportedException{
         IdentifiableEntity<?> result = (IdentifiableEntity<?>)super.clone();
