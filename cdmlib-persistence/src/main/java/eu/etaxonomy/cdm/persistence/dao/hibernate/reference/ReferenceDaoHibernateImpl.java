@@ -23,7 +23,6 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IInProceedings;
@@ -35,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
@@ -55,7 +55,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	public void rebuildIndex() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-		for(Reference reference : list(null,null)) { // re-index all agents
+		for(Reference<?> reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorship());
 
 			if(reference.getType().equals(ReferenceType.Article)) {
@@ -83,7 +83,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 		Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName());
 
-		List<Object[]> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
 
 		for(Object[] object : result){
 			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (Integer)object[1], (String) object[2]));
@@ -152,24 +153,27 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		return references;
 	}
 
-	@Override
-	public List<Reference> getSubordinateReferences(
-			Reference reference) {
+
+    @Override
+	public List<Reference> getSubordinateReferences(Reference reference) {
 
 		List<Reference> references = new ArrayList();
-		List<Reference> subordinateReferences = new ArrayList();
+		List<Reference> subordinateReferences = new ArrayList<Reference>();
 
 		Query query = getSession().createQuery("select r from Reference r where r.inReference = (:reference)");
 		query.setParameter("reference", reference);
-		references.addAll(query.list());
-		for(Reference ref : references){
+
+		@SuppressWarnings("unchecked")
+	    List<Reference<?>> list = query.list();
+	    references.addAll(list);
+		for(Reference<?> ref : references){
 			subordinateReferences.addAll(getSubordinateReferences(ref));
 		}
 		references.addAll(subordinateReferences);
 		return references;
 	}
 
-	@Override
+    @Override
 	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<OrderHint> orderHints, List<String> propertyPaths) {
 
 		/*
@@ -181,7 +185,6 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		 */
 
 		//TODO implement search in nameDescriptions
-		List<TaxonBase> taxonBaseList = new ArrayList<TaxonBase>();
 		Set<Reference> referenceSet = new HashSet<Reference>();
 		referenceSet.add(reference);
 		if(includeSubordinateReferences){
@@ -235,7 +238,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		query.setParameterList("referenceBase_5", referenceSet);
 		query.setParameterList("referenceBase_6", referenceSet);
 
-		taxonBaseList = query.list();
+		@SuppressWarnings("unchecked")
+        List<TaxonBase> taxonBaseList = query.list();
 
 		defaultBeanInitializer.initializeAll(taxonBaseList, propertyPaths);
 

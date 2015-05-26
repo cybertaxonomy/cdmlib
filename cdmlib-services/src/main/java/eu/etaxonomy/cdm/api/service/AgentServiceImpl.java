@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,9 +29,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -48,23 +48,24 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Transactional(readOnly = true)
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
-	
+
     @Autowired
     ICdmGenericDao genericDao;
 
-	@Autowired
+	@Override
+    @Autowired
 	protected void setDao(IAgentDao dao) {
 		assert dao != null;
 		this.dao = dao;
 	}
-    
+
  	/**
 	 * Constructor
 	 */
 	public AgentServiceImpl(){
 		if (logger.isDebugEnabled()) { logger.debug("Load AgentService Bean"); }
 	}
-	
+
 
 	@Override
 	@Transactional(readOnly = false)
@@ -74,7 +75,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-	
+
 	@Override
 	public List<Institution> searchInstitutionByCode(String code) {
 		return dao.getInstitutionByCode(code);
@@ -83,36 +84,36 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Override
 	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countInstitutionalMemberships(person);
-		
+
 		List<InstitutionalMembership> results = new ArrayList<InstitutionalMembership>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber); 
+			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber);
 		}
-		
+
 		return new DefaultPagerImpl<InstitutionalMembership>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber) {
 		Integer numberOfResults = dao.countMembers(team);
-			
+
 		List<Person> results = new ArrayList<Person>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getMembers(team, pageSize, pageNumber); 
+			results = dao.getMembers(team, pageSize, pageNumber);
 		}
-			
+
 		return new DefaultPagerImpl<Person>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber) {
 		Integer numberOfResults = dao.countAddresses(agent);
-		
+
 		List<Address> results = new ArrayList<Address>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getAddresses(agent, pageSize, pageNumber); 
+			results = dao.getAddresses(agent, pageSize, pageNumber);
 		}
-			
+
 		return new DefaultPagerImpl<Address>(pageNumber, numberOfResults, pageSize, results);
 	}
 
@@ -135,12 +136,12 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache() {
 		return dao.getInstitutionUuidAndTitleCache();
 	}
-	
+
 	@Override
     public DeleteResult delete(AgentBase base){
-    	
+
 		DeleteResult result = this.isDeletable(base, null);
-    	
+
     	if (result.isOk()){
 			if (base instanceof Team){
 				Team baseTeam = (Team) base;
@@ -154,12 +155,12 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 				}
 			}
 			saveOrUpdate(base);
-			
+
 			dao.delete(base);
-			
+
 		}
-		
-		return result;		
+
+		return result;
     }
 
 	@Override
@@ -183,7 +184,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}else{
 			throw new IllegalStateException("Unhandled state of team members collection");
 		}
-		
+
 		return result;
 	}
 
@@ -193,7 +194,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 		strategy.setDefaultMergeMode(MergeMode.SECOND);
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-		
+
 		if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
@@ -207,6 +208,6 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		return team;
 	}
-	
-	
+
+
 }
