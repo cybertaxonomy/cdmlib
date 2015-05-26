@@ -213,18 +213,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return titleCache;
     }
 
-    /**
-     * The titleCache will be regenerated from scratch if not protected
-     * @return <code>true</code> if title cache was regenerated, <code>false</code> otherwise
-     */
-    protected boolean regenerateTitleCache() {
-        if (!protectedTitleCache) {
-            this.titleCache = null;
-            getTitleCache();
-        }
-        return protectedTitleCache;
-    }
-
     @Deprecated
     @Override
     public void setTitleCache(String titleCache){
@@ -347,6 +335,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
     	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
     	return result;
@@ -478,12 +467,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         	}
         }
     }
-    
+
     @Override
     public void removeSources() {
        this.sources.clear();
     }
-    
+
     @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -681,7 +670,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             Extension newExtension = (Extension)extension.clone();
             result.addExtension(newExtension);
         }
-        
+
         //Identifier
         result.identifiers = new ArrayList<Identifier>();
         for (Identifier<?> identifier : getIdentifiers() ){

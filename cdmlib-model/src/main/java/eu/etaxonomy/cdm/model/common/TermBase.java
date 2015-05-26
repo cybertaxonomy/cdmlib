@@ -63,9 +63,9 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
-    
+
 	/**
-	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term} 
+	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
 	 * and in it's {@link TermVocabulary vocabulary}.
 	 */
 	@XmlAttribute(name ="TermType")
@@ -83,12 +83,12 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 
-//******************* CONSTRUCTOR *************************************/    
-    
+//******************* CONSTRUCTOR *************************************/
+
     //for JAXB only, TODO needed?
     @Deprecated
     protected TermBase(){}
-    
+
     protected TermBase(TermType type){
         super();
         if (type == null){
@@ -107,9 +107,9 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     private void initCacheStrategy() {
         this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
     }
-    
+
 //******************** GETTER /SETTER ********************************/
-    
+
 	public TermType getTermType() {
 		return termType;
 	}
@@ -124,14 +124,14 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 
     public void addRepresentation(Representation representation) {
         this.representations.add(representation);
-        // this is just a preliminary solution (see ticket #3148)
-        if(representation.language !=null && representation.language.equals(Language.DEFAULT())){
-        	this.regenerateTitleCache();
-        }
+        //reset titleCache
+        this.titleCache = null;
     }
 
     public void removeRepresentation(Representation representation) {
         this.representations.remove(representation);
+      //reset titlecache
+        this.titleCache = null;
     }
 
     public Representation getRepresentation(Language lang) {
