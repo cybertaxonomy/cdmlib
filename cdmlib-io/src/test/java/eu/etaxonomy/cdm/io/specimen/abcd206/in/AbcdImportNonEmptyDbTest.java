@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 29.01.2009
  * @version 1.0
  */
-public class AbcdImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegrationTest {
+public class AbcdImportNonEmptyDbTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
@@ -79,13 +80,18 @@ public class AbcdImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 	}
 
 	@Test
-    @DataSet( value="SpecimenImportConfiguratorTest.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
+    @DataSet( value="AbcdImportNonEmptyDbTest.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
     public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));
 
+        System.out.println("Show derived units");
+        List<DerivedUnit> specs = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+        for (DerivedUnit name : specs){
+            System.out.println(name.getTitleCache());
+        }
     }
 
     @Override
