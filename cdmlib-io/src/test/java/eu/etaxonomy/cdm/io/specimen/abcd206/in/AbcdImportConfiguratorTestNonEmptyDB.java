@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 29.01.2009
  * @version 1.0
  */
-public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegrationTest {
+public class AbcdImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
@@ -57,7 +57,7 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml";
+		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdImportTestCalvumPart2.xml";
 		URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
         try {
