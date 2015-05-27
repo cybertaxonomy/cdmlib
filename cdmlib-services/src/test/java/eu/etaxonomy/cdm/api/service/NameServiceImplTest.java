@@ -8,10 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
@@ -24,10 +20,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -35,7 +29,6 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -139,24 +132,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
-       
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);
         if (!result.isOk()){
-        	Exception e = result.getExceptions().get(0);
+        	Exception e = result.getExceptions().iterator().next();
         	Assert.assertEquals("The Ecxeption should be a ReferencedObjectException because it is a basionym", "Name can't be deleted as it is a basionym.", e.getMessage());
         } else{
         	Assert.fail();
         }
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
-        nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
+        nameWithBasionym = name1.getNameRelations().iterator().next().getToName();
         nameWithBasionym.removeBasionyms();
-       
+
         result = nameService.delete(name1); //should throw now exception
-        
-        
-        
+
+
+
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -187,26 +180,26 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-       
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1, config);
         if (result.isOk()){
         	Assert.fail("This should throw an error as long as name relationships exist.");
         }
-            
-        
+
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
         //ignore is basionym for
         config.setIgnoreIsBasionymFor(true);
-       
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         nameService.delete(name1,  config);
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
-       
+
     }
 
     /**
@@ -226,27 +219,27 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-       
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1, config);
        if (result.isOk()){
     	   Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
-        
-        
+
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
         //ignore all name relationships
         config.setRemoveAllNameRelationships(true);
-      
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         result = nameService.delete(name1, config);
         logger.debug(result);
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
-        
+
     }
 
     /**
@@ -267,14 +260,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         config.setIgnoreHasBasionym(false);
-       
+
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
        DeleteResult result = nameService.delete(name1, config);
       if (result.isOk()){
     	  Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
-           
-        
+
+
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
@@ -316,11 +309,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //		printDataSet(System.out, tableNames);
 
         //parent
-        
+
          name1 = (NonViralName<?>)nameService.find(name1.getUuid());
          DeleteResult result = nameService.delete(name1);
          if (result.isError()){
-            Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + result.getExceptions().get(0).getMessage());
+            Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + result.getExceptions().iterator().next().getMessage());
         }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -334,7 +327,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
-       
+
         result = nameService.delete(name1);
         if (result.isOk()){
             Assert.fail("Delete should throw an error as long as hybrid child exist.");
@@ -342,12 +335,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         name1.removeHybridChild(child);
-        
+
         result = nameService.delete(name1); //should throw now exception
         if (result.isError()){
-        	Assert.fail("Delete should throw NO exception when deleting a hybrid child: " +result.getExceptions().get(0).getMessage());
+        	Assert.fail("Delete should throw NO exception when deleting a hybrid child: " +result.getExceptions().iterator().next().getMessage());
         }
-       
+
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -356,7 +349,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
-    @Test 
+    @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameBaseInConcept() {
         final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
@@ -371,9 +364,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         taxonService.save(taxon);
         commitAndStartNewTransaction(tableNames);
 
-        
+
         DeleteResult result = nameService.delete(name1);
-           
+
         if (result.isOk()){
         	Assert.fail("Delete should throw an error as long as name is used in a concept.");
         }
@@ -385,10 +378,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         taxon.setName(basionym);
         taxonService.save(taxon);
         nameBase =nameService.find(name1.getUuid());
-       
-        
-        
-       
+
+
+
+
         result = nameService.delete(nameBase); //should throw no exception
         if (result.isError()){
         	Assert.fail("Delete should throw NO error ");
@@ -414,31 +407,31 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         occurrenceService.save(specimen);
         UUID uuidName1 = nameService.save(name1);
-        
+
         commitAndStartNewTransaction(tableNames);
         DeleteResult result = nameService.delete(name1);
         if (result.isOk()){
     	   Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
         }
          commitAndStartNewTransaction(tableNames);
-        
+
         name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNotNull("Name should still be in database",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",name1);
         specimen.setStoredUnder(null);
         occurrenceService.saveOrUpdate(specimen);
-        
+
         nameService.delete(name1); //should throw no exception
-       
-        
+
+
         name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNull("Name should not be in database anymore",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
-        
+
         	occurrenceService.delete(specimen); //this is to better run this test in the test suit
-    	
+
     }
 
     /**
@@ -486,9 +479,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
         taxonService.saveOrUpdate(taxon);
-       
+
         nameService.delete(name1);  //should throw now exception
-    	
+
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -503,7 +496,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-   
+
     public void testDeleteTaxonNameBaseAsType() {
         final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -516,23 +509,23 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean addToAllHomotypicNames = true;
         higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
         nameService.save(higherName);
-       
+
        commitAndStartNewTransaction(tableNames);
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
        DeleteResult result = nameService.delete(name1);
        if (result.isOk()){
     	   Assert.fail("This should throw an error because name is used in a type designation.");
         }
-        
+
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
         higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
-        
+
     	nameService.delete(name1);  //should throw now exception
-       
+
     	commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -547,7 +540,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    
+
     public void testDeleteTaxonNameBase() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -562,7 +555,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);//should throw now exception
-       
+
         setComplete();
         endTransaction();
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -580,7 +573,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        	
+
         nameService.delete(name1);  //should throw now exception
         if (!result.isOk()){
         	Assert.fail();
@@ -607,7 +600,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //		printDataSet(System.out, tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        
+
         result = nameService.delete(name1);  //should throw now exception
         if (!result.isOk()){
         	Assert.fail();
@@ -622,7 +615,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-   
+
     public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -648,9 +641,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        
+
         	nameService.delete(name1);  //should throw now exception
-        
+
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -786,14 +779,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
         name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
         this.nameService.update(name3);
-        
+
         this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
         Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
-        
+
         nameService.deleteTypeDesignation(name3, desig3);
         commitAndStartNewTransaction(tableNames);
-        
+
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -881,7 +874,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 
