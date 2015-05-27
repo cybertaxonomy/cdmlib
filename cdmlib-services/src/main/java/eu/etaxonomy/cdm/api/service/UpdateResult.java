@@ -11,8 +11,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
@@ -90,8 +92,8 @@ public class UpdateResult implements Serializable{
 		 * The highest exception that occurred during delete (if any).
 		 * @return
 		 */
-		public Collection<Exception> getExceptions() {
-			return exceptions;
+		public List<Exception> getExceptions() {
+			return new ArrayList<Exception>(exceptions);
 		}
 		public void addException(Exception exception) {
 			this.exceptions.add(exception);
