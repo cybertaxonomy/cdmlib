@@ -35,9 +35,18 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
+ * This test was formerly used to generally test if an AbcdImport can be run successful
+ * and later it was also used to run import into a prefilled database.
+ * We do now have more specific test classes {@link SpecimenImportConfiguratorTest}
+ * and {@link AbcdGgbnImportTest} which do cover the specific single cases better.
+ *
+ * Also the input data for the test is incomplete so we could just throw it away.
+ * However, as even incomplete and superficial tests sometimes find unexpected errors
+ * we may keep it but not further develop it as long as it does not create larger
+ * problems.
+ *
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
 public class AbcdImportNonEmptyDbTest extends CdmTransactionalIntegrationTest {
 
