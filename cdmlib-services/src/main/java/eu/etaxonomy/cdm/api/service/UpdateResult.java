@@ -38,7 +38,8 @@ public class UpdateResult implements Serializable{
 
 		private Status status = Status.OK;
 
-		private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
+		@SuppressWarnings("unchecked")
+        private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
 
