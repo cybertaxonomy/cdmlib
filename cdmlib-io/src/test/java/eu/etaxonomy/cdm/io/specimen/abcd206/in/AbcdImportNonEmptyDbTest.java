@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -95,12 +94,6 @@ public class AbcdImportNonEmptyDbTest extends CdmTransactionalIntegrationTest {
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 13, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));
-
-        System.out.println("Show derived units");
-        List<DerivedUnit> specs = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-        for (DerivedUnit name : specs){
-            System.out.println(name.getTitleCache());
-        }
     }
 
     @Override
