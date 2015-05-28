@@ -236,8 +236,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
@@ -1243,22 +1243,36 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
         NonViralName<?> parent = hybridRelation.getParentName();
         NonViralName<?> child = hybridRelation.getHybridName();
-
-        if (this.equals(parent) || this.equals(child)){
-            hybridRelation.setHybridName(null);
+        if (this.equals(parent)){
+        	this.hybridParentRelations.remove(hybridRelation);
+        	child.hybridChildRelations.remove(hybridRelation);
+        	hybridRelation.setHybridName(null);
             hybridRelation.setParentName(null);
-
-            if (parent != null) {
-                parent.removeHybridRelationship(hybridRelation);
-            }
-
-            if (child != null) {
-                child.removeHybridRelationship(hybridRelation);
-            }
-
-            this.hybridChildRelations.remove(hybridRelation);
-            this.hybridParentRelations.remove(hybridRelation);
+        	
         }
+        if (this.equals(child)){
+        	parent.hybridParentRelations.remove(hybridRelation);
+        	this.hybridChildRelations.remove(hybridRelation);
+        	hybridRelation.setHybridName(null);
+            hybridRelation.setParentName(null);
+        	
+        }
+        
+//        if (this.equals(parent) || this.equals(child)){
+//            hybridRelation.setHybridName(null);
+//            hybridRelation.setParentName(null);
+//
+//            if (parent != null) {
+//                parent.removeHybridRelationship(hybridRelation);
+//            }
+//
+//            if (child != null) {
+//                child.removeHybridRelationship(hybridRelation);
+//            }
+//            
+//            this.hybridChildRelations.remove(hybridRelation);
+//            this.hybridParentRelations.remove(hybridRelation);
+//        }
     }
 
 
@@ -1281,7 +1295,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(parent) && hybridRelationship.getHybridName().equals(this)) {
-                this.removeHybridRelationship(hybridRelationship);
+            	this.removeHybridRelationship(hybridRelationship);
             }
         }
     }
