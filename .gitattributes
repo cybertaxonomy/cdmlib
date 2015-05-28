@@ -520,7 +520,6 @@ cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/defaultIoApplicationContext.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.properties -text
-cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/excel/ExcelImportMapping.properties -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/mapping/lifeStageToGbif.tsv -text
 cdmlib-io/src/main/resources/mapping/nameTypeStatusToGbif.tsv -text
