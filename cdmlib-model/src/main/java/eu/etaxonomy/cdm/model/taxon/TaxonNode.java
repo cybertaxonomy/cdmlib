@@ -145,13 +145,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlElement(name = "countChildren")
     private int countChildren;
 
-    @XmlElementWrapper(name = "nodeAgents")
-    @XmlElement(name = "nodeAgent")
+    @XmlElementWrapper(name = "agentRelations")
+    @XmlElement(name = "agentRelation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    private Set<TaxonNodeAgentRelation> agents = new HashSet<TaxonNodeAgentRelation>();
+    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<TaxonNodeAgentRelation>();
 
 
 //	private Taxon originalConcept;
@@ -296,16 +296,26 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.parent = parent;
     }
 
-    public TaxonNodeAgentRelation addNodeAgent(TaxonNode taxonNode, TeamOrPersonBase<?> agent, DefinedTerm type){
-        TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(taxonNode, agent, type);
+// ****************** Agent Relations ****************************/
+
+
+    /**
+     * @return
+     */
+    public Set<TaxonNodeAgentRelation> getAgentRelations() {
+        return this.agentRelations;
+    }
+
+    public TaxonNodeAgentRelation addAgentRelation(DefinedTerm type, TeamOrPersonBase<?> agent){
+        TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(this, agent, type);
         return result;
     }
     /**
      * @param nodeAgentRelation
      */
-    protected void addAgent(TaxonNodeAgentRelation agentRelation) {
+    protected void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
-        this.agents.add(agentRelation);
+        this.agentRelations.add(agentRelation);
     }
 
     /**
@@ -313,10 +323,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     public void removeNodeAgent(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
-        agents.remove(agentRelation);
+        agentRelations.remove(agentRelation);
     }
 
-
+//********************
 
     //synonymToBeused
     public Synonym getSynonymToBeUsed() {
@@ -848,9 +858,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             result.countChildren = 0;
 
             //agents
-            result.agents = new HashSet<TaxonNodeAgentRelation>();
-            for (TaxonNodeAgentRelation rel : this.agents){
-                result.addAgent((TaxonNodeAgentRelation)rel.clone());
+            result.agentRelations = new HashSet<TaxonNodeAgentRelation>();
+            for (TaxonNodeAgentRelation rel : this.agentRelations){
+                result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
             }
 
             return result;
@@ -860,4 +870,5 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return null;
         }
     }
+
 }

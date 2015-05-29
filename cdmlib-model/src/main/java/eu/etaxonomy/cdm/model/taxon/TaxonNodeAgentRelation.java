@@ -82,7 +82,7 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
         result.taxonNode = taxonNode;
         result.agent = agent;
         result.setType(type);
-        taxonNode.addAgent(result);
+        taxonNode.addAgentRelation(result);
         return result;
     }
 
@@ -108,7 +108,7 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
         return type;
     }
     public void setType(DefinedTerm type) {
-        if (type.getTermType() != TermType.TaxonNodeAgentRelationType){
+        if (type != null && type.getTermType() != TermType.TaxonNodeAgentRelationType){
             throw new IllegalArgumentException("Only TaxonNode Agent Relation Type terms are allowed as TaxonNodeAgentRelation.type");
         }
         this.type = type;
