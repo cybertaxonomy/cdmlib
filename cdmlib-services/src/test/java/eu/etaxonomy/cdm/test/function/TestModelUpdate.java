@@ -33,13 +33,13 @@ public class TestModelUpdate {
 
 
 	private void testMySQL(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
-//		database = "campanula_test";
+//		database = "cdm36";
 		String username = "edit";
 		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
