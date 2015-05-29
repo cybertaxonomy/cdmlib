@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -70,12 +69,12 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
-import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author pkelbert
@@ -111,10 +110,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     private MyName currentMyName;
 
     private Reference<?> sourceUrlRef;
-    
+
     private String followingText;  //text element immediately following a tax:name in tax:nomenclature TODO move do state
     private String usedFollowingTextPrefix; //the part of the following text which has been used during taxon name creation
-    
+
     private final TaxonXAddSources sourceHandler = new TaxonXAddSources();
 
     /**
@@ -176,7 +175,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	private Taxon handleSingleNode(Reference<?> refMods, URI sourceName,
 			List<TaxonNameBase> namesToSave, Node child, Taxon acceptedTaxon) {
 		Taxon defaultTaxon =null;
-        
+
 		String nodeName = child.getNodeName();
 		if (nodeName.equalsIgnoreCase("tax:nomenclature")){
 		    NodeList nomenclatureChildren = child.getChildNodes();
@@ -653,7 +652,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         sourceHandler.addAndSaveSource(refMods, derivedUnitBase);
 
         TaxonDescription taxonDescription = importer.getTaxonDescription(acceptedTaxon, false, true);
-        
+
         Feature feature=null;
         feature = makeFeature(derivedUnitBase);
         if(!StringUtils.isEmpty(descr)) {
@@ -868,7 +867,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
 
         sourceHandler.addAndSaveSource(refMods, derivedUnitBase);
-        
+
         //TODO this may not always be correct, ask user
         TaxonNameBase<?,?> typifiableName = acceptedTaxon != null ?  acceptedTaxon.getName() : null;
         myspecimenOrObservation = extractSpecimenOrObservation(event,derivedUnitBase,SpecimenOrObservationType.DerivedUnit, typifiableName);
@@ -878,7 +877,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         sourceHandler.addAndSaveSource(refMods, derivedUnitBase);
 
         TaxonDescription taxonDescription = importer.getTaxonDescription(acceptedTaxon, false, true);
-        
+
         Feature feature = makeFeature(derivedUnitBase);
         featuresMap.put(feature.getTitleCache(),feature);
         if(!StringUtils.isEmpty(descr)) {
@@ -895,7 +894,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
 
     /**
-     * @param currentName 
+     * @param currentName
      * @param materials: the XML node group
      * @param acceptedTaxon: the current accepted Taxon
      * @param refMods: the current reference extracted from the MODS
@@ -1315,7 +1314,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     }else{
                     	logger.warn("node not handled yet: " + insideNodes.item(j).getNodeName());
                     }
-                
+
                 }
                 if (!StringUtils.isBlank(StringUtils.join(blabla," "))) {
                     fullDescription.add(StringUtils.join(blabla," "));
@@ -1379,14 +1378,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void setParticularDescription(String descr, Taxon acceptedTaxon, Taxon defaultTaxon, Reference<?> refMods, Feature currentFeature) {
         logger.info("setParticularDescription " + currentFeature.getTitleCache()+", \n blabla : "+descr);
-        
+
         //remove redundant feature title
         String featureStr = currentFeature.getTitleCache();
         if (!descr.isEmpty() && descr.toLowerCase().startsWith(featureStr.toLowerCase())){
         	descr = descr.replaceAll("(?i)" + featureStr + "\\.\\s*", "");
-        }	
+        }
 
-        
+
         acceptedTaxon = CdmBase.deproxy(acceptedTaxon, Taxon.class);
         featuresMap.put(currentFeature.getTitleCache(),currentFeature);
 
@@ -1548,12 +1547,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
             }
         }
-       
+
         for(MyName name:names){
         	TaxonNameBase nameToBeFilled = name.getTaxonNameBase();
             Synonym synonym = name.getSyno();
             addFollowingTextToName(nameToBeFilled, followingText);
-            
+
             /* INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
             nameToBeFilled = parser.parseFullName(name.getName(), nomenclaturalCode, name.getRank());
             if (nameToBeFilled.hasProblem() &&
@@ -1590,7 +1589,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     private boolean addFollowingTextToName(TaxonNameBase nameToBeFilled, String followingText) {
     	if (nameToBeFilled != null && StringUtils.isNotBlank(followingText)){
     		if (! followingText.matches("\\d\\.?")){
-    		
+
 	    		if (followingText.startsWith(",")){
 	    			followingText = followingText.substring(1).trim();
 	    		}
@@ -1599,7 +1598,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     		return true;
     	}
     	return false;
-		
+
 	}
 
 	/**
@@ -1724,7 +1723,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             	   String nomNovStatus = this.newNameStatus(currentMyName.getStatus());
 	               	if (nomNovStatus != null){
 	               		nameToBeFilled.setAppendedPhrase(nomNovStatus);
-	               	}else{ 
+	               	}else{
 	            	   try {
 	                        NomenclaturalStatusType  statusType = nomStatusString2NomStatus(currentMyName.getStatus());
                             nameToBeFilled.addStatus(NomenclaturalStatus.NewInstance(statusType));
@@ -2047,7 +2046,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         for (int i=0;i<children.getLength();i++){
             if(children.item(i).getNodeName().equalsIgnoreCase("tax:status")){
                 String status = children.item(i).getTextContent().trim();
-                
+
                 if (!status.isEmpty()){
                 	if (newNameStatus(status) != null){
                 		newNameStatus = newNameStatus(status);
@@ -2067,12 +2066,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         boolean containsSynonyms=false;
         boolean wasSynonym = false;
         usedFollowingTextPrefix = null;  //reset
-    	
+
         for (int i=0; i<children.getLength(); i++){
         	Node childNode = children.item(i);
         	String childName = childNode.getNodeName();
-        	
-        	
+
+
         	//following text
         	followingText = null;
         	if ( i + 1 < children.getLength()){
@@ -2081,7 +2080,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             		followingText = followingTextNode.getTextContent();
             	}
         	}
-        	
+
         	//traverse nodes
             if (childName.equalsIgnoreCase("#text")) {
                 freetext = childNode.getTextContent().trim();
@@ -2097,7 +2096,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 //System.out.println("HANDLE FIRST NAME OF THE LIST");
                 if(!containsSynonyms){
                 	wasSynonym = false;
-                    
+
                 	//System.out.println("I : "+i);
                     currentMyName = new MyName(false);
                     try {
@@ -2186,7 +2185,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 //System.out.println("SET SECUNDUM "+configState.getConfig().getSecundum());
                             }
                             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
-                            
+
                             if (!sourcelinked){
                                 sourceHandler.addSource(refMods, acceptedTaxon);
                             }
@@ -2207,7 +2206,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     try{
                         extractSynonyms(childNode, acceptedTaxon, refMods, followingText);
                         wasSynonym = true;
-                        
+
                     }catch(NullPointerException e){
                         logger.warn("null pointer exception, the accepted taxon might be null");
                     }
@@ -2219,11 +2218,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 extractReferences(childNode,nametosave,acceptedTaxon,refMods);
             }else if (childName.equalsIgnoreCase("tax:bibref")){
             	logger.warn(childName + " still preliminary");
-            	
+
             	NonViralName<?> currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
             	boolean handled = addFollowingTextToName (currentName, childNode.getTextContent() );
             	if (! handled){
-            		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());	
+            		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
             	}
             }else{
             	logger.warn(childName + " not yet handled");
@@ -2236,10 +2235,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 		handled = addFollowingTextToName (currentName, childNode.getTextContent() );
                 	}
                 	if (! handled){
-                		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());	
+                		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
                 	}
                 }
-            
+
                  freetext = "";
             }
 
@@ -2247,7 +2246,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         //importer.getClassificationService().saveOrUpdate(classification);
         return acceptedTaxon;
     }
-    
+
 
 
 
@@ -2624,7 +2623,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private TaxonNameBase<?,?> parseWithExtension(INonViralNameParser parser, String atomisedNameStr, Rank rank, String followingText, HashMap<String, String> atomisedMap) {
     	Object[] nameExtensionResult = getPossibleExtension(followingText, atomisedMap, nomenclaturalCode);
-    	
+
     	TaxonNameBase<?,?> name = parser.parseFullName(atomisedNameStr, nomenclaturalCode, rank);
     	if (nameExtensionResult != null && nameExtensionResult[0] != null){
     		String ext = (String)nameExtensionResult[0];
@@ -2652,7 +2651,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 		if (StringUtils.isBlank(followingText)){
 			return null;
 		}
-    	
+
     	boolean includeAuthor = true;
     	boolean includeYear = false;
 		if (atomisedMap.containsKey("dwc:scientificnameauthorship")){
@@ -2676,7 +2675,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     			match = matcher.group();
     		}
     	}
-    	
+
 		return new Object[]{match, includeAuthor, includeYear};
 	}
 
@@ -2915,7 +2914,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             n=n.trim();
             String author = myname.getAuthor();
             if(n.split(" ").length>2){
-            
+
                 String n2=n.split(" ")[0]+" "+n.split(" ")[1];
                 String a= "";
                 try{
@@ -3007,7 +3006,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	            n=n.trim();
 	            String author = myname.getAuthor();
 	            if(n.split(" ").length>2){
-	            	
+
 	                String n2=n.split(" ")[0]+" "+n.split(" ")[1];
 	                String a="";
 	                try{
@@ -3016,7 +3015,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	                myname.setAuthor(a);
 	                //System.out.println("FINDCREATESPECIES --"+n2+"--"+n+"**"+a+"##");
 	                n=n2;
-	
+
 	            }
 	            Taxon species = myname.findOrCreateTaxon(atomisedMap.get("dwc:species"),n, Rank.SPECIES(),rank);
 	            myname.setSpecies(species);
@@ -3037,10 +3036,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
 
     }
-    
+
 
     /**
-     * @param refMods 
+     * @param refMods
      * @see #createUnparsedSynonym(Rank, String, HashMap, MyName)
      * the original TaxonXImport extracted Synonyms by creating acc Taxa with partial names
      * I (AM) do not understand this but don't want to destroy code which maybe works in some cases) there
@@ -3049,13 +3048,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void createUnparsedSynonymNew(Rank rank, String newName, HashMap<String, String> atomisedMap, MyName myname, Reference<?> refMods) {
         logger.info("createSynonym");
-        
+
         NonViralName<?> nameToBeFilled = this.getNonViralNameAccNomenclature();
         //System.out.println("createsynonym");
         if(rank.equals(Rank.UNKNOWN_RANK())){
-            //TODO 
+            //TODO
         	myname.setNotParsableTaxon(newName);
-        	
+
         	nameToBeFilled.setTitleCache(newName, true);
         }else{
         	if(atomisedMap.get("dwc:genus") != null ){
@@ -3104,7 +3103,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         	myname.setSynonym(true);
         }
 	}
-    
+
     /**
      * @param rank
      * @param newName
@@ -3217,7 +3216,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     @SuppressWarnings("rawtypes")
     public NonViralName<?> castTaxonNameBase(TaxonNameBase tnb, NonViralName<?> nvn) {
-        
+
     	//logger.info("castTaxonNameBase");
         NonViralName<?> taxonnamebase2 = nvn;
         if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)) {
@@ -3487,7 +3486,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         public String getVarietyStr() {
             return varietyStr;
         }
-        
+
         public Integer getPublicationYear() {
 			return publicationYear;
 		}
@@ -3588,7 +3587,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     }
                 }
             }
-            
+
             tmpTaxonBase = CdmBase.deproxy(tmpTaxonBase, TaxonBase.class);
             if (author != null) {
                 if (!getIdentifier().isEmpty() && (getIdentifier().length()>2)){
@@ -3598,7 +3597,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             }
             TaxonNameBase<?,?> tnb = CdmBase.deproxy(tmpTaxonBase.getName(), TaxonNameBase.class);
-            
+
             if(!isSynonym) {
                 this.taxon=(Taxon)tmpTaxonBase;
             } else {
@@ -3607,7 +3606,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             	this.syno=(Synonym)tmpTaxonBase;
             }
-            
+
             taxonNameBase = castTaxonNameBase(tnb, taxonNameBase);
 
         }
@@ -3801,7 +3800,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 			if (! compare){
 				return false;
 			}
-			
+
 			if (nodeName.getNameCache() != null && nodeName.getNameCache().equals(newName.getNameCache())){
 				if (nodeName.getNameCache().equals(nodeName.getTitleCache())){
 					if (newName.getNameCache().length() < newName.getTitleCache().length()){
@@ -3810,7 +3809,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 					}
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -3830,9 +3829,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 //                return higherTaxon;
             }
             //add the relation to the highertaxon, except if the current rank to add IS the maxRank
-            
+
             //TODO higher Ranks
-            
+
             if(hierarchy.containsKey(Rank.FAMILY()) && !state2.getConfig().getMaxRank().equals(Rank.FAMILY())){
                 higherTaxon=saveAndGetHigherTaxon(Rank.FAMILY(),higherTaxon);
             }
@@ -4120,7 +4119,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                     importer.getClassificationService().saveOrUpdate(classification);
                 }
-                
+
             }
 
             tmp = CdmBase.deproxy(tmp, Taxon.class);
@@ -4136,7 +4135,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
             return tmp;
         }
-        
+
         /**
          * @param tnb
          * @return
@@ -4398,7 +4397,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         private Taxon buildGenus(String partialname, NonViralName<?> tnb) {
             Taxon tmp;
             tnb.setGenusOrUninomial(partialname);
-            
+
 
             tmp = findMatchingTaxon(tnb,refMods);
             if(tmp ==null){
@@ -4523,7 +4522,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (currentlsid !=null){
                         if (currentlsid.getLsid().equals(lsid.getLsid())){
                             try{
-                                return (Taxon) t;
+                                return t;
                             }
                             catch(Exception e){logger.warn("Exception occurred while comparing LSIDs "+e );}
                         }
@@ -4917,7 +4916,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     	if (tnb.getTitleCache() == null){
     		tnb.setTitleCache(tnb.toString(), tnb.isProtectedTitleCache());
     	}
-    	
+
         Pager<TaxonBase> pager=importer.getTaxonService().findByTitle(TaxonBase.class, tnb.getTitleCache().split("sec.")[0].trim(), MatchMode.BEGINNING, null, null, null, null, null);
         List<TaxonBase>records = pager.getRecords();
 
@@ -5241,7 +5240,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if(parentDoesNotExist) {
                 Taxon tmp = findMatchingTaxon(parentNameName,ref);
                 if(tmp ==null){
-                
+
                     parent=Taxon.NewInstance(parentNameName, ref);
                     importer.getTaxonService().save(parent);
                     parent = CdmBase.deproxy(parent, Taxon.class);

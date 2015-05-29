@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public aspect PropertyChangeAspect {
 	static Logger logger = Logger.getLogger(PropertyChangeAspect.class);
 	
-//	pointcut execAdder(CdmBase cb): target(cb) && execution(void CdmBase+.add*(..) );
+//	pointcut execAdder(CdmBase cb): target(cb) && execution(void CdmBase+.add*(..) );  //once implemented we may want to remove addToSetWithChangeEvent and remove... from CdmBase
 	
 	pointcut execSetter(CdmBase cb): target(cb) && execution(void CdmBase+.set*(..) );
 //	/** *********** OLD ***********************/
@@ -79,48 +79,49 @@ public aspect PropertyChangeAspect {
 	}
 
 
-		/**
-		 * @param signature
-		 * Return the Field object that belongs to the signature of a setter method
-		 * If no matching attribute can be found return null instead of throwing an NoSuchFieldException
-		 * Removes first 3 characters of method name to find property name
-		 */
-		private Field getFieldOfSetter( Signature signature ){
-			Field field = null;
-			String propertyName = "";
-			//logger.debug( "Getting the field name of setter ["+signature.getName() + "]" );
+	/**
+	 * @param signature
+	 * Return the Field object that belongs to the signature of a setter method
+	 * If no matching attribute can be found return null instead of throwing an NoSuchFieldException
+	 * Removes first 3 characters of method name to find property name
+	 */
+	private Field getFieldOfSetter( Signature signature ){
+		Field field = null;
+		String propertyName = "";
+		//logger.debug( "Getting the field name of setter ["+signature.getName() + "]" );
+		try{
+			String methodName = signature.getName();
+			propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+			field = signature.getDeclaringType().getDeclaredField( propertyName );
+		}catch( NoSuchFieldException e ){
 			try{
-				String methodName = signature.getName();
-				propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+				propertyName = "is"+propertyName.substring(0, 1).toUpperCase()+ propertyName.substring(1);
 				field = signature.getDeclaringType().getDeclaredField( propertyName );
-			}catch( NoSuchFieldException e ){
-				try{
-					propertyName = "is"+propertyName.substring(0, 1).toUpperCase()+ propertyName.substring(1);
-					field = signature.getDeclaringType().getDeclaredField( propertyName );
-				}catch( NoSuchFieldException nsfe ){
-					// can't find any matching attribute. catch error and return null
-					return null;
-				}
+			}catch( NoSuchFieldException nsfe ){
+				// can't find any matching attribute. catch error and return null
+				return null;
 			}
-			return field;
-		}	
-		/**
-		 * Fires a propertyChange Event
-		 * @param cb  CdmBase that fires that Event
-		 * @param property the property's name
-		 * @param oldval the old value
-		 * @param newval the new value
-		  */
-		void fireLoggingPropertyChange( CdmBase cb,
-				String property,
-				Object oldval,
-				Object newval) {
-
-			//logger.debug( "PropertyChangeEvent: property [" + property + "], old value [" + oldval + "], new value [" + newval + "]");
-			// call firePropertyChange in original class. Method defined in CdmBase superclass!
-			cb.firePropertyChange( property,
-					( oldval == null ) ? oldval : oldval.toString(),
-					( newval == null ) ? newval : newval.toString());
 		}
+		return field;
+	}
+		
+	/**
+	 * Fires a propertyChange Event
+	 * @param cb  CdmBase that fires that Event
+	 * @param property the property's name
+	 * @param oldval the old value
+	 * @param newval the new value
+	  */
+	void fireLoggingPropertyChange( CdmBase cb,
+			String property,
+			Object oldval,
+			Object newval) {
+
+		//logger.debug( "PropertyChangeEvent: property [" + property + "], old value [" + oldval + "], new value [" + newval + "]");
+		// call firePropertyChange in original class. Method defined in CdmBase superclass!
+		cb.firePropertyChange( property,
+				( oldval == null ) ? oldval : oldval.toString(),
+				( newval == null ) ? newval : newval.toString());
+	}
 		
 }

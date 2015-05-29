@@ -173,7 +173,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalFullName(NonViralName<?> nameToBeFilledOrig){
+	private String getLocalFullNameRegEx(NonViralName<?> nameToBeFilledOrig){
 	    NonViralName<?> nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilledOrig, NonViralName.class);
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
@@ -228,7 +228,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    nameToBeFilled.setProblemEnds(fullReferenceString.length());
 
 	    //get full name reg
-		String localFullName = getLocalFullName(nameToBeFilled);
+		String localFullName = getLocalFullNameRegEx(nameToBeFilled);
 		//get full name reg
 		String localSimpleName = getLocalSimpleName(nameToBeFilled);
 
@@ -276,7 +276,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 
-		String localFullName = getLocalFullName(nameToBeFilled);
+		String localFullName = getLocalFullNameRegEx(nameToBeFilled);
 		Matcher fullNameMatcher = getMatcher (pStart + localFullName, fullReferenceString);
 		if (fullNameMatcher.find()){
 			String fullNameString = fullNameMatcher.group(0);
@@ -933,7 +933,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    //hybrid bits
 		    handleHybridBits(nameToBeFilled);
 		    if (!nameToBeFilled.isHybridFormula()){
-		        nameToBeFilled.getHybridChildRelations().clear();
+		        Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
+		        hybridChildRelations.addAll(nameToBeFilled.getHybridChildRelations());
+		        
+		        for (HybridRelationship hybridRelationship: hybridChildRelations){
+		        	nameToBeFilled.removeHybridRelationship(hybridRelationship);
+		        }
 		    }
 
 			//authors

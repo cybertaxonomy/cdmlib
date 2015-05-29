@@ -8,12 +8,14 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author n.hoffmann

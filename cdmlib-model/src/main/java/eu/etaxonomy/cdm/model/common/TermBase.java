@@ -63,9 +63,9 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
-    
+
 	/**
-	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term} 
+	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
 	 * and in it's {@link TermVocabulary vocabulary}.
 	 */
 	@XmlAttribute(name ="TermType")
@@ -83,12 +83,12 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 
-//******************* CONSTRUCTOR *************************************/    
-    
+//******************* CONSTRUCTOR *************************************/
+
     //for JAXB only, TODO needed?
     @Deprecated
     protected TermBase(){}
-    
+
     protected TermBase(TermType type){
         super();
         if (type == null){
@@ -107,9 +107,9 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     private void initCacheStrategy() {
         this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
     }
-    
+
 //******************** GETTER /SETTER ********************************/
-    
+
 	public TermType getTermType() {
 		return termType;
 	}
@@ -123,15 +123,13 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     }
 
     public void addRepresentation(Representation representation) {
-        this.representations.add(representation);
-        // this is just a preliminary solution (see ticket #3148)
-        if(representation.language !=null && representation.language.equals(Language.DEFAULT())){
-        	this.regenerateTitleCache();
-        }
+//        this.representations.add(representation);
+        this.addToSetWithChangeEvent(this.representations, representation, "representations");
     }
 
     public void removeRepresentation(Representation representation) {
-        this.representations.remove(representation);
+//        this.representations.remove(representation);
+        this.removeFromSetWithChangeEvent(this.representations, representation, "representations");
     }
 
     public Representation getRepresentation(Language lang) {
@@ -204,9 +202,6 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         this.uri = uri;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel()
-     */
     @Transient
     public String getLabel() {
         if(getLabel(Language.DEFAULT())!=null){
@@ -220,9 +215,6 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         return super.getUuid().toString();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel(eu.etaxonomy.cdm.model.common.Language)
-     */
     public String getLabel(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null : repr.getLabel();
@@ -245,17 +237,11 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription()
-     */
     @Transient
     public String getDescription() {
         return this.getDescription(Language.DEFAULT());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription(eu.etaxonomy.cdm.model.common.Language)
-     */
     public String getDescription(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null :repr.getDescription();

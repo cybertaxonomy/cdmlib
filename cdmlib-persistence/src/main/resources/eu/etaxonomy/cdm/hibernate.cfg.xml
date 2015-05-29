@@ -35,6 +35,12 @@
           in your hibernate configuration, using hibernate-specific configuration keys.
           All other properties must be defined as usual in a c3p0.properties file.
           This is confusing, and will hopefully be simplified some time in the future, but for now...
+          
+          DOCUMENTATION UPDATE (2015-05-22):
+          Hibernate's C3P0ConnectionProvider renames 7 c3p0 configuration properties, which, 
+          if set in your hibernate configuration, will override any configuration you may have set 
+          in a c3p0.properties file.
+          TODO: are points (2) and (3) still valid? I don't think so! (AK)
 
             hibernate.c3p0.acquire_increment
 			hibernate.c3p0.idle_test_period

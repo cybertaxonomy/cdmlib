@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Primer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner
@@ -29,5 +29,4 @@ public interface IPrimerService extends IAnnotatableService<Primer>{
      * @return a list of {@link UuidAndTitleCache}
      */
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache();
-
 }

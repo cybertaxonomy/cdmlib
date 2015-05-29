@@ -27,24 +27,21 @@ import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -58,7 +55,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * If name is <code>null</code> this method has no effect.
 	 * @param name
 	 * @param config
-	 * 
+	 *
 	 */
 	public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
 
@@ -157,18 +154,18 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 */
 	public List getNamesByName(String name, CdmBase sessionObject);
-	
+
 	/**
 	 * Fuzzy matching for the taxon name elements. The input name is first atomised using the {@link NonViralNameParserImpl}
 	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
 	 * Each field is then matched separately with the same accuracy parameter.
-	 *  
+	 *
 	 * @param name taxon name to fuzzy match
 	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
 	 * @param languages list of languages to consider when matching (currently not used)
 	 * @param highlightFragments
-	 * @param propertyPaths 
-	 * @param maxNoOfResults 
+	 * @param propertyPaths
+	 * @param maxNoOfResults
 	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -178,22 +175,22 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             String name,
             float accuracy,
             List<Language> languages,
-            boolean highlightFragments, 
+            boolean highlightFragments,
             List<String> propertyPaths,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
-	
+
 	/**
-	 * Fuzzy matching for the taxon name elements using only the lucene index. 
-	 * 
+	 * Fuzzy matching for the taxon name elements using only the lucene index.
+	 *
 	 * The input name is first atomised using the {@link NonViralNameParserImpl}
 	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
 	 * Each field is then matched separately with the same accuracy parameter.
-	 *  
+	 *
 	 * @param name taxon name to fuzzy match
 	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
 	 * @param languages list of languages to consider when matching (currently not used)
 	 * @param highlightFragments
-	 * @param maxNoOfResults 
+	 * @param maxNoOfResults
 	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -203,18 +200,18 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             String name,
             float accuracy,
             List<Language> languages,
-            boolean highlightFragments, 
+            boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
-    
+
 	/**
-	 * Fuzzy matching against the name cache using only the lucene index. 
-	 * 
-	 *  
+	 * Fuzzy matching against the name cache using only the lucene index.
+	 *
+	 *
 	 * @param name taxon name to fuzzy match
 	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
 	 * @param languages list of languages to consider when matching (currently not used)
 	 * @param highlightFragments
-	 * @param maxNoOfResults 
+	 * @param maxNoOfResults
 	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -224,32 +221,32 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             String name,
             float accuracy,
             List<Language> languages,
-            boolean highlightFragments, 
+            boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
-    
+
 	/**
 	 * Exact matching for the taxon name elements using only the lucene index.
-	 * 
+	 *
 	 * The input name is first atomised using the {@link NonViralNameParserImpl}
 	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
 	 * Each field is then matched separately with the same accuracy parameter.
-	 *  
+	 *
 	 * @param name taxon name to fuzzy match
 	 * @param wildcard boolean flag to indicate whether a wildcard '*' should be added at the end of the query
 	 * @param languages list of languages to consider when matching (currently not used)
 	 * @param highlightFragments
-	 * @param maxNoOfResults 
+	 * @param maxNoOfResults
 	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-    
+
     public List<DocumentSearchResult> findByNameExactSearch(
-            String name,      
+            String name,
             boolean wildcard,
             List<Language> languages,
-            boolean highlightFragments, 
+            boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
 
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.

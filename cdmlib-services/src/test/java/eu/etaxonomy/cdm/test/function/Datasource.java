@@ -37,14 +37,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -73,9 +68,9 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 		String server = "localhost";
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm34" : "cdm341");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
 		database = "testCategoricalData";
-		database = "350_editor_test";
+//		database = "350_editor_test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -128,18 +123,18 @@ public class Datasource {
 //		ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
 //		valMan.registerValidationListeners();
 
-		State state = State.NewInstance();
-		Taxon taxon = Taxon.NewInstance(null, null);
-		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
-//		CategoricalData catData = CategoricalData.NewInstance(state, Feature.HABITAT());
-		QuantitativeData quantData = QuantitativeData.NewInstance(Feature.ANATOMY());
-		StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.AVERAGE(), 2);
-		quantData.addStatisticalValue(statisticalValue);
-		desc.addElement(quantData);
+//		State state = State.NewInstance();
+//		Taxon taxon = Taxon.NewInstance(null, null);
+//		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+////		CategoricalData catData = CategoricalData.NewInstance(state, Feature.HABITAT());
+//		QuantitativeData quantData = QuantitativeData.NewInstance(Feature.ANATOMY());
+//		StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.AVERAGE(), 2);
+//		quantData.addStatisticalValue(statisticalValue);
+//		desc.addElement(quantData);
 
-		appCtr.getTermService().saveOrUpdate(state);
-
-		appCtr.getTaxonService().save(taxon);
+//		appCtr.getTermService().saveOrUpdate(state);
+//
+//		appCtr.getTaxonService().save(taxon);
 
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
