@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
@@ -441,13 +442,21 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 
     //35
     /**
-     * DNA Quality levels link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
+     * DNA Quality levels {link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
      * But also local identifier types such Sample Designation, Catalog Number,
      * Accession Number, ... are allowed.
      * {@link DnaQu}
      */
     @XmlEnumValue("DnaQualityType")
-    DnaQualityType(UUID.fromString("55746f7b-78a8-4e5f-8e70-ee9ce047c835"), "DNA Quality Type", "DQT", null),
+    DnaQualityType(UUID.fromString("18049372-56e6-4d45-85fc-6a403fecb881"), "DNA Quality Type", "DQT", null),
+
+    //36
+    /**
+     * {@link TaxonNodeAgentRelation#getType() TaxonNode Agent Relation Type}.
+     * The role an agent plays for a taxon node (classification subtree).
+     */
+    @XmlEnumValue("DnaQualityType")
+    TaxonNodeAgentRelationType(UUID.fromString("8e28881a-0744-41ff-a5ed-31246125c424"), "TaxonNode Agent Relation Type", "TART", null),
 
     ;
 
@@ -538,6 +547,5 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
                 return null;
         }
     }
-
 
 }

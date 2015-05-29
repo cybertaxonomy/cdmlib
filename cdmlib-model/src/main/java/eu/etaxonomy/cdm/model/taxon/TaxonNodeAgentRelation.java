@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +30,7 @@ import org.springframework.security.core.GrantedAuthority;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * This class relates a TaxonNode (Taxon within it's given publication context)
@@ -58,6 +60,7 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //the
+    @NotNull
     private TaxonNode taxonNode;
 
     @XmlElement(name = "Agent")
@@ -65,6 +68,7 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @NotNull
     private TeamOrPersonBase<?> agent;
 
     @XmlElement(name = "Type")
@@ -73,14 +77,23 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private DefinedTerm type;
 
-    private TaxonNodeAgentRelation(){};
+    protected static TaxonNodeAgentRelation NewInstance(TaxonNode taxonNode, TeamOrPersonBase<?> agent, DefinedTerm type){
+        TaxonNodeAgentRelation result = new TaxonNodeAgentRelation();
+        result.taxonNode = taxonNode;
+        result.agent = agent;
+        result.setType(type);
+        taxonNode.addAgent(result);
+        return result;
+    }
+
+    private TaxonNodeAgentRelation(){}
 
 //********************* GETTER / SETTER **********************/
 
     public TaxonNode getTaxonNode() {
         return taxonNode;
     }
-    public void setTaxonNode(TaxonNode taxonNode) {
+    protected void setTaxonNode(TaxonNode taxonNode) {
         this.taxonNode = taxonNode;
     }
 
@@ -95,7 +108,19 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
         return type;
     }
     public void setType(DefinedTerm type) {
+        if (type.getTermType() != TermType.TaxonNodeAgentRelationType){
+            throw new IllegalArgumentException("Only TaxonNode Agent Relation Type terms are allowed as TaxonNodeAgentRelation.type");
+        }
         this.type = type;
+    }
+
+//************************ to String **********************************/
+
+
+    @Override
+    public String toString() {
+        return "TaxonNodeAgentRelation [taxonNode=" + taxonNode +
+                ", agent=" + agent + ", type=" + type + "]";
     }
 
 

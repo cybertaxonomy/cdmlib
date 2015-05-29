@@ -1145,6 +1145,7 @@ cdmlib-model/src/main/resources/terms/Stage.csv -text
 cdmlib-model/src/main/resources/terms/State.csv -text
 cdmlib-model/src/main/resources/terms/StatisticalMeasure.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
+cdmlib-model/src/main/resources/terms/TaxonNodeAgentRelationType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TextFormat.csv -text

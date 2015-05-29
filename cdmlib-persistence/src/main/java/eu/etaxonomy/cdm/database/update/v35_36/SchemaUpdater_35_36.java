@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableRemover;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
 
@@ -139,6 +140,16 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
                 "DescriptionElementBase",
                 "StatisticalMeasurementValue",
                 INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //TaxonNodeAgentRelation
+        //#3583
+        stepName = "Add TaxonNodeAgentRelation table";
+        tableName = "TaxonNodeAgentRelation";
+        columnNames = new String[]{"taxonnode_id","agent_id","type_id"};
+        referencedTables = new String[]{"TaxonNode","AgentBase","DefinedTermBase"};
+        columnTypes = new String[]{"int","int","int"};
+        step = TableCreator.NewAnnotatableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
         stepList.add(step);
 
 		return stepList;

@@ -43,8 +43,10 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -69,7 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
     "countChildren",
-    "nodeAgents",
+    "agents",
     "synonymToBeUsed"
 })
 @XmlRootElement(name = "TaxonNode")
@@ -149,7 +151,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    private Set<TaxonNodeAgentRelation> nodeAgents = new HashSet<TaxonNodeAgentRelation>();
+    private Set<TaxonNodeAgentRelation> agents = new HashSet<TaxonNodeAgentRelation>();
 
 
 //	private Taxon originalConcept;
@@ -293,6 +295,27 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
     }
+
+    public TaxonNodeAgentRelation addNodeAgent(TaxonNode taxonNode, TeamOrPersonBase<?> agent, DefinedTerm type){
+        TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(taxonNode, agent, type);
+        return result;
+    }
+    /**
+     * @param nodeAgentRelation
+     */
+    protected void addAgent(TaxonNodeAgentRelation agentRelation) {
+        agentRelation.setTaxonNode(this);
+        this.agents.add(agentRelation);
+    }
+
+    /**
+     * @param nodeAgentRelation
+     */
+    public void removeNodeAgent(TaxonNodeAgentRelation agentRelation) {
+        agentRelation.setTaxonNode(this);
+        agents.remove(agentRelation);
+    }
+
 
 
     //synonymToBeused
@@ -803,13 +826,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
 
-    /**
-     * @param clone
-     */
-    private void addNodeAgent(TaxonNodeAgentRelation nodeAgentRelation) {
-        nodeAgentRelation.setTaxonNode(this);
 
-    }
 
 //*********************** CLONE ********************************************************/
     /**
@@ -830,9 +847,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             result.childNodes = new ArrayList<TaxonNode>();
             result.countChildren = 0;
 
-            result.nodeAgents = new HashSet<TaxonNodeAgentRelation>();
-            for (TaxonNodeAgentRelation rel : this.nodeAgents){
-                result.addNodeAgent((TaxonNodeAgentRelation)rel.clone());
+            //agents
+            result.agents = new HashSet<TaxonNodeAgentRelation>();
+            for (TaxonNodeAgentRelation rel : this.agents){
+                result.addAgent((TaxonNodeAgentRelation)rel.clone());
             }
 
             return result;
