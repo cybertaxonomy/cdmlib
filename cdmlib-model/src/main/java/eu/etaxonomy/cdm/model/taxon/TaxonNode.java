@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
     "countChildren",
+    "nodeAgents",
     "synonymToBeUsed"
 })
 @XmlRootElement(name = "TaxonNode")
@@ -141,6 +142,15 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @XmlElement(name = "countChildren")
     private int countChildren;
+
+    @XmlElementWrapper(name = "nodeAgents")
+    @XmlElement(name = "nodeAgent")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    private final Set<TaxonNodeAgentRelation> nodeAgents = new HashSet<TaxonNodeAgentRelation>();
+
 
 //	private Taxon originalConcept;
 //	//or
@@ -563,11 +573,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setParent(parent);
 
         // set the classification to the parents classification
-       
+
 	        Classification classification = parent.getClassification();
 	        //FIXME also set the tree index here for performance reasons
 	        setClassificationRecursively(classification);
-        
+
         // add this node to the parent child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){
@@ -685,7 +695,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return parent.getAncestorOfRank(rank);
         }
 		return null;
-        
+
     }
 
     /**
@@ -780,6 +790,19 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return childNodes.size() > 0;
     }
 
+
+    public boolean hasTaxon() {
+        return (taxon!= null);
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public Rank getNullSafeRank() {
+        return hasTaxon() ? getTaxon().getNullSafeRank() : null;
+    }
+
 //*********************** CLONE ********************************************************/
     /**
      * Clones <i>this</i> taxon node. This is a shortcut that enables to create
@@ -808,17 +831,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
     }
 
-	public boolean hasTaxon() {
-		return (taxon!= null);
-	}
-
-    /**
-     * @return
-     */
-	@Transient
-    public Rank getNullSafeRank() {
-        return hasTaxon() ? getTaxon().getNullSafeRank() : null;
-    }
 
 
 
