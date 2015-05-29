@@ -149,7 +149,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    private final Set<TaxonNodeAgentRelation> nodeAgents = new HashSet<TaxonNodeAgentRelation>();
+    private Set<TaxonNodeAgentRelation> nodeAgents = new HashSet<TaxonNodeAgentRelation>();
 
 
 //	private Taxon originalConcept;
@@ -803,6 +803,14 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
 
+    /**
+     * @param clone
+     */
+    private void addNodeAgent(TaxonNodeAgentRelation nodeAgentRelation) {
+        nodeAgentRelation.setTaxonNode(this);
+
+    }
+
 //*********************** CLONE ********************************************************/
     /**
      * Clones <i>this</i> taxon node. This is a shortcut that enables to create
@@ -816,14 +824,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Override
     public Object clone()  {
-        TaxonNode result;
         try{
-        result = (TaxonNode)super.clone();
-        result.getTaxon().addTaxonNode(result);
-        result.childNodes = new ArrayList<TaxonNode>();
-        result.countChildren = 0;
+            TaxonNode result = (TaxonNode)super.clone();
+            result.getTaxon().addTaxonNode(result);
+            result.childNodes = new ArrayList<TaxonNode>();
+            result.countChildren = 0;
 
-        return result;
+            result.nodeAgents = new HashSet<TaxonNodeAgentRelation>();
+            for (TaxonNodeAgentRelation rel : this.nodeAgents){
+                result.addNodeAgent((TaxonNodeAgentRelation)rel.clone());
+            }
+
+            return result;
         }catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();

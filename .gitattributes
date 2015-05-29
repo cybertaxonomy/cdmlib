@@ -973,6 +973,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNaturalComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeAgentRelation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
