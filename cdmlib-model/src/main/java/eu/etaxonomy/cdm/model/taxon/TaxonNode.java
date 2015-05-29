@@ -830,8 +830,4 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return null;
         }
     }
-
-
-
-
 }
