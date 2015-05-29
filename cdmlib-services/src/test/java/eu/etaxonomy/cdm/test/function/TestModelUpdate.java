@@ -33,7 +33,7 @@ public class TestModelUpdate {
 
 
 	private void testMySQL(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
@@ -53,24 +53,18 @@ public class TestModelUpdate {
 			e.printStackTrace();
 		}
 
-		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
-//		Person person = Person.NewInstance();
-//		TextData textData = TextData.NewInstance();
+//		Classification classification = Classification.NewInstance("Me");
 //		Taxon taxon = Taxon.NewInstance(null, null);
-//		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-//		description.addElement(textData);
-//		LanguageString text = textData.putText(Language.ENGLISH(), "Ich bin ein toller text");
-//		IntextReference.NewAgentInstance(person, text, 3, 5);
-//
-//		appCtr.getAgentService().save(person);
-//		appCtr.getTaxonService().save(taxon);
-//		appCtr.getCommonService().createFullSampleData();
+//		Person person = Person.NewInstance();
+//		TaxonNode node = classification.addChildTaxon(taxon, null, null);
+//		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
+//		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
 
-		//		insertSomeData(appCtr);
-//		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
+		appCtr.getCommonService().createFullSampleData();
+
+//		appCtr.getClassificationService().save(classification);
 
 		appCtr.close();
 	}

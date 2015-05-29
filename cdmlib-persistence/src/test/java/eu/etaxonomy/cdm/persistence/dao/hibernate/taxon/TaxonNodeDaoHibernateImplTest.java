@@ -230,8 +230,11 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         TaxonNode newNode = taxonNodeDao.load(node.getUuid());
         Assert.assertNotSame(node, newNode);
-        Assert.assertEquals("Node should have agent relation", 1, newNode.getAgentRelations()  );
-
+        Assert.assertEquals("Node should have agent relation", 1, newNode.getAgentRelations().size());
+        TaxonNodeAgentRelation newRel = newNode.getAgentRelations().iterator().next();
+        Assert.assertEquals(rel, newRel);
+        Assert.assertEquals(rel.getId(), newRel.getId());
+        Assert.assertNotSame(rel, newRel);
     }
 
 

@@ -111,6 +111,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
 	}
 
+    public static DefinedTerm NewTaxonNodeAgentRelationTypeInstance(String description, String label, String labelAbbrev){
+        return new DefinedTerm(TermType.TaxonNodeAgentRelationType, description, label, labelAbbrev);
+    }
+
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only
