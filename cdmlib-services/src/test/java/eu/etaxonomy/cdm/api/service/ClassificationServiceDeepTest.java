@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -39,9 +38,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created Sep 22, 2009
  * @version 1.0
  */
-public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTest{
+public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTest{
 
-    private static final Logger logger = Logger.getLogger(ClassifcationServiceDeepTest.class);
+    private static final Logger logger = Logger.getLogger(ClassificationServiceDeepTest.class);
 
     @SpringBeanByType
     IClassificationService service;
@@ -106,8 +105,7 @@ public class ClassifcationServiceDeepTest extends CdmTransactionalIntegrationTes
 
 
     @Override
-    @Test
-    @Ignore
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
 
     	String[] stringTaxonNames= new String[]{"Griftus grifatus subsp. fikus", "Griftus", "Genus genus subsp. tri", "Genus genus subsp. alt" ,

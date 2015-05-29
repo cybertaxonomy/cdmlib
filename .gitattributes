@@ -2430,7 +2430,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeField
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AbstractSecurityTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AgentServiceImplTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceDeepTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
@@ -2502,7 +2502,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/BlankDataSet.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceDeepTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text
