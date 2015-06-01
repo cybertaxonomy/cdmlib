@@ -145,11 +145,6 @@
       <version>1.1.2</version>
       <type>tld</type>
     </dependency>
-    <!-- Connection Pooling -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-c3p0</artifactId>
-    </dependency>
     <!-- swagger -->
     <dependency>
       <groupId>com.mangofactory</groupId>
@@ -180,6 +175,16 @@
       <groupId>com.yourkit</groupId>
       <artifactId>yjp-controller-api-redist</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Connection Pooling and jdbc -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-c3p0</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <artifactId>c3p0</artifactId>
+        <groupId>com.mchange</groupId>
     </dependency>
   </dependencies>
 
