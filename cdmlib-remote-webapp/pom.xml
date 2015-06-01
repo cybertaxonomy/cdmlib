@@ -58,6 +58,34 @@
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-remote</artifactId>
+      <exclusions>
+        <!-- 
+            exclude all jdbc drivers from the war. 
+            Jdbc drivers must only be added to {APPLICATION_CONTAINER}/lib
+            see http://dev.e-taxonomy.eu/trac/ticket/4955 
+            and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder
+         -->
+        <exclusion>
+          <artifactId>postgresql</artifactId>
+          <groupId>postgresql</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>mysql-connector-java</artifactId>
+          <groupId>mysql</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>c3p0</artifactId>
+          <groupId>com.mchange</groupId>
+        </exclusion>
+        <exclusion>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>         
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed?
