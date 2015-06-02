@@ -55,7 +55,7 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 		node = service.load(uuidNode);	
 		UUID uuidChild = node.getChildAt(0).getUuid();
 		assertNotNull(node);
-		service.delete(node, true);
+		service.delete(uuidNode, true);
 		node = service.load(uuidNode);
 		assertNull(node);
 		node = service.load(UUID.fromString("f0dd12ed-ea77-419a-bce6-4282d0067c91"));
