@@ -82,13 +82,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
-        if (sortMode.equals(NodeSortMode.doNaturalOrder)){
-        	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
-        	Collections.sort(childNodes, comparator);
-        } else if (sortMode.equals(NodeSortMode.doAlphabeticalOrder)){
-        	Collections.sort(childNodes, this.taxonNodeComparator);
-        } 
-        
+        if (sortMode != null){
+	        if (sortMode.equals(NodeSortMode.doNaturalOrder)){
+	        	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+	        	Collections.sort(childNodes, comparator);
+	        } else if (sortMode.equals(NodeSortMode.doAlphabeticalOrder)){
+	        	Collections.sort(childNodes, this.taxonNodeComparator);
+	        } 
+        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
