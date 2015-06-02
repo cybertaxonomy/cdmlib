@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
@@ -33,15 +34,14 @@ public class TestModelUpdate {
 
 
 	private void testMySQL(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
 
-		String server = "localhost";
+
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
 //		database = "cdm36";
-		String username = "edit";
-		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		CdmDataSource dataSource = getDatasource(dbType, database);
 
 
  		try {
@@ -61,34 +61,51 @@ public class TestModelUpdate {
 //		TaxonNode node = classification.addChildTaxon(taxon, null, null);
 //		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
 //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
+//      appCtr.getClassificationService().save(classification);
 
-		appCtr.getCommonService().createFullSampleData();
+//		appCtr.getCommonService().createFullSampleData();
 
-//		appCtr.getClassificationService().save(classification);
+
 
 		appCtr.close();
 	}
 
 
 
-//	String server = "localhost";
-//	String database = "testCDM";
-//	String username = "postgres";
-//	dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
+/**
+     * @param dbType
+     * @param database
+     * @return
+     */
+    private CdmDataSource getDatasource(DatabaseTypeEnum dbType, String database) {
+        String server = "localhost";
+        String username = "edit";
+        String serverSql = "130.133.70.26";
+
+        if (dbType == DatabaseTypeEnum.MySQL){
+            return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+        }else if (dbType == DatabaseTypeEnum.H2){
+            //H2
+            String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+            username = "sa";
+            CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+            return dataSource;
+        }else if (dbType == DatabaseTypeEnum.SqlServer2005){
+            server = serverSql;
+            username = "cdmupdater";
+            CdmDataSource dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, 1433, username, AccountStore.readOrStorePassword(server, database, username, null));
+            return dataSource;
+        }else if (dbType == DatabaseTypeEnum.PostgreSQL){
+            server = serverSql;
+            username = "postgres";
+            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null), null);
+            return dataSource;
+        }else{
+            throw new IllegalArgumentException("dbType not supported:" + dbType);
+        }
+    }
 
 
-//	//SQLServer
-//	database = "CDMTest";
-//	int port = 1433;
-//	username = "pesiexport";
-////	dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
-//
-	//H2
-//	String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-//	String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
-//	username = "sa";
-//	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
-//	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
 	/**
 	 * Updates the H2 test database in remote web-app.
