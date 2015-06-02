@@ -814,7 +814,6 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
     @Override
 	public void createFullSampleData() {
-        //problem is dependency to test package
 		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
 		dataGenerator.fillWithData(getSession());
 	}
