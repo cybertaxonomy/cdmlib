@@ -237,7 +237,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
@@ -1258,21 +1258,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         	
         }
         
-//        if (this.equals(parent) || this.equals(child)){
-//            hybridRelation.setHybridName(null);
-//            hybridRelation.setParentName(null);
-//
-//            if (parent != null) {
-//                parent.removeHybridRelationship(hybridRelation);
-//            }
-//
-//            if (child != null) {
-//                child.removeHybridRelationship(hybridRelation);
-//            }
-//            
-//            this.hybridChildRelations.remove(hybridRelation);
-//            this.hybridParentRelations.remove(hybridRelation);
-//        }
+
     }
 
 
