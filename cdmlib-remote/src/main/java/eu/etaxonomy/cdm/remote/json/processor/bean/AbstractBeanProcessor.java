@@ -43,6 +43,8 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
 
     private Set<String> excludes = new HashSet<String>();
 
+    private Set<String> mergedExcludes = null;
+
     public Set<String> getExcludes() {
         return excludes;
     }
@@ -78,10 +80,13 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
      * @return
      */
     protected Set<String> getMergedExcludes(){
-        Set<String> mergedExcludes = new HashSet<String>(excludes);
-        if(getIgnorePropNames() != null){
-            mergedExcludes.addAll(getIgnorePropNames());
+        if(mergedExcludes  == null) {
+            mergedExcludes = new HashSet<String>(excludes);
+            if(getIgnorePropNames() != null){
+                mergedExcludes.addAll(getIgnorePropNames());
+            }
         }
+
         return mergedExcludes;
     }
 
@@ -99,9 +104,11 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
     }
 
 
-    /* (non-Javadoc)
-     * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+
+    /**
+     * {@inheritDoc}
      */
+    @Override
     public final JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
         if(logger.isDebugEnabled()){
