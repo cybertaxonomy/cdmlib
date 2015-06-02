@@ -2301,6 +2301,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatCategorica
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenerator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NodeSortMode.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
