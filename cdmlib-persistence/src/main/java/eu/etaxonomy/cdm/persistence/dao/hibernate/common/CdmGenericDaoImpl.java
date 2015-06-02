@@ -55,8 +55,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
-import eu.etaxonomy.cdm.datagenerator.FullCoverageDataGenerator;
-//import eu.etaxonomy.cdm.datagenerator.FullCoverageDataGenerator;
+import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -93,7 +92,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Class<? extends CdmBase> otherClass;
 		Class<?> itemClass;
 		Class<?> targetClass;  //new as item class is used for isCollection we have a duplicate here
-		public boolean isCollection(){return itemClass != null;};
+		public boolean isCollection(){return itemClass != null;}
 		@Override
         public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
 	}

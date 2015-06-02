@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -412,28 +413,70 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	public StatisticalMeasurementValue setSpecificStatisticalValue(Float value, Set<DefinedTerm> modifiers, StatisticalMeasure type){
-		StatisticalMeasurementValue result = null;
-		if (value != null){
-			StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance();
-			newValue.setValue(value);
-			if (modifiers != null){
-				newValue.getModifiers().addAll(modifiers);
-			}
-			newValue.setType(type);
-			result = newValue;
-		}
-		for (StatisticalMeasurementValue existingValue : statisticalValues){
-			if (type.equals(existingValue.getType())){
-				result = existingValue;
-				statisticalValues.remove(existingValue);
-				break;
-			}
-		}
-		if (result != null){
-			statisticalValues.add(result);
-		}
+
+	    StatisticalMeasurementValue result = null;
+		StatisticalMeasurementValue existingSmValue = null;
+
+        for (StatisticalMeasurementValue existingValue : statisticalValues){
+            if (type.equals(existingValue.getType())){
+                existingSmValue = existingValue;
+                break;
+            }
+        }
+        if (value == null && existingSmValue == null){
+            return null;
+        }else if (value == null && existingSmValue != null){
+            this.removeStatisticalValue(existingSmValue);
+            return null;
+        }else if (value != null && existingSmValue == null){
+            result = StatisticalMeasurementValue.NewInstance(type, value);
+            if (modifiers != null){
+                for (DefinedTerm modifier : modifiers){
+                    result.addModifier(modifier);
+                }
+            }
+            this.addStatisticalValue(result);
+        } else if (value != null && existingSmValue != null){
+            result = existingSmValue;
+            result.setValue(value);
+            //remove existing modifiers
+            Iterator<DefinedTerm> it = result.getModifiers().iterator();
+            while (it.hasNext()){
+                it.remove();
+            }
+            //add new modifiers
+            if (modifiers != null){
+                for (DefinedTerm modifier : modifiers){
+                    result.addModifier(modifier);
+                }
+            }
+        }
 		return result;
 	}
+
+//   public StatisticalMeasurementValue setSpecificStatisticalValue_old(Float value, Set<DefinedTerm> modifiers, StatisticalMeasure type){
+//        StatisticalMeasurementValue result = null;
+//        if (value != null){
+//            StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance();
+//            newValue.setValue(value);
+//            if (modifiers != null){
+//                newValue.getModifiers().addAll(modifiers);
+//            }
+//            newValue.setType(type);
+//            result = newValue;
+//        }
+//        for (StatisticalMeasurementValue existingValue : statisticalValues){
+//            if (type.equals(existingValue.getType())){
+//                result = existingValue;
+//                statisticalValues.remove(existingValue);
+//                break;
+//            }
+//        }
+//        if (result != null){
+//            statisticalValues.add(result);
+//        }
+//        return result;
+//    }
 
 	public Boolean getUnknownData() {
 		return unknownData;

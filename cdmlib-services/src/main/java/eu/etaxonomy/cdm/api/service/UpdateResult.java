@@ -11,10 +11,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
@@ -41,7 +39,7 @@ public class UpdateResult implements Serializable{
 		private Status status = Status.OK;
 
 		@SuppressWarnings("unchecked")
-        private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
+		private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
 
 		private final Set<CdmBase> upatedObjects = new HashSet<CdmBase>();
 
@@ -88,12 +86,12 @@ public class UpdateResult implements Serializable{
 			this.status = status;
 		}
 
-		/**
+		/** 
 		 * The highest exception that occurred during delete (if any).
 		 * @return
 		 */
-		public List<Exception> getExceptions() {
-			return new ArrayList<Exception>(exceptions);
+		public Collection<Exception> getExceptions() {
+			return exceptions;
 		}
 		public void addException(Exception exception) {
 			this.exceptions.add(exception);

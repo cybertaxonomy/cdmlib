@@ -1,7 +1,7 @@
 /**
  *
  */
-package eu.etaxonomy.cdm.datagenerator;
+package eu.etaxonomy.cdm.database.data;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -337,6 +338,10 @@ public class FullCoverageDataGenerator {
 		Language eng = Language.ENGLISH();
 		textData.putText(eng, "My text data");
 		LanguageString languageString = textData.getLanguageText(eng);
+
+		Taxon referencedTaxon = getTaxon();
+		cdmBases.add(referencedTaxon);
+		languageString.addIntextReference(IntextReference.NewTaxonInstance(referencedTaxon, languageString, 2, 5));
 		textData.putModifyingText(eng, "nice diagnosis");
 		handleAnnotatableEntity(textData);
 		handleAnnotatableEntity(languageString);
@@ -654,17 +659,15 @@ public class FullCoverageDataGenerator {
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
-		DefinedTerm relType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance("TN Rel", "TN Rel", null);
-		node.addAgentRelation(relType, Person.NewTitledInstance("Taxon Node Agent Relation Test Person"));
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
 
-		cdmBases.add(relType);
 		cdmBases.add(taxon);
 		cdmBases.add(concept);
 		cdmBases.add(childTaxon);
 		cdmBases.add(classification);
+
 
 	}
 
@@ -899,7 +902,8 @@ public class FullCoverageDataGenerator {
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
 
 		//Identifier
-		Identifier.NewInstance(identifiableEntity, "ident23", DefinedTerm.SEX_FEMALE());
+		Identifier<?> identifier = Identifier.NewInstance(identifiableEntity, "ident23", DefinedTerm.SEX_FEMALE());
+		handleAnnotatableEntity(identifier);
 
 
 		//Rights

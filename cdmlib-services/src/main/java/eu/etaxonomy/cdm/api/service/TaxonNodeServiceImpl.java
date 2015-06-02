@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparatorSearch;
+import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -72,7 +74,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-            List<String> propertyPaths, boolean recursive, boolean sorted) {
+            List<String> propertyPaths, boolean recursive, NodeSortMode sortMode) {
         taxonNode = dao.load(taxonNode.getUuid());
         List<TaxonNode> childNodes;
         if (recursive == true){
@@ -80,9 +82,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
-        if (sorted){
-        	Collections.sort(childNodes, taxonNodeComparator);
-        }
+        if (sortMode.equals(NodeSortMode.doNaturalOrder)){
+        	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+        	Collections.sort(childNodes, comparator);
+        } else if (sortMode.equals(NodeSortMode.doAlphabeticalOrder)){
+        	Collections.sort(childNodes, this.taxonNodeComparator);
+        } 
+        
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
@@ -242,6 +248,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
         result.addUpdatedObject(newAcceptedTaxon);
+        result.addUpdatedObject(oldTaxon);
 
         //oldTaxonNode.delete();
         return result;
@@ -264,7 +271,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	        	if (treeNode instanceof TaxonNode){
 	        		TaxonNode taxonNode;
 		            taxonNode = HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
-
+		            TaxonNode parent = taxonNode.getParent();
 		            	//check whether the node has children or the children are already deleted
 		            if(taxonNode.hasChildNodes()){
 	            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
@@ -289,7 +296,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 	            		} else {
 	            			//move the children to the parent
-	            			TaxonNode parent = taxonNode.getParent();
+	            			
 	            			for (TaxonNode child: childNodesList){
 	            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
 	            			}
@@ -312,6 +319,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
 		            		    taxonService.saveOrUpdate(taxon);
 		            		    saveOrUpdate(taxonNode);
+		            		    
 				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
 				            	if (!resultTaxon.isOk()){
@@ -328,10 +336,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            	Taxon taxon = taxonNode.getTaxon();
 		            	//node is rootNode
 		            	if (taxon != null){
-		            		taxonNode.getTaxon().removeTaxonNode(taxonNode);
+		            		taxon.removeTaxonNode(taxonNode);
 		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
 				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 				            	saveOrUpdate(taxonNode);
+				            	
 				            	taxonService.saveOrUpdate(taxon);
 				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
                                 if (!resultTaxon.isOk()){
