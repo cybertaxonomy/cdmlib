@@ -38,7 +38,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param recursive
 	 * @return List<TaxonNode>
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, boolean sort);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
 
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
@@ -101,9 +101,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid,
 			boolean moveToParent);
 
-	List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-			List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
-
+	
 
 
 
