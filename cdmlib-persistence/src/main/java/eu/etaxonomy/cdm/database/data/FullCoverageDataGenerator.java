@@ -1,7 +1,7 @@
 /**
  *
  */
-package eu.etaxonomy.cdm.datagenerator;
+package eu.etaxonomy.cdm.database.data;
 
 import java.net.URI;
 import java.util.ArrayList;

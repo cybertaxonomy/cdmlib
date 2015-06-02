@@ -1297,6 +1297,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PermissionDeniedExcep
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PersistentTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/UpdatableRoutingDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/WrappedCdmDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/data/FullCoverageDataGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/H2DatabaseType.java -text
@@ -1602,7 +1603,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/update/CdmUpdaterTest.java -text
-cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/FullCoverageDataGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImplTest.java -text
