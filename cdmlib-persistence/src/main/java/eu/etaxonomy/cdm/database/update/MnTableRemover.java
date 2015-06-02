@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * but a direct link (foreign key) from the child table to the parent table.
  * This class removes MN tables and replaces them by the direct link (if possible)
  *
- * Tested for MySQL, H2, PostGres
+ * Tested for: MySQL, H2, PostGres
  * Untested: SQL Server (currently not testable due to #4957)
  *
  * @author a.mueller

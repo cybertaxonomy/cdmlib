@@ -33,7 +33,7 @@ public class TestModelUpdate {
 	private static final Logger logger = Logger.getLogger(TestModelUpdate.class);
 
 
-	private void testMySQL(){
+	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
@@ -133,20 +133,10 @@ public class TestModelUpdate {
 
 	private void test(){
 		System.out.println("Start Datasource");
-		testMySQL();
+		testSelectedDb();
 
 //		updateRemoteWebappTestH2();
 
-    	//testDatabaseChange();
-
-		//testSqlServer();
-
-		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
-		//testPostgreServer();
-		//testLocalHsql();
-		//testLocalH2();
-		//testWritableResourceDirectory();
-//		testH2();
 		System.out.println("\nEnd Datasource");
 	}
 
