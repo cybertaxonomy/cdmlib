@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableRemover;
@@ -73,7 +74,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 		stepList.add(step);
 
-        //#4843  TODO test
+        //#4843
         //Allow NULL for DefinedTermBase_SupportedCategoricalEnumeration
 		//.supportedcategoricalenumerations_id
         stepName = "Remove NOT NULL from supportedcategoricalenumerations_id";
@@ -82,7 +83,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, !INCLUDE_AUDIT);
         stepList.add(step);
 
-        //#4843  TODO test
+        //#4843
         //Allow NULL for DefinedTermBase_RecommendedModifierEnumeration
         //.recommendedmodifierenumeration_id
         stepName = "Remove NOT NULL from recommendedmodifierenumeration_id";
@@ -150,6 +151,38 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         referencedTables = new String[]{"TaxonNode","AgentBase","DefinedTermBase"};
         columnTypes = new String[]{"int","int","int"};
         step = TableCreator.NewAnnotatableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //authorTeam -> authorship for TaxonNameBase #4332
+        stepName = "Rename TaxonNameBase.combinationAuthorTeam_id column";
+        tableName = "TaxonNameBase";
+        oldColumnName = "combinationAuthorTeam_id";
+        newColumnName = "combinationAuthorship_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //authorTeam -> authorship for TaxonNameBase #4332
+        stepName = "Rename TaxonNameBase.exCombinationAuthorTeam_id column";
+        tableName = "TaxonNameBase";
+        oldColumnName = "exCombinationAuthorTeam_id";
+        newColumnName = "exCombinationAuthorship_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //authorTeam -> authorship for TaxonNameBase #4332
+        stepName = "Rename TaxonNameBase.basionymAuthorTeam_id column";
+        tableName = "TaxonNameBase";
+        oldColumnName = "basionymAuthorTeam_id";
+        newColumnName = "basionymAuthorship_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //authorTeam -> authorship for TaxonNameBase #4332
+        stepName = "Rename TaxonNameBase.exBasionymAuthorTeam_id column";
+        tableName = "TaxonNameBase";
+        oldColumnName = "exBasionymAuthorTeam_id";
+        newColumnName = "exBasionymAuthorship_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
 		return stepList;
