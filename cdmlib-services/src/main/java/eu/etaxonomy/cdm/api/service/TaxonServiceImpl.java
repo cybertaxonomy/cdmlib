@@ -2982,6 +2982,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
             if (!(ref instanceof TaxonNameBase)){
+            	message = null;
                 if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
                     message = "The Taxon can't be deleted as long as it has synonyms.";
 

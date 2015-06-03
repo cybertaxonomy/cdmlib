@@ -389,29 +389,37 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+    	DeleteResult result = new DeleteResult();
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
-    		return taxonService.deleteTaxon(taxon, config, node.getClassification());
-    	} else{
-    		DeleteResult result = new DeleteResult();
-    		result.setCdmEntity(node);
-    		boolean success = taxon.removeTaxonNode(node);
-    		if (success){
-    			if (!dao.delete(node).equals(null)){
-    				return result;
-    			} else {
-    				result.setError();
-    				return result;
-    			}
-    		}else{
-    			result.setError();
-    			result.addException(new Exception("The node can not be removed from the taxon."));
+    		result = taxonService.deleteTaxon(taxon, config, node.getClassification());
+    		if (result.isOk()){
     			return result;
     		}
-
+    	} 
+    	
+    	result.setCdmEntity(node);
+    	boolean success = taxon.removeTaxonNode(node);
+    	taxonService.saveOrUpdate(taxon);
+		result.addUpdatedObject(taxon);
+		
+    	if (success){
+			result.setStatus(Status.OK);
+    		if (!dao.delete(node).equals(null)){
+    			return result;
+    		} else {
+    			result.setError();
+    			return result;
+    		}
+    	}else{
+    		result.setError();
+    		result.addException(new Exception("The node can not be removed from the taxon."));
+    		return result;
     	}
+
+    	
 
     }
 
