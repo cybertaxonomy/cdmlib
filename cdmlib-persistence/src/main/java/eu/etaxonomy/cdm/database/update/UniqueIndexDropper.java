@@ -61,7 +61,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 	private boolean checkExists(ICdmDataSource datasource, CaseType caseType) throws SQLException, DatabaseTypeNotSupportedException {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		if (type.equals(DatabaseTypeEnum.MySQL)){
-			String sql = " SELECT count(*)	" +
+			String sql = " SELECT count(*)" +
 			             " FROM information_schema.KEY_COLUMN_USAGE kcu " +
                             " INNER JOIN information_schema.TABLE_CONSTRAINTS tc ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME " +
                             " AND tc.TABLE_NAME = kcu.TABLE_NAME AND tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA " +
@@ -127,9 +127,9 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 		                    " AND tc.TABLE_NAME = kcu.TABLE_NAME AND tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA " +
 		                    " WHERE kcu.TABLE_NAME = '@tableName' AND kcu.TABLE_SCHEMA = '@dbName' AND kcu.COLUMN_NAME = '@columnName' "+
 		                        " AND tc.TABLE_NAME = '@tableName' AND tc.TABLE_SCHEMA = '@dbName' AND CONSTRAINT_TYPE = 'UNIQUE' ";
-		    sql = sql.replace("@tableName", tableName.toUpperCase());
-            sql = sql.replace("@columnName", indexColumn.toUpperCase());
-            sql = sql.replace("@dbName", datasource.getDatabase().toUpperCase());
+		    sql = sql.replace("@tableName", caseType.replaceTableNames(tableName));
+            sql = sql.replace("@columnName", indexColumn);
+            sql = sql.replace("@dbName", datasource.getDatabase());
             String constraintName = (String)datasource.getSingleValue(sql);
             result = constraintName;
 		}else if (type.equals(DatabaseTypeEnum.H2) ){
