@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
     "countChildren",
-    "agents",
+    "agentRelations",
     "synonymToBeUsed"
 })
 @XmlRootElement(name = "TaxonNode")
