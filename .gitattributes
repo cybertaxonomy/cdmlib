@@ -973,6 +973,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNaturalComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeAgentRelation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
@@ -1144,6 +1145,7 @@ cdmlib-model/src/main/resources/terms/Stage.csv -text
 cdmlib-model/src/main/resources/terms/State.csv -text
 cdmlib-model/src/main/resources/terms/StatisticalMeasure.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
+cdmlib-model/src/main/resources/terms/TaxonNodeAgentRelationType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TextFormat.csv -text
@@ -1328,6 +1330,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ITermUpdaterSt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/IUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MapTableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableCreator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableRemover.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
@@ -1374,6 +1377,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/TermUpd
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v33_34/UsernameConstraintUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/SchemaUpdater_341_35.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v34_35/TermUpdater_34_35.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/SchemaUpdater_35_36.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/TermUpdater_35_36.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
@@ -2428,7 +2433,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeField
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AbstractSecurityTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AgentServiceImplTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceDeepTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
@@ -2500,7 +2505,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/BlankDataSet.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassifcationServiceDeepTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceDeepTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text

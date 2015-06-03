@@ -87,14 +87,14 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 //                logger.info("loading data base schema from " + termsDtd.getFile().getAbsolutePath());
 //                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
 
-                
+
                 //old: IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
 
                 IDataSet dataSet = new FlatXmlDataSetBuilder()
                 	.setMetaDataSetFromDtd(termsDtd.getInputStream())
                 	.build(termsDataSet.getInputStream());
-                
-                
+
+
                 //ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
 //				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
 //					System.err.println(rowId + " : " + definedTermBase.getValue(rowId, "CREATEDBY_ID"));
@@ -108,7 +108,9 @@ public class TestingTermInitializer extends PersistentTermInitializer {
                 }
             } finally {
                 try {
-                    connection.close();
+                    if (connection != null){
+                        connection.close();
+                    }
                 } catch (SQLException sqle) {
                     logger.error(sqle);
                 }
@@ -120,7 +122,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
             	initializeAndStore(vocabularyType, new HashMap<UUID,DefinedTermBase>(), null);
-            } 
+            }
             transactionManager.commit(txStatus);
             //txStatus = transactionManager.getTransaction(txDefinition);
         }

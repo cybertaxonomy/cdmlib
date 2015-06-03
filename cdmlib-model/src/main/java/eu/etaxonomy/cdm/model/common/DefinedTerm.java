@@ -53,12 +53,15 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static final UUID uuidSpecimenScan = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 	public static final UUID uuidDetailImage = UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34");
 	//...
-	
+
 	//Identifier Type
 	public static final UUID uuidLsid = UUID.fromString("26729412-9df6-4cc3-9e5d-501531ca21f0");
 	public static final UUID uuidAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
-	
-	
+
+	//TaxonNode Agent Relation Type
+	public static final UUID uuidLastScrutiny = UUID.fromString("b4495910-28e9-4a49-86cf-a0476c78f460");
+    public static final UUID uuidAuthorOfSubtree = UUID.fromString("c2c7e9b7-d6a7-48a0-b13f-a7a2e2a9b8c9");
+
 	protected static Map<UUID, DefinedTerm> termMap = null;
 
 
@@ -79,7 +82,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm NewModifierInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.Modifier, description, label, labelAbbrev);
 	}
-	
+
 	public static DefinedTerm NewInstitutionTypeInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.InstitutionType, description, label, labelAbbrev);
 	}
@@ -103,11 +106,15 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static DefinedTerm NewKindOfUnitInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
 	}
-	
+
 	public static DefinedTerm NewIdentifierTypeInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
 	}
-	
+
+    public static DefinedTerm NewTaxonNodeAgentRelationTypeInstance(String description, String label, String labelAbbrev){
+        return new DefinedTerm(TermType.TaxonNodeAgentRelationType, description, label, labelAbbrev);
+    }
+
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only

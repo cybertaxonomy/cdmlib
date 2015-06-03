@@ -73,7 +73,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		return parseSimpleName(simpleName, null, null);
 	}
 
-
 	@Override
     public NonViralName parseSimpleName(String simpleName, NomenclaturalCode code, Rank rank){
 		//"parseSimpleName() not yet implemented. Uses parseFullName() instead");
@@ -84,7 +83,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		//"parseSimpleName() not yet implemented. Uses parseFullName() instead");
 		parseFullName(nameToBeFilled, simpleNameString, rank, makeEmpty);
 	}
-
 
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
 		return getNonViralNameInstance(fullString, code, null);
@@ -753,15 +751,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			nameToBeFilled.removeParsingProblem(ParserProblem.CheckRank);
 		}
 		String authorString = null;
-
 		if (fullNameStringOrig == null){
 			return;
 		}
-
-
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
 		}
+
 		String fullNameString = fullNameStringOrig.replaceAll(oWs , " ").trim();
 
 		fullNameString = removeHybridBlanks(fullNameString);
@@ -1084,7 +1080,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 	}
 
-
 	/**
 	 * Guesses the rank of uninomial depending on the typical endings for ranks
 	 * @param nameToBeFilled
@@ -1213,10 +1208,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param authorTeamString String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	protected void authorsAndEx (String authorTeamString, TeamOrPersonBase<?>[] authors, Integer[] years){
+	protected void authorsAndEx (String authorTeamStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
 		//TODO noch allgemeiner am anfang durch Replace etc.
-		authorTeamString = authorTeamString.trim();
+		String authorTeamString = authorTeamStringOrig.trim();
 		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " );
+
 		//int authorEnd = authorTeamString.length();
 		int authorBegin = 0;
 
@@ -1287,10 +1283,15 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	protected Team parsedTeam(String authorString){
 		Team result = Team.NewInstance();
 		String[] authors = authorString.split(notFinalTeamSplitter);
-		for (String author : authors){
-			Person person = Person.NewInstance();
-			person.setNomenclaturalTitle(author);
-			result.addTeamMember(person);
+		for (int i = 0; i < authors.length; i++){
+		    String author = authors[i];
+		    if ("al.".equals(author.trim()) && i == authors.length - 1){  //final al. is handled as hasMoreMembers
+			    result.setHasMoreMembers(true);
+			}else{
+			    Person person = Person.NewInstance();
+			    person.setNomenclaturalTitle(author);
+			    result.addTeamMember(person);
+			}
 		}
 		return result;
 	}

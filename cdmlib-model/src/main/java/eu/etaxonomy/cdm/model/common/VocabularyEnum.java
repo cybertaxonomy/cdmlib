@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,12 +38,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author n.hoffmann
  * @created 03.06.2009
- * 
+ *
  * @deprecated
  * A static list of vocabularies is not the right way to do this.
  * We will use a service method that will return vocabularies by term type (once that is implemented)
  */
-@Deprecated 
+@Deprecated
 public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
@@ -91,40 +91,41 @@ public enum VocabularyEnum {
 	SpecimenKindOfUnit("b0344ec4-12f7-40d3-82c1-0092e9780bbd", DefinedTerm.class),
 	MediaSpecimenKindOfUnit("56f47c83-8d42-404a-88fc-03c57b560f6d", DefinedTerm.class),
 	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", DefinedTerm.class),
-	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class)
+	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class),
+	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class)
 	;
-	 
-	
+
+
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;
-	
+
 	private VocabularyEnum(String uuidString, Class<? extends DefinedTermBase<?>> clazz){
 		this.uuid = UUID.fromString(uuidString);
 		this.clazz = clazz;
 	}
-	
-	/** 
+
+	/**
 	 * @return the <code>UUID</code> this vocabulary is uniquely identified with
 	 */
 	public UUID getUuid(){
 		return uuid;
 	}
-	
+
 	/**
 	 * @return the Class of a specific term vocabulary
 	 */
 	public Class<? extends DefinedTermBase<?>> getClazz(){
 		return clazz;
 	}
-	
+
 	public static VocabularyEnum getVocabularyEnum(Class<?> clazz){
-		
+
 		for(VocabularyEnum vocabulary : VocabularyEnum.values()){
 			if(vocabulary.getClazz().equals(clazz)){
 				return vocabulary;
 			}
 		}
-		
+
 		return null;
 	}
 }

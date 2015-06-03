@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.database.update.v34_35;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
+import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
@@ -59,18 +59,15 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
-//		String columnName;
 		String newColumnName;
-		String oldColumnName;
 		String query;
 		String columnNames[];
 		String referencedTables[];
 		String columnTypes[];
-//		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		
-		
+
+
 		//IntextReference
 		//#4706
 		stepName = "Add IntextReference table";
@@ -80,23 +77,23 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		referencedTables = new String[]{null, null, "AgentBase","Annotation","LanguageString","Media",
 				"SpecimenOrObservationBase","Reference","TaxonBase","TaxonNameBase"};
 		columnTypes = new String[]{"int","int","int","int","int","int","int","int","int","int"};
-		step = TableCreator.NewVersionableInstance(stepName, tableName, columnNames, 
+		step = TableCreator.NewVersionableInstance(stepName, tableName, columnNames,
 				columnTypes, referencedTables, INCLUDE_AUDIT);
 		stepList.add(step);
-		
+
 		//Drop EntityValidationResult and EntityConstraintViolation
 		//#4709
 		stepName = "Drop EntityConstraintViolation table";
 		tableName = "EntityConstraintViolation";
 		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
 		stepList.add(step);
-		
+
 		stepName = "Drop EntityValidationResult table";
 		tableName = "EntityValidationResult";
 		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
 		stepList.add(step);
-		
-        //... and create new entity validation and 
+
+        //... and create new entity validation and
         stepName = "Create EntityValidation table";
         tableName = "EntityValidation";
         columnNames = new String[]{"updated","crudeventtype","userfriendlydescription","userfriendlytypename",
@@ -122,43 +119,43 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         tableName = "TaxonNode";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, tableName, 0);
         stepList.add(step);
-        
+
         //identifier versionable -> annotatable
         stepName = "Upgrade identifier from versionable to annotatable";
         tableName = "Identifier";
         step = ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepName, tableName, INCLUDE_AUDIT);
         stepList.add(step);
-        
+
         //agent - collector title  #4311
         stepName = "Add collector title for TeamOrPersonBase";
         tableName = "AgentBase";
         newColumnName = "collectorTitle";
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
-        
+
         //agent - collector title  #4311
         stepName = "Add protectedCollectorTitleCache to Team";
         tableName = "AgentBase";
         newColumnName = "protectedCollectorTitleCache";
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
- 
-		
+
+
 		//update DerivationEvent.taxonname_id  #4578, #3448, #4203, #4518
 		stepName = "Update taxon name in derivation event";
 		query = "UPDATE DeterminationEvent " +
-				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " + 
+				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
 		stepList.add(step);
-        
-        
+
+
         //#4110 update idInVocabulary for some new databases
         updateAreas(stepList);
-        
+
 		return stepList;
-		
+
 	}
 
 	//#4110 update idInVocabulary for some new databases
@@ -193,7 +190,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				String.format(queryVocUuid, uuid), 99)
 				.setDefaultAuditing(tableName);
 		stepList.add(step);
-		
+
 		// Waterbody => all
 		stepName = "Update idInVocabulary for Waterbody if necessary";
 		uuid = NamedArea.uuidWaterbodyVocabulary.toString();
@@ -201,16 +198,16 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				String.format(queryVocUuid, uuid), 99)
 				.setDefaultAuditing(tableName);
 		stepList.add(step);
-		
+
 		// Continent => None has an id
 
-		
-		
+
+
 	}
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_35_36.NewInstance();
 	}
 
 	@Override

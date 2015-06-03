@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,11 +24,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ClassChanger.class);
 
-	private String newClassName;
-	private String[] oldClassNames;
-	private boolean isIdentifiable;
-	private boolean isAnnotatable;
-	private boolean isSourcable;
+	private final String newClassName;
+	private final String[] oldClassNames;
+	private final boolean isIdentifiable;
+	private final boolean isAnnotatable;
+	private final boolean isSourcable;
 
 	public static final ClassChanger NewIdentifiableInstance(String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
 		return new ClassChanger(stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, true);
@@ -39,14 +39,12 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 	public static final ClassChanger NewDescriptionElementInstance(String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
 		return new ClassChanger(stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, false);
 	}
-	
-	
+
+
 	protected ClassChanger(String stepName, String tableName, String newClassName, String[] oldClassNames, boolean includeAudTable, boolean isAnnotatable, boolean isSourcable, boolean isIdentifiable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.newClassName = newClassName;
 		this.oldClassNames = oldClassNames;
-		this.includeAudTable = includeAudTable;
 		this.isIdentifiable = isIdentifiable;
 		this.isAnnotatable = isAnnotatable;
 		this.isSourcable = isSourcable;
@@ -60,18 +58,18 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 				String updateQuery = getDtypeUpdateQueryString(tableName, datasource, monitor);
 				datasource.executeUpdate(updateQuery);
 			}
-			
+
 			if (isAnnotatable){
 				updateAnnotatables(tableName, datasource, monitor, caseType);
 			}
 			if (isSourcable){
 				updateSourcable(tableName, datasource, monitor, caseType);
 			}
-			
+
 			if (isIdentifiable){
 				updateIdentifiables(tableName, datasource, monitor, caseType);
 			}
-			
+
 			return result;
 		} catch ( Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -94,22 +92,22 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 		String sql = " UPDATE %s " +
 				" SET %s = '%s' " +
 				" WHERE %s = '%s'";
-		
+
 		for (String oldClassPath : oldClassNames){
-			String query = String.format(sql, caseType.transformTo(extensionClass), 
-					typeAttr, newClassName, 
+			String query = String.format(sql, caseType.transformTo(extensionClass),
+					typeAttr, newClassName,
 					typeAttr, oldClassPath);
 			datasource.executeUpdate(query);
 		}
 	}
 
-	
+
 	public String getDtypeUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
-		updateQuery = " UPDATE @tableName " + 
+		updateQuery = " UPDATE @tableName " +
 				" SET DTYPE = '@newTableName' " +
 				" WHERE (1=0 @dtypes)";
-		
+
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@newTableName", getSimpleName(newClassName));
 		String dtypes = "";
@@ -117,7 +115,7 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 			dtypes += String.format(" OR DTYPE = '%s' ", getSimpleName(oldClassName)) ;
 		}
 		updateQuery = updateQuery.replace("@dtypes", dtypes);
-		
+
 		return updateQuery;
 	}
 	private String getSimpleName(String className) {

@@ -43,8 +43,10 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -69,6 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
     "countChildren",
+    "agentRelations",
     "synonymToBeUsed"
 })
 @XmlRootElement(name = "TaxonNode")
@@ -141,6 +144,15 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @XmlElement(name = "countChildren")
     private int countChildren;
+
+    @XmlElementWrapper(name = "agentRelations")
+    @XmlElement(name = "agentRelation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<TaxonNodeAgentRelation>();
+
 
 //	private Taxon originalConcept;
 //	//or
@@ -284,6 +296,37 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         this.parent = parent;
     }
 
+// ****************** Agent Relations ****************************/
+
+
+    /**
+     * @return
+     */
+    public Set<TaxonNodeAgentRelation> getAgentRelations() {
+        return this.agentRelations;
+    }
+
+    public TaxonNodeAgentRelation addAgentRelation(DefinedTerm type, TeamOrPersonBase<?> agent){
+        TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(this, agent, type);
+        return result;
+    }
+    /**
+     * @param nodeAgentRelation
+     */
+    protected void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
+        agentRelation.setTaxonNode(this);
+        this.agentRelations.add(agentRelation);
+    }
+
+    /**
+     * @param nodeAgentRelation
+     */
+    public void removeNodeAgent(TaxonNodeAgentRelation agentRelation) {
+        agentRelation.setTaxonNode(this);
+        agentRelations.remove(agentRelation);
+    }
+
+//********************
 
     //synonymToBeused
     public Synonym getSynonymToBeUsed() {
@@ -563,11 +606,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setParent(parent);
 
         // set the classification to the parents classification
-       
+
 	        Classification classification = parent.getClassification();
 	        //FIXME also set the tree index here for performance reasons
 	        setClassificationRecursively(classification);
-        
+
         // add this node to the parent child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){
@@ -685,7 +728,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return parent.getAncestorOfRank(rank);
         }
 		return null;
-        
+
     }
 
     /**
@@ -780,6 +823,21 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return childNodes.size() > 0;
     }
 
+
+    public boolean hasTaxon() {
+        return (taxon!= null);
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public Rank getNullSafeRank() {
+        return hasTaxon() ? getTaxon().getNullSafeRank() : null;
+    }
+
+
+
 //*********************** CLONE ********************************************************/
     /**
      * Clones <i>this</i> taxon node. This is a shortcut that enables to create
@@ -793,33 +851,24 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Override
     public Object clone()  {
-        TaxonNode result;
         try{
-        result = (TaxonNode)super.clone();
-        result.getTaxon().addTaxonNode(result);
-        result.childNodes = new ArrayList<TaxonNode>();
-        result.countChildren = 0;
+            TaxonNode result = (TaxonNode)super.clone();
+            result.getTaxon().addTaxonNode(result);
+            result.childNodes = new ArrayList<TaxonNode>();
+            result.countChildren = 0;
 
-        return result;
+            //agents
+            result.agentRelations = new HashSet<TaxonNodeAgentRelation>();
+            for (TaxonNodeAgentRelation rel : this.agentRelations){
+                result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
+            }
+
+            return result;
         }catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();
             return null;
         }
     }
-
-	public boolean hasTaxon() {
-		return (taxon!= null);
-	}
-
-    /**
-     * @return
-     */
-	@Transient
-    public Rank getNullSafeRank() {
-        return hasTaxon() ? getTaxon().getNullSafeRank() : null;
-    }
-
-
 
 }

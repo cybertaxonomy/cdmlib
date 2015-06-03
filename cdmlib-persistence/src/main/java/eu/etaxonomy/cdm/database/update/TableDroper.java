@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,13 +22,13 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TableDroper.class);
-	
+
 	private boolean ifExists = true;
-	
+
 	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable){
 		return new TableDroper(stepName, tableName, includeAudTable, true);
 	}
-	
+
 	/**
 	 * @param stepName
 	 * @param tableName
@@ -41,11 +41,9 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 		return new TableDroper(stepName, tableName, includeAudTable, ifExists);
 	}
 
-	
+
 	protected TableDroper(String stepName, String tableName, boolean includeAudTable, boolean ifExists) {
-		super(stepName);
-		this.tableName = tableName;
-		this.includeAudTable = includeAudTable;
+		super(stepName, tableName, includeAudTable);
 		this.ifExists = ifExists;
 	}
 
@@ -79,7 +77,7 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 			logger.error(message);
 			return false;
 		}
-		
+
 	}
 
 	/**
@@ -93,7 +91,7 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		
+
 		updateQuery = "DROP TABLE @ifExists @tableName ";
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
@@ -112,7 +110,7 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 		}else{
 			updateQuery = updateQuery.replace("@ifExists", "");
 		}
-		
+
 		return updateQuery;
 	}
 

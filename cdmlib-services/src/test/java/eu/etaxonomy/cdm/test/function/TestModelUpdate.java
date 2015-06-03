@@ -29,45 +29,46 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 public class TestModelUpdate {
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TestModelUpdate.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TestModelUpdate.class);
 
 
-    private void testMySQL(){
-        DbSchemaValidation schema = DbSchemaValidation.CREATE;
+	private void testSelectedDb(){
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-        DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-
-
-        String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm35");
-//      database = "cdm36";
-        CdmDataSource dataSource = getDatasource(dbType, database);  ;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
 
 
-        try {
-            CdmUpdater updater = new CdmUpdater();
-            if (schema == DbSchemaValidation.VALIDATE){
-                updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
+//		database = "cdm36";
+		CdmDataSource dataSource = getDatasource(dbType, database);
 
-        CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
-//      Classification classification = Classification.NewInstance("Me");
-//      Taxon taxon = Taxon.NewInstance(null, null);
-//      Person person = Person.NewInstance();
-//      TaxonNode node = classification.addChildTaxon(taxon, null, null);
-//      DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
-//      TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
+ 		try {
+			CdmUpdater updater = new CdmUpdater();
+			if (schema == DbSchemaValidation.VALIDATE){
+				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        appCtr.getCommonService().createFullSampleData();
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
+//		Classification classification = Classification.NewInstance("Me");
+//		Taxon taxon = Taxon.NewInstance(null, null);
+//		Person person = Person.NewInstance();
+//		TaxonNode node = classification.addChildTaxon(taxon, null, null);
+//		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
+//		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
 //      appCtr.getClassificationService().save(classification);
 
-        appCtr.close();
-    }
+//		appCtr.getCommonService().createFullSampleData();
+
+
+
+		appCtr.close();
+	}
 
 
 
@@ -96,7 +97,8 @@ public class TestModelUpdate {
             return dataSource;
         }else if (dbType == DatabaseTypeEnum.PostgreSQL){
             server = serverSql;
-            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, -1, username,  AccountStore.readOrStorePassword(server, database, username, null), null);
+            username = "postgres";
+            CdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(server, database, 5432, username,  AccountStore.readOrStorePassword(server, database, username, null), null);
             return dataSource;
         }else{
             throw new IllegalArgumentException("dbType not supported:" + dbType);
@@ -105,68 +107,45 @@ public class TestModelUpdate {
 
 
 
-//  String server = "localhost";
-//  String database = "testCDM";
-//  String username = "postgres";
-//  dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
+	/**
+	 * Updates the H2 test database in remote web-app.
+	 * Requires that the local path to the database is adapted
+	 */
+	@SuppressWarnings("unused")  //enable only if needed
+	private void updateRemoteWebappTestH2(){
+		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 
 
-//  //SQLServer
-//  database = "CDMTest";
-//  int port = 1433;
-//  username = "pesiexport";
-////    dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
-//
+ 		try {
+			CdmUpdater updater = new CdmUpdater();
+			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    /**
-     * Updates the H2 test database in remote web-app.
-     * Requires that the local path to the database is adapted
-     */
-    @SuppressWarnings("unused")  //enable only if needed
-    private void updateRemoteWebappTestH2(){
-        String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-        ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
+		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+		CdmApplicationController appCtr;
+		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
+		appCtr.close();
+	}
 
 
-        try {
-            CdmUpdater updater = new CdmUpdater();
-            updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	private void test(){
+		System.out.println("Start Datasource");
+		testSelectedDb();
 
-        //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-        CdmApplicationController appCtr;
-        appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
-        appCtr.close();
-    }
+//		updateRemoteWebappTestH2();
 
+		System.out.println("\nEnd Datasource");
+	}
 
-    private void test(){
-        System.out.println("Start Datasource");
-        testMySQL();
-
-//      updateRemoteWebappTestH2();
-
-        //testDatabaseChange();
-
-        //testSqlServer();
-
-        //CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
-        //testPostgreServer();
-        //testLocalHsql();
-        //testLocalH2();
-        //testWritableResourceDirectory();
-//      testH2();
-        System.out.println("\nEnd Datasource");
-    }
-
-    /**
-     * @param args
-     */
-    public static void  main(String[] args) {
-        TestModelUpdate cc = new TestModelUpdate();
-        cc.test();
-    }
+	/**
+	 * @param args
+	 */
+	public static void  main(String[] args) {
+		TestModelUpdate cc = new TestModelUpdate();
+    	cc.test();
+	}
 
 }

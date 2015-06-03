@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -183,6 +184,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name="combinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorTeam;
@@ -193,6 +195,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name="exCombinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorTeam;
@@ -203,6 +206,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name="basionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorTeam;
@@ -213,6 +217,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @JoinColumn(name="exBasionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorTeam;
@@ -1248,16 +1253,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         	child.hybridChildRelations.remove(hybridRelation);
         	hybridRelation.setHybridName(null);
             hybridRelation.setParentName(null);
-        	
+
         }
         if (this.equals(child)){
         	parent.hybridParentRelations.remove(hybridRelation);
         	this.hybridChildRelations.remove(hybridRelation);
         	hybridRelation.setHybridName(null);
             hybridRelation.setParentName(null);
-        	
+
         }
-        
+
 
     }
 

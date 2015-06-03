@@ -28,13 +28,17 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -52,6 +56,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private IDefinedTermDao termDao;
 
     private UUID uuid1;
     private UUID uuid2;
@@ -137,7 +144,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     @DataSet
-    public void testlistChildren(){
+    public void testListChildren(){
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
 
         Classification classification =  classificationDao.load(ClassificationUuid);
@@ -181,7 +188,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         logger.info(countTaxa);
         assertEquals("there should be 7 taxa left", 7, countTaxa);
     }
-    
+
     @Test
     @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
     @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
@@ -195,7 +202,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
-    
+
     @Test
     @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
     @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml")
@@ -210,9 +217,30 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 
+    @Test
+    public void testSaveAndLoadTaxonNodeAgentRelation(){
+        Classification classification = Classification.NewInstance("Me");
+        Taxon taxon = Taxon.NewInstance(null, null);
+        Person person = Person.NewInstance();
+        TaxonNode node = classification.addChildTaxon(taxon, null, null);
+        DefinedTerm lastScrutiny = (DefinedTerm)termDao.findByUuid(DefinedTerm.uuidLastScrutiny);
+        TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
+        taxonNodeDao.save(node);
+        commitAndStartNewTransaction(null);
+
+        TaxonNode newNode = taxonNodeDao.load(node.getUuid());
+        Assert.assertNotSame(node, newNode);
+        Assert.assertEquals("Node should have agent relation", 1, newNode.getAgentRelations().size());
+        TaxonNodeAgentRelation newRel = newNode.getAgentRelations().iterator().next();
+        Assert.assertEquals(rel, newRel);
+        Assert.assertEquals(rel.getId(), newRel.getId());
+        Assert.assertNotSame(rel, newRel);
+    }
+
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub 
+        // TODO Auto-generated method stub
     }
 
 }

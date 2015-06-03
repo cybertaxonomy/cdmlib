@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,26 +24,26 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
-	
-	private String newColumnName;
-	private String columnType;
-	private Object defaultValue;
+
+	private final String newColumnName;
+	private final String columnType;
+	private final Object defaultValue;
 	private boolean isNotNull;
 
-	private String referencedTable;
+	private final String referencedTable;
 
 	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, null, notNull, referencedTable);
 	}
-	
+
 	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Integer defaultValue, boolean notNull){
 		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, defaultValue, notNull, null);
 	}
-	
+
 	public static final ColumnAdder NewTinyIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
 		return new ColumnAdder(stepName, tableName, newColumnName, "tinyint", includeAudTable, null, notNull, null);
 	}
-	
+
 	public static final ColumnAdder NewDoubleInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
 		return new ColumnAdder(stepName, tableName, newColumnName, "double", includeAudTable, null, notNull, null);
 	}
@@ -51,7 +51,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	public static final ColumnAdder NewBooleanInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Boolean defaultValue){
 		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
 	}
-	
+
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
 	}
@@ -63,17 +63,15 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	public static final ColumnAdder NewClobInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
 	}
-	
+
 	public static final ColumnAdder NewDateTimeInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
 		return new ColumnAdder(stepName, tableName, newColumnName, "datetime", includeAudTable, null, notNull, null);
 	}
-	
+
 	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.columnType = columnType;
-		this.includeAudTable = includeAudTable;
 		this.defaultValue = defaultValue;
 		this.isNotNull = notNull;
 		this.referencedTable = referencedTable;
@@ -90,7 +88,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
-			
+
 			if (defaultValue instanceof Boolean){
 				String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : getBoolean((Boolean) defaultValue, datasource));
 				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
@@ -107,7 +105,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 			if (referencedTable != null){
 				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType);
 			}
-			
+
 			return result;
 		} catch ( Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -117,11 +115,11 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	}
 
 	/**
-	 * Returns the update query string. tableName must already be cased correctly. See {@link CaseType}. 
+	 * Returns the update query string. tableName must already be cased correctly. See {@link CaseType}.
 	 * @param tableName correctly cased table name
 	 * @param datasource data source
 	 * @param monitor monitor
-	 * @return the query string 
+	 * @return the query string
 	 * @throws DatabaseTypeNotSupportedException
 	 */
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
@@ -147,7 +145,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		updateQuery = updateQuery.replace("@columnName", newColumnName);
 		updateQuery = updateQuery.replace("@columnType", databaseColumnType);
 		updateQuery = updateQuery.replace("@addSeparator", getAddColumnSeperator(datasource));
-		
+
 		return updateQuery;
 	}
 
@@ -177,7 +175,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Returns the sql keywords for adding a column. This is usually 'ADD' or 'ADD COLUMN'
@@ -199,7 +197,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	public String getReferencedTable() {
 		return referencedTable;
 	}
-	
+
 
 	public String getNewColumnName() {
 		return newColumnName;
