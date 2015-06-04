@@ -4,13 +4,13 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-remote</artifactId>
-  <version>3.6.0</version>
+  <version>3.6.1-SNAPSHOT</version>
   <properties>
     <!-- custom property to hold the patch version number shouldn't this
       be set in the parent pom? -->
@@ -23,13 +23,13 @@
   <packaging>jar</packaging>
   <scm>
     <connection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.0/cdmlib-remote
+      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
     </connection>
     <developerConnection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.0/cdmlib-remote
+      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
     </developerConnection>
     <url>
-      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.0/cdmlib-remote
+      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
     </url>
   </scm>
 
