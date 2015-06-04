@@ -89,16 +89,24 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase<TableCreator> i
 
 
         //copy data to new column
-
+        String stepName = "Copy data to new column";
         String childTable = "@@" + childTableName + "@@ c";
+        String childTableAud = "@@" + childTableName + "_AUD@@ c";
         String mnTable = "@@" + mnTableName + "@@";
+        String mnTableAud = "@@" + mnTableName + "_AUD@@";
         String sql = ""
                 + " UPDATE " + childTable
                 + " SET " + fkColumnName + " = "
                 +       " (SELECT " + mnParentFkColumnName
                         + " FROM " + mnTable + " MN "
                         + " WHERE MN." + mnChildFkColumnName + " = c.id) ";
-        SimpleSchemaUpdaterStep dataUpdateStep = SimpleSchemaUpdaterStep.NewAuditedInstance(sql, sql, mnTableName, 99);
+        String sqlAudited = ""
+                + " UPDATE " + childTableAud
+                + " SET " + fkColumnName + " = "
+                +       " (SELECT " + mnParentFkColumnName
+                        + " FROM " + mnTableAud + " MN "
+                        + " WHERE MN." + mnChildFkColumnName + " = c.id AND c.REV = MN.REV) ";
+        SimpleSchemaUpdaterStep dataUpdateStep = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, sql, sqlAudited, 99);
         innerStepList.add(dataUpdateStep);
 
         //delete old table
