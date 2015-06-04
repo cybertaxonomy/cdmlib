@@ -93,6 +93,8 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		}
 		if (teamMembers.size() == 0){
 			result = EMPTY_TEAM;
+		} else if (team.isHasMoreMembers()){
+		    result += " et al.";
 		}
 		return result;
 	}
