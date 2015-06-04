@@ -67,13 +67,6 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
-		//add hasMoreMembers
-		stepName = "Add hasMoreMembers to Team";
-		tableName = "AgentBase";
-		newColumnName = "hasMoreMembers";
-		step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-		stepList.add(step);
-
         //#4843
         //Allow NULL for DefinedTermBase_SupportedCategoricalEnumeration
 		//.supportedcategoricalenumerations_id
@@ -90,6 +83,13 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         tableName = "DefinedTermBase_RecommendedModifierEnumeration";
         oldColumnName = "recommendedmodifierenumeration_id";
         step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //add hasMoreMembers
+        stepName = "Add hasMoreMembers to Team";
+        tableName = "AgentBase";
+        newColumnName = "hasMoreMembers";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
         //SingleReadAlignment firstSeqPosition
