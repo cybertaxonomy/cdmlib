@@ -59,7 +59,6 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 //		String columnName;
 		String newColumnName;
 		String oldColumnName;
-		String query;
 		String columnNames[];
 		String referencedTables[];
 		String columnTypes[];
