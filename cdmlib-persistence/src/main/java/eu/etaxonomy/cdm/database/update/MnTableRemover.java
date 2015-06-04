@@ -18,6 +18,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * Tested for: MySQL, H2, PostGres
  * Untested: SQL Server (currently not testable due to #4957)
  *
+ * Open issues:
+ *  - validation that no duplicate values exist (which will throw an exception during invoke)
+ *
  * @author a.mueller
  * @date 2015-05-21
  */
