@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparatorSearch;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -82,13 +81,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
-        if (sortMode != null){
-	        if (sortMode.equals(NodeSortMode.NaturalOrder)){
-	        	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
-	        	Collections.sort(childNodes, comparator);
-	        } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
-	        	Collections.sort(childNodes, this.taxonNodeComparator);
-	        } 
+        if (sortMode == null){
+            sortMode = NodeSortMode.RankAndAlphabeticalOrder;
+        }
+        if (sortMode.equals(NodeSortMode.NaturalOrder)){
+            TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+            Collections.sort(childNodes, comparator);
+        } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
+            Collections.sort(childNodes, this.taxonNodeComparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
@@ -231,14 +231,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             newAcceptedTaxon.addDescription(description);
         }
         oldTaxon.clearDescriptions();
-        
+
         taxonService.update(newAcceptedTaxon);
-        
+
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
 //        conf.setDeleteNameIfPossible(false);
-        
+
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
@@ -297,7 +297,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 	            		} else {
 	            			//move the children to the parent
-	            			
+
 	            			for (TaxonNode child: childNodesList){
 	            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
 	            			}
@@ -320,7 +320,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
 		            		    taxonService.saveOrUpdate(taxon);
 		            		    saveOrUpdate(taxonNode);
-		            		    
+
 				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
 				            	if (!resultTaxon.isOk()){
@@ -341,7 +341,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
 				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 				            	saveOrUpdate(taxonNode);
-				            	
+
 				            	taxonService.saveOrUpdate(taxon);
 				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
                                 if (!resultTaxon.isOk()){
@@ -374,14 +374,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
 
     }
-    
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
     	TaxonNode node = dao.load(nodeUUID);
     	return deleteTaxonNode(node, config);
     }
-    
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
      */
@@ -398,13 +398,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		if (result.isOk()){
     			return result;
     		}
-    	} 
-    	
+    	}
+
     	result.setCdmEntity(node);
     	boolean success = taxon.removeTaxonNode(node);
     	taxonService.saveOrUpdate(taxon);
 		result.addUpdatedObject(taxon);
-		
+
     	if (success){
 			result.setStatus(Status.OK);
     		if (!dao.delete(node).equals(null)){
@@ -419,7 +419,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		return result;
     	}
 
-    	
+
 
     }
 
@@ -438,7 +438,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public int countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
-    
+
     @Override
     @Transactional
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean moveToParent){
@@ -446,7 +446,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (moveToParent){
     	   return moveTaxonNode(taxonNodeUuid, targetNodeUuid);
        }else{
-    	   
+
     	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
     	   TaxonNode targetNode = dao.load(targetNodeUuid);
     	   Integer sortIndex = targetNode.getSortIndex();
@@ -459,7 +459,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         return result;
     }
-    
+
     @Override
     @Transactional
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
