@@ -97,70 +97,73 @@
                   <ggbn:marker>ITS (ITS1, 5.8S rRNA, ITS2)</ggbn:marker>
                   <ggbn:Sequencings>
                     <ggbn:sequencing>
-<!--                       <ggbn:SingleSequencings> -->
-<!--                         <ggbn:singleSequencing> -->
-<!--                           <ggbn:sequencingDirection>forward</ggbn:sequencingDirection> -->
-<!--                           <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_F.ab1</ggbn:chromatogramFileURI> -->
-<!--                           <ggbn:SequencingPrimers> -->
-<!--                             <ggbn:sequencingPrimer> -->
-<!--                               <ggbn:primerSequence -->
-<!--                                 Direction="forward">5´-GCCGTMTTTATGTTAATGC-3´</ggbn:primerSequence> -->
-<!--                               <ggbn:primerName>PIpetB1411F</ggbn:primerName> -->
-<!--                               <ggbn:primerReferenceCitation>Löhne & -->
-<!--                                 Borsch 2005</ggbn:primerReferenceCitation> -->
-<!--                             </ggbn:sequencingPrimer> -->
-<!--                           </ggbn:SequencingPrimers> -->
-<!--                         </ggbn:singleSequencing> -->
-<!--                         <ggbn:singleSequencing> -->
-<!--                           <ggbn:sequencingDirection>reverse</ggbn:sequencingDirection> -->
-<!--                           <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_R.ab1</ggbn:chromatogramFileURI> -->
-<!--                           <ggbn:SequencingPrimers> -->
-<!--                             <ggbn:sequencingPrimer> -->
-<!--                               <ggbn:primerSequence -->
-<!--                                 Direction="reverse">5´-AATTTAGCYCTTAATACAGG-3´</ggbn:primerSequence> -->
-<!--                               <ggbn:primerName>PIpetD738R</ggbn:primerName> -->
-<!--                               <ggbn:primerReferenceCitation>Löhne & -->
-<!--                                 Borsch 2005</ggbn:primerReferenceCitation> -->
-<!--                             </ggbn:sequencingPrimer> -->
-<!--                           </ggbn:SequencingPrimers> -->
-<!--                         </ggbn:singleSequencing> -->
-<!--                       </ggbn:SingleSequencings> -->
-<!--                       <ggbn:consensusSequence>TTTCGGGTCC TTTATAGTGA -->
-<!--                         AGATATAGCA TAGATAGTTG -->
-<!--                         TAATCCATTA -->
-<!--                         TGTATCATTG GGGAAGGAAG GAGAATATTT TTTTGATAGA ATACAAGTAT -->
-<!--                         GGATTATTGA AACTAATACG CCATGTATTT GGATATTTCC CTTGAACTGC -->
-<!--                         ATAATATTCT TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA -->
-<!--                         AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG TCTGTGCAGA -->
-<!--                         TACGGGCTTT TATCTATCTG CCACATTGTA ATTCACAAAC CAATGTGTCT -->
-<!--                         TTGTTCCAAC CATCGCGTAA GCCCCATACA GAAGATAGGC TGGTTCGCTT -->
-<!--                         GAAGAGAATC TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG -->
-<!--                         GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG TATAAAAATG -->
-<!--                         CACTCATTTC CTCTGCATTG ACACGAGCTA TGAGACTATC GGAGTGAAAG -->
-<!--                         AAAGGGTCTA AAGAAGAAGA AAGCTTGGGC TAGATTAGTA ACAAGTAAAT -->
-<!--                         CCTTTGTGTG TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG -->
-<!--                         CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA CTTGATCATA -->
-<!--                         TCACGATTGA CTTTGTAAGC CTACTTGGGT ATTGAGTATT TACTTGTAAG -->
-<!--                         AACCGAATTC TTTGGGGGAT AGTTGCAAAA AGAATCCAGT CAATTGTTCT -->
-<!--                         TACGTAAAAC CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC -->
-<!--                         GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC GAGCTGGATG -->
-<!--                         ATGAAAAATT ATCATGTCCG GTTCCTTCG</ggbn:consensusSequence> -->
-<!--                       <ggbn:consensusSequenceLength>912</ggbn:consensusSequenceLength> -->
-<!--                       <ggbn:consensusSequenceChromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_Campa_drabifolia.pde</ggbn:consensusSequenceChromatogramFileURI> -->
-<!--                       <ggbn:geneticAccession> -->
-<!--                         <ggbn:geneticAccessionNumber>AJ746397</ggbn:geneticAccessionNumber> -->
-<!--                         <ggbn:geneticAccessionNumberURI>http://www.ncbi.nlm.nih.gov/nuccore/56310613</ggbn:geneticAccessionNumberURI> -->
-<!--                       </ggbn:geneticAccession> -->
-<!--                       <ggbn:References> -->
-<!--                         <ggbn:Reference> -->
-<!--                           <ggbn:ReferenceCitation>Gemeinholzer,B., -->
-<!--                             Bachmann,K. (2005): Examining morphological -->
-<!--                             and molecular diagnostic character states in -->
-<!--                             Cichorium intybus L. (Asteraceae) and -->
-<!--                             Cichorium spinosum L. Plant Systematics and -->
-<!--                             Evolution 253 (1-3): 105-123.</ggbn:ReferenceCitation> -->
-<!--                         </ggbn:Reference> -->
-<!--                       </ggbn:References> -->
+                      <ggbn:SingleSequencings>
+                        <ggbn:singleSequencing>
+                          <ggbn:sequencingDirection>forward</ggbn:sequencingDirection>
+                          <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_GM312-petD_F.ab1</ggbn:chromatogramFileURI>
+                          <ggbn:SequencingPrimers>
+                            <ggbn:sequencingPrimer>
+                              <ggbn:primerSequence
+                                Direction="forward">5´-GCCGTMTTTATGTTAATGC-3´</ggbn:primerSequence>
+                              <ggbn:primerName>PIpetB1411F</ggbn:primerName>
+                              <ggbn:primerReferenceCitation>Löhne &amp;
+                                Borsch 2005</ggbn:primerReferenceCitation>
+                            </ggbn:sequencingPrimer>
+                          </ggbn:SequencingPrimers>
+                        </ggbn:singleSequencing>
+                        <ggbn:singleSequencing>
+                          <ggbn:sequencingDirection>reverse</ggbn:sequencingDirection>
+                          <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_GM312-petD_R.ab1</ggbn:chromatogramFileURI>
+                          <ggbn:SequencingPrimers>
+                            <ggbn:sequencingPrimer>
+                              <ggbn:primerSequence
+                                Direction="reverse">5´-AATTTAGCYCTTAATACAGG-3´</ggbn:primerSequence>
+                              <ggbn:primerName>PIpetD738R</ggbn:primerName>
+                              <ggbn:primerReferenceCitation>Löhne &amp;
+                                Borsch 2005</ggbn:primerReferenceCitation>
+                            </ggbn:sequencingPrimer>
+                          </ggbn:SequencingPrimers>
+                        </ggbn:singleSequencing>
+                      </ggbn:SingleSequencings>
+                      <ggbn:consensusSequence>
+                      TTTCGGGTCC TTTATAGTGA AGATATAGCA TAGATAGTTG
+                      TAATCCATTA TGTATCATTG GGGAAGGAAG GAGAATATTT
+                      TTTTGATAGA ATACAAGTAT GGATTATTGA AACTAATACG
+                      CCATGTATTT GGATATTTCC CTTGAACTGC ATAATATTCT
+                      TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA
+                      AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG
+                      TCTGTGCAGA TACGGGCTTT TATCTATCTG CCACATTGTA
+                      ATTCACAAAC CAATGTGTCT TTGTTCCAAC CATCGCGTAA
+                      GCCCCATACA GAAGATAGGC TGGTTCGCTT GAAGAGAATC
+                      TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG
+                      GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG
+                      TATAAAAATG CACTCATTTC CTCTGCATTG ACACGAGCTA
+                      TGAGACTATC GGAGTGAAAG AAAGGGTCTA AAGAAGAAGA
+                      AAGCTTGGGC TAGATTAGTA ACAAGTAAAT CCTTTGTGTG
+                      TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG
+                      CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA
+                      CTTGATCATA TCACGATTGA CTTTGTAAGC CTACTTGGGT
+                      ATTGAGTATT TACTTGTAAG AACCGAATTC TTTGGGGGAT
+                      AGTTGCAAAA AGAATCCAGT CAATTGTTCT TACGTAAAAC
+                      CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC
+                      GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC
+                      GAGCTGGATG ATGAAAAATT ATCATGTCCG GTTCCTTCG</ggbn:consensusSequence>
+                      <ggbn:consensusSequenceLength>912</ggbn:consensusSequenceLength>
+                      <ggbn:consensusSequenceChromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_Campa_drabifolia.pde</ggbn:consensusSequenceChromatogramFileURI>
+                      <ggbn:geneticAccession>
+                        <ggbn:geneticAccessionNumber>AJ746397</ggbn:geneticAccessionNumber>
+                        <ggbn:geneticAccessionNumberURI>http://www.ncbi.nlm.nih.gov/nuccore/56310613</ggbn:geneticAccessionNumberURI>
+                      </ggbn:geneticAccession>
+                      <ggbn:References>
+                        <ggbn:Reference>
+                          <ggbn:ReferenceCitation>Gemeinholzer,B.,
+                            Bachmann,K. (2005): Examining morphological
+                            and molecular diagnostic character states in
+                            Cichorium intybus L. (Asteraceae) and
+                            Cichorium spinosum L. Plant Systematics and
+                            Evolution 253 (1-3): 105-123.</ggbn:ReferenceCitation>
+                        </ggbn:Reference>
+                      </ggbn:References>
                     </ggbn:sequencing>
                   </ggbn:Sequencings>
                 </ggbn:amplification>

@@ -9,14 +9,28 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.ggbn;
 
+import java.net.URI;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportReport;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SequenceString;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner
@@ -29,11 +43,16 @@ public class AbcdGgbnParser {
 
     private final String prefix = "ggbn:";
 
-    /**
-     * @param ggbn
-     * @return
-     */
-    public DnaSample parse(NodeList ggbn) {
+    private final Abcd206ImportReport report;
+
+    private final ICdmApplicationConfiguration cdmAppController;
+
+    public AbcdGgbnParser(Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
+        this.report = report;
+        this.cdmAppController = cdmAppController;
+    }
+
+    public DnaSample parse(NodeList ggbn, Abcd206ImportState state) {
         DnaSample dnaSample = DnaSample.NewInstance();
 
         for(int i=0;i<ggbn.getLength();i++){
@@ -51,19 +70,16 @@ public class AbcdGgbnParser {
                 NodeList gelImageList = element.getElementsByTagName(prefix+"gelImage");
                 NodeList amplificationsList = element.getElementsByTagName(prefix+"Amplifications");
 
-                parseDnaQuality(element);
+//                dnaSample.setDnaQuality(parseDnaQuality(element, state));
 
-                parseGelImage(gelImageList);
-                parseAmplifications(amplificationsList);
+                parseGelImage(gelImageList, state);
+                parseAmplifications(amplificationsList, dnaSample, state);
             }
         }
         return dnaSample;
     }
 
-    /**
-     * @param element
-     */
-    private void parseDnaQuality(Element element) {
+    private DnaQuality parseDnaQuality(Element element, Abcd206ImportState state) {
         DnaQuality dnaQuality = DnaQuality.NewInstance();
 
         NodeList purificationMethodList = element.getElementsByTagName(prefix+"purificationMethod");
@@ -95,12 +111,10 @@ public class AbcdGgbnParser {
 
 //        dnaQuality.setQualityTerm(qualityTerm)
 
+        return dnaQuality;
     }
 
-    /**
-     * @param gelImageList
-     */
-    private void parseGelImage(NodeList gelImageList) {
+    private void parseGelImage(NodeList gelImageList, Abcd206ImportState state) {
         if(gelImageList.item(0)!=null && gelImageList.item(0) instanceof Element){
             Element gelImage = (Element)gelImageList.item(0);
             NodeList fileURIList = gelImage.getElementsByTagName("fileURI");
@@ -115,51 +129,114 @@ public class AbcdGgbnParser {
 
     }
 
-    /**
-     * @param amplificationsList
-     */
-    private void parseAmplifications(NodeList amplificationsList) {
+    private void parseAmplifications(NodeList amplificationsList, DnaSample dnaSample, Abcd206ImportState state) {
         if(amplificationsList.item(0)!=null && amplificationsList.item(0) instanceof Element){
+            AmplificationResult amplificationResult = AmplificationResult.NewInstance();
+            Amplification amplification = Amplification.NewInstance();
             NodeList amplificationList = ((Element) amplificationsList.item(0)).getElementsByTagName(prefix+"amplification");
             for(int i=0;i<amplificationList.getLength();i++){
                 if(amplificationList.item(i) instanceof Element){
-                    Element amplification = (Element)amplificationList.item(i);
-                    NodeList amplificationDateList = amplification.getElementsByTagName(prefix+"amplificationDate");
-                    NodeList amplificationStaffList = amplification.getElementsByTagName(prefix+"amplificationStaff");
-                    NodeList markerList = amplification.getElementsByTagName(prefix+"marker");
-                    NodeList markerSubfragmentList = amplification.getElementsByTagName(prefix+"markerSubfragment");
-                    NodeList amplificationSuccessList = amplification.getElementsByTagName(prefix+"amplificationSuccess");
-                    NodeList amplificationSuccessDetailsList = amplification.getElementsByTagName(prefix+"amplificationSuccessDetails");
-                    NodeList amplificationMethodList = amplification.getElementsByTagName(prefix+"amplificationMethod");
-                    NodeList purificationMethodList = amplification.getElementsByTagName(prefix+"purificationMethod");
-                    NodeList libReadsSeqdList = amplification.getElementsByTagName(prefix+"lib_reads_seqd");
-                    NodeList libScreenList = amplification.getElementsByTagName(prefix+"lib_screen");
-                    NodeList libVectorList = amplification.getElementsByTagName(prefix+"lib_vector");
-                    NodeList libConstMethList = amplification.getElementsByTagName(prefix+"lib_const_meth");
-                    NodeList plasmidList = amplification.getElementsByTagName(prefix+"plasmid");
+                    Element amplificationElement = (Element)amplificationList.item(i);
+                    NodeList amplificationDateList = amplificationElement.getElementsByTagName(prefix+"amplificationDate");
+                    NodeList amplificationStaffList = amplificationElement.getElementsByTagName(prefix+"amplificationStaff");
 
-                    parseAmplificationSequencing(amplification.getElementsByTagName(prefix+"Sequencings"));
-                    parseAmplificationPrimers(amplification.getElementsByTagName(prefix+"AmplificationPrimers"));
+                    NodeList markerList = amplificationElement.getElementsByTagName(prefix+"marker");
+                    if(markerList.item(0)!=null){
+                        String amplificationMarker = markerList.item(0).getTextContent();
+                        DefinedTerm dnaMarker = null;
+                        List<DefinedTermBase> markersFound = cdmAppController.getTermService().findByTitle(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                        if(markersFound.size()==1){
+                            dnaMarker = (DefinedTerm) markersFound.get(0);
+                        }
+                        else{
+                            dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
+                            cdmAppController.getTermService().saveOrUpdate(dnaMarker);
+                        }
+                        amplification.setDnaMarker(dnaMarker);
+                    }
+
+                    NodeList markerSubfragmentList = amplificationElement.getElementsByTagName(prefix+"markerSubfragment");
+                    NodeList amplificationSuccessList = amplificationElement.getElementsByTagName(prefix+"amplificationSuccess");
+                    NodeList amplificationSuccessDetailsList = amplificationElement.getElementsByTagName(prefix+"amplificationSuccessDetails");
+                    NodeList amplificationMethodList = amplificationElement.getElementsByTagName(prefix+"amplificationMethod");
+                    NodeList purificationMethodList = amplificationElement.getElementsByTagName(prefix+"purificationMethod");
+                    NodeList libReadsSeqdList = amplificationElement.getElementsByTagName(prefix+"lib_reads_seqd");
+                    NodeList libScreenList = amplificationElement.getElementsByTagName(prefix+"lib_screen");
+                    NodeList libVectorList = amplificationElement.getElementsByTagName(prefix+"lib_vector");
+                    NodeList libConstMethList = amplificationElement.getElementsByTagName(prefix+"lib_const_meth");
+                    NodeList plasmidList = amplificationElement.getElementsByTagName(prefix+"plasmid");
+
+                    NodeList sequencingsList = amplificationElement.getElementsByTagName(prefix+"Sequencings");
+                    if(sequencingsList.item(0)!=null && sequencingsList.item(0) instanceof Element){
+                        parseAmplificationSequencings((Element)sequencingsList.item(0), dnaSample, state);
+                    }
+                    parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
+            amplificationResult.setAmplification(amplification);
+            dnaSample.addAmplificationResult(amplificationResult);
         }
     }
 
-    /**
-     * @param elementsByTagName
-     */
     private void parseAmplificationPrimers(NodeList elementsByTagName) {
         // TODO Auto-generated method stub
 
     }
 
-    /**
-     * @param nodeList
-     *
-     */
-    private void parseAmplificationSequencing(NodeList nodeList) {
-        // TODO Auto-generated method stub
+    private void parseAmplificationSequencings(Element sequencings, DnaSample dnaSample, Abcd206ImportState state) {
+        NodeList sequencingList = sequencings.getElementsByTagName(prefix+"sequencing");
+        for(int i=0;i<sequencingList.getLength();i++){
+            Sequence sequence = Sequence.NewInstance("");
+            dnaSample.addSequence(sequence);
 
+            if(sequencingList.item(i) instanceof Element){
+                Element sequencing = (Element)sequencingList.item(i);
+                //Consensus sequence
+                NodeList consensusSequencesList = sequencing.getElementsByTagName(prefix+"consensusSequence");
+                if(consensusSequencesList.item(0)!=null){
+                    String sequenceString = consensusSequencesList.item(0).getTextContent();
+                    sequenceString = sequenceString.replaceAll("\n", "");
+                    sequenceString = sequenceString.replaceAll("( )+", " ");
+                    sequence.setConsensusSequence(SequenceString.NewInstance(sequenceString));
+                }
+                //sequence length
+                NodeList consensusSequencesLengthList = sequencing.getElementsByTagName(prefix+"consensusSequenceLength");
+                if(sequence.getConsensusSequence()!=null){
+                    sequence.getConsensusSequence().setLength(parseFirstNodeDouble(consensusSequencesLengthList).intValue());
+                }
+                //contig file URL
+                NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
+                URI uri = parseFirstUri(consensusSequenceChromatogramFileURIList);
+                Media contigFile = Media.NewInstance(uri, null, null, null);
+                sequence.setContigFile(contigFile);
+            }
+        }
+//        if(nodeList.item(0)!=null && nodeList.item(0) instanceof Element){
+//        NodeList plasmidList = amplificationElement.getElementsByTagName(prefix+"plasmid");
+
+    }
+
+    private URI parseFirstUri(NodeList nodeList){
+        URI uri = null;
+        if(nodeList.item(0)!=null){
+            String textContent = nodeList.item(0).getTextContent();
+            if(textContent!=null){
+                try {
+                    uri = URI.create(textContent);
+                } catch (IllegalArgumentException e) {
+                    //nothing
+                }
+            }
+        }
+        return uri;
+    }
+
+    private String parseFirstTextContent(NodeList nodeList){
+        String string = null;
+        if(nodeList.getLength()>0){
+            string = nodeList.item(0).getTextContent();
+        }
+        return string;
     }
 
     private Double parseFirstNodeDouble(NodeList nodeList){

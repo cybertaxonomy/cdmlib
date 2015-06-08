@@ -345,8 +345,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 Element unitExtension = (Element) unitExtensions.item(i);
                 NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
                 if(ggbn.getLength()>0){
-                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
-                    DnaSample dnaSample = ggbnParser.parse(ggbn);
+                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser(report, cdmAppController);
+                    DnaSample dnaSample = ggbnParser.parse(ggbn, state);
                     save(dnaSample, state);
                     String specimenUnitID = null;
                     SpecimenOrObservationBase<?> parentSpecimen = parent;
