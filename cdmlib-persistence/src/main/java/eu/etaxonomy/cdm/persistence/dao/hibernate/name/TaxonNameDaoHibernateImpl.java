@@ -31,7 +31,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -54,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -307,9 +307,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
             NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
@@ -695,9 +692,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getUuidAndTitleCacheOfNames()
-     */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
         String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase";

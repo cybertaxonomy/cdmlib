@@ -61,7 +61,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
     								//+ "(" + month + ")?)" ;                 // optional month
 
-    //separator
     protected static String yearSeperator = "\\." + oWs;
     protected static String detailSeparator = ":" + oWs;
     protected static String referenceSeparator1 = "," + oWs ;
@@ -76,19 +75,19 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String status = "";
 
     //marker
-    protected static String InfraGenusMarker = "(subgen.|subg.|sect.|subsect.|ser.|subser.|t.infgen.|\\[unranked\\])";
-    protected static String aggrOrGroupMarker = "(aggr.|agg.|group)";
-    protected static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f. sp.|f.spec.|f.sp.|\\[unranked\\]|tax." + fWs + "infrasp.)";
-    protected static String oldInfraSpeciesMarker = "(prol.|proles|race|taxon|sublusus)";
+    protected static String InfraGenusMarker = "(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
+    protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
+    protected static String infraSpeciesMarker = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\. sp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
     //AuthorString
 	protected static String authorPart = "(" + "(O'|d'|D'|L'|'t|ten\\s||le\\s|zur\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
-    protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?" ;
-    protected static String finalTeamSplitter = fWs + "(&)" + fWs;
+    protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f\\.|fil\\.|secundus)?" ;
+    protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
-    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?"  + author + "(" + finalTeamSplitter + "al.)?" +  fWs;
-    protected static String exString = "(ex.?)";
+    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)" +  fWs;
+    protected static String exString = "(ex\\.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
     protected static String basEnd = "\\)";
@@ -126,7 +125,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
 
     protected static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|\u00DF|\\(\\d{1,3}\\)))?";
-    protected static String pFig = "fig." + fWs + nr4 + "[a-z]?";
+    protected static String pFig = "fig\\." + fWs + nr4 + "[a-z]?";
     protected static String pFigs = pFig + "(-" + nr4 + ")?";
     //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
     protected static String pTabFig = "(" + pStrTab + "|" + pFigs + ")";
@@ -199,24 +198,20 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String pBookReference = softEditionVolRefTitle;
     protected static String pBookSectionReference = authorTeam + referenceAuthorSeparator + softEditionVolRefTitle;
-    protected static String pArticleReference = pVolRefTitle  ;
-    protected static String pSoftArticleReference = softVolNoAuthorRefTitle  ;
-
+    protected static String pArticleReference = pVolRefTitle;
+    protected static String pSoftArticleReference = softVolNoAuthorRefTitle;
 
     protected static String pReferenceSineDetail = "(" + pArticleReference + "|" + pBookSectionReference + "|" + pBookReference + ")";
-
 
     protected static String pReference = pReferenceSineDetail + detailSeparator + detail +
 					yearSeperator + yearPhrase + "(" + referenceEnd + ")?";
 
     //static String strictBook = referenc
 
-
-
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
-    protected static String pNomStatusNom = "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s?prop\\.)?|altern(ativ)?\\.|subnud.|nov\\.|legit\\.|sanct\\.|valid|"+
+    protected static String pNomStatusNom = "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s?prop\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
     					"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
     protected static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.)";
@@ -238,7 +233,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     //cultivars and hybrids
     protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
-    protected static String cultivarMarker = oWs + "(cv.|')";
+    protected static String cultivarMarker = oWs + "(cv\\.|')";
     protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|notho)";
     protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + hybridPart;
     protected static String hybridFormularSeparator = oWs + "[" + hybridSign + "xX]" + oWs;

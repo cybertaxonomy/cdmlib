@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
@@ -32,32 +32,24 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	final static UUID uuid = UUID.fromString("1cbda0d1-d5cc-480f-bf38-40a510a3f223");
 
 	public static final String EMPTY_TEAM = "-empty team-";
-	
+
 	static public TeamDefaultCacheStrategy NewInstance(){
 		return new TeamDefaultCacheStrategy();
 	}
-	
-	/**
-	 * 
-	 */
+
 	private TeamDefaultCacheStrategy() {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INomenclaturalAuthorCacheStrategy#getNomenclaturalTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-	 */
-	public String getNomenclaturalTitle(Team team) {
+	@Override
+    public String getNomenclaturalTitle(Team team) {
 		String result = "";
-		
+
 		List<Person> teamMembers = team.getTeamMembers();
 		int i = 0;
 		for (Person teamMember : teamMembers){
@@ -65,7 +57,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 			String concat;
 			if (i <= 1){
 				concat = "";
-			}else if (i < teamMembers.size()){
+			}else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size()) ){
 				concat = STD_TEAM_CONCATINATION;
 			}else{
 				concat = FINAL_TEAM_CONCATINATION;
@@ -74,18 +66,18 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		}
 		if (teamMembers.size() == 0){
 			result = team.getTitleCache();
+		}else if (team.isHasMoreMembers()){
+		    result += " et al.";
 		}
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INomenclaturalAuthorCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-	 */
-	public String getTitleCache(Team team) {
+	@Override
+    public String getTitleCache(Team team) {
 		// TODO is still dummy
 		String result = "";
 		List<Person> teamMembers = team.getTeamMembers();//Hibernate.initialize(teamMembers);
-		
+
 		int i = 0;
 		for (Person teamMember : teamMembers){
 			i++;
@@ -101,6 +93,8 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		}
 		if (teamMembers.size() == 0){
 			result = EMPTY_TEAM;
+		} else if (team.isHasMoreMembers()){
+		    result += " et al.";
 		}
 		return result;
 	}

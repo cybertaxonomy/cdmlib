@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,22 +22,22 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeChanger> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
-	
-	private String columnName;
-	private String newColumnType;
-	private Object defaultValue;
-	private boolean isNotNull;
-	private String referencedTable;
+
+	private final String columnName;
+	private final String newColumnType;
+	private final Object defaultValue;
+	private final boolean isNotNull;
+	private final String referencedTable;
 
 
 	public static final ColumnTypeChanger NewStringSizeInstance(String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){
 		return new ColumnTypeChanger(stepName, tableName, columnName, "nvarchar("+newSize+")", includeAudTable, null, false, null);
 	}
-	
+
 	public static final ColumnTypeChanger NewClobInstance(String stepName, String tableName, String columnName, boolean includeAudTable){
 		return new ColumnTypeChanger(stepName, tableName, columnName, "clob", includeAudTable, null, false, null);
 	}
-	
+
 	public static final ColumnTypeChanger NewInt2DoubleInstance(String stepName, String tableName, String columnName, boolean includeAudTable){
 		return new ColumnTypeChanger(stepName, tableName, columnName, "double", includeAudTable, null, false, null);
 	}
@@ -45,18 +45,16 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 	public static final ColumnTypeChanger NewInt2StringInstance(String stepName, String tableName, String columnName, int size, boolean includeAudTable, Integer defaultValue, boolean notNull){
 		return new ColumnTypeChanger(stepName, tableName, columnName, "nvarchar("+size+")", includeAudTable, defaultValue, notNull, null);
 	}
-	
+
 //	public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(){
-//		
+//
 //	}
-	
-	
+
+
 	protected ColumnTypeChanger(String stepName, String tableName, String columnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.columnName = columnName;
 		this.newColumnType = newColumnType;
-		this.includeAudTable = includeAudTable;
 		this.defaultValue = defaultValue;
 		this.isNotNull = notNull;
 		this.referencedTable = referencedTable;
@@ -66,16 +64,16 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		try {
-			
+
 			String updateQuery;
 			if (this.isNotNull){
 				updateQuery = getNotNullUpdateQuery(tableName, datasource, monitor);
 				datasource.executeUpdate(updateQuery);
 			}
-			
+
 			updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
-			
+
 			if (defaultValue instanceof Boolean){
 				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
 				updateQuery = updateQuery.replace("@tableName", tableName);
@@ -85,7 +83,7 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 			if (referencedTable != null){
 				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable, caseType);
 			}
-				
+
 			return result;
 		} catch ( Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -141,14 +139,14 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 		updateQuery = updateQuery.replace("@columnName", columnName);
 		updateQuery = updateQuery.replace("@columnType", databaseColumnType);
 //		updateQuery = updateQuery.replace("@addSeparator", getAddColumnSeperator(datasource));
-		
+
 		return updateQuery;
 	}
 
 	private String getDatabaseColumnType(ICdmDataSource datasource, String columnType) {
 		return ColumnAdder.getDatabaseColumnType(datasource, columnType);
 	}
-	
+
 	public String getReferencedTable() {
 		return referencedTable;
 	}

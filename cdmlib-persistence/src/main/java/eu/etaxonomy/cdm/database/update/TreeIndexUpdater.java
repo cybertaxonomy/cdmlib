@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,11 +23,11 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  */
 public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpdater> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
-	
+
 	private String indexColumnName = "treeIndex";
-	private String treeIdColumnName;
-	private String parentIdColumnName = "parent_id";
-	
+	private final String treeIdColumnName;
+	private final String parentIdColumnName = "parent_id";
+
 	public static final TreeIndexUpdater NewInstance(String stepName, String tableName, String treeIdColumnName, boolean includeAudTable){
 		return new TreeIndexUpdater(stepName, tableName, treeIdColumnName, null, includeAudTable);
 	}
@@ -35,68 +35,66 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 	public static final TreeIndexUpdater NewInstance(String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable){
 		return new TreeIndexUpdater(stepName, tableName, treeIdColumnName, indexColumnName, includeAudTable);
 	}
-	
-	
+
+
 	protected TreeIndexUpdater(String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.treeIdColumnName = treeIdColumnName;
 		this.indexColumnName = indexColumnName == null ? this.indexColumnName : indexColumnName;
-		this.includeAudTable = includeAudTable;
 	}
 
 	@Override
 	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		try{
-			boolean result = true;			
-			
+			boolean result = true;
+
 	//		String charType = "CHAR";  //TODO may depend on database type
-			
+
 			//clean up nodes without classification  //this should not happen with correct "delete" implementation
 			String sql = String.format(" DELETE FROM %s WHERE %s IS NULL ", tableName, treeIdColumnName);
 			datasource.executeUpdate(sql);
-			
+
 			//... set all index entries to NULL
 			sql = String.format(" UPDATE %s SET %s = NULL", tableName, indexColumnName);
 			datasource.executeUpdate(sql);
-			
+
 			//start
 			String separator = ITreeNode.separator;
 			String treePrefix = ITreeNode.treePrefix;
 			sql = String.format(" UPDATE %s " +
 					" SET %s = CONCAT('%s%s', %s, '%s', id, '%s') " +
-					" WHERE %s IS NULL AND %s IS NOT NULL ", 
-						tableName, 
-						indexColumnName, separator, treePrefix, treeIdColumnName, separator, separator, 
+					" WHERE %s IS NULL AND %s IS NOT NULL ",
+						tableName,
+						indexColumnName, separator, treePrefix, treeIdColumnName, separator, separator,
 						parentIdColumnName, treeIdColumnName);
 			datasource.executeUpdate(sql);
-			
+
 			//width search index creation
 			String sqlCount = String.format(" SELECT count(*) as n " +
 					" FROM %s child INNER JOIN %s parent ON child.%s = parent.id " +
 					" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ",
 					tableName, tableName, parentIdColumnName, indexColumnName, indexColumnName);
-			
+
 			Long n;
 			do {
-			
+
 				//MySQL
 				if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
 					sql = String.format(" UPDATE %s child " +
 							" INNER JOIN %s parent ON child.%s = parent.id " +
 							" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +
-							" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ", 
-								tableName, 
-								tableName, parentIdColumnName, 
+							" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ",
+								tableName,
+								tableName, parentIdColumnName,
 								indexColumnName, indexColumnName, separator,
 								indexColumnName, indexColumnName);
 				}else{
 					//ANSI
 					//http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
-					//does not work with MySQL as MySQL does not allow to use the same table in Subselect and Update (error 1093: http://dev.mysql.com/doc/refman/5.1/de/subquery-errors.html) 
+					//does not work with MySQL as MySQL does not allow to use the same table in Subselect and Update (error 1093: http://dev.mysql.com/doc/refman/5.1/de/subquery-errors.html)
 					sql = String.format(" UPDATE %s " +
 							" SET %s = ( " +
-								" ( SELECT CONCAT ( parent.%s, %s.id, '%s') " + 
+								" ( SELECT CONCAT ( parent.%s, %s.id, '%s') " +
 									" FROM %s parent " +
 									" WHERE parent.id = %s.%s ) " +
 								" ) " +
@@ -111,17 +109,17 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 								indexColumnName, tableName, separator,
 								tableName,
 								tableName, parentIdColumnName,
-								
+
 								tableName,
 								tableName, parentIdColumnName, indexColumnName, tableName, indexColumnName
 							);
 				}
-				
+
 				datasource.executeUpdate(sql);
-				
+
 				n = (Long)datasource.getSingleValue(sqlCount);
 			}	while (n > 0) ;
-			
+
 			sqlCount = String.format(" SELECT count(*) as n " +
 					" FROM %s " +
 					" WHERE %s IS NULL ", tableName, indexColumnName);
@@ -130,7 +128,7 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 				String message = "There are tree nodes with no tree index in %s. This indicates that there is a problem in the tree structure of 1 or more classifications.";
 				logger.error(String.format(message, tableName));
 			}
-			
+
 			return result;
 		}catch(Exception e){
 			monitor.warning(e.getMessage(), e);

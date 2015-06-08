@@ -31,14 +31,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	/**
-	 *returns the childnodes of the taxonNode, if recursive is true it returns all descendants
+	 *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
 	 *
 	 * @param taxonNode
 	 * @param propertyPaths
 	 * @param recursive
-	 * @return
+	 * @return List<TaxonNode>
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, boolean sort);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
 
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
@@ -111,6 +111,8 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 */
 	public int countAllNodesForClassification(Classification classification);
+
+	public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config);
 
 
     /**

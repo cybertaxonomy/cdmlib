@@ -34,11 +34,20 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
+ * This test was formerly used to generally test if an AbcdImport can be run successful
+ * and later it was also used to run import into a prefilled database.
+ * We do now have more specific test classes {@link SpecimenImportConfiguratorTest}
+ * and {@link AbcdGgbnImportTest} which do cover the specific single cases better.
+ *
+ * Also the input data for the test is incomplete so we could just throw it away.
+ * However, as even incomplete and superficial tests sometimes find unexpected errors
+ * we may keep it but not further develop it as long as it does not create larger
+ * problems.
+ *
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
-public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegrationTest {
+public class AbcdImportNonEmptyDbTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
@@ -57,7 +66,7 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml";
+		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdImportTestCalvumPart2.xml";
 		URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
         try {
@@ -79,21 +88,14 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 	}
 
 	@Test
-    @DataSet( value="SpecimenImportConfiguratorTest.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
-    public void testDoInvoke() {
+    @DataSet( value="AbcdImportNonEmptyDbTest.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
+	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator);
         assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+        assertEquals("Number of TaxonNames is incorrect", 13, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));
-
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

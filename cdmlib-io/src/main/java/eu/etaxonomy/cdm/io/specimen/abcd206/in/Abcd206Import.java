@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -90,6 +89,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -345,8 +345,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 Element unitExtension = (Element) unitExtensions.item(i);
                 NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
                 if(ggbn.getLength()>0){
-                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser();
-                    DnaSample dnaSample = ggbnParser.parse(ggbn);
+                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser(report, cdmAppController);
+                    DnaSample dnaSample = ggbnParser.parse(ggbn, state);
                     save(dnaSample, state);
                     String specimenUnitID = null;
                     SpecimenOrObservationBase<?> parentSpecimen = parent;
@@ -1307,7 +1307,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(DerivedUnit derivedUnitBase2, Reference<?> b, String d) {
         Set<IdentifiableSource> linkedSources = derivedUnitBase2.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference a = is.getCitation();
+            Reference<?> a = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1354,8 +1354,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(SpecimenOrObservationBase<?> specimen, OriginalSourceBase<?> source) {
         Set<IdentifiableSource> linkedSources = specimen.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference a = is.getCitation();
-            Reference b = source.getCitation();
+            Reference<?> a = is.getCitation();
+            Reference<?> b = source.getCitation();
             String c = is.getCitationMicroReference();
             String d = source.getCitationMicroReference();
 
@@ -1404,7 +1404,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, Reference<?> a, String d) {
         Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
         for (DescriptionElementSource is:linkedSources){
-            Reference b = is.getCitation();
+            Reference<?> b = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1450,7 +1450,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, Reference<?> a, String d) {
         Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference b = is.getCitation();
+            Reference<?> b = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1495,8 +1495,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, OriginalSourceBase<?> source) {
         Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
         for (DescriptionElementSource is:linkedSources){
-            Reference a = is.getCitation();
-            Reference b = source.getCitation();
+            Reference<?> a = is.getCitation();
+            Reference<?> b = source.getCitation();
             String c = is.getCitationMicroReference();
             String d = source.getCitationMicroReference();
 
@@ -1542,8 +1542,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, OriginalSourceBase<?> sour) {
         Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference a = is.getCitation();
-            Reference b = sour.getCitation();
+            Reference<?> a = is.getCitation();
+            Reference<?> b = sour.getCitation();
             String c = is.getCitationMicroReference();
             String d = sour.getCitationMicroReference();
 

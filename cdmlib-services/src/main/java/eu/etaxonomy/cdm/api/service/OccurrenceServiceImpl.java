@@ -74,7 +74,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -108,6 +107,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 

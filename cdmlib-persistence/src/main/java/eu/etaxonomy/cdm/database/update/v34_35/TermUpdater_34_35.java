@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
-import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
 import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
+import eu.etaxonomy.cdm.database.update.v35_36.TermUpdater_35_36;
 
 /**
  * @author a.mueller
@@ -72,7 +72,7 @@ public class TermUpdater_34_35 extends TermUpdaterBase implements ITermUpdater {
 	
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_35_36.NewInstance();
 	}
 
 	@Override

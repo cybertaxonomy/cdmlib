@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.persistence.dao.molecular;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner

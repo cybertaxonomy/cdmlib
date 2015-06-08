@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -69,6 +68,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;

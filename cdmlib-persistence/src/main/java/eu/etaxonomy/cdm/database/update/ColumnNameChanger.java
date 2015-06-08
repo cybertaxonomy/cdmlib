@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,30 +22,28 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameChanger> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
-	
-	private String newColumnName;
-	private String oldColumnName;
-	private Datatype datatype; //TODO make enum
-	
+
+	private final String newColumnName;
+	private final String oldColumnName;
+	private final Datatype datatype; //TODO make enum
+
 	private enum Datatype{
 		integer,
 		clob
 	}
-	
+
 	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
 		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer);
 	}
-	
+
 	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
 		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob);
 	}
 
 	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
-		this.includeAudTable = includeAudTable;
 		this.datatype = datatype;
 	}
 
@@ -55,7 +53,7 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 			boolean result = true;
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String updateQuery;
-			
+
 			if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 				logger.warn("SQLServer column name changer syntax not yet tested");
 				updateQuery = "EXEC sp_rename '@oldName', '@newName'";
@@ -77,7 +75,7 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 			updateQuery = updateQuery.replace("@newColumnName", newColumnName);
 			updateQuery = updateQuery.replace("@definition", getDefinition());
 			datasource.executeUpdate(updateQuery);
-			
+
 			return result;
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);

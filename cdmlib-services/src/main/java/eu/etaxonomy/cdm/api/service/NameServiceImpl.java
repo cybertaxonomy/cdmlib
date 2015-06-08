@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -80,6 +79,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -160,7 +160,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             if (homotypicalGroup != null){
                 homotypicalGroup.removeTypifiedName(name, false);
             }
-            
+
              //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
 	//		//type designations
@@ -172,7 +172,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 	        try{
 	        UUID nameUuid = dao.delete(name);
-	        
+
 	        }catch(Exception e){
 	        	result.addException(e);
 	        	result.setError();
@@ -853,7 +853,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
     		HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
-    		
+
     		if (!nameConfig.isIgnoreIsBasionymFor() && homotypicalGroup.getBasionyms().contains(name)){
        		 	result.addException(new Exception( "Name can't be deleted as it is a basionym."));
        		 	result.setAbort();
@@ -944,13 +944,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         name.setAsGroupsBasionym();
         result.addUpdatedObject(name);
         return result;
+
     }
 
     @Override
     public List<HashMap<String,String>> getNameRecords(){
-    	
+
 		return dao.getNameRecords();
-    	
+
     }
 
 }

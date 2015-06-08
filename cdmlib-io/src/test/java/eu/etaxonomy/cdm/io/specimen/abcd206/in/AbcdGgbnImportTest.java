@@ -14,9 +14,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -27,7 +29,13 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -68,8 +76,55 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
         assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
-
         assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+
+        //dna quality
+//        DnaQuality dnaQuality = dnaSample.getDnaQuality();
+//        assertNotNull("Dna quality is null", dnaQuality!=null);
+//        assertEquals(new Double("0,77"),dnaQuality.getRatioOfAbsorbance260_230());
+//        assertEquals(new Double("1,38"),dnaQuality.getRatioOfAbsorbance260_280());
+
+        //amplifications
+        Set<AmplificationResult> amplificationResults = dnaSample.getAmplificationResults();
+        assertNotNull(amplificationResults);
+        assertEquals(1,  amplificationResults.size());
+        AmplificationResult amplificationResult = amplificationResults.iterator().next();
+        Amplification amplification = amplificationResult.getAmplification();
+        assertNotNull("Amplification is null", amplification);
+        DefinedTerm dnaMarker = amplification.getDnaMarker();
+        assertNotNull(dnaMarker);
+        assertEquals("ITS (ITS1, 5.8S rRNA, ITS2)", dnaMarker.getLabel());
+
+        //sequencing
+        Set<Sequence> sequences = dnaSample.getSequences();
+        assertNotNull(sequences);
+        assertEquals(1, sequences.size());
+        Sequence sequence = sequences.iterator().next();
+        SequenceString consensusSequence = sequence.getConsensusSequence();
+        assertNotNull(consensusSequence);
+//        assertEquals(
+//                "TTTCGGGTCC TTTATAGTGA AGATATAGCA TAGATAGTTG TAATCCATTA" +
+//        		" TGTATCATTG GGGAAGGAAG GAGAATATTT TTTTGATAGA ATACAAGTAT" +
+//        		" GGATTATTGA AACTAATACG CCATGTATTT GGATATTTCC CTTGAACTGC" +
+//        		" ATAATATTCT TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA" +
+//        		" AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG TCTGTGCAGA" +
+//        		" TACGGGCTTT TATCTATCTG CCACATTGTA ATTCACAAAC CAATGTGTCT" +
+//        		" TTGTTCCAAC CATCGCGTAA GCCCCATACA GAAGATAGGC TGGTTCGCTT" +
+//        		" GAAGAGAATC TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG" +
+//        		" GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG TATAAAAATG" +
+//        		" CACTCATTTC CTCTGCATTG ACACGAGCTA TGAGACTATC GGAGTGAAAG" +
+//        		" AAAGGGTCTA AAGAAGAAGA AAGCTTGGGC TAGATTAGTA ACAAGTAAAT" +
+//        		" CCTTTGTGTG TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG" +
+//        		" CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA CTTGATCATA" +
+//        		" TCACGATTGA CTTTGTAAGC CTACTTGGGT ATTGAGTATT TACTTGTAAG" +
+//        		" AACCGAATTC TTTGGGGGAT AGTTGCAAAA AGAATCCAGT CAATTGTTCT" +
+//        		" TACGTAAAAC CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC" +
+//        		" GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC GAGCTGGATG" +
+//        		" ATGAAAAATT ATCATGTCCG GTTCCTTCG",consensusSequence.getString());
+//        assertEquals((Integer)912, consensusSequence.getLength());
+        assertNotNull(sequence.getContigFile());
+        assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_Campa_drabifolia.pde"), MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile()).getUri());
+
 	}
 
 	@Test
@@ -189,9 +244,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");

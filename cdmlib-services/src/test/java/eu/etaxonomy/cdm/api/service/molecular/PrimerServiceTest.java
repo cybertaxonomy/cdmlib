@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Primer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**

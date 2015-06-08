@@ -62,7 +62,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @XmlType(name = "Team", propOrder = {
 	"protectedNomenclaturalTitleCache",
 	"protectedCollectorTitleCache",
-    "teamMembers"
+    "teamMembers",
+    "hasMoreMembers"
 })
 @XmlRootElement(name = "Team")
 @Entity
@@ -92,6 +93,10 @@ public class Team extends TeamOrPersonBase<Team> {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
+    
+    @XmlElement(name = "hasMoreMembers")
+	private boolean hasMoreMembers;
+
 
 
 	/**
@@ -221,7 +226,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		if (wasMember){
 			firePropertyChange("teamMember", person, null);
 		}
-
 	}
 
 
@@ -279,9 +283,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache()
-	 */
+
 	@Override
 	//@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
@@ -299,6 +301,13 @@ public class Team extends TeamOrPersonBase<Team> {
 		return result;
 	}
 
+	/**
+	 * Protected nomenclatural title cache flag should be set to true, if
+	 * the title cache is to be preferred against the atomized data.
+	 * This may be the case if no atomized data exists or if atomization 
+	 * was incomplete for whatever reason.
+	 * @return
+	 */
 	public boolean isProtectedNomenclaturalTitleCache() {
 		return protectedNomenclaturalTitleCache;
 	}
@@ -306,6 +315,23 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setProtectedNomenclaturalTitleCache(
 			boolean protectedNomenclaturalTitleCache) {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
+	}
+	
+
+	/**
+	 * The hasMoreMembers flag is true if this team has more members than
+	 * mentioned in the {@link #teamMembers} list. This is usually the case
+	 * when "et al." is used in the team representation. Formatters should add
+	 * "et al." or an according post fix to the team string representation
+	 *  if this flag is set.
+	 * @return
+	 */
+	public boolean isHasMoreMembers() {
+		return hasMoreMembers;
+	}
+
+	public void setHasMoreMembers(boolean hasMoreMembers) {
+		this.hasMoreMembers = hasMoreMembers;
 	}
 
 //*********************** CLONE ********************************************************/
@@ -333,9 +359,5 @@ public class Team extends TeamOrPersonBase<Team> {
 			e.printStackTrace();
 			return null;
 		}
-
-
 	}
-
-
 }

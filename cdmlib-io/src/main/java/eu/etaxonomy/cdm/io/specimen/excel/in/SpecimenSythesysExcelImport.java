@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -64,22 +62,19 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
  * @created 29.10.2008
- * @version 1.0
- */
-/**
- * @author pkelbert
  * @date 13 mars 2013
  *
  */
 @Component
 public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenSynthesysExcelImportState>
-implements ICdmIO<SpecimenSynthesysExcelImportState> {
+        implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
     private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
 
@@ -844,19 +839,11 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         getTaxonService().saveOrUpdate(taxon);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-     */
     @Override
     protected boolean isIgnore(SpecimenSynthesysExcelImportState state) {
         return false;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.specimen.SpecimenIoBase#doInvoke(eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportState)
-     */
     @Override
     protected void doInvoke(SpecimenSynthesysExcelImportState state) {
         boolean success = true;
@@ -1103,16 +1090,9 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
     }
 
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-     */
     @Override
     protected boolean doCheck(SpecimenSynthesysExcelImportState state) {
         logger.warn("Validation not yet implemented for " + getClass().getSimpleName());
         return true;
     }
-
-
 }

@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner
@@ -30,19 +30,14 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
 @Service
 @Transactional(readOnly = true)
 public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao> implements IPrimerService{
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IPrimerService#getPrimerUuidAndTitleCache()
-     */
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
         return dao.getPrimerUuidAndTitleCache();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     @Autowired
     protected void setDao(IPrimerDao dao) {

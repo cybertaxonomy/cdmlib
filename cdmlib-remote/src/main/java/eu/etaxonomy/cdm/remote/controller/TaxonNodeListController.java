@@ -73,7 +73,7 @@ public class TaxonNodeListController extends AbstractController<TaxonNode, ITaxo
 
         TaxonNode taxonNode = service.find(taxonNodeUuid);
 
-        return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, false);
+        return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, null);
     }
 
 

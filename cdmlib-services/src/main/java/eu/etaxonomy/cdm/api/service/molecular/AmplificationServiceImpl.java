@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner

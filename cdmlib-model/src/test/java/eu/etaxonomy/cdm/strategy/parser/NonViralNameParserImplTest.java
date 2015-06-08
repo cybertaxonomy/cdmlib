@@ -321,8 +321,18 @@ public class NonViralNameParserImplTest {
 		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex M\u00FCller & Schmidt)Clark ex Ciardelli";
 		NonViralName<?> authorname = parser.parseFullName(fullNameString);
 		assertFalse(authorname.hasProblem());
-		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getExBasionymAuthorTeam()).getTeamMembers().size());
+		assertEquals("Basionym author should have 3 authors", 2, ((Team)authorname.getExBasionymAuthorTeam()).getTeamMembers().size());
+        Assert.assertTrue("ExbasionymAuthorTeam must have more members'", ((Team)authorname.getExBasionymAuthorTeam()).isHasMoreMembers());
+	}
 
+	@Test
+    public final void testEtAl() {
+        //some authors
+        String fullNameString = "Abies alba Greuther, Hiver & al.";
+        NonViralName<?> authorname = parser.parseFullName(fullNameString);
+        assertFalse(authorname.hasProblem());
+        assertEquals("Basionym author should have 2 authors", 2, ((Team)authorname.getCombinationAuthorTeam()).getTeamMembers().size());
+        assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorTeam()).isHasMoreMembers()  );
 	}
 
 	/**
@@ -428,13 +438,13 @@ public class NonViralNameParserImplTest {
 		name1 = parser.parseReferencedName(hybridCache, botanicCode, null);
 		assertFalse("Name must not have parsing problems", name1.hasProblem());
 
-
 		//x-sign
 		hybridCache = "Abies alba x Pinus bus";
 		name1 = parser.parseFullName(hybridCache, botanicCode, null);
 		assertFalse("Name must be parsable", name1.hasProblem());
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
 		assertFalse("Name must not have parsing problems", name1.hasProblem());
+
 
 		//Subspecies first hybrid
 		name1 = parser.parseFullName("Abies alba subsp. beta "+UTF8.HYBRID+" Pinus bus", botanicCode, null);
@@ -513,7 +523,6 @@ public class NonViralNameParserImplTest {
         assertTrue("", name1.getHybridChildRelations().isEmpty());
         assertFalse("Name must not have parsing problems", name1.hasProblem());
 	}
-
 
 	private void testName_StringNomcodeRank(Method parseMethod)
 			throws InvocationTargetException, IllegalAccessException  {
@@ -1356,6 +1365,14 @@ public class NonViralNameParserImplTest {
 		Assert.assertEquals("Persons title must be 'le Doux'", "le Doux", person.getTitleCache());
 		Assert.assertEquals("Year must be 1931", Integer.valueOf(1931), zooName.getPublicationYear() );
 
+		//et al.
+		nvn = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
+        team = (Team)nvn.getCombinationAuthorTeam();
+        Assert.assertNotNull("Comb. author must not be null", team);
+        Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
+        Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
+        Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
 
 	}
 

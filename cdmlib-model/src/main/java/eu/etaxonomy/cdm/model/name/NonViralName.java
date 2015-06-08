@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -183,6 +184,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @JoinColumn(name="combinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorTeam;
@@ -193,6 +195,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @JoinColumn(name="exCombinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorTeam;
@@ -203,6 +206,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @JoinColumn(name="basionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorTeam;
@@ -213,6 +217,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 //    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @JoinColumn(name="exBasionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorTeam;
@@ -236,7 +241,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
@@ -1243,22 +1248,22 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
         NonViralName<?> parent = hybridRelation.getParentName();
         NonViralName<?> child = hybridRelation.getHybridName();
-
-        if (this.equals(parent) || this.equals(child)){
-            hybridRelation.setHybridName(null);
+        if (this.equals(parent)){
+        	this.hybridParentRelations.remove(hybridRelation);
+        	child.hybridChildRelations.remove(hybridRelation);
+        	hybridRelation.setHybridName(null);
             hybridRelation.setParentName(null);
 
-            if (parent != null) {
-                parent.removeHybridRelationship(hybridRelation);
-            }
-
-            if (child != null) {
-                child.removeHybridRelationship(hybridRelation);
-            }
-
-            this.hybridChildRelations.remove(hybridRelation);
-            this.hybridParentRelations.remove(hybridRelation);
         }
+        if (this.equals(child)){
+        	parent.hybridParentRelations.remove(hybridRelation);
+        	this.hybridChildRelations.remove(hybridRelation);
+        	hybridRelation.setHybridName(null);
+            hybridRelation.setParentName(null);
+
+        }
+
+
     }
 
 
@@ -1281,7 +1286,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         for(HybridRelationship hybridRelationship : hybridRelationships) {
             // remove name relationship from this side
             if (hybridRelationship.getParentName().equals(parent) && hybridRelationship.getHybridName().equals(this)) {
-                this.removeHybridRelationship(hybridRelationship);
+            	this.removeHybridRelationship(hybridRelationship);
             }
         }
     }

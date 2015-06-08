@@ -256,7 +256,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 
 	@Override
 	public String getDatabase() {
-		throw new UnsupportedOperationException("getDatabase() not supported by WrappedCdmDataSource");
+	    throw new UnsupportedOperationException("getDatabase() not supported by WrappedCdmDataSource");
 	}
 
 	@Override

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.5.2-SNAPSHOT</version>
+    <version>3.6.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -58,6 +58,34 @@
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-remote</artifactId>
+      <exclusions>
+        <!-- 
+            exclude all jdbc drivers from the war. 
+            Jdbc drivers must only be added to {APPLICATION_CONTAINER}/lib
+            see http://dev.e-taxonomy.eu/trac/ticket/4955 
+            and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder
+         -->
+        <exclusion>
+          <artifactId>postgresql</artifactId>
+          <groupId>postgresql</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>mysql-connector-java</artifactId>
+          <groupId>mysql</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>c3p0</artifactId>
+          <groupId>com.mchange</groupId>
+        </exclusion>
+        <exclusion>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>         
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed?
@@ -117,11 +145,6 @@
       <version>1.1.2</version>
       <type>tld</type>
     </dependency>
-    <!-- Connection Pooling -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-c3p0</artifactId>
-    </dependency>
     <!-- swagger -->
     <dependency>
       <groupId>com.mangofactory</groupId>
@@ -152,6 +175,16 @@
       <groupId>com.yourkit</groupId>
       <artifactId>yjp-controller-api-redist</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Connection Pooling and jdbc -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-c3p0</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <artifactId>c3p0</artifactId>
+        <groupId>com.mchange</groupId>
     </dependency>
   </dependencies>
 

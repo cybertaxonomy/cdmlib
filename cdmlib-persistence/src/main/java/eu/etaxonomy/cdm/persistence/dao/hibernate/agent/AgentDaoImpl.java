@@ -28,10 +28,10 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
 @Repository

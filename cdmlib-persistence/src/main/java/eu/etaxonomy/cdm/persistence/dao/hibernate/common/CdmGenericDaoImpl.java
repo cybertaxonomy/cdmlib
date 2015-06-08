@@ -55,7 +55,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
-//import eu.etaxonomy.cdm.datagenerator.FullCoverageDataGenerator;
+import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -92,7 +92,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Class<? extends CdmBase> otherClass;
 		Class<?> itemClass;
 		Class<?> targetClass;  //new as item class is used for isCollection we have a duplicate here
-		public boolean isCollection(){return itemClass != null;};
+		public boolean isCollection(){return itemClass != null;}
 		@Override
         public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
 	}
@@ -158,7 +158,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			return null;
 		}
 		try {
-			
+
 			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 
@@ -184,7 +184,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		return holderSet;
 	}
-	
+
 	@Override
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
 		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
@@ -343,7 +343,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			refHolder.otherClass = cdmClass;
 			refHolder.itemClass = (isCollection ? itemClass : null) ;
 			refHolder.targetClass = type ;
-			
+
 			result.add(refHolder);
 		return true;
 	}
@@ -427,7 +427,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
 			IMatchStrategy matchStrategy) throws MatchException {
-		
+
 		getSession().flush();
 		try {
 			List<T> result = new ArrayList<T>();
@@ -813,8 +813,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
     @Override
 	public void createFullSampleData() {
-//		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
-//		dataGenerator.fillWithData(getSession());
+		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
+		dataGenerator.fillWithData(getSession());
 	}
 
 }

@@ -10,11 +10,11 @@ package eu.etaxonomy.cdm.persistence.dao.reference;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**

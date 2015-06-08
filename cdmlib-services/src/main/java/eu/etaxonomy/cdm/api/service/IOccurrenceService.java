@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -53,6 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**

@@ -20,7 +20,10 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  */
 public interface IPolytomousKeyNodeService extends IVersionableService<PolytomousKeyNode> {
 
+
 	public DeleteResult delete(PolytomousKeyNode node, boolean deleteChildren);
 
     public DeleteResult delete(UUID nodeUuid, boolean deleteChildren);
+
+
 }

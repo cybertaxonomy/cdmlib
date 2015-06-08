@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,19 +29,19 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
-	
+
 	private static final boolean SORT_INDEX = true;
-	
-	private List<String> columnNames;
-	private List<String> columnTypes;
-	private List<Object> defaultValues;
-	private List<Boolean> isNotNull;
-	private List<String> referencedTables;
-	private boolean includeCdmBaseAttributes;
-	private boolean includeIdentifiableEntity;
-	private boolean includeAnnotatableEntity;
+
+	private final List<String> columnNames;
+	private final List<String> columnTypes;
+	private final List<Object> defaultValues;
+	private final List<Boolean> isNotNull;
+	private final List<String> referencedTables;
+	private final boolean includeCdmBaseAttributes;
+	private final boolean includeIdentifiableEntity;
+	private final boolean includeAnnotatableEntity;
 	private boolean includeEventBase;
-	private boolean excludeVersionableAttributes;
+	private final boolean excludeVersionableAttributes;
 	protected List<ColumnAdder> columnAdders = new ArrayList<ColumnAdder>();
 	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<ISchemaUpdaterStep>();
 	private String primaryKeyParams;
@@ -49,48 +49,46 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 	private String uniqueParams;
 	private String uniqueParams_AUD;
 
-	
+
 //	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable){
 	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, boolean includeAudTable, boolean includeCdmBaseAttributes){
 		return new TableCreator(stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
-	
+
 	public static final TableCreator NewInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable, boolean includeCdmBaseAttributes){
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
-	
+
 	public static final TableCreator NewNonVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), false, true, false, false, true);
 	}
-	
+
 	public static final TableCreator NewVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, false, false, false);
 	}
-	
+
 	public static final TableCreator NewAnnotatableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
 	}
-	
+
 	public static final TableCreator NewEventInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
 		TableCreator result = new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
 		result.includeEventBase = true;
 		return result;
 	}
-	
+
 	public static final TableCreator NewIdentifiableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
 		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, true, false);
 	}
-	
-	protected TableCreator(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables, 
+
+	protected TableCreator(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables,
 			boolean includeAudTable, boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity, boolean excludeVersionableAttributes) {
-		super(stepName);
-		this.tableName = tableName;
+		super(stepName, tableName, includeAudTable);
 		this.columnNames = columnNames;
 		this.columnTypes = columnTypes;
 		this.defaultValues = defaultValues;
 		this.isNotNull = isNotNull;
 		this.referencedTables = referencedTables;
-		this.includeAudTable = includeAudTable;
 		this.includeCdmBaseAttributes = includeCdmBaseAttributes;
 		this.includeAnnotatableEntity = includeAnnotatableEntity;
 		this.includeIdentifiableEntity = includeIdentifiableEntity;
@@ -112,7 +110,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		if (columnNames.size() != columnTypes.size()){
 			throw new RuntimeException ("ColumnNames and columnTypes must be of same size. Step: " + getStepName());
 		}
-			
+
 		try {
 			for (int i = 0; i < columnNames.size(); i++){
 				boolean isNotNull = this.isNotNull == null ? false : this.isNotNull.get(i);
@@ -148,15 +146,15 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * fills the mnTablesStepList
-	 * @param mnTablesStepList, String tableName 
+	 * @param mnTablesStepList, String tableName
 	 */
 	public static void makeMnTables(List<ISchemaUpdaterStep> mnTablesStepList, String tableName, boolean includeAnnotatable, boolean includeIdentifiable) {
 		TableCreator tableCreator;
 		String stepName;
-		
+
 		if (includeAnnotatable){
 			//annotations
 			stepName= "Add @tableName annotations";
@@ -169,9 +167,9 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			stepName = stepName.replace("@tableName", tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
-			
+
 		}
-		
+
 		if (includeIdentifiable){
 
 			//credits
@@ -179,21 +177,21 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			stepName = stepName.replace("@tableName", tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Credit", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
 			mnTablesStepList.add(tableCreator);
-			
-			
+
+
 			//identifier
 			stepName= "Add @tableName identifiers";
 			stepName = stepName.replace("@tableName", tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Identifier", null, SchemaUpdaterBase.INCLUDE_AUDIT, SORT_INDEX, false);
 			mnTablesStepList.add(tableCreator);
 
-			
+
 			//extensions
 			stepName= "Add @tableName extensions";
 			stepName = stepName.replace("@tableName", tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
-			
+
 			//OriginalSourceBase
 			stepName= "Add @tableName sources";
 			stepName = stepName.replace("@tableName", tableName);
@@ -238,28 +236,28 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			}
 			//specific columns
 			updateQuery += 	getColumnsSql(tableName, datasource, monitor);
-			
+
 			//primary and unique keys
 			String primaryKeySql = primaryKey(isAuditing)==null ? "" : "primary key (" + primaryKey(isAuditing) + "),";
 			String uniqueSql = unique(isAuditing)== null ? "" : "unique(" + unique(isAuditing) + "),";
 			updateQuery += primaryKeySql + uniqueSql;
-			
+
 			//finalize
 			updateQuery = StringUtils.chomp(updateQuery.trim(), ",") + ")";
-			
+
 			//replace
 			updateQuery = updateQuery.replace("@tableName", tableName);
-			
+
 			//append datasource specific string
 			updateQuery += datasource.getDatabaseType().getHibernateDialect().getTableTypeString();
 			logger.debug("UPDATE Query: " + updateQuery);
-			
+
 			//execute
 			datasource.executeUpdate(updateQuery);
-			
+
 			//Foreign Keys
 			result &= createForeignKeys(tableName, isAuditing, datasource, monitor, caseType);
-			
+
 			return result;
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
@@ -277,14 +275,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		String result = "";
 		for (ColumnAdder adder : this.columnAdders){
 			String singleAdderSQL = adder.getUpdateQueryString(tableName, datasource, monitor) + ", ";
-			
+
 			String[] split = singleAdderSQL.split(ColumnAdder.getAddColumnSeperator(datasource));
 			result += split[1];
 		}
 		return result;
 	}
 
-	
+
 	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
@@ -293,11 +291,11 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 				String referencedTable = "UserAccount";
 				result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 			}
-			
+
 			String attribute = "createdby";
 			String referencedTable = "UserAccount";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);			
-		
+			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+
 		}
 		if (isAudit){
 			String attribute = "REV";
@@ -311,7 +309,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		}
 		for (ColumnAdder adder : this.columnAdders){
 			if (adder.getReferencedTable() != null){
-				result &= makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(), adder.getReferencedTable(), caseType); 
+				result &= makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(), adder.getReferencedTable(), caseType);
 			}
 		}
 		return result;
@@ -319,14 +317,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 
 	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType) throws SQLException {
 		boolean result = true;
-		
+
 		referencedTable = caseType.transformTo(referencedTable);
-		
+
 		if (supportsForeignKeys(datasource, monitor, tableName, referencedTable)){
 			String index = "FK@tableName_@attribute";
 			index = index.replace("@tableName", tableName);
 			index = index.replace("@attribute", attribute);
-			
+
 			String idSuffix = "_id";
 			if (isRevAttribute(attribute) || attribute.endsWith(idSuffix)){
 				idSuffix = "";
@@ -343,7 +341,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			}else{
 				updateQuery = updateQuery.replace("@constraintName", "");  //H2 does not support "CONSTRAINT", didn't check for others
 			}
-			
+
 			if (isRevAttribute(attribute)){
 				updateQuery = updateQuery.replace("@id", "revisionnumber");
 			}else{
@@ -358,7 +356,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 				logger.warn(message, e);
 				return true;   //we do not interrupt update if only foreign key generation did not work
 			}
-			return result;			
+			return result;
 		}else{
 			return true;
 		}
@@ -402,12 +400,12 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			} catch (Exception e) {
 				String message = "Problems to determine table engine for MySQL.";
 				monitor.warning(message);
-				return true;  //default 
+				return true;  //default
 			}
-			
+
 		}
-		
-				
+
+
 	}
 
 	private static boolean isRevAttribute(String attribute) {
@@ -422,11 +420,11 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 	 */
 	protected String primaryKey(boolean isAudit){
 		String result = null;
-		if (! isAudit && this.primaryKeyParams != null){ 
+		if (! isAudit && this.primaryKeyParams != null){
 			return this.primaryKeyParams;
-		}else if (isAudit && this.primaryKeyParams_AUD != null){ 
+		}else if (isAudit && this.primaryKeyParams_AUD != null){
 			return this.primaryKeyParams_AUD;
-		} 
+		}
 
 		if (includeCdmBaseAttributes || ! includeCdmBaseAttributes){ //TODO how to handle not CDMBase includes
 			if (! isAudit){
@@ -437,7 +435,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Constructs the unique key creation string
 	 * @param isAudit

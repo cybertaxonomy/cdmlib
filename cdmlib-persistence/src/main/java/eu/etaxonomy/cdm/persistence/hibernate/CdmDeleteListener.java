@@ -18,7 +18,6 @@ import org.hibernate.engine.spi.Status;
 import org.hibernate.event.spi.DeleteEvent;
 import org.hibernate.event.spi.DeleteEventListener;
 
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -32,9 +31,7 @@ public class CdmDeleteListener implements DeleteEventListener {
     private static final long serialVersionUID = -5511287200489449838L;
     protected static final Logger logger = Logger.getLogger(CdmDeleteListener.class);
 
-    /* (non-Javadoc)
-     * @see org.hibernate.event.DeleteEventListener#onDelete(org.hibernate.event.DeleteEvent)
-     */
+    @Override
     public void onDelete(DeleteEvent event) throws HibernateException {
         Object entity = event.getObject();
         if(entity != null && RelationshipBase.class.isAssignableFrom(entity.getClass())) {
@@ -43,9 +40,7 @@ public class CdmDeleteListener implements DeleteEventListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.event.DeleteEventListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)
-     */
+    @Override
     public void onDelete(DeleteEvent event, Set transientEntities)throws HibernateException {
         Object entity = event.getObject();
         if(entity != null && RelationshipBase.class.isAssignableFrom(entity.getClass())) {
