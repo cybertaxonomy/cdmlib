@@ -112,8 +112,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
-	public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config);
-
 
     /**
      * @param taxonNode

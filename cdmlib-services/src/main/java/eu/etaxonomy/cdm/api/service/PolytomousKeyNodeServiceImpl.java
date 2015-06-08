@@ -72,10 +72,4 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 
 	}
 
-	   @Override
-	    public DeleteResult delete(UUID nodeUuid, boolean deleteChildren){
-	       PolytomousKeyNode node = dao.load(nodeUuid);
-	       return delete(node, deleteChildren);
-	   }
-
 }
