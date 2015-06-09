@@ -34,11 +34,15 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -95,6 +99,19 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(dnaMarker);
         assertEquals("ITS (ITS1, 5.8S rRNA, ITS2)", dnaMarker.getLabel());
 
+        //amplification primers
+        Primer forwardPrimer = amplification.getForwardPrimer();
+        assertNotNull(forwardPrimer);
+        assertEquals("PIpetB1411F", forwardPrimer.getLabel());
+        assertEquals("5´-GCCGTMTTTATGTTAATGC-3´", forwardPrimer.getSequence().getString());
+        assertNotNull(forwardPrimer.getPublishedIn());
+        assertEquals("Löhne & Borsch 2005", forwardPrimer.getPublishedIn().getTitle());
+
+        Primer reversePrimer = amplification.getReversePrimer();
+        assertNotNull(reversePrimer);
+        assertEquals("PIpetD738R", reversePrimer.getLabel());
+        assertEquals("5´-AATTTAGCYCTTAATACAGG-3´", reversePrimer.getSequence().getString());
+
         //sequencing
         Set<Sequence> sequences = dnaSample.getSequences();
         assertNotNull(sequences);
@@ -102,29 +119,49 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         Sequence sequence = sequences.iterator().next();
         SequenceString consensusSequence = sequence.getConsensusSequence();
         assertNotNull(consensusSequence);
-//        assertEquals(
-//                "TTTCGGGTCC TTTATAGTGA AGATATAGCA TAGATAGTTG TAATCCATTA" +
-//        		" TGTATCATTG GGGAAGGAAG GAGAATATTT TTTTGATAGA ATACAAGTAT" +
-//        		" GGATTATTGA AACTAATACG CCATGTATTT GGATATTTCC CTTGAACTGC" +
-//        		" ATAATATTCT TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA" +
-//        		" AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG TCTGTGCAGA" +
-//        		" TACGGGCTTT TATCTATCTG CCACATTGTA ATTCACAAAC CAATGTGTCT" +
-//        		" TTGTTCCAAC CATCGCGTAA GCCCCATACA GAAGATAGGC TGGTTCGCTT" +
-//        		" GAAGAGAATC TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG" +
-//        		" GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG TATAAAAATG" +
-//        		" CACTCATTTC CTCTGCATTG ACACGAGCTA TGAGACTATC GGAGTGAAAG" +
-//        		" AAAGGGTCTA AAGAAGAAGA AAGCTTGGGC TAGATTAGTA ACAAGTAAAT" +
-//        		" CCTTTGTGTG TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG" +
-//        		" CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA CTTGATCATA" +
-//        		" TCACGATTGA CTTTGTAAGC CTACTTGGGT ATTGAGTATT TACTTGTAAG" +
-//        		" AACCGAATTC TTTGGGGGAT AGTTGCAAAA AGAATCCAGT CAATTGTTCT" +
-//        		" TACGTAAAAC CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC" +
-//        		" GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC GAGCTGGATG" +
-//        		" ATGAAAAATT ATCATGTCCG GTTCCTTCG",consensusSequence.getString());
+        assertEquals(
+                "TTTCGGGTCC TTTATAGTGA AGATATAGCA TAGATAGTTG TAATCCATTA" +
+        		" TGTATCATTG GGGAAGGAAG GAGAATATTT TTTTGATAGA ATACAAGTAT" +
+        		" GGATTATTGA AACTAATACG CCATGTATTT GGATATTTCC CTTGAACTGC" +
+        		" ATAATATTCT TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA" +
+        		" AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG TCTGTGCAGA" +
+        		" TACGGGCTTT TATCTATCTG CCACATTGTA ATTCACAAAC CAATGTGTCT" +
+        		" TTGTTCCAAC CATCGCGTAA GCCCCATACA GAAGATAGGC TGGTTCGCTT" +
+        		" GAAGAGAATC TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG" +
+        		" GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG TATAAAAATG" +
+        		" CACTCATTTC CTCTGCATTG ACACGAGCTA TGAGACTATC GGAGTGAAAG" +
+        		" AAAGGGTCTA AAGAAGAAGA AAGCTTGGGC TAGATTAGTA ACAAGTAAAT" +
+        		" CCTTTGTGTG TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG" +
+        		" CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA CTTGATCATA" +
+        		" TCACGATTGA CTTTGTAAGC CTACTTGGGT ATTGAGTATT TACTTGTAAG" +
+        		" AACCGAATTC TTTGGGGGAT AGTTGCAAAA AGAATCCAGT CAATTGTTCT" +
+        		" TACGTAAAAC CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC" +
+        		" GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC GAGCTGGATG" +
+        		" ATGAAAAATT ATCATGTCCG GTTCCTTCG",consensusSequence.getString());
 //        assertEquals((Integer)912, consensusSequence.getLength());
         assertNotNull(sequence.getContigFile());
         assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_Campa_drabifolia.pde"), MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile()).getUri());
+        assertEquals(1, sequence.getCitations().size());
+        Reference reference = sequence.getCitations().iterator().next();
+        assertEquals("Gemeinholzer,B., Bachmann,K. (2005): Examining morphological "
+                + "and molecular diagnostic character states in "
+                + "Cichorium intybus L. (Asteraceae) and Cichorium spinosum L."
+                + " Plant Systematics and Evolution 253 (1-3): 105-123.", reference.getTitle());
 
+        //single reads
+        Set<SingleRead> singleReads = sequence.getSingleReads();
+        assertNotNull(singleReads);
+        assertEquals(2, singleReads.size());
+        for (SingleRead singleRead : singleReads) {
+            if(singleRead.getDirection().equals(SequenceDirection.Forward)){
+                assertNotNull(singleRead.getPherogram());
+                assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_F.ab1"), MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram()).getUri());
+            }
+            else{
+                assertNotNull(singleRead.getPherogram());
+                assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_R.ab1"), MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram()).getUri());
+            }
+        }
 	}
 
 	@Test
