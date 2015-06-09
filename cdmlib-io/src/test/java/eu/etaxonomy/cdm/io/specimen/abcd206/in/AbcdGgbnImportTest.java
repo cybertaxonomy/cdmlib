@@ -28,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -57,6 +58,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
+
+	@SpringBeanByType
+	private IReferenceService referenceService;
 
 	@Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -142,7 +146,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(sequence.getContigFile());
         assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_Campa_drabifolia.pde"), MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile()).getUri());
         assertEquals(1, sequence.getCitations().size());
-        Reference reference = sequence.getCitations().iterator().next();
+        Reference<?> reference = sequence.getCitations().iterator().next();
         assertEquals("Gemeinholzer,B., Bachmann,K. (2005): Examining morphological "
                 + "and molecular diagnostic character states in "
                 + "Cichorium intybus L. (Asteraceae) and Cichorium spinosum L."
@@ -162,6 +166,13 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
                 assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_R.ab1"), MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram()).getUri());
             }
         }
+
+
+        //remove references to keep the test DB clean for later tests
+        sequence.removeCitation(reference);
+        referenceService.delete(reference);
+        referenceService.delete(forwardPrimer.getPublishedIn());
+        referenceService.delete(reversePrimer.getPublishedIn());
 	}
 
 	@Test
