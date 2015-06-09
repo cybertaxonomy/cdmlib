@@ -77,11 +77,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
     }
 
 
-
-
-    /* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
-	 */
 	@Override
 	public String getServerNameByConnectionString(String connectionString) {
 		String result;
@@ -101,11 +96,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	}
 
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getDatabaseNameByConnectionString(java.lang.String)
-	 */
 	@Override
 	public String getDatabaseNameByConnectionString(String connectionString) {
 		int pos = -1;
@@ -125,9 +115,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)
-	 */
 	@Override
 	public int getPortByConnectionString(String connectionString) {
 		int result;
@@ -156,17 +143,11 @@ public class H2DatabaseType extends DatabaseTypeBase {
 		return LocalH2.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getInitMethod()
-	 */
 	@Override
 	public String getInitMethod() {
 		return initMethod;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDestroyMethod()
-	 */
 	@Override
 	public String getDestroyMethod() {
 		return destroyMethod;
