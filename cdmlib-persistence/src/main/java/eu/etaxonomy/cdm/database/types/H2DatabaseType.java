@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,33 +30,34 @@ import eu.etaxonomy.cdm.database.LocalH2;
  */
 public class H2DatabaseType extends DatabaseTypeBase {
 	private static final Logger logger = Logger.getLogger(H2DatabaseType.class);
-	
+
 	//typeName
-	private String typeName = "H2 Database";
-   
+	private final String typeName = "H2 Database";
+
 	//class
-	private String classString = "org.h2.Driver";
-    
+	private final String classString = "org.h2.Driver";
+
 	//url
-	private String urlString = "jdbc:h2:";
-    
+	private final String urlString = "jdbc:h2:";
+
 	//path
 	@SuppressWarnings("unused")
-	private String path = getDefaultPath();
-	
+	private final String path = getDefaultPath();
+
     //port
-    private int defaultPort = 9092;
-    
+    private final int defaultPort = 9092;
+
     //hibernate dialect
-    private Dialect hibernateDialect = new H2CorrectedDialect();
-    
+    private final Dialect hibernateDialect = new H2CorrectedDialect();
+
     //init method
-    private String initMethod = "init";
-    
+    private final String initMethod = "init";
+
     //destroy method
-    private String destroyMethod = "destroy";
-    
+    private final String destroyMethod = "destroy";
+
     //connection String
+    @Override
 	public String getConnectionString(ICdmDataSource ds, int port){
         H2Mode mode = ds.getMode();
 		String path = ds.getFilePath();
@@ -74,10 +75,10 @@ public class H2DatabaseType extends DatabaseTypeBase {
         	return null;
         }
     }
-	
-	
-	
-    
+
+
+
+
     /* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
 	 */
@@ -85,7 +86,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	public String getServerNameByConnectionString(String connectionString) {
 		String result;
 		if (connectionString.startsWith("file:") || connectionString.startsWith( urlString + "file:")){
-			result = null; 
+			result = null;
 		}else if (connectionString.startsWith("tcp://")){
 			String prefix = "tcp://";
 			String dbSeparator = "/";
@@ -131,7 +132,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	public int getPortByConnectionString(String connectionString) {
 		int result;
 		if (connectionString.startsWith("file:") || connectionString.startsWith( urlString + "file:")){
-			result = -1; 
+			result = -1;
 		}else if (connectionString.startsWith("tcp://")){
 			String prefix = "tcp://";
 			String dbSeparator = "/";
@@ -162,7 +163,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	public String getInitMethod() {
 		return initMethod;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDestroyMethod()
 	 */
@@ -170,11 +171,11 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	public String getDestroyMethod() {
 		return destroyMethod;
 	}
-	
+
 	private static final String getDefaultPath(){
 		try{
 			File path = CdmApplicationUtils.getWritableResourceDir();
-			String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
+			String subPath = File.separator + "h2" + File.separator + "LocalH2";
 			return  path + subPath;
 		}catch(IOException e){
 			logger.error(e);
