@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -63,6 +64,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	private IReferenceService referenceService;
 
 	@Test
+	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
@@ -168,11 +170,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         }
 
 
-        //remove references to keep the test DB clean for later tests
-        sequence.removeCitation(reference);
-        referenceService.delete(reference);
-        referenceService.delete(forwardPrimer.getPublishedIn());
-        referenceService.delete(reversePrimer.getPublishedIn());
 	}
 
 	@Test
