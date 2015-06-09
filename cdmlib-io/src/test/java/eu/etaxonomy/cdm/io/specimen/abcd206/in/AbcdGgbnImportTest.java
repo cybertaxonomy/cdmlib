@@ -173,6 +173,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
+    @Ignore
 	@DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testAttachDnaSampleToDerivedUnit(){
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -231,6 +232,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
+    @Ignore
 	@DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testNoAttachDnaSampleToDerivedUnit(){
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
