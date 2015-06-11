@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -399,8 +400,17 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(ownerClazz);
 						for(PropertyDescriptor d : descriptors) {
 						    if(d.getName().equals(param)) {
-                                ParameterizedType pt = (ParameterizedType) d.getReadMethod().getGenericReturnType();
-                                collectionEntitiyType = pt.getActualTypeArguments()[0];
+						        Method readMethod = d.getReadMethod();
+                                ParameterizedType pt = (ParameterizedType) readMethod.getGenericReturnType();
+                                Type[] actualTypeArguments = pt.getActualTypeArguments();
+                                if(actualTypeArguments.length == 2) {
+                                    // this must be a map of <Language, String> (aka LanguageString) there is no other case like this in the cdm
+                                    // in case of Maps the returned Collection will be the Collection of the values, so collectionEntitiyType is the
+                                    // second typeArgument
+                                    collectionEntitiyType = actualTypeArguments[1];
+                                } else {
+                                    collectionEntitiyType = actualTypeArguments[0];
+                                }
                                 if(collectionEntitiyType instanceof TypeVariable) {
                                     collectionEntitiyType = ((TypeVariable)collectionEntitiyType).getBounds()[0];
                                 }
