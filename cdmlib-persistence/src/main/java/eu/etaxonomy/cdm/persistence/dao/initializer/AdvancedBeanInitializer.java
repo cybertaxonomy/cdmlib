@@ -24,6 +24,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
+import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -451,12 +452,16 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     							if (propValue == null){
     							    logger.trace("Collection is null");
     							}else {
+    							    if(propValue instanceof PersistentMap) {
+    							        propValue = ((PersistentMap)propValue).values();
+    							    }
     							    for(Object newBean : (Collection<Object>)propValue ) {
-    							        if (newBean instanceof HibernateProxy){
+    							        if(newBean instanceof HibernateProxy){
     							            newBean = initializeInstance(newBean);
     							        }
 
     							        autoinitializeBean((CdmBase)newBean, autoInit);
+
     							        node.addBean(newBean);
     							    }
     							}
