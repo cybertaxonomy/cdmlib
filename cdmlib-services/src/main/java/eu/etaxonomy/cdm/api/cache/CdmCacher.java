@@ -40,6 +40,10 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      *
      */
     private void init() {
+        if(getDefaultCache() == null) {
+            // Create default cache
+            getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
+        }
         setup();
     }
 
@@ -73,20 +77,16 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         .statistics(true);
 
     }
+    
+    
 
     /**
      * Returns the default cache
      *
      * @return
      */
-    public Cache getDefaultCache() {
-        Cache defaultCache = getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
-        if(defaultCache == null) {
-            // Create default cache
-            defaultCache = new Cache(getDefaultCacheConfiguration());
-            getDefaultCacheManager().addCache(defaultCache);
-        }
-        return defaultCache;
+    public static Cache getDefaultCache() {
+        return getDefaultCacheManager().getCache(DEFAULT_CACHE_NAME);
     }
 
 
