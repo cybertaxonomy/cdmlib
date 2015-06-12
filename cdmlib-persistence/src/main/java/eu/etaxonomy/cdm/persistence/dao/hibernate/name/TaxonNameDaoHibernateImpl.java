@@ -741,7 +741,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         UUID persUuid = persistentObject.getUuid();
         persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
-        getSession().delete(persistentObject);
+
 
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
@@ -752,6 +752,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         		homotypicalGroupDao.delete(homotypicalGroup);
         	}
         }
+
+        getSession().delete(persistentObject);
         return persistentObject.getUuid();
     }
 
