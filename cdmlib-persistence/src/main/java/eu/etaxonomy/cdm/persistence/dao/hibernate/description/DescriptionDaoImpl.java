@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -878,7 +877,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     @Override
     public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
-        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"

@@ -4,6 +4,8 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -17,6 +19,8 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
@@ -256,8 +260,27 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 
 	@Override
 	public String getDatabase() {
-	    throw new UnsupportedOperationException("getDatabase() not supported by WrappedCdmDataSource");
+	    if(datasource instanceof ComboPooledDataSource) {
+	      String jdbcUrl = ((ComboPooledDataSource)datasource).getJdbcUrl();
+	        try {
+                return getDatabaseFrom(jdbcUrl);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+	    } else {
+	        throw new UnsupportedOperationException("getDatabase() not implemented for " + datasource.getClass() + " in WrappedCdmDataSource");
+	    }
 	}
+
+    /**
+     * @param jdbcUrl
+     * @return
+     * @throws URISyntaxException
+     */
+    private String getDatabaseFrom(String jdbcUrl) throws URISyntaxException {
+        URI url = new URI(jdbcUrl.substring(5));
+        return url.getPath().substring(1);
+    }
 
 	@Override
 	public void setMode(H2Mode h2Mode) {

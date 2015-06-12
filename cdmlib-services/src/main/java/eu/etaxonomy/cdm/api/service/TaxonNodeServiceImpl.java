@@ -95,18 +95,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return childNodes;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     @Autowired
     protected void setDao(ITaxonNodeDao dao) {
         this.dao = dao;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
@@ -256,6 +250,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //oldTaxonNode.delete();
         return result;
     }
+
 
 
     /* (non-Javadoc)
@@ -430,9 +425,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	return deleteTaxonNode(node, config);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
@@ -482,9 +474,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#countAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification)
-     */
     @Override
     public int countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
@@ -518,7 +507,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(taxonNode.getParent());
         result.addUpdatedObject(newParent);
         result.setCdmEntity(taxonNode);
-        Reference reference = taxonNode.getReference();
+        Reference<?> reference = taxonNode.getReference();
         String microReference = taxonNode.getMicroReference();
         newParent.addChildNode(taxonNode, reference, microReference);
         dao.saveOrUpdate(taxonNode);
@@ -532,6 +521,5 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
 
     }
-
 
 }
