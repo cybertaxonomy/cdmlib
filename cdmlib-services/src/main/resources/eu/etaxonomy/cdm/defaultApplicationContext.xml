@@ -19,7 +19,7 @@
   	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.application\.CdmApplicationRemoteConfiguration" /> 
   </context:component-scan>
   
-  <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
+    <bean id="cdmTermCacher" class="eu.etaxonomy.cdm.api.cache.CdmTermCacher" />
   
   <!-- EditGeoService was moved to ext. It is no longer available here -->
 
