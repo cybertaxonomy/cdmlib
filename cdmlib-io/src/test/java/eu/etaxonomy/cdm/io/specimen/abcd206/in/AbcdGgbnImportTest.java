@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
+import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -64,7 +65,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	private IReferenceService referenceService;
 
 	@Test
-	@Ignore
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
@@ -89,10 +89,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 
         //dna quality
-//        DnaQuality dnaQuality = dnaSample.getDnaQuality();
-//        assertNotNull("Dna quality is null", dnaQuality!=null);
-//        assertEquals(new Double("0,77"),dnaQuality.getRatioOfAbsorbance260_230());
-//        assertEquals(new Double("1,38"),dnaQuality.getRatioOfAbsorbance260_280());
+        DnaQuality dnaQuality = dnaSample.getDnaQuality();
+        assertNotNull("Dna quality is null", dnaQuality!=null);
+        assertEquals(new Double("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
+        assertEquals(new Double("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
+        assertEquals(new DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
+//        assertEquals(MeasurementUnit.NewInstance(, label, labelAbbrev)DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 
         //amplifications
         Set<AmplificationResult> amplificationResults = dnaSample.getAmplificationResults();
@@ -173,7 +175,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-    @Ignore
 	@DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testAttachDnaSampleToDerivedUnit(){
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -232,7 +233,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-    @Ignore
 	@DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testNoAttachDnaSampleToDerivedUnit(){
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");

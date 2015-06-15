@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -97,7 +99,11 @@ public class ExcelSpecimenImportExampleTest extends
 
 
 	 @Test
-	 @Ignore  //does not run together with testResultSet or others
+//	 @Ignore  //does not run together with testResultSet or others
+	 @DataSets({
+	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
+	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
+	 })
 	 public void testDoInvoke() {
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -110,7 +116,11 @@ public class ExcelSpecimenImportExampleTest extends
 	 }
 
 	 @Test
-	 @Ignore //does not run together with testResultSet or others
+//	 @Ignore //does not run together with testResultSet or others
+	 @DataSets({
+	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
+	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
+	 })
 	 public void testDoInvokeXslx() {
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -126,6 +136,7 @@ public class ExcelSpecimenImportExampleTest extends
 	@Test
 	@DataSet
 	@ExpectedDataSet
+	@Ignore
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);

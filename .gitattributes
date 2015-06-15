@@ -587,6 +587,9 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-io/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/BlankDataSet.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/ClearDBDataSet.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/ClearDB_with_Terms_DataSet.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/TermsDataSet-with_auditing_info.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
