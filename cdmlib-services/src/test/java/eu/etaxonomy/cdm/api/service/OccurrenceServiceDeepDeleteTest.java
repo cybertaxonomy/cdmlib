@@ -210,7 +210,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //delete field unit
         deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));

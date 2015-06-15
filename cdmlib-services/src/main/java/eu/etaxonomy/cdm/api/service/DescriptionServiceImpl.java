@@ -481,6 +481,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
+    		dao.delete(description);
 
             deleteResult.addUpdatedObject(tax);
             deleteResult.setCdmEntity(tax);
