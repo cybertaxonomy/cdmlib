@@ -557,5 +557,13 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         transactionManager.commit(txStatus);
     }
 
+    /**
+     * This is the common method to create test data xml files for integration tests.
+     *
+     * With {@link CdmTransactionalIntegrationTestExample#createTestDataSet} an example
+     * implementation of this method is provided.
+     *
+     * @throws FileNotFoundException
+     */
     public abstract void createTestDataSet() throws FileNotFoundException;
 }
