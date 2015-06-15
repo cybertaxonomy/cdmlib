@@ -28,16 +28,19 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -45,6 +48,9 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -60,6 +66,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	private INameService nameService;
+
+	@SpringBeanByType
+	private ITaxonService taxonService;
 
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
@@ -78,6 +87,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	private IReferenceService referenceService;
+
+	@SpringBeanByType
+	private IClassificationService classificationService;
 
 
 
@@ -424,6 +436,91 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
+	@DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testIgnoreAuthorship(){
+	    UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
+	    UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
+
+//        Classification classification = Classification.NewInstance("Checklist");
+//        classification.setUuid(classificationUUID);
+//
+//        Reference<?> secReference = ReferenceFactory.newGeneric();
+//        Team team = Team.NewTitledInstance("Hal.", "Hal.");
+//        secReference.setAuthorship(team);
+//
+//        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
+//        taxonName.setGenusOrUninomial("Campanula");
+//        taxonName.setSpecificEpithet("versicolor");
+//        taxonName.setInfraSpecificEpithet("tomentella");
+//
+//        Taxon taxon = Taxon.NewInstance(taxonName, secReference);
+//        taxon.setUuid(taxonUUID);
+//
+//        classification.addChildTaxon(taxon, secReference, "");
+//
+//        taxonService.save(taxon);
+//        nameService.save(taxonName);
+//        referenceService.save(secReference);
+//
+//        commitAndStartNewTransaction(null);
+//
+//        setComplete();
+//        endTransaction();
+//
+//
+//        try {
+//            writeDbUnitDataSetFile(new String[] {
+//                    "SpecimenOrObservationBase",
+//                    "SpecimenOrObservationBase_DerivationEvent",
+//                    "DerivationEvent",
+//                    "DescriptionElementBase",
+//                    "DescriptionBase",
+//                    "TaxonBase",
+//                    "TypeDesignationBase",
+//                    "TaxonNameBase",
+//                    "TaxonNameBase_TypeDesignationBase",
+//                    "HomotypicalGroup",
+//                    "AgentBase",
+//                    "AgentBase_AgentBase",
+//                    "Reference",
+//                    "TaxonNode",
+//                    "Classification",
+//                    "LanguageString"
+//            }, "testIgnoreAuthorship");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    //test initial state
+	    Taxon taxon = (Taxon) taxonService.load(taxonUUID);
+	    assertNotNull(taxon);
+	    Classification classification = classificationService.load(classificationUUID);
+	    assertNotNull(classification);
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+
+	    importConfigurator.setIgnoreAuthorship(true);
+	    importConfigurator.setClassificationUuid(classificationUUID);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+
+	}
+
+	@Test
 	@Ignore
 	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testSetUnitIDAsBarcode() {
@@ -434,8 +531,60 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */
     @Override
+    @Ignore
+    @Test
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+        UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
+        UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
 
+        Classification classification = Classification.NewInstance("Checklist");
+        classification.setUuid(classificationUUID);
+
+        Reference<?> secReference = ReferenceFactory.newGeneric();
+        Team team = Team.NewTitledInstance("Hal.", "Hal.");
+        secReference.setAuthorship(team);
+
+        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
+        taxonName.setGenusOrUninomial("Campanula");
+        taxonName.setSpecificEpithet("versicolor");
+        taxonName.setInfraSpecificEpithet("tomentella");
+
+        Taxon taxon = Taxon.NewInstance(taxonName, secReference);
+        taxon.setUuid(taxonUUID);
+
+        classification.addChildTaxon(taxon, secReference, "");
+
+        taxonService.save(taxon);
+        nameService.save(taxonName);
+        referenceService.save(secReference);
+
+        commitAndStartNewTransaction(null);
+
+        setComplete();
+        endTransaction();
+
+
+        try {
+            writeDbUnitDataSetFile(new String[] {
+                    "SpecimenOrObservationBase",
+                    "SpecimenOrObservationBase_DerivationEvent",
+                    "DerivationEvent",
+                    "DescriptionElementBase",
+                    "DescriptionBase",
+                    "TaxonBase",
+                    "TypeDesignationBase",
+                    "TaxonNameBase",
+                    "TaxonNameBase_TypeDesignationBase",
+                    "HomotypicalGroup",
+                    "AgentBase",
+                    "AgentBase_AgentBase",
+                    "Reference",
+                    "TaxonNode",
+                    "Classification",
+                    "LanguageString"
+            }, "testIgnoreAuthorship");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
