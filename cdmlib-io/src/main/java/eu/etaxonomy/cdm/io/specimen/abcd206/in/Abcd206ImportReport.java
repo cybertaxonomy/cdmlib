@@ -158,6 +158,7 @@ public class Abcd206ImportReport {
         for(UnitIdSpecimen specimen:ignoredImports){
             out.println(formatSpecimen(specimen));
         }
+        out.println("\n");
         //all specimens
         Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
         for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {

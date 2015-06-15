@@ -80,7 +80,7 @@ public class AbcdGgbnParser {
                 NodeList gelImageList = element.getElementsByTagName(prefix+"gelImage");
                 NodeList amplificationsList = element.getElementsByTagName(prefix+"Amplifications");
 
-//                dnaSample.setDnaQuality(parseDnaQuality(element, state));
+                dnaSample.setDnaQuality(parseDnaQuality(element, state));
 
                 parseGelImage(gelImageList, state);
                 parseAmplifications(amplificationsList, dnaSample, state);

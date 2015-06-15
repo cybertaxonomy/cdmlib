@@ -352,13 +352,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         results = taxonDao.getTaxaByNameForEditor(true, true,false,false,"Aus", null,MatchMode.EXACT,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
-        
+
         results = taxonDao.getTaxaByNameForEditor(true, true,true,false,"A*", null,MatchMode.BEGINNING,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",15,results.size());
-        
+
         //TODO: test the search for misapplied names
-        
+
     }
 
 
@@ -1112,13 +1112,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 
