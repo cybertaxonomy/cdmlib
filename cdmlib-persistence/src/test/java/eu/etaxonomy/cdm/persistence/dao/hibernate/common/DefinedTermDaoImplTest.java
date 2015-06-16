@@ -247,6 +247,12 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	     newModifier.setProtectedTitleCache(true);
          Assert.assertEquals("English Label should be the title cache", "English Modifier", newModifier.getTitleCache());
 
+         //Change English label
+         newModifier.setProtectedTitleCache(false);
+         newModifier.setLabel("New English label");
+         dao.saveOrUpdate(newModifier);
+         newModifier.setProtectedTitleCache(true);
+         Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
 
          //Add German
          newModifier.setProtectedTitleCache(false);
@@ -254,7 +260,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
          newModifier.addRepresentation(newRepresentation);
          dao.saveOrUpdate(newModifier);
          newModifier.setProtectedTitleCache(true);
-         Assert.assertEquals("English (default language) label should still be the title cache", "English Modifier", newModifier.getTitleCache());
+         Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
 
          //Remove English
          newModifier.setProtectedTitleCache(false);

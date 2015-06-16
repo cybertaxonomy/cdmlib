@@ -145,11 +145,18 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 
 	    //German and English
 	    newVoc.setProtectedTitleCache(false);
-        Representation englishRepresentation = Representation.NewInstance("Description", "English Label", "Abbrev.", Language.DEFAULT());
+        Representation englishRepresentation = Representation.NewInstance("Description", "English label", "Abbrev.", Language.DEFAULT());
         newVoc.addRepresentation(englishRepresentation);
         dao.saveOrUpdate(newVoc);
         newVoc.setProtectedTitleCache(true);
-        Assert.assertEquals("English Label should be new title cache", "English Label", newVoc.getTitleCache());
+        Assert.assertEquals("English Label should be new title cache", "English label", newVoc.getTitleCache());
+
+        //Change English label
+        newVoc.setProtectedTitleCache(false);
+        newVoc.setLabel("New English label");
+        dao.saveOrUpdate(newVoc);
+        newVoc.setProtectedTitleCache(true);
+        Assert.assertEquals("English (default language) label should be new English label", "New English label", newVoc.getTitleCache());
 
         //Remove English
         newVoc.setProtectedTitleCache(false);
@@ -162,5 +169,4 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }
