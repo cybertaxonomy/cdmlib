@@ -7,13 +7,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.specimen.abcd206.in.ggbn;
+package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
 import java.net.URI;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -21,6 +20,7 @@ import org.w3c.dom.NodeList;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportReport;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -98,7 +98,7 @@ public class AbcdGgbnParser {
         NodeList concentrationList = element.getElementsByTagName(prefix+"concentration");
         if(concentrationList.getLength()==1){
             Node concentration = concentrationList.item(0);
-            dnaQuality.setConcentration(parseDouble(concentration));
+            dnaQuality.setConcentration(AbcdParseUtility.parseDouble(concentration));
             if(concentration instanceof Element){
                 String unit = ((Element) concentration).getAttribute("Unit");
 //                dnaQuality.setConcentrationUnit(concentrationUnit)
@@ -106,14 +106,14 @@ public class AbcdGgbnParser {
         }
 
         NodeList ratioOfAbsorbance260_280List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_280");
-        dnaQuality.setRatioOfAbsorbance260_280(parseFirstNodeDouble(ratioOfAbsorbance260_280List));
+        dnaQuality.setRatioOfAbsorbance260_280(AbcdParseUtility.parseFirstNodeDouble(ratioOfAbsorbance260_280List));
 
         NodeList ratioOfAbsorbance260_230List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_230");
-        dnaQuality.setRatioOfAbsorbance260_230(parseFirstNodeDouble(ratioOfAbsorbance260_230List));
+        dnaQuality.setRatioOfAbsorbance260_230(AbcdParseUtility.parseFirstNodeDouble(ratioOfAbsorbance260_230List));
 
         NodeList qualityCheckDateList = element.getElementsByTagName(prefix+"qualityCheckDate");
         if(qualityCheckDateList.item(0)!=null){
-            dnaQuality.setQualityCheckDate(DateTime.parse(qualityCheckDateList.item(0).getTextContent()));
+            dnaQuality.setQualityCheckDate(AbcdParseUtility.parseFirstDate(qualityCheckDateList));
         }
 
         NodeList qualityList = element.getElementsByTagName(prefix+"quality");
@@ -178,7 +178,7 @@ public class AbcdGgbnParser {
 
                     NodeList sequencingsList = amplificationElement.getElementsByTagName(prefix+"Sequencings");
                     if(sequencingsList.item(0)!=null && sequencingsList.item(0) instanceof Element){
-                        parseAmplificationSequencings((Element)sequencingsList.item(0), amplification, dnaSample, state);
+                        parseAmplificationSequencings((Element)sequencingsList.item(0), amplification, amplificationResult, dnaSample, state);
                     }
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
@@ -193,7 +193,7 @@ public class AbcdGgbnParser {
 
     }
 
-    private void parseAmplificationSequencings(Element sequencings, Amplification amplification, DnaSample dnaSample, Abcd206ImportState state) {
+    private void parseAmplificationSequencings(Element sequencings, Amplification amplification, AmplificationResult amplificationResult, DnaSample dnaSample, Abcd206ImportState state) {
         NodeList sequencingList = sequencings.getElementsByTagName(prefix+"sequencing");
         for(int i=0;i<sequencingList.getLength();i++){
             Sequence sequence = Sequence.NewInstance("");
@@ -204,19 +204,19 @@ public class AbcdGgbnParser {
 
                 //singleSequencings
                 NodeList singleSequencingsList = sequencing.getElementsByTagName(prefix+"SingleSequencings");
-                parseSingleSequencings(singleSequencingsList, amplification, sequence);
+                parseSingleSequencings(singleSequencingsList, amplification, amplificationResult, sequence);
                 //Consensus sequence
                 NodeList consensusSequencesList = sequencing.getElementsByTagName(prefix+"consensusSequence");
-                sequence.setConsensusSequence(SequenceString.NewInstance(parseFirstTextContent(consensusSequencesList)));
+                sequence.setConsensusSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(consensusSequencesList)));
                 //sequence length
                 NodeList consensusSequencesLengthList = sequencing.getElementsByTagName(prefix+"consensusSequenceLength");
                 if(sequence.getConsensusSequence()!=null){
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
-                    sequence.getConsensusSequence().setLength(parseFirstNodeDouble(consensusSequencesLengthList).intValue());
+                    sequence.getConsensusSequence().setLength(AbcdParseUtility.parseFirstNodeDouble(consensusSequencesLengthList).intValue());
                 }
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
-                URI uri = parseFirstUri(consensusSequenceChromatogramFileURIList);
+                URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList);
                 Media contigFile = Media.NewInstance(uri, null, null, null);
                 sequence.setContigFile(contigFile);
 
@@ -242,7 +242,7 @@ public class AbcdGgbnParser {
             if(referenceList.item(i) instanceof Element){
                 Element element = (Element)referenceList.item(i);
                 NodeList referenceCitationList = element.getElementsByTagName(prefix+"ReferenceCitation");
-                String referenceCitation = parseFirstTextContent(referenceCitationList);
+                String referenceCitation = AbcdParseUtility.parseFirstTextContent(referenceCitationList);
                 List<Reference> matchedReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, referenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
                 Reference<?> reference;
                 if(matchedReferences.size()==1){
@@ -259,7 +259,7 @@ public class AbcdGgbnParser {
 
     }
 
-    private void parseSingleSequencings(NodeList singleSequencingsList, Amplification amplification, Sequence sequence) {
+    private void parseSingleSequencings(NodeList singleSequencingsList, Amplification amplification, AmplificationResult amplificationResult, Sequence sequence) {
         if(singleSequencingsList.item(0)!=null && singleSequencingsList.item(0) instanceof Element){
             Element singleSequencings = (Element)singleSequencingsList.item(0);
             NodeList singleSequencingList = singleSequencings.getElementsByTagName(prefix+"singleSequencing");
@@ -267,11 +267,12 @@ public class AbcdGgbnParser {
                 //single read
                 SingleRead singleRead = SingleRead.NewInstance();
                 SingleReadAlignment.NewInstance(sequence, singleRead);
+                amplificationResult.addSingleRead(singleRead);
                 if(singleSequencingList.item(i) instanceof Element){
                     Element singleSequencing = (Element)singleSequencingList.item(i);
                     NodeList sequencingDirectionList = singleSequencing.getElementsByTagName(prefix+"sequencingDirection");
                     //read direction
-                    String singleReadDirection = parseFirstTextContent(sequencingDirectionList);
+                    String singleReadDirection = AbcdParseUtility.parseFirstTextContent(sequencingDirectionList);
                     if(singleReadDirection.equals(FORWARD)){
                         singleRead.setDirection(SequenceDirection.Forward);
                     }
@@ -280,7 +281,7 @@ public class AbcdGgbnParser {
                     }
                     //read pherogram URI
                     NodeList chromatogramFileURIList = singleSequencing.getElementsByTagName(prefix+"chromatogramFileURI");
-                    singleRead.setPherogram(Media.NewInstance(parseFirstUri(chromatogramFileURIList), null, null, null));
+                    singleRead.setPherogram(Media.NewInstance(AbcdParseUtility.parseFirstUri(chromatogramFileURIList), null, null, null));
                     NodeList sequencingPrimersList = singleSequencing.getElementsByTagName(prefix+"SequencingPrimers");
                     parseSequencingPrimers(sequencingPrimersList, amplification);
                 }
@@ -302,7 +303,7 @@ public class AbcdGgbnParser {
                     Element sequencingPrimer = (Element)sequencingPrimerList.item(i);
                     //primer sequence
                     NodeList primerSequenceList = sequencingPrimer.getElementsByTagName(prefix+"primerSequence");
-                    primer.setSequence(SequenceString.NewInstance(parseFirstTextContent(primerSequenceList)));
+                    primer.setSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(primerSequenceList)));
                     //primer direction
                     String direction = parseFirstAttribute("Direction", primerSequenceList);
                     if(direction!=null){
@@ -315,10 +316,10 @@ public class AbcdGgbnParser {
                     }
                     //primer name
                     NodeList primerNameList = sequencingPrimer.getElementsByTagName(prefix+"primerName");
-                    primer.setLabel(parseFirstTextContent(primerNameList));
+                    primer.setLabel(AbcdParseUtility.parseFirstTextContent(primerNameList));
                     //reference citation
                     NodeList primerReferenceCitationList = sequencingPrimer.getElementsByTagName(prefix+"primerReferenceCitation");
-                    String primerReferenceCitation = parseFirstTextContent(primerReferenceCitationList);
+                    String primerReferenceCitation = AbcdParseUtility.parseFirstTextContent(primerReferenceCitationList);
                     List<Reference> matchingReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, primerReferenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
                     Reference<?> primerReference;
                     if(matchingReferences.size()==1){
@@ -349,7 +350,7 @@ public class AbcdGgbnParser {
             if(geneticAccessionList.item(i) instanceof Element){
                 //genetic accession number
                 NodeList geneticAccessionNumberList = ((Element)geneticAccessionList.item(i)).getElementsByTagName(prefix+"geneticAccessionNumber");
-                sequence.setGeneticAccessionNumber(parseFirstTextContent(geneticAccessionNumberList));
+                sequence.setGeneticAccessionNumber(AbcdParseUtility.parseFirstTextContent(geneticAccessionNumberList));
 
                 //genetic accession number uri
                 NodeList geneticAccessionNumberUriList = ((Element)geneticAccessionList.item(i)).getElementsByTagName(prefix+"geneticAccessionNumberURI");
@@ -357,54 +358,6 @@ public class AbcdGgbnParser {
 
             }
         }
-    }
-
-    private URI parseFirstUri(NodeList nodeList){
-        URI uri = null;
-        if(nodeList.item(0)!=null){
-            String textContent = nodeList.item(0).getTextContent();
-            if(textContent!=null){
-                try {
-                    uri = URI.create(textContent);
-                } catch (IllegalArgumentException e) {
-                    //nothing
-                }
-            }
-        }
-        return uri;
-    }
-
-    private String parseFirstTextContent(NodeList nodeList){
-        String string = null;
-        if(nodeList.getLength()>0){
-            string = nodeList.item(0).getTextContent().replace("\n", "").replaceAll("( )+", " ").trim();
-        }
-        return string;
-    }
-
-    private Double parseFirstNodeDouble(NodeList nodeList){
-        if(nodeList.getLength()>0){
-            return parseDouble(nodeList.item(0));
-        }
-        return null;
-    }
-
-    private Double parseDouble(Node node){
-        String message = "Could not parse double value for node " + node.getNodeName();
-        Double doubleValue = null;
-        try{
-            String textContent = node.getTextContent();
-            //remove 1000 dots
-            textContent = textContent.replace(".","");
-            //convert commmas
-            textContent = textContent.replace(",",".");
-            doubleValue = Double.parseDouble(textContent);
-        } catch (NullPointerException npe){
-            logger.error(message, npe);
-        } catch (NumberFormatException nfe){
-            logger.error(message, nfe);
-        }
-        return doubleValue;
     }
 
 }
