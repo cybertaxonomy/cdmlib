@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -49,8 +49,8 @@ public class TdwgAreaTest {
 	@Before
 	public void setUp() throws Exception {
 	}
-	
-// ************** TESTS *************************************************	
+
+// ************** TESTS *************************************************
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.location.TdwgArea_Old#getAreaByTdwgAbbreviation(java.lang.String)}.
@@ -103,63 +103,63 @@ public class TdwgAreaTest {
 //			e.printStackTrace();
 //		}
 //	}
-	
+
 	@Test
 	public void testLoadingOfPartOfRelationships() {
 		NamedArea britain = getAreaByTdwgAbbreviation("GRB");
 		NamedArea northernEurope = getAreaByTdwgAbbreviation("10");
 		assert britain != null : "NamedArea must exist";
 		assert northernEurope != null : "NamedArea must exist";
-		
+
 		Assert.assertTrue("Northern Europe should include Britain",northernEurope.getIncludes().contains(britain));
 		assertEquals("Britain should be part of Northern Europe",britain.getPartOf(),northernEurope);
 	}
-	
+
 	@Test
 	public void testNamedAreaLevelAssignment() {
 		NamedArea britain = getAreaByTdwgAbbreviation("GRB");
 		NamedArea northernEurope = getAreaByTdwgAbbreviation("10");
 		assert britain != null : "NamedArea must exist";
 		assert northernEurope != null : "NamedArea must exist";
-		
+
 		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
 		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
 	}
-	
+
 	@Test
 	public void testUtf8(){
 		DefaultTermInitializer initializer = new DefaultTermInitializer();
 		initializer.initialize();
 		NamedArea saoTome = NamedArea.getTdwgTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
 		assertEquals("Utf8 error", "S\u00E3o Tom\u00E9", saoTome.getLabel());
-		
+
 	}
-	
-	
+
+
 	@Test
 	public void testCompare(){
 		//test compare method for set functionality. TreeSet is used by OrderedTermVocabulary therefore
 		//this needs to work correctly
 		TermVocabulary voc = getAreaByTdwgAbbreviation("1").getVocabulary();
-		
+
 		Set<NamedArea> set = new TreeSet<NamedArea>();
-		NamedArea area3 = new NamedArea();
+		NamedArea area3 = NamedArea.NewInstance();
 		area3.addRepresentation(Representation.NewInstance("Spain", "Spain", "SPA", Language.DEFAULT()));
-		NamedArea area4 = new NamedArea();
+		NamedArea area4 = NamedArea.NewInstance();
 		area4.addRepresentation(Representation.NewInstance("Spain6", "Spain6", "SPA-SP", Language.DEFAULT()));
 		voc.addTerm(area3);
 		voc.addTerm(area4);
-		
+
 		set.add(area3);
 		set.add(area4);
 		Assert.assertEquals("There must be 2 areas in the set", 2, set.size());
 	}
-	
-	
+
+
 
 //	@Test
 //	public void getHirarchichalAreasTest(){
-//		//NamedArea area0 = getAreaByTdwgLabel("Spain"); 
+//		//NamedArea area0 = getAreaByTdwgLabel("Spain");
 //		//System.out.println(area0.getLabel().toString());
 //		//NamedArea partof = area0.getPartOf();
 //		//System.out.println(partof.getLevel().getLabel());
@@ -173,7 +173,7 @@ public class TdwgAreaTest {
 //		Set<NamedAreaLevel> omitLevels = new HashSet<NamedAreaLevel>();
 //		NamedAreaLevel level = NamedAreaLevel.TDWG_LEVEL2();
 //		omitLevels.add(level);
-//		
+//
 //		//creating and filling the list
 //		List<NamedArea> areaList = new ArrayList<NamedArea>();
 //		NamedArea area1 = getAreaByTdwgLabel("Spain");
@@ -188,22 +188,22 @@ public class TdwgAreaTest {
 //		areaList.add(area5);
 //		NamedArea area6 = getAreaByTdwgLabel("Portugal");
 //		areaList.add(area6);
-//		
+//
 //		//System.out.println(areaListToString(areaList));
-//		
+//
 //		NamedAreaTree tree = new NamedAreaTree();
 //		tree.merge(areaList, omitLevels);
-///*		
+///*
 //		for (NamedArea area : areaList) {
 //			List<NamedArea> levelList = area.getAllLevelList();
 //			tree.merge(levelList);
 //			//System.out.println(areaListToString(levelList));
 //		}
-//*/		
+//*/
 //		System.out.println(tree.toString());
 //		tree.sortChildren();
 //		System.out.println(tree.toString());
-//		
+//
 //		List<NamedArea> areaList2 = new ArrayList<NamedArea>();
 //		NamedArea area7 = getAreaByTdwgLabel("Chita");
 //		areaList2.add(area7);
@@ -211,11 +211,11 @@ public class TdwgAreaTest {
 //		areaList2.add(area8);
 //		NamedArea area9 = getAreaByTdwgLabel("Philippines");
 //		areaList2.add(area9);
-//		
+//
 //		tree.merge(areaList2, omitLevels);
 //		tree.sortChildren();
 //		System.out.println(tree.toString());
-//		
+//
 //		List<Distribution> distList = new ArrayList<Distribution>();
 //		Distribution dist1 = Distribution.NewInstance(area1, null);
 //		distList.add(dist1);
@@ -229,10 +229,10 @@ public class TdwgAreaTest {
 //		distList.add(dist5);
 //		Distribution dist6 = Distribution.NewInstance(area6, null);
 //		distList.add(dist6);
-//		
+//
 //		DistributionTree distTree = new DistributionTree();
 //		distTree.merge(distList, omitLevels);
-//		
+//
 //		List<Distribution> distList2 = new ArrayList<Distribution>();
 //		Distribution dist7 = Distribution.NewInstance(area7, null);
 //		distList2.add(dist7);
@@ -246,10 +246,10 @@ public class TdwgAreaTest {
 //		System.out.println(distTree.toString());
 //
 //	}
-//	
-	
-	
-/*	
+//
+
+
+/*
 	private void print(NamedAreaNode result) {
 		System.out.print("{" + (result == null? "" :result.toString()));
 		for (LevelNode levelNode :  result.levelList){
@@ -278,8 +278,8 @@ public class TdwgAreaTest {
 		}
 		return aux;
 	}
-	
-	
+
+
 	private NamedArea getAreaByTdwgAbbreviation(String tdwgAbbrev){
 		return NamedArea.getAreaByTdwgAbbreviation(tdwgAbbrev);
 	}
@@ -287,10 +287,9 @@ public class TdwgAreaTest {
 	private NamedArea getAreaByTdwgLabel(String tdwgLabel){
 		return NamedArea.getAreaByTdwgLabel(tdwgLabel);
 	}
-	
+
 	private boolean isTdwgAreaLabel(String tdwgLabel){
 		return NamedArea.isTdwgAreaLabel(tdwgLabel);
 	}
 
-	
 }
