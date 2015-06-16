@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -64,6 +65,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
+	/**
+	 * Tests import import of DNA unit and all its parameters
+	 * and sub derivatives (sequence, amplification, etc.)
+	 */
 	@Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() {
@@ -84,6 +89,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
         DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
         assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
         assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
@@ -170,10 +176,16 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
                 assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_GM312-petD_R.ab1"), MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram()).getUri());
             }
         }
+        assertNotNull(amplificationResult.getSingleReads());
+        assertEquals(amplificationResult.getSingleReads(), singleReads);
 
 
 	}
 
+	/**
+	 * Tests import of DNA unit and attaching it to an existing specimen to which
+	 * it has a UnitAssociation.
+	 */
 	@Test
 	@DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testAttachDnaSampleToDerivedUnit(){
@@ -220,6 +232,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
+	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
@@ -232,6 +246,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 
+	/**
+	 * Tests importing of DNA unit without attaching it to an existing specimen.
+	 * Creates a FieldUnit with an attached DnaSample.
+	 */
 	@Test
 	@DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testNoAttachDnaSampleToDerivedUnit(){
@@ -279,6 +297,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Number of derived units is incorrect", 3, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 3, derivedUnits.size());
+	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
