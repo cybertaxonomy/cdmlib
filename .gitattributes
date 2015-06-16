@@ -2614,3 +2614,4 @@ src/site/resources/images/cdmlib-arch4.png -text
 src/site/resources/images/cdmlib_overview.png -text
 src/site/site.xml -text
 src/test/resources/h2/cdmTest.h2.db -text svneol=unset#unset
+/test -text
