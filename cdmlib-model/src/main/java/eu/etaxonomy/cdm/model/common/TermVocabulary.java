@@ -91,11 +91,11 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public static TermVocabulary NewInstance(TermType type){
 		return new TermVocabulary(type);
 	}
-	
+
 	public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz){
 		return new TermVocabulary<T>(type);
 	}
-	
+
 	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
 		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
 	}
@@ -111,7 +111,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	protected TermVocabulary(TermType type) {
 		super(type);
 	}
-	
+
 	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(type, term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
@@ -193,18 +193,16 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.setUri(URI.create(csvLine.get(1)));
 		String label = csvLine.get(2).trim();
 		String description = csvLine.get(3);
-		
+
 		//see  http://dev.e-taxonomy.eu/trac/ticket/3550
 		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
-		//preliminary until above is solved
-//		this.setTitleCache(label, true);
-		
+
 		TermType termType = TermType.getByKey(csvLine.get(4));
 		if (termType == null){
 			throw new IllegalArgumentException("TermType can not be mapped: " + csvLine.get(4));
 		}
 		this.setTermType(termType);
-		
+
 		return this;
 	}
 
@@ -236,5 +234,4 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 		return result;
 	}
-
 }
