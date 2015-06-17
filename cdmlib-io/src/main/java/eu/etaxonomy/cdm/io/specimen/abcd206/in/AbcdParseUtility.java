@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -54,7 +57,7 @@ public class AbcdParseUtility {
         return string;
     }
 
-    public static Double parseFirstNodeDouble(NodeList nodeList){
+    public static Double parseFirstDouble(NodeList nodeList){
         if(nodeList.getLength()>0){
             return parseDouble(nodeList.item(0));
         }
@@ -79,13 +82,26 @@ public class AbcdParseUtility {
         return doubleValue;
     }
 
-    public static DateTime parseFirstDate(NodeList nodeList) {
+    public static DateTime parseFirstDateTime(NodeList nodeList) {
         DateTime dateTime = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
             dateTime = DateTime.parse(textContent);
         }
         return dateTime;
+    }
+
+    public static Date parseFirstDate(NodeList nodeList) {
+        Date date = null;
+        String textContent = parseFirstTextContent(nodeList);
+        if(textContent!=null){
+            try {
+                date = new SimpleDateFormat().parse(textContent);
+            } catch (ParseException e) {
+                logger.error("Could not parse date: "+date, e);
+            }
+        }
+        return date;
     }
 
 }
