@@ -17,8 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
-import eu.etaxonomy.cdm.common.media.MimeType;
 
 /**
  * @author n.hoffmann
@@ -49,7 +47,7 @@ public class ImageInfoTest {
         URL tiffUrl = ImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.tif");
         tiffUri = tiffUrl.toURI();
 
-        remotePngUri = URI.create("http://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
+        remotePngUri = URI.create("https://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
     }
 
     @Test
