@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -42,9 +44,11 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -68,10 +72,11 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	/**
 	 * Tests import import of DNA unit and all its parameters
 	 * and sub derivatives (sequence, amplification, etc.)
+	 * @throws ParseException
 	 */
 	@Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testImportGgbn() {
+    public void testImportGgbn() throws ParseException {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
@@ -90,9 +95,41 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
-        DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
-        assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
-        assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+
+        //associated specimen
+        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setSignificantIdentifier("B 10 0066577");
+        List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(1, records.size());
+        SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
+        assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
+        DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
+        assertEquals("Herbarium Berolinense", specimen.getCollection().getName());
+        assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
+
+        //dna sample
+        FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
+        dnaConfig.setSignificantIdentifier("DB 6");
+        List<SpecimenOrObservationBase> dnaRecords = occurrenceService.findByTitle(dnaConfig).getRecords();
+        assertEquals(1, dnaRecords.size());
+        SpecimenOrObservationBase dnaSpecimen = dnaRecords.iterator().next();
+        assertEquals(DnaSample.class, dnaSpecimen.getClass());
+        DnaSample dnaSample = (DnaSample) dnaSpecimen;
+        DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
+        assertNotNull(derivedFrom);
+        assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
+        assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+        assertEquals("DNA Bank", dnaSample.getCollection().getCode());
+        assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
+        //preservation/preparation
+        assertNotNull(derivedFrom.getActor());
+        assertEquals("Bansemer, Jana", derivedFrom.getActor().getTitleCache());
+        assertNotNull(derivedFrom.getTimeperiod());
+        assertEquals((Integer)2002,derivedFrom.getTimeperiod().getStartYear());
+        assertEquals((Integer)8,derivedFrom.getTimeperiod().getStartMonth());
+        assertEquals((Integer)13,derivedFrom.getTimeperiod().getStartDay());
+        assertNotNull(dnaSample.getPreservation());
+
 
         //dna quality
         DnaQuality dnaQuality = dnaSample.getDnaQuality();
