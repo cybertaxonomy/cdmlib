@@ -317,7 +317,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     AbcdDnaParser dnaParser = new AbcdDnaParser(prefix, report, state.getCdmRepository()!=null?state.getCdmRepository():this);
                     DnaSample dnaSample = dnaParser.parse(item, derivedUnitBase, state, existingAssociatedSpecimen==null);
                     save(dnaSample, state);
-                    DerivationEvent.NewSimpleInstance(derivedUnitBase, dnaSample, DerivationEventType.DNA_EXTRACTION());
                     save(derivedUnitBase, state);
                     report.addDerivate(AbcdImportUtility.getUnitID(derivedUnitBase, state.getConfig()), derivedUnitBase, dataHolder.unitID, dnaSample);
                 }

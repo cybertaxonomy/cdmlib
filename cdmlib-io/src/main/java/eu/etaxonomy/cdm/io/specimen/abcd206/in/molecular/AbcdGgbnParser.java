@@ -62,8 +62,7 @@ public class AbcdGgbnParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public DnaSample parse(NodeList ggbn, Abcd206ImportState state) {
-        DnaSample dnaSample = DnaSample.NewInstance();
+    public DnaSample parse(NodeList ggbn, DnaSample dnaSample, Abcd206ImportState state) {
 
         for(int i=0;i<ggbn.getLength();i++){
             Node item = ggbn.item(i);
@@ -106,14 +105,14 @@ public class AbcdGgbnParser {
         }
 
         NodeList ratioOfAbsorbance260_280List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_280");
-        dnaQuality.setRatioOfAbsorbance260_280(AbcdParseUtility.parseFirstNodeDouble(ratioOfAbsorbance260_280List));
+        dnaQuality.setRatioOfAbsorbance260_280(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_280List));
 
         NodeList ratioOfAbsorbance260_230List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_230");
-        dnaQuality.setRatioOfAbsorbance260_230(AbcdParseUtility.parseFirstNodeDouble(ratioOfAbsorbance260_230List));
+        dnaQuality.setRatioOfAbsorbance260_230(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_230List));
 
         NodeList qualityCheckDateList = element.getElementsByTagName(prefix+"qualityCheckDate");
         if(qualityCheckDateList.item(0)!=null){
-            dnaQuality.setQualityCheckDate(AbcdParseUtility.parseFirstDate(qualityCheckDateList));
+            dnaQuality.setQualityCheckDate(AbcdParseUtility.parseFirstDateTime(qualityCheckDateList));
         }
 
         NodeList qualityList = element.getElementsByTagName(prefix+"quality");
@@ -215,7 +214,7 @@ public class AbcdGgbnParser {
                 NodeList consensusSequencesLengthList = sequencing.getElementsByTagName(prefix+"consensusSequenceLength");
                 if(sequence.getConsensusSequence()!=null){
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
-                    sequence.getConsensusSequence().setLength(AbcdParseUtility.parseFirstNodeDouble(consensusSequencesLengthList).intValue());
+                    sequence.getConsensusSequence().setLength(AbcdParseUtility.parseFirstDouble(consensusSequencesLengthList).intValue());
                 }
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
