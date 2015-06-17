@@ -117,7 +117,6 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 + whereClassification ;
 
             // this is for the case
-            //   - exact match of the ranks
             //   - rank is lower and has children with higher rank
             String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.childNodes as tnc" +
                     " WHERE " +
