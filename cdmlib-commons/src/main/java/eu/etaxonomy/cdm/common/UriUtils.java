@@ -21,11 +21,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -42,6 +49,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.log4j.Logger;
@@ -218,6 +227,19 @@ public class UriUtils {
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
         HttpClient  client = new DefaultHttpClient();
+
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, getTrustingManager(), new java.security.SecureRandom());
+            SSLSocketFactory socketFactory = new SSLSocketFactory(sc);
+            Scheme sch = new Scheme("https", 443, socketFactory);
+            client.getConnectionManager().getSchemeRegistry().register(sch);
+        } catch (KeyManagementException e1) {
+            throw new RuntimeException("Registration of ssl support failed", e1);
+        } catch (NoSuchAlgorithmException e2) {
+            throw new RuntimeException("Registration of ssl support failed", e2);
+        }
+
 
         HttpUriRequest method;
         switch (httpMethod) {
@@ -453,5 +475,26 @@ public class UriUtils {
           success = false;
         }
         return success;
+    }
+
+    private static TrustManager[] getTrustingManager() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                // Do nothing
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                // Do nothing
+            }
+
+        } };
+        return trustAllCerts;
     }
 }
