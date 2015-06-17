@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdImportUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.UnitAssociationParser;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -54,8 +55,10 @@ public class AbcdDnaParser {
             the ones of the ABCD unit itself which are initially imported and set for the
             specimen.
              */
-            dnaCollection = derivedUnitBase.getCollection();
+            dnaCollection = derivedUnitBase.getCollection().clone();
             dnaUnitID = AbcdImportUtility.getUnitID(derivedUnitBase, state.getConfig());
+            UnitAssociationParser associationParser = new UnitAssociationParser(prefix, report, cdmAppController);
+            associationParser.parse(item, derivedUnitBase, state);
         }
         DnaSample dnaSample = null;
         NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
