@@ -54,6 +54,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
     /**
      * see http://dev.e-taxonomy.eu/trac/ticket/2778
+     * Classification/{uuid}/childNodesAt/{rank-uuid} fails if only species in database
      */
     @Test
     @DataSet(value="ClassificationDaoHibernateImplTest.issue2778.xml")
@@ -82,68 +83,69 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * {@inheritDoc}
      */
     @Override
-    @Test // uncomment to write out the test data xml file for this test class
+//    @Test // uncomment to write out the test data xml file for this test class
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
-    // 1. create the entities   and save them
-    Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
-    europeanAbiesClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
-    classificationDao.save(europeanAbiesClassification);
+	    // 1. create the entities   and save them
+	    Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
+	    europeanAbiesClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+	    classificationDao.save(europeanAbiesClassification);
+	
+	    Reference<?> sec = ReferenceFactory.newBook();
+	    sec.setTitleCache("Kohlbecker, A., Testcase standart views, 2013", true);
+	    Reference<?> sec_sensu = ReferenceFactory.newBook();
+	    sec_sensu.setTitleCache("Komarov, V. L., Flora SSSR 29", true);
+	    referenceDao.save(sec);
+	    referenceDao.save(sec_sensu);
+	
+	
+	    BotanicalName n_abies_alba = BotanicalName.NewInstance(Rank.SPECIES());
+	    n_abies_alba.setNameCache("Abies alba", true);
+	    Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
+	    taxonDao.save(t_abies_alba);
+	
+	    BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
+	    n_abies_grandis.setNameCache("Abies grandis", true);
+	    Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
+	    taxonDao.save(t_abies_grandis);
+	
+	    BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
+	    n_abies_kawakamii.setNameCache("Abies kawakamii", true);
+	    Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
+	    taxonDao.save(t_abies_kawakamii);
+	
+	    BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
+	    n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
+	    Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
+	    taxonDao.save(t_abies_lasiocarpa);
+	
+	    // add taxa to classifications
+	    europeanAbiesClassification.addChildTaxon(t_abies_alba, null, null);
+	    europeanAbiesClassification.addChildTaxon(t_abies_grandis, null, null);
+	    europeanAbiesClassification.addChildTaxon(t_abies_kawakamii, null, null);
+	    europeanAbiesClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
+	    classificationDao.saveOrUpdate(europeanAbiesClassification);
+	
+	    // 2. end the transaction so that all data is actually written to the db
+	    setComplete();
+	    endTransaction();
+	
+	    // use the fileNameAppendix if you are creating a data set file which need to be named differently
+	    // from the standard name. Fir example if a single test method needs different data then the other
+	    // methods the test class you may want to set the fileNameAppendix when creating the data for this method.
+	    String fileNameAppendix = "issue2778";
 
-    Reference<?> sec = ReferenceFactory.newBook();
-    sec.setTitleCache("Kohlbecker, A., Testcase standart views, 2013", true);
-    Reference<?> sec_sensu = ReferenceFactory.newBook();
-    sec_sensu.setTitleCache("Komarov, V. L., Flora SSSR 29", true);
-    referenceDao.save(sec);
-    referenceDao.save(sec_sensu);
-
-
-    BotanicalName n_abies_alba = BotanicalName.NewInstance(Rank.SPECIES());
-    n_abies_alba.setNameCache("Abies alba", true);
-    Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
-    taxonDao.save(t_abies_alba);
-
-    BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
-    n_abies_grandis.setNameCache("Abies grandis", true);
-    Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
-    taxonDao.save(t_abies_grandis);
-
-    BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
-    n_abies_kawakamii.setNameCache("Abies kawakamii", true);
-    Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
-    taxonDao.save(t_abies_kawakamii);
-
-    BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
-    n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
-    Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
-    taxonDao.save(t_abies_lasiocarpa);
-
-    // add taxa to classifications
-    europeanAbiesClassification.addChildTaxon(t_abies_alba, null, null);
-    europeanAbiesClassification.addChildTaxon(t_abies_grandis, null, null);
-    europeanAbiesClassification.addChildTaxon(t_abies_kawakamii, null, null);
-    europeanAbiesClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
-    classificationDao.saveOrUpdate(europeanAbiesClassification);
-
-    // 2. end the transaction so that all data is actually written to the db
-    setComplete();
-    endTransaction();
-
-    // use the fileNameAppendix if you are creating a data set file which need to be named differently
-    // from the standard name. Fir example if a single test method needs different data then the other
-    // methods the test class you may want to set the fileNameAppendix when creating the data for this method.
-    String fileNameAppendix = "issue2778";
-
-    // 3.
-    writeDbUnitDataSetFile(new String[] {
-        "TAXONBASE", "TAXONNAMEBASE",
-        "REFERENCE",
-        "AGENTBASE","HOMOTYPICALGROUP",
-        "CLASSIFICATION", "TAXONNODE",
-        "HIBERNATE_SEQUENCES" // IMPORTANT!!!
-        },
-        fileNameAppendix );
+	    // 3.
+	    writeDbUnitDataSetFile(new String[] {
+	        "TAXONBASE", "TAXONNAMEBASE",
+	        "REFERENCE",
+	        "AGENTBASE","HOMOTYPICALGROUP",
+	        "CLASSIFICATION", "TAXONNODE",
+	        "LANGUAGESTRING",
+	        "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+	        },
+	        fileNameAppendix );
   }
 
 }
