@@ -150,6 +150,7 @@ public class AbcdGgbnParser {
                     NodeList amplificationDateList = amplificationElement.getElementsByTagName(prefix+"amplificationDate");
                     NodeList amplificationStaffList = amplificationElement.getElementsByTagName(prefix+"amplificationStaff");
 
+                    //amplification dna marker
                     NodeList markerList = amplificationElement.getElementsByTagName(prefix+"marker");
                     if(markerList.item(0)!=null){
                         String amplificationMarker = markerList.item(0).getTextContent();
@@ -176,6 +177,7 @@ public class AbcdGgbnParser {
                     NodeList libConstMethList = amplificationElement.getElementsByTagName(prefix+"lib_const_meth");
                     NodeList plasmidList = amplificationElement.getElementsByTagName(prefix+"plasmid");
 
+                    //consensus sequence
                     NodeList sequencingsList = amplificationElement.getElementsByTagName(prefix+"Sequencings");
                     if(sequencingsList.item(0)!=null && sequencingsList.item(0) instanceof Element){
                         parseAmplificationSequencings((Element)sequencingsList.item(0), amplification, amplificationResult, dnaSample, state);
@@ -198,6 +200,7 @@ public class AbcdGgbnParser {
         for(int i=0;i<sequencingList.getLength();i++){
             Sequence sequence = Sequence.NewInstance("");
             dnaSample.addSequence(sequence);
+            sequence.setDnaMarker(amplification.getDnaMarker());
 
             if(sequencingList.item(i) instanceof Element){
                 Element sequencing = (Element)sequencingList.item(i);
@@ -283,7 +286,7 @@ public class AbcdGgbnParser {
                     NodeList chromatogramFileURIList = singleSequencing.getElementsByTagName(prefix+"chromatogramFileURI");
                     singleRead.setPherogram(Media.NewInstance(AbcdParseUtility.parseFirstUri(chromatogramFileURIList), null, null, null));
                     NodeList sequencingPrimersList = singleSequencing.getElementsByTagName(prefix+"SequencingPrimers");
-                    parseSequencingPrimers(sequencingPrimersList, amplification);
+                    parseSequencingPrimers(sequencingPrimersList, singleRead, amplification);
                 }
             }
         }
@@ -291,14 +294,16 @@ public class AbcdGgbnParser {
 
     /**
      * @param sequencingPrimersList
+     * @param singleRead
      * @param amplification
      */
-    private void parseSequencingPrimers(NodeList sequencingPrimersList, Amplification amplification) {
+    private void parseSequencingPrimers(NodeList sequencingPrimersList, SingleRead singleRead, Amplification amplification) {
         if(sequencingPrimersList.item(0)!=null && sequencingPrimersList.item(0) instanceof Element){
-            Primer primer = Primer.NewInstance(null);
             Element sequencingPrimers = (Element)sequencingPrimersList.item(0);
             NodeList sequencingPrimerList = sequencingPrimers.getElementsByTagName(prefix+"sequencingPrimer");
             for(int i=0;i<sequencingPrimerList.getLength();i++){
+                Primer primer = Primer.NewInstance(null);
+                singleRead.setPrimer(primer);
                 if(sequencingPrimerList.item(i) instanceof Element){
                     Element sequencingPrimer = (Element)sequencingPrimerList.item(i);
                     //primer sequence
