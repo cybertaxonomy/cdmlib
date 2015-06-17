@@ -303,6 +303,7 @@ public class AbcdGgbnParser {
             for(int i=0;i<sequencingPrimerList.getLength();i++){
                 Primer primer = Primer.NewInstance(null);
                 singleRead.setPrimer(primer);
+                cdmAppController.getPrimerService().save(primer);
                 if(sequencingPrimerList.item(i) instanceof Element){
                     Element sequencingPrimer = (Element)sequencingPrimerList.item(i);
                     //primer sequence
