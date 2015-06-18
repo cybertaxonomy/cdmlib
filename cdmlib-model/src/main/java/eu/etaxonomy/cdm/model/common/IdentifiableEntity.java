@@ -607,12 +607,26 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
+        	
+        	 thisNameCache = thisNameCache.replaceAll("\u00D7", "");
+        	 thisNameCache = thisNameCache.replaceAll("[“\"\\u0022]", "");
+        	 
+        	 
+        	 specifiedNameCache = specifiedNameCache.replaceAll("\u00D7", "");
+        	 specifiedNameCache = specifiedNameCache.replaceAll("[“\"\\u0022]", "");
+        	 
+        	 
              result = thisNameCache.compareTo(specifiedNameCache);
          }
 
          // Compare title cache of taxon names
 
          if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
+        	 thisTitleCache = thisTitleCache.replaceAll("\u00D7", "");
+        	 thisTitleCache = thisTitleCache.replaceAll("[“\"\\u0022]", "");
+        	      	 
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll("\u00D7", "");
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll("[“\"\\u0022]", "");
              result = thisTitleCache.compareTo(specifiedTitleCache);
          }
 
