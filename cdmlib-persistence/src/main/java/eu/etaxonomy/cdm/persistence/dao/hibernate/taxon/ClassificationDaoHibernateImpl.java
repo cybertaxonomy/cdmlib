@@ -117,10 +117,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 + whereClassification ;
 
             // this is for the case
-            //   - rank is lower and has children with higher rank
-            String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.childNodes as tnc" +
+            //   - rank is lower and has parent with higher rank
+            String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.parent as parent" +
                     " WHERE " +
-                    " (tn.taxon.name.rank.orderIndex < :rankOrderIndex AND tnc.taxon.name.rank.orderIndex > :rankOrderIndex)"
+                    " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
                     + whereClassification ;
             query1 = getSession().createQuery(hql1);
             query2 = getSession().createQuery(hql2);

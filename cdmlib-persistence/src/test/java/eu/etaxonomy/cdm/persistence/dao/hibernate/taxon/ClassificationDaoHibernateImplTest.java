@@ -69,27 +69,76 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_UUID));
 
         // test for the bug in http://dev.e-taxonomy.eu/trac/ticket/2778
-        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, Rank.GENUS(), null, null, null);
+        Rank rank = Rank.GENUS();
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals(3, rootNodes.size());
+        
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("The absolut root nodes should be returned", 3, rootNodes.size());
     }
 
   
     /**
-     * see http://dev.e-taxonomy.eu/trac/ticket/2778
-     * Classification/{uuid}/childNodesAt/{rank-uuid} fails if only species in database
+     * Test listRankSpecificRootNode with an existing classification
      */
     @Test
     @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
-    public void testListRankSpecificRootNodesWithGenus() {
+    public void testListRankSpecificRootNodesWithHierarchie() {
 
         // check preconditions
     	checkPreconditions();
 
         Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_FULL_UUID));
 
-        // test for the bug in http://dev.e-taxonomy.eu/trac/ticket/2778
-        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, Rank.GENUS(), null, null, null);
-        assertEquals(1, rootNodes.size());
+        Rank rank = Rank.GENUS();
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("Only the genus should come back", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+        
+        rank = Rank.SUBGENUS();
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("Only the 3 species should come back", 2, rootNodes.size());
+        for (TaxonNode tn : rootNodes){
+        	assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
+        }
+ 
+        rank = Rank.SUBFAMILY();
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("Only the genus should come back", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+        
+        rank = Rank.FAMILY();
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("Only the family should come back", 1, rootNodes.size());
+        assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
+        
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("Only the family as the absolut root node should come back", 1, rootNodes.size());
+        assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
+        
+    }
+    
+    /**
+     * Test listRankSpecificRootNode with all classifications
+     */
+    @Test
+    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    public void testListRankSpecificRootNodesWithNoClassification() {
+    	Classification classification = null;
+        
+    	Rank rank = Rank.GENUS();
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("3 Species from no hierarchie and 1 genus from hierarchie should return", 4, rootNodes.size());
+        
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
+        assertEquals("4 taxa should return (3 species from no hierarchie, 1 family, from hierarchie classification", 4, rootNodes.size());
     }
 	
     private void checkPreconditions() {
@@ -110,7 +159,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * {@inheritDoc}
      */
     @Override
-    @Test // uncomment to write out the test data xml file for this test class
+//    @Test // uncomment to write out the test data xml file for this test class
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
