@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.api.service.config.SwitchAgentConfigurator;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
