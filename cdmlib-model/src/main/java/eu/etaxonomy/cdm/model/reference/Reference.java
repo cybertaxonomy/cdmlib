@@ -132,6 +132,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
     	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
     )
+	@Audited
 	protected ReferenceType type;
 
 	//Title of the reference
@@ -598,7 +599,12 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Override
     public void setType(ReferenceType type) {
 		this.setCacheStrategy(type.getCacheStrategy());
-		this.type = type;
+		if (type == null){
+			this.type = ReferenceType.Generic;
+		} else{
+			this.type = type;
+		}
+		
 	}
 
 	/**
