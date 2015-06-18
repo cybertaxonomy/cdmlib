@@ -24,7 +24,7 @@
         <prop key="/remoting/classification.service">httpClassificationService</prop>
         <prop key="/remoting/collection.service">httpCollectionService</prop>
         <prop key="/remoting/common.service">httpCommonService</prop>
-        <prop key="/remoting-public/database.service">httpDatabaseService</prop>
+        <prop key="/remoting/database.service">httpDatabaseService</prop>
         <prop key="/remoting/description.service">httpDescriptionService</prop>
         <prop key="/remoting/featurenode.service">httpFeatureNodeService</prop>
         <prop key="/remoting/featuretree.service">httpFeatureTreeService</prop>
