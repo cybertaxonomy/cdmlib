@@ -178,6 +178,7 @@ public class Rank extends OrderedTermBase<Rank> {
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
     )
+    @Audited
     private RankClass rankClass;
 
 

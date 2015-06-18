@@ -282,7 +282,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(3,t2.getSynonyms().size());
 		assertEquals(2, t2.getDescriptions().size());
 
-		result = taxonService.deleteTaxon(t1, null, null);
+		result = taxonService.deleteTaxon(t1.getUuid(), null, null);
 		if (result.isAbort() || result.isError()){
 			Assert.fail();
 		}
@@ -337,6 +337,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		//root of new classification
 		Classification classification2 = classificationService.load(classification2Uuid);
 		node1 = taxonNodeService.load(node1Uuid);
+		classification2.setRootNode(HibernateProxyHelper.deproxy(classification2.getRootNode(),TaxonNode.class));
 		classification2.addChildNode(node1, null, null);
 		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});

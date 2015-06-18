@@ -57,7 +57,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param config
 	 *
 	 */
-	public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
+	public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from
@@ -481,5 +481,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
     public UpdateResult setAsGroupsBasionym(UUID nameUuid);
 
 	public List<HashMap<String, String>> getNameRecords();
+
 
 }

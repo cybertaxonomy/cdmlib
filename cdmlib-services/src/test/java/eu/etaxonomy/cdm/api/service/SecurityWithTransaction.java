@@ -98,7 +98,7 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         Taxon actualTaxon = (Taxon)taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
 
         //try {
-		DeleteResult result = taxonService.deleteTaxon(actualTaxon, null, null);
+		DeleteResult result = taxonService.deleteTaxon(actualTaxon.getUuid(), null, null);
 		/*} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
 		}*/

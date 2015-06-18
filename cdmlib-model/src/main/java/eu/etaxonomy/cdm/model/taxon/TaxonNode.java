@@ -533,7 +533,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             this.countChildren = childNodes.size();
             child.setParent(null);
             child.setTreeIndex(null);
-            updateSortIndex(childNodes, index);
+            updateSortIndex(index);
             child.setSortIndex(null);
         }
     }
@@ -587,7 +587,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     protected void setParentTreeNode(TaxonNode parent, int index){
         // remove ourselves from the old parent
         TaxonNode formerParent = this.getParent();
-
+        formerParent = HibernateProxyHelper.deproxy(formerParent, TaxonNode.class);
         if (formerParent != null){
         	//special case, child already exists for same parent
             //FIXME document / check for correctness
@@ -627,7 +627,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         //sortIndex
         //TODO workaround (see sortIndex doc)
-        updateSortIndex(parentChildren, index);
+        this.getParent().updateSortIndex(index);
         //only for debugging
         if (! this.getSortIndex().equals(index)){
         	logger.warn("index and sortindex are not equal");
@@ -643,9 +643,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 * @param parentChildren
 	 * @param index
 	 */
-	private void updateSortIndex(List<TaxonNode> children, int index) {
-		for(int i = index; i < children.size(); i++){
-        	TaxonNode child = children.get(i);
+	private void updateSortIndex(int index) {
+		for(int i = index; i < this.childNodes.size(); i++){
+        	TaxonNode child = childNodes.get(i);
         	if (child != null){
 //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
         		child.setSortIndex(i);

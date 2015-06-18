@@ -19,16 +19,20 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @date 18.03.2010
  *
  */
-public class TaxonComparatorSearch implements Serializable, Comparator<TaxonBase> {
+public class TaxonNodeComparator implements Serializable, Comparator<TaxonNode> {
 	private static final long serialVersionUID = 2596641007876609704L;
-
-	public int compare(TaxonBase taxon1, TaxonBase taxon2) {
+	
+	public int compare(TaxonNode node1, TaxonNode node2) {
 		
-		if (taxon1.getUuid().equals(taxon2.getUuid())){
+		
+		if (node1.getUuid().equals(node2.getUuid())){
 			return 0;
 		}
-		TaxonNameBase<?,?> name1 = taxon1.getName();
-		TaxonNameBase<?,?> name2 = taxon2.getName();
+		TaxonBase taxon1 = node1.getTaxon();
+		TaxonBase taxon2 = node2.getTaxon();
+		
+		TaxonNameBase name1 = taxon1.getName();
+		TaxonNameBase name2 = taxon2.getName();
 		
 		Rank rankTax1 = (name1 == null) ? null : name1.getRank();
 		Rank rankTax2 = (name2 == null) ? null : name2.getRank();
@@ -58,5 +62,7 @@ public class TaxonComparatorSearch implements Serializable, Comparator<TaxonBase
 			return 1;
 		}
 	}
+
+	
 
 }

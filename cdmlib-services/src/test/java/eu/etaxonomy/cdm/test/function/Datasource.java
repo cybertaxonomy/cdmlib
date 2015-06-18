@@ -150,7 +150,7 @@ public class Datasource {
 		ITaxonService taxonService = appCtr.getTaxonService();
 		Taxon taxon = node.getTaxon();
 		//try {
-			taxonService.deleteTaxon(taxon, new TaxonDeletionConfigurator(), node.getClassification());
+			taxonService.deleteTaxon(taxon.getUuid(), new TaxonDeletionConfigurator(), node.getClassification().getUuid());
 
 		/*} catch (DataChangeNoRollbackException e) {
 			e.printStackTrace();

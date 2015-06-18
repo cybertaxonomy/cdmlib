@@ -164,7 +164,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
         UUID uuid = service.save(taxon);
        // try {
-			service.deleteTaxon(taxon, null, null);
+			service.deleteTaxon(taxon.getUuid(), null, null);
 		/*} catch (DataChangeNoRollbackException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -811,7 +811,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameDeleteAllNameRelations(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
                 "SynonymRelationship","SynonymRelationship_AUD",
@@ -1070,7 +1070,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //try {
             //commitAndStartNewTransaction(tableNames);
 
-        DeleteResult result = service.deleteTaxon(child1, config, null);
+        DeleteResult result = service.deleteTaxon(child1.getUuid(), config, null);
         if (result.isOk()){
             Assert.fail("Delete should throw an error as long as name is used in classification.");
         }
@@ -1098,7 +1098,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
        // try {
 
-       result = service.deleteTaxon(child1, config, null);
+       result = service.deleteTaxon(child1
+    		   .getUuid(), config, null);
        if (result.isOk()){
            	Assert.fail("Delete should throw an exception because of the determination event");
        }
@@ -1117,7 +1118,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(0, child1.getTaxonNodes().size());
        // try {
 
-         result = service.deleteTaxon(child1, config, null);
+         result = service.deleteTaxon(child1.getUuid(), config, null);
 
          if (!result.isOk()){
             Assert.fail("Delete should not throw an exception anymore");
@@ -1130,7 +1131,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon child2 =(Taxon) service.find(TaxonGenerator.SPECIES2_UUID);
 
        // try {
-        result = service.deleteTaxon(child2, config, null);
+        result = service.deleteTaxon(child2.getUuid(), config, null);
         if (!result.isOk()){
             Assert.fail("Delete should not throw an exception");
         }
@@ -1174,7 +1175,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
        // try {
-        DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1192,7 +1193,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteNameIfPossible(true);
         Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         service.save(newTaxon);
-        result = service.deleteTaxon(newTaxon, config, null);
+        result = service.deleteTaxon(newTaxon.getUuid()
+        		, config, null);
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1226,7 +1228,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteSynonymsIfPossible(false);
 
 
-       DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+       DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1263,7 +1265,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(true);
-        DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1297,7 +1299,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         secondClassification.addChildTaxon(testTaxon, null, null);
         //delete the taxon in all classifications
         //try {
-       DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+       DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
        if (!result.isOk()){
         	Assert.fail();
         }
@@ -1332,7 +1334,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteInAllClassifications(false);
        //     try {
-       DeleteResult result = service.deleteTaxon(testTaxon, config, secondClassification);
+       DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, secondClassification.getUuid());
 /*                Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
             } catch (DataChangeNoRollbackException e) {
                 logger.debug(e.getMessage());
@@ -1371,7 +1373,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
 
 
-        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1410,7 +1412,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
        // try {
-        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1449,7 +1451,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
-        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
 
         if(!result.isOk()){
          	Assert.fail();
@@ -1486,7 +1488,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(true);
 
-        DeleteResult result  = service.deleteTaxon(testTaxon, config, null);
+        DeleteResult result  = service.deleteTaxon(testTaxon.getUuid(), config, null);
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1515,7 +1517,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(false);
 
-        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1548,7 +1550,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
        // try {
-            service.deleteTaxon(misappliedNameTaxon, config, null);
+            service.deleteTaxon(misappliedNameTaxon.getUuid(), config, null);
        // } catch (DataChangeNoRollbackException e) {
          //   e.printStackTrace();
 

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,9 +85,9 @@ public interface IService<T extends ICdmBase>{
      * @return the unique identifier of the deleted entity
      * @return deleteResult
      */
-    public DeleteResult delete(T persistentObject) ;
+    public DeleteResult delete(UUID persistentObjectUUID) ;
 
-    public DeleteResult delete(UUID uuid) ;
+    
 
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
@@ -328,5 +329,8 @@ public interface IService<T extends ICdmBase>{
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+	public DeleteResult delete(T persistentObject);
+
+	
 
 }

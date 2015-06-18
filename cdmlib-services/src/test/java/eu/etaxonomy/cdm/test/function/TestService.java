@@ -160,7 +160,7 @@ public class TestService {
 		logger.info("Remove taxon ...");
 		UUID uuid = null;
 		
-		DeleteResult result = taxonService.deleteTaxon(taxon1, null, null);
+		DeleteResult result = taxonService.deleteTaxon(taxon1.getUuid(), null, null);
 		
 		if(!result.isOk()){ 
          	Assert.fail();

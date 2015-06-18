@@ -182,7 +182,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameDeletionConfigurator config = new NameDeletionConfigurator();
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        DeleteResult result = nameService.delete(name1, config);
+        DeleteResult result = nameService.delete(name1.getUuid(), config);
         if (result.isOk()){
         	Assert.fail("This should throw an error as long as name relationships exist.");
         }
@@ -195,7 +195,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setIgnoreIsBasionymFor(true);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1,  config);
+        nameService.delete(name1.getUuid(),  config);
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -221,7 +221,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameDeletionConfigurator config = new NameDeletionConfigurator();
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        DeleteResult result = nameService.delete(name1, config);
+        DeleteResult result = nameService.delete(name1.getUuid(), config);
        if (result.isOk()){
     	   Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
@@ -234,7 +234,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setRemoveAllNameRelationships(true);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        result = nameService.delete(name1, config);
+        result = nameService.delete(name1.getUuid(), config);
         logger.debug(result);
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -262,7 +262,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setIgnoreHasBasionym(false);
 
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-       DeleteResult result = nameService.delete(name1, config);
+       DeleteResult result = nameService.delete(name1.getUuid(), config);
       if (result.isOk()){
     	  Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
@@ -275,7 +275,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setIgnoreHasBasionym(true);
         try {
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            result = nameService.delete(name1, config);
+            result = nameService.delete(name1.getUuid(), config);
             logger.debug(result);
             commitAndStartNewTransaction(tableNames);
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());

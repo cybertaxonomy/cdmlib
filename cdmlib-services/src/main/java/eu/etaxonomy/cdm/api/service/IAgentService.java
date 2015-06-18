@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.service.config.SwitchAgentConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -104,6 +105,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache();
+
 	
 	/**
 	 * If the given {@link Team} is a single member team all links to the team are redirected to the

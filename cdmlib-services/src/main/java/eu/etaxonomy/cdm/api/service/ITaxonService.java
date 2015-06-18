@@ -133,8 +133,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param synonym
      * @param acceptedTaxon
      * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
+     * @return 
      */
-    public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
 
     /**
      * Changes a synonym into an accepted taxon and removes
@@ -233,14 +234,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
-    /**
-     * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
-     * @param taxon
-     * @param config
-     *
-     */
-    public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
-
+    
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
      * All relations to taxa are updated correctly depending on the homotypic
@@ -981,7 +975,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 			Reference reference, String referenceDetail, boolean keepReference)
 			throws HomotypicalGroupChangeException;
 
+	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
+			UUID toTaxonUuid);
 
+	
 
 
 

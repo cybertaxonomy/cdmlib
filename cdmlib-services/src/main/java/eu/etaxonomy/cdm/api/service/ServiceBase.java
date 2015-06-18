@@ -68,6 +68,19 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
+    public DeleteResult delete(UUID persistentObjectUUID) {
+    	DeleteResult result = new DeleteResult();
+    	try{
+    		T persistentObject = dao.load(persistentObjectUUID);
+    		dao.delete(persistentObject);
+    	} catch(DataAccessException e){
+    		result.setError();
+    		result.addException(e);
+    	}
+        return result;
+    }
+    @Override
+    @Transactional(readOnly = false)
     public DeleteResult delete(T persistentObject) {
     	DeleteResult result = new DeleteResult();
     	try{
@@ -80,11 +93,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return result;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public DeleteResult delete(UUID uuid) {
-        return delete(dao.load(uuid));
-    }
+   
 
     @Override
     @Transactional(readOnly = true)

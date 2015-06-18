@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -67,6 +68,8 @@ import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -234,8 +237,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     @Transactional(readOnly = false)
-    public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
-
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
+    	UpdateResult result = new UpdateResult();
         TaxonNameBase<?,?> synonymName = synonym.getName();
         synonymName.removeTaxonBase(synonym);
         TaxonNameBase<?,?> taxonName = acceptedTaxon.getName();
@@ -243,29 +246,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         synonym.setName(taxonName);
         acceptedTaxon.setName(synonymName);
+        result.addUpdatedObject(acceptedTaxon);
+        result.addUpdatedObject(synonym);
+		return result;
 
         // the accepted taxon needs a new uuid because the concept has changed
         // FIXME this leads to an error "HibernateException: immutable natural identifier of an instance of eu.etaxonomy.cdm.model.taxon.Taxon was altered"
         //acceptedTaxon.setUuid(UUID.randomUUID());
     }
 
-
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid) {
-        UpdateResult result = new UpdateResult();
-        Synonym synonym = (Synonym)dao.load(synonymUuid);
-        Taxon taxon = (Taxon)dao.load(acceptedTaxonUuid);
-        result.addUpdatedObject(synonym);
-        result.addUpdatedObject(taxon);
-        result.setCdmEntity(synonym);
-        swapSynonymAndAcceptedTaxon(synonym, taxon);
-        return result;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
-     */
 
     @Override
     @Transactional(readOnly = false)
@@ -666,7 +655,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(),configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
         }
         if (configurator.isDoTaxaByCommonNames()) {
-
             //if(configurator.getPageSize() == null ){
                 List<UuidAndTitleCache<IdentifiableEntity>> commonNameResults = dao.getTaxaByCommonNameForEditor(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
                 if(commonNameResults != null){
@@ -944,21 +932,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid)  {
-        return deleteTaxon((Taxon)dao.load(taxonUuid), config, classificationDao.load(classificationUuid));
-    }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
-     */
-
-    @Override
-    public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification)  {
+    public DeleteResult deleteTaxon(UUID taxonUUID, TaxonDeletionConfigurator config, UUID classificationUuid)  {
 
     	if (config == null){
             config = new TaxonDeletionConfigurator();
         }
-
+    	Taxon taxon = (Taxon)dao.load(taxonUUID);
+    	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
         DeleteResult result = isDeletable(taxon, config);
 
         if (result.isOk()){
@@ -1003,7 +983,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
                         if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
                             if (taxon.equals(taxRel.getToTaxon())){
-                                this.deleteTaxon(taxRel.getFromTaxon(), config, classification);
+                            	
+                                this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
                             }
                         }
                     }
@@ -1037,9 +1018,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 " which also describes specimens or abservations";
                         //throw new ReferencedObjectUndeletableException(message);
                     }
-
                     removeDescriptions.add(desc);
-
+                    
 
                 }
                 for (TaxonDescription desc: removeDescriptions){
@@ -1154,7 +1134,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         //remove name if possible (and required)
                         if (name != null && config.isDeleteNameIfPossible()){
-                        	nameResult = nameService.delete(name, config.getNameDeletionConfig());
+                        	nameResult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
                         }
 
                         if (nameResult.isError()){
@@ -1259,10 +1239,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Transactional(readOnly = false)
-    public UUID delete(Synonym syn){
-        UUID result = syn.getUuid();
-        this.deleteSynonym(syn, null);
-        return result;
+    public DeleteResult delete(UUID synUUID){
+    	DeleteResult result = new DeleteResult();
+    	Synonym syn = (Synonym)dao.load(synUUID);
+        
+        return this.deleteSynonym(syn, null);
     }
 
     @Transactional(readOnly = false)
@@ -1303,7 +1284,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 this.saveOrUpdate(relatedTaxon);
             }
             this.saveOrUpdate(synonym);
-            result.addUpdatedObject(taxon);
+
             //TODO remove name from homotypical group?
 
             //remove synonym (if necessary)
@@ -1316,7 +1297,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //remove name if possible (and required)
                 if (name != null && config.isDeleteNameIfPossible()){
 
-                        DeleteResult nameDeleteresult = nameService.delete(name, config.getNameDeletionConfig());
+                        DeleteResult nameDeleteresult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
                         if (nameDeleteresult.isAbort()){
                         	result.addExceptions(nameDeleteresult.getExceptions());
                         	result.addUpdatedObject(name);
@@ -1345,17 +1326,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
     }
-
-
-    @Transactional(readOnly = false)
-    @Override
-    public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid, SynonymDeletionConfigurator config) {
-        return deleteSynonym((Synonym)dao.load(synonymUuid), (Taxon)dao.load(taxonUuid), config);
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#findIdenticalTaxonNameIds(java.util.List)
-     */
 
     @Override
     public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath) {
@@ -2983,7 +2953,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //TODO: configurator and classification
                 TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
                 config.setDeleteNameIfPossible(false);
-                this.deleteTaxon(fromTaxon, config, null);
+                this.deleteTaxon(fromTaxon.getUuid(), config, null);
                 return synonymRelationship.getSynonym();
 
     }
@@ -3254,4 +3224,62 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
 		return moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
 	}
+	
+	@Override
+	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid, UUID toTaxonUuid){
+		UpdateResult result = new UpdateResult();
+		
+		Taxon fromTaxon = (Taxon)dao.load(fromTaxonUuid);
+		Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
+		  for(TaxonDescription description : fromTaxon.getDescriptions()){
+              //reload to avoid session conflicts
+              description = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+
+              String moveMessage = String.format("Description moved from %s", fromTaxon);
+              if(description.isProtectedTitleCache()){
+                  String separator = "";
+                  if(!StringUtils.isBlank(description.getTitleCache())){
+                      separator = " - ";
+                  }
+                  description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+              }
+              Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+              annotation.setAnnotationType(AnnotationType.TECHNICAL());
+              description.addAnnotation(annotation);
+              toTaxon.addDescription(description);
+              dao.saveOrUpdate(toTaxon);
+              dao.saveOrUpdate(fromTaxon);
+              result.addUpdatedObject(toTaxon);
+              result.addUpdatedObject(fromTaxon);
+             
+          }
+
+		
+		return result;
+	}
+
+	@Override
+	public DeleteResult deleteSynonym(UUID synonymUuid, UUID taxonUuid,
+			SynonymDeletionConfigurator config) {
+		TaxonBase base = this.load(synonymUuid);
+		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
+		base = this.load(taxonUuid);
+		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class); 
+		
+		return this.deleteSynonym(syn, taxon, config);
+	}
+
+	@Override
+	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
+			UUID acceptedTaxonUuid) {
+		TaxonBase base = this.load(synonymUUid);
+		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
+		base = this.load(acceptedTaxonUuid);
+		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class); 
+		
+		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
+	}
+
+
+	
 }

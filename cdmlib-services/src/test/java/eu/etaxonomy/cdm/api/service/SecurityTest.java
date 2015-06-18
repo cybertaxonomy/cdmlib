@@ -789,7 +789,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
            // try {
-        	DeleteResult result = taxonService.deleteTaxon(taxon, null, null);
+        	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
             /*} catch (DataChangeNoRollbackException e) {
                 Assert.fail();
             }*/
@@ -827,9 +827,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         Taxon taxon = (Taxon)taxonService.load(UUID_LACTUCA);
-        DeleteResult result = taxonService.deleteTaxon(taxon, null, null);
-        if (!result.isError()) {
-        	Assert.fail();
+        try{
+        DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
+        Assert.fail();
+        }catch(PermissionDeniedException e){
+        	
         }
        endTransaction();
        startNewTransaction();

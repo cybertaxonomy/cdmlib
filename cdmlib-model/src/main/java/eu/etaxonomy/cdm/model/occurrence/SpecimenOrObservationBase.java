@@ -110,6 +110,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
     )
+    @Audited
     private SpecimenOrObservationType recordBasis;
 
 

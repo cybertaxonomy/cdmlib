@@ -21,6 +21,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -39,6 +42,8 @@ public class IdentifiableEntityTest {
 	private NonViralName<?> abiesAlba;
 	private NonViralName<?> abiesAlbaMichx;
 	private NonViralName<?> abiesAlbaMill;
+	private NonViralName<?> abiesAlbaxPinusBeta;
+	private NonViralName<?> pinusBeta;
 	
 	private Taxon abiesTaxon;
 	private Taxon abiesMillTaxon;
@@ -48,6 +53,7 @@ public class IdentifiableEntityTest {
 	
 	private NonViralName<?> abiesBalsamea;
 	private Taxon abiesBalsameaTaxon;
+	private Taxon abiesAlbaxPinusBetaTaxon;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -110,6 +116,14 @@ public class IdentifiableEntityTest {
 		abiesBalsamea.getNameCache();
 		abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
 		abiesBalsameaTaxon = Taxon.NewInstance(abiesBalsamea, sec);
+		
+		abiesAlbaxPinusBeta = NonViralName.NewInstance(Rank.SPECIES());
+		pinusBeta = NonViralName.NewInstance(Rank.SPECIES());
+		pinusBeta.setGenusOrUninomial("Pinus");
+		pinusBeta.setSpecificEpithet("beta");
+		abiesAlbaxPinusBeta.setHybridFormula(true);
+		abiesAlbaxPinusBeta.addHybridParent(abiesAlba, HybridRelationshipType.FIRST_PARENT(), null);
+		abiesAlbaxPinusBeta.addHybridParent(pinusBeta, HybridRelationshipType.SECOND_PARENT(), null);
 		
 	}
 
@@ -181,6 +195,14 @@ public class IdentifiableEntityTest {
 		compareResult = (abiesMill.compareTo(abies) == 0);
 		equalsResult = abiesMill.equals(abies);
 		assertEquals(compareResult, equalsResult);
+		
+		//Abies alba x Pinus beta < Abies alba xinus
+		BotanicalName abiesAlbaXinus = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		abiesAlbaXinus.setGenusOrUninomial("Abies");
+		abiesAlbaXinus.setSpecificEpithet("alba");
+		abiesAlbaXinus.setInfraSpecificEpithet("xinus");
+		result = abiesAlbaxPinusBeta.compareTo(abiesAlbaXinus);
+		assertTrue(result < 0);
 	}
 	
 	/**

@@ -123,22 +123,29 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public DeleteResult delete(TaxonNameBase name){
+    public DeleteResult delete(UUID nameUUID){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-        DeleteResult result = delete(name, config);
+        
+        DeleteResult result = delete(nameUUID, config);
 
 
         return result;
 
+    }
+    
+    @Override
+    public DeleteResult delete(TaxonNameBase name){
+        return delete(name.getUuid());
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
      */
     @Override
-    public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
+    public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {
     	DeleteResult result = new DeleteResult();
-
+       	TaxonNameBase name = dao.load(nameUUID);
+    
     	if (name == null){
     		result.setAbort();
             return result;
@@ -953,5 +960,5 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return dao.getNameRecords();
 
     }
-
+    
 }

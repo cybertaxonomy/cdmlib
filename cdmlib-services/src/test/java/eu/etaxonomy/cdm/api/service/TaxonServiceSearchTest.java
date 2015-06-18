@@ -121,6 +121,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private INameService nameService;
     @SpringBeanByType
     private ICdmMassIndexer indexer;
+    
+    @SpringBeanByType
+    private ITaxonNodeService nodeService;
 
     private static final int BENCHMARK_ROUNDS = 300;
 
@@ -751,8 +754,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("expecting Abies balsamea sec.", childNode.getTaxon().getUuid().toString(), ABIES_BALSAMEA_UUID);
         Assert.assertEquals("expecting default classification", childNode.getClassification().getUuid().toString(), CLASSIFICATION_UUID);
 
-        // moving the taxon around
+        // moving the taxon around, the rootnode is only a proxy
+        alternateClassification.setRootNode(HibernateProxyHelper.deproxy(alternateClassification.getRootNode(), TaxonNode.class));
         alternateClassification.addChildNode(childNode, null, null);
+      
         classificationService.saveOrUpdate(alternateClassification);
         commitAndStartNewTransaction(null);
 

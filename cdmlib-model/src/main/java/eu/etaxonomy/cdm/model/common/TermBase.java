@@ -74,6 +74,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
     )
+	@Audited
 	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
@@ -233,9 +234,9 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
                 this.titleCache = null;  //force titleCache refresh
             }else{
                 repr = Representation.NewInstance(null, label, null, language);
-                this.addRepresentation(repr);
-            }
+            this.addRepresentation(repr);
         }
+    }
     }
 
     @Transient

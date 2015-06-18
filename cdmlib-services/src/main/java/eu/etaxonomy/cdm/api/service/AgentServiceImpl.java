@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,8 +139,8 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	}
 
 	@Override
-    public DeleteResult delete(AgentBase base){
-
+    public DeleteResult delete(UUID agentUUID){
+		AgentBase base = dao.load(agentUUID);
 		DeleteResult result = this.isDeletable(base, null);
 
     	if (result.isOk()){
@@ -163,6 +164,11 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return result;
     }
 
+	@Override
+    public DeleteResult delete(AgentBase agent){
+		return delete(agent.getUuid());
+	}
+	
 	@Override
 	public Person convertTeam2Person(Team team) throws MergeException {
 		Person result = null;

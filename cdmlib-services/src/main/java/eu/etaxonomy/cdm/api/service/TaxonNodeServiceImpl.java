@@ -34,14 +34,17 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
+
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -59,7 +62,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
 
-    private Comparator<? super TaxonNode> taxonNodeComparator;
+    private Comparator<? super TaxonNode> taxonNodeComparator = new TaxonNodeByNameComparator();
 
     @Autowired
     private ITaxonService taxonService;
@@ -67,10 +70,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IClassificationService classService;
 
-    @Autowired
-    public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
-        this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
-    }
+   
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -85,11 +85,19 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if (sortMode == null){
             sortMode = NodeSortMode.RankAndAlphabeticalOrder;
         }
+        Comparator<TaxonNode> comparator = null;
         if (sortMode.equals(NodeSortMode.NaturalOrder)){
-            TaxonNaturalComparator comparator = new TaxonNaturalComparator();
-            Collections.sort(childNodes, comparator);
+            comparator = new TaxonNaturalComparator();
+            
         } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
-            Collections.sort(childNodes, this.taxonNodeComparator);
+        	comparator = new TaxonNodeByNameComparator();
+           
+        } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
+        	comparator = new TaxonNodeComparator();
+        	
+        }
+        if (comparator != null){
+        	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
@@ -236,7 +244,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 //        conf.setDeleteNameIfPossible(false);
 
         if (result.isOk()){
-        	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
+        	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, null);
         }else{
         	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
@@ -347,7 +355,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		            		    saveOrUpdate(taxonNode);
 
 				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
+				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
 				            	if (!resultTaxon.isOk()){
 	                                result.addExceptions(resultTaxon.getExceptions());
 	                                result.setStatus(resultTaxon.getStatus());
@@ -368,7 +376,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 				            	saveOrUpdate(taxonNode);
 
 				            	taxonService.saveOrUpdate(taxon);
-				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon, configNew, classification);
+				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
+				            	
                                 if (!resultTaxon.isOk()){
                                     result.addExceptions(resultTaxon.getExceptions());
                                     result.setStatus(resultTaxon.getStatus());
@@ -436,7 +445,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	}
     	DeleteResult result = new DeleteResult();
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
-    		result = taxonService.deleteTaxon(taxon, config, node.getClassification());
+    		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
     		if (result.isOk()){
     			return result;
     		}
