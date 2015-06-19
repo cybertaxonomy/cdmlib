@@ -173,7 +173,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalFullNameRegEx(NonViralName<?> nameToBeFilledOrig){
+	private String getCodeSpecificFullNameRegEx(NonViralName<?> nameToBeFilledOrig){
 	    NonViralName<?> nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilledOrig, NonViralName.class);
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
@@ -192,7 +192,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalSimpleName(NonViralName<?> nameToBeFilled){
+	private String getCodeSpecificSimpleNameRegEx(NonViralName<?> nameToBeFilled){
 		nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilled, NonViralName.class);
 
 		if (nameToBeFilled instanceof ZoologicalName){
@@ -228,23 +228,23 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    nameToBeFilled.setProblemEnds(fullReferenceString.length());
 
 	    //get full name reg
-		String localFullName = getLocalFullNameRegEx(nameToBeFilled);
+		String localFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled);
 		//get full name reg
-		String localSimpleName = getLocalSimpleName(nameToBeFilled);
+		String localSimpleNameRegEx = getCodeSpecificSimpleNameRegEx(nameToBeFilled);
 
 		//separate name and reference part
-		String nameAndRefSeparator = "(^" + localFullName + ")("+ referenceSeperator + ")";
-		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparator, fullReferenceString);
+		String nameAndRefSeparatorRegEx = "(^" + localFullNameRegEx + ")("+ referenceSeperator + ")";
+		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparatorRegEx, fullReferenceString);
 
-		Matcher onlyNameMatcher = getMatcher (localFullName, fullReferenceString);
+		Matcher onlyNameMatcher = getMatcher (localFullNameRegEx, fullReferenceString);
 		Matcher hybridMatcher = hybridFormulaPattern.matcher(fullReferenceString);
-		Matcher onlySimpleNameMatcher = getMatcher (localSimpleName, fullReferenceString);
+		Matcher onlySimpleNameMatcher = getMatcher (localSimpleNameRegEx, fullReferenceString);
 
-		if (nameAndRefSeparatorMatcher.find()){
-			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
-		}else if (onlyNameMatcher.matches()){
+		if (onlyNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
+		} else if (nameAndRefSeparatorMatcher.find()){
+			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
 		}else if (hybridMatcher.matches() ){
 		    //I do not remember why we need makeEmpty = false for onlyNameMatcher,
 		    //but for hybridMatcher we need to remove old Hybrid Relationships if necessary, therefore
@@ -276,7 +276,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 
-		String localFullName = getLocalFullNameRegEx(nameToBeFilled);
+		String localFullName = getCodeSpecificFullNameRegEx(nameToBeFilled);
 		Matcher fullNameMatcher = getMatcher (pStart + localFullName, fullReferenceString);
 		if (fullNameMatcher.find()){
 			String fullNameString = fullNameMatcher.group(0);
@@ -666,32 +666,38 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 
-	private Reference parseArticle(String reference){
+	private Reference<?> parseArticle(String reference){
 		//if (articlePatter)
 		//(type, author, title, volume, editor, series;
-		Reference result = ReferenceFactory.newArticle();
+		Reference<?> result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
-		Reference inJournal = ReferenceFactory.newJournal();
+		Reference<?> inJournal = ReferenceFactory.newJournal();
 		inJournal.setTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}
 
-	private Reference parseBookSection(String reference){
-		Reference result = ReferenceFactory.newBookSection();
-		String[] parts = reference.split(referenceAuthorSeparator, 2);
-		if (parts.length != 2){
-			logger.warn("Unexpected number of parts");
-			result.setTitleCache(reference,true);
-		}else{
-			String authorString = parts[0];
-			String bookString = parts[1];
-
+	private Reference<?> parseBookSection(String reference){
+		Reference<?> result = ReferenceFactory.newBookSection();
+		
+		Pattern authorPattern = Pattern.compile("^" + authorTeam + referenceAuthorSeparator);
+		Matcher authorMatcher = authorPattern.matcher(reference);
+		boolean find = authorMatcher.find();
+		if (find){
+			String authorString = authorMatcher.group(0).trim();
+			String bookString = reference.substring(authorString.length()).trim();
+			authorString = authorString.substring(0, authorString.length() -1);
+			
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
 			inBook.setAuthorship(authorTeam);
 			result.setInBook(inBook);
+		}else{
+			logger.warn("Unexpected non matching book section author part");
+			//TODO do we want to record a 'problem' here?
+			result.setTitleCache(reference,true);
 		}
+
 		return result;
 	}
 

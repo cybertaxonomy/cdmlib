@@ -326,13 +326,94 @@ public class NonViralNameParserImplTest {
 	}
 
 	@Test
-    public final void testEtAl() {
+    public final void testEtAl() throws StringNotParsableException {
         //some authors
         String fullNameString = "Abies alba Greuther, Hiver & al.";
         NonViralName<?> authorname = parser.parseFullName(fullNameString);
         assertFalse(authorname.hasProblem());
         assertEquals("Basionym author should have 2 authors", 2, ((Team)authorname.getCombinationAuthorTeam()).getTeamMembers().size());
         assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorTeam()).isHasMoreMembers()  );
+        
+		//et al.
+		NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
+	    Team team = (Team)nvn.getCombinationAuthorTeam();
+	    Assert.assertNotNull("Comb. author must not be null", team);
+	    Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
+	    Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
+	    Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
+	}
+	
+	@Test
+    public final void testMultipleAuthors() throws StringNotParsableException {
+        //multiple authors for inReference
+        String fullTitleString = "Abies alba L. in Mill., Gregor & Behr., Sp. Pl. 173: 384. 1982.";
+        NonViralName<?> multipleAuthorRefName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        assertFalse(multipleAuthorRefName.hasProblem());
+        assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorTeam() instanceof Person);
+        assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorTeam()).getNomenclaturalTitle());
+        INomenclaturalReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
+        Assert.assertNotNull("nomRef must have inRef", ((Reference<?>)nomRef).getInReference());
+        Reference<?> inRef = ((Reference<?>)nomRef).getInReference();
+        String title = inRef.getTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        assertTrue(inRef.getAuthorship() instanceof Team);
+        Team team = (Team)inRef.getAuthorship();
+        assertEquals(3, team.getTeamMembers().size());
+        
+//        multiple authors in Name
+        fullTitleString = "Abies alba Mill., Aber & Schwedt";
+        NonViralName<?> multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        assertFalse(multipleAuthorName.hasProblem());
+        assertTrue("Combination author should be a team", multipleAuthorName.getCombinationAuthorTeam() instanceof Team);
+        team = (Team)multipleAuthorName.getCombinationAuthorTeam();
+        assertEquals(3, team.getTeamMembers().size());
+        assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
+        
+//      multiple authors in Name with reference
+	    fullTitleString = "Abies alba Mill., Aber & Schwedt in L., Sp. Pl. 173: 384. 1982.";
+	    multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+	    assertFalse(multipleAuthorName.hasProblem());
+	    assertTrue("Combination author should be a team", multipleAuthorName.getCombinationAuthorTeam() instanceof Team);
+	    team = (Team)multipleAuthorName.getCombinationAuthorTeam();
+	    assertEquals(3, team.getTeamMembers().size());
+	    assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
+	    nomRef = multipleAuthorName.getNomenclaturalReference();
+        Assert.assertNotNull("nomRef must have inRef", ((Reference<?>)nomRef).getInReference());
+        inRef = ((Reference<?>)nomRef).getInReference();
+        title = inRef.getTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        assertTrue(inRef.getAuthorship() instanceof Person);
+        Person person = (Person)inRef.getAuthorship();
+        assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitle());
+        
+        
+	    fullTitleString = "Abies alba Mill., Aber & Schwedt, Sp. Pl. 173: 384. 1982.";
+	    multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+	    assertFalse(multipleAuthorName.hasProblem());
+	    assertTrue("Combination author should be a team", multipleAuthorName.getCombinationAuthorTeam() instanceof Team);
+	    team = (Team)multipleAuthorName.getCombinationAuthorTeam();
+	    assertEquals(3, team.getTeamMembers().size());
+	    assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
+	    nomRef = multipleAuthorName.getNomenclaturalReference();
+        Assert.assertNull("nomRef must not have inRef as it is a book itself", ((Reference<?>)nomRef).getInReference());
+        title = nomRef.getTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        assertTrue(nomRef.getAuthorship() instanceof Team);
+        team = (Team)nomRef.getAuthorship();
+        assertEquals(3, team.getTeamMembers().size());
+        assertEquals("Second team member should be Schwedt", "Schwedt", team.getTeamMembers().get(2).getTitleCache());
+	       
+		//et al.
+		NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+		parser.parseReferencedName (nvn, "Marmota marmota Eckweiler, Hand et al., 2003", Rank.SPECIES(),true);
+		assertTrue("Combination author should be a team", nvn.getCombinationAuthorTeam() instanceof Team);
+        team = (Team)nvn.getCombinationAuthorTeam();
+	    Assert.assertNotNull("Comb. author must not be null", team);
+	    Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
+	    Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
+	    Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
+
 	}
 
 	/**
@@ -1365,16 +1446,10 @@ public class NonViralNameParserImplTest {
 		Assert.assertEquals("Persons title must be 'le Doux'", "le Doux", person.getTitleCache());
 		Assert.assertEquals("Year must be 1931", Integer.valueOf(1931), zooName.getPublicationYear() );
 
-		//et al.
-		nvn = ZoologicalName.NewInstance(null);
-		parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
-        team = (Team)nvn.getCombinationAuthorTeam();
-        Assert.assertNotNull("Comb. author must not be null", team);
-        Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
-        Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
-        Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
-
+	
 	}
+	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#authorTeamAndEx(java.lang.String)}.
