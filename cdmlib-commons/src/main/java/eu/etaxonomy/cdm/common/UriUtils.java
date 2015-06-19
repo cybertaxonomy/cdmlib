@@ -348,7 +348,7 @@ public class UriUtils {
      * Performs HEAD request for the given URI.<BR>
      * If any exception occurs <code>false</code> is returned. Otherwise true. <BR>
      * @param serviceUri the URI to test.
-     * @return true if service is available.
+     * @return true if service is available, false otherwise. Also a non-absolute URI will return false.
      */
     public static boolean isServiceAvailable(URI serviceUri){
         return isServiceAvailable(serviceUri, null);
@@ -359,12 +359,12 @@ public class UriUtils {
      * If any exception occurs <code>false</code> is returned. Otherwise true. <BR>
      * @param serviceUri the URI to test.
      * @param timeout the timeout of the request in milliseconds
-     * @return true if service is available.
+     * @return true if service is available, false otherwise. Also a non-absolute URI will return false.
      */
     public static boolean isServiceAvailable(URI serviceUri, Integer timeout){
         boolean result = false;
 
-        if(serviceUri==null || serviceUri.getHost()==null){
+        if(serviceUri==null || serviceUri.getHost()==null || !serviceUri.isAbsolute()){
             return false;
         }
 
