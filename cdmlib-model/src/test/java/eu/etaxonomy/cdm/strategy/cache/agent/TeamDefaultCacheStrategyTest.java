@@ -130,7 +130,6 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, Dr1. P1FN P1LN, P3NomT et al.'", "P2NomT, Dr1. P1FN P1LN, P3NomT et al.", team2.getNomenclaturalTitle());
 
 
-
 		//don't take next test to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitle());
 
@@ -148,6 +147,11 @@ public class TeamDefaultCacheStrategyTest {
 		//person3
 		Assert.assertNotNull("team3 title cache must not to be null", team3.getTitleCache());
 		Assert.assertTrue("team3 title cache must not be empty", StringUtils.isNotBlank(team3.getTitleCache()));
+		
+		team2.setHasMoreMembers(true);
+		Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT et al.'", "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT et al.", team2.getTitleCache());
+
+		
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 title cache should should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getTitleCache());
 
@@ -160,6 +164,5 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setSuffix(null);
 		Assert.assertEquals("team1 title cache should be Dr1. P1FN P1LN", "Dr1. P1FN P1LN", team1.getTitleCache());
 	}
-
 
 }

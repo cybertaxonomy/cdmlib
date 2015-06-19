@@ -54,14 +54,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		int i = 0;
 		for (Person teamMember : teamMembers){
 			i++;
-			String concat;
-			if (i <= 1){
-				concat = "";
-			}else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size()) ){
-				concat = STD_TEAM_CONCATINATION;
-			}else{
-				concat = FINAL_TEAM_CONCATINATION;
-			}
+			String concat = concatString(team, teamMembers, i);
 			result += concat + teamMember.getNomenclaturalTitle();
 		}
 		if (teamMembers.size() == 0){
@@ -81,14 +74,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		int i = 0;
 		for (Person teamMember : teamMembers){
 			i++;
-			String concat;
-			if (i <= 1){
-				concat = "";
-			}else if (i < teamMembers.size()){
-				concat = STD_TEAM_CONCATINATION;
-			}else{
-				concat = FINAL_TEAM_CONCATINATION;
-			}
+			String concat = concatString(team, teamMembers, i);
 			result += concat + teamMember.getTitleCache();
 		}
 		if (teamMembers.size() == 0){
@@ -97,6 +83,18 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		    result += " et al.";
 		}
 		return result;
+	}
+
+	private String concatString(Team team, List<Person> teamMembers, int i) {
+		String concat;
+		if (i <= 1){
+			concat = "";
+		}else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
+			concat = STD_TEAM_CONCATINATION;
+		}else{
+			concat = FINAL_TEAM_CONCATINATION;
+		}
+		return concat;
 	}
 
 }
