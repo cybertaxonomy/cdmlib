@@ -4,19 +4,19 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-		<version>3.6.2-SNAPSHOT</version>
+		<version>3.6.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-io</artifactId>
-  <version>3.6.2-SNAPSHOT</version>
+  <version>3.6.2</version>
   <name>CDM Import/Export</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.2/cdmlib-io</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.2/cdmlib-io</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-parent-3.6.2/cdmlib-io</url>
   </scm>
   <build>
     <plugins>
