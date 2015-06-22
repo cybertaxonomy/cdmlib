@@ -99,10 +99,10 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "infraGenericEpithet",
     "specificEpithet",
     "infraSpecificEpithet",
-    "combinationAuthorTeam",
-    "exCombinationAuthorTeam",
-    "basionymAuthorTeam",
-    "exBasionymAuthorTeam",
+    "combinationAuthorship",
+    "exCombinationAuthorship",
+    "basionymAuthorship",
+    "exBasionymAuthorship",
     "authorshipCache",
     "protectedAuthorshipCache",
     "protectedNameCache",
@@ -228,7 +228,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         @Field(analyze = Analyze.NO)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
-            cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
+            cacheReplacedProperties={"combinationAuthorship", "basionymAuthorship", "exCombinationAuthorship", "exBasionymAuthorship"} )
     //TODO Val #3379
 //    @NotNull
     @Size(max = 255)
@@ -373,7 +373,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * 			<i>this</i> non viral taxon name if its rank is species aggregate or lower
      * @param	infraSpecificEpithet  the string for the second epithet of
      * 			<i>this</i> non viral taxon name if its rank is lower than species
-     * @param	combinationAuthorTeam  the author or the team who published <i>this</i> non viral taxon name
+     * @param	combinationAuthorship  the author or the team who published <i>this</i> non viral taxon name
      * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> non viral taxon name was published
      * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
      * @param	homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
@@ -384,14 +384,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    protected NonViralName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+    protected NonViralName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         super(rank, homotypicalGroup);
         setNameCacheStrategy();
         setGenusOrUninomial(genusOrUninomial);
         setInfraGenericEpithet (infraGenericEpithet);
         setSpecificEpithet(specificEpithet);
         setInfraSpecificEpithet(infraSpecificEpithet);
-        setCombinationAuthorship(combinationAuthorTeam);
+        setCombinationAuthorship(combinationAuthorship);
         setNomenclaturalReference(nomenclaturalReference);
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
@@ -1419,7 +1419,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
             result.authorshipCache = null;
         }
 
-        //no changes to: basionamyAuthorTeam, combinationAuthorTeam, exBasionymAuthorTeam, exCombinationAuthorTeam
+        //no changes to: basionamyAuthorship, combinationAuthorship, exBasionymAuthorship, exCombinationAuthorship
         //genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
         //protectedAuthorshipCache, protectedNameCache
         //binomHybrid, monomHybrid, trinomHybrid, hybridFormula,

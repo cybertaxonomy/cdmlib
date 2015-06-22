@@ -51,10 +51,10 @@
             <name class="object">
                 <anamorphic type="boolean">false</anamorphic>
                 <appendedPhrase type="string"/>
-                <basionymAuthorTeam class="object" null="true"/>
+                <basionymAuthorship class="object" null="true"/>
                 <binomHybrid type="boolean">false</binomHybrid>
                 <class type="string">BotanicalName</class>
-                <combinationAuthorTeam class="object">
+                <combinationAuthorship class="object">
                     <class type="string">Person</class>
                     <contact class="object">
                         <class type="string">Contact</class>
@@ -72,10 +72,10 @@
                     <protectedTitleCache type="boolean">false</protectedTitleCache>
                     <suffix type="string"/>
                     <uuid type="string">b7156be4-29a2-49e7-b071-8aacf1dcb2dc</uuid>
-                </combinationAuthorTeam>
+                </combinationAuthorship>
                 <data class="array"/>
-                <exBasionymAuthorTeam class="object" null="true"/>
-                <exCombinationAuthorTeam class="object" null="true"/>
+                <exBasionymAuthorship class="object" null="true"/>
+                <exCombinationAuthorship class="object" null="true"/>
                 <genusOrUninomial type="string">Chondrilla</genusOrUninomial>
                 <hybridFormula type="boolean">false</hybridFormula>
                 <infraGenericEpithet type="string"/>

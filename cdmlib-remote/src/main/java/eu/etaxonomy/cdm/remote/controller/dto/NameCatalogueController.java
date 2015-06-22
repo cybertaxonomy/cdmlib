@@ -144,10 +144,10 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
 
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
-            "combinationAuthorTeam.$",
-            "exCombinationAuthorTeam.$",
-            "basionymAuthorTeam.$",
-            "exBasionymAuthorTeam.$",
+            "combinationAuthorship.$",
+            "exCombinationAuthorship.$",
+            "basionymAuthorship.$",
+            "exBasionymAuthorship.$",
             "nameCache",
             "taxonBases",
             "taxonBases.synonymRelations.type.$"});
@@ -167,10 +167,10 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "taxonBases",
             "status",
             "nomenclaturalReference.$",
-            "combinationAuthorTeam.$",
-            "exCombinationAuthorTeam.$",
-            "basionymAuthorTeam.$",
-            "exBasionymAuthorTeam.$",
+            "combinationAuthorship.$",
+            "exCombinationAuthorship.$",
+            "basionymAuthorship.$",
+            "exBasionymAuthorship.$",
             "relationsToThisName.fromName.$",
             "relationsToThisName.nomenclaturalReference.$",
             "relationsToThisName.type.$",

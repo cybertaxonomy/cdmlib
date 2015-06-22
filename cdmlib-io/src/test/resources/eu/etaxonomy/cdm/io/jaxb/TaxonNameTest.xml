@@ -439,7 +439,7 @@
             <name:NameCache>Acherontia atropos</name:NameCache>  
             <name:GenusOrUninomial>Acherontia</name:GenusOrUninomial>
             <name:SpecificEpithet>atropos</name:SpecificEpithet>
-            <name:CombinationAuthorTeam>urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c</name:CombinationAuthorTeam>
+            <name:CombinationAuthorship>urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c</name:CombinationAuthorship>
             <name:AuthorshipCache>(Linnaeus, 1758)</name:AuthorshipCache>
             <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
             <name:ProtectedNameCache>false</name:ProtectedNameCache>

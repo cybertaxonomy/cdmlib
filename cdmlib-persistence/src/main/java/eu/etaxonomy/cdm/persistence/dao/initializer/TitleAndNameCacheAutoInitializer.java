@@ -97,10 +97,10 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
             if (NonViralName.class.isAssignableFrom(clazz)){
-                result += String.format(" LEFT JOIN FETCH %s.combinationAuthorTeam ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorTeam ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.basionymAuthorTeam ", beanAlias);
-                result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorTeam ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.combinationAuthorship ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorship ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
             }
         }
 

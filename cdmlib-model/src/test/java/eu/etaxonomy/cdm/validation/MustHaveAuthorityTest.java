@@ -65,7 +65,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	}
 
 	@Test
-	public void testValidSpecificNameWithBasionymAuthorTeam() {
+	public void testValidSpecificNameWithBasionymAuthorship() {
 		name.setAuthorshipCache(null);
 		name.setBasionymAuthorship(Person.NewInstance());
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);

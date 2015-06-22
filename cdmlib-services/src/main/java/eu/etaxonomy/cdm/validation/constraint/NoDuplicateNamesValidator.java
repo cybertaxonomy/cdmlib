@@ -37,10 +37,10 @@ public class NoDuplicateNamesValidator implements
 		includeProperties.add("rank");
 		includeProperties.add("nomenclaturalReference");
 		includeProperties.add("nomenclaturalMicroReference");
-		includeProperties.add("basionymAuthorTeam");
-		includeProperties.add("exBasionymAuthorTeam");
-		includeProperties.add("combinationAuthorTeam");
-		includeProperties.add("exCombinationAuthorTeam");
+		includeProperties.add("basionymAuthorship");
+		includeProperties.add("exBasionymAuthorship");
+		includeProperties.add("combinationAuthorship");
+		includeProperties.add("exCombinationAuthorship");
 	}
 
 	private INameService nameService;
