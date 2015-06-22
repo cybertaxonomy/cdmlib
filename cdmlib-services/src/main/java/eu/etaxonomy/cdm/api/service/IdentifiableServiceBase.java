@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
-public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO>
+public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO>
 						implements IIdentifiableEntityService<T>{
 
 
