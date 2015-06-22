@@ -73,10 +73,10 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 			return null;
 		}
 		String result = "";
-		INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorTeam();
-		INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorTeam();
-		INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorTeam();
-		INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorTeam();
+		INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
+		INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
+		INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
+		INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
 		Integer publicationYear = nonViralName.getPublicationYear();
 		Integer originalPublicationYear = nonViralName.getOriginalPublicationYear();
 

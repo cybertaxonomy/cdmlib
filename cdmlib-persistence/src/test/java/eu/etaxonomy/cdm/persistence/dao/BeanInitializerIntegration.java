@@ -104,7 +104,7 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		endTransaction();
 
 		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertTrue("TaxonNameBase.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorTeam()));
+		assertTrue("TaxonNameBase.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
 	}
 
 	/**

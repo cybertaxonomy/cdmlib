@@ -1958,7 +1958,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
             if (team != null) {
-                taxonName.setBasionymAuthorTeam(team);
+                taxonName.setBasionymAuthorship(team);
             }
             else {
                 if (getFromMap(atomisedMap, "AuthorTeamParenthesis") != null) {
@@ -1971,7 +1971,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (getFromMap(atomisedMap, "CombinationAuthorTeamAndYear") != null) {
                 team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "CombinationAuthorTeamAndYear"), true);
-                taxonName.setCombinationAuthorTeam(team);
+                taxonName.setCombinationAuthorship(team);
             }
             if (taxonName.hasProblem()) {
                 logger.info("pb ICZN");
@@ -2013,12 +2013,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (getFromMap(atomisedMap, "AuthorTeamParenthesis") != null) {
                 team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "AuthorTeamParenthesis"), true);
-                taxonName.setBasionymAuthorTeam(team);
+                taxonName.setBasionymAuthorship(team);
             }
             if (getFromMap(atomisedMap, "AuthorTeam") != null) {
                 team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "AuthorTeam"), true);
-                taxonName.setCombinationAuthorTeam(team);
+                taxonName.setCombinationAuthorship(team);
             }
             if (team == null) {
                 if (getFromMap(atomisedMap, "AuthorTeamParenthesis") != null) {
@@ -2031,7 +2031,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (getFromMap(atomisedMap, "CombinationAuthorTeamAndYear") != null) {
                 team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "CombinationAuthorTeamAndYear"), true);
-                taxonName.setCombinationAuthorTeam(team);
+                taxonName.setCombinationAuthorship(team);
             }
             if (taxonName.hasProblem()) {
                 logger.info("pb ICBN");
@@ -2065,12 +2065,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (getFromMap(atomisedMap, "AuthorTeamAndYear") != null) {
                 Team team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "AuthorTeamAndYear"), true);
-                taxonName.setCombinationAuthorTeam(team);
+                taxonName.setCombinationAuthorship(team);
             }
             if (getFromMap(atomisedMap, "ParentheticalAuthorTeamAndYear") != null) {
                 Team team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "ParentheticalAuthorTeamAndYear"), true);
-                taxonName.setBasionymAuthorTeam(team);
+                taxonName.setBasionymAuthorship(team);
             }
             if (taxonName.hasProblem()) {
                 logger.info("pb ICNB");

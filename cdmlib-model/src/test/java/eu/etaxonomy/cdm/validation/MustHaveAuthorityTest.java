@@ -67,7 +67,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	@Test
 	public void testValidSpecificNameWithBasionymAuthorTeam() {
 		name.setAuthorshipCache(null);
-		name.setBasionymAuthorTeam(Person.NewInstance());
+		name.setBasionymAuthorship(Person.NewInstance());
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
@@ -83,7 +83,7 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 	public void testValidAutonym() {
 		name.setInfraSpecificEpithet("aus");
 		name.setAuthorshipCache(null);
-		name.setBasionymAuthorTeam(null);
+		name.setBasionymAuthorship(null);
 		name.setRank(Rank.SUBSPECIES());
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());

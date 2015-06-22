@@ -401,7 +401,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
-		name.setBasionymAuthorTeam(author);
+		name.setBasionymAuthorship(author);
 		
 		name.setNomenclaturalReference(ref1);
 		
@@ -538,7 +538,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article2.addMedia(media2);
 		
 //		ref1.setAuthorship(author);
-//		name1.setBasionymAuthorTeam(author);
+//		name1.setBasionymAuthorship(author);
 		
 		name1.setNomenclaturalReference(article1);
 
@@ -794,8 +794,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		cdmGenericDao.save((Reference<?>)book1);
 		
 		//starting condition
-		name1.setCombinationAuthorTeam(person1);
-		Assert.assertEquals("Name1 should have person1 as combination author", person1, name1.getCombinationAuthorTeam());
+		name1.setCombinationAuthorship(person1);
+		Assert.assertEquals("Name1 should have person1 as combination author", person1, name1.getCombinationAuthorship());
 		
 		DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 //		strategy.setOnlyReallocateLinks(true);
@@ -814,7 +814,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		} catch (Exception e) {
 			Assert.fail("Unhandled exception during merge");
 		}
-		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorTeam());
+		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
 		
 		//test collections
 		team1.addTeamMember(person1);
@@ -829,12 +829,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		} catch (Exception e) {
 			Assert.fail("Unhandled exception during merge");
 		}
-		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorTeam());
+		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
 		
 		//test successful merge
 		cdmGenericDao.save(name1);
 		cdmGenericDao.merge(team2, person1, strategy);
-		Assert.assertEquals("Name1 should have team2 as combination author now", team2, name1.getCombinationAuthorTeam());
+		Assert.assertEquals("Name1 should have team2 as combination author now", team2, name1.getCombinationAuthorship());
 	
 	}
 	

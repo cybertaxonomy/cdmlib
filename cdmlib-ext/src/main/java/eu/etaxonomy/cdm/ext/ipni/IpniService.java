@@ -486,8 +486,8 @@ public class IpniService  implements IIpniService{
 		}
 		
 		//authors
-		name.setBasionymAuthorTeam(Team.NewTitledInstance(valueMap.get(BASIONYM_AUTHOR), valueMap.get(BASIONYM_AUTHOR)));
-		name.setCombinationAuthorTeam(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
+		name.setBasionymAuthorship(Team.NewTitledInstance(valueMap.get(BASIONYM_AUTHOR), valueMap.get(BASIONYM_AUTHOR)));
+		name.setCombinationAuthorship(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
 		
 		//publication
 		Reference<?> ref = ReferenceFactory.newGeneric();

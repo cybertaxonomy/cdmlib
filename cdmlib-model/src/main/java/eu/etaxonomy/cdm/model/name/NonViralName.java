@@ -178,7 +178,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
-    @XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlElement(name = "CombinationAuthorship", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -187,9 +187,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @JoinColumn(name="combinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private TeamOrPersonBase<?> combinationAuthorTeam;
+    private TeamOrPersonBase<?> combinationAuthorship;
 
-    @XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExCombinationAuthorship", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -198,9 +198,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @JoinColumn(name="exCombinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private TeamOrPersonBase<?> exCombinationAuthorTeam;
+    private TeamOrPersonBase<?> exCombinationAuthorship;
 
-    @XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlElement(name = "BasionymAuthorship", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -209,9 +209,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @JoinColumn(name="basionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private TeamOrPersonBase<?> basionymAuthorTeam;
+    private TeamOrPersonBase<?> basionymAuthorship;
 
-    @XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExBasionymAuthorship", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -220,7 +220,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @JoinColumn(name="exBasionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
-    private TeamOrPersonBase<?> exBasionymAuthorTeam;
+    private TeamOrPersonBase<?> exBasionymAuthorship;
 
     @XmlElement(name = "AuthorshipCache")
     @Fields({
@@ -391,7 +391,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         setInfraGenericEpithet (infraGenericEpithet);
         setSpecificEpithet(specificEpithet);
         setInfraSpecificEpithet(infraSpecificEpithet);
-        setCombinationAuthorTeam(combinationAuthorTeam);
+        setCombinationAuthorship(combinationAuthorTeam);
         setNomenclaturalReference(nomenclaturalReference);
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
@@ -519,21 +519,21 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public TeamOrPersonBase<?> getCombinationAuthorTeam(){
-        return this.combinationAuthorTeam;
+    public TeamOrPersonBase<?> getCombinationAuthorship(){
+        return this.combinationAuthorship;
     }
 
     /**
-     * @see  #getCombinationAuthorTeam()
+     * @see  #getCombinationAuthorship()
      */
-    public void setCombinationAuthorTeam(TeamOrPersonBase<?> combinationAuthorTeam){
-        this.combinationAuthorTeam = combinationAuthorTeam;
+    public void setCombinationAuthorship(TeamOrPersonBase<?> combinationAuthorship){
+        this.combinationAuthorship = combinationAuthorship;
     }
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that contributed to
      * the publication of <i>this</i> non viral taxon name as generally stated by
-     * the {@link #getCombinationAuthorTeam() combination author (team)} itself.<BR>
+     * the {@link #getCombinationAuthorship() combination author (team)} itself.<BR>
      * An ex-author(-team) is an author(-team) to whom a taxon name was ascribed
      * although it is not the author(-team) of a valid publication (for instance
      * without the validating description or diagnosis in case of a name for a
@@ -549,19 +549,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * condition for the existence of an ex author (team) for <i>this</i> same name.
      *
      * @return  the nomenclatural ex author (team) of <i>this</i> non viral taxon name
-     * @see 	#getCombinationAuthorTeam()
+     * @see 	#getCombinationAuthorship()
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public TeamOrPersonBase<?> getExCombinationAuthorTeam(){
-        return this.exCombinationAuthorTeam;
+    public TeamOrPersonBase<?> getExCombinationAuthorship(){
+        return this.exCombinationAuthorship;
     }
 
     /**
-     * @see  #getExCombinationAuthorTeam()
+     * @see  #getExCombinationAuthorship()
      */
-    public void setExCombinationAuthorTeam(TeamOrPersonBase<?> exCombinationAuthorTeam){
-        this.exCombinationAuthorTeam = exCombinationAuthorTeam;
+    public void setExCombinationAuthorship(TeamOrPersonBase<?> exCombinationAuthorship){
+        this.exCombinationAuthorship = exCombinationAuthorship;
     }
 
     /**
@@ -571,46 +571,46 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * combination due to a taxonomical revision.
      *
      * @return  the nomenclatural basionym author (team) of <i>this</i> non viral taxon name
-     * @see 	#getCombinationAuthorTeam()
+     * @see 	#getCombinationAuthorship()
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public TeamOrPersonBase<?> getBasionymAuthorTeam(){
-        return basionymAuthorTeam;
+    public TeamOrPersonBase<?> getBasionymAuthorship(){
+        return basionymAuthorship;
     }
 
     /**
-     * @see  #getBasionymAuthorTeam()
+     * @see  #getBasionymAuthorship()
      */
-    public void setBasionymAuthorTeam(TeamOrPersonBase<?> basionymAuthorTeam) {
-        this.basionymAuthorTeam = basionymAuthorTeam;
+    public void setBasionymAuthorship(TeamOrPersonBase<?> basionymAuthorship) {
+        this.basionymAuthorship = basionymAuthorship;
     }
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that contributed to
      * the publication of the original combination <i>this</i> non viral taxon name is
      * based on. This should have been generally stated by
-     * the {@link #getBasionymAuthorTeam() basionym author (team)} itself.
+     * the {@link #getBasionymAuthorship() basionym author (team)} itself.
      * The presence of a basionym author (team) of <i>this</i> non viral taxon name is a
      * condition for the existence of an ex basionym author (team)
      * for <i>this</i> same name.
      *
      * @return  the nomenclatural ex basionym author (team) of <i>this</i> non viral taxon name
-     * @see 	#getBasionymAuthorTeam()
-     * @see 	#getExCombinationAuthorTeam()
-     * @see 	#getCombinationAuthorTeam()
+     * @see 	#getBasionymAuthorship()
+     * @see 	#getExCombinationAuthorship()
+     * @see 	#getCombinationAuthorship()
      * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
-    public TeamOrPersonBase<?> getExBasionymAuthorTeam(){
-        return exBasionymAuthorTeam;
+    public TeamOrPersonBase<?> getExBasionymAuthorship(){
+        return exBasionymAuthorship;
     }
 
     /**
-     * @see  #getExBasionymAuthorTeam()
+     * @see  #getExBasionymAuthorship()
      */
-    public void setExBasionymAuthorTeam(TeamOrPersonBase<?> exBasionymAuthorTeam) {
-        this.exBasionymAuthorTeam = exBasionymAuthorTeam;
+    public void setExBasionymAuthorship(TeamOrPersonBase<?> exBasionymAuthorship) {
+        this.exBasionymAuthorship = exBasionymAuthorship;
     }
     /**
      * Returns either the scientific name string (without authorship) for <i>this</i>
@@ -1332,10 +1332,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @return false if no author ((ex)combination or (ex)basionym) exists, true otherwise
      */
     public boolean hasAuthors() {
-        return (this.getCombinationAuthorTeam() != null ||
-                this.getExCombinationAuthorTeam() != null ||
-                this.getBasionymAuthorTeam() != null ||
-                this.getExBasionymAuthorTeam() != null);
+        return (this.getCombinationAuthorship() != null ||
+                this.getExCombinationAuthorship() != null ||
+                this.getBasionymAuthorship() != null ||
+                this.getExBasionymAuthorship() != null);
     }
 
     /**
@@ -1343,7 +1343,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @return
      */
     public String computeCombinationAuthorNomenclaturalTitle() {
-        return computeNomenclaturalTitle(this.getCombinationAuthorTeam());
+        return computeNomenclaturalTitle(this.getCombinationAuthorship());
     }
 
     /**
@@ -1351,7 +1351,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @return
      */
     public String computeBasionymAuthorNomenclaturalTitle() {
-        return computeNomenclaturalTitle(this.getBasionymAuthorTeam());
+        return computeNomenclaturalTitle(this.getBasionymAuthorship());
     }
 
 
@@ -1360,7 +1360,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @return
      */
     public String computeExCombinationAuthorNomenclaturalTitle() {
-        return computeNomenclaturalTitle(this.getExCombinationAuthorTeam());
+        return computeNomenclaturalTitle(this.getExCombinationAuthorship());
     }
 
     /**
@@ -1368,7 +1368,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @return
      */
     public String computeExBasionymAuthorNomenclaturalTitle() {
-        return computeNomenclaturalTitle(this.getExBasionymAuthorTeam());
+        return computeNomenclaturalTitle(this.getExBasionymAuthorship());
     }
 
     private String computeNomenclaturalTitle(INomenclaturalAuthor author){

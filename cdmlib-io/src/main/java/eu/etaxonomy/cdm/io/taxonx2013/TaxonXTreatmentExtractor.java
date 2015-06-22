@@ -4069,7 +4069,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                 if (rank.equals(globalrank) && author != null) {
 
-                    tnb.setCombinationAuthorTeam(findOrCreateAuthor(author));
+                    tnb.setCombinationAuthorship(findOrCreateAuthor(author));
                     if (getIdentifier() !=null && !getIdentifier().isEmpty()){
                         Taxon taxonLSID = getTaxonByLSID(getIdentifier());
                         if (taxonLSID !=null) {

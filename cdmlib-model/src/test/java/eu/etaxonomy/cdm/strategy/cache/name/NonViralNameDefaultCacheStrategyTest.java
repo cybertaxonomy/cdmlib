@@ -224,15 +224,15 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
      */
     @Test
     public void testGetAuthorshipCache() {
-        this.speciesName.setCombinationAuthorTeam(author);
+        this.speciesName.setCombinationAuthorship(author);
         assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
-        this.speciesName.setBasionymAuthorTeam(basAuthor);
+        this.speciesName.setBasionymAuthorship(basAuthor);
         String expected = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+author.getNomenclaturalTitle();
         assertEquals(expected, speciesName.getAuthorshipCache());
         String authorshipcache = "authorshipcache";
         speciesName.setAuthorshipCache(authorshipcache);
         assertEquals(authorshipcache, speciesName.getAuthorshipCache());
-        speciesName.setCombinationAuthorTeam(exAuthor);
+        speciesName.setCombinationAuthorship(exAuthor);
         assertEquals(authorshipcache, speciesName.getAuthorshipCache()); //cache is protected
         assertEquals(speciesNameString + " " + authorshipcache, speciesName.getFullTitleCache());
         //unprotected
@@ -251,7 +251,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     @Test
     public void testHybridNames() {
         //Note \u00D7 : hybrid sign (multiplication sign)
-        this.speciesName.setCombinationAuthorTeam(author);
+        this.speciesName.setCombinationAuthorship(author);
         Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 
@@ -274,7 +274,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     @Test
     public void testHybridFormula(){
-        this.speciesName.setCombinationAuthorTeam(author);
+        this.speciesName.setCombinationAuthorship(author);
         Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
 
@@ -315,8 +315,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         ref.setTitleCache("GenericRef",true);
         this.subSpeciesName.setNomenclaturalReference(ref);
         Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
-        subSpeciesName.setCombinationAuthorTeam(author);
-        subSpeciesName.setBasionymAuthorTeam(basAuthor);
+        subSpeciesName.setCombinationAuthorship(author);
+        subSpeciesName.setBasionymAuthorship(basAuthor);
         Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
         //cascade name change to fullTitleCache
         subSpeciesName.setRank(Rank.SPECIES());
@@ -422,8 +422,8 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
         zooName.setGenusOrUninomial("Homo");
         zooName.setSpecificEpithet("sapiens");
-        zooName.setBasionymAuthorTeam(basAuthor);
-        zooName.setCombinationAuthorTeam(author);
+        zooName.setBasionymAuthorship(basAuthor);
+        zooName.setCombinationAuthorship(author);
         zooName.setNomenclaturalReference(book);
         zooName.setNomenclaturalMicroReference("22");
         Assert.assertEquals("Expected full title cache has error", "Homo sapiens (Basio, A.) X., Booktitle: 22", zooName.getFullTitleCache());
@@ -604,7 +604,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	Assert.assertEquals("<i>Abies alba</i>", strategy.getTitleCache(speciesName, rules));
     	rules.addRule(TagEnum.name, "b");
     	Assert.assertEquals("<b><i>Abies alba</i></b>", strategy.getTitleCache(speciesName, rules));
-    	speciesName.setCombinationAuthorTeam(author);
+    	speciesName.setCombinationAuthorship(author);
     	Assert.assertEquals("<b><i>Abies alba</i></b> L.", strategy.getTitleCache(speciesName, rules));
     	rules.addRule(TagEnum.authors, "i");
     	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
@@ -620,9 +620,9 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	name.setSpecificEpithet("atropurpurea");
     	name.setInfraSpecificEpithet("atropurpurea");
     	Team combTeam = Team.NewTitledInstance("Combauthor", "Combauthor");
-    	name.setCombinationAuthorTeam(combTeam);
+    	name.setCombinationAuthorship(combTeam);
     	Team exCombTeam = Team.NewTitledInstance("Excomb", "Excomb");
-    	name.setExCombinationAuthorTeam(exCombTeam);
+    	name.setExCombinationAuthorship(exCombTeam);
     	
     	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
     }

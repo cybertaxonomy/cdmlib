@@ -261,7 +261,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				}catch(NullPointerException e){
 					
 				}
-				//AuthorTeams
+				//Authorships
 				//TODO
 				/*
 				 * <tn:authorteam>
@@ -317,7 +317,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				
 				
 				
-				nonViralName.setCombinationAuthorTeam(authorTeam);
+				nonViralName.setCombinationAuthorship(authorTeam);
 				
 				//Annotations:
 				/*
@@ -335,7 +335,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (basionymAuthorValue != null){
 					TeamOrPersonBase<?> basionymAuthor = Team.NewInstance();
 					basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
-					nonViralName.setBasionymAuthorTeam(basionymAuthor);
+					nonViralName.setBasionymAuthorship(basionymAuthor);
 				}
 
 				//TODO
@@ -344,7 +344,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (combinationAuthorValue != null){
 					TeamOrPersonBase<?> combinationAuthor = Team.NewInstance();
 					combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}
 
 				//set the authorshipCache
@@ -463,7 +463,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (basionymAuthorValue != null){
 					TeamOrPersonBase<?> basionymAuthor = Team.NewInstance();
 					basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
-					nonViralName.setBasionymAuthorTeam(basionymAuthor);
+					nonViralName.setBasionymAuthorship(basionymAuthor);
 				}
 
 				//TODO
@@ -472,7 +472,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (combinationAuthorValue != null){
 					TeamOrPersonBase<?> combinationAuthor = Team.NewInstance();
 					combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}
 
 				//set the authorshipCache
@@ -639,7 +639,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (basionymAuthorValue != null){
 					TeamOrPersonBase<?> basionymAuthor = Team.NewInstance();
 					basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
-					nonViralName.setBasionymAuthorTeam(basionymAuthor);
+					nonViralName.setBasionymAuthorship(basionymAuthor);
 				}
 
 				//TODO
@@ -648,7 +648,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (combinationAuthorValue != null){
 					TeamOrPersonBase<?> combinationAuthor = Team.NewInstance();
 					combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}
 
 				//set the authorshipCache

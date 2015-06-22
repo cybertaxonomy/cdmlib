@@ -69,7 +69,7 @@ public class TestModel {
 		Person team= Person.NewInstance();
 		team.addPropertyChangeListener(listener);
 		team.setTitleCache("AuthorAgent1", true);
-		tn.setCombinationAuthorTeam(team);
+		tn.setCombinationAuthorship(team);
 	}
 	
 	public void testParentRelation(){

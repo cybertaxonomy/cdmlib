@@ -71,8 +71,8 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		Person basionymAuthor = Person.NewInstance();
 		basionymAuthor.setNomenclaturalTitle("L.");
 		
-		name.setCombinationAuthorTeam(combinationAuthor);
-		name.setBasionymAuthorTeam(basionymAuthor);
+		name.setCombinationAuthorship(combinationAuthor);
+		name.setBasionymAuthorship(basionymAuthor);
 		assertEquals("Namecache should be Abies alba", expectedNameCache, name.getNameCache());
 		assertEquals("Titlecache should be Abies alba (Mill.) L.", expectedNameTitleCache, name.getTitleCache());
 		sec = ReferenceFactory.newBook();
@@ -109,9 +109,9 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	public void testAndInTitleCache() {
 		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
 		Team team = Team.NewInstance();
-		team.addTeamMember((Person)name.getCombinationAuthorTeam());
-		team.addTeamMember((Person)name.getBasionymAuthorTeam());
-		name.setCombinationAuthorTeam(team);
+		team.addTeamMember((Person)name.getCombinationAuthorship());
+		team.addTeamMember((Person)name.getBasionymAuthorship());
+		name.setCombinationAuthorship(team);
 		System.out.println(taxonBase.generateTitle());
 		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxonBase.generateTitle());
 		

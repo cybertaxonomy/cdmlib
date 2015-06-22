@@ -540,7 +540,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
-				determinedBy = (TeamOrPersonBase<?>)dummyName.getCombinationAuthorTeam();
+				determinedBy = (TeamOrPersonBase<?>)dummyName.getCombinationAuthorship();
 			} catch (StringNotParsableException e) {
 				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
 			}
@@ -660,7 +660,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			authors.add(determinationLight.author);
 		}
 		TeamOrPersonBase<?> agent = (TeamOrPersonBase)getOrMakeAgent(state, authors);
-		name.setCombinationAuthorTeam(agent);
+		name.setCombinationAuthorship(agent);
 		
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){

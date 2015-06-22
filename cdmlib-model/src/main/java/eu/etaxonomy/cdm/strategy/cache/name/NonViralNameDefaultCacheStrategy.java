@@ -356,10 +356,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>> extends
      */
     protected String getNonCacheAuthorshipCache(T nonViralName){
         String result = "";
-        INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorTeam();
-        INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorTeam();
-        INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorTeam();
-        INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorTeam();
+        INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
+        INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
+        INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
+        INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
         String basionymPart = "";
         String authorPart = "";
         //basionym

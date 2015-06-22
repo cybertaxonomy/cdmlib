@@ -71,7 +71,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
         combAuthor.addTeamMember(Person.NewTitledInstance("Iron Man"));
         BotanicalName name = BotanicalName.NewInstance(null, "Abies alba", null, null, null, null, null, null, null);
-        name.setCombinationAuthorTeam(combAuthor);
+        name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
         UUID taxonUuid = taxonService.save(taxon);
         printDataSetWithNull(System.out,false,null,includeTables);
@@ -145,12 +145,12 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
         // normally this call should throw a lazy loading exception since
-        // the combinationAuthorTeam object is not initialized, but
+        // the combinationAuthorship object is not initialized, but
         // the findTaxonByUuid performs this initialization (via the
-        // AdvancedBeanInitializer) since the combinationAuthorTeam
+        // AdvancedBeanInitializer) since the combinationAuthorship
         // is annotated with CacheUpdate
 
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
 
         // setting the protected title cache to false to ensure that
         // TeamDefaultCacheStrategy.getTitleCache is called, which in turn tries
@@ -208,7 +208,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // session attached implying that all the following calls will succeed
 
         NonViralName nvn =  CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
         taxonService.update(taxon);
 
         // ---- loading taxon with find (id) ----
@@ -220,7 +220,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // session attached implying that all the following calls will succeed
 
         nvn =  CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
         taxonService.update(taxon);
 
         // ---- loading taxon with findTaxonByUuid ----
@@ -233,7 +233,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
         nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
 
         // since a valid session is now attached to teamMembers, forcing the
         // initializing of the teamMembers (in TeamDefaultCacheStrategy.getTitleCache)
@@ -259,7 +259,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
 
         BotanicalName name = BotanicalName.NewInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
-        name.setCombinationAuthorTeam(combAuthor);
+        name.setCombinationAuthorship(combAuthor);
 
         Taxon taxon = Taxon.NewInstance(name, null);
 
@@ -272,7 +272,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
 
         NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
         team.setProtectedTitleCache(false);
 
         try {
@@ -332,12 +332,12 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
         // normally this call should throw a lazy loading exception since
-        // the combinationAuthorTeam object is not initialized, but
+        // the combinationAuthorship object is not initialized, but
         // the findTaxonByUuid performs this initialization (via the
-        // AdvancedBeanInitializer) since the combinationAuthorTeam
+        // AdvancedBeanInitializer) since the combinationAuthorship
         // is annotated with CacheUpdate
 
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorTeam(),Team.class);
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
 
         // setting the protected title cache to false to ensure that
         // TeamDefaultCacheStrategy.getTitleCache is called, which in turn tries
