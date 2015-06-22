@@ -53,7 +53,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	person.setContact(getContact());
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
-    	name.setCombinationAuthorTeam(person);
+    	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
 
     	service.save(person);
@@ -70,7 +70,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
     	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
        	Assert.assertNotNull("Contact must be copied too", team.getContact());
-    	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorTeam());
+    	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
 
     }
 
@@ -90,7 +90,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	team.addAnnotation(annotation);
     	team.setContact(getContact());
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
-    	name.setCombinationAuthorTeam(team);
+    	name.setCombinationAuthorship(team);
 
     	service.save(team);
     	nameSerivce.save(name);
@@ -108,7 +108,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals("Nom. title must be equal", nomTitle, person.getNomenclaturalTitle());
     	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
     	Assert.assertNotNull("Contact must be copied too", person.getContact());
-    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorTeam());
+    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
     }
 
 
@@ -123,7 +123,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	team.addAnnotation(annotation2);
     	team.setContact(getContact());
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
-    	name.setCombinationAuthorTeam(team);
+    	name.setCombinationAuthorship(team);
     	Person member = Person.NewTitledInstance("Member person");
     	member.setNomenclaturalTitle("Memb. pers.");
     	Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
@@ -152,7 +152,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 //    	Assert.assertEquals("The only annotation should be annotation 3", annotation3.getText(), annotationText);
     	//FIXME currently merge mode is still MERGE for user defined fields
 //    	Assert.assertNull("Contact must not be copied", person.getContact());
-    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorTeam());
+    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
     }
 
     @Override

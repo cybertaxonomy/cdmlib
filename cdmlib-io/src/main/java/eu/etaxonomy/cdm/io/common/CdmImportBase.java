@@ -978,9 +978,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (StringUtils.isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
-		if (childName.isAutonym() && childName.getCombinationAuthorTeam() == null && childName.getBasionymAuthorTeam() == null ){
-			childName.setCombinationAuthorTeam(parentName.getCombinationAuthorTeam());
-			childName.setBasionymAuthorTeam(parentName.getBasionymAuthorTeam());
+		if (childName.isAutonym() && childName.getCombinationAuthorship() == null && childName.getBasionymAuthorship() == null ){
+			childName.setCombinationAuthorship(parentName.getCombinationAuthorship());
+			childName.setBasionymAuthorship(parentName.getBasionymAuthorship());
 		}	
 	}
 	

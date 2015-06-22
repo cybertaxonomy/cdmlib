@@ -345,15 +345,15 @@ public class DefaultMergeStrategyTest {
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
 		Person person1 = Person.NewInstance();
-		botName1.setCombinationAuthorTeam(team1);
-		botName2.setCombinationAuthorTeam(team2);
+		botName1.setCombinationAuthorship(team1);
+		botName2.setCombinationAuthorship(team2);
 		
 		//taxa
 		TaxonBase<?> taxon1= Taxon.NewInstance(botName1, book1);
 		TaxonBase<?> taxon2= Taxon.NewInstance(botName2, book2);
 		
 		try {
-			botNameMergeStrategy.setMergeMode("combinationAuthorTeam", MergeMode.SECOND);
+			botNameMergeStrategy.setMergeMode("combinationAuthorship", MergeMode.SECOND);
 			botNameMergeStrategy.setMergeMode("anamorphic", MergeMode.AND);
 			
 //			botNameMergeStrategy.invoke(botName1, botName2);
@@ -384,8 +384,8 @@ public class DefaultMergeStrategyTest {
 		//Description
 		Assert.assertEquals("Number of descriptions must be 2", 2, botName1.getDescriptions().size());
 		
-		//AuthorTeams
-		Assert.assertEquals("Combination author must be combination author 1", team1, botName1.getCombinationAuthorTeam());
+		//Authorships
+		Assert.assertEquals("Combination author must be combination author 1", team1, botName1.getCombinationAuthorship());
 		
 		//Taxa
 		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());

@@ -26,8 +26,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
-
-
 public class TestPersistence {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestPersistence.class);
@@ -60,7 +58,7 @@ public class TestPersistence {
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
 		team.setTitleCache("AuthorAgent1", true);
-		tn.setCombinationAuthorTeam(team);
+		tn.setCombinationAuthorship(team);
 		
 		logger.info("Save objects ...");
  		

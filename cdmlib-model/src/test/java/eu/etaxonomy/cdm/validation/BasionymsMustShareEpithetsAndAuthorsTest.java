@@ -59,13 +59,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");
 		author1 = Person.NewTitledInstance("Person");
-		name.setBasionymAuthorTeam(author1);
+		name.setBasionymAuthorship(author1);
 
 		author2 = Person.NewTitledInstance("Person2");
 		basionymName = BotanicalName.NewInstance(Rank.SPECIES());
 		basionymName.setGenusOrUninomial("Aus");
 		basionymName.setSpecificEpithet("aus");
-        basionymName.setCombinationAuthorTeam(author1);
+        basionymName.setCombinationAuthorship(author1);
 
 
         name.addBasionym(basionymName);
@@ -76,13 +76,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 /****************** TESTS *****************************/
 
 	@Test
-	public void testBasionymHasSameAuthorTeam() {
+	public void testBasionymHasSameAuthorship() {
         Assert.assertEquals(1, name.getNameRelations().size());
         NameRelationship basRel = name.getNameRelations().iterator().next();
 	    Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
         assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
-        basionymName.setCombinationAuthorTeam(author2);
+        basionymName.setCombinationAuthorship(author2);
         Assert.assertEquals(1, name.getNameRelations().size());
         basRel = name.getNameRelations().iterator().next();
         constraintViolations  = validator.validate(basRel, Level3.class);
@@ -159,12 +159,12 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
        zooName.setGenusOrUninomial("Aus");
        zooName.setSpecificEpithet("aus");
-       zooName.setBasionymAuthorTeam(author1);
+       zooName.setBasionymAuthorship(author1);
        zooName.setNomenclaturalReference(nomRef);
        ZoologicalName originalCombination = ZoologicalName.NewInstance(Rank.SPECIES());
        originalCombination.setGenusOrUninomial("Aus");
        originalCombination.setSpecificEpithet("aus");
-       originalCombination.setCombinationAuthorTeam(author1);
+       originalCombination.setCombinationAuthorship(author1);
        originalCombination.setNomenclaturalReference(nomRef);
        zooName.addBasionym(originalCombination);
 

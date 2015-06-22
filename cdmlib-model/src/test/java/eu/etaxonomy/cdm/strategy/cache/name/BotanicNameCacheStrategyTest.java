@@ -151,26 +151,26 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Test
 	public final void testGetTitleCache() {
 		assertNull(subSpeciesNameString, strategy.getTitleCache(null));
-		subSpeciesName.setCombinationAuthorTeam(author);
-		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
+		subSpeciesName.setCombinationAuthorship(author);
+		subSpeciesName.setExCombinationAuthorship(exAuthor);
+		subSpeciesName.setBasionymAuthorship(basAuthor);
+		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getTitleCache(subSpeciesName));
 		
-		subSpeciesName.setExCombinationAuthorTeam(null);
+		subSpeciesName.setExCombinationAuthorship(null);
 		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
 				
-		subSpeciesName.setExBasionymAuthorTeam(null);
+		subSpeciesName.setExBasionymAuthorship(null);
 		assertEquals(subSpeciesNameString + " (" + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
 			
 		
 		//Autonym
 		subSpeciesName.setInfraSpecificEpithet("alba");
-		subSpeciesName.setCombinationAuthorTeam(author);
-		subSpeciesName.setBasionymAuthorTeam(null);
-		subSpeciesName.setExCombinationAuthorTeam(null);
-		subSpeciesName.setExBasionymAuthorTeam(null);
+		subSpeciesName.setCombinationAuthorship(author);
+		subSpeciesName.setBasionymAuthorship(null);
+		subSpeciesName.setExCombinationAuthorship(null);
+		subSpeciesName.setExBasionymAuthorship(null);
 		//changed 2009-09-04
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
@@ -197,16 +197,16 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Test
 	public final void testGetAuthorshipCache() {
-		subSpeciesName.setCombinationAuthorTeam(author);
+		subSpeciesName.setCombinationAuthorship(author);
 		assertEquals(authorString, strategy.getAuthorshipCache(subSpeciesName));
 
-		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
+		subSpeciesName.setExCombinationAuthorship(exAuthor);
 		assertEquals(exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
-		subSpeciesName.setBasionymAuthorTeam(basAuthor);
+		subSpeciesName.setBasionymAuthorship(basAuthor);
 		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 
-		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
+		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals("(" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
@@ -255,7 +255,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	@Test
 	public final void testAutonyms() {
 		subSpeciesName.setInfraSpecificEpithet("alba");
-		subSpeciesName.setCombinationAuthorTeam(author);
+		subSpeciesName.setCombinationAuthorship(author);
 		//changed 2009-09-04
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));

@@ -93,7 +93,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		assertEquals("infraGenericEpi", fullName.getInfraGenericEpithet());
 		assertEquals("specEpi", fullName.getSpecificEpithet());
 		assertEquals("infraSpecificEpi", fullName.getInfraSpecificEpithet());
-		assertEquals(combinationAuthorTeam, fullName.getCombinationAuthorTeam());
+		assertEquals(combinationAuthorTeam, fullName.getCombinationAuthorship());
 		assertEquals(nomenclaturalReference, fullName.getNomenclaturalReference());
 		assertEquals("microRef", fullName.getNomenclaturalMicroReference());
 		assertSame(homotypicalGroup, fullName.getHomotypicalGroup());

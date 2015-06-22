@@ -346,7 +346,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the nomenclatural status type "superfluous". A "valid"
 	 * ("available") {@link TaxonNameBase taxon name} is "superfluous" if, when published,
-	 * the taxon to which it was applied, as circumscribed by its {@link NonViralName#getCombinationAuthorTeam() author},
+	 * the taxon to which it was applied, as circumscribed by its {@link NonViralName#getCombinationAuthorship() author},
 	 * definitely included the type of a name which ought to have been adopted,
 	 * or of which the epithet ought to have been adopted, under the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and if it has not been later declared
@@ -622,7 +622,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the nomenclatural status type "invalid combination". A
 	 * {@link TaxonNameBase bi- or trinomial} is an "invalid combination" if its
-	 * {@link NonViralName#getCombinationAuthorTeam() author} did not definitely associate the final
+	 * {@link NonViralName#getCombinationAuthorship() author} did not definitely associate the final
 	 * epithet with the name of the genus or species, or with its abbreviation.<BR>
 	 * An "invalid combination" taxon name is therefore also "invalid"
 	 * ("not available" for {@link ZoologicalName zoological names}).

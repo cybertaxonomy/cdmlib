@@ -65,8 +65,8 @@ public class TaxonGenerator {
 		BotanicalName botName = BotanicalName.NewInstance(Rank.GENUS()); 
         botName.setTitleCache("Hieracium L.", true); 
         botName.setGenusOrUninomial("Hieracium"); 
-        botName.setCombinationAuthorTeam(Person.NewInstance()); 
-        botName.getCombinationAuthorTeam().setNomenclaturalTitle("L."); 
+        botName.setCombinationAuthorship(Person.NewInstance()); 
+        botName.getCombinationAuthorship().setNomenclaturalTitle("L."); 
         botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec); 
         genusTaxon.setUuid(GENUS_UUID);
@@ -75,7 +75,7 @@ public class TaxonGenerator {
         BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS()); 
         basionym.setTitleCache("Hieracilla DC.", true); 
         basionym.setGenusOrUninomial("Hieracilla"); 
-        basionym.setCombinationAuthorTeam(deCandolle); 
+        basionym.setCombinationAuthorship(deCandolle); 
         basionym.setUuid(BASIONYM_UUID);
         botName.addBasionym(basionym, null, null,"216");
         
@@ -84,8 +84,8 @@ public class TaxonGenerator {
         botSpecies.setTitleCache("Hieracium asturianum Pau", true); 
         botSpecies.setGenusOrUninomial("Hieracium"); 
         botSpecies.setSpecificEpithet("asturianum"); 
-        botSpecies.setCombinationAuthorTeam(Person.NewInstance()); 
-        botSpecies.getCombinationAuthorTeam().setNomenclaturalTitle("Pau"); 
+        botSpecies.setCombinationAuthorship(Person.NewInstance()); 
+        botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau"); 
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec); 
         childTaxon.setUuid(SPECIES1_UUID);
@@ -101,7 +101,7 @@ public class TaxonGenerator {
         botSpecies4.setTitleCache("Hieracium gueri DC.", true); 
         botSpecies4.setGenusOrUninomial("Hieracium"); 
         botSpecies4.setSpecificEpithet("gueri"); 
-        botSpecies4.setCombinationAuthorTeam(deCandolle); 
+        botSpecies4.setCombinationAuthorship(deCandolle); 
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec); 
         childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
@@ -112,8 +112,8 @@ public class TaxonGenerator {
         botSpecies2.setTitleCache("Hieracium wolffii Zahn", true); 
         botSpecies2.setGenusOrUninomial("Hieracium"); 
         botSpecies2.setSpecificEpithet("wolffii"); 
-        botSpecies2.setCombinationAuthorTeam(Person.NewInstance()); 
-        botSpecies2.getCombinationAuthorTeam().setNomenclaturalTitle("Zahn"); 
+        botSpecies2.setCombinationAuthorship(Person.NewInstance()); 
+        botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn"); 
         botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec); 
         childTaxon2.setUuid(SPECIES2_UUID);
@@ -125,7 +125,7 @@ public class TaxonGenerator {
         botSpecies3.setTitleCache("Hieracium lupium DC.", true); 
         botSpecies3.setGenusOrUninomial("Hieracium"); 
         botSpecies3.setSpecificEpithet("lupium"); 
-        botSpecies3.setCombinationAuthorTeam(deCandolle); 
+        botSpecies3.setCombinationAuthorship(deCandolle); 
         botSpecies3.setUuid(SYNONYM2_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec); 
         childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
@@ -135,7 +135,7 @@ public class TaxonGenerator {
         missName.setTitleCache("Hieracium lupium DC.", true); 
         missName.setGenusOrUninomial("Hieracium"); 
         missName.setSpecificEpithet("lupium"); 
-        missName.setCombinationAuthorTeam(deCandolle); 
+        missName.setCombinationAuthorship(deCandolle); 
         missName.setUuid(SPECIES5_NAME_UUID);
         Taxon misappliedName = Taxon.NewInstance(missName, sec); 
         childTaxon2.addMisappliedName(misappliedName, citationRef, "125");

@@ -26,7 +26,7 @@ public class MustHaveAuthorityValidator implements
     public boolean isValid(NonViralName<?> name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 
-		if(name.getBasionymAuthorTeam() == null && name.getAuthorshipCache() == null) {
+		if(name.getBasionymAuthorship() == null && name.getAuthorshipCache() == null) {
 		    valid = false;
 		    if(name.isInstanceOf(BotanicalName.class) && name.isInfraSpecific()) {
 			    if(name.isAutonym() ) {

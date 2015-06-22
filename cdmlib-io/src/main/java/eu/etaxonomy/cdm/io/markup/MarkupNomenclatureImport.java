@@ -488,13 +488,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
 				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrAut, event);
-				name.setCombinationAuthorTeam(authorAndEx[0]);
-				name.setExCombinationAuthorTeam(authorAndEx[1]);
+				name.setCombinationAuthorship(authorAndEx[0]);
+				name.setExCombinationAuthorship(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
 				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(infrParAut,event);
-				name.setBasionymAuthorTeam(authorAndEx[0]);
-				name.setExBasionymAuthorTeam(authorAndEx[1]);
+				name.setBasionymAuthorship(authorAndEx[0]);
+				name.setExBasionymAuthorship(authorAndEx[1]);
 			}
 		} else {
 			if (name.getRank() == null) {
@@ -507,18 +507,18 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			}
 			if (StringUtils.isNotBlank(authorStr)) {
 				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(authorStr,	event);
-				name.setCombinationAuthorTeam(authorAndEx[0]);
-				name.setExCombinationAuthorTeam(authorAndEx[1]);
+				name.setCombinationAuthorship(authorAndEx[0]);
+				name.setExCombinationAuthorship(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(paraut)) {
 				TeamOrPersonBase<?>[] authorAndEx = authorAndEx(paraut, event);
-				name.setBasionymAuthorTeam(authorAndEx[0]);
-				name.setExBasionymAuthorTeam(authorAndEx[1]);
+				name.setBasionymAuthorship(authorAndEx[0]);
+				name.setExBasionymAuthorship(authorAndEx[1]);
 			}
 		}
 		
 		//remember author for following citations
-		state.setLatestAuthorInHomotype((TeamOrPersonBase<?>)name.getCombinationAuthorTeam());
+		state.setLatestAuthorInHomotype((TeamOrPersonBase<?>)name.getCombinationAuthorship());
 	}
 
 	private TeamOrPersonBase<?>[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {

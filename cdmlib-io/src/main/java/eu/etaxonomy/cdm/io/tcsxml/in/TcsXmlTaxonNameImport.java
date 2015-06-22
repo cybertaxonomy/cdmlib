@@ -9,11 +9,9 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -23,15 +21,10 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -388,15 +381,15 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success); 
-				nonViralName.setCombinationAuthorTeam(author);
-				//setCombinationAuthorTeam(author);
+				nonViralName.setCombinationAuthorship(author);
+				//setCombinationAuthorship(author);
 				testNoMoreElements();
 				
 				childName = "BasionymAuthorship";
 				obligatory = false;
 				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
-				nonViralName.setBasionymAuthorTeam(basionymAuthor);
+				nonViralName.setBasionymAuthorship(basionymAuthor);
 				testNoMoreElements();
 				
 				childName = "CombinationAuthorship";
@@ -404,7 +397,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
 				if (combinationAuthor != null){
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
+					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}
 				testNoMoreElements();
 				

@@ -39,7 +39,7 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 				NonViralName<?> toName = (NonViralName<?>) to;
 
 				//compare author teams
-				if(fromName.getCombinationAuthorTeam() == null || !fromName.getCombinationAuthorTeam().equals(toName.getBasionymAuthorTeam())) {
+				if(fromName.getCombinationAuthorship() == null || !fromName.getCombinationAuthorship().equals(toName.getBasionymAuthorship())) {
 					valid = false;
 					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("fromName").addNode("basionymAuthorTeam").addConstraintViolation();
 					//remove duplicate violation as it does not give more information

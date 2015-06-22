@@ -224,8 +224,8 @@ public class DefaultMatchStrategyTest {
 		botName2.setGenusOrUninomial("Genus1");
 		Assert.assertTrue("Names with equal genus should match", matchStrategy.invoke(botName1, botName2));
 		
-		botName1.setCombinationAuthorTeam(team1);
-		botName2.setCombinationAuthorTeam(null);
+		botName1.setCombinationAuthorship(team1);
+		botName2.setCombinationAuthorship(null);
 		Assert.assertFalse("Names one having an author the other one not should not match", matchStrategy.invoke(botName1, botName2));
 		
 		botName1.setAuthorshipCache("authorCache1");
@@ -315,7 +315,7 @@ public class DefaultMatchStrategyTest {
 		Assert.assertFalse("Books with not matching in series should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		Assert.assertFalse("Sections with differing print series should not match", bookSectionMatchStrategy.invoke(section1, section2));
 		
-		//authorTeam
+		//Authorship
 		Person person1 = Person.NewTitledInstance("person");
 		Person person2 = Person.NewTitledInstance("person");
 		
@@ -381,8 +381,8 @@ public class DefaultMatchStrategyTest {
 		//authors
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
-		botName1.setCombinationAuthorTeam(team1);
-		botName2.setCombinationAuthorTeam(team2);
+		botName1.setCombinationAuthorship(team1);
+		botName2.setCombinationAuthorship(team2);
 		Assert.assertTrue("Similar teams should match", DefaultMatchStrategy.NewInstance(Team.class).invoke(team1, team2));
 		Assert.assertTrue("Similar names with matching authors should match", matchStrategy.invoke(botName1, botName2));
 		

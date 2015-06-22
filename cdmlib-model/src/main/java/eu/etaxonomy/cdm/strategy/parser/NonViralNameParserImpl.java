@@ -330,7 +330,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    if (nameToBeFilled.isInstanceOf(ZoologicalName.class)){
 			ZoologicalName zooName = CdmBase.deproxy(nameToBeFilled, ZoologicalName.class);
 			//is name new combination?
-			if (zooName.getBasionymAuthorTeam() != null || zooName.getOriginalPublicationYear() != null){
+			if (zooName.getBasionymAuthorship() != null || zooName.getOriginalPublicationYear() != null){
 				ParserProblem parserProblem = ParserProblem.NewCombinationHasPublication;
 				zooName.addParsingProblem(parserProblem);
 				nameToBeFilled.setProblemStarts((nameToBeFilled.getProblemStarts()> -1) ? nameToBeFilled.getProblemStarts(): name.length());
@@ -377,7 +377,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 	    Reference<?> nomRef;
 		if ( (nomRef = (Reference<?>)nameToBeFilled.getNomenclaturalReference()) != null ){
-			nomRef.setAuthorship(nameToBeFilled.getCombinationAuthorTeam());
+			nomRef.setAuthorship(nameToBeFilled.getCombinationAuthorship());
 		}
 	}
 
@@ -1044,10 +1044,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Integer[] years = new Integer[4];
 		Class<? extends NonViralName> clazz = nonViralName.getClass();
 		fullAuthors(authorString, authors, years, clazz);
-		nonViralName.setCombinationAuthorTeam(authors[0]);
-		nonViralName.setExCombinationAuthorTeam(authors[1]);
-		nonViralName.setBasionymAuthorTeam(authors[2]);
-		nonViralName.setExBasionymAuthorTeam(authors[3]);
+		nonViralName.setCombinationAuthorship(authors[0]);
+		nonViralName.setExCombinationAuthorship(authors[1]);
+		nonViralName.setBasionymAuthorship(authors[2]);
+		nonViralName.setExBasionymAuthorship(authors[3]);
 		if (nonViralName instanceof ZoologicalName){
 			ZoologicalName zooName = CdmBase.deproxy(nonViralName, ZoologicalName.class);
 			zooName.setPublicationYear(years[0]);
@@ -1075,10 +1075,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			// END
 			logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
 		}
-		nameToBeFilled.setCombinationAuthorTeam(authors[0]);
-		nameToBeFilled.setExCombinationAuthorTeam(authors[1]);
-		nameToBeFilled.setBasionymAuthorTeam(authors[2]);
-		nameToBeFilled.setExBasionymAuthorTeam(authors[3]);
+		nameToBeFilled.setCombinationAuthorship(authors[0]);
+		nameToBeFilled.setExCombinationAuthorship(authors[1]);
+		nameToBeFilled.setBasionymAuthorship(authors[2]);
+		nameToBeFilled.setExBasionymAuthorship(authors[3]);
 		if (nameToBeFilled instanceof ZoologicalName){
 			ZoologicalName zooName = (ZoologicalName)nameToBeFilled;
 			zooName.setPublicationYear(years[0]);
@@ -1179,7 +1179,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * like fullTeams but without trim and match check
 	 */
 	protected void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years){
-		int authorTeamStart = 0;
+		int authorShipStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
 
 		if (basionymMatcher.find(0)){
@@ -1187,7 +1187,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			String basString = basionymMatcher.group();
 			basString = basString.replaceFirst(basStart, "");
 			basString = basString.replaceAll(basEnd, "").trim();
-			authorTeamStart = basionymMatcher.end(1) + 1;
+			authorShipStart = basionymMatcher.end(1) + 1;
 
 			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[2];
 			Integer[] basYears = new Integer[2];
@@ -1197,10 +1197,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			authors[3]= basAuthors[1];
 			years[3] = basYears[1];
 		}
-		if (fullAuthorString.length() >= authorTeamStart){
+		if (fullAuthorString.length() >= authorShipStart){
 			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
 			Integer[] combinationYears = new Integer[2];
-			authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
+			authorsAndEx(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
 			authors[0]= combinationAuthors[0] ;
 			years[0] = combinationYears[0];
 			authors[1]= combinationAuthors[1];
@@ -1211,25 +1211,25 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 	/**
 	 * Parses the author and ex-author String
-	 * @param authorTeamString String representing the author and the ex-author team
+	 * @param authorShipStringOrig String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	protected void authorsAndEx (String authorTeamStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
+	protected void authorsAndEx (String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
 		//TODO noch allgemeiner am anfang durch Replace etc.
-		String authorTeamString = authorTeamStringOrig.trim();
-		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " );
+		String authorShipString = authorShipStringOrig.trim();
+		authorShipString = authorShipString.replaceFirst(oWs + "ex" + oWs, " ex. " );
 
 		//int authorEnd = authorTeamString.length();
 		int authorBegin = 0;
 
-		Matcher exAuthorMatcher = exAuthorPattern.matcher(authorTeamString);
+		Matcher exAuthorMatcher = exAuthorPattern.matcher(authorShipString);
 		if (exAuthorMatcher.find(0)){
 			authorBegin = exAuthorMatcher.end(0);
 			int exAuthorEnd = exAuthorMatcher.start(0);
-			String exString = authorTeamString.substring(0, exAuthorEnd).trim();
+			String exString = authorShipString.substring(0, exAuthorEnd).trim();
 			authors [1] = author(exString);
 		}
-		zooOrBotanicAuthor(authorTeamString.substring(authorBegin), authors, years );
+		zooOrBotanicAuthor(authorShipString.substring(authorBegin), authors, years );
 	}
 
 	/**
@@ -1421,10 +1421,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		nameToBeFilled.setNameCache(null, false);
 
 		nameToBeFilled.setAppendedPhrase(null);
-		nameToBeFilled.setBasionymAuthorTeam(null);
-		nameToBeFilled.setCombinationAuthorTeam(null);
-		nameToBeFilled.setExBasionymAuthorTeam(null);
-		nameToBeFilled.setExCombinationAuthorTeam(null);
+		nameToBeFilled.setBasionymAuthorship(null);
+		nameToBeFilled.setCombinationAuthorship(null);
+		nameToBeFilled.setExBasionymAuthorship(null);
+		nameToBeFilled.setExCombinationAuthorship(null);
 		nameToBeFilled.setAuthorshipCache(null, false);
 
 

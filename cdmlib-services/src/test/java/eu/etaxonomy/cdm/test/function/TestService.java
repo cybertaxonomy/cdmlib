@@ -96,7 +96,7 @@ public class TestService {
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
 		team.setTitleCache("AuthorAgent1", true);
-		nvn.setCombinationAuthorTeam(team);
+		nvn.setCombinationAuthorship(team);
 
 		logger.info("Save objects ...");
  		appCtr.getTaxonService().save(parentTaxon);

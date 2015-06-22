@@ -115,70 +115,70 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );
 		assertEquals("infraSpec", nonViralName.getInfraSpecificEpithet());
-		assertEquals(agent, nonViralName.getCombinationAuthorTeam() );
+		assertEquals(agent, nonViralName.getCombinationAuthorship() );
 		assertEquals(article, nonViralName.getNomenclaturalReference() );
 		assertEquals("mikro", nonViralName.getNomenclaturalMicroReference() );
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getCombinationAuthorTeam()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setCombinationAuthorTeam(eu.etaxonomy.cdm.model.agent.Agent)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getCombinationAuthorship()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setCombinationAuthorship(eu.etaxonomy.cdm.model.agent.Agent)}.
 	 */
 	@Test
-	public final void testGetSetCombinationAuthorTeam() {
+	public final void testGetSetCombinationAuthorship() {
 		Team team1 = Team.NewInstance();
-		nonViralName1.setCombinationAuthorTeam(team1);
-		assertEquals(team1, nonViralName1.getCombinationAuthorTeam());
-		nonViralName1.setCombinationAuthorTeam(null);
-		assertEquals(null, nonViralName1.getCombinationAuthorTeam());
-		nonViralName2.setCombinationAuthorTeam(null);
-		assertEquals(null, nonViralName2.getCombinationAuthorTeam());
+		nonViralName1.setCombinationAuthorship(team1);
+		assertEquals(team1, nonViralName1.getCombinationAuthorship());
+		nonViralName1.setCombinationAuthorship(null);
+		assertEquals(null, nonViralName1.getCombinationAuthorship());
+		nonViralName2.setCombinationAuthorship(null);
+		assertEquals(null, nonViralName2.getCombinationAuthorship());
 	}
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorTeam()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorship()}.
 	 */
 	@Test
-	public final void testGetSetExCombinationAuthorTeam() {
+	public final void testGetSetExCombinationAuthorship() {
 		Team team1 = Team.NewInstance();
-		nonViralName1.setExCombinationAuthorTeam(team1);
-		assertEquals(team1, nonViralName1.getExCombinationAuthorTeam());
-		nonViralName1.setExCombinationAuthorTeam(null);
-		assertEquals(null, nonViralName1.getExCombinationAuthorTeam());
-		nonViralName2.setExCombinationAuthorTeam(null);
-		assertEquals(null, nonViralName2.getExCombinationAuthorTeam());
+		nonViralName1.setExCombinationAuthorship(team1);
+		assertEquals(team1, nonViralName1.getExCombinationAuthorship());
+		nonViralName1.setExCombinationAuthorship(null);
+		assertEquals(null, nonViralName1.getExCombinationAuthorship());
+		nonViralName2.setExCombinationAuthorship(null);
+		assertEquals(null, nonViralName2.getExCombinationAuthorship());
 	}
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getCombinationAuthorTeam()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setCombinationAuthorTeam(eu.etaxonomy.cdm.model.agent.Agent)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getCombinationAuthorship()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setCombinationAuthorship(eu.etaxonomy.cdm.model.agent.Agent)}.
 	 */
 	@Test
-	public final void testGetSetBasionymAuthorTeam() {
+	public final void testGetSetBasionymAuthorship() {
 		Team team1 = Team.NewInstance();
-		nonViralName1.setBasionymAuthorTeam(team1);
-		assertEquals(team1, nonViralName1.getBasionymAuthorTeam());
-		nonViralName1.setBasionymAuthorTeam(null);
-		assertEquals(null, nonViralName1.getBasionymAuthorTeam());
-		nonViralName2.setBasionymAuthorTeam(null);
-		assertEquals(null, nonViralName2.getBasionymAuthorTeam());
+		nonViralName1.setBasionymAuthorship(team1);
+		assertEquals(team1, nonViralName1.getBasionymAuthorship());
+		nonViralName1.setBasionymAuthorship(null);
+		assertEquals(null, nonViralName1.getBasionymAuthorship());
+		nonViralName2.setBasionymAuthorship(null);
+		assertEquals(null, nonViralName2.getBasionymAuthorship());
 	}
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorTeam()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorship()}.
 	 */
 	@Test
-	public final void testGetSetExBasionymAuthorTeam() {
+	public final void testGetSetExBasionymAuthorship() {
 		Team team1 = Team.NewInstance();
-		nonViralName1.setExBasionymAuthorTeam(team1);
-		assertEquals(team1, nonViralName1.getExBasionymAuthorTeam());
-		nonViralName1.setExBasionymAuthorTeam(null);
-		assertEquals(null, nonViralName1.getExBasionymAuthorTeam());
-		nonViralName2.setExBasionymAuthorTeam(null);
-		assertEquals(null, nonViralName2.getExBasionymAuthorTeam());
+		nonViralName1.setExBasionymAuthorship(team1);
+		assertEquals(team1, nonViralName1.getExBasionymAuthorship());
+		nonViralName1.setExBasionymAuthorship(null);
+		assertEquals(null, nonViralName1.getExBasionymAuthorship());
+		nonViralName2.setExBasionymAuthorship(null);
+		assertEquals(null, nonViralName2.getExBasionymAuthorship());
 	}
 
 
@@ -257,8 +257,8 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setNomenclaturalReference(ref1);
 		Assert.assertEquals("Abies alba", nonViralName1.getNameCache());
 
-		nonViralName1.setCombinationAuthorTeam(team1);
-		assertEquals(team1, nonViralName1.getCombinationAuthorTeam());
+		nonViralName1.setCombinationAuthorship(team1);
+		assertEquals(team1, nonViralName1.getCombinationAuthorship());
 		assertEquals(strTeam1, nonViralName1.getAuthorshipCache());
 		Assert.assertEquals("Abies alba "+strTeam1, nonViralName1.getTitleCache());
 		Assert.assertEquals("Abies alba "+strTeam1+ ", RefTitle", nonViralName1.getFullTitleCache());
@@ -273,8 +273,8 @@ public class NonViralNameTest extends EntityTestBase {
 
 		Assert.assertEquals("Calendula alba "+strTeam3+ ", RefTitle", nonViralName1.getFullTitleCache());
 
-		nonViralName1.setCombinationAuthorTeam(null);
-		assertEquals(null, nonViralName1.getCombinationAuthorTeam());
+		nonViralName1.setCombinationAuthorship(null);
+		assertEquals(null, nonViralName1.getCombinationAuthorship());
 	}
 
 
@@ -358,7 +358,7 @@ public class NonViralNameTest extends EntityTestBase {
 
 		Team combinationAuthor = Team.NewTitledInstance("CombinationAuthor", "comb. auth.");
 		nonViralName1.setRank(Rank.SUBSPECIES());
-		nonViralName1.setCombinationAuthorTeam(combinationAuthor);
+		nonViralName1.setCombinationAuthorship(combinationAuthor);
 		nonViralName1.setGenusOrUninomial("Aus");
 		nonViralName1.setInfraGenericEpithet("Infaus");
 		nonViralName1.setSpecificEpithet("bus");
@@ -380,7 +380,7 @@ public class NonViralNameTest extends EntityTestBase {
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());
 		Assert.assertEquals("Infraspecific epithet should be equal", "infrabus", clone.getInfraSpecificEpithet());
 		Assert.assertEquals("BinomHybrid should be equal", true, clone.isBinomHybrid());
-		Assert.assertSame("Combination author should be the same", combinationAuthor, clone.getCombinationAuthorTeam());
+		Assert.assertSame("Combination author should be the same", combinationAuthor, clone.getCombinationAuthorship());
 		Assert.assertEquals("NameCache should be equal", nonViralName1.getNameCache(), clone.getNameCache());
 		Assert.assertEquals("AuthorshipCache should be equal", nonViralName1.getAuthorshipCache(), clone.getAuthorshipCache());
 

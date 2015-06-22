@@ -169,7 +169,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	/**
 	 * Returns the "holotype" designation status. A holotype of a
 	 * set of names is the one {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
-	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorTeam() author} of the
+	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorship() author} of the
 	 * "type-bringing" {@link TaxonNameBase taxon name} (or by the author of a later validated
 	 * "invalid" taxon name).
 	 *
