@@ -4,13 +4,13 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.6.2-SNAPSHOT</version>
+    <version>3.6.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-remote</artifactId>
-  <version>3.6.2-SNAPSHOT</version>
+  <version>3.6.2</version>
   <properties>
     <!-- custom property to hold the patch version number shouldn't this
       be set in the parent pom? -->
