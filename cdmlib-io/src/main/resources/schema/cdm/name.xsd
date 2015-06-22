@@ -287,10 +287,10 @@
           <xs:element name="InfraGenericEpithet" type="xs:string" minOccurs="0"/>
           <xs:element name="SpecificEpithet" type="xs:string" minOccurs="0"/>
           <xs:element name="InfraSpecificEpithet" type="xs:string" minOccurs="0"/>
-          <xs:element name="CombinationAuthorTeam" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="ExCombinationAuthorTeam" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="BasionymAuthorTeam" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="ExBasionymAuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="CombinationAuthorship" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="ExCombinationAuthorship" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="BasionymAuthorship" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="ExBasionymAuthorship" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AuthorshipCache" type="xs:string" minOccurs="0"/>
           <xs:element name="ProtectedAuthorshipCache" type="xs:boolean"/>
           <xs:element name="ProtectedNameCache" type="xs:boolean"/>

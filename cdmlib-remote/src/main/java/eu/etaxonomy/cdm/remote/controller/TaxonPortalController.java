@@ -166,7 +166,7 @@ public class TaxonPortalController extends TaxonController
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-            "synonymRelations.synonym.name.combinationAuthorTeam.$",
+            "synonymRelations.synonym.name.combinationAuthorship.$",
 
             "name.typeDesignations",
 
@@ -186,7 +186,7 @@ public class TaxonPortalController extends TaxonController
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
-            "synonymRelations.synonym.name.combinationAuthorTeam.$",
+            "synonymRelations.synonym.name.combinationAuthorship.$",
 
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",

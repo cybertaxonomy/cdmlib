@@ -41,9 +41,9 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 				//compare author teams
 				if(fromName.getCombinationAuthorship() == null || !fromName.getCombinationAuthorship().equals(toName.getBasionymAuthorship())) {
 					valid = false;
-					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("fromName").addNode("basionymAuthorTeam").addConstraintViolation();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("fromName").addNode("basionymAuthorship").addConstraintViolation();
 					//remove duplicate violation as it does not give more information
-//					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("toName").addNode("basionymAuthorTeam").addConstraintViolation();
+//					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("toName").addNode("basionymAuthorship").addConstraintViolation();
 				}
 
 				//compare last epithet

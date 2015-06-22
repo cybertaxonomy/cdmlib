@@ -56,10 +56,10 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
                 // the transient field fromName is added to the serialization
                 "relationsFromThisName",
                 "relationsToThisName",
-                "combinationAuthorTeam",
-                "basionymAuthorTeam",
-                "exCombinationAuthorTeam",
-                "exBasionymAuthorTeam"
+                "combinationAuthorship",
+                "basionymAuthorship",
+                "exCombinationAuthorship",
+                "exBasionymAuthorship"
         });
     }
 

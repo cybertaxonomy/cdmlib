@@ -96,7 +96,7 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 	@Test
 	public void testInitializeManyToOneSubclassProperty() {
 		List<String> propertyPaths = new ArrayList<String>();
-		propertyPaths.add("combinationAuthorTeam");
+		propertyPaths.add("combinationAuthorship");
 		propertyPaths.add("hybridRelationships");
 
 		NonViralName sphingidae = (NonViralName)taxonNameDao.load(sphingidaeUuid, propertyPaths);
@@ -160,6 +160,6 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

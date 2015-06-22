@@ -140,7 +140,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * 			<i>this</i> zoological taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
 	 * 			<i>this</i> zoological taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> zoological taxon name
+	 * @param	combinationAuthorship  the author or the team who published <i>this</i> zoological taxon name
 	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> zoological taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
@@ -151,8 +151,8 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	protected ZoologicalName (Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	protected ZoologicalName (Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -213,7 +213,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * 			<i>this</i> zoological taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
 	 * 			<i>this</i> zoological taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> zoological taxon name
+	 * @param	combinationAuthorship  the author or the team who published <i>this</i> zoological taxon name
 	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> zoological taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
@@ -222,8 +222,8 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * @see		#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
 	 */
-	public static ZoologicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	public static ZoologicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 	}
 
 

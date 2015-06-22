@@ -114,7 +114,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * 			<i>this</i> botanical taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
 	 * 			<i>this</i> botanical taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> botanical taxon name
+	 * @param	combinationAuthorship  the author or the team who published <i>this</i> botanical taxon name
 	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
@@ -125,8 +125,8 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	protected BotanicalName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	protected BotanicalName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
 
@@ -186,7 +186,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * 			<i>this</i> botanical taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
 	 * 			<i>this</i> botanical taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> botanical taxon name
+	 * @param	combinationAuthorship  the author or the team who published <i>this</i> botanical taxon name
 	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
@@ -195,8 +195,8 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * @see		ZoologicalName#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
-	public static  BotanicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
-		return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	public static  BotanicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 	}
 
 	/**

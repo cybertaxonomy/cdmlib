@@ -82,10 +82,10 @@ public class MatchStrategyConfigurator {
 		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(NonViralName.class);
 
 		strategy.setMatchMode("nomenclaturalReference", MatchMode.IGNORE);
-		strategy.setMatchMode("combinationAuthorTeam", MatchMode.IGNORE);
-		strategy.setMatchMode("exCombinationAuthorTeam", MatchMode.IGNORE);
-		strategy.setMatchMode("basionymAuthorTeam", MatchMode.IGNORE);
-		strategy.setMatchMode("exBasionymAuthorTeam", MatchMode.IGNORE);
+		strategy.setMatchMode("combinationAuthorship", MatchMode.IGNORE);
+		strategy.setMatchMode("exCombinationAuthorship", MatchMode.IGNORE);
+		strategy.setMatchMode("basionymAuthorship", MatchMode.IGNORE);
+		strategy.setMatchMode("exBasionymAuthorship", MatchMode.IGNORE);
 
 		return strategy;
 	}
