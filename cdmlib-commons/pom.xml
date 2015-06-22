@@ -6,19 +6,19 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.6.4</version>
+    <version>3.6.5-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-commons</artifactId>
-  <version>3.6.4</version>
+  <version>3.6.5-SNAPSHOT</version>
   <name>CDM Commons</name>
   <description>EDIT CDM library - Commons</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-commons</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-commons</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-commons</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-commons/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-commons/</url>
   </scm>
   
   <dependencies>

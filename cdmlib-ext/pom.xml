@@ -6,19 +6,19 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-	    <version>3.6.4</version>
+	    <version>3.6.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-ext</artifactId>
-  <version>3.6.4</version>
+  <version>3.6.5-SNAPSHOT</version>
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-extern</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-extern</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-parent-3.6.4/cdmlib-extern</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-extern/</url>
   </scm>
 
   <dependencies>
