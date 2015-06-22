@@ -195,17 +195,35 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         occurrenceService.saveOrUpdate(specimenB);
         occurrenceService.saveOrUpdate(dnaSample);
 
+        Person derivationActor = Person.NewTitledInstance("Derivation Actor");
+        String derivationDescription = "Derivation Description";
+        Institution derivationInstitution = Institution.NewInstance();
+        TimePeriod derivationTimePeriod = TimePeriod.NewInstance(2015);
+
         DerivationEvent originalDerivedFromEvent = DerivationEvent.NewSimpleInstance(specimenA, dnaSample, DerivationEventType.DNA_EXTRACTION());
+
+        originalDerivedFromEvent.setActor(derivationActor);
+        originalDerivedFromEvent.setDescription(derivationDescription);
+        originalDerivedFromEvent.setInstitution(derivationInstitution);
+        originalDerivedFromEvent.setTimeperiod(derivationTimePeriod);
 
         occurrenceService.moveDerivate(specimenA, specimenB, dnaSample);
         assertTrue("DerivationEvent not removed from source!", specimenA.getDerivationEvents().isEmpty());
         assertEquals("DerivationEvent not moved to source!", 1, specimenB.getDerivationEvents().size());
+
         DerivationEvent derivationEvent = specimenB.getDerivationEvents().iterator().next();
         assertEquals("Moved DerivationEvent not of same type!", DerivationEventType.DNA_EXTRACTION(), derivationEvent.getType());
+        assertEquals(derivationActor, derivationEvent.getActor());
+        assertEquals(derivationDescription, derivationEvent.getDescription());
+        assertEquals(derivationInstitution, derivationEvent.getInstitution());
+        assertEquals(derivationTimePeriod, derivationEvent.getTimeperiod());
+        assertEquals(DerivationEventType.DNA_EXTRACTION(), derivationEvent.getType());
+
         assertEquals("Wrong number of derivation originals!", 1, derivationEvent.getOriginals().size());
         SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
         assertEquals("Origin of moved object not correct", specimenB, newOriginal);
         assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
+
         DerivedUnit movedDerivate = derivationEvent.getDerivatives().iterator().next();
         assertEquals("Moved derivate has wrong type", SpecimenOrObservationType.DnaSample, movedDerivate.getRecordBasis());
         assertNotEquals("DerivationEvent 'derivedFrom' has not been changed after moving", originalDerivedFromEvent, movedDerivate.getDerivedFrom());

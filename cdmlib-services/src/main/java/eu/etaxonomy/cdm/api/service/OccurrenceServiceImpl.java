@@ -899,11 +899,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             from.removeDerivationEvent(eventToRemove);
+            if(eventToRemove!=null){
+                // add new derivation event to target and copy the event parameters of the old one
+                DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, null);
+                derivedFromNewOriginalEvent.setActor(eventToRemove.getActor());
+                derivedFromNewOriginalEvent.setDescription(eventToRemove.getDescription());
+                derivedFromNewOriginalEvent.setInstitution(eventToRemove.getInstitution());
+                derivedFromNewOriginalEvent.setTimeperiod(eventToRemove.getTimeperiod());
+                derivedFromNewOriginalEvent.setType(eventToRemove.getType());
+                to.addDerivationEvent(derivedFromNewOriginalEvent);
+                derivate.setDerivedFrom(derivedFromNewOriginalEvent);
+            }
+
             saveOrUpdate(from);
-            // add new derivation event to target
-            DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, eventToRemove == null ? null : eventToRemove.getType());
-            to.addDerivationEvent(derivedFromNewOriginalEvent);
-            derivate.setDerivedFrom(derivedFromNewOriginalEvent);
             saveOrUpdate(to);
             return true;
         }
