@@ -3,19 +3,19 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-		<version>3.6.3-SNAPSHOT</version>
+		<version>3.6.3</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-persistence</artifactId>
-  <version>3.6.3-SNAPSHOT</version>
+  <version>3.6.3</version>
   <name>CDM Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
-    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.3/cdmlib-persistence</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.6.3/cdmlib-persistence</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/tags/cdmlib/cdmlib-parent-3.6.3/cdmlib-persistence</url>
   </scm>
   <build>
     <plugins>
