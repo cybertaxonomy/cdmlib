@@ -39,22 +39,24 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private ICdmApplicationConfiguration cdmRepository;
 
-	 private Classification classification = null;
-	 private Classification defaultClassification = null;
-	 private Reference<?> ref = null;
+	private String prefix;
 
-	 private Abcd206DataHolder dataHolder;
-	 private DerivedUnit derivedUnitBase;
-	 private FieldUnit fieldUnit;
+	private Classification classification = null;
+	private Classification defaultClassification = null;
+	private Reference<?> ref = null;
 
-	 private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
-	 private boolean associationSourcesSet=false;
-	 private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<OriginalSourceBase<?>>();
-	 private boolean descriptionSourcesSet=false;
-	 private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
-	 private boolean derivedUnitSourcesSet=false;
-	 private boolean descriptionGroupSet = false;
-	 private TaxonDescription descriptionGroup = null;
+	private Abcd206DataHolder dataHolder;
+	private DerivedUnit derivedUnitBase;
+	private FieldUnit fieldUnit;
+
+	private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
+	private boolean associationSourcesSet=false;
+	private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<OriginalSourceBase<?>>();
+	private boolean descriptionSourcesSet=false;
+	private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
+	private boolean derivedUnitSourcesSet=false;
+	private boolean descriptionGroupSet = false;
+	private TaxonDescription descriptionGroup = null;
 
 //****************** CONSTRUCTOR ***************************************************/
 
@@ -190,6 +192,14 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
     public void setDescriptionGroup(TaxonDescription descriptionGroup) {
         this.descriptionGroup = descriptionGroup;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public void reset() {
