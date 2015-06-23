@@ -64,7 +64,7 @@ public class AbcdDnaParser {
             dnaCollection = derivedUnitBase.getCollection().clone();
             dnaUnitID = AbcdImportUtility.getUnitID(derivedUnitBase, state.getConfig());
             UnitAssociationParser associationParser = new UnitAssociationParser(prefix, report, cdmAppController);
-            associationParser.parse(item, derivedUnitBase, state);
+            associationParser.parse(item, state);
         }
         DnaSample dnaSample = DnaSample.NewInstance();
         DerivationEvent.NewSimpleInstance(derivedUnitBase, dnaSample, DerivationEventType.DNA_EXTRACTION());
