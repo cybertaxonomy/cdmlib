@@ -122,6 +122,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
         report = new Abcd206ImportReport();
+        ICdmApplicationConfiguration cdmAppController = state.getCdmRepository()!=null?state.getCdmRepository():this;
 
         state.setTx(startTransaction());
         logger.info("INVOKE Specimen Import from ABCD2.06 XML ");
@@ -158,7 +159,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (! StringUtils.isBlank(reference.getTitleCache())) {
                         if (reference.getTitleCache().equalsIgnoreCase(name)) {
                             state.setRef(reference);
-//                            System.out.println("FIND SAME REFERENCE");
                         }
                     }
                 }
@@ -203,7 +203,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (classif.getTitleCache() != null && classif.getCitation() != null
                             && classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(state.getRef())) {
                         state.setClassification(classif);
-                        //                        System.out.println("FIND SAME CLASSIF");
                     }
                 }
                 if (state.getClassification() == null){
@@ -211,9 +210,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     //we do not need a default classification when creating an empty new one
                     state.setDefaultClassification(state.getClassification());
                 }
-                //                if (state.getConfig().getClassificationUuid() != null) {
-                //                    classification.setUuid(state.getConfig().getClassificationUuid());
-                //                }
                 save(state.getClassification(), state);
             }
         }
@@ -245,6 +241,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 Element item = (Element) unitsList.item(i);
                 this.setUnitPropertiesXML( item, abcdFieldGetter, state);
                 updateProgress(state, "Importing data for unit "+state.getDataHolder().unitID+" ("+i+"/"+unitsList.getLength()+")");
+
                 //check if unit is DNA and associated to a specimen
                 SpecimenOrObservationBase<?> existingAssociatedSpecimen = null;
                 if(state.getDataHolder().associatedUnitIds.size()==1){
@@ -264,23 +261,27 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         e.printStackTrace();
                     }
                 }
+                // import DNA unit
+                if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
+
+                    AbcdDnaParser dnaParser = new AbcdDnaParser(prefix, report, cdmAppController);
+                    DnaSample dnaSample = dnaParser.parse(item, state.getDerivedUnitBase(), state, existingAssociatedSpecimen==null);
+                    save(dnaSample, state);
+                    save(state.getDerivedUnitBase(), state);
+                    //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
+                    state.setDerivedUnitBase(dnaSample);
+                    report.addDerivate(AbcdImportUtility.getUnitID(state.getDerivedUnitBase(), state.getConfig()), state.getDerivedUnitBase(), state.getDataHolder().unitID, dnaSample);
+                }
                 //import default unit
                 if(existingAssociatedSpecimen==null){
                     this.handleSingleUnit(state);
                 }
-                // import DNA unit
-                if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
-
-                    AbcdDnaParser dnaParser = new AbcdDnaParser(prefix, report, state.getCdmRepository()!=null?state.getCdmRepository():this);
-                    DnaSample dnaSample = dnaParser.parse(item, state.getDerivedUnitBase(), state, existingAssociatedSpecimen==null);
-                    save(dnaSample, state);
-                    save(state.getDerivedUnitBase(), state);
-                    report.addDerivate(AbcdImportUtility.getUnitID(state.getDerivedUnitBase(), state.getConfig()), state.getDerivedUnitBase(), state.getDataHolder().unitID, dnaSample);
+                //import associated units
+                NodeList unitAssociationsList = item.getElementsByTagName(prefix+"UnitAssociations");
+                if(unitAssociationsList.getLength()==1 && unitAssociationsList.item(0) instanceof Element){
+                    UnitAssociationParser unitAssociationParser = new UnitAssociationParser(prefix, report, cdmAppController);
+                    unitAssociationParser.parse((Element)unitAssociationsList.item(0), state);
                 }
-
-                // compare the ABCD elements added in to the CDM and the
-                // unhandled ABCD elements
-                //compareABCDtoCDM(sourceName, state.getDataHolder().knownABCDelements, abcdFieldGetter);
 
                 state.getDataHolder().reset();
             }

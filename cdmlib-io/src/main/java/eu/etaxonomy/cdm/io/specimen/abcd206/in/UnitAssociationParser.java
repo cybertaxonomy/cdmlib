@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -41,11 +40,19 @@ public class UnitAssociationParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public void parse(Element item, DerivedUnit derivedUnit, Abcd206ImportState state){
+    public void parse(Element item, Abcd206ImportState state){
         NodeList associationsList = item.getElementsByTagName(prefix+"Associations");
         if(associationsList.getLength()==1 && associationsList.item(0) instanceof Element){
             Element associations = (Element)associationsList.item(0);
             NodeList unitAssociationList = associations.getElementsByTagName(prefix+"UnitAssociation");
+
+            for(int i=0;i<unitAssociationList.getLength();i++){
+//                BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
+            }
+
+
+
+
             //FIXME: how to handle multiple unit assocations?
             // maybe check AssociationType but this needs to be stable
             // for only the first unitAssociation will be used
@@ -75,9 +82,6 @@ public class UnitAssociationParser {
                 String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
                 NodeList associationTypeList = unitAssociation.getElementsByTagName(prefix+"AssociationType");
 
-                collection.setInstitute(institution);
-                derivedUnit.setCollection(collection);
-                AbcdImportUtility.setUnitID(derivedUnit, unitId, state.getConfig());
             }
         }
     }
