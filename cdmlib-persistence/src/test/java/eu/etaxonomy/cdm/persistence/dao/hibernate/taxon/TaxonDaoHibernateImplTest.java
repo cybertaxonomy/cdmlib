@@ -32,7 +32,6 @@ import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -130,9 +129,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
         rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-
-
         mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
+
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
         previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));
@@ -172,9 +170,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetRootTaxa() {
-        Reference sec1 = referenceDao.findById(1);
+        Reference<?> sec1 = referenceDao.findById(1);
         assert sec1 != null : "sec1 must exist";
-        Reference sec2 = referenceDao.findById(2);
+        Reference<?> sec2 = referenceDao.findById(2);
         assert sec2 != null : "sec2 must exist";
 
         List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
@@ -274,7 +272,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    //@Ignore
     @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameWithMisappliedNames(){
 
@@ -915,7 +912,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     @ExpectedDataSet
-    @Ignore
     public void testAddChild() throws Exception {
         Taxon parent = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert parent != null : "taxon cannot be null";
@@ -1063,26 +1059,16 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification));
     }
 
-    @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
-    @Ignore
-    public void testGetAuditEventsByType() {
-
-        List<String> propertyPaths = new ArrayList<String>();
-        propertyPaths.add("name");
-        propertyPaths.add("createdBy");
-        propertyPaths.add("updatedBy");
-        int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
-        List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
-        assertNotNull("getAuditEvents should return a list",auditEvents);
-        assertFalse("the list should not be empty",auditEvents.isEmpty());
-        assertEquals("There should be thirty eight AuditEventRecords in the list",38, auditEvents.size());
-    }
 
     @Test
-    @Ignore
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    //NOTE: There is a problem with loading AuditEvents if this test runs
+    //stand alone or as first (one of the first) in the test suite. For some reason
+    //the AuditEvent records from the @DataSet are not inserted into the database then,
+    //while those inserted by the terms dataset are inserted as well as a completely new one.
+    //This problem for some reason does not happen if not running at first place
     public void testGetAuditEventsByTypeWithRestrictions() {
+        commitAndStartNewTransaction(new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
 
         List<String> propertyPaths = new ArrayList<String>();
         propertyPaths.add("name");
@@ -1092,43 +1078,58 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
         criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
 
+        int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
+
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list",auditEvents);
         assertFalse("the list should not be empty",auditEvents.isEmpty());
         assertEquals("There should be one AuditEventRecord in the list",1, auditEvents.size());
     }
+
+
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+//    @DataSets({  //for testing only
+//        @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml"),
+//        @DataSet("TaxonDaoHibernateImplTest.testFindDeletedAuditEvents.xml")
+//    })
+    //NOTE: There is a problem with loading AuditEvents if this test runs
+    //stand alone or as first (one of the first) in the test suite. For some reason
+    //the AuditEvent records from the @DataSet are not inserted into the database then,
+    //while those inserted by the terms dataset are inserted as well as a completely new one.
+    //This problem for some reason does not happen if not running at first place
+    public void testGetAuditEventsByTypeWithNoRestrictions() {
+        printDataSet(System.out, new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
+        commitAndStartNewTransaction(new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
+
+        List<String> propertyPaths = new ArrayList<String>();
+        propertyPaths.add("name");
+        propertyPaths.add("createdBy");
+        propertyPaths.add("updatedBy");
+        int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
+        List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
+        assertNotNull("getAuditEvents should return a list", auditEvents);
+        assertFalse("the list should not be empty", auditEvents.isEmpty());
+        assertEquals("There should be thirty eight AuditEventRecords in the list", 38, auditEvents.size());
+    }
+
+
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetCommonName(){
-
-
-        List<Taxon> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
+       List<Taxon> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
                 MatchMode.BEGINNING, null, null, null, null);
 
         assertNotNull("getTaxaByCommonName should return a list", commonNameResults);
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
         assertEquals("There should be one Taxon with common name", 1,commonNameResults.size());
         assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
-
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
-
-//    @Test
-//    public void testDeploy(){
-//    	TaxonBase taxonBase = taxonDao.findByUuid(UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a"));
-//
-//    	Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
-//    }
-
-
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
