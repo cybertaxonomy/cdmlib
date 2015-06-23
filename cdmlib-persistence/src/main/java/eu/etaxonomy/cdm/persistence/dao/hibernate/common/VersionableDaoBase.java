@@ -208,7 +208,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 
-	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
+	@Override
+    public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -241,7 +242,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         /**
          * At the moment we need to transform the data manually
          */
-        List<Object[]> objs = (List<Object[]>)query.getResultList();
+        List<Object[]> objs = query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
 
         for(Object[] obj : objs) {
@@ -254,7 +255,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		return records;
 	}
 
-	public int countAuditEvents(T t, AuditEventSort sort) {
+	@Override
+    public int countAuditEvents(T t, AuditEventSort sort) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -277,7 +279,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		return ((Long)query.getSingleResult()).intValue();
 	}
 
-	public AuditEventRecord<T> getNextAuditEvent(T t) {
+	@Override
+    public AuditEventRecord<T> getNextAuditEvent(T t) {
 		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
@@ -286,7 +289,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 
-	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
+	@Override
+    public AuditEventRecord<T> getPreviousAuditEvent(T t) {
 		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
@@ -295,7 +299,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 
-	public int countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
+	@Override
+    public int countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
 		AuditQuery query = null;
 
 		if(clazz == null) {
@@ -316,7 +321,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 
 		query.addProjection(AuditEntity.revisionNumber().count());
 
-		return ((Long)query.getSingleResult()).intValue();
+		int result = ((Long)query.getSingleResult()).intValue();
+		return result;
 	}
 
 	protected void addCriteria(AuditQuery query, List<AuditCriterion> criteria) {
@@ -327,7 +333,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 
-	public List<AuditEventRecord<T>> getAuditEvents(Class<? extends T> clazz,AuditEvent from, AuditEvent to, List<AuditCriterion> criteria,	Integer pageSize, Integer pageNumber, AuditEventSort sort,	List<String> propertyPaths) {
+	@Override
+    public List<AuditEventRecord<T>> getAuditEvents(Class<? extends T> clazz,AuditEvent from, AuditEvent to, List<AuditCriterion> criteria,	Integer pageSize, Integer pageNumber, AuditEventSort sort,	List<String> propertyPaths) {
         AuditQuery query = null;
 
 		if(clazz == null) {
@@ -364,7 +371,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		/**
          * At the moment we need to transform the data manually
          */
-        List<Object[]> objs = (List<Object[]>)query.getResultList();
+        List<Object[]> objs = query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
 
         for(Object[] obj : objs) {
@@ -389,7 +396,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		return super.count(example, includeProperties);
 	}
 
-	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+	@Override
+    public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		this.checkNotInPriorView("list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {");
 		return super.list(example, includeProperties, limit, start, orderHints, propertyPaths);
 	}
