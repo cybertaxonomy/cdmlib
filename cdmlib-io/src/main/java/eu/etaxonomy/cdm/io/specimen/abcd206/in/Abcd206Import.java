@@ -98,7 +98,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private final boolean DEBUG = true;
 
     private static final String COLON = ":";
-    private static String prefix = "";
 
     private Abcd206ImportReport report;
 
@@ -209,8 +208,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
 
-        NodeList unitsList = AbcdParseUtility.getUnitsNodeList(state);
-        prefix = AbcdParseUtility.getPrefix(state);
+        NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
 
         if (unitsList != null) {
             String message = "nb units to insert: " + unitsList.getLength();
@@ -221,7 +219,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             state.setDataHolder(new Abcd206DataHolder());
             state.getDataHolder().reset();
 
-            Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), prefix);
+            Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix());
 
             prepareCollectors(state, unitsList, abcdFieldGetter);
 
@@ -259,7 +257,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 // import DNA unit
                 if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
-                    AbcdDnaParser dnaParser = new AbcdDnaParser(prefix, report, cdmAppController);
+                    AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), report, cdmAppController);
                     //parent field unit
                     FieldUnit fieldUnit = FieldUnit.NewInstance();
                     state.setFieldUnit(fieldUnit);
@@ -274,9 +272,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 this.handleSingleUnit(state);
 
                 //import associated units
-                NodeList unitAssociationsList = item.getElementsByTagName(prefix+"UnitAssociations");
+                NodeList unitAssociationsList = item.getElementsByTagName(state.getPrefix()+"UnitAssociations");
                 if(unitAssociationsList.getLength()==1 && unitAssociationsList.item(0) instanceof Element){
-                    UnitAssociationParser unitAssociationParser = new UnitAssociationParser(prefix, report, cdmAppController);
+                    UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
                     unitAssociationParser.parse((Element)unitAssociationsList.item(0), state);
                 }
 
@@ -771,7 +769,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         group = root.getChildNodes();
         for (int i = 0; i < group.getLength(); i++) {
-            if (group.item(i).getNodeName().equals(prefix + "Identifications")) {
+            if (group.item(i).getNodeName().equals(state.getPrefix() + "Identifications")) {
                 group = group.item(i).getChildNodes();
                 break;
             }
@@ -796,7 +794,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             group = root.getChildNodes();
             for (int i = 0; i < group.getLength(); i++) {
-                if (group.item(i).getNodeName().equals(prefix + "Identifications")) {
+                if (group.item(i).getNodeName().equals(state.getPrefix() + "Identifications")) {
                     group = group.item(i).getChildNodes();
                     break;
                 }

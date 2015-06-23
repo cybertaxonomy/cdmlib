@@ -107,7 +107,7 @@ public class AbcdParseUtility {
      * @param fileName: the file's location
      * @return the list of root nodes ("Unit")
      */
-    public static NodeList getUnitsNodeList(Abcd206ImportState state) {
+    public static NodeList parseUnitsNodeList(Abcd206ImportState state) {
         InputStream inputStream = state.getConfig().getSource();
         NodeList unitList = null;
         try {
@@ -117,48 +117,23 @@ public class AbcdParseUtility {
             Document document = builder.parse(inputStream);
             Element root = document.getDocumentElement();
             unitList = root.getElementsByTagName("Unit");
-            if (unitList.getLength() == 0) {
-                unitList = root.getElementsByTagName("abcd:Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("");
+                return unitList;
             }
-            if (unitList.getLength() == 0) {
-                unitList = root.getElementsByTagName("abcd21:Unit");
+            unitList = root.getElementsByTagName("abcd:Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("abcd:");
+                return unitList;
+            }
+            unitList = root.getElementsByTagName("abcd21:Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("abcd21:");
             }
         } catch (Exception e) {
             logger.warn(e);
         }
         return unitList;
-    }
-
-    /**
-     * Return the prefix an ABCD XML file
-     * @param fileName: the file's location
-     * @return the prefix
-     */
-    public static String getPrefix(Abcd206ImportState state) {
-        InputStream inputStream = state.getConfig().getSource();
-        NodeList unitList = null;
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            Document document = builder.parse(inputStream);
-            Element root = document.getDocumentElement();
-            unitList = root.getElementsByTagName("Unit");
-            if (unitList.getLength()>0) {
-                return null;
-            }
-            unitList = root.getElementsByTagName("abcd:Unit");
-            if (unitList.getLength()>0) {
-                return "abcd:";
-            }
-            unitList = root.getElementsByTagName("abcd21:Unit");
-            if (unitList.getLength() == 0) {
-                return "abcd21:";
-            }
-        } catch (Exception e) {
-            logger.warn(e);
-        }
-        return null;
     }
 
 }
