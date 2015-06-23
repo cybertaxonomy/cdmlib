@@ -34,17 +34,15 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
-
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -62,7 +60,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
 
-    private Comparator<? super TaxonNode> taxonNodeComparator = new TaxonNodeByNameComparator();
+    private final Comparator<? super TaxonNode> taxonNodeComparator = new TaxonNodeByNameComparator();
 
     @Autowired
     private ITaxonService taxonService;
@@ -70,7 +68,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IClassificationService classService;
 
-   
+
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -88,13 +86,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         Comparator<TaxonNode> comparator = null;
         if (sortMode.equals(NodeSortMode.NaturalOrder)){
             comparator = new TaxonNaturalComparator();
-            
+
         } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
         	comparator = new TaxonNodeByNameComparator();
-           
+
         } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
         	comparator = new TaxonNodeComparator();
-        	
+
         }
         if (comparator != null){
         	Collections.sort(childNodes, comparator);
@@ -377,7 +375,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 				            	taxonService.saveOrUpdate(taxon);
 				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
-				            	
+
                                 if (!resultTaxon.isOk()){
                                     result.addExceptions(resultTaxon.getExceptions());
                                     result.setStatus(resultTaxon.getStatus());
@@ -444,8 +442,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		config = new TaxonDeletionConfigurator();
     	}
     	DeleteResult result = new DeleteResult();
+
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
     		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
+    		result.addUpdatedObject(parent);
     		if (result.isOk()){
     			return result;
     		}
@@ -454,7 +454,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	result.setCdmEntity(node);
     	boolean success = taxon.removeTaxonNode(node);
     	taxonService.saveOrUpdate(taxon);
-		result.addUpdatedObject(taxon);
+    	result.addUpdatedObject(parent);
 
     	if (success){
 			result.setStatus(Status.OK);
