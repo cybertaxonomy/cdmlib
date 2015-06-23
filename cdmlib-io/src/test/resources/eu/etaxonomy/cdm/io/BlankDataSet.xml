@@ -3,4 +3,11 @@
   <SpecimenOrObservationBase/>
   <TaxonNameBase/>
   <OriginalSourceBase/>
+  <Primer/>
+  <Sequence/>
+  <SingleRead/>
+  <MATERIALORMETHODEVENT/>
+  <AMPLIFICATION/>
+  <AMPLIFICATIONRESULT/>
+  <SINGLEREADALIGNMENT/>
 </dataset>
