@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -214,8 +209,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
 
-        InputStream source = state.getConfig().getSource();
-        NodeList unitsList = getUnitsNodeList(source);
+        NodeList unitsList = AbcdParseUtility.getUnitsNodeList(state);
+        prefix = AbcdParseUtility.getPrefix(state);
 
         if (unitsList != null) {
             String message = "nb units to insert: " + unitsList.getLength();
@@ -297,34 +292,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         commitTransaction(state.getTx());
         report.printReport(state.getConfig().getReportUri());
         return;
-    }
-
-    /**
-     * Return the list of root nodes for an ABCD 2.06 XML file
-     * @param fileName: the file's location
-     * @return the list of root nodes ("Unit")
-     */
-    protected NodeList getUnitsNodeList(InputStream inputStream) {
-        NodeList unitList = null;
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            Document document = builder.parse(inputStream);
-            Element root = document.getDocumentElement();
-            unitList = root.getElementsByTagName("Unit");
-            if (unitList.getLength() == 0) {
-                unitList = root.getElementsByTagName("abcd:Unit");
-                prefix = "abcd:";
-            }
-            if (unitList.getLength() == 0) {
-                unitList = root.getElementsByTagName("abcd21:Unit");
-                prefix = "abcd21:";
-            }
-        } catch (Exception e) {
-            logger.warn(e);
-        }
-        return unitList;
     }
 
     /**

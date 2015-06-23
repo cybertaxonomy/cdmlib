@@ -9,11 +9,17 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -94,6 +100,65 @@ public class AbcdParseUtility {
         DateTime dateTime = parseFirstDateTime(nodeList);
         date = dateTime.toDate();
         return date;
+    }
+
+    /**
+     * Return the list of root nodes for an ABCD XML file
+     * @param fileName: the file's location
+     * @return the list of root nodes ("Unit")
+     */
+    public static NodeList getUnitsNodeList(Abcd206ImportState state) {
+        InputStream inputStream = state.getConfig().getSource();
+        NodeList unitList = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document document = builder.parse(inputStream);
+            Element root = document.getDocumentElement();
+            unitList = root.getElementsByTagName("Unit");
+            if (unitList.getLength() == 0) {
+                unitList = root.getElementsByTagName("abcd:Unit");
+            }
+            if (unitList.getLength() == 0) {
+                unitList = root.getElementsByTagName("abcd21:Unit");
+            }
+        } catch (Exception e) {
+            logger.warn(e);
+        }
+        return unitList;
+    }
+
+    /**
+     * Return the prefix an ABCD XML file
+     * @param fileName: the file's location
+     * @return the prefix
+     */
+    public static String getPrefix(Abcd206ImportState state) {
+        InputStream inputStream = state.getConfig().getSource();
+        NodeList unitList = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document document = builder.parse(inputStream);
+            Element root = document.getDocumentElement();
+            unitList = root.getElementsByTagName("Unit");
+            if (unitList.getLength()>0) {
+                return null;
+            }
+            unitList = root.getElementsByTagName("abcd:Unit");
+            if (unitList.getLength()>0) {
+                return "abcd:";
+            }
+            unitList = root.getElementsByTagName("abcd21:Unit");
+            if (unitList.getLength() == 0) {
+                return "abcd21:";
+            }
+        } catch (Exception e) {
+            logger.warn(e);
+        }
+        return null;
     }
 
 }
