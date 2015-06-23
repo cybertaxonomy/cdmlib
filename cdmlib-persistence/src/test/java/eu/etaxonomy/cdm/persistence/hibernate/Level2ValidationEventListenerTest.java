@@ -9,8 +9,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -56,7 +54,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	 * Test method for
 	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}
 	 * .
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -133,7 +131,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 
 	@Override
 	public void createTestDataSet() throws FileNotFoundException {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 	}
 
 }

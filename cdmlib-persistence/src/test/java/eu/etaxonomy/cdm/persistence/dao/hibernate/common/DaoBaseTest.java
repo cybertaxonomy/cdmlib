@@ -39,12 +39,6 @@ public class DaoBaseTest  extends CdmIntegrationTest {
         assertNotNull(daoBaseTester.getSession());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

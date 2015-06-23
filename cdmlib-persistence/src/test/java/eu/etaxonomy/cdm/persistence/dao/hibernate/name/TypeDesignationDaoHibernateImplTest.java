@@ -10,8 +10,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -163,17 +163,17 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		//   2. new TypeDesignation with uuid ceca086e-e8d3-444e-abfb-c47f76835130
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("ceca086e-e8d3-444e-abfb-c47f76835130"));
-		
+
 //		//REMOVE
 //		desig1.setOriginalNameString("orig");
-//		
+//
 		name1.addTypeDesignation(desig1, true);
 
 		nameDao.saveOrUpdate(name1);
 		commitAndStartNewTransaction(new String[]{"TypeDesignationBase", "TypeDesignationBase_AUD"});
 //		System.out.println(desig1.getId());
 //		System.out.println(desig1.getUuid());
-		
+
 //		printDataSet(System.err, new String[]{"TaxonNameBase","TaxonNameBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD",
 //				"TypeDesignationBase","TypeDesignationBase_AUD",
@@ -333,7 +333,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

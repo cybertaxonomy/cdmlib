@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.tmp;
 
@@ -31,24 +31,24 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
     @SpringBeanByType
     private ITaxonNodeDao taxonNodeDao;
-	
+
     @SpringBeanByType
     private IClassificationDao classificationDao;
-    
+
     @SpringBeanByType
     private TaxonNodeFilterDaoHibernateImpl filterDao;
-    
-    
 
 
-	
+
+
+
 	private Classification classification1;
 	private TaxonNode node1;
 	private TaxonNode node2;
 	private TaxonNode node3;
 	private TaxonNode node4;
 	private TaxonNode node5;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -68,7 +68,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		node4 = node3.addChildTaxon(taxon4, citation, microCitation);
 		node5 = node3.addChildTaxon(taxon5, citation, microCitation);
 		classificationDao.save(classification1);
-		
+
 	}
 
 	/**
@@ -83,13 +83,13 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		Assert.assertTrue(listUuid.contains(node4.getUuid()));
 		Assert.assertFalse(listUuid.contains(node2.getUuid()));
 		Assert.assertFalse(listUuid.contains(classification.getRootNode().getUuid()));
-		
-		
+
+
 		filter = new TaxonNodeFilter(classification.getRootNode());
 		listUuid = filterDao.listUuids(filter);
 		//FIXME still unclear if (empty) root node should be part of the result
 		Assert.assertEquals("All 6 children should be returned", 6, listUuid.size());
-		
+
 		filter = new TaxonNodeFilter(node3);
 		listUuid = filterDao.listUuids(filter);
 		Assert.assertEquals("All 3 children should be returned", 3, listUuid.size());
@@ -98,16 +98,16 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 		listUuid = filterDao.listUuids(filter);
 		Assert.assertEquals("All 3 children and node 2 should be returned", 4, listUuid.size());
 		Assert.assertTrue(listUuid.contains(node2.getUuid()));
-		
+
 		filter = new TaxonNodeFilter(node1).not(node4);
 		listUuid = filterDao.listUuids(filter);
 		Assert.assertEquals("Node and 2 children but not node4 should be returned", 3, listUuid.size());
 		Assert.assertFalse(listUuid.contains(node4.getUuid()));
 
-		
 
-		
-		
+
+
+
 	}
 
     /* (non-Javadoc)
@@ -116,7 +116,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

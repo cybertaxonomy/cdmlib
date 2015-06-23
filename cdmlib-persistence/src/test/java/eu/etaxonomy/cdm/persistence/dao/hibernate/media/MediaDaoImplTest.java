@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -40,49 +40,49 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	IMediaDao mediaDao;
-	
+
 	@SpringBeanByType
 	IDefinedTermDao definedTermDao;
-	
+
 	@SpringBeanByType
 	ITaxonDao taxonDao;
-	
+
 	UUID europeUuid;
 	UUID africaUuid;
 	UUID sphingidaeUuid;
-	
+
 	Set<Taxon> taxonomicScope;
 	Set<NamedArea> geoScopes;
-	
+
 	@Before
 	public void setUp() {
 		europeUuid = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
 		africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
 		sphingidaeUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
-		
+
 		taxonomicScope = new HashSet<Taxon>();
 		geoScopes = new HashSet<NamedArea>();
 	}
-	
+
 	@Test
 	public void testCountMediaKeys() {
 		int numberOfMediaKeys = mediaDao.countMediaKeys(null,null);
-		
+
 		assertEquals("countMediaKeys should return 3",3,numberOfMediaKeys);
 	}
-	
+
 	@Test
 	public void testGetMediaKeys() {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("title");
 		List<MediaKey> keys = mediaDao.getMediaKeys(null, null, null, null,propertyPaths);
-		
+
 		assertNotNull("getMediaKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 3 MediaKey instances",3, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
-	
+
 	@Test
 	public void testCountMediaKeysWithScope() {
 		NamedArea europe = (NamedArea)definedTermDao.findByUuid(europeUuid);
@@ -91,16 +91,16 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		assert europe != null : "NamedArea must exist";
 		assert africa != null : "NamedArea must exist";
 		assert sphingidae != null : "Taxon must exist";
-		
+
 		geoScopes.add(europe);
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
-		
+
 		int numberOfMediaKeys = mediaDao.countMediaKeys(taxonomicScope,geoScopes);
-		
+
 		assertEquals("countMediaKeys should return 1",1,numberOfMediaKeys);
 	}
-	
+
 	@Test
 	public void testGetMediaKeysWithScope() {
 		List<String> propertyPaths = new ArrayList<String>();
@@ -111,13 +111,13 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		assert europe != null : "NamedArea must exist";
 		assert africa != null : "NamedArea must exist";
 		assert sphingidae != null : "Taxon must exist";
-		
+
 		geoScopes.add(europe);
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
-		
+
 		List<MediaKey> keys = mediaDao.getMediaKeys(taxonomicScope,geoScopes, null, null,propertyPaths);
-		
+
 		assertNotNull("getMediaKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
@@ -130,6 +130,6 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
-    }	
+
+    }
 }

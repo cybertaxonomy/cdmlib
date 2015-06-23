@@ -153,7 +153,7 @@ public class StatisticsDaoHibernateImplTest extends
 	private IDescriptionElementDao descriptionElementDao;
 	@SpringBeanByType
 	private ITaxonNodeDao taxonNodeDao;
-	
+
 	private UUID rootUuid;
 
 	@Before
@@ -469,7 +469,7 @@ public class StatisticsDaoHibernateImplTest extends
 
 	/**
 	 * create and count a new sec Reference
-	 * 
+	 *
 	 * @param classiCounter
 	 * @param taxonCounter
 	 * @return
@@ -510,11 +510,11 @@ public class StatisticsDaoHibernateImplTest extends
 
 	private TaxonNode createTaxTree(Classification classification) {
 		Random rand = new Random();
-		
+
 			Set<TaxonNode> nodes = classification.getAllNodes();
 			ArrayList<TaxonNode> children = new ArrayList<TaxonNode>();
 			TaxonNode parent = nodes.iterator().next();
-			
+
 			TaxonNode root = parent;
 			nodes.remove(parent);
 			while (!nodes.isEmpty()) {
@@ -533,7 +533,7 @@ public class StatisticsDaoHibernateImplTest extends
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void print() {
 		for (Classification classification : classifications) {
@@ -578,6 +578,6 @@ public class StatisticsDaoHibernateImplTest extends
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

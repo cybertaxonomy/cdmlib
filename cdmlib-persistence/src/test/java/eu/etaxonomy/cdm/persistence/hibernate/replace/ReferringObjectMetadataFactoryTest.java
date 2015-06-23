@@ -120,7 +120,7 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub  
+        // TODO Auto-generated method stub
     }
 }
 

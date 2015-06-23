@@ -53,7 +53,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     private static final String CLASSIFICATION_FULL_UUID = "a71467a6-74dc-4148-9530-484628a5ab0e";
     private static final UUID UUID_ABIES = UUID.fromString("19f560d9-a555-4883-9c54-39d04872307c");
     private static final UUID UUID_PINACEAE = UUID.fromString("74216ed8-5f04-439e-87e0-500738f5e7fc");
-    
+
 
 
     /**
@@ -72,13 +72,13 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         Rank rank = Rank.GENUS();
         List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals(3, rootNodes.size());
-        
+
         rank = null;
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("The absolut root nodes should be returned", 3, rootNodes.size());
     }
 
-  
+
     /**
      * Test listRankSpecificRootNode with an existing classification
      */
@@ -96,34 +96,34 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         assertEquals("Only the genus should come back", 1, rootNodes.size());
         assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
-        
+
         rank = Rank.SUBGENUS();
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("Only the 3 species should come back", 2, rootNodes.size());
         for (TaxonNode tn : rootNodes){
         	assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
         }
- 
+
         rank = Rank.SUBFAMILY();
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("Only the genus should come back", 1, rootNodes.size());
         assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
-        
+
         rank = Rank.FAMILY();
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("Only the family should come back", 1, rootNodes.size());
         assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
-        
+
         rank = null;
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("Only the family as the absolut root node should come back", 1, rootNodes.size());
         assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
-        
+
     }
-    
+
     /**
      * Test listRankSpecificRootNode with all classifications
      */
@@ -131,16 +131,16 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testListRankSpecificRootNodesWithNoClassification() {
     	Classification classification = null;
-        
+
     	Rank rank = Rank.GENUS();
         List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("3 Species from no hierarchie and 1 genus from hierarchie should return", 4, rootNodes.size());
-        
+
         rank = null;
         rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, null, null, null);
         assertEquals("4 taxa should return (3 species from no hierarchie, 1 family, from hierarchie classification", 4, rootNodes.size());
     }
-	
+
     private void checkPreconditions() {
 		// check preconditions
         List<TaxonBase> taxa = taxonDao.list(null, null);
@@ -150,8 +150,8 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 //            assertEquals(Rank.SPECIES().getUuid(), t.getName().getRank().getUuid());
 //        }
 	}
- 
-    
+
+
     /**
      * At the moment the data created is special to the issue http://dev.e-taxonomy.eu/trac/ticket/2778
      * ClassificationDaoHibernateImplTest.issue2778.xml
@@ -167,35 +167,35 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	    Classification flatHierarchieClassification = Classification.NewInstance("European Abies");
 	    flatHierarchieClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
 	    classificationDao.save(flatHierarchieClassification);
-	
+
 	    Reference<?> sec = ReferenceFactory.newBook();
 	    sec.setTitleCache("Kohlbecker, A., Testcase standart views, 2013", true);
 	    Reference<?> sec_sensu = ReferenceFactory.newBook();
 	    sec_sensu.setTitleCache("Komarov, V. L., Flora SSSR 29", true);
 	    referenceDao.save(sec);
 	    referenceDao.save(sec_sensu);
-	
-	
+
+
 	    BotanicalName n_abies_alba = BotanicalName.NewInstance(Rank.SPECIES());
 	    n_abies_alba.setNameCache("Abies alba", true);
 	    Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
 	    taxonDao.save(t_abies_alba);
-	
+
 	    BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
 	    n_abies_grandis.setNameCache("Abies grandis", true);
 	    Taxon t_abies_grandis = Taxon.NewInstance(n_abies_grandis, sec);
 	    taxonDao.save(t_abies_grandis);
-	
+
 	    BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
 	    n_abies_kawakamii.setNameCache("Abies kawakamii", true);
 	    Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
 	    taxonDao.save(t_abies_kawakamii);
-	
+
 //	    BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
 //	    n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
 //	    Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
 //	    taxonDao.save(t_abies_lasiocarpa);
-	    
+
 	    BotanicalName n_abies = BotanicalName.NewInstance(Rank.GENUS());
 	    n_abies.setNameCache("Abies", true);
 	    Taxon t_abies = Taxon.NewInstance(n_abies, sec);
@@ -207,15 +207,15 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	    Taxon t_pinaceae = Taxon.NewInstance(n_pinaceae, sec);
 	    t_pinaceae.setUuid(UUID_PINACEAE);
 	    taxonDao.save(t_pinaceae);
-    
-	
+
+
 	    // add taxa to classifications
 	    flatHierarchieClassification.addChildTaxon(t_abies_alba, null, null);
 	    flatHierarchieClassification.addChildTaxon(t_abies_grandis, null, null);
 	    flatHierarchieClassification.addChildTaxon(t_abies_kawakamii, null, null);
 //	    flatHierarchieClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
 	    classificationDao.saveOrUpdate(flatHierarchieClassification);
-	
+
 	    // 1. create the entities   and save them
 	    Classification fullHierarchieClassification = Classification.NewInstance("European Abies full hierarchie");
 	    fullHierarchieClassification.setUuid(UUID.fromString(CLASSIFICATION_FULL_UUID));
@@ -224,15 +224,15 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	    fullHierarchieClassification.addParentChild(t_pinaceae, t_abies, null, null);
 	    fullHierarchieClassification.addParentChild(t_abies, t_abies_alba, null, null);
 	    fullHierarchieClassification.addParentChild(t_abies, t_abies_grandis, null, null);
-	    
+
 	    classificationDao.saveOrUpdate(fullHierarchieClassification);
-		
-	    
-	    
+
+
+
 	    // 2. end the transaction so that all data is actually written to the db
 	    setComplete();
 	    endTransaction();
-	
+
 	    // use the fileNameAppendix if you are creating a data set file which need to be named differently
 	    // from the standard name. Fir example if a single test method needs different data then the other
 	    // methods the test class you may want to set the fileNameAppendix when creating the data for this method.

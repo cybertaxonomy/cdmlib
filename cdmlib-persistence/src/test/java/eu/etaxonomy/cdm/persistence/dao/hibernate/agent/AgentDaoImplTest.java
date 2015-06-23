@@ -30,8 +30,6 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
@@ -43,12 +41,12 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
+//    private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
 
 
     @SpringBeanByType
     private IAgentDao agentDao;
-    
+
     @SpringBeanByType
 	IReferenceDao referenceDao;
 
@@ -165,7 +163,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testDelete() throws Exception {
         Person person = (Person)agentDao.findByUuid(personUuid);
         agentDao.delete(person);
-        
+
         commitAndStartNewTransaction(null);
     }
 
