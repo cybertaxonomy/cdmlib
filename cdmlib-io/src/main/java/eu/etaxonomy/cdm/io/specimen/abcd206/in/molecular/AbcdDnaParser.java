@@ -18,17 +18,13 @@ import org.w3c.dom.NodeList;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportReport;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdImportUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.UnitAssociationParser;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 
 /**
@@ -50,24 +46,9 @@ public class AbcdDnaParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public DnaSample parse(Element item, DerivedUnit derivedUnitBase, Abcd206ImportState state, boolean associatedSpecimenCreated) {
-        Collection dnaCollection = null;
-        String dnaUnitID = null;
-        if(associatedSpecimenCreated){
-            /*cache UnitID and collection to swap later with the dna sample
-            This is done because initially ABCD unit contains both the specimen data
-            and the DNA data. But the actual specimen data (collection, unitID) are stored
-            under the UnitAssociation whereas the collection and unitID of the dna sample are
-            the ones of the ABCD unit itself which are initially imported and set for the
-            specimen.
-             */
-            dnaCollection = derivedUnitBase.getCollection().clone();
-            dnaUnitID = AbcdImportUtility.getUnitID(derivedUnitBase, state.getConfig());
-            UnitAssociationParser associationParser = new UnitAssociationParser(prefix, report, cdmAppController);
-            associationParser.parse(item, state);
-        }
+    public DnaSample parse(Element item, Abcd206ImportState state) {
         DnaSample dnaSample = DnaSample.NewInstance();
-        DerivationEvent.NewSimpleInstance(derivedUnitBase, dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent.NewSimpleInstance(state.getFieldUnit(), dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         //specimen unit
         NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
@@ -82,10 +63,6 @@ public class AbcdDnaParser {
                 if(ggbn.getLength()>0){
                     AbcdGgbnParser ggbnParser = new AbcdGgbnParser(report, cdmAppController);
                     ggbnParser.parse(ggbn, dnaSample, state);
-                    if(associatedSpecimenCreated){
-                        dnaSample.setCollection(dnaCollection);
-                        AbcdImportUtility.setUnitID(dnaSample, dnaUnitID, state.getConfig());
-                    }
                 }
             }
         }

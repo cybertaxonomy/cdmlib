@@ -192,6 +192,9 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         this.descriptionGroup = descriptionGroup;
     }
 
-
-
+    public void reset() {
+        getDataHolder().reset();
+        derivedUnitBase = null;
+        fieldUnit = null;
+    }
 }
