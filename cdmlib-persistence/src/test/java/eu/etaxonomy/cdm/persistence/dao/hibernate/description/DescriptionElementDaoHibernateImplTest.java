@@ -17,13 +17,13 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -261,29 +262,27 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		logger.warn("Not yet implemented");
 	}
 
-	@Test  //cascading for modifying text didn't work
+	@Test  //test cascading for modifying text (and others)
+	@DataSet( loadStrategy=CleanSweepInsertLoadStrategy.class)
 	@ExpectedDataSet(factory=MultiSchemaXmlDataSetFactory.class)
-	@Ignore //FIXME unitils3 upgrade problem: Differences found between the expected data set and actual database content.
 	public void testSaveCategoricalData(){
 		UUID uuidDummyState = UUID.fromString("881b9c80-626d-47a6-b308-a63ee5f4178f");
-//		State state = State.NewInstance("TestState", "TestState", "TestState");
-//		termDao.saveOrUpdate(state);
 		State state = (State)termDao.findByUuid(uuidDummyState);
-		CategoricalData data = CategoricalData.NewInstance();
-		data.setUuid(UUID.fromString("5c3f2340-f675-4d50-af96-89a2a12993b8"));
-		data.setFeature(Feature.DESCRIPTION());
+		CategoricalData categoricalData = CategoricalData.NewInstance();
+		categoricalData.setUuid(UUID.fromString("5c3f2340-f675-4d50-af96-89a2a12993b8"));
+		categoricalData.setFeature(Feature.DESCRIPTION());
 		StateData stateData = StateData.NewInstance(state);
 		stateData.setUuid(UUID.fromString("04b9190d-d4ab-4c3a-8dec-8293dc820ddc"));
 		stateData.putModifyingText(Language.ENGLISH(), "test modifier");
 		LanguageString langString = stateData.getModifyingText().get(Language.ENGLISH());
 		langString.setUuid(UUID.fromString("53a91bd4-d758-47ec-a385-94799bdb9f32"));
-		data.addStateData(stateData);
-//		Modifier modifier = Modifier.NewInstance("my test modifier", "test", null);
-//		TODO still throws JDBC batch update exception, one reason may be that in hibernate_sequence nextVal for definedtermbase is "1"
-//		stateData.addModifier(modifier);
+		categoricalData.addStateData(stateData);
+		DefinedTerm modifier = DefinedTerm.SEX_FEMALE();
+		System.out.println(modifier.getId());
+		stateData.addModifier(modifier);
 
-		descriptionElementDao.save(data);
-
+		descriptionElementDao.save(categoricalData);
+		commit();
 //		commitAndStartNewTransaction(new String[]{"Hibernate_sequences","DescriptionElementBase","DescriptionElementBase_StateData","StateData_DefinedTermBase", "StateData", "StateData_LanguageString", "LanguageString"});
 	}
 
