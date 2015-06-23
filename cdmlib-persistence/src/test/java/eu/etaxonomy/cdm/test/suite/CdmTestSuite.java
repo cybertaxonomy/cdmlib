@@ -9,9 +9,9 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
+import org.apache.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.CdmDataSourceTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;

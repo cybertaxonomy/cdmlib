@@ -17,9 +17,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
-import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -31,7 +31,7 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	IPreferenceDao dao;
-	
+
 /************ TESTS ********************************/
 
     @Test
@@ -47,26 +47,26 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
         CdmPreference pref = dao.get(key);
         Assert.assertNotNull("CdmPreference for given key must exist", pref);
         Assert.assertEquals("ICNAFP", pref.getValue());
-        
+
         key = CdmPreference.NewKey(PreferenceSubject.Database, PreferencePredicate.Test);
         pref = dao.get(key);
         Assert.assertNull("CdmPreference for given key must not exist", pref);
     }
-    
-	
+
+
     @Test
     @DataSet
     public void testCount() {
     	 int countStart = dao.count();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
     }
-	
+
     @Test
     @DataSet
     public void testSet() {
     	 int countStart = dao.count();
          Assert.assertEquals(1, countStart);
-    	
+
     	CdmPreference pref = CdmPreference.NewInstance(PreferenceSubject.Database, PreferencePredicate.Test, "200");
         dao.set(pref);
 	   	int count = dao.count();
@@ -74,10 +74,10 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
 
         pref = CdmPreference.NewInstance(PreferenceSubject.Database, PreferencePredicate.NomenclaturalCode, "ICZN");
         dao.set(pref);
-        
+
 	   	count = dao.count();
 	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
-        
+
     }
 
     /* (non-Javadoc)
@@ -86,6 +86,6 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -35,21 +35,21 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 
 	@SpringBeanByType
 	IMediaRepresentationPartDao dao;
-	
+
 	@SpringBeanByType
 	IDefinedTermDao definedTermDao;
-	
-	
+
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@Test
 	public void testCount() {
 		int numberOfMediaRepresentationParts = dao.count();
 		assertEquals("count should return 3",3,numberOfMediaRepresentationParts);
 	}
-	
+
 	@Test
 	public void testFindByUuid() {
 		MediaRepresentationPart part = dao.findByUuid(UUID.fromString("e06a0f29-ef82-4ce3-8a94-dd98feae8f9e"));
@@ -59,7 +59,7 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 		} catch (URISyntaxException e) {
 			Assert.fail("No URISyntaxException should occurr");
 		}
-		
+
 		MediaRepresentationPart part2 = dao.findByUuid(UUID.fromString("a07a0f29-ef82-3ce3-8a94-dd98feae8f9e"));
 		Assert.assertNotNull("part2 should not be null", part2);
 		try {
@@ -67,7 +67,7 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 		} catch (URISyntaxException e) {
 			Assert.fail("No URISyntaxException should occurr");
 		}
-		
+
 		try {
 			MediaRepresentationPart part3 = dao.findByUuid(UUID.fromString("b48a0f26-2f42-3ce3-8a04-dd98feaa8e98"));
 			Assert.assertEquals("part URI should be http://www.test2.de", new URI("http://www.test2.de"), part3.getUri());
@@ -81,26 +81,26 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 		}
 
 	}
-	
+
 	@Test
 	@ExpectedDataSet
 	public void testSave() {
 		try {
 			URI uri = new URI("http://www.test3.de");
-			
+
 			MediaRepresentationPart part1 = MediaRepresentationPart.NewInstance(uri, 22);
 			//a representation is needed otherwise a not nullable exception is thrown (due to lucene index (?))
 			MediaRepresentation representation = MediaRepresentation.NewInstance();
 			representation.addRepresentationPart(part1);
 			dao.save(part1);
 			commit();
-			
+
 		} catch (URISyntaxException e) {
 			Assert.fail("URI should be ok");
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testLongUri() {
 		try {
@@ -108,18 +108,18 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 					"wereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+
 					"weeeeeeeeeeeeeeeeeeeeeee/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+
 					"uizweiuzriuzewiurziuewui/weeeeeeeeeeeeeeeeeuiziuzwueziuzweiurziuwzriufsfdds");
-			
+
 			MediaRepresentationPart part1 = MediaRepresentationPart.NewInstance(uri, 22);
 			//a representation is needed otherwise a not nullable exception is thrown (due to lucene index (?))
 			MediaRepresentation representation = MediaRepresentation.NewInstance();
 			representation.addRepresentationPart(part1);
 			dao.save(part1);
 			commit();
-			
+
 		} catch (URISyntaxException e) {
 			Assert.fail("URI should be ok");
 		}
-		
+
 	}
 
     /* (non-Javadoc)
@@ -128,7 +128,7 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

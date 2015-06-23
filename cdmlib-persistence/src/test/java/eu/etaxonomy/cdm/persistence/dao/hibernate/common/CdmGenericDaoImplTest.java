@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -174,18 +174,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
-	
+
 	@SpringBeanByType
 	private ICdmGenericDao cdmGenericDao;
-	
+
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
-	
+
 	@SpringBeanByType
 	private IOccurrenceDao occurrenceDao;
 
 	@SpringBeanByType
-	private ITaxonNameDao nameDao; 
+	private ITaxonNameDao nameDao;
 
 	@SpringBeanByType
 	private IAgentDao agentDao;
@@ -196,8 +196,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	@Before
 	public void setUp() throws Exception {}
 
-// ***************** TESTS **************************************************	
-	
+// ***************** TESTS **************************************************
+
 	@Test
 	public void testDelete(){
 		Reference<?> ref1 = ReferenceFactory.newBook();
@@ -242,146 +242,146 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Class<?>[] existingClassesArray = {
 				Address.class,
 				AgentBase.class,
-				Institution.class, 
-				InstitutionalMembership.class, 
-				Person.class, 
-				Team.class, 
-				TeamOrPersonBase.class, 
-				Annotation.class, 
-				AnnotationType.class, 
+				Institution.class,
+				InstitutionalMembership.class,
+				Person.class,
+				Team.class,
+				TeamOrPersonBase.class,
+				Annotation.class,
+				AnnotationType.class,
 				Credit.class,
-				DefinedTermBase.class, 
-				Extension.class, 
-				ExtensionType.class, 
-				GrantedAuthorityImpl.class, 
-				Group.class, 
+				DefinedTermBase.class,
+				Extension.class,
+				ExtensionType.class,
+				GrantedAuthorityImpl.class,
+				Group.class,
 				IdentifiableSource.class,
 				Identifier.class,
-				Language.class, 
-				LanguageString.class, 
-				LSIDAuthority.class, 
-				Marker.class, 
-				MarkerType.class, 
-				OrderedTermBase.class, 
-				OrderedTermVocabulary.class, 
+				Language.class,
+				LanguageString.class,
+				LSIDAuthority.class,
+				Marker.class,
+				MarkerType.class,
+				OrderedTermBase.class,
+				OrderedTermVocabulary.class,
 				OriginalSourceBase.class,
-				RelationshipTermBase.class, 
-				Representation.class, 
-				TermVocabulary.class, 
-				User.class, 
+				RelationshipTermBase.class,
+				Representation.class,
+				TermVocabulary.class,
+				User.class,
 				DefinedTerm.class,
-				
-				CategoricalData.class, 
-				CommonTaxonName.class, 
-				DescriptionBase.class, 
-				DescriptionElementBase.class, 
-				Distribution.class, 
-				Feature.class, 
-				FeatureNode.class, 
-				FeatureTree.class, 
-				MediaKey.class, 
-				IndividualsAssociation.class, 
-				MeasurementUnit.class, 
-				PresenceAbsenceTerm.class, 
-				QuantitativeData.class, 
-				SpecimenDescription.class, 
-				State.class, 
-				StateData.class, 
-				StatisticalMeasure.class, 
-				StatisticalMeasurementValue.class, 
-				TaxonDescription.class, 
-				TaxonInteraction.class, 
-				TaxonNameDescription.class, 
-				TextData.class, 
-				TextFormat.class, 
-				NamedArea.class, 
-				NamedAreaLevel.class, 
-				NamedAreaType.class, 
-				ReferenceSystem.class, 
-				Country.class, 
-				AudioFile.class, 
-				ImageFile.class, 
-				Media.class, 
-				MediaRepresentation.class, 
-				MediaRepresentationPart.class, 
-				MovieFile.class, 
-				Rights.class, 
-				RightsType.class, 
+
+				CategoricalData.class,
+				CommonTaxonName.class,
+				DescriptionBase.class,
+				DescriptionElementBase.class,
+				Distribution.class,
+				Feature.class,
+				FeatureNode.class,
+				FeatureTree.class,
+				MediaKey.class,
+				IndividualsAssociation.class,
+				MeasurementUnit.class,
+				PresenceAbsenceTerm.class,
+				QuantitativeData.class,
+				SpecimenDescription.class,
+				State.class,
+				StateData.class,
+				StatisticalMeasure.class,
+				StatisticalMeasurementValue.class,
+				TaxonDescription.class,
+				TaxonInteraction.class,
+				TaxonNameDescription.class,
+				TextData.class,
+				TextFormat.class,
+				NamedArea.class,
+				NamedAreaLevel.class,
+				NamedAreaType.class,
+				ReferenceSystem.class,
+				Country.class,
+				AudioFile.class,
+				ImageFile.class,
+				Media.class,
+				MediaRepresentation.class,
+				MediaRepresentationPart.class,
+				MovieFile.class,
+				Rights.class,
+				RightsType.class,
 				Amplification.class,
 				DnaSample.class,
 				SingleRead.class,
 				SingleReadAlignment.class,
 				Primer.class,
 				Sequence.class,
-				PhylogeneticTree.class, 
-				Sequence.class, 
-				BacterialName.class, 
-				BotanicalName.class, 
-				CultivarPlantName.class, 
-				HomotypicalGroup.class, 
-				HybridRelationship.class, 
-				HybridRelationshipType.class, 
-				NameRelationship.class, 
-				NameRelationshipType.class, 
-				NameTypeDesignation.class, 
-				NameTypeDesignationStatus.class, 
-				NomenclaturalStatus.class, 
-				NomenclaturalStatusType.class, 
-				NonViralName.class, 
-				Rank.class, 
-				SpecimenTypeDesignation.class, 
-				SpecimenTypeDesignationStatus.class, 
-				TaxonNameBase.class, 
-				TypeDesignationBase.class, 
-				ViralName.class, 
-				ZoologicalName.class, 
-				Collection.class, 
-				DerivationEvent.class, 
-				DerivationEventType.class, 
-				DerivedUnit.class, 
-				DeterminationEvent.class, 
-				FieldUnit.class, 
-				GatheringEvent.class, 
-				PreservationMethod.class, 
-				SpecimenOrObservationBase.class, 
-				Reference.class, 
-				Synonym.class, 
-				SynonymRelationship.class, 
-				SynonymRelationshipType.class, 
-				Taxon.class, 
-				TaxonBase.class, 
-				TaxonNode.class, 
-				Classification.class, 
-				TaxonRelationship.class, 
+				PhylogeneticTree.class,
+				Sequence.class,
+				BacterialName.class,
+				BotanicalName.class,
+				CultivarPlantName.class,
+				HomotypicalGroup.class,
+				HybridRelationship.class,
+				HybridRelationshipType.class,
+				NameRelationship.class,
+				NameRelationshipType.class,
+				NameTypeDesignation.class,
+				NameTypeDesignationStatus.class,
+				NomenclaturalStatus.class,
+				NomenclaturalStatusType.class,
+				NonViralName.class,
+				Rank.class,
+				SpecimenTypeDesignation.class,
+				SpecimenTypeDesignationStatus.class,
+				TaxonNameBase.class,
+				TypeDesignationBase.class,
+				ViralName.class,
+				ZoologicalName.class,
+				Collection.class,
+				DerivationEvent.class,
+				DerivationEventType.class,
+				DerivedUnit.class,
+				DeterminationEvent.class,
+				FieldUnit.class,
+				GatheringEvent.class,
+				PreservationMethod.class,
+				SpecimenOrObservationBase.class,
+				Reference.class,
+				Synonym.class,
+				SynonymRelationship.class,
+				SynonymRelationshipType.class,
+				Taxon.class,
+				TaxonBase.class,
+				TaxonNode.class,
+				Classification.class,
+				TaxonRelationship.class,
 				TaxonRelationshipType.class ,
-				//Contact.class,  //these are embedabble classes 
-				//LSID.class, 
-				//Point.class, 
-				//NomenclaturalCode.class, 
+				//Contact.class,  //these are embedabble classes
+				//LSID.class,
+				//Point.class,
+				//NomenclaturalCode.class,
 		}	;
 		List<Class<?>> existingClassesList = new ArrayList<Class<?>>();
 		existingClassesList.addAll(Arrays.asList(existingClassesArray));
 		boolean includeAbstractClasses = true;
 		Set<Class<? extends CdmBase>> foundClasses = cdmGenericDao.getAllPersistedClasses(includeAbstractClasses);
-		
-		//for debugging only		
+
+		//for debugging only
 		//		for (Class existingClass : existingClassesList){
 		//			if (! foundClasses.contains(existingClass)){
 		//				logger.warn("Class not found: " + existingClass.getCanonicalName());
 		//			}
 		//		}
-		
+
 		//All classes must be found
 		Assert.assertTrue("all classes must be found by getAllCdmClasses() method", foundClasses.containsAll(existingClassesList));
-		
-		
+
+
 		//No extra classes must be found
 		for (Class<?> clazz : foundClasses){
-			if (! CdmBase.class.isAssignableFrom(clazz)&& !( AuditEvent.class == clazz) && !( CdmPreference.class == clazz)  ){ //OLD: && !( LSID.class == clazz)&& !( NomenclaturalCode.class == clazz) && !( Point.class == clazz) && !( Modifier.class == clazz) && !( Contact.class == clazz) 
+			if (! CdmBase.class.isAssignableFrom(clazz)&& !( AuditEvent.class == clazz) && !( CdmPreference.class == clazz)  ){ //OLD: && !( LSID.class == clazz)&& !( NomenclaturalCode.class == clazz) && !( Point.class == clazz) && !( Modifier.class == clazz) && !( Contact.class == clazz)
 				Assert.fail("Class " + clazz.getName() + " is not assignable from CdmBase");
 			}
 		}
-		
+
 		includeAbstractClasses = false;
 		Set<Class<? extends CdmBase>> noAbstractClasses = cdmGenericDao.getAllPersistedClasses(includeAbstractClasses);
 		Class<?> abstractClassToTest = TaxonNameBase.class;
@@ -402,14 +402,14 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
-		
+
 		name.setNomenclaturalReference(ref1);
-		
+
 		taxonDao.save(taxon);
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //		Reference ref1 = referenceService.findByUuid(uuid);
-		
-	
+
+
 		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
 		System.out.println("############## RESULT ###################");
 		for (CdmBase obj: referencedObjects){
@@ -417,10 +417,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		}
 		assertEquals(3, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
-		
+
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
 //		AgentBase author = agentService.findByUuid(uuidAuthor);
-		
+
 		referencedObjects = cdmGenericDao.getReferencingObjects(author);
 		System.out.println("############## RESULT ###################");
 		for (CdmBase obj: referencedObjects){
@@ -429,10 +429,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
 	}
-	
+
 	/**
 	 * 2nd test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
-	 * 
+	 *
 	 */
 	@Test
 	@DataSet
@@ -441,19 +441,19 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 //		desc1.setTitleCache("desc1");
 //		SpecimenDescription desc2 = SpecimenDescription.NewInstance();
 //		desc2.setTitleCache("desc2");
-//		
+//
 //		SpecimenOrObservationBase spec1 = Specimen.NewInstance();
-//		
+//
 //		desc1.addDescribedSpecimenOrObservation(spec1);
 //		//Taxon taxon = Taxon.NewInstance(taxonNameBase, sec)
 //		spec1.addDescription(desc2);
-//		
+//
 //		occurrenceService.save(spec1);
-		
+
 		UUID uuidSpec = UUID.fromString("41539e9c-3764-4f14-9712-2d07d00c8e4c");
 		SpecimenOrObservationBase<?> spec1 = occurrenceDao.findByUuid(uuidSpec);
-		
-	
+
+
 		Set<CdmBase> referencingObjects = cdmGenericDao.getReferencingObjects(spec1);
 //		System.out.println("############## RESULT ###################");
 //		for (CdmBase obj: referencingObjects){
@@ -463,89 +463,89 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
 
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException 
+	 * @throws MergeException
 	 */
 	@Test
 //	@Ignore
 	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
-				
+
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
-		
+
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
-		
+
 		ZoologicalName zooName1 = ZoologicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
 		Reference<?> article1 = ReferenceFactory.newArticle();
 		Reference<?> article2 = ReferenceFactory.newArticle();
-		
-		
+
+
 		name1.setNomenclaturalReference(article1);
 		name2.setNomenclaturalReference(article2);
-		
-		
+
+
 		Taxon taxon1 = Taxon.NewInstance(name1, article1);
 		Taxon taxon2 = Taxon.NewInstance(name2, article2);
-		
-		
+
+
 //		Person author = Person.NewInstance();
 //		author.setTitleCache("Author");
 		Annotation annotation1 = Annotation.NewInstance("A1", Language.DEFAULT());
 		Annotation annotation2 = Annotation.NewInstance("A2", Language.DEFAULT());
-		
+
 		article1.addAnnotation(annotation1);
 		article2.addAnnotation(annotation2);
-		
+
 		Marker marker1 = Marker.NewInstance(MarkerType.COMPLETE(), false);
 		Marker marker2 = Marker.NewInstance(MarkerType.IMPORTED(), false);
-		
+
 		article1.addMarker(marker1);
 		article2.addMarker(marker2);
 
 		Rights rights1 = Rights.NewInstance();
 		Rights rights2 = Rights.NewInstance();
-		
+
 		article1.addRights(rights1);
 		article2.addRights(rights2);
 
 		Credit credit1 = Credit.NewInstance(Team.NewInstance(), "credit1");
 		Credit credit2 = Credit.NewInstance(Team.NewInstance(), "credit2");
-		
+
 		article1.addCredit(credit1);
 		article2.addCredit(credit2);
 
 		Extension extension1 = Extension.NewInstance();
 		Extension extension2 = Extension.NewInstance();
-		
+
 		article1.addExtension(extension1);
 		article2.addExtension(extension2);
-		
+
 		IdentifiableSource source1 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
 		IdentifiableSource source2 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
-		
+
 		article1.addSource(source1);
 		article2.addSource(source2);
 
 		Media media1 = Media.NewInstance();
 		Media media2 = Media.NewInstance();
-		
+
 		article1.addMedia(media1);
 		article2.addMedia(media2);
-		
+
 //		ref1.setAuthorship(author);
 //		name1.setBasionymAuthorship(author);
-		
+
 		name1.setNomenclaturalReference(article1);
 
 		nameDao.save(name1);
 		nameDao.save(name2);
 		nameDao.save(zooName1);
-		
+
 		TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon1);
 		taxDesc.setTitleCache("taxDesc", true);
 		taxDesc.addSource(OriginalSourceType.Unknown, null, null, article2, null);
@@ -555,20 +555,20 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		//unidircetional reference to the merged object should be redirected
 		cdmGenericDao.merge(article1, article2, null);
 		Assert.assertEquals("Name2 must have article 1 as new nomRef", article1 ,name2.getNomenclaturalReference());
-		//TODO microCitations!! -> warning	
-		
+		//TODO microCitations!! -> warning
+
 		//Annotations
 		Assert.assertEquals("Annotation number should be 2 (1 from each of the merged objects)", 2, article1.getAnnotations().size());
-		
+
 		//Marker
 		Assert.assertEquals("Marker number should be 2 (1 from each of the merged objects)", 2, article1.getMarkers().size());
 
 		//Rights
 		Assert.assertEquals("Rights number should be 2 (1 from each of the merged objects)", 2, article1.getRights().size());
-		
+
 		//Credits
 		Assert.assertEquals("Credits number should be 2 (1 from each of the merged objects)", 2, article1.getCredits().size());
-		
+
 		//Extensions
 		Assert.assertEquals("Extensions number should be 2 (1 from each of the merged objects)", 2, article1.getExtensions().size());
 
@@ -581,38 +581,38 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		//Description sources
 		Assert.assertEquals("Number of sources for taxon description must be 1", 1, taxDesc.getSources().size());
 		Assert.assertEquals("Taxon description must have article1 as source", taxDesc.getSources().iterator().next().getCitation(),article1);
-	
+
 		//test exceptions
 		testMergeExceptions(name1, name2, taxon1, zooName1);
 
-		
-		//FIXME TO BE IMPLEMENTED 
+
+		//FIXME TO BE IMPLEMENTED
 		//current defalt implementation for rights, credits and media is ADD_CLONE and therefore the below tests don't work
 		//TODO is this the wanted default behaviour?
 //		Assert.assertTrue("Rights2 must be contained in the rights", article1.getRights().contains(rights2));
 //		Assert.assertTrue("Credits2 must be contained in the credits", article1.getCredits().contains(credit2));
 //		Assert.assertTrue("Media2 must be contained in the media", article1.getMedia().contains(media2));
-	
+
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException 
+	 * @throws MergeException
 	 */
 	@Test
 //	@Ignore
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
-		
+
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
 		BotanicalName name3 = BotanicalName.NewInstance(Rank.SPECIES());
 		name3.setTitleCache("BotanicalName3", true);
-		
+
 		Reference<?> database = ReferenceFactory.newDatabase();
-		
+
 		Taxon taxon1 = Taxon.NewInstance(name1, database);
 		Taxon taxon2 = Taxon.NewInstance(name2, database);
 		Taxon taxon3 = Taxon.NewInstance(name3, database);
@@ -624,41 +624,41 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		cdmGenericDao.merge(name1, name2, null);
 		Assert.assertEquals("Name1 must have 2 taxa attached now.", 2 ,name1.getTaxonBases().size());
 		Assert.assertEquals("Taxon2 must have name1 as new name.", name1 ,taxon2.getName());
-	
-//TODO		
+
+//TODO
 //		cdmGenericDao.merge(taxon1, taxon3, null);
 //		Assert.assertEquals("Name1 must have 3 taxa attached now.", 3 ,name1.getTaxonBases().size());
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException 
+	 * @throws MergeException
 	 */
 	@Test
 	public void testMergeAuthors() throws MergeException {
-		
+
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
-		
+
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2.setTitleCache("BotanicalName2", true);
 
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();
-		
+
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
 		Team team3 = Team.NewInstance();
 		team1.setTitleCache("team1", true);
 		team2.setTitleCache("team2", true);
 		team3.setTitleCache("team3", true);
-		
+
 		Person person1 = Person.NewTitledInstance("person1");
 		Person person2 = Person.NewTitledInstance("person2");
 		Person person3 = Person.NewTitledInstance("person3");
-		
+
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
 		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
@@ -667,29 +667,29 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
 		String emailAddress1 = "Email1";
 		team1.addEmailAddress(emailAddress1);
-		
+
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
 		String emailAddress2 = "Email2";
 		team2.addEmailAddress(emailAddress2);
-		
+
 		team3.addTeamMember(person3);
 		team3.addEmailAddress("emailAddress3");
-		
+
 		book1.setAuthorship(team2);
 		book2.setAuthorship(team3);
-		
+
 		Credit credit1 = Credit.NewInstance(team3, "credit1");
 		book2.addCredit(credit1);
-		
+
 		agentDao.save(team1);
 		agentDao.save(team2);
 		agentDao.save(team3);
 		cdmGenericDao.save((Reference<?>)book1);
 		cdmGenericDao.save((Reference<?>)book2);
-				
+
 		cdmGenericDao.merge(team2, team3, null);
-		
+
 		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorship());
 		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorship());
 		Assert.assertSame("Agent of credit1 must be team2.", team2, credit1.getAgent());
@@ -697,16 +697,16 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
 		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
 		Assert.assertSame("Team2 must have person3 as third member.",person3, team2.getTeamMembers().get(2));
-		
-		
-		//Contact 
+
+
+		//Contact
 		cdmGenericDao.merge(team2, team1, null);
 		Contact team2Contact = team2.getContact();
 		Assert.assertNotNull("team2Contact must not be null", team2Contact);
 		Assert.assertNotNull("Addresses must not be null", team2Contact.getAddresses());
 		Assert.assertEquals("Number of addresses must be 3", 3, team2Contact.getAddresses().size());
 		Assert.assertEquals("Number of email addresses must be 4", 4, team2Contact.getEmailAddresses().size());
-		
+
 		boolean street1Exists = false;
 		boolean street3Exists = false;
 		boolean country1Exists = false;
@@ -724,49 +724,49 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue("Street1 must be one of the streets in team2's addresses", street1Exists);
 		Assert.assertTrue("Street3 must be one of the streets in team2's addressesss", street3Exists);
 		Assert.assertTrue("Argentina must be one of the countries in team2's addresses", country1Exists);
-		
+
 		//Person
 		Institution institution1 = Institution.NewInstance();
 		institution1.setTitleCache("inst1", true);
 		Institution institution2 = Institution.NewInstance();
 		institution2.setTitleCache("inst2", true);
-		
+
 		TimePeriod period1 = TimePeriod.NewInstance(2002, 2004);
 		TimePeriod period2 = TimePeriod.NewInstance(2004, 2006);
-		
+
 		person1.addInstitutionalMembership(institution1, period1, "departement1", "role1");
 		person2.addInstitutionalMembership(institution2, period2, "departement2", "role2");
 
 		IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
 		personMergeStrategy.invoke(person1, person2);
-		
+
 		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
 		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
 			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
 		}
 	}
 
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException 
+	 * @throws MergeException
 	 */
 	@Test
 	public void testReallocatePersonTeam() throws MergeException {
-		
+
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
-		
+
 		IBook book1 = ReferenceFactory.newBook();
-		
+
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
 		team1.setTitleCache("team1", true);
 		team2.setTitleCache("team2", true);
-		
+
 		Person person1 = Person.NewTitledInstance("person1");
 		Person person2 = Person.NewTitledInstance("person2");
-		
+
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
 		person1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
@@ -775,31 +775,31 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
 		String emailAddress1 = "Email1";
 		team1.addEmailAddress(emailAddress1);
-		
-		
+
+
 		//FIXME
 //		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
 		String emailAddress2 = "Email2";
 		team2.addEmailAddress(emailAddress2);
-		
+
 		Credit credit1 = Credit.NewInstance(team2, "credit1");
 		book1.addCredit(credit1);
-		
+
 		agentDao.save(team1);
 		agentDao.save(team2);
 		agentDao.save(person1);
 		agentDao.save(person2);
 
 		cdmGenericDao.save((Reference<?>)book1);
-		
+
 		//starting condition
 		name1.setCombinationAuthorship(person1);
 		Assert.assertEquals("Name1 should have person1 as combination author", person1, name1.getCombinationAuthorship());
-		
+
 		DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 //		strategy.setOnlyReallocateLinks(true);
-			
+
 		FieldUnit fieldUnit1 = FieldUnit.NewInstance();
 		fieldUnit1.setPrimaryCollector(person1);
 		cdmGenericDao.save(fieldUnit1);
@@ -815,7 +815,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.fail("Unhandled exception during merge");
 		}
 		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
-		
+
 		//test collections
 		team1.addTeamMember(person1);
 		try {
@@ -830,15 +830,15 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.fail("Unhandled exception during merge");
 		}
 		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
-		
+
 		//test successful merge
 		cdmGenericDao.save(name1);
 		cdmGenericDao.merge(team2, person1, strategy);
 		Assert.assertEquals("Name1 should have team2 as combination author now", team2, name1.getCombinationAuthorship());
-	
+
 	}
-	
-	
+
+
 	private void testMergeExceptions(CdmBase name1, CdmBase name2, CdmBase taxon,CdmBase zooName1) throws MergeException{
 		//
 		try {
@@ -871,35 +871,35 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 //			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
 //		}
 	}
-	
+
 	@Test
 	public void findMatching(){
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();
 		IBook book3 = ReferenceFactory.newBook();
-		
+
 		String title1 = "title1";
 		String title2 = "title2";
 		book1.setTitle(title1);
 		book2.setTitle(title2);
 		book3.setTitle(title1);
-		
+
 		cdmGenericDao.saveOrUpdate((Reference<?>)book1);
 		cdmGenericDao.saveOrUpdate((Reference<?>)book2);
 		cdmGenericDao.saveOrUpdate((Reference<?>)book3);
-		
+
 		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
-		
+
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertNotNull("Resultlist must not be null", matchResult);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
-			
+
 			book1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
-			
+
 			book3.setDatePublished(TimePeriod.NewInstance(1999));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
@@ -908,7 +908,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
-			
+
 			//BookSection
 			IBookSection section1 = ReferenceFactory.newBookSection();
 			section1.setInBook(book1);
@@ -925,11 +925,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			cdmGenericDao.saveOrUpdate((Reference<?>)section1);
 			cdmGenericDao.saveOrUpdate((Reference<?>)section2);
 			cdmGenericDao.saveOrUpdate((Reference<?>)section3);
-			
+
 			List<IBookSection> sectionResult = cdmGenericDao.findMatching(section3, null);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, sectionResult.size());
 			Assert.assertSame("Resultlist entry must be section1", section1, sectionResult.get(0));
-			
+
 			section2.setInBook(book2 = (IBook)book1.clone());
 			cdmGenericDao.saveOrUpdate((Reference<?>)book2);
 			cdmGenericDao.saveOrUpdate((Reference<?>)book1);
@@ -937,34 +937,34 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			sectionResult = cdmGenericDao.findMatching(section3, null);
 			Assert.assertEquals("Resultlist must have 1 entries", 2, sectionResult.size());
-			
+
 
 			Person person1 = Person.NewTitledInstance("person");
 			Person person2 = Person.NewTitledInstance("person");
 			Person person3 = Person.NewTitledInstance("person");
-			
+
 			person1.setPrefix("pre1");
 			person2.setPrefix("pre2");
 			person3.setPrefix("pre3");
-			
+
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 //			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
-			
+
 			book1.setAuthorship(person1);
 			book2.setAuthorship(person1);
 			book3.setAuthorship(person1);
-			
+
 			boolean m = matchStrategy.invoke(book1, book3);
 			boolean m2 = matchStrategy.invoke(book2, book3);
-			
+
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
-			
+
 			book2.setAuthorship(person2);
 			book3.setAuthorship(person3);
 			matchResult = cdmGenericDao.findMatching(book3, null);
 			Assert.assertEquals("Resultlist must have no entries", 0, matchResult.size());
-			
+
 			person3.setPrefix("pre1");
 			matchResult = cdmGenericDao.findMatching(book3, null);
 			Assert.assertEquals("Resultlist must have 1 entry", 1, matchResult.size());
@@ -976,8 +976,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		}
 
 	}
-	
-	
+
+
 	@Test
 	public void findMatchingCache(){
 		IBook book1 = ReferenceFactory.newBook();
@@ -985,26 +985,26 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Team team2 = Team.NewInstance();
 		team1.setTitleCache("Team1", true);
 		team2.setTitleCache("Team1", true);
-		
+
 		book1.setTitle("Title1");
 		book1.setEdition("Edition1");
 		book1.setAuthorship(team1);
-		
-		
+
+
 		IBook book2 = (IBook) ((Reference<?>)book1).clone();
 		IBook book3 = (IBook) ((Reference<?>)book1).clone();
-		
+
 //		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 //		book1.setTitleCache("cache1");
 //		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
-//		
+//
 //		bookClone.setTitleCache("cache1");
 //		Assert.assertTrue("Cached book with same cache should match", matchStrategy.invoke(book1, bookClone));
-//			
+//
 //		bookClone.setTitleCache("cache2");
 //		Assert.assertFalse("Cached book with differings caches should not match", matchStrategy.invoke(book1, bookClone));
 //		bookClone.setTitleCache("cache1"); //restore
-//		
+//
 //		bookClone.setEdition(null);
 //		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
 
@@ -1013,40 +1013,40 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		cdmGenericDao.saveOrUpdate((Reference<?>)book3);
 		cdmGenericDao.saveOrUpdate(team1);
 		cdmGenericDao.saveOrUpdate(team2);
-		
-		
+
+
 		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
-		
+
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertNotNull("Resultlist must not be null", matchResult);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
-			
+
 			book1.setTitleCache("cache1", true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
-			
+
 			book2.setTitleCache("cache2", false);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
-			
+
 			book2.setEdition(null);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 0 entries", 0, matchResult.size());
-			
+
 			book3.setTitleCache("cache1", true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
-			
+
 			IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
 			boolean teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
-			
+
 			book3.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
@@ -1056,24 +1056,24 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
-			
+
 			book2.setTitleCache(book3.getTitleCache(), true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
-			
+
 			team2.setTitleCache("team2", true);
 			teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
-			
+
 			book3.setAuthorship(team1);
 			book2.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
-			
-			
+
+
 		} catch (MatchException e) {
 			Assert.fail("Find match must not throw Exception: " + e.getMessage());
 			e.printStackTrace();
@@ -1098,7 +1098,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		logger.debug("");
 
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.
 	 */

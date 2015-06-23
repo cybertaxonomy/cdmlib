@@ -9,17 +9,12 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
+import org.apache.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.CdmDataSourceTest;
-import eu.etaxonomy.cdm.database.DatabaseEnumTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTest;
 
 
 @RunWith(Suite.class)

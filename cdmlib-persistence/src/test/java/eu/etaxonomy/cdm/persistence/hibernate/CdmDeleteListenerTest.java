@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -44,7 +44,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	private ITaxonNameDao taxonNameDao;
 
 	private UUID uuid;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -52,7 +52,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	public void setUp() throws Exception {
 		uuid = UUID.fromString("44415fc0-1703-11df-8a39-0800200c9a66");
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.CdmDeleteListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)}.
 	 */
@@ -66,24 +66,24 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 		 */
 		taxonNameDao.refresh(name, new LockOptions(LockMode.READ), null);
 		assertNotNull(name);
-//		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing 
+//		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing
 //		Assert.assertEquals("There should be 2 relationships", 2, nRels);
 		Set<NameRelationship> relations = name.getNameRelations();
 		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());
 		name.removeNameRelationship(relations.iterator().next());
-		
+
 		Set<HybridRelationship> hybridRels = name.getHybridParentRelations();
 		Assert.assertEquals("There must be 1 parent relationship", 1, hybridRels.size());
-		
+
 		taxonNameDao.saveOrUpdate(name);
-		
+
 		setComplete();
 		endTransaction();
 		startNewTransaction();
-		
+
 //		nRels = taxonDao.countAllRelationships();
 //		Assert.assertEquals("There should be 1 relationship now", 1, nRels);
-		
+
 	}
 
     /* (non-Javadoc)
@@ -92,6 +92,6 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

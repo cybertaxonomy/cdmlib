@@ -201,7 +201,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
             commitAndStartNewTransaction(null);
             logger.error("Expected failure of evaluation.");
         } catch (RuntimeException e){
-            securityException = findSecurityRuntimeException(e);            
+            securityException = findSecurityRuntimeException(e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -376,6 +376,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

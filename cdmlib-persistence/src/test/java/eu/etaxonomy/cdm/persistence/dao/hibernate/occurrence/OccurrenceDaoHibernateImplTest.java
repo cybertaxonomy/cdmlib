@@ -18,8 +18,8 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private IOccurrenceDao dao;
-	
-	
+
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -28,8 +28,8 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 	public void setUp() throws Exception {
 	}
 
-//**************** TESTS ************************************************	
-	
+//**************** TESTS ************************************************
+
 	@Test
 	public void testRebuildIndex() {
 		logger.warn("Not yet implemented");
@@ -94,7 +94,7 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 	public void testListByAnyAssociation() {
 		logger.warn("Not yet implemented");
 	}
-	
+
 	@Test
 	public void testSaveOriginalLabelData(){
 		DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
@@ -112,7 +112,7 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

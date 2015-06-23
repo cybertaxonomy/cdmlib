@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -31,8 +30,8 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	private OccurrenceDaoHibernateImpl occurrenceDao;
-	
-	
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -48,16 +47,16 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 		DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		DeterminationEvent detWithTaxonOnlyAndNoName = DeterminationEvent.NewInstance(taxon, unit);
-		
+
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon taxon2 = Taxon.NewInstance(name, null);
 		DeterminationEvent detWithTaxonOnlyAndNameOnTaxon = DeterminationEvent.NewInstance(taxon2, unit);
-		
+
 		DeterminationEvent detWithNameOnly = DeterminationEvent.NewInstance(name, unit);
-		
+
 		occurrenceDao.save(unit);
 		commitAndStartNewTransaction(null);
-		
+
 		unit = (DerivedUnit)occurrenceDao.findByUuid(unit.getUuid());
 		for (DeterminationEvent persistedDetEvent : unit.getDeterminations()){
 			if (persistedDetEvent.getUuid().equals(detWithTaxonOnlyAndNoName.getUuid())){
@@ -73,10 +72,10 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 				Assert.fail("All cases should be handled");
 			}
 		}
-		
+
 	}
 
-	
+
 	@Override
 	public void createTestDataSet() throws FileNotFoundException {}
 
