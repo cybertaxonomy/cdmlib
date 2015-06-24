@@ -92,14 +92,6 @@ public class EditGeoService implements IEditGeoService {
         return distributionFeature;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString
-     * (java.util.List, java.util.Map, int, int, java.lang.String,
-     * java.lang.String, java.util.List)
-     */
     @Override
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
@@ -131,9 +123,6 @@ public class EditGeoService implements IEditGeoService {
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#getDistributionServiceRequestParameterString(java.util.Set, java.util.Map, int, int, java.lang.String, java.lang.String, java.util.List)
-     */
     @Override
     public String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
@@ -154,14 +143,7 @@ public class EditGeoService implements IEditGeoService {
         return uriParams;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString
-     * (eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int,
-     * int, java.lang.String, java.lang.String)
-     */
+
     @Override
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
@@ -181,14 +163,6 @@ public class EditGeoService implements IEditGeoService {
                 langs);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#
-     * getOccurrenceServiceRequestParameterString
-     * (eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int,
-     * int, java.lang.String, java.lang.String)
-     */
     @Override
     public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
@@ -252,23 +226,12 @@ public class EditGeoService implements IEditGeoService {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.ext.geo.IEditGeoService#setMapping(eu.etaxonomy.cdm.
-     * model.location.NamedArea, eu.etaxonomy.cdm.ext.geo.GeoServiceArea)
-     */
     @Override
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
         areaMapping.set(area, geoServiceArea);
 
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#mapShapeFileToNamedAreas(java.io.Reader, java.util.List, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
-     */
     @Override
     @Transactional(readOnly=false)
     public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
@@ -350,6 +313,4 @@ public class EditGeoService implements IEditGeoService {
 
         return dto;
     }
-
-
 }
