@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -279,8 +280,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 synonymRelationshipType,
                 citation,
                 citationMicroReference);
-        result.addUpdatedObject(oldTaxonParentNode);
-        result.addUpdatedObject(newTaxonNode);
+        result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
+        result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
         result.setCdmEntity(oldTaxonParentNode);
         return result;
     }
