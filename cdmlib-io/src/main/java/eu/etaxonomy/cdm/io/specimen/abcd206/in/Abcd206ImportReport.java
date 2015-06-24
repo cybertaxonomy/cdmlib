@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * Gathers information about the ABCD import and presents them in a suitable way.
  * @author pplitzner
  * @date Jan 23, 2015
  *
@@ -42,7 +43,7 @@ public class Abcd206ImportReport {
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
     private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
     private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
-    private final List<UnitIdSpecimen> ignoredImports = new ArrayList<Abcd206ImportReport.UnitIdSpecimen>();
+    private final List<UnitIdSpecimen> ignoredImports = new ArrayList<UnitIdSpecimen>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
@@ -59,26 +60,22 @@ public class Abcd206ImportReport {
         createdTaxonNodes.add(taxonNode);
     }
 
-    public void addDerivate(String parentUnitId, DerivedUnit parent){
-        addDerivate(parentUnitId, parent, null, null);
+    public void addDerivate(DerivedUnit parent, Abcd206ImportConfigurator config){
+        addDerivate(parent, null, config);
     }
 
-    public void addDerivate(String parentUnitId, SpecimenOrObservationBase<?> parent, String childUnitId, DerivedUnit child){
-        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(parentUnitId, parent);
+    public void addDerivate(DerivedUnit parent, DerivedUnit child, Abcd206ImportConfigurator config){
+        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(AbcdImportUtility.getUnitID(parent, config), parent);
         List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
             children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(new UnitIdSpecimen(childUnitId, child));
+            children.add(new UnitIdSpecimen(AbcdImportUtility.getUnitID(child, config), child));
         }
         derivateMap.put(parentUnitIdSpecimen, children);
     }
 
-    /**
-     * @param taxon
-     * @param derivedUnitBase
-     */
     public void addIndividualAssociation(Taxon taxon, String derivedUnitId, DerivedUnit derivedUnitBase) {
         UnitIdSpecimen derivedUnitIdSpecimen = new UnitIdSpecimen(derivedUnitId, derivedUnitBase);
         List<UnitIdSpecimen> associatedSpecimens = taxonToAssociatedSpecimens.get(taxon);
@@ -146,7 +143,7 @@ public class Abcd206ImportReport {
             out.println(taxon.getTitleCache() + " ("+specimens.size()+")");
             for (UnitIdSpecimen derivedUnit : specimens) {
                 out.println("\t- "+formatSpecimen(derivedUnit));
-                //check for derivates
+                //check for derivatives
                 List<UnitIdSpecimen> list = derivateMap.get(derivedUnit);
                 for (UnitIdSpecimen derivate : list) {
                     out.println("\t\t- "+formatSpecimen(derivate));

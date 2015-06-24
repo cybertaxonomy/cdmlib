@@ -93,7 +93,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         boolean result = defaultImport.invoke(importConfigurator);
         assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
 
@@ -105,7 +105,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
         assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
         DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
-        assertEquals("Herbarium Berolinense", specimen.getCollection().getName());
+        assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
         assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
 
         //dna sample

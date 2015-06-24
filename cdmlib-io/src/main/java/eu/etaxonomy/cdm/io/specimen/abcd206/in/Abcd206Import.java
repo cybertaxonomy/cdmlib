@@ -265,7 +265,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     save(dnaSample, state);
                     //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
                     state.setDerivedUnitBase(dnaSample);
-                    report.addDerivate(AbcdImportUtility.getUnitID(state.getDerivedUnitBase(), state.getConfig()), state.getDerivedUnitBase(), state.getDataHolder().unitID, dnaSample);
                 }
 
                 //import default unit + field unit data
@@ -283,14 +282,28 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
                         NodeList associatedUnits = associationWrapper.getAssociatedUnits();
                         for(int m=0;m<associatedUnits.getLength();m++){
+                            if(associatedUnits.item(m) instanceof Element){
+                                state.reset();
+                                this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                                handleSingleUnit(state);
 
-                            state.reset();
-                            this.setUnitPropertiesXML( item, abcdFieldGetter, state);
-                            handleSingleUnit(state);
+                                state.setPrefix(currentPrefix);
+                                //attach current unit and associated unit depending on association type
+                                //TODO
 
-                            state.setPrefix(currentPrefix);
-                            //attach current unit and associated unit depending on association type
-                            //TODO
+                                //copy derivation event
+                                DerivationEvent previousDerivationEvent = currentUnit.getDerivedFrom();
+                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(state.getDerivedUnitBase(), currentUnit, previousDerivationEvent.getType());
+                                updatedDerivationEvent.setActor(previousDerivationEvent.getActor());
+                                updatedDerivationEvent.setDescription(previousDerivationEvent.getDescription());
+                                updatedDerivationEvent.setInstitution(previousDerivationEvent.getInstitution());
+                                updatedDerivationEvent.setTimeperiod(previousDerivationEvent.getTimeperiod());
+                                report.addDerivate(state.getDerivedUnitBase(), currentUnit, state.getConfig());
+
+                                //handle field unit of associated specimen
+                                //TODO
+                                cdmAppController.getOccurrenceService().delete(state.getFieldUnit());
+                            }
                         }
                     }
                 }
@@ -349,6 +362,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //                    fieldUnit = derivedUnitFacade.getFieldUnit(true);
 //                }
 //            }
+            //import new specimen
             else{
                 // create facade
                 if(state.getDerivedUnitBase()==null){
@@ -1197,7 +1211,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         save(taxonDescription, state);
         save(taxon, state);
-        report.addDerivate(state.getDataHolder().unitID, state.getDerivedUnitBase());
+        report.addDerivate(state.getDerivedUnitBase(), state.getConfig());
         report.addIndividualAssociation(taxon, state.getDataHolder().unitID, state.getDerivedUnitBase());
     }
 
