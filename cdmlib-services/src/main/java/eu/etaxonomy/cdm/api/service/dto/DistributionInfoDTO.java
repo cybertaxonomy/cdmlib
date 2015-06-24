@@ -9,10 +9,12 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * @author a.kohlbecker
@@ -22,17 +24,17 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 public class DistributionInfoDTO {
 
 
-    private String condensedStatusString = null;
+    private Map<PresenceAbsenceTerm, String> condensedDistribution = null;
     private DistributionTree tree = null;
     private String mapUriParams = null;
     private Set<Distribution> elements = null;
 
 
     /**
-     * @param condensedStatusString the condensedStatusString to set
+     * @param condensedDistribution the condensedDistribution to set
      */
-    public void setCondensedStatusString(String condensedStatusString) {
-        this.condensedStatusString = condensedStatusString;
+    public void setCondensedDistribution(Map<PresenceAbsenceTerm, String> condensedDistribution) {
+        this.condensedDistribution = condensedDistribution;
     }
     /**
      * @param tree the tree to set
@@ -54,10 +56,10 @@ public class DistributionInfoDTO {
     }
 
     /**
-     * @return the condensedStatusString
+     * @return the condensedDistribution
      */
-    public String getCondensedStatusString() {
-        return condensedStatusString;
+    public Map<PresenceAbsenceTerm, String> getCondensedDistribution() {
+        return condensedDistribution;
     }
     /**
      * @return the tree
@@ -79,7 +81,7 @@ public class DistributionInfoDTO {
     }
 
     public enum InfoPart{
-        condensedStatusString,
+        condensedDistribution,
         tree,
         mapUriParams,
         elements,

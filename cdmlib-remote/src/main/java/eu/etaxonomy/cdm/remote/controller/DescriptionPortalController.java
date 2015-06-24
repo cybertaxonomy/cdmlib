@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -212,11 +213,13 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     /**
      * @param taxonUuid
      * @param parts
-     *            possible values: condensedStatusString, tree, mapUriParams,
+     *            possible values: condensedStatus, tree, mapUriParams,
      *            elements,
      * @param subAreaPreference
      * @param statusOrderPreference
      * @param hideMarkedAreasList
+     * @param recipe
+     *  The recipe for creating the condensed distribution status
      * @param omitLevels
      * @param request
      * @param response
@@ -234,6 +237,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
+
             HttpServletRequest request,
             HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
 
@@ -251,7 +256,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY);
+                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY, null);
 
             mv.addObject(dto);
 
