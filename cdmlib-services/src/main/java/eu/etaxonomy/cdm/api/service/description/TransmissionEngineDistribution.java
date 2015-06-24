@@ -361,7 +361,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         for (NamedArea superArea : superAreas){
             superAreaUuids.add(superArea.getUuid());
         }
-        List<DefinedTermBase> superAreaList = termService.find(superAreaUuids);
+        List<NamedArea> superAreaList = (List)termService.find(superAreaUuids);
 
         // visit all accepted taxa
         Pager<Taxon> taxonPager = null;
@@ -398,8 +398,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
-                for (DefinedTermBase superAreaTermBase : superAreaList){
-                    NamedArea superArea = (NamedArea)superAreaTermBase;
+                for (NamedArea superArea : superAreaList){
 
                     // accumulate all sub area status
                     PresenceAbsenceTerm accumulatedStatus = null;
@@ -524,62 +523,61 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     logger.error("accumulateByRank() - taxonNode pager was NULL");
                 }
 
-
-                isLastPage = taxonPager.getRecords().size() < batchSize;
-                if (taxonPager.getRecords().size() == 0){
-                    break;
-                }
-
-                for(TaxonNode taxonNode : taxonPager.getRecords()) {
-
-                    Taxon taxon = taxonNode.getTaxon();
-                    if (taxaProcessedIds.contains(taxon.getId())) {
-                        if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByRank() - skipping already processed taxon :" + taxon.getTitleCache());
-                        }
-                        continue;
-                    }
-                    taxaProcessedIds.add(taxon.getId());
-                    if(logger.isDebugEnabled()){
-                        logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxon.getTitleCache());
+                if(taxonPager != null){
+                    isLastPage = taxonPager.getRecords().size() < batchSize;
+                    if (taxonPager.getRecords().size() == 0){
+                        break;
                     }
 
-                    // Step through direct taxonomic children for accumulation
-                    @SuppressWarnings("rawtypes")
-                    Map<NamedArea, PresenceAbsenceTerm> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTerm>();
+                    for(TaxonNode taxonNode : taxonPager.getRecords()) {
 
-                    for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
-
-                        getSession().setReadOnly(taxonNode, true);
-                        if(logger.isTraceEnabled()){
-                            logger.trace("                   subtaxon :" + subTaxonNode.getTaxon().getTitleCache());
-                        }
-
-                        for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
-                            PresenceAbsenceTerm status = distribution.getStatus();
-                            NamedArea area = distribution.getArea();
-                            if (status == null || getByRankIgnoreStatusList().contains(status)){
-                              continue;
+                        Taxon taxon = taxonNode.getTaxon();
+                        if (taxaProcessedIds.contains(taxon.getId())) {
+                            if(logger.isDebugEnabled()){
+                                logger.debug("accumulateByRank() - skipping already processed taxon :" + taxon.getTitleCache());
                             }
-                            accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), status));
-                         }
-                    }
-
-                    if(accumulatedStatusMap.size() > 0) {
-                        TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
-                        for (NamedArea area : accumulatedStatusMap.keySet()) {
-                            // store new distribution element in new Description
-                            Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
-                            newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                            description.addElement(newDistribitionElement);
+                            continue;
                         }
-                        taxonService.saveOrUpdate(taxon);
-                        descriptionService.saveOrUpdate(description);
-                    }
-                    taxonSubMonitor.worked(1); // one taxon worked
+                        taxaProcessedIds.add(taxon.getId());
+                        if(logger.isDebugEnabled()){
+                            logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxon.getTitleCache());
+                        }
 
-                } // next taxon node ....
+                        // Step through direct taxonomic children for accumulation
+                        Map<NamedArea, PresenceAbsenceTerm> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTerm>();
 
+                        for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
+
+                            getSession().setReadOnly(taxonNode, true);
+                            if(logger.isTraceEnabled()){
+                                logger.trace("                   subtaxon :" + subTaxonNode.getTaxon().getTitleCache());
+                            }
+
+                            for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
+                                PresenceAbsenceTerm status = distribution.getStatus();
+                                NamedArea area = distribution.getArea();
+                                if (status == null || getByRankIgnoreStatusList().contains(status)){
+                                  continue;
+                                }
+                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), status));
+                             }
+                        }
+
+                        if(accumulatedStatusMap.size() > 0) {
+                            TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
+                            for (NamedArea area : accumulatedStatusMap.keySet()) {
+                                // store new distribution element in new Description
+                                Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
+                                newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+                                description.addElement(newDistribitionElement);
+                            }
+                            taxonService.saveOrUpdate(taxon);
+                            descriptionService.saveOrUpdate(description);
+                        }
+                        taxonSubMonitor.worked(1); // one taxon worked
+
+                    } // next taxon node ....
+                }
                 taxonPager = null;
                 flushAndClear();
 
@@ -734,7 +732,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      */
     private List<Distribution> distributionsFor(Taxon taxon) {
         return descriptionService
-                .getDescriptionElementsForTaxon(taxon, null, Distribution.class, null, null, null);
+                .listDescriptionElementsForTaxon(taxon, null, Distribution.class, null, null, null);
     }
 
     /**
@@ -768,7 +766,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             // load the term
             term = (PresenceAbsenceTerm) termService.load(term.getUuid());
             // find the extension
-            Extension priotityExtension = null;
+            Extension priorityExtension = null;
             Set<Extension> extensions = term.getExtensions();
             for(Extension extension : extensions){
                 if (!extension.getType().equals(ExtensionType.ORDER())) {
@@ -776,14 +774,14 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
                 int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
                 if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
-                    priotityExtension = extension;
+                    priorityExtension = extension;
                     break;
                 }
             }
-            if(priotityExtension == null) {
-                priotityExtension = Extension.NewInstance(term, null, ExtensionType.ORDER());
+            if(priorityExtension == null) {
+                priorityExtension = Extension.NewInstance(term, null, ExtensionType.ORDER());
             }
-            priotityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
+            priorityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
 
             // save the term
             termService.saveOrUpdate(term);

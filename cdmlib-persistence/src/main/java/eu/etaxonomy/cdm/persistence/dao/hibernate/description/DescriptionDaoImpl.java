@@ -702,6 +702,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
+        @SuppressWarnings("unchecked")
         List<T> results = query.list();
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -738,10 +739,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             listOrCount = "de";
         }
 
-        String queryString = "select " + listOrCount + " from DescriptionElementBase as de" +
-                " left join de.inDescription as d" +
-                " left join d.taxon as t" +
-                " where d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid ";
+        String queryString = "SELECT " + listOrCount + " FROM DescriptionElementBase AS de" +
+                " LEFT JOIN de.inDescription AS d" +
+                " LEFT JOIN d.taxon AS t" +
+                " WHERE d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid ";
 
         if(type != null){
             queryString += " and de.class = :type";
