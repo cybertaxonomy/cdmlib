@@ -28,7 +28,11 @@ public interface IImportConfigurator extends IIoConfigurator {
     public static enum CHECK{
         CHECK_ONLY,
         IMPORT_WITHOUT_CHECK,
-        CHECK_AND_IMPORT,
+        CHECK_AND_IMPORT;
+
+        public boolean isImport(){
+            return this == IMPORT_WITHOUT_CHECK || this == CHECK_AND_IMPORT ;
+        }
     }
 
     public static enum EDITOR{
@@ -42,7 +46,7 @@ public interface IImportConfigurator extends IIoConfigurator {
         NOMENCLATURAL,
         CONCEPT_REFERENCES,
         ALL;
-        
+
         public DO_REFERENCES invers(){
         	if (this == DO_REFERENCES.NONE){
         		return ALL;
@@ -57,7 +61,7 @@ public interface IImportConfigurator extends IIoConfigurator {
         	}
         }
     }
-    
+
 
 
     public boolean isValid();
@@ -112,8 +116,10 @@ public interface IImportConfigurator extends IIoConfigurator {
 
     public void setDestination(ICdmDataSource destination);
 
+    @Override
     public DbSchemaValidation getDbSchemaValidation();
 
+    @Override
     public void setDbSchemaValidation(
             DbSchemaValidation dbSchemaValidation);
 
