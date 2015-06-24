@@ -50,6 +50,7 @@ public class Group extends CdmBase {
 
     public final static UUID groupEditorUuid = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
     public final static UUID groupProjectManagerUuid = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
+    public final static UUID groupPublisherUuid = UUID.fromString("c1f20ad8-1782-40a7-b06b-ce4773acb5ea");
 
 //*********************** FACTORY *********************/
 
@@ -62,9 +63,9 @@ public class Group extends CdmBase {
         group.setName(name);
         return group;
     }
-    
-//**************** FIELDS ******************************/    
-    
+
+//**************** FIELDS ******************************/
+
     @XmlElement(name = "Name")
     @Column(unique = true)
     @Field
@@ -87,13 +88,13 @@ public class Group extends CdmBase {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
-// ********************* CONSTRUCTOR ************************/    
-    
+// ********************* CONSTRUCTOR ************************/
+
     protected Group(){
         super();
     }
 
-// *************** METHODS ***********************************/    
+// *************** METHODS ***********************************/
 
     public Set<GrantedAuthority> getGrantedAuthorities() {
         return grantedAuthorities;
