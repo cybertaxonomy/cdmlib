@@ -79,8 +79,6 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
-    private static final long serialVersionUID = -4738245032655597608L;
-
     /**
      * must match the key in eu/etaxonomy/cdm/services_security.xml
      */
