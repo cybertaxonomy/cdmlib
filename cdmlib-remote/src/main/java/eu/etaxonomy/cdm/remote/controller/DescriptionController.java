@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -255,7 +256,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     /**
      * @param taxonUuid
      * @param parts
-     *            possible values: condensedStatusString, tree, mapUriParams,
+     *            possible values: condensedStatus, tree, mapUriParams,
      *            elements,
      * @param subAreaPreference
      * @param statusOrderPreference
@@ -263,6 +264,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
      * @param omitLevels
      * @param request
      * @param response
+     * @param recipe
+     *  The recipe for creating the condensed distribution status
      * @return
      * @throws IOException
      * @throws JsonMappingException
@@ -277,6 +280,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
             HttpServletRequest request,
             HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
 
@@ -289,12 +293,13 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 hideMarkedAreas = hideMarkedAreasList.asSet();
             }
 
+
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getInitializationStrategy());
+                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getInitializationStrategy(), recipe);
 
             mv.addObject(dto);
 

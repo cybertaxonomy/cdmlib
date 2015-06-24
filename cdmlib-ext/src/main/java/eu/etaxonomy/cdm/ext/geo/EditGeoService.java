@@ -93,15 +93,10 @@ public class EditGeoService implements IEditGeoService {
     }
 
     /**
-     * {@inheritDoc}
+     * @param taxonDescriptions
+     * @return
      */
-    @Override
-    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> langs) {
-
+    private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
             List<Distribution> result = (List) dao.getDescriptionElements(
@@ -114,6 +109,21 @@ public class EditGeoService implements IEditGeoService {
                     null);
             distributions.addAll(result);
         }
+        return distributions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
+
+        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
 
         String uriParams = getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference,
@@ -124,8 +134,6 @@ public class EditGeoService implements IEditGeoService {
 
         return uriParams;
     }
-
-
 
     /**
      * {@inheritDoc}
@@ -143,7 +151,6 @@ public class EditGeoService implements IEditGeoService {
 
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
-                hideMarkedAreas,
                 areaMapping,
                 presenceAbsenceTermColors,
                 null, langs);
@@ -200,13 +207,35 @@ public class EditGeoService implements IEditGeoService {
 
     }
 
-    public String getCondensedDistributionString(List<TaxonDescription> taxonDescriptions,
+    public Map<PresenceAbsenceTerm, String> getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            CondensedDistributionStringRecipe recipe,
+            CondensedDistributionRecipe recipe,
             List<Language> langs) {
-        return null;
+        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
+        return getCondensedDistribution(distributions, subAreaPreference,
+                statusOrderPreference, hideMarkedAreas, recipe, langs);
+    }
+
+    public Map<PresenceAbsenceTerm, String> getCondensedDistribution(Set<Distribution> distributions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            CondensedDistributionRecipe recipe,
+            List<Language> langs) {
+
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+
+
+        Map<PresenceAbsenceTerm, String> condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
+                filteredDistributions,
+                recipe,
+                langs);
+
+        return condensedDistribution;
     }
 
     /**
@@ -289,7 +318,7 @@ public class EditGeoService implements IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths){
+            List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
@@ -326,13 +355,13 @@ public class EditGeoService implements IEditGeoService {
 
         if (parts.contains(InfoPart.mapUriParams)) {
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
-                    hideMarkedAreas,
                     areaMapping,
                     presenceAbsenceTermColors,
                     null, languages));
         }
 
-        if(parts.contains(InfoPart.condensedStatusString)) {
+        if(parts.contains(InfoPart.condensedDistribution)) {
+            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(filteredDistributions, recipe, languages));
             logger.error("condensedStatusString not yet supported:  #3907 (EuroMed: implement condensed status string of distribution information)");
         }
 

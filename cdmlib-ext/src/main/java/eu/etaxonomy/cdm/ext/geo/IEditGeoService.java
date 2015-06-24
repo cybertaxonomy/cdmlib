@@ -81,20 +81,18 @@ public interface IEditGeoService {
      * @param distributions
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
-     * @param hideMarkedAreas
-     *            distributions where the area has a {@link Marker} with one of
-     *            the specified {@link MarkerType}s will be skipped, see
-     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      * @param langs
      * @return
      */
-    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
-            boolean subAreaPreference, boolean statusOrderPreference,
+    public String getDistributionServiceRequestParameterString(
+            Set<Distribution> distributions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
@@ -202,6 +200,6 @@ public interface IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages, List<String> propertyPaths);
+            List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe);
 
 }

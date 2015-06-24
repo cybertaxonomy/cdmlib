@@ -40,8 +40,6 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -189,10 +187,9 @@ public class EditGeoServiceUtilities {
      *            DescriptionUtility.filterDistributions(distributions,
      *            subAreaPreference, statusOrderPreference, hideMarkedAreas);
      *            }
-     * @param hideMarkedAreas
-     *            distributions where the area has a {@link Marker} with one of
-     *            the specified {@link MarkerType}s will be skipped, see
-     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+     * @param mapping
+     *            Data regarding the mapping of NamedAreas to shape file
+     *            attribute tables
      * @param presenceAbsenceTermColors
      *            A map that defines the colors of PresenceAbsenceTerms. The
      *            PresenceAbsenceTerms are defined by their uuid. If a
@@ -203,18 +200,7 @@ public class EditGeoServiceUtilities {
      *            name of a layer which is representing a specific
      *            {@link NamedAreaLevel} Supply this parameter if you to project
      *            all other distribution area levels to this layer.
-     *
-     * @param width
-     *            The maps width
-     * @param height
-     *            The maps height
-     * @param bbox
-     *            The maps bounding box (e.g. "-180,-90,180,90" for the whole
-     *            world)
-     * @param layer
-     *            The layer that is responsible for background borders and
-     *            colors. Use the name for the layer. If null 'earth' is taken
-     *            as default.
+     * @param languages
      *
      * @return the parameter string or an empty string if the
      *         <code>distributions</code> set was null or empty.
@@ -222,7 +208,6 @@ public class EditGeoServiceUtilities {
     @Transient
     public static String getDistributionServiceRequestParameterString(
             Collection<Distribution> filteredDistributions,
-            Set<MarkerType> hideMarkedAreas,
             IGeoServiceAreaMapping mapping,
             Map<PresenceAbsenceTerm,Color> presenceAbsenceTermColors,
             String projectToLayer,
@@ -781,6 +766,29 @@ public class EditGeoServiceUtilities {
             }
         }
         return presenceAbsenceTermColors;
+    }
+
+
+    /**
+     * @param filteredDistributions
+     * @param recipe
+     * @param hideMarkedAreas
+     * @param langs
+     * @return
+     */
+    public static Map<PresenceAbsenceTerm, String> getCondensedDistribution(Collection<Distribution> filteredDistributions,
+            CondensedDistributionRecipe recipe, List<Language> langs) {
+        ICondensedDistributionComposer composer;
+        try {
+            composer = recipe.newCondensedDistributionComposerInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        Map<PresenceAbsenceTerm, String> condensedDistribution = composer.createCondensedDistribution(
+                filteredDistributions,  langs);
+        return condensedDistribution;
     }
 
 }
