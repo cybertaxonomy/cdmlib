@@ -272,10 +272,27 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 this.handleSingleUnit(state);
 
                 //import associated units
-                NodeList unitAssociationsList = item.getElementsByTagName(state.getPrefix()+"UnitAssociations");
-                if(unitAssociationsList.getLength()==1 && unitAssociationsList.item(0) instanceof Element){
-                    UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
-                    unitAssociationParser.parse((Element)unitAssociationsList.item(0), state);
+                DerivedUnit currentUnit = state.getDerivedUnitBase();
+                String currentPrefix = state.getPrefix();
+
+                NodeList unitAssociationList = item.getElementsByTagName(state.getPrefix()+"UnitAssociation");
+                for(int k=0;k<unitAssociationList.getLength();k++){
+                    if(unitAssociationList.item(k) instanceof Element){
+                        Element unitAssociation = (Element)unitAssociationList.item(k);
+                        UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
+                        UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
+                        NodeList associatedUnits = associationWrapper.getAssociatedUnits();
+                        for(int m=0;m<associatedUnits.getLength();m++){
+
+                            state.reset();
+                            this.setUnitPropertiesXML( item, abcdFieldGetter, state);
+                            handleSingleUnit(state);
+
+                            state.setPrefix(currentPrefix);
+                            //attach current unit and associated unit depending on association type
+                            //TODO
+                        }
+                    }
                 }
 
                 state.reset();

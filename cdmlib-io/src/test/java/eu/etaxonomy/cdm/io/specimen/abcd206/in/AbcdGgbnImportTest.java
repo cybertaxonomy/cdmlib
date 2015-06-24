@@ -98,15 +98,15 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
 
         //associated specimen
-//        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
-//        config.setSignificantIdentifier("B 10 0066577");
-//        List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
-//        assertEquals(1, records.size());
-//        SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
-//        assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
-//        DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
-//        assertEquals("Herbarium Berolinense", specimen.getCollection().getName());
-//        assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
+        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setSignificantIdentifier("B 10 0066577");
+        List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(1, records.size());
+        SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
+        assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
+        DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
+        assertEquals("Herbarium Berolinense", specimen.getCollection().getName());
+        assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
 
         //dna sample
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
