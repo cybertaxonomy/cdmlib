@@ -175,24 +175,20 @@ public class EditGeoServiceUtilities {
     static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
 
 
-
-    //preliminary implementation for TDWG areas
     /**
      * Returns the parameter String for the EDIT geo webservice to create a
-     * dsitribution map.
+     * distribution map.
      *
      * @param distributions
      *            A set of distributions that should be shown on the map
-     * @param subAreaPreference
-     *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection,
-     *            boolean, boolean}
+     *            The {@link DescriptionUtility} class provides a method for
+     *            filtering a set of Distributions :
      *
-     * @param statusOrderPreference
-     *            enables the <b>Status order preference rule</b> if set to
-     *            true, see {@link
-     *            DescriptionUtility#filterDistributions(Collection, boolean,
-     *            boolean}
+     *            {@code
+     *            Collection<Distribution> filteredDistributions =
+     *            DescriptionUtility.filterDistributions(distributions,
+     *            subAreaPreference, statusOrderPreference, hideMarkedAreas);
+     *            }
      * @param hideMarkedAreas
      *            distributions where the area has a {@link Marker} with one of
      *            the specified {@link MarkerType}s will be skipped, see
@@ -203,6 +199,11 @@ public class EditGeoServiceUtilities {
      *            PresenceAbsenceTerm is not included in this map, it's default
      *            color is taken instead. If the map == null all terms are
      *            colored by their default color.
+     * @param projectToLayer
+     *            name of a layer which is representing a specific
+     *            {@link NamedAreaLevel} Supply this parameter if you to project
+     *            all other distribution area levels to this layer.
+     *
      * @param width
      *            The maps width
      * @param height
@@ -210,26 +211,22 @@ public class EditGeoServiceUtilities {
      * @param bbox
      *            The maps bounding box (e.g. "-180,-90,180,90" for the whole
      *            world)
-     * @param projectToLayer
-     *            name of a layer which is representing a specific
-     *            {@link NamedAreaLevel} Supply this parameter if you to project
-     *            all other distribution area levels to this layer.
      * @param layer
      *            The layer that is responsible for background borders and
      *            colors. Use the name for the layer. If null 'earth' is taken
      *            as default.
+     *
      * @return the parameter string or an empty string if the
      *         <code>distributions</code> set was null or empty.
      */
     @Transient
     public static String getDistributionServiceRequestParameterString(
-            Set<Distribution> distributions,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
+            Collection<Distribution> filteredDistributions,
             Set<MarkerType> hideMarkedAreas,
             IGeoServiceAreaMapping mapping,
             Map<PresenceAbsenceTerm,Color> presenceAbsenceTermColors,
-            String projectToLayer, List<Language> languages){
+            String projectToLayer,
+            List<Language> languages){
 
 
         /*
@@ -258,13 +255,11 @@ public class EditGeoServiceUtilities {
 
 
         //handle empty set
-        if(distributions == null || distributions.size() == 0){
+        if(filteredDistributions == null || filteredDistributions.size() == 0){
             return "";
         }
 
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
-
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
         List<PresenceAbsenceTerm> statusList = new ArrayList<PresenceAbsenceTerm>();

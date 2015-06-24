@@ -122,8 +122,8 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference, statusOrderPreference, null, mapping,
-                presenceAbsenceColorMap, null, languages );
+                null, mapping, presenceAbsenceColorMap, null,
+                languages );
         logger.warn(result);
         Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:a:DEU.*"));
 
@@ -153,9 +153,9 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference ,
-                statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, null, languages );
+                null ,
+                mapping,
+                presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
         logger.debug(result);
@@ -196,9 +196,9 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference ,
-                statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, null, languages );
+                null ,
+                mapping,
+                presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
         assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
@@ -351,9 +351,9 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference ,
-                statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, null, languages );
+                null ,
+                mapping,
+                presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 

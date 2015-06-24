@@ -139,14 +139,14 @@ public class EditGeoService implements IEditGeoService {
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
-//        if (backLayer == null) {
-//            backLayer = DEFAULT_BACK_LAYER;
-//        }
-        String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference,
-                statusOrderPreference,
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+
+        String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 hideMarkedAreas,
-                areaMapping, presenceAbsenceTermColors, null, langs);
+                areaMapping,
+                presenceAbsenceTermColors,
+                null, langs);
         return uriParams;
     }
 
@@ -198,6 +198,15 @@ public class EditGeoService implements IEditGeoService {
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors);
 
+    }
+
+    public String getCondensedDistributionString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            CondensedDistributionStringRecipe recipe,
+            List<Language> langs) {
+        return null;
     }
 
     /**
@@ -317,10 +326,10 @@ public class EditGeoService implements IEditGeoService {
 
         if (parts.contains(InfoPart.mapUriParams)) {
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
-                    subAreaPreference,
-                    statusOrderPreference,
                     hideMarkedAreas,
-                    areaMapping, presenceAbsenceTermColors, null, languages));
+                    areaMapping,
+                    presenceAbsenceTermColors,
+                    null, languages));
         }
 
         if(parts.contains(InfoPart.condensedStatusString)) {
