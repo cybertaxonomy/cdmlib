@@ -266,6 +266,7 @@ public class BerlinModelTransformer {
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
 	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
 	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
+	public static final UUID uuidHiddenArea = UUID.fromString("0318c67d-e323-4e9c-bffb-bc0c7f8f9f40");
 
 
 	//Extension Types
