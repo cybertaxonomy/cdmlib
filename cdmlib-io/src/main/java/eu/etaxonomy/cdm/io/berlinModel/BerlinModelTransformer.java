@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -46,26 +46,26 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
-	
+
 	//source Refs
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
-	
+
 	//ranks
 	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
 	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
 	public static UUID uuidRankSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
-	
+
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
-	
+
 	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
 	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
 	public static UUID uuidSerbia = UUID.fromString("4ffed197-3d7e-4cd9-8984-e64b8dee9512");
 	public static UUID uuidLebanonSyria = UUID.fromString("0c45f250-99da-4b19-aa89-c3e56cfdf103");
 	public static UUID uuidUssr = UUID.fromString("a512e00a-45f3-4be5-82fa-bba8d675696f");
 	public static UUID uuidSicilyMalta = UUID.fromString("424d81ee-d272-4ae8-9600-0a334049cd72");
-	
+
 	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
 	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
 	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
@@ -91,7 +91,7 @@ public class BerlinModelTransformer {
 	public static UUID uuidIbizaWithFormentera = UUID.fromString("1cda2a33-3469-49d5-8e77-cb5451110519");
 	public static UUID uuidMallorca = UUID.fromString("a10cba04-b4b5-4a4b-b69a-fcd4b3916fec");
 	public static UUID uuidMenorca = UUID.fromString("9f6ede48-27f8-4270-bf4e-c97eaa86aab7");
-	
+
 	//russia
 	public static UUID uuidRussiaNorthern = UUID.fromString("c23bc1c9-a775-4426-b883-07d4d7d47eed");
 	public static UUID uuidRussiaBaltic = UUID.fromString("579dad44-9439-4b19-8716-ab90d8f27944");
@@ -103,9 +103,11 @@ public class BerlinModelTransformer {
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
 	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
 	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
-	
-	
+
+
+
 	//E+M areas
+	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
 	public static UUID uuidEM = UUID.fromString("111BDF38-7A32-440A-9808-8AF1C9E54B51");
 	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");
 	public static UUID uuid14 = UUID.fromString("4FF83A35-97DE-4C39-BEDE-27EE9ECEFB45");
@@ -255,33 +257,33 @@ public class BerlinModelTransformer {
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 
 
-		
+
 	//language areas
 //	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
 	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
-	
+
 	//Marker Types
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
 	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
 	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
-	
-	
+
+
 	//Extension Types
 	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
 	public static final UUID uuidExpertName = UUID.fromString("24becb79-a90c-47d3-be35-efc87bb48fd3");
-	
+
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
 	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
 	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
 	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
-	
+
 	//Area Level
 	public static final UUID uuidAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
 	public static final UUID uuidAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");
 	public static final UUID uuidAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
-	
-	
+
+
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
 
@@ -299,9 +301,9 @@ public class BerlinModelTransformer {
 	public static int REF_PRINT_SERIES = 55;
 	public static int REF_CONFERENCE_PROCEEDINGS = 56;
 	public static int REF_JOURNAL_VOLUME = 57;
-	
 
-	
+
+
 	//NameStatus
 	public static int NAME_ST_NOM_INVAL = 1;
 	public static int NAME_ST_NOM_ILLEG = 2;
@@ -322,8 +324,8 @@ public class BerlinModelTransformer {
 	public static int NAME_ST_NOM_CONFUS = 17;
 	public static int NAME_ST_NOM_ALTERN = 18;
 	public static int NAME_ST_COMB_INVAL = 19;
-	
-	
+
+
 	//NameRelationShip
 	public static int NAME_REL_IS_BASIONYM_FOR = 1;
 	public static int NAME_REL_IS_LATER_HOMONYM_OF = 2;
@@ -345,12 +347,12 @@ public class BerlinModelTransformer {
 	public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
 	public static int NAME_REL_IS_LECTOTYPE_OF = 61;
 	public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
-	
+
 	//NameFacts
 	public static String NAME_FACT_PROTOLOGUE = "Protologue";
 	public static String NAME_FACT_ALSO_PUBLISHED_IN = "Also published in";
 	public static String NAME_FACT_BIBLIOGRAPHY = "Bibliography";
-	
+
 	//TaxonRelationShip
 	public static int TAX_REL_IS_INCLUDED_IN = 1;
 	public static int TAX_REL_IS_SYNONYM_OF = 2;
@@ -363,8 +365,8 @@ public class BerlinModelTransformer {
 	public static int TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF = 102;
 	public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
 	public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
-	
-	
+
+
 
 	//TaxonStatus
 	public static int T_STATUS_ACCEPTED = 1;
@@ -373,8 +375,8 @@ public class BerlinModelTransformer {
 	public static int T_STATUS_PRO_PARTE_SYN = 4;
 	public static int T_STATUS_UNRESOLVED = 5;
 	public static int T_STATUS_ORPHANED = 6;
-	
-	
+
+
 	//Facts
 	public static int FACT_DESCRIPTION = 1;
 	public static int FACT_GROWTH_FORM = 2;
@@ -398,17 +400,17 @@ public class BerlinModelTransformer {
 	public static final UUID uuidFeatureEditorParenthesis = UUID.fromString("6ee10a2e-ff02-4cf4-a520-89630edc5b44");
 	public static final UUID uuidFeatureInedited = UUID.fromString("c93e2968-bc52-4165-9755-ce37611faf01");
 	public static final UUID uuidFeatureCommentsEditing = UUID.fromString("7a155021-158a-48bb-81d0-9a72b718e2de");
-	
-	
-	
+
+
+
 	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
 	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
 	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
-	
+
 	static NomenclaturalStatusType nomStatusCombIned;
 	static NomenclaturalStatusType nomStatusSpNovIned;
 	static NomenclaturalStatusType nomStatusNomOrthCons;
-	
+
 	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
 		NomenclaturalStatusType result = null;
 		if (nomStatus == null){
@@ -438,7 +440,7 @@ public class BerlinModelTransformer {
 		return result;
 	}
 
-	
+
 	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk, String nomStatusLabel)  throws UnknownCdmTypeException{
 		if (nomStatusFk == NAME_ST_NOM_INVAL){
 			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID());
@@ -487,7 +489,7 @@ public class BerlinModelTransformer {
 			throw new UnknownCdmTypeException("Unknown NomenclaturalStatus (id=" + Integer.valueOf(nomStatusFk).toString() + ")");
 		}
 	}
-	
+
 	public static UUID getEMAreaUuid(String areaId){
 		if (areaId == null){
 			logger.warn("No AreaId given");
@@ -643,10 +645,10 @@ public class BerlinModelTransformer {
 			logger.warn("Area not found: " + areaId);
 			return null;
 		}
-		
+
 	}
-	
-	
+
+
 	//TypeDesignation
 	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
 		switch (typeStatusId){
@@ -670,7 +672,7 @@ public class BerlinModelTransformer {
 			}
 		}
 	}
-	
+
 	//TypeDesignation
 	public static TaxonRelationshipType taxonRelId2TaxonRelType (int relTaxonTypeId, ResultWrapper<Boolean> isInverse, ResultWrapper<Boolean> isDoubtful)  throws UnknownCdmTypeException{
 		isInverse.setValue(false);
@@ -690,16 +692,16 @@ public class BerlinModelTransformer {
 			case 22: return TaxonRelationshipType.INCLUDES_OR_OVERLAPS();
 			case 23: return TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS();
 			case 24: return TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
-			
+
 			case 26: return TaxonRelationshipType.EXCLUDES();
-			
+
 			//TODO other relationshipTypes
-			
+
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
-			
+
 			//how to implement this, what is a purely doubtful relationship ??
 //			case 42: isDoubtful.setValue(true); return TaxonRelationshipType.();
-			
+
 			case 43: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_TO();
 			case 44: isInverse.setValue(true);isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDES();
 			case 46: isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDES();
@@ -708,13 +710,13 @@ public class BerlinModelTransformer {
 			case 51: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_OVERLAPS();
 			case 58: isDoubtful.setValue(true); return TaxonRelationshipType.EXCLUDES();
 
-			
+
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(relTaxonTypeId).toString() + ")");
 			}
 		}
 	}
-	
+
 	//TypeDesignation
 	public static HybridRelationshipType relNameId2HybridRel (int relNameId)  throws UnknownCdmTypeException{
 		switch (relNameId){
@@ -728,7 +730,7 @@ public class BerlinModelTransformer {
 			}
 		}
 	}
-	
+
 	//OccStatus
 	public static PresenceAbsenceTerm occStatus2PresenceAbsence (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
@@ -758,8 +760,8 @@ public class BerlinModelTransformer {
 			}
 		}
 	}
-	
-	
+
+
 	//FactCategory
 	public static Feature factCategory2Feature (int factCategoryId)  throws UnknownCdmTypeException{
 		switch (factCategoryId){
@@ -775,7 +777,7 @@ public class BerlinModelTransformer {
 			}
 		}
 	}
-	
+
 	public static UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
 		if (key == null){
 			return null;
@@ -783,20 +785,20 @@ public class BerlinModelTransformer {
 		}else if (key.equalsIgnoreCase("301-Conservation Status")){ return uuidFeatureConservationStatus;
 		}else if (key.equalsIgnoreCase("302-Use")){ return uuidFeatureUse;
 		}else if (key.equalsIgnoreCase("303-Comments")){ return uuidFeatureComments;
-		
+
 		}else if (key.equalsIgnoreCase("10-general distribution (Euro+Med)")){ return uuidFeatureDistrEM;
 		}else if (key.equalsIgnoreCase("11-general distribution (world)")){ return uuidFeatureDistrWorld;
 		}else if (key.equalsIgnoreCase("250-Editor_Brackets")){ return uuidFeatureEditorBrackets;
 		}else if (key.equalsIgnoreCase("251-Editor_Parenthesis")){ return uuidFeatureEditorParenthesis;
 		}else if (key.equalsIgnoreCase("252-Inedited")){ return uuidFeatureInedited;
 		}else if (key.equalsIgnoreCase("253-Comments on editing process")){ return uuidFeatureCommentsEditing;
-		
+
 		}else{
 			return null;
 		}
 	}
-	
-	
+
+
 	static Rank collSpeciesRank;
 	/**
 	 * @param i
@@ -807,7 +809,7 @@ public class BerlinModelTransformer {
 		if (rankId == null){
 			return null;
 		}else if (rankId == 57){
-			
+
 			if (collSpeciesRank == null){
 				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
 				collSpeciesRank.setUuid(uuidRankCollSpecies);
@@ -819,18 +821,18 @@ public class BerlinModelTransformer {
 		return result;
 	}
 
-	
+
 	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown, boolean switchSpeciesGroup) throws UnknownCdmTypeException{
 		Rank result;
 		try {
 			int rankId = rs.getInt("rankFk");
-			
+
 			String abbrev = rs.getString("rankAbbrev");
 			String rankName = rs.getString("rank");
 			if (logger.isDebugEnabled()){logger.debug(rankId);}
 			if (logger.isDebugEnabled()){logger.debug(abbrev);}
 			if (logger.isDebugEnabled()){logger.debug(rankName);}
-			
+
 			if (switchSpeciesGroup){
 				if (rankId == 59){
 					rankId = 57;
@@ -882,13 +884,13 @@ public class BerlinModelTransformer {
 						case 84: return Rank.SPECIALFORM();
 						case 98: return Rank.INFRAGENERICTAXON();
 						case 99: return Rank.INFRASPECIFICTAXON();
-						
+
 						case 750: return Rank.SUPERCLASS();
 						case 780: return Rank.INFRACLASS();
 						case 820: return Rank.INFRAORDER();
-						
+
 						case 830: return Rank.SUPERFAMILY();
-						
+
 						default: {
 							Rank rank = rankId2NewRank(57, switchSpeciesGroup);
 							if (rank != null){
@@ -908,7 +910,7 @@ public class BerlinModelTransformer {
 			e.printStackTrace();
 			logger.warn("Exception occurred. Created UNKNOWN_RANK instead");
 			return Rank.UNKNOWN_RANK();
-		}		
+		}
 	}
 
 
@@ -922,7 +924,7 @@ public class BerlinModelTransformer {
 		else if (rank.equals(Rank.SUBPHYLUM())){	return 7;}
 		else if (rank.equals(Rank.DIVISION())){		return 8;}
 		else if (rank.equals(Rank.SUBDIVISION())){	return 9;}
-		
+
 		else if (rank.equals(Rank.CLASS())){		return 10;}
 		else if (rank.equals(Rank.SUBCLASS())){		return 13;}
 		else if (rank.equals(Rank.SUPERORDER())){	return 16;}
@@ -951,19 +953,19 @@ public class BerlinModelTransformer {
 		else if (rank.equals(Rank.SPECIALFORM())){	return 84;}
 		else if (rank.equals(Rank.INFRAGENERICTAXON())){	return 98;}
 		else if (rank.equals(Rank.INFRASPECIFICTAXON())){	return 99;}
-		
+
 		else if (rank.equals(Rank.SUPERCLASS())){	return 750;}
 		else if (rank.equals(Rank.INFRACLASS())){	return 780;}
 		else if (rank.equals(Rank.INFRAORDER())){	return 820;}
 		else if (rank.equals(Rank.SUPERFAMILY())){	return 830;}
-		
+
 		else {
 			//TODO Exception
 			logger.warn("Rank not yet supported in Berlin Model: "+ rank.getLabel());
 			return null;
 		}
 	}
-	
+
 	public static Integer textData2FactCategoryFk (Feature feature){
 		if (feature == null){return null;}
 		if (feature.equals(Feature.DESCRIPTION())){
@@ -983,10 +985,10 @@ public class BerlinModelTransformer {
 			return null;
 		}
 	}
-	
-	
+
+
 	public static Integer taxonBase2statusFk (TaxonBase<?> taxonBase){
-		if (taxonBase == null){return null;}		
+		if (taxonBase == null){return null;}
 		if (taxonBase.isInstanceOf(Taxon.class)){
 			return T_STATUS_ACCEPTED;
 		}else if (taxonBase.isInstanceOf(Synonym.class)){
@@ -995,13 +997,13 @@ public class BerlinModelTransformer {
 			logger.warn("Unknown ");
 			return T_STATUS_UNRESOLVED;
 		}
-		//TODO 
+		//TODO
 //		public static int T_STATUS_PARTIAL_SYN = 3;
 //		public static int T_STATUS_PRO_PARTE_SYN = 4;
 //		public static int T_STATUS_UNRESOLVED = 5;
 //		public static int T_STATUS_ORPHANED = 6;
 	}
-		
+
 	public static Integer ref2refCategoryId (Reference<?> ref){
 		if (ref == null){
 			return null;
@@ -1016,11 +1018,11 @@ public class BerlinModelTransformer {
 		else if (ref.getType().equals(ReferenceType.CdDvd)){	return REF_CD;}
 		else if (ref.getType().equals(ReferenceType.Journal)){	return REF_JOURNAL;}
 		else if (ref.getType().equals(ReferenceType.Generic)){	return REF_UNKNOWN;}
-		else if (ref.getType().equals(ReferenceType.PrintSeries)){	
+		else if (ref.getType().equals(ReferenceType.PrintSeries)){
 			logger.warn("Print Series is not a standard Berlin Model category");
 			return REF_PRINT_SERIES;
 		}
-		else if (ref.getType().equals(ReferenceType.Proceedings)){	
+		else if (ref.getType().equals(ReferenceType.Proceedings)){
 			logger.warn("Proceedings is not a standard Berlin Model category");
 			return REF_CONFERENCE_PROCEEDINGS;
 		}
@@ -1030,20 +1032,20 @@ public class BerlinModelTransformer {
 		else if (ref.getType().equals(ReferenceType.Report)){	return REF_NOT_APPLICABLE;}
 		else if (ref.getType().equals(ReferenceType.Thesis)){	return REF_NOT_APPLICABLE;}
 		else if (ref.getType().equals(ReferenceType.Report)){	return REF_NOT_APPLICABLE;}
-		
+
 		else {
 			//TODO Exception
 			logger.warn("Reference type not yet supported in Berlin Model: "+ ref.getClass().getSimpleName());
 			return null;
 		}
 	}
-	
-	
+
+
 	public static Integer taxRelation2relPtQualifierFk (RelationshipBase<?,?,?> rel){
 		if (rel == null){
 			return null;
 		}
-//		else if (rel instanceof SynonymRelationship){		
+//		else if (rel instanceof SynonymRelationship){
 //			return ;
 //		}else if (rel instanceof TaxonRelationship){
 			RelationshipTermBase<?> type = rel.getType();
@@ -1059,14 +1061,14 @@ public class BerlinModelTransformer {
 //			public static int TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF = 102;
 //			public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
 //			public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
-			
+
 			}else {
 				//TODO Exception
 				logger.warn("Relationship type not yet supported by Berlin Model export: "+ rel.getType());
 				return null;
 		}
 	}
-	
+
 	public static Integer nomStatus2nomStatusFk (NomenclaturalStatusType status){
 		if (status == null){
 			return null;
@@ -1079,7 +1081,7 @@ public class BerlinModelTransformer {
 		}else if (status.equals(NomenclaturalStatusType.UTIQUE_REJECTED())) {return NAME_ST_NOM_UTIQUE_REJ;
 		}else if (status.equals(NomenclaturalStatusType.UTIQUE_REJECTED_PROP())) {return NAME_ST_NOM_UTIQUE_REJ_PROP;
 		}else if (status.equals(NomenclaturalStatusType.CONSERVED())) {return NAME_ST_NOM_CONS;
-		
+
 		}else if (status.equals(NomenclaturalStatusType.CONSERVED_PROP())) {return NAME_ST_NOM_CONS_PROP;
 		}else if (status.equals(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED())) {return NAME_ST_ORTH_CONS;
 		}else if (status.equals(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP())) {return NAME_ST_ORTH_CONS_PROP;
@@ -1088,7 +1090,7 @@ public class BerlinModelTransformer {
 		}else if (status.equals(NomenclaturalStatusType.PROVISIONAL())) {return NAME_ST_NOM_PROVIS;
 		}else if (status.equals(NomenclaturalStatusType.DOUBTFUL())) {return NAME_ST_NOM_DUB;
 		}else if (status.equals(NomenclaturalStatusType.NOVUM())) {return NAME_ST_NOM_NOV;
-		
+
 		}else if (status.equals(NomenclaturalStatusType.CONFUSUM())) {return NAME_ST_NOM_CONFUS;
 		}else if (status.equals(NomenclaturalStatusType.ALTERNATIVE())) {return NAME_ST_NOM_ALTERN;
 		}else if (status.equals(NomenclaturalStatusType.COMBINATION_INVALID())) {return NAME_ST_COMB_INVAL;
@@ -1100,8 +1102,8 @@ public class BerlinModelTransformer {
 		}
 	}
 
-	
-	
+
+
 	public static Integer nameRel2RelNameQualifierFk (RelationshipBase<?,?,?> rel){
 		if (rel == null){
 			return null;
@@ -1114,8 +1116,8 @@ public class BerlinModelTransformer {
 		}else if (type.equals(NameRelationshipType.VALIDATED_BY_NAME())) {return NAME_REL_IS_VALIDATION_OF;
 		}else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {return NAME_REL_IS_LATER_VALIDATION_OF;
 		}else if (type.equals(NameRelationshipType.CONSERVED_AGAINST())) {return NAME_REL_IS_CONSERVED_AGAINST;
-		
-		
+
+
 		}else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {return NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF;
 		}else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {return NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
 		}else {
@@ -1123,7 +1125,7 @@ public class BerlinModelTransformer {
 			logger.warn("Relationship type not yet supported by Berlin Model export: "+ rel.getType());
 			return null;
 	}
-			
+
 			//NameRelationShip
 
 //	}else if (type.equals(NameRelationshipType.())) {return NAME_REL_IS_REJECTED_IN_FAVOUR_OF;
@@ -1135,16 +1137,16 @@ public class BerlinModelTransformer {
 //
 //			public static int NAME_REL_IS_REJECTED_IN_FAVOUR_OF = 14;
 //	}else if (type.equals(NameRelationshipType.)) {return NAME_REL_IS_REJECTED_TYPE_OF;
-//			
+//
 //			public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
 //			public static int NAME_REL_IS_LECTOTYPE_OF = 61;
 //			public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
 
 		//	}else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {return NAME_REL_IS_TYPE_OF;
-			
-			
+
+
 	}
-	
+
 	public static UUID getWebMarkerUuid (int markerCategoryId){
 		if (markerCategoryId == 1){
 			return UUID.fromString("d8554418-d1ae-471d-a1bd-a0cbc7ab860c");  //any as not to find in cichorieae
@@ -1192,12 +1194,12 @@ public class BerlinModelTransformer {
 		}else if (markerCategoryId == 950){
 			return UUID.fromString("1e53f58c-6528-42c6-99ae-0f75a3c3c264");
 		}else if (markerCategoryId == 960){
-			return UUID.fromString("1903d460-94cc-4fc4-b2a8-a3fb0cfd69a0");			
+			return UUID.fromString("1903d460-94cc-4fc4-b2a8-a3fb0cfd69a0");
 		}else{
 			logger.warn("Unknown webMarker category: " + markerCategoryId);
 			return null;
 		}
 
 	}
-	
+
 }
