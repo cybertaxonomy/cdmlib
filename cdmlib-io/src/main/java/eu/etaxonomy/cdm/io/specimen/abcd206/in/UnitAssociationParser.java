@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.http.client.ClientProtocolException;
@@ -36,79 +37,57 @@ public class UnitAssociationParser {
 
     private final ICdmApplicationConfiguration cdmAppController;
 
-
     public UnitAssociationParser(String prefix, Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;
     }
 
-    public void parse(Element item, Abcd206ImportState state){
-        NodeList associationsList = item.getElementsByTagName(prefix+"Associations");
-        if(associationsList.getLength()==1 && associationsList.item(0) instanceof Element){
-            Element associations = (Element)associationsList.item(0);
-            NodeList unitAssociationList = associations.getElementsByTagName(prefix+"UnitAssociation");
+    public UnitAssociationWrapper parse(Element unitAssociation, Abcd206ImportState state){
+        //unit id
+        String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
+        //data access point
+        URI datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"DatasetAccessPoint"));
+        if(datasetAccessPoint==null){
+            datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"));
+        }
+        //association type
+        String associationType = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociationType"));
 
-            for(int i=0;i<unitAssociationList.getLength();i++){
+        String unableToLoadMessage = String.format("Unable to load unit %s from %s", unitId, datasetAccessPoint);
+        if(datasetAccessPoint!=null){
+            BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
+            OccurenceQuery query = new OccurenceQuery(unitId);
+            try {
+                InputStream inputStream = serviceWrapper.query(query, datasetAccessPoint);
+                if(inputStream!=null){
+                    state.getConfig().setSource(inputStream);
+                    NodeList associatedUnits = AbcdParseUtility.parseUnitsNodeList(state);
 
-                Element unitAssociation = (Element)unitAssociationList.item(0);
-
-                //unit id
-                String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
-                //data access point
-                URI datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"DatasetAccessPoint"));
-                if(datasetAccessPoint==null){
-                    datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"));
-                }
-                String message = "Unable to load unit "+unitId+" from "+datasetAccessPoint;
-                if(datasetAccessPoint!=null){
-                    //association type
-                    NodeList associationTypeList = unitAssociation.getElementsByTagName(prefix+"AssociationType");
-
-                    BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
-                    OccurenceQuery query = new OccurenceQuery(unitId);
-                    try {
-                        serviceWrapper.query(query, datasetAccessPoint);
-                    } catch (ClientProtocolException e) {
-                        logger.error(message, e);
-                    } catch (IOException e) {
-                        logger.error(message, e);
+                    if(associatedUnits.getLength()>1){
+                        String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitId);
+                        logger.warn(moreThanOneUnitFoundMessage);
+                        report.addInfoMessage(moreThanOneUnitFoundMessage);
                     }
+
+                    return new UnitAssociationWrapper(associatedUnits, associationType);
                 }
                 else{
-                    report.addInfoMessage(message);
+                    logger.error(unableToLoadMessage);
+                    report.addInfoMessage(unableToLoadMessage);
                 }
+            } catch (ClientProtocolException e) {
+                logger.error(unableToLoadMessage, e);
+                report.addInfoMessage(unableToLoadMessage);
+            } catch (IOException e) {
+                logger.error(unableToLoadMessage, e);
+                report.addInfoMessage(unableToLoadMessage);
             }
-
-
-
-
-//            //FIXME: how to handle multiple unit assocations?
-//            // maybe check AssociationType but this needs to be stable
-//            // for only the first unitAssociation will be used
-//            if(unitAssociationList.getLength()>0 && unitAssociationList.item(0) instanceof Element){
-//                String collectionName = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"SourceName"));
-//                List<Collection> matchingCollections = cdmAppController.getCollectionService().findByTitle(Collection.class, collectionName, MatchMode.EXACT, null, null, null, null, null).getRecords();
-//                Collection collection;
-//                if(matchingCollections.size()==1){
-//                    collection = matchingCollections.iterator().next();
-//                }
-//                else{
-//                    collection = Collection.NewInstance();
-//                    collection.setName(collectionName);
-//                }
-//                String institutionName = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"SourceInstitutionCode"));
-//                List<AgentBase> matchingInstitutions = cdmAppController.getAgentService().findByTitle(Institution.class, institutionName, MatchMode.EXACT, null, null, null, null, null).getRecords();
-//                Institution institution;
-//                if(matchingInstitutions.size()==1){
-//                    institution = (Institution) matchingInstitutions.iterator().next();
-//                }
-//                else{
-//                    institution = Institution.NewInstance();
-//                    institution.setName(institutionName);
-//                }
-//            }
         }
+        else{
+            report.addInfoMessage(unableToLoadMessage);
+        }
+        return null;
     }
 
 }
