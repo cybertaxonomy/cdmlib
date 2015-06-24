@@ -92,6 +92,9 @@ public class EditGeoService implements IEditGeoService {
         return distributionFeature;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
@@ -123,6 +126,10 @@ public class EditGeoService implements IEditGeoService {
     }
 
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
@@ -143,7 +150,6 @@ public class EditGeoService implements IEditGeoService {
         return uriParams;
     }
 
-
     @Override
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
@@ -163,6 +169,9 @@ public class EditGeoService implements IEditGeoService {
                 langs);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
@@ -226,12 +235,19 @@ public class EditGeoService implements IEditGeoService {
 
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
         areaMapping.set(area, geoServiceArea);
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly=false)
     public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
