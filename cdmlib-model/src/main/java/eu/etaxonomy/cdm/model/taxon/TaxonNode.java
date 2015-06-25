@@ -607,11 +607,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         // set the classification to the parents classification
 
-	        Classification classification = parent.getClassification();
-	        //FIXME also set the tree index here for performance reasons
-	        setClassificationRecursively(classification);
+        Classification classification = parent.getClassification();
+        //FIXME also set the tree index here for performance reasons
+        setClassificationRecursively(classification);
 
-        // add this node to the parent child nodes
+        // add this node to the parent's child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){
             //avoid duplicates
@@ -644,8 +644,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 * @param index
 	 */
 	private void updateSortIndex(int index) {
-		for(int i = index; i < this.childNodes.size(); i++){
-        	TaxonNode child = childNodes.get(i);
+	    List<TaxonNode> children = this.getChildNodes();
+		for(int i = index; i < children.size(); i++){
+        	TaxonNode child = children.get(i);
         	if (child != null){
 //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
         		child.setSortIndex(i);
