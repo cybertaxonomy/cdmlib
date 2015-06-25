@@ -780,6 +780,9 @@ public class EditGeoServiceUtilities {
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
             CondensedDistributionRecipe recipe, List<Language> langs) {
         ICondensedDistributionComposer composer;
+        if(recipe == null) {
+            throw new NullPointerException("parameter recipe must not be null");
+        }
         try {
             composer = recipe.newCondensedDistributionComposerInstance();
         } catch (InstantiationException e) {
