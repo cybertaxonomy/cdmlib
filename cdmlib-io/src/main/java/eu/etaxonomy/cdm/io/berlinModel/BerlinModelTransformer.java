@@ -641,8 +641,10 @@ public class BerlinModelTransformer {
 		}else if (areaId.equals("Cc")){return uuidCc;
 		}else if (areaId.equals("Bt")){return uuidBt;
 		}else if (areaId.equals("Tcs")){return uuidTcs;
-		}else{
-			logger.warn("Area not found: " + areaId);
+        }else if (areaId.equals("Azores")){return null;  //these are duplicates and are handled differently
+        }else if (areaId.equals("Canary Is.")){return null; //these are duplicates and are handled differently
+        }else{
+		    logger.warn("Area not found: " + areaId);
 			return null;
 		}
 

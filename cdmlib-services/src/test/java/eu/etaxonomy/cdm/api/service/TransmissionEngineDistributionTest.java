@@ -171,7 +171,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testArea_area() throws FileNotFoundException {
+    public void testArea_area() {
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
@@ -203,7 +203,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testArea_rank_and_area() throws FileNotFoundException {
+    public void testArea_rank_and_area() {
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,

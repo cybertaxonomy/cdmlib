@@ -317,10 +317,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         monitor.worked(1);
         monitor.setTaskName("Accumulating distributions");
 
+        monitor.subTask("Accumulating distributions to super areas");
         if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
         }
+        monitor.subTask("Accumulating distributions to higher ranks");
         if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byRanks));
