@@ -645,7 +645,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 */
 	private void updateSortIndex(int index) {
 	    List<TaxonNode> children = this.getChildNodes();
-		for(int i = index; i < children.size(); i++){
+	    for(int i = index; i < children.size(); i++){
         	TaxonNode child = children.get(i);
         	if (child != null){
 //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
