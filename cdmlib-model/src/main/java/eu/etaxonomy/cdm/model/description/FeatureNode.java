@@ -271,6 +271,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see				#removeChild(int)
 	 */
 	public void addChild(FeatureNode child, int index){
+	    List<FeatureNode> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
