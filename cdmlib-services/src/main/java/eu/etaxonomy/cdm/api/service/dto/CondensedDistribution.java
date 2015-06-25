@@ -103,7 +103,7 @@ public class CondensedDistribution {
         return out.toString();
     }
 
-    class DistributionItem {
+    public class DistributionItem {
 
 
         private PresenceAbsenceTerm status;

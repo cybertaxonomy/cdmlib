@@ -256,7 +256,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY, null);
+                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY, recipe);
 
             mv.addObject(dto);
 

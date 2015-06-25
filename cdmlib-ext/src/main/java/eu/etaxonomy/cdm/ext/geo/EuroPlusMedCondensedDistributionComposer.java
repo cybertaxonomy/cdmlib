@@ -115,10 +115,14 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
         //1. order by PresenceAbsenceTerms
         Map<PresenceAbsenceTerm, Collection<NamedArea>> byStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
         for(Distribution d : filteredDistributions) {
-            if(!byStatus.containsKey(d.getStatus())) {
-                byStatus.put(d.getStatus(), new HashSet<NamedArea>());
+            PresenceAbsenceTerm status = d.getStatus();
+            if(status == null) {
+                continue;
             }
-            byStatus.get(d.getStatus()).add(d.getArea());
+            if(!byStatus.containsKey(status)) {
+                byStatus.put(status, new HashSet<NamedArea>());
+            }
+            byStatus.get(status).add(d.getArea());
         }
 
         //2. build the area hierarchy
@@ -196,11 +200,14 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
      * @return
      */
     private String statusSymbol(PresenceAbsenceTerm status) {
+        if(status == null) {
+            return "";
+        }
         String symbol = statusSymbols.get(status.getUuid());
         if(symbol == null) {
             symbol = "";
         }
-        return symbol ;
+        return symbol;
     }
 
     private boolean isForeignStatus(PresenceAbsenceTerm status) {
