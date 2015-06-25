@@ -11,11 +11,10 @@ package eu.etaxonomy.cdm.ext.geo;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * @author a.kohlbecker
@@ -30,7 +29,7 @@ public interface ICondensedDistributionComposer {
      * @param langs
      * @return
      */
-    Map<PresenceAbsenceTerm, String> createCondensedDistribution(Collection<Distribution> filteredDistributions,
+    public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> langs);
 
 }
