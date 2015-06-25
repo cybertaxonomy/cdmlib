@@ -158,6 +158,9 @@ public class EditGeoService implements IEditGeoService {
         return uriParams;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
@@ -314,7 +317,9 @@ public class EditGeoService implements IEditGeoService {
         return resultMap;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
