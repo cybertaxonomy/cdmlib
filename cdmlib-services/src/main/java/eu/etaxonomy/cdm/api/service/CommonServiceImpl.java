@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -276,40 +275,41 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 	}
 
     @Override
-    public PersistentCollection initializeCollection(PersistentCollection col) {
-            return genericDao.initializeCollection(col);
+    public Object initializeCollection(UUID ownerUuid, String fieldName) {
+            return genericDao.initializeCollection(ownerUuid, fieldName);
 
     }
 
     @Override
-    public boolean isEmpty(PersistentCollection col) {
-            return genericDao.isEmpty(col);
+    public boolean isEmpty(UUID ownerUuid, String fieldName) {
+            return genericDao.isEmpty(ownerUuid, fieldName);
 
     }
 
     @Override
-	public int size(PersistentCollection col) {
-    	return genericDao.size(col);
+	public int size(UUID ownerUuid, String fieldName) {
+    	return genericDao.size(ownerUuid, fieldName);
+    }
+
+
+    @Override
+    public Object get(UUID ownerUuid, String fieldName, int index) {
+        return genericDao.get(ownerUuid, fieldName, index);
     }
 
     @Override
-    public Object get(PersistentCollection col, int index) {
-    	return genericDao.get(col, index);
+    public boolean contains(UUID ownerUuid, String fieldName, Object element) {
+    	return genericDao.contains(ownerUuid, fieldName, element);
     }
 
     @Override
-    public boolean contains(PersistentCollection col, Object element) {
-    	return genericDao.contains(col, element);
+    public boolean containsKey(UUID ownerUuid, String fieldName, Object key) {
+    	return genericDao.containsKey(ownerUuid, fieldName, key);
     }
 
     @Override
-    public boolean containsKey(PersistentCollection col, Object key) {
-    	return genericDao.containsKey(col, key);
-    }
-
-    @Override
-    public boolean containsValue(PersistentCollection col, Object element) {
-    	return genericDao.containsValue(col, element);
+    public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
+    	return genericDao.containsValue(ownerUuid, fieldName, value);
     }
 
 	@Override

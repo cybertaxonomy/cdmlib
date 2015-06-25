@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -63,7 +62,7 @@ public interface ICdmGenericDao {
 
 	/**
 	 * Returns all classes that are persisted via the persisting framework.
-	 * E.g. in hibernate these are all classes registered in the session factory 
+	 * E.g. in hibernate these are all classes registered in the session factory
 	 * (via e.g. hibernate.cfg.xml)
 	 * <BR>
 	 * @param includeAbstractClasses if <code>false</code> the abstract classes
@@ -113,7 +112,7 @@ public interface ICdmGenericDao {
 	 */
 	public <T extends CdmBase> boolean  isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
 
-	
+
 	/**
 	 * Returns a List of matching persistent objects according to the match strategy
 	 * @param <T>
@@ -161,70 +160,6 @@ public interface ICdmGenericDao {
 	@Deprecated
 	public Query getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
 
-	/**
-	 * Initializes a lazy loaded persistent collection.
-	 *
-	 * @param col the persistent collection to initialize
-	 * @return the initialized persistent collection
-	 */
-	public PersistentCollection initializeCollection(PersistentCollection col);
-
-	/**
-	 * Checks if a lazy loaded persistent collection is empty.
-	 *
-	 * @param col the persistent collection
-	 * @return the initialized persistent collection
-	 */
-	public boolean isEmpty(PersistentCollection col);
-
-	/**
-	 * Returns the size of a persistent collection.
-	 *
-	 * @param col the persistent collection to initialize
-	 * @return the size of the persistent collection
-	 */
-
-	public int size(PersistentCollection col);
-
-	/**
-	 * Returns the object contained in a persistent collection at the given index.
-	 *
-	 * @param col the persistent collection
-	 * @param index the index of the requested element
-	 * @return the object at the requested index
-	 */
-
-	public Object get(PersistentCollection col, int index);
-
-	/**
-	 * checks whether an object is contained within a persistent collection.
-	 *
-	 * @param col the persistent collection
-	 * @param element the element to check for
-	 * @return true if the element exists in the collection, false o/w
-	 */
-
-    public boolean contains(PersistentCollection col, Object element);
-
-	/**
-	 * checks whether an key object exists within a persistent collection
-	 * (usually a map)
-	 *
-	 * @param col the persistent collection
-	 * @param key the key object to look for.
-	 * @return true if the key object exists in the collection, false o/w
-	 */
-    public boolean containsKey(PersistentCollection col, Object key);
-
-	/**
-	 * checks whether an value object exists within a persistent collection
-	 * (usually a map)
-	 *
-	 * @param col the persistent collection
-	 * @param key the value object to look for.
-	 * @return true if the value object exists in the collection, false o/w
-	 */
-    public boolean containsValue(PersistentCollection col, Object element);
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
@@ -257,6 +192,75 @@ public interface ICdmGenericDao {
      * @throws DataAccessException
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Initializes a collection or map.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @return initialised collection or map
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName);
+
+    /**
+     * Checks if a collection or map is empty.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @return true if the collection of map is empty, else false
+     */
+    public boolean isEmpty(UUID ownerUuid, String fieldName);
+
+    /**
+     * Returns the size of requested collection or map.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @return the size of the persistent collection
+     */
+    public int size(UUID ownerUuid, String fieldName);
+
+    /**
+     * Returns the object contained in a collection or map at the given index.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @param index the index of the requested element
+     * @return the object at the requested index
+     */
+    public Object get(UUID ownerUuid, String fieldName, int index);
+
+    /**
+     * Checks whether an object is contained within a persistent collection.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @param element the element to check for
+     * @return true if the element exists in the collection, false o/w
+     */
+    public boolean contains(UUID ownerUuid, String fieldName, Object element);
+
+    /**
+     * Checks whether an index object exists within a persistent collection
+     * (usually a map)
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of map
+     * @param key the index object to look for.
+     * @return true if the index object exists in the collection, false o/w
+     */
+    public boolean containsKey(UUID ownerUuid, String fieldName, Object key);
+
+    /**
+     * checks whether an value object exists within a persistent collection
+     * (usually a map)
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of map
+     * @param key the value object to look for.
+     * @return true if the value object exists in the collection, false o/w
+     */
+    public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
 
 
 }
