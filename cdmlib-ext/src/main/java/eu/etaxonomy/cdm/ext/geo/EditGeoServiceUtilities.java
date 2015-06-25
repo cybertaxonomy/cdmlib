@@ -37,6 +37,7 @@ import org.codehaus.jackson.map.type.MapType;
 import org.codehaus.jackson.map.type.TypeFactory;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -776,7 +777,7 @@ public class EditGeoServiceUtilities {
      * @param langs
      * @return
      */
-    public static Map<PresenceAbsenceTerm, String> getCondensedDistribution(Collection<Distribution> filteredDistributions,
+    public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
             CondensedDistributionRecipe recipe, List<Language> langs) {
         ICondensedDistributionComposer composer;
         try {
@@ -786,7 +787,7 @@ public class EditGeoServiceUtilities {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        Map<PresenceAbsenceTerm, String> condensedDistribution = composer.createCondensedDistribution(
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 filteredDistributions,  langs);
         return condensedDistribution;
     }

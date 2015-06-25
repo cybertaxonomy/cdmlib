@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -120,11 +123,15 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
-        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
+
+
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, subAreaPreference, statusOrderPreference, null);
+
+        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );
         logger.warn(result);
         Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:a:DEU.*"));
-
     }
 
     @Test
@@ -363,6 +370,40 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         // request map image from webservice
         subTestWithEditMapService(result);
+    }
+
+    @Test
+    public void testGetCondensedDistribution() {
+
+        NamedArea germany = NamedArea.NewInstance("Germany", "", "GER");
+        NamedArea berlin = NamedArea.NewInstance("Berlin", "", "GER-B");
+        berlin.setPartOf(germany);
+        NamedArea bawue = NamedArea.NewInstance("Baden Württemberg", "", "GER-BW");
+        bawue.setPartOf(germany);
+        NamedArea france = NamedArea.NewInstance("France", "", "FR");
+        NamedArea ileDeFrance = NamedArea.NewInstance("Ile-de-France", "", "FR-J");
+        ileDeFrance.setPartOf(france);
+        NamedArea italy = NamedArea.NewInstance("Italy", "", "IT");
+        NamedArea spain = NamedArea.NewInstance("Spain", "", "S");
+
+        Set<Distribution> distributions = new HashSet<Distribution>();
+        distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(italy, PresenceAbsenceTerm.PRESENT_DOUBTFULLY()));
+
+        distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS()));
+        distributions.add(Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED()));
+        distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
+
+        List<Language> languages = new ArrayList<Language>();
+
+        CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
+                distributions,
+                CondensedDistributionRecipe.EuroPlusMed,
+                languages);
+
+        Assert.assertEquals("GER(B BW) ?IT [aFR cFR-J nS]", condensedDistribution.toString());
     }
 
 

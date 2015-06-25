@@ -9,12 +9,10 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * @author a.kohlbecker
@@ -24,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 public class DistributionInfoDTO {
 
 
-    private Map<PresenceAbsenceTerm, String> condensedDistribution = null;
+    private CondensedDistribution condensedDistribution = null;
     private DistributionTree tree = null;
     private String mapUriParams = null;
     private Set<Distribution> elements = null;
@@ -33,7 +31,7 @@ public class DistributionInfoDTO {
     /**
      * @param condensedDistribution the condensedDistribution to set
      */
-    public void setCondensedDistribution(Map<PresenceAbsenceTerm, String> condensedDistribution) {
+    public void setCondensedDistribution(CondensedDistribution condensedDistribution) {
         this.condensedDistribution = condensedDistribution;
     }
     /**
@@ -58,7 +56,7 @@ public class DistributionInfoDTO {
     /**
      * @return the condensedDistribution
      */
-    public Map<PresenceAbsenceTerm, String> getCondensedDistribution() {
+    public CondensedDistribution getCondensedDistribution() {
         return condensedDistribution;
     }
     /**

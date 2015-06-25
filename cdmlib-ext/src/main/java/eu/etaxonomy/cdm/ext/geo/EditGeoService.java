@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
@@ -207,7 +208,7 @@ public class EditGeoService implements IEditGeoService {
 
     }
 
-    public Map<PresenceAbsenceTerm, String> getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
+    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
@@ -218,7 +219,7 @@ public class EditGeoService implements IEditGeoService {
                 statusOrderPreference, hideMarkedAreas, recipe, langs);
     }
 
-    public Map<PresenceAbsenceTerm, String> getCondensedDistribution(Set<Distribution> distributions,
+    public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
@@ -230,7 +231,7 @@ public class EditGeoService implements IEditGeoService {
 
 
 
-        Map<PresenceAbsenceTerm, String> condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
+        CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 recipe,
                 langs);
