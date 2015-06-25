@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.hibernate.collection.spi.PersistentCollection;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -148,67 +147,75 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 	public List getHqlResult(String hqlQuery);
 
-	/**
-	 * Initializes a lazy loaded persistent collection.
-	 *
-	 * @param col the persistent collection to initialize
-	 * @return the initialized persistent collection
-	 */
-	public PersistentCollection initializeCollection(PersistentCollection col);
+
+    /**
+     * Initializes a collection or map.
+     *
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+     * @return initialised collection or map
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName);
 
 	/**
-	 * Checks if a lazy loaded persistent collection is empty.
+	 * Checks if a collection or map is empty.
 	 *
-	 * @param col the persistent collection
-	 * @return the initialized persistent collection
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
+	 * @return true if the collection of map is empty, else false
 	 */
-	public boolean isEmpty(PersistentCollection col);
+	public boolean isEmpty(UUID ownerUuid, String fieldName);
 
 	/**
-	 * Returns the size of a persistent collection.
+	 * Returns the size of requested collection or map.
 	 *
-	 * @param col the persistent collection to initialize
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
 	 * @return the size of the persistent collection
 	 */
-	public int size(PersistentCollection col);
+	public int size(UUID ownerUuid, String fieldName);
 
 	/**
-	 * Returns the object contained in a persistent collection at the given index.
+	 * Returns the object contained in a collection or map at the given index.
 	 *
-	 * @param col the persistent collection
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
 	 * @param index the index of the requested element
 	 * @return the object at the requested index
 	 */
-	public Object get(PersistentCollection col, int index);
+	public Object get(UUID ownerUuid, String fieldName, int index);
 
 	/**
-	 * checks whether an object is contained within a persistent collection.
+	 * Checks whether an object is contained within a persistent collection.
 	 *
-	 * @param col the persistent collection
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of collection or map
 	 * @param element the element to check for
 	 * @return true if the element exists in the collection, false o/w
 	 */
-	public boolean contains(PersistentCollection col, Object element);
+	public boolean contains(UUID ownerUuid, String fieldName, Object element);
 
 	/**
-	 * checks whether an index object exists within a persistent collection
+	 * Checks whether an index object exists within a persistent collection
 	 * (usually a map)
 	 *
-	 * @param col the persistent collection
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of map
 	 * @param key the index object to look for.
 	 * @return true if the index object exists in the collection, false o/w
 	 */
-	public boolean containsKey(PersistentCollection col, Object key);
+	public boolean containsKey(UUID ownerUuid, String fieldName, Object key);
 
 	/**
 	 * checks whether an value object exists within a persistent collection
 	 * (usually a map)
 	 *
-	 * @param col the persistent collection
+     * @param ownerUuid uuid of owner cdm entity
+     * @param fieldName field name of map
 	 * @param key the value object to look for.
 	 * @return true if the value object exists in the collection, false o/w
 	 */
-	public boolean containsValue(PersistentCollection col, Object element);
+	public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
@@ -255,5 +262,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+
+
 
 }

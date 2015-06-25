@@ -12,12 +12,14 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -26,16 +28,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -52,6 +50,7 @@ import org.hibernate.type.Type;
 import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
@@ -723,92 +722,88 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 
     @Override
-    public PersistentCollection initializeCollection(PersistentCollection col) {
-            Session session = getSession();
-            col.setCurrentSession((SessionImplementor) session);
-
-            if(!((SessionImplementor)session).getPersistenceContext().getCollectionEntries().containsKey(col)) {
-                    ((SessionImplementor)session).getPersistenceContext().addUninitializedDetachedCollection(
-                                    ((SessionImplementor)session).getFactory().getCollectionPersister( col.getRole() ),col);
-            }
-            col.forceInitialization();
-            logger.debug("initialising persistent collection with with role : " + col.getRole() + " and key : " + col.getKey());
-            return col;
+    public Object initializeCollection(UUID ownerUuid, String fieldName)  {
+        List<String> propertyPaths = Arrays.asList(new String[] {fieldName});
+        CdmBase cdmBase = load(ownerUuid, propertyPaths);
+        Field field = ReflectionUtils.findField(cdmBase.getClass(), fieldName);
+        field.setAccessible(true);
+        Object obj;
+        try {
+            obj = field.get(cdmBase);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("Requested object is not accessible");
+        }
+        if(obj instanceof Collection || obj instanceof Map) {
+            return obj;
+        } else {
+            throw new IllegalArgumentException("Field name provided does not correspond to a collection or map");
+        }
     }
 
     @Override
-    public boolean isEmpty(PersistentCollection col) {
-    	return initializeCollection(col).empty();
+    public boolean isEmpty(UUID ownerUuid, String fieldName) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof Collection) {
+            return ((Collection)col).isEmpty();
+        } else if(col instanceof Map){
+            return ((Map)col).isEmpty();
+        }
+
+        return false;
     }
 
     @Override
-    public int size(PersistentCollection col) {
-    	logger.debug("remote size() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);
-    	SessionImplementor session = (SessionImplementor)getSession();
-    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
+    public int size(UUID ownerUuid, String fieldName) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof Collection) {
+            return ((Collection)col).size();
+        } else if(col instanceof Map){
+            return ((Map)col).size();
+        }
+        return 0;
+    }
 
-    	if ( entry != null ) {
 
-    		CollectionPersister persister = entry.getLoadedPersister();
-    		return persister.getSize( entry.getLoadedKey(), session );
-    	}
-    	return -1;
+    @Override
+    public Object get(UUID ownerUuid, String fieldName, int index) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof List) {
+            return ((List)col).get(index);
+        } else {
+            throw new IllegalArgumentException("Field name provided does not correspond to a list");
+        }
     }
 
     @Override
-    public Object get(PersistentCollection col, int index) {
-    	logger.debug("remote get() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);
-    	SessionImplementor session = (SessionImplementor)getSession();
-    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
-
-    	if ( entry != null ) {
-
-    		CollectionPersister persister = entry.getLoadedPersister();
-    		return persister.getElementByIndex(entry.getLoadedKey(), index, session, col);
-
-    	}
-    	//FIXME:Remoting Should we not be throwing an exception here ?
-    	return null;
+    public boolean contains(UUID ownerUuid, String fieldName, Object element) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof Collection) {
+            return ((Collection)col).contains(element);
+        } else {
+            throw new IllegalArgumentException("Field name provided does not correspond to a collection");
+        }
     }
 
     @Override
-    public boolean contains(PersistentCollection col, Object element) {
-    	logger.debug("remote contains() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);
-    	SessionImplementor session = (SessionImplementor)getSession();
-    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
-
-    	if ( entry != null ) {
-
-    		CollectionPersister persister = entry.getLoadedPersister();
-    		return persister.elementExists(entry.getLoadedKey(), element, session);
-    	}
-    	//FIXME:Remoting Should we not be throwing an exception here ?
-    	return false;
+    public boolean containsKey(UUID ownerUuid, String fieldName, Object key) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof Map) {
+            return ((Map)col).containsKey(key);
+        } else {
+            throw new IllegalArgumentException("Field name provided does not correspond to a map");
+        }
     }
 
-    @Override
-    public boolean containsKey(PersistentCollection col, Object key) {
-    	logger.debug("remote containsKey() - for role : " + col.getRole() + " and key : " + col.getKey());
-    	initializeCollection(col);
-    	SessionImplementor session = (SessionImplementor)getSession();
-    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
 
-    	if ( entry != null ) {
-
-    		CollectionPersister persister = entry.getLoadedPersister();
-    		return persister.indexExists(entry.getLoadedKey(), key, session);
-    	}
-    	//FIXME:Remoting Should we not be throwing an exception here ?
-    	return false;
-
-    }
 
     @Override
-    public boolean containsValue(PersistentCollection col, Object element) {
-    	return contains(col, element);
+    public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
+        Object col = initializeCollection(ownerUuid, fieldName);
+        if(col instanceof Map) {
+            return ((Map)col).containsValue(value);
+        } else {
+            throw new IllegalArgumentException("Field name provided does not correspond to a map");
+        }
     }
 
     @Override
@@ -816,5 +811,6 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
 		dataGenerator.fillWithData(getSession());
 	}
+
 
 }
