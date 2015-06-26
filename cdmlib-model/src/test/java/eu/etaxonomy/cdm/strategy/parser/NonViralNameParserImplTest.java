@@ -1453,7 +1453,7 @@ public class NonViralNameParserImplTest {
 	public void testParseSection(){
 	    //this test does not really test problematic cases where sect.idInVoc = "sect." instead of "sect.(bot.)"
 	    //however, by changing the csv file entry to sect. just for testing it can be used as a functional test
-	    String sectionNameStr = "Taraxacum sect. Testtaxa Müller, Incredible Taxa: 12. 2016";
+	    String sectionNameStr = "Taraxacum sect. Testtaxa M\u00fcller, Incredible Taxa: 12. 2016";
 	    NonViralName<?> sectionName = parser.parseReferencedName(sectionNameStr, NomenclaturalCode.ICNAFP, null);
 	    int parsingProblem = sectionName.getParsingProblem();
 	    Assert.assertEquals("Problem should be 0", 0, parsingProblem);
