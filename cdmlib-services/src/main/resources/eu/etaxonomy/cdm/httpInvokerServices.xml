@@ -369,5 +369,16 @@
       </value>
     </property>
   </bean>
+  
+   <bean id="httpTestService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="testServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.ITestService
+      </value>
+    </property>
+  </bean>
 
 </beans>
