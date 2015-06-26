@@ -213,7 +213,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
     	Taxon newTaxon = Taxon.NewInstance(null, null);
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
-    	classification.addChildTaxon(newTaxon, 0, null, null);
+    	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
+    	newNode.setUuid(UUID.fromString("58728644-1155-4520-98f7-309fdb62abd7"));
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 
