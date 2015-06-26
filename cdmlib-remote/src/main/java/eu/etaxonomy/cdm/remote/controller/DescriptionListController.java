@@ -88,10 +88,6 @@ public class DescriptionListController extends IdentifiableListController<Descri
     private static UUID transmissionEngineMonitorUuid = null;
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IDescriptionService service) {
@@ -149,14 +145,17 @@ public class DescriptionListController extends IdentifiableListController<Descri
                 "representations"
         });
 
+        //area level
+        final NamedAreaLevel areaLevel = NamedAreaLevel.TDWG_LEVEL3();
+
         if (!progressMonitorController.isMonitorRunning(transmissionEngineMonitorUuid)) {
             transmissionEngineMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread() {
                 @Override
                 public void run() {
-                    Pager<NamedArea> areaPager = termService.list(NamedAreaLevel.TDWG_LEVEL3(), (NamedAreaType) null,
+                    Pager<NamedArea> areaPager = termService.list(areaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
-                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), Rank.SUBSPECIES(), Rank.GENUS(),
+                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), Rank.UNRANKED_INFRASPECIFIC(), Rank.GENUS(),
                             null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                 }
             };
