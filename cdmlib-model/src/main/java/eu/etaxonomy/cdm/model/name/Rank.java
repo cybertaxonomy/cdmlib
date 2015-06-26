@@ -734,6 +734,14 @@ public class Rank extends OrderedTermBase<Rank> {
                     return Rank.SUBSECTION_ZOOLOGY();
                 }
             }
+        }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)) {
+            if (abbrev != null){
+                if (abbrev.equalsIgnoreCase("sect.")) {
+                    return Rank.SECTION_BOTANY();
+                } else if (abbrev.equalsIgnoreCase("subsect.")) {
+                    return Rank.SUBSECTION_BOTANY();
+                }
+            }
         }
         return getRankByIdInVoc(abbrev, useUnknown);
     }
