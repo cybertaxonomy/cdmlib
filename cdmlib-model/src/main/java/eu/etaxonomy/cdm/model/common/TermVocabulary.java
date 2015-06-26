@@ -44,6 +44,8 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 /**
  * A single enumeration must only contain DefinedTerm instances of one kind
@@ -154,6 +156,20 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.termSourceUri = vocabularyUri;
 	}
 
+    /**
+     * Returns the first term found having the defined idInVocabulary.
+     * If number of terms with given idInVoc > 1 the result is not deterministic.
+     * @param idInVoc
+     * @return the term with the given idInVoc
+     */
+    public T getTermByIdInvocabulary(String idInVoc) {
+        for (T term : getTerms() ){
+            if (CdmUtils.nullSafeEqual(idInVoc, term.getIdInVocabulary())){
+                return term;
+            }
+        }
+        return null;
+    }
 
 	@Override
     public Iterator<T> iterator() {
