@@ -22,4 +22,8 @@ public interface ITestService {
 
     public  void waitFor(long timeToWaitInMs) throws InterruptedException ;
 
+    public UpdateResult returnResult(UpdateResult result);
+
+    public UpdateResult throwException(Exception ex);
+
 }
