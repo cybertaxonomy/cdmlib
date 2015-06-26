@@ -27,4 +27,20 @@ public class TestServiceImpl implements ITestService {
         Thread.sleep(timeToWaitInMs);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITestService#returnResult(eu.etaxonomy.cdm.api.service.UpdateResult)
+     */
+    @Override
+    public UpdateResult returnResult(UpdateResult result) {
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITestService#throwException(java.lang.Exception)
+     */
+    @Override
+    public UpdateResult throwException(Exception ex) {
+        throw new RuntimeException(ex);
+    }
+
 }
