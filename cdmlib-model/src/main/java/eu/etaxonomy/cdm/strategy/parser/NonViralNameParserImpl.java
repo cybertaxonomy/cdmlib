@@ -679,7 +679,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 	private Reference<?> parseBookSection(String reference){
 		Reference<?> result = ReferenceFactory.newBookSection();
-		
+
 		Pattern authorPattern = Pattern.compile("^" + authorTeam + referenceAuthorSeparator);
 		Matcher authorMatcher = authorPattern.matcher(reference);
 		boolean find = authorMatcher.find();
@@ -687,7 +687,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			String authorString = authorMatcher.group(0).trim();
 			String bookString = reference.substring(authorString.length()).trim();
 			authorString = authorString.substring(0, authorString.length() -1);
-			
+
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
 			inBook.setAuthorship(authorTeam);
@@ -794,10 +794,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			 //infra genus
 			 else if (infraGenusPattern.matcher(fullNameString).matches()){
 				Rank infraGenericRank;
+
+
 				if ("[unranked]".equals(epi[1])){
 					infraGenericRank = Rank.INFRAGENERICTAXON();
 				}else{
-					infraGenericRank = Rank.getRankByIdInVoc(epi[1]);
+					infraGenericRank = Rank.getRankByIdInVoc(epi[1], nameToBeFilledOrig.getNomenclaturalCode());
 				}
 				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -941,7 +943,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    if (!nameToBeFilled.isHybridFormula()){
 		        Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
 		        hybridChildRelations.addAll(nameToBeFilled.getHybridChildRelations());
-		        
+
 		        for (HybridRelationship hybridRelationship: hybridChildRelations){
 		        	nameToBeFilled.removeHybridRelationship(hybridRelationship);
 		        }

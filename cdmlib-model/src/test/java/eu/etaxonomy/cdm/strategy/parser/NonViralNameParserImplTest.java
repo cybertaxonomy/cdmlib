@@ -333,7 +333,7 @@ public class NonViralNameParserImplTest {
         assertFalse(authorname.hasProblem());
         assertEquals("Basionym author should have 2 authors", 2, ((Team)authorname.getCombinationAuthorship()).getTeamMembers().size());
         assertTrue("Basionym author team should have more authors", ((Team)authorname.getCombinationAuthorship()).isHasMoreMembers()  );
-        
+
 		//et al.
 		NonViralName<?> nvn = ZoologicalName.NewInstance(null);
 		parser.parseAuthors(nvn, "Eckweiler, Hand et al., 2003");
@@ -343,7 +343,7 @@ public class NonViralNameParserImplTest {
 	    Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
 	    Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
 	}
-	
+
 	@Test
     public final void testMultipleAuthors() throws StringNotParsableException {
         //multiple authors for inReference
@@ -360,7 +360,7 @@ public class NonViralNameParserImplTest {
         assertTrue(inRef.getAuthorship() instanceof Team);
         Team team = (Team)inRef.getAuthorship();
         assertEquals(3, team.getTeamMembers().size());
-        
+
 //        multiple authors in Name
         fullTitleString = "Abies alba Mill., Aber & Schwedt";
         NonViralName<?> multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -369,7 +369,7 @@ public class NonViralNameParserImplTest {
         team = (Team)multipleAuthorName.getCombinationAuthorship();
         assertEquals(3, team.getTeamMembers().size());
         assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
-        
+
 //      multiple authors in Name with reference
 	    fullTitleString = "Abies alba Mill., Aber & Schwedt in L., Sp. Pl. 173: 384. 1982.";
 	    multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -386,8 +386,8 @@ public class NonViralNameParserImplTest {
         assertTrue(inRef.getAuthorship() instanceof Person);
         Person person = (Person)inRef.getAuthorship();
         assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitle());
-        
-        
+
+
 	    fullTitleString = "Abies alba Mill., Aber & Schwedt, Sp. Pl. 173: 384. 1982.";
 	    multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
 	    assertFalse(multipleAuthorName.hasProblem());
@@ -403,7 +403,7 @@ public class NonViralNameParserImplTest {
         team = (Team)nomRef.getAuthorship();
         assertEquals(3, team.getTeamMembers().size());
         assertEquals("Second team member should be Schwedt", "Schwedt", team.getTeamMembers().get(2).getTitleCache());
-	       
+
 		//et al.
 		NonViralName<?> nvn = ZoologicalName.NewInstance(null);
 		parser.parseReferencedName (nvn, "Marmota marmota Eckweiler, Hand et al., 2003", Rank.SPECIES(),true);
@@ -1446,9 +1446,22 @@ public class NonViralNameParserImplTest {
 		Assert.assertEquals("Persons title must be 'le Doux'", "le Doux", person.getTitleCache());
 		Assert.assertEquals("Year must be 1931", Integer.valueOf(1931), zooName.getPublicationYear() );
 
-	
+
 	}
-	
+
+	@Test  //#4764
+	public void testParseSection(){
+	    //this test does not really test problematic cases where sect.idInVoc = "sect." instead of "sect.(bot.)"
+	    //however, by changing the csv file entry to sect. just for testing it can be used as a functional test
+	    String sectionNameStr = "Taraxacum sect. Testtaxa Müller, Incredible Taxa: 12. 2016";
+	    NonViralName<?> sectionName = parser.parseReferencedName(sectionNameStr, NomenclaturalCode.ICNAFP, null);
+	    int parsingProblem = sectionName.getParsingProblem();
+	    Assert.assertEquals("Problem should be 0", 0, parsingProblem);
+	    Rank rank = sectionName.getRank();
+	    Assert.assertEquals("", Rank.SECTION_BOTANY(), rank  );
+
+	}
+
 
 
 	/**
