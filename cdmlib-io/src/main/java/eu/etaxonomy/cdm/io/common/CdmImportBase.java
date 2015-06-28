@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
-	
+
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
 	protected static final boolean READ_MEDIA_DATA = true;
@@ -103,27 +103,27 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
-	
+
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
-	
-	
-	
+
+
+
 	private static final String UuidOnly = "UUIDOnly";
 	private static final String UuidLabel = "UUID or label";
 	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
 	private static final String UuidAbbrev = "UUID or abbreviation";
-	
+
 	public enum TermMatchMode{
 		UUID_ONLY(0, UuidOnly)
 		,UUID_LABEL(1, UuidLabel)
 		,UUID_LABEL_ABBREVLABEL(2, UuidLabelAbbrev)
 		,UUID_ABBREVLABEL(3, UuidAbbrev)
 		;
-		
-		
-		private int id;
-		private String representation;
+
+
+		private final int id;
+		private final String representation;
 		private TermMatchMode(int id, String representation){
 			this.id = id;
 			this.representation = representation;
@@ -143,10 +143,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				default: return UUID_ONLY;
 			}
  		}
-		
-		
+
+
 	}
-	
+
 	protected Classification makeTree(STATE state, Reference<?> reference){
 		String treeName = "Classification (Import)";
 		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
@@ -154,7 +154,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(reference);
-		
+
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
@@ -165,14 +165,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		state.putTree(reference, tree);
 		return tree;
 	}
-	
-	
+
+
 	/**
 	 * Alternative memory saving method variant of
 	 * {@link #makeTree(STATE state, Reference ref)} which stores only the
-	 * UUID instead of the full tree in the <code>ImportStateBase</code> by 
+	 * UUID instead of the full tree in the <code>ImportStateBase</code> by
 	 * using <code>state.putTreeUuid(ref, tree);</code>
-	 * 
+	 *
 	 * @param state
 	 * @param ref
 	 * @return
@@ -184,7 +184,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(ref);
-		
+
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
@@ -195,10 +195,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}
-	
-	
-	
-	
+
+
+
+
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
 	}
@@ -223,7 +223,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return extensionType;
 	}
-	
+
 	protected DefinedTerm getIdentiferType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -245,8 +245,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return identifierType;
 	}
-	
-	
+
+
 	protected MarkerType getMarkerType(STATE state, String keyString) {
 		IInputTransformer transformer = state.getTransformer();
 		MarkerType markerType = null;
@@ -266,13 +266,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return null;
 	}
-	
+
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getMarkerType(state, uuid, label, text, labelAbbrev, null);
 	}
 
-	
-	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
+
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MarkerType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -280,7 +280,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (markerType == null){
 			markerType = (MarkerType)getTermService().find(uuid);
 			if (markerType == null){
-				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
+				markerType = MarkerType.NewInstance(description, label, labelAbbrev);
 				markerType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
@@ -293,7 +293,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return markerType;
 	}
-	
+
 	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -308,7 +308,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.AnnotationType, uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
 				}
-				
+
 				voc.addTerm(annotationType);
 				getTermService().save(annotationType);
 			}
@@ -316,8 +316,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return annotationType;
 	}
-	
-	
+
+
 	protected ReferenceSystem getReferenceSystem(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -338,11 +338,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putReferenceSystem(refSystem);
 		}
 		return refSystem;
-		
+
 	}
 
-	
-	
+
+
 	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank, RankClass rankClass){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -369,7 +369,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return rank;
 
 	}
-	
+
 	/**
 	 * Returns a named area for a given uuid by first . If the named area does not
 	 * @param state
@@ -388,8 +388,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode, null);
 	}
-	
-	
+
+
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode,
 			List<TermVocabulary<NamedArea>> vocabularyPreference){
 		Class<NamedArea> clazz = NamedArea.class;
@@ -403,7 +403,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
-			
+
 			if (vocabularyPreference == null){
 				vocabularyPreference =  new ArrayList<TermVocabulary<NamedArea>>();
 			}
@@ -411,8 +411,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				vocabularyPreference.add(Country.GERMANY().getVocabulary());
 				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
 			}
-			
-			
+
+
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
@@ -423,7 +423,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, clazz, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
-			
+
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
@@ -440,8 +440,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return namedArea;
 	}
-	
-	
+
+
 	private NamedArea findBestMatchingArea(Pager<NamedArea> areaPager, UUID uuid, String label, String text, String abbrev, List<TermVocabulary<NamedArea>> vocabularyPreference) {
 		// TODO preliminary implementation
 		List<NamedArea> list = areaPager.getRecords();
@@ -494,10 +494,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}else{
 					//do nothing
 				}
-				
+
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -549,7 +549,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return namedAreaLevel;
 	}
-	
+
 	/**
 	 * Returns a {@link State} if it exists. <code>null</code> otherwise.
 	 * @param state
@@ -560,7 +560,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return getStateTerm(state, uuid, null, null, null, null);
 	}
 
-	
+
 	/**
 	 * Returns a {@link State} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the state exists in the database, if not creating it anew (with vocabulary etc.).
@@ -597,7 +597,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return stateTerm;
 	}
-	
+
 	/**
 	 * Returns a feature if it exists, null otherwise.
 	 * @see #getFeature(ImportStateBase, UUID, String, String, String, TermVocabulary)
@@ -608,7 +608,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected Feature getFeature(STATE state, UUID uuid){
 		return getFeature(state, uuid, null, null, null, null);
 	}
-	
+
 	/**
 	 * Returns a feature for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the feature exists in the database, if not creating it anew (with vocabulary etc.).
@@ -631,7 +631,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
-//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
+//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8");
 				if (voc == null){
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.Feature, uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
@@ -643,7 +643,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return feature;
 	}
-	
+
 	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		if (uuid == null){
 			return null;
@@ -665,7 +665,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return unit;
 	}
-	
+
 	/**
 	 * Returns a {@link MeasurementUnit} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the {@link MeasurementUnit} exists in the database, if not creating it anew (with vocabulary etc.).
@@ -698,7 +698,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return unit;
 	}
-	
+
 	/**
 	 * Returns a {@link StatisticalMeasure} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the {@link StatisticalMeasure} exists in the database, if not creating it anew (with vocabulary etc.).
@@ -731,7 +731,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return statisticalMeasure;
 	}
-	
+
 	/**
 	 * Returns a {@link Modifier} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the {@link Modifier} exists in the database, if not creating it anew (with vocabulary etc.).
@@ -764,7 +764,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return modifier;
 	}
-	
+
 	/**
 	 * Returns a taxon relationship type for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the taxon relationship type exists in the database, if not creating it anew (with vocabulary etc.).
@@ -797,7 +797,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return relType;
 	}
-	
+
 	private boolean hasNoLabel(String label, String text, String labelAbbrev) {
 		return label == null && text == null && labelAbbrev == null;
 	}
@@ -823,7 +823,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				presenceTerm = PresenceAbsenceTerm.NewPresenceInstance(text, label, labelAbbrev);
 				presenceTerm.setUuid(uuid);
 				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05"); 
+				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05");
 				TermVocabulary<PresenceAbsenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
 				voc.addTerm(presenceTerm);
 				getTermService().save(presenceTerm);
@@ -845,7 +845,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getLanguage(state, uuid, label, text, labelAbbrev, null);
 	}
-	
+
 	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		if (uuid == null){
 			return null;
@@ -855,15 +855,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			language = (Language)getTermService().find(uuid);
 			if (language == null){
 				language = Language.NewInstance(text, label, labelAbbrev);
-				
+
 				language.setUuid(uuid);
 				if (voc == null){
-					UUID uuidLanguageVoc = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b"); 
+					UUID uuidLanguageVoc = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
 					boolean isOrdered = false;
 					voc = getVocabulary(TermType.Language, uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
 				}
 				//set vocabulary ; FIXME use another user-defined vocabulary
-				
+
 				voc.addTerm(language);
 				getTermService().save(language);
 			}
@@ -871,12 +871,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return language;
 	}
-	
+
 
 	/**
-	 * @param uuid 
+	 * @param uuid
 	 * @return
-	 * 
+	 *
 	 */
 	protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
 		List<String> propPath = Arrays.asList(new String[]{"terms"});
@@ -892,7 +892,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return voc;
 	}
-	
+
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
 	 * If cdmBase is not sourceable nothing happens.
@@ -928,7 +928,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			logger.warn("Sourced object is null");
 		}
 	}
-	
+
 	/**
 	 * @see #addOriginalSource(CdmBase, Object, String, Reference)
 	 * @param rs
@@ -942,7 +942,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		Object id = rs.getObject(dbIdAttribute);
 		addOriginalSource(cdmBase, id, namespace, citation);
 	}
-	
+
 
 	/**
 	 * If the child taxon is missing genus or species epithet information and the rank is below <i>genus</i>
@@ -961,7 +961,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		NonViralName<?> childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
 		fillMissingEpithets(parentName, childName);
 	}
-	
+
 	/**
 	 * If the child name is missing genus or species epithet information and the rank is below <i>genus</i>
 	 * or <i>species</i> respectively the according epithets are taken from the parent name.
@@ -974,16 +974,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (StringUtils.isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
-		
+
 		if (StringUtils.isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 		if (childName.isAutonym() && childName.getCombinationAuthorship() == null && childName.getBasionymAuthorship() == null ){
 			childName.setCombinationAuthorship(parentName.getCombinationAuthorship());
 			childName.setBasionymAuthorship(parentName.getBasionymAuthorship());
-		}	
+		}
 	}
-	
+
 	/**
 	 * Returns the taxon description for a taxon. If there are multiple taxon descriptions
 	 * an arbitrary one is chosen.
@@ -998,12 +998,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		Reference<?> ref = null;
 		return getTaxonNameDescription(name, ref, isImageGallery, createNewIfNotExists);
 	}
-	
+
 	/**
 	 * Like {@link #getTaxonDescription(Taxon, boolean, boolean)}
 	 * Only matches a description if the given reference is a source of the description.<BR>
 	 * If a new description is created the given reference will be added as a source.
-	 * 
+	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
 	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase<?,?> name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
@@ -1026,7 +1026,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns the taxon description for a taxon. If there are multiple taxon descriptions
 	 * an arbitrary one is chosen.
@@ -1041,12 +1041,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		Reference<?> ref = null;
 		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
 	}
-	
+
 	/**
 	 * Like {@link #getTaxonDescription(Taxon, boolean, boolean)}
 	 * Only matches a description if the given reference is a source of the description.<BR>
 	 * If a new description is created the given reference will be added as a source.
-	 * 
+	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
@@ -1069,10 +1069,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
-	 * Returns the {@link SpecimenDescription specimen description} for a {@link SpecimenOrObservationBase specimen or observation}. 
+	 * Returns the {@link SpecimenDescription specimen description} for a {@link SpecimenOrObservationBase specimen or observation}.
 	 * If there are multiple specimen descriptions an arbitrary one is chosen.
 	 * If no specimen description exists, a new one is created if <code>createNewIfNotExists</code> is <code>true</code>.
 	 * @param createNewIfNotExists
@@ -1084,12 +1084,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		Reference ref = null;
 		return getSpecimenDescription(specimen, ref, isImageGallery, createNewIfNotExists);
 	}
-	
+
 	/**
 	 * Like {@link #getSpecimenDescription(SpecimenOrObservationBase, boolean, boolean)}
 	 * Only matches a description if the given reference is a source of the description.<BR>
 	 * If a new description is created the given reference will be added as a source.
-	 * 
+	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
 	public SpecimenDescription getSpecimenDescription(SpecimenOrObservationBase specimen, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
@@ -1112,7 +1112,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Returns the textdata that holds general information about a feature for a taxon description.
@@ -1123,8 +1123,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * sources need to be added to the description itself.
 	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
 	 * there will be a boolean marker in the TextData class itself.
-	 * @param state 
-	 * @param feature 
+	 * @param state
+	 * @param feature
 	 * @param taxon
 	 * @param ref
 	 * @param createIfNotExists
@@ -1140,8 +1140,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 				for (Marker marker : textData.getMarkers()){
 					MarkerType markerType = marker.getMarkerType();
-					if (markerType != null && 
-							markerType.getUuid().equals(featurePlaceholderUuid) && 
+					if (markerType != null &&
+							markerType.getUuid().equals(featurePlaceholderUuid) &&
 							marker.getValue() == true){
 						return textData;
 					}
@@ -1178,17 +1178,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return false;
 		}
 		return true;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Returns the accepted taxon of a {@link TaxonBase taxon base}. <BR>
 	 * If taxonBase is of type taxon the same object is returned. If taxonBase is of type
 	 * synonym the accepted taxon is returned if one exists. If no accepted taxon exists
-	 * <code>null</code> is returned. If multiple accepted taxa exist the one taxon with the 
-	 * same secundum reference is returned. If no such single taxon exists an 
-	 * {@link IllegalStateException illegal state exception} is thrown.  
+	 * <code>null</code> is returned. If multiple accepted taxa exist the one taxon with the
+	 * same secundum reference is returned. If no such single taxon exists an
+	 * {@link IllegalStateException illegal state exception} is thrown.
 	 * @param taxonBase
 	 * @return
 	 */
@@ -1224,10 +1224,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
-	
+
 
 	/**
-	 * Creates 
+	 * Creates
 	 * @param uriString
 	 * @param readDataFromUrl
 	 * @see #READ_MEDIA_DATA
@@ -1271,11 +1271,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Retrieves an Integer value from a result set. If the value is NULL null is returned.
-	 * ResultSet.getInt() returns 0 therefore we need a special handling for this case. 
+	 * ResultSet.getInt() returns 0 therefore we need a special handling for this case.
 	 * @param rs
 	 * @param columnName
 	 * @return
@@ -1289,7 +1289,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Integer.valueOf(intObject.toString());
 		}
 	}
-	
+
 	protected Boolean nullSafeBoolean(ResultSet rs, String columnName) throws SQLException {
 		Object bitObject = rs.getObject(columnName);
 		if (bitObject == null){
@@ -1298,7 +1298,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Boolean.valueOf(bitObject.toString());
 		}
 	}
-	
+
 	protected Double nullSafeDouble(ResultSet rs, String columnName) throws SQLException {
 		Object doubleObject = rs.getObject(columnName);
 		if (doubleObject == null){
@@ -1307,7 +1307,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Double.valueOf(doubleObject.toString());
 		}
 	}
-	
+
 	protected Float nullSafeFloat(ResultSet rs, String columnName) throws SQLException {
 		Object doubleObject = rs.getObject(columnName);
 		if (doubleObject == null){
@@ -1316,7 +1316,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Float.valueOf(doubleObject.toString());
 		}
 	}
-	
+
 
 	/**
 	 * Returns <code>null</code> for all blank strings. Identity function otherwise.
@@ -1331,5 +1331,5 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
-	
+
 }
