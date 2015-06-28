@@ -227,10 +227,11 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      */
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
         Serializable areaLevelId;
-        if (area instanceof HibernateProxy) {
-            areaLevelId = ((HibernateProxy) area).getHibernateLazyInitializer().getIdentifier();
+        NamedAreaLevel areaLevel = area.getLevel();
+        if (areaLevel instanceof HibernateProxy) {
+            areaLevelId = ((HibernateProxy) areaLevel).getHibernateLazyInitializer().getIdentifier();
         } else {
-            areaLevelId = area.getId();
+            areaLevelId = areaLevel.getId();
         }
         return omitLevelIds.isEmpty() || omitLevelIds.contains(areaLevelId);
     }
