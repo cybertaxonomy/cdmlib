@@ -368,7 +368,6 @@ public class EditGeoService implements IEditGeoService {
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(filteredDistributions, recipe, languages));
-            logger.error("condensedStatusString not yet supported:  #3907 (EuroMed: implement condensed status string of distribution information)");
         }
 
         return dto;
