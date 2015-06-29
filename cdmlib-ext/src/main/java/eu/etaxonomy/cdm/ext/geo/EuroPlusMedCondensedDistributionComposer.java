@@ -78,7 +78,6 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
 
         // [Lu] introduced (casual or naturalized) =  introduced, introduced: naturalized
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED().getUuid(), "");
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid(), "");
 
         // [aLu] casual alien = introduced: adventitious (casual)
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid(), "a");
@@ -89,12 +88,13 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
 
         // [nLu] naturalized
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
+        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid(), "n");
 
         foreignStatusUuids = new HashSet<UUID>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid());
-//        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid()); // how about this?
+        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.CULTIVATED().getUuid());
 
