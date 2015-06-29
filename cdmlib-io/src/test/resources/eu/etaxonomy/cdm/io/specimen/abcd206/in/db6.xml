@@ -44,6 +44,9 @@
                 </abcd21:Person>
               </abcd21:preparationAgent>
               <abcd21:preparationDate>2002-08-13T00:00:00</abcd21:preparationDate>
+              <abcd21:sampleDesignations>
+                <abcd21:sampleDesignation>CAM010</abcd21:sampleDesignation>
+              </abcd21:sampleDesignations>
             </abcd21:preparation>
           </abcd21:Preparations>
           <abcd21:Preservations>
