@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,6 +22,8 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -105,8 +108,25 @@ public class AbcdDnaParser {
                 //preparation date
                 Date preparationDate = AbcdParseUtility.parseFirstDate(((Element) node).getElementsByTagName(prefix+"preparationDate"));
                 derivedFrom.setTimeperiod(TimePeriod.NewInstance(preparationDate, null));
+                //sample designation
+                NodeList sampleDesignationsList = ((Element) node).getElementsByTagName(prefix+"sampleDesignations");
+                if(sampleDesignationsList.item(0)!=null && sampleDesignationsList.item(0) instanceof Element){
+                    parseSampleDesignations((Element)sampleDesignationsList.item(0), dnaSample);
+                }
             }
         }
+    }
+
+    /**
+     * @param item
+     * @param dnaSample
+     */
+    private void parseSampleDesignations(Element item, DnaSample dnaSample) {
+        NodeList sampleDesignationList = item.getElementsByTagName(prefix+"sampleDesignation");
+        for(int i=0;i<sampleDesignationList.getLength();i++){
+            Identifier.NewInstance(dnaSample, sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
+        }
+
     }
 
     private AgentBase<?> parsePreparationAgent(Element item) {

@@ -32,6 +32,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -69,6 +70,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private IReferenceService referenceService;
+
+	@SpringBeanByType
+	private ITermService termService;
 
 	/**
 	 * Tests import import of DNA unit and all its parameters
@@ -130,6 +134,11 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals((Integer)8,derivedFrom.getTimeperiod().getStartMonth());
         assertEquals((Integer)13,derivedFrom.getTimeperiod().getStartDay());
         assertNotNull(dnaSample.getPreservation());
+        //sample designation
+        Set<String> identifiers = dnaSample.getIdentifiers((DefinedTerm) termService.find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
+        assertNotNull(identifiers);
+        assertEquals(1, identifiers.size());
+        assertEquals("CAM010", identifiers.iterator().next());
 
 
         //dna quality
@@ -284,6 +293,11 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+
+	}
+
+	@Test
+	public void testAvoidDuplicateMolecularData(){
 
 	}
 
