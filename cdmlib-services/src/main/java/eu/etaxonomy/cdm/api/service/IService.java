@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +86,7 @@ public interface IService<T extends ICdmBase>{
      */
     public DeleteResult delete(UUID persistentObjectUUID) ;
 
-    
+
 
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
@@ -331,6 +330,16 @@ public interface IService<T extends ICdmBase>{
 
 	public DeleteResult delete(T persistentObject);
 
-	
+    /**
+     * Deletes a collection of persistent objects correponding to the
+     * given list of uuids. The result will have status as ok if even one
+     * of the deletes is successful, else error.
+     *
+     * @param persistentObjectUUIDs uuids of persistent objects to delete
+     * @return DeleteResult object
+     */
+    public DeleteResult delete(Collection<UUID> persistentObjectUUIDs);
+
+
 
 }
