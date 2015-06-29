@@ -306,6 +306,9 @@ public class AbcdGgbnParser {
                 cdmAppController.getPrimerService().save(primer);
                 if(sequencingPrimerList.item(i) instanceof Element){
                     Element sequencingPrimer = (Element)sequencingPrimerList.item(i);
+                    //primer name
+                    NodeList primerNameList = sequencingPrimer.getElementsByTagName(prefix+"primerName");
+                    primer.setLabel(AbcdParseUtility.parseFirstTextContent(primerNameList));
                     //primer sequence
                     NodeList primerSequenceList = sequencingPrimer.getElementsByTagName(prefix+"primerSequence");
                     primer.setSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(primerSequenceList)));
@@ -319,9 +322,6 @@ public class AbcdGgbnParser {
                             amplification.setReversePrimer(primer);
                         }
                     }
-                    //primer name
-                    NodeList primerNameList = sequencingPrimer.getElementsByTagName(prefix+"primerName");
-                    primer.setLabel(AbcdParseUtility.parseFirstTextContent(primerNameList));
                     //reference citation
                     NodeList primerReferenceCitationList = sequencingPrimer.getElementsByTagName(prefix+"primerReferenceCitation");
                     String primerReferenceCitation = AbcdParseUtility.parseFirstTextContent(primerReferenceCitationList);
