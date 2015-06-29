@@ -9,17 +9,24 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author pplitzner
@@ -41,6 +48,18 @@ public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplificati
     @Override
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache() {
         return dao.getAmplificationUuidAndLabelCache();
+    }
+
+    @Override
+    public Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        Integer numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
+
+        List<Amplification> results = new ArrayList<Amplification>();
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+               results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+
+         return new DefaultPagerImpl<Amplification>(pageNumber, numberOfResults, pageSize, results);
     }
 
 }

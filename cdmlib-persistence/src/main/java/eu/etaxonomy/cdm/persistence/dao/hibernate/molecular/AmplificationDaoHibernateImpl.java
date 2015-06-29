@@ -16,12 +16,15 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author pplitzner
@@ -56,5 +59,16 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
         }
 
         return list;
+    }
+
+    @Override
+    public Integer countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
+        return countByParam(Amplification.class, "labelCache", queryString, matchmode, criteria);
+    }
+
+    @Override
+    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParam(Amplification.class, "labelCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 }

@@ -16,12 +16,15 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author pplitzner
@@ -56,6 +59,17 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         }
 
         return list;
+    }
+
+    @Override
+    public Integer countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
+        return countByParam(Primer.class, "label", queryString, matchmode, criteria);
+    }
+
+    @Override
+    public List<Primer> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 }
