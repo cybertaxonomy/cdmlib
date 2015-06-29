@@ -112,14 +112,12 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
             childAreas.add(deproxied);
         }
 
-        while(true) {
+        if(!childAreas.isEmpty()) {
             parentAreas = termDao.getPartOf(childAreas, null, null, null);
-            if(parentAreas.size() == 0) {
-                break;
-            }
             childAreas.clear();
             childAreas.addAll(parentAreas);
         }
+
     }
 
     public void recursiveSortChildrenByLabel(){
