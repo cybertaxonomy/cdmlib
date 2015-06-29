@@ -82,7 +82,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() throws ParseException {
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_without_association.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
@@ -97,20 +97,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         boolean result = defaultImport.invoke(importConfigurator);
         assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
-
-        //associated specimen
-        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
-        config.setSignificantIdentifier("B 10 0066577");
-        List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(1, records.size());
-        SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
-        assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
-        DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
-        assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
-        assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
 
         //dna sample
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
@@ -124,6 +113,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(derivedFrom);
         assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
         assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+        assertTrue(derivedFrom.getOriginals().iterator().next() instanceof FieldUnit);
         assertEquals("DNA Bank", dnaSample.getCollection().getCode());
         assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
         //preservation/preparation
@@ -227,6 +217,61 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(amplificationResult.getSingleReads(), singleReads);
 
 
+	}
+
+	/**
+	 * Tests import import of DNA unit and all its parameters
+	 * and sub derivatives (sequence, amplification, etc.)
+	 * @throws ParseException
+	 */
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testImportAssociatedSpecimen() throws ParseException {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+
+	    //associated specimen
+	    FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+	    config.setSignificantIdentifier("B 10 0066577");
+	    List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
+	    assertEquals(1, records.size());
+	    SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
+	    assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
+	    DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
+	    assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
+	    assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
+
+	    //dna sample
+	    FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
+	    dnaConfig.setSignificantIdentifier("DB 6");
+	    List<SpecimenOrObservationBase> dnaRecords = occurrenceService.findByTitle(dnaConfig).getRecords();
+	    assertEquals(1, dnaRecords.size());
+	    SpecimenOrObservationBase dnaSpecimen = dnaRecords.iterator().next();
+	    assertEquals(DnaSample.class, dnaSpecimen.getClass());
+	    DnaSample dnaSample = (DnaSample) dnaSpecimen;
+	    DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
+	    assertNotNull(derivedFrom);
+	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
+	    assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+	    assertTrue(derivedFrom.getOriginals().iterator().next() instanceof DerivedUnit);
+	    assertEquals("DNA Bank", dnaSample.getCollection().getCode());
+	    assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
 	}
 
 	/**
@@ -336,7 +381,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 //        }
 
 
-	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6.xml";
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_without_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
