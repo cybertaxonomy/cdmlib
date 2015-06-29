@@ -40,4 +40,11 @@ public interface IPolytomousKeyService extends IIdentifiableEntityService<Polyto
      */
    public UpdateResult updateAllNodeNumberings(UUID polytomousKeyUuid);
 
+    /**
+     * Refreshes all node numberings for all polytomous keys recursively from the root node downwards.
+     *
+     * @return
+     */
+    public UpdateResult updateAllNodeNumberings();
+
 }

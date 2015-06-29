@@ -133,4 +133,15 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	    polytomousKey.getRoot().refreshNodeNumbering();
 	    return result;
 	}
+
+	@Override
+	public UpdateResult updateAllNodeNumberings() {
+	    UpdateResult result = new UpdateResult();
+	    List<PolytomousKey> polytomousKeys = dao.list();
+	    for(PolytomousKey polytomousKey : polytomousKeys) {
+	        polytomousKey.getRoot().refreshNodeNumbering();
+	    }
+	    return result;
+	}
+
 }
