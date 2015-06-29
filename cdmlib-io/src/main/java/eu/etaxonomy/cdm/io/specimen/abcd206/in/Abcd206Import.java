@@ -280,29 +280,31 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         Element unitAssociation = (Element)unitAssociationList.item(k);
                         UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
                         UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
-                        NodeList associatedUnits = associationWrapper.getAssociatedUnits();
-                        for(int m=0;m<associatedUnits.getLength();m++){
-                            if(associatedUnits.item(m) instanceof Element){
-                                state.reset();
-                                this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
-                                handleSingleUnit(state);
+                        if(associationWrapper!=null){
+                            NodeList associatedUnits = associationWrapper.getAssociatedUnits();
+                            for(int m=0;m<associatedUnits.getLength();m++){
+                                if(associatedUnits.item(m) instanceof Element){
+                                    state.reset();
+                                    this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                                    handleSingleUnit(state);
 
-                                state.setPrefix(currentPrefix);
-                                //attach current unit and associated unit depending on association type
-                                //TODO
+                                    state.setPrefix(currentPrefix);
+                                    //attach current unit and associated unit depending on association type
+                                    //TODO
 
-                                //copy derivation event
-                                DerivationEvent previousDerivationEvent = currentUnit.getDerivedFrom();
-                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(state.getDerivedUnitBase(), currentUnit, previousDerivationEvent.getType());
-                                updatedDerivationEvent.setActor(previousDerivationEvent.getActor());
-                                updatedDerivationEvent.setDescription(previousDerivationEvent.getDescription());
-                                updatedDerivationEvent.setInstitution(previousDerivationEvent.getInstitution());
-                                updatedDerivationEvent.setTimeperiod(previousDerivationEvent.getTimeperiod());
-                                report.addDerivate(state.getDerivedUnitBase(), currentUnit, state.getConfig());
+                                    //copy derivation event
+                                    DerivationEvent previousDerivationEvent = currentUnit.getDerivedFrom();
+                                    DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(state.getDerivedUnitBase(), currentUnit, previousDerivationEvent.getType());
+                                    updatedDerivationEvent.setActor(previousDerivationEvent.getActor());
+                                    updatedDerivationEvent.setDescription(previousDerivationEvent.getDescription());
+                                    updatedDerivationEvent.setInstitution(previousDerivationEvent.getInstitution());
+                                    updatedDerivationEvent.setTimeperiod(previousDerivationEvent.getTimeperiod());
+                                    report.addDerivate(state.getDerivedUnitBase(), currentUnit, state.getConfig());
 
-                                //handle field unit of associated specimen
-                                //TODO
-                                cdmAppController.getOccurrenceService().delete(state.getFieldUnit());
+                                    //handle field unit of associated specimen
+                                    //TODO
+                                    cdmAppController.getOccurrenceService().delete(state.getFieldUnit());
+                                }
                             }
                         }
                     }
