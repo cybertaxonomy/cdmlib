@@ -154,7 +154,7 @@ public class CondensedDistribution {
          */
         @Override
         public int compare(DistributionItem o1, DistributionItem o2) {
-            return o1.sortString.compareTo(o2.sortString);
+            return o1.sortString.compareToIgnoreCase(o2.sortString);
         }
 
 
