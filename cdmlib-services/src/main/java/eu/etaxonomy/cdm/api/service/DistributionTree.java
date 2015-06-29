@@ -231,7 +231,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         if (areaLevel instanceof HibernateProxy) {
             areaLevelId = ((HibernateProxy) areaLevel).getHibernateLazyInitializer().getIdentifier();
         } else {
-            areaLevelId = areaLevel.getId();
+            areaLevelId = areaLevel==null ? null : areaLevel.getId();
         }
         return omitLevelIds.isEmpty() || omitLevelIds.contains(areaLevelId);
     }
