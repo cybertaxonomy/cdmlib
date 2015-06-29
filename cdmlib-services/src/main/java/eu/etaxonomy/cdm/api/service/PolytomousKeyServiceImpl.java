@@ -35,8 +35,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	private IIdentificationKeyDao identificationKeyDao;
 	private ITaxonDao taxonDao;
 
-//	private IPolytomousKeyNodeDao nodeDao;
-
 
 	@Override
     @Autowired
@@ -53,11 +51,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	protected void setDao(ITaxonDao taxonDao) {
 		this.taxonDao = taxonDao;
 	}
-
-//	@Autowired
-//	protected void setDao(IPolytomousKeyNodeDao nodeDao) {
-//		this.nodeDao = nodeDao;
-//	}
 
 
 	/* (non-Javadoc)
@@ -133,17 +126,11 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		return pager;
 	}
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-//	 */
-//	@Override
-//	public UUID delete(PolytomousKey key) {
-//
-////		nodeDao.deleteForKey(key);
-//
-//		return super.delete(key);
-//	}
-
-
-
+	@Override
+	public UpdateResult updateAllNodeNumberings(UUID polytomousKeyUuid) {
+	    UpdateResult result = new UpdateResult();
+	    PolytomousKey polytomousKey = dao.load(polytomousKeyUuid);
+	    polytomousKey.getRoot().refreshNodeNumbering();
+	    return result;
+	}
 }

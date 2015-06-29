@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -79,6 +80,26 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     	}
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult delete(Collection<UUID> persistentObjectUUIDs) {
+        DeleteResult result = new DeleteResult();
+        boolean atLeastOneOK = false;
+        for(UUID persistentObjectUUID : persistentObjectUUIDs) {
+            try {
+                T persistentObject = dao.load(persistentObjectUUID);
+                dao.delete(persistentObject);
+            } catch(DataAccessException e){
+                result.setStatus(Status.ERROR);
+                result.addException(e);
+            }
+            atLeastOneOK = true;
+        }
+
+        return result;
+    }
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(T persistentObject) {
@@ -93,7 +114,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return result;
     }
 
-   
+
 
     @Override
     @Transactional(readOnly = true)
