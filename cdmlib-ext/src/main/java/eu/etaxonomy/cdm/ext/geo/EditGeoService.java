@@ -212,25 +212,23 @@ public class EditGeoService implements IEditGeoService {
     }
 
     public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
-            boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             CondensedDistributionRecipe recipe,
             List<Language> langs) {
         Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
-        return getCondensedDistribution(distributions, subAreaPreference,
-                statusOrderPreference, hideMarkedAreas, recipe, langs);
+        return getCondensedDistribution(distributions, statusOrderPreference,
+                hideMarkedAreas, recipe, langs);
     }
 
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
-            boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             CondensedDistributionRecipe recipe,
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+                distributions, false, statusOrderPreference, hideMarkedAreas);
 
 
 
@@ -349,7 +347,9 @@ public class EditGeoService implements IEditGeoService {
         }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
-        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+        // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, false, statusOrderPreference, hideMarkedAreas);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -359,15 +359,18 @@ public class EditGeoService implements IEditGeoService {
             dto.setTree(DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions));
         }
 
+        if(parts.contains(InfoPart.condensedDistribution)) {
+            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(filteredDistributions, recipe, languages));
+        }
+
         if (parts.contains(InfoPart.mapUriParams)) {
-            dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+            // only apply the subAreaPreference rule for the maps
+            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, subAreaPreference, false, null);
+
+            dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,
                     presenceAbsenceTermColors,
                     null, languages));
-        }
-
-        if(parts.contains(InfoPart.condensedDistribution)) {
-            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(filteredDistributions, recipe, languages));
         }
 
         return dto;
