@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<abcd21:DataSets>
+  <abcd21:DataSet>
+    <abcd21:Units>
+      <abcd21:Unit>
+        <abcd21:SourceInstitutionID>BGBM</abcd21:SourceInstitutionID>
+        <abcd21:SourceID>DNA Bank</abcd21:SourceID>
+        <abcd21:UnitID>DB 6</abcd21:UnitID>
+        <abcd21:Identifications>
+          <abcd21:Identification>
+            <abcd21:Result>
+              <abcd21:TaxonIdentified>
+                <abcd21:HigherTaxa>
+                  <abcd21:HigherTaxon>
+                    <abcd21:HigherTaxonName>COMPOSITAE</abcd21:HigherTaxonName>
+                    <abcd21:HigherTaxonRank>familia</abcd21:HigherTaxonRank>
+                  </abcd21:HigherTaxon>
+                </abcd21:HigherTaxa>
+                <abcd21:ScientificName>
+                  <abcd21:FullScientificNameString>Cichorium intybus L.</abcd21:FullScientificNameString>
+                  <abcd21:NameAtomised>
+                    <abcd21:Botanical>
+                      <abcd21:GenusOrMonomial>Cichorium</abcd21:GenusOrMonomial>
+                      <abcd21:FirstEpithet>intybus</abcd21:FirstEpithet>
+                    </abcd21:Botanical>
+                  </abcd21:NameAtomised>
+                </abcd21:ScientificName>
+              </abcd21:TaxonIdentified>
+            </abcd21:Result>
+            <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+          </abcd21:Identification>
+        </abcd21:Identifications>
+        <abcd21:RecordBasis>MaterialSample</abcd21:RecordBasis>
+        <abcd21:KindOfUnit>DNA</abcd21:KindOfUnit>
+        <abcd21:SpecimenUnit>
+          <abcd21:Preparations>
+            <abcd21:preparation>
+              <abcd21:preparationType>gDNA</abcd21:preparationType>
+              <abcd21:preparationMaterials>DNeasy Plant Mini Spin Kit
+                Qiagen</abcd21:preparationMaterials>
+              <abcd21:preparationAgent>
+                <abcd21:Person>
+                  <abcd21:FullName>Bansemer, Jana</abcd21:FullName>
+                </abcd21:Person>
+              </abcd21:preparationAgent>
+              <abcd21:preparationDate>2002-08-13T00:00:00</abcd21:preparationDate>
+              <abcd21:sampleDesignations>
+                <abcd21:sampleDesignation>CAM010</abcd21:sampleDesignation>
+              </abcd21:sampleDesignations>
+            </abcd21:preparation>
+          </abcd21:Preparations>
+          <abcd21:Preservations>
+            <abcd21:preservation>
+              <abcd21:preservationType>TE buffer</abcd21:preservationType>
+              <abcd21:preservationTemperature>-80</abcd21:preservationTemperature>
+            </abcd21:preservation>
+          </abcd21:Preservations>
+        </abcd21:SpecimenUnit>
+        <abcd21:MultiMediaObjects>
+          <abcd21:MultiMediaObject>
+            <abcd21:fileURI>http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=7475</abcd21:fileURI>
+          </abcd21:MultiMediaObject>
+          <abcd21:MultiMediaObject>
+            <abcd21:fileURI>http://ww2.bgbm.org/herbarium/images/B/10/00/66/57/thumbs/B_10_0066577.jpg</abcd21:fileURI>
+          </abcd21:MultiMediaObject>
+        </abcd21:MultiMediaObjects>
+        <abcd21:Associations>
+          <abcd21:UnitAssociation>
+            <abcd21:SourceInstitutionCode>BGBM</abcd21:SourceInstitutionCode>
+            <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
+            <abcd21:UnitID>B 10 0066577</abcd21:UnitID>
+            <abcd21:AssociationType>DNA and specimen from the same
+              individual</abcd21:AssociationType>
+            <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+          </abcd21:UnitAssociation>
+        </abcd21:Associations>
+        <abcd21:Gathering>
+          <abcd21:Agents>
+            <abcd21:GatheringAgent>
+              <abcd21:Person>
+                <abcd21:FullName>B. Valdés, S. Talavera, G. Alziar, D. Jeanmonod, N. Galland, U. MatthÃ¤s, V. Stevanovic, P. Minissale, S. Fici, B. Foggi, M. Watson, P. Hinz &amp; J. M. Romero</abcd21:FullName>
+              </abcd21:Person>
+            </abcd21:GatheringAgent>
+          </abcd21:Agents>
+          <abcd21:LocalityText>Bailén Prov. Jaen.</abcd21:LocalityText>
+        </abcd21:Gathering>
+        <abcd21:CollectorsFieldNumber>Rec.It2993/88</abcd21:CollectorsFieldNumber>
+        <abcd21:UnitExtensions>
+          <abcd21:UnitExtension>
+            <ggbn:GGBN>
+              <ggbn:ratioOfAbsorbance260_280>1,38</ggbn:ratioOfAbsorbance260_280>
+              <ggbn:ratioOfAbsorbance260_230>0,77</ggbn:ratioOfAbsorbance260_230>
+              <ggbn:concentration Unit="ng/µl">17,14</ggbn:concentration>
+              <ggbn:qualityCheckDate>2008-04-15T00:00:00</ggbn:qualityCheckDate>
+              <ggbn:Amplifications>
+                <ggbn:amplification>
+                  <ggbn:marker>ITS (ITS1, 5.8S rRNA, ITS2)</ggbn:marker>
+                  <ggbn:Sequencings>
+                    <ggbn:sequencing>
+                      <ggbn:SingleSequencings>
+                        <ggbn:singleSequencing>
+                          <ggbn:sequencingDirection>forward</ggbn:sequencingDirection>
+                          <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_GM312-petD_F.ab1</ggbn:chromatogramFileURI>
+                          <ggbn:SequencingPrimers>
+                            <ggbn:sequencingPrimer>
+                              <ggbn:primerSequence
+                                Direction="forward">5´-GCCGTMTTTATGTTAATGC-3´</ggbn:primerSequence>
+                              <ggbn:primerName>PIpetB1411F</ggbn:primerName>
+                              <ggbn:primerReferenceCitation>Löhne &amp;
+                                Borsch 2005</ggbn:primerReferenceCitation>
+                            </ggbn:sequencingPrimer>
+                          </ggbn:SequencingPrimers>
+                        </ggbn:singleSequencing>
+                        <ggbn:singleSequencing>
+                          <ggbn:sequencingDirection>reverse</ggbn:sequencingDirection>
+                          <ggbn:chromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_GM312-petD_R.ab1</ggbn:chromatogramFileURI>
+                          <ggbn:SequencingPrimers>
+                            <ggbn:sequencingPrimer>
+                              <ggbn:primerSequence
+                                Direction="reverse">5´-AATTTAGCYCTTAATACAGG-3´</ggbn:primerSequence>
+                              <ggbn:primerName>PIpetD738R</ggbn:primerName>
+                              <ggbn:primerReferenceCitation>Löhne &amp;
+                                Borsch 2005</ggbn:primerReferenceCitation>
+                            </ggbn:sequencingPrimer>
+                          </ggbn:SequencingPrimers>
+                        </ggbn:singleSequencing>
+                      </ggbn:SingleSequencings>
+                      <ggbn:consensusSequence>
+                      TTTCGGGTCC TTTATAGTGA AGATATAGCA TAGATAGTTG
+                      TAATCCATTA TGTATCATTG GGGAAGGAAG GAGAATATTT
+                      TTTTGATAGA ATACAAGTAT GGATTATTGA AACTAATACG
+                      CCATGTATTT GGATATTTCC CTTGAACTGC ATAATATTCT
+                      TTATTTTCCA TGAATAGTGT AAGGGAATTT TTCGAAGAGA
+                      AAATGGATTA TGGGAGTGTG TGACTTGAGC TATTGATTGG
+                      TCTGTGCAGA TACGGGCTTT TATCTATCTG CCACATTGTA
+                      ATTCACAAAC CAATGTGTCT TTGTTCCAAC CATCGCGTAA
+                      GCCCCATACA GAAGATAGGC TGGTTCGCTT GAAGAGAATC
+                      TTTTCTATGA TCAGATCCGA ATTATGTCGT ACATGAGCAG
+                      GCTCCGTAAG ATCTAGTTGA CTTAAGTCAA ACTTCAATAG
+                      TATAAAAATG CACTCATTTC CTCTGCATTG ACACGAGCTA
+                      TGAGACTATC GGAGTGAAAG AAAGGGTCTA AAGAAGAAGA
+                      AAGCTTGGGC TAGATTAGTA ACAAGTAAAT CCTTTGTGTG
+                      TGTGTTTGTA ATTAGTAAAT GGGCTCTCAA TATTTTGGGG
+                      CTAATTACTG ATCCTAAGGT TTGAGACGAC CCAGAAAGCA
+                      CTTGATCATA TCACGATTGA CTTTGTAAGC CTACTTGGGT
+                      ATTGAGTATT TACTTGTAAG AACCGAATTC TTTGGGGGAT
+                      AGTTGCAAAA AGAATCCAGT CAATTGTTCT TACGTAAAAC
+                      CATTCATATC TCGTATATGG ATATGTCTAG ATAGGCTATC
+                      GATTTTCGAT GGATTCGTTT GGTTCTTTTG ATTATTGCTC
+                      GAGCTGGATG ATGAAAAATT ATCATGTCCG GTTCCTTCG</ggbn:consensusSequence>
+                      <ggbn:consensusSequenceLength>912</ggbn:consensusSequenceLength>
+                      <ggbn:consensusSequenceChromatogramFileURI>http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&amp;path=%2FCAM385_Campa_drabifolia.pde</ggbn:consensusSequenceChromatogramFileURI>
+                      <ggbn:geneticAccession>
+                        <ggbn:geneticAccessionNumber>AJ746397</ggbn:geneticAccessionNumber>
+                        <ggbn:geneticAccessionNumberURI>http://www.ncbi.nlm.nih.gov/nuccore/56310613</ggbn:geneticAccessionNumberURI>
+                      </ggbn:geneticAccession>
+                      <ggbn:References>
+                        <ggbn:Reference>
+                          <ggbn:ReferenceCitation>Gemeinholzer,B.,
+                            Bachmann,K. (2005): Examining morphological
+                            and molecular diagnostic character states in
+                            Cichorium intybus L. (Asteraceae) and
+                            Cichorium spinosum L. Plant Systematics and
+                            Evolution 253 (1-3): 105-123.</ggbn:ReferenceCitation>
+                        </ggbn:Reference>
+                      </ggbn:References>
+                    </ggbn:sequencing>
+                  </ggbn:Sequencings>
+                </ggbn:amplification>
+              </ggbn:Amplifications>
+            </ggbn:GGBN>
+          </abcd21:UnitExtension>
+        </abcd21:UnitExtensions>
+      </abcd21:Unit>
+    </abcd21:Units>
+  </abcd21:DataSet>
+</abcd21:DataSets>

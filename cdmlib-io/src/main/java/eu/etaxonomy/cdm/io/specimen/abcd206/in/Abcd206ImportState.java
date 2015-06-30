@@ -205,5 +205,6 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
     public void reset() {
         getDataHolder().reset();
         derivedUnitBase = null;
+        fieldUnit = null;
     }
 }
