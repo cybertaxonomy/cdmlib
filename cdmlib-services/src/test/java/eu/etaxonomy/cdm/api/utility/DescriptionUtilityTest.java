@@ -120,19 +120,20 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
         Distribution distBerlin = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());
 
+        // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
-        // 1. Mixed situation
+        // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
-        // all computed => subAreaPreference should have no effect?
+        // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
@@ -171,7 +172,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
