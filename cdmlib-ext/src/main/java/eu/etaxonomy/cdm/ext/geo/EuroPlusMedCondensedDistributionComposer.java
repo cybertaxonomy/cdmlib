@@ -231,7 +231,8 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
             subAreaString.append(statusSymbol);
 
             String areaLabel = node.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
-            subAreaString.append(StringUtils.remove(areaLabel, parentLabel + "-"));
+            String cleanSubAreaLabel = StringUtils.replaceEach(areaLabel, new String[] {parentLabel, "(", ")"}, new String[] {"", "", ""});
+            subAreaString.append(cleanSubAreaLabel);
 
             if(!node.subAreas.isEmpty()) {
                 subAreaString.append('(');
