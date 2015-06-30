@@ -98,7 +98,9 @@ public class AbcdParseUtility {
     public static Date parseFirstDate(NodeList nodeList) {
         Date date = null;
         DateTime dateTime = parseFirstDateTime(nodeList);
-        date = dateTime.toDate();
+        if(dateTime!=null){
+            date = dateTime.toDate();
+        }
         return date;
     }
 
