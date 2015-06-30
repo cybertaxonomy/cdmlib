@@ -273,7 +273,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 //import associated units
                 DerivedUnit currentUnit = state.getDerivedUnitBase();
                 String currentPrefix = state.getPrefix();
-
                 NodeList unitAssociationList = item.getElementsByTagName(state.getPrefix()+"UnitAssociation");
                 for(int k=0;k<unitAssociationList.getLength();k++){
                     if(unitAssociationList.item(k) instanceof Element){
@@ -287,23 +286,41 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                     state.reset();
                                     this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
                                     handleSingleUnit(state);
+                                    DerivedUnit associatedUnit = state.getDerivedUnitBase();
 
                                     state.setPrefix(currentPrefix);
                                     //attach current unit and associated unit depending on association type
+                                    if(associationWrapper.getAssociationType().contains("same individual")){
+                                        //parent-child relation:
+                                        //copy derivation event and connect parent and sub derivative
+                                        DerivationEvent derivedFromEvent = currentUnit.getDerivedFrom();
+                                        DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, derivedFromEvent.getType());
+                                        updatedDerivationEvent.setActor(derivedFromEvent.getActor());
+                                        updatedDerivationEvent.setDescription(derivedFromEvent.getDescription());
+                                        updatedDerivationEvent.setInstitution(derivedFromEvent.getInstitution());
+                                        updatedDerivationEvent.setTimeperiod(derivedFromEvent.getTimeperiod());
+                                        report.addDerivate(associatedUnit, currentUnit, state.getConfig());
+                                    }
+                                    else if(associationWrapper.getAssociationType().contains("same population")){
+                                        //siblings relation
+                                        //connect associated unit to already existing field unit
+                                        java.util.Collection<FieldUnit> fieldUnits = cdmAppController.getOccurrenceService().getFieldUnits(currentUnit.getUuid());
+                                        if(fieldUnits.size()==1){
+                                            FieldUnit fieldUnit = fieldUnits.iterator().next();
+                                            DerivationEvent associatedDerivedFrom = associatedUnit.getDerivedFrom();
+                                            DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(fieldUnit, associatedUnit, associatedDerivedFrom.getType());
+                                            updatedDerivationEvent.setActor(associatedDerivedFrom.getActor());
+                                            updatedDerivationEvent.setDescription(associatedDerivedFrom.getDescription());
+                                            updatedDerivationEvent.setInstitution(associatedDerivedFrom.getInstitution());
+                                            updatedDerivationEvent.setTimeperiod(associatedDerivedFrom.getTimeperiod());
+                                        }
+                                    }
+
                                     //TODO
-
-                                    //copy derivation event
-                                    DerivationEvent previousDerivationEvent = currentUnit.getDerivedFrom();
-                                    DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(state.getDerivedUnitBase(), currentUnit, previousDerivationEvent.getType());
-                                    updatedDerivationEvent.setActor(previousDerivationEvent.getActor());
-                                    updatedDerivationEvent.setDescription(previousDerivationEvent.getDescription());
-                                    updatedDerivationEvent.setInstitution(previousDerivationEvent.getInstitution());
-                                    updatedDerivationEvent.setTimeperiod(previousDerivationEvent.getTimeperiod());
-                                    report.addDerivate(state.getDerivedUnitBase(), currentUnit, state.getConfig());
-
                                     //handle field unit of associated specimen
-                                    //TODO
                                     cdmAppController.getOccurrenceService().delete(state.getFieldUnit());
+
+                                    save(associatedUnit, state);
                                 }
                             }
                         }
