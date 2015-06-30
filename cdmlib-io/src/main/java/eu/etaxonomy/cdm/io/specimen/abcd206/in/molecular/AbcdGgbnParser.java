@@ -92,6 +92,7 @@ public class AbcdGgbnParser {
         DnaQuality dnaQuality = DnaQuality.NewInstance();
 
         NodeList purificationMethodList = element.getElementsByTagName(prefix+"purificationMethod");
+        //TODO
 //        dnaQuality.setPurificationMethod(purificationMethod)
 
         NodeList concentrationList = element.getElementsByTagName(prefix+"concentration");
@@ -100,6 +101,7 @@ public class AbcdGgbnParser {
             dnaQuality.setConcentration(AbcdParseUtility.parseDouble(concentration));
             if(concentration instanceof Element){
                 String unit = ((Element) concentration).getAttribute("Unit");
+                //TODO
 //                dnaQuality.setConcentrationUnit(concentrationUnit)
             }
         }
@@ -118,6 +120,7 @@ public class AbcdGgbnParser {
         NodeList qualityList = element.getElementsByTagName(prefix+"quality");
         NodeList qualityRemarksList = element.getElementsByTagName(prefix+"qualityRemarks");
 
+        //TODO
 //        dnaQuality.setQualityTerm(qualityTerm)
 
         return dnaQuality;
@@ -184,6 +187,12 @@ public class AbcdGgbnParser {
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
+            //check if amplification already exists
+            List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService().findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
+            if(matchingAmplifications.size()==1){
+                amplification = matchingAmplifications.iterator().next();
+            }
+            cdmAppController.getAmplificationService().save(amplification);
             amplificationResult.setAmplification(amplification);
             dnaSample.addAmplificationResult(amplificationResult);
         }
@@ -291,24 +300,27 @@ public class AbcdGgbnParser {
         }
     }
 
-    /**
-     * @param sequencingPrimersList
-     * @param singleRead
-     * @param amplification
-     */
     private void parseSequencingPrimers(NodeList sequencingPrimersList, SingleRead singleRead, Amplification amplification) {
         if(sequencingPrimersList.item(0)!=null && sequencingPrimersList.item(0) instanceof Element){
             Element sequencingPrimers = (Element)sequencingPrimersList.item(0);
             NodeList sequencingPrimerList = sequencingPrimers.getElementsByTagName(prefix+"sequencingPrimer");
             for(int i=0;i<sequencingPrimerList.getLength();i++){
-                Primer primer = Primer.NewInstance(null);
-                singleRead.setPrimer(primer);
-                cdmAppController.getPrimerService().save(primer);
                 if(sequencingPrimerList.item(i) instanceof Element){
                     Element sequencingPrimer = (Element)sequencingPrimerList.item(i);
                     //primer name
-                    NodeList primerNameList = sequencingPrimer.getElementsByTagName(prefix+"primerName");
-                    primer.setLabel(AbcdParseUtility.parseFirstTextContent(primerNameList));
+                    String primerName = AbcdParseUtility.parseFirstTextContent(sequencingPrimer.getElementsByTagName(prefix+"primerName"));
+                    //check if primer already exists
+                    List<Primer> matchingPrimers = cdmAppController.getPrimerService().findByLabel(primerName, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                    Primer primer = null;
+                    if(matchingPrimers.size()==1){
+                        primer = matchingPrimers.iterator().next();
+                        return;
+                    }
+                    else{
+                        primer = Primer.NewInstance(null);
+                        primer.setLabel(primerName);
+                    }
+                    singleRead.setPrimer(primer);
                     //primer sequence
                     NodeList primerSequenceList = sequencingPrimer.getElementsByTagName(prefix+"primerSequence");
                     primer.setSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(primerSequenceList)));
@@ -336,6 +348,8 @@ public class AbcdGgbnParser {
                         cdmAppController.getReferenceService().saveOrUpdate(primerReference);
                     }
                     primer.setPublishedIn(primerReference);
+
+                    cdmAppController.getPrimerService().save(primer);
                 }
             }
         }
