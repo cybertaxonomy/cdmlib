@@ -220,10 +220,10 @@ public class AbcdGgbnParser {
                 NodeList consensusSequencesList = sequencing.getElementsByTagName(prefix+"consensusSequence");
                 sequence.setConsensusSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(consensusSequencesList)));
                 //sequence length
-                NodeList consensusSequencesLengthList = sequencing.getElementsByTagName(prefix+"consensusSequenceLength");
-                if(sequence.getConsensusSequence()!=null){
+                Double consensusSequenceLength = AbcdParseUtility.parseFirstDouble(sequencing.getElementsByTagName(prefix+"consensusSequenceLength"));
+                if(sequence.getConsensusSequence()!=null && consensusSequenceLength!=null){
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
-                    sequence.getConsensusSequence().setLength(AbcdParseUtility.parseFirstDouble(consensusSequencesLengthList).intValue());
+                    sequence.getConsensusSequence().setLength(consensusSequenceLength.intValue());
                 }
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
