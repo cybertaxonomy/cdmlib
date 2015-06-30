@@ -403,6 +403,32 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	/**
+     * Tests importing of DNA unit with an ABCD with only few fields filled.
+     * Should just check that no NPEs occur when some fields are missing.
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+    })
+    public void testImportGgbnSparseData(){
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sparse_data.xml";
+        URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	}
+
+	/**
 	 * Tests importing of DNA unit without attaching it to an existing specimen.
 	 * Creates a FieldUnit with an attached DnaSample.
 	 */
