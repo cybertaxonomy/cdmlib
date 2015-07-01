@@ -146,9 +146,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-     */
     @Override
     @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
@@ -200,9 +197,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#countDeterminations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.taxon.TaxonBase)
-     */
     @Override
     public int countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
         return dao.countDeterminations(occurence, taxonbase);
@@ -232,9 +226,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#list(java.lang.Class, eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
@@ -257,9 +248,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.getFieldUnitUuidAndTitleCache();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
-     */
     @Override
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
         derivedUnit = (DerivedUnit) dao.load(derivedUnit.getUuid(), null);
@@ -270,9 +258,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return derivedUnitFacade;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listDerivedUnitFacades(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.List)
-     */
     @Override
     public List<DerivedUnitFacade> listDerivedUnitFacades(
             DescriptionBase description, List<String> propertyPaths) {
@@ -304,9 +289,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -314,17 +296,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Collection<SpecimenOrObservationBase> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
         return pageFieldUnitsByAssociatedTaxon(null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageFieldUnitsByAssociatedTaxon(java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Pager<SpecimenOrObservationBase> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
@@ -563,11 +539,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return preservedSpecimenDTO;
     }
 
-    /**
-     * @param derivedUnit
-     * @param derivateDataDTO
-     * @return
-     */
     private DerivateDataDTO assembleDerivateDataDTO(DerivateDTO derivateDTO, SpecimenOrObservationBase<?> specimenOrObservation) {
         DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
         Collection<DerivedUnit> childDerivates = getDerivedUnitsFor(specimenOrObservation);
@@ -650,11 +621,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return derivateDataDTO;
     }
 
-    /**
-     * @param string
-     * @param tail
-     * @return
-     */
     private String removeTail(String string, final String tail) {
         if (string.endsWith(tail)) {
             string = string.substring(0, string.length() - tail.length());
@@ -689,9 +655,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageByAssociatedTaxon(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @SuppressWarnings("unchecked")
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
@@ -765,13 +728,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param languages
-     * @param highlightFragments
-     * @return
-     */
     private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
             List<Language> languages, boolean highlightFragments) {
 
@@ -806,9 +762,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getFieldUnits(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
-     */
     @Override
     public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
@@ -828,10 +781,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return fieldUnits;
     }
 
-    /**
-     * @param original
-     * @param fieldUnits
-     */
     private Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
         Collection<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
@@ -848,9 +797,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return fieldUnits;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#moveSequence(eu.etaxonomy.cdm.model.molecular.DnaSample, eu.etaxonomy.cdm.model.molecular.DnaSample, eu.etaxonomy.cdm.model.molecular.Sequence)
-     */
     @Override
     public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
         // reload specimens to avoid session conflicts
@@ -869,9 +815,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#moveDerivate(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
-     */
     @Override
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
         // reload specimens to avoid session conflicts
@@ -1008,10 +951,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return nonCascadedCdmEntities;
     }
 
-    /**
-     * @param specimen
-     * @return
-     */
     private Collection<ICdmBase> getSpecimenOrObservationNonCascadedAssociatedElements(
             SpecimenOrObservationBase<?> specimen) {
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
@@ -1037,9 +976,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return nonCascadedCdmEntities;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.VersionableServiceBase#isDeletable(eu.etaxonomy.cdm.model.common.VersionableEntity, eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase)
-     */
     @Override
     public DeleteResult isDeletable(SpecimenOrObservationBase specimen, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = new DeleteResult();
@@ -1124,9 +1060,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return deleteResult;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#delete(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator)
-     */
     @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
@@ -1261,26 +1194,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     // return delete(entity, config);
     // }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listAssociatedTaxa(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
-     */
     @Override
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listIndividualsAssociations(specimen, null, null, null, null);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listTypeDesignations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listTypeDesignations(specimen, limit, start, orderHints, propertyPaths);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listDescriptionsWithDescriptionSpecimen(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(
             SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints,
@@ -1288,9 +1212,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.listDescriptionsWithDescriptionSpecimen(specimen, limit, start, orderHints, propertyPaths);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getStatesForSpecimen(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
-     */
     @Override
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen) {
         Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
@@ -1312,9 +1233,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return states;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getStatesForSpecimen(java.util.UUID)
-     */
     @Override
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(UUID specimenUuid) {
         SpecimenOrObservationBase<?> specimen = load(specimenUuid);
@@ -1327,9 +1245,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IdentifiableServiceBase#findByTitle(eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator)
-     */
     @Override
     public Pager<SpecimenOrObservationBase> findByTitle(
             IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
