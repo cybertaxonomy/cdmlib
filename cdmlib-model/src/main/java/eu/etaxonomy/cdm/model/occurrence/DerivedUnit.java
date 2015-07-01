@@ -169,7 +169,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	public static DerivedUnit NewInstance(SpecimenOrObservationType type) {
 		if (type.isMedia()){
 			return MediaSpecimen.NewInstance(type);
-		}else if (type.isKindOf(SpecimenOrObservationType.DnaSample)){
+		}else if (type.equals(SpecimenOrObservationType.DnaSample) || type.isKindOf(SpecimenOrObservationType.DnaSample)){
 			return DnaSample.NewInstance();
 		}else{
 			return new DerivedUnit(type);
