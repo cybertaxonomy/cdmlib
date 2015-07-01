@@ -1148,31 +1148,43 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return deleteResult;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#deleteDerivateHierarchy(eu.etaxonomy.cdm.model.common.ICdmBase)
-     */
+    @Override
+    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence){
+        DeleteResult deleteResult = new DeleteResult();
+        singleRead = HibernateProxyHelper.deproxy(singleRead, SingleRead.class);
+        //delete from amplification result
+        if(singleRead.getAmplificationResult()!=null){
+            singleRead.getAmplificationResult().removeSingleRead(singleRead);
+        }
+        //delete from sequence
+        sequence.removeSingleRead(singleRead);
+        deleteResult.setStatus(Status.OK);
+        return deleteResult;
+    }
+
     @Override
     public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
+        String deleteMolecularNotAllowed = "Deleting molecular data is not allowed in config";
         if (from.isInstanceOf(Sequence.class)) {
             if (!config.isDeleteMolecularData()) {
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
+                deleteResult.addException(new ReferencedObjectUndeletableException(deleteMolecularNotAllowed));
                 return deleteResult;
             }
             Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
             sequence.getDnaSample().removeSequence(sequence);
             deleteResult = sequenceService.delete(sequence);
         }
-        else if(from.isInstanceOf(SingleRead.class))  {
-            if (!config.isDeleteMolecularData()) {
-                deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("deleting molecur data is not allowed in config"));
-                return deleteResult;
+        else if(from instanceof SingleRead){
+            SingleRead singleRead = (SingleRead)from;
+            //delete from amplification result
+            if(singleRead.getAmplificationResult()!=null){
+                singleRead.getAmplificationResult().removeSingleRead(singleRead);
             }
-            SingleRead singleRead = HibernateProxyHelper.deproxy(from, SingleRead.class);
-            singleRead.getAmplificationResult().removeSingleRead(singleRead);
-            deleteResult.setStatus(Status.OK);
+            deleteResult.setAbort();
+            deleteResult.addException(new ReferencedObjectUndeletableException("Deleted ONLY from amplification. "
+                    + "Single read may still be attached to a consensus sequence."));
         }
         else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
             deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
