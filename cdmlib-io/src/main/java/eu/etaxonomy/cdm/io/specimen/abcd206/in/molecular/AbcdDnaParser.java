@@ -93,12 +93,7 @@ public class AbcdDnaParser {
                 String preparationType = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preparationType"));
                 //preparation materials
                 String preparationMaterials = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preparationMaterials"));
-                PreservationMethod preservation = dnaSample.getPreservation();
-                if(preservation==null){
-                    preservation = PreservationMethod.NewInstance();
-                    dnaSample.setPreservation(preservation);
-                }
-                preservation.setMaterialMethodText(preparationMaterials);
+                derivedFrom.setDescription(preparationMaterials);
                 //preparation actor
                 NodeList preparationAgentList = ((Element) node).getElementsByTagName(prefix+"preparationAgent");
                 if(preparationAgentList.item(0)!=null && preparationAgentList.item(0) instanceof Element){
