@@ -38,8 +38,10 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -469,6 +471,14 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return an unordered list of all child derivatives
      */
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
+
+    /**
+     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult}.
+     * @param singleRead the single read to delete
+     * @param sequence the sequence to which the single read belongs
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
 
 
 }
