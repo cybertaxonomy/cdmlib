@@ -11,13 +11,13 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -151,30 +151,41 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet(value="OccurrenceServiceDeepDeleteTest.testDeleteStepByStep.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteDerivateHierarchyStepByStep(){
+        UUID fieldUnitUuid = UUID.fromString("4d91a9bc-2af7-40f8-b6e6-545305301807");
+        UUID derivedUnitUuid = UUID.fromString("f9c57904-e512-4927-90ad-f3833cdef967");
+        UUID tissueSampleUuid = UUID.fromString("14b92fce-1236-455b-ba46-2a7e35d9230e");
+        UUID dnaSampleUuid = UUID.fromString("60c31688-edec-4796-aa2f-28a7ea12256b");
+        UUID sequenceUuid = UUID.fromString("24804b67-d6f7-48e5-811a-e7240230d305");
+
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
 
-        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
-        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
-        Sequence consensusSequence = sequenceService.load(SEQUENCE_UUID);
+        FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(fieldUnitUuid);
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnitUuid);
+        DerivedUnit tissueSample = (DerivedUnit) occurrenceService.load(tissueSampleUuid);
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(dnaSampleUuid);
+        Sequence consensusSequence = sequenceService.load(sequenceUuid);
 
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertNotNull(fieldUnit);
+        assertNotNull(derivedUnit);
+        assertNotNull(tissueSample);
+        assertNotNull(dnaSample);
+        assertNotNull(consensusSequence);
+
+        assertEquals(assertMessage, 4, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 3, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
         assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals("incorrect number of single reads", 1, consensusSequence.getSingleReads().size());
+        assertEquals(consensusSequence.getSingleReads().iterator().next(), dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next());
 
-        //delete single read -> should fail
-        SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
-        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
         //delete sequence -> should fail
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
@@ -182,9 +193,11 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         //allow deletion of molecular data
         config.setDeleteMolecularData(true);
 
-        deleteResult = occurrenceService.deleteDerivateHierarchy(singleRead, config);
+        SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
+        deleteResult = occurrenceService.deleteSingleRead(singleRead, consensusSequence);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(consensusSequence.getSingleReads().isEmpty());
+        assertEquals("incorrect number of single reads", 0, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals("incorrect number of single reads", 0, consensusSequence.getSingleReads().size());
 
         //delete sequence -> should fail
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
@@ -194,6 +207,14 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //delete dna sample
         deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
+        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
+        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
+        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+
+        //delete tissue sample
+        deleteResult = occurrenceService.deleteDerivateHierarchy(tissueSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -218,36 +239,43 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     @Test
-    @Ignore
+//    @Ignore
     public void createTestDataSet() throws FileNotFoundException {
+        UUID fieldUnitUuid = UUID.fromString("4d91a9bc-2af7-40f8-b6e6-545305301807");
+        UUID derivedUnitUuid = UUID.fromString("f9c57904-e512-4927-90ad-f3833cdef967");
+        UUID tissueSampleUuid = UUID.fromString("14b92fce-1236-455b-ba46-2a7e35d9230e");
+        UUID dnaSampleUuid = UUID.fromString("60c31688-edec-4796-aa2f-28a7ea12256b");
+        UUID sequenceUuid = UUID.fromString("24804b67-d6f7-48e5-811a-e7240230d305");
+
         //how the XML was generated
         FieldUnit fieldUnit = FieldUnit.NewInstance();
-        fieldUnit.setUuid(FIELD_UNIT_UUID);
+        fieldUnit.setUuid(fieldUnitUuid);
         //sub derivates (DerivedUnit, DnaSample)
-        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-        derivedUnit.setUuid(DERIVED_UNIT_UUID);
-        DnaSample dnaSample = DnaSample.NewInstance();
-        dnaSample.setUuid(DNA_SAMPLE_UUID);
+        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        derivedUnit.setUuid(derivedUnitUuid);
+        DerivedUnit tissueSample = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+        tissueSample.setUuid(tissueSampleUuid);
+        DnaSample dnaSample = (DnaSample) DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
+        dnaSample.setUuid(dnaSampleUuid);
+        Sequence sequence = Sequence.NewInstance("");
+        sequence.setUuid(sequenceUuid);
+        SingleRead singleRead1 = SingleRead.NewInstance();
+
+        dnaSample.addSequence(sequence);
+        sequence.addSingleRead(singleRead1);
+        AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample);
+        amplificationResult.addSingleRead(singleRead1);
 
         //derivation events
         DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent.NewSimpleInstance(derivedUnit, tissueSample, DerivationEventType.TISSUE_SAMPLING());
+        DerivationEvent.NewSimpleInstance(tissueSample, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
-        //DNA (Sequence, SingleRead, Amplification)
-        Sequence sequence = Sequence.NewInstance(dnaSample, "ATTCG", 5);
-        sequence.setUuid(SEQUENCE_UUID);
-        SingleRead singleRead = SingleRead.NewInstance();
-        sequence.addSingleRead(singleRead);
-        dnaSample.addSequence(sequence);
-        AmplificationResult amplificationResult = AmplificationResult.NewInstance(dnaSample);
-        amplificationResult.addSingleRead(singleRead);
         occurrenceService.save(fieldUnit);
         occurrenceService.save(derivedUnit);
+        occurrenceService.save(tissueSample);
         occurrenceService.save(dnaSample);
 
         commitAndStartNewTransaction(null);
@@ -255,17 +283,24 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         setComplete();
         endTransaction();
 
-
         try {
             writeDbUnitDataSetFile(new String[] {
                     "SpecimenOrObservationBase",
                     "SpecimenOrObservationBase_DerivationEvent",
                     "DerivationEvent",
                     "Sequence",
-                    "Sequence_SingleRead",
                     "SingleRead",
-                    "AmplificationResult"
-            });
+                    "SingleReadAlignment",
+                    "Amplification",
+                    "AmplificationResult",
+                    "DescriptionElementBase",
+                    "DescriptionBase",
+                    "TaxonBase",
+                    "TypeDesignationBase",
+                    "TaxonNameBase",
+                    "TaxonNameBase_TypeDesignationBase",
+                    "HomotypicalGroup"
+            }, "testDeleteStepByStep");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
