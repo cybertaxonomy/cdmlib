@@ -164,8 +164,37 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
-
     }
+
+    @Test
+    public void testFilterDistributions_fallbackAreaFilter(){
+
+        NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
+        jugoslavia.setIdInVocabulary("Ju");
+        NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
+        serbia.setIdInVocabulary("Sr");
+        serbia.setPartOf(jugoslavia);
+
+        Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
+        Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
+
+        distributions.add(distSerbia);
+        distributions.add(distJugoslavia);
+
+        // using TO_BE_CHECKED to mark Ju as fallback area
+        jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas,
+                MarkerType.TO_BE_CHECKED());
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
+    }
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

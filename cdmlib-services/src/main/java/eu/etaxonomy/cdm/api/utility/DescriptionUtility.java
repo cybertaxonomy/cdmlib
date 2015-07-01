@@ -168,7 +168,7 @@ public class DescriptionUtility {
                 filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
             }
         } else {
-            // only run the Sub area preference rule
+            // no filtering happened until this point, therefor adding all given distributions
             filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
             for(Distribution distribution : distributions){
                 NamedArea area = distribution.getArea();
@@ -188,7 +188,7 @@ public class DescriptionUtility {
                     continue;
                 }
                 if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())
-                        && key.hasMarker(fallbackAreaMarkerType, true)){
+                        && key.getPartOf().hasMarker(fallbackAreaMarkerType, true)){
                     removeCandidatesFallback.add(key.getPartOf());
                 }
             }
