@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -241,7 +242,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
     @Override
     @Test
-//    @Ignore
+    @Ignore
     public void createTestDataSet() throws FileNotFoundException {
         UUID fieldUnitUuid = UUID.fromString("4d91a9bc-2af7-40f8-b6e6-545305301807");
         UUID derivedUnitUuid = UUID.fromString("f9c57904-e512-4927-90ad-f3833cdef967");
