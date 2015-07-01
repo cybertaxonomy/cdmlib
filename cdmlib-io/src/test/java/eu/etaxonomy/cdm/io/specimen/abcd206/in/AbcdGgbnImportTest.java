@@ -124,6 +124,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals((Integer)8,derivedFrom.getTimeperiod().getStartMonth());
         assertEquals((Integer)13,derivedFrom.getTimeperiod().getStartDay());
         assertNotNull(dnaSample.getPreservation());
+        assertEquals("DNeasy Plant Mini Spin Kit Qiagen", derivedFrom.getDescription());
         //sample designation
         Set<String> identifiers = dnaSample.getIdentifiers((DefinedTerm) termService.find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
         assertNotNull(identifiers);
