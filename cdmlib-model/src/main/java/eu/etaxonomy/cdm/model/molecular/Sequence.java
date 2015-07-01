@@ -425,9 +425,11 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	public void removeSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
 		this.singleReadAlignments.remove(singleReadAlignment);
-		if (this.equals(singleReadAlignment.getConsensusSequence())){
-			singleReadAlignment.setConsensusAlignment(null);
-		}
+		//TODO setting this to NULL violates an SQL constraint
+		//to check: run OccurrenceServiceTest.testDeleteStepByStep()
+//		if (this.equals(singleReadAlignment.getConsensusSequence())){
+//			singleReadAlignment.setConsensusAlignment(null);
+//		}
 	}
 //	/**
 //	 * @see #getSingleReads()
@@ -437,9 +439,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 //	private void setSingleReadAlignments(Set<SingleReadAlignment> singleReadAlignments) {
 //		this.singleReadAlignments = singleReadAlignments;
 //	}
-	
+
 // *********************** CONVENIENCE ***********************************/
-	
+
 	/**
 	 * Convenience method to add a single read to a consensus sequence
 	 * by creating a {@link SingleReadAlignment}.
@@ -450,7 +452,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		SingleReadAlignment alignment = SingleReadAlignment.NewInstance(this, singleRead);
 		return alignment;
 	}
-	
+
 	public void removeSingleRead(SingleRead singleRead) {
 		Set<SingleReadAlignment> toRemove = new HashSet<SingleReadAlignment>();
 		for (SingleReadAlignment align : this.singleReadAlignments){
@@ -463,7 +465,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		}
 		return;
 	}
-	
+
 	/**
 	 * Convenience method that returns all single reads this consensus sequence
 	 * is based on via {@link SingleReadAlignment}s.
