@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd21:DataSets>
+      <abcd21:DataSet>
+        <abcd21:Units>
+          <abcd21:Unit>
+            <abcd21:SourceInstitutionID>BGBM</abcd21:SourceInstitutionID>
+            <abcd21:SourceID>DNA Bank</abcd21:SourceID>
+            <abcd21:UnitID>DB 1522</abcd21:UnitID>
+            <abcd21:Identifications>
+              <abcd21:Identification>
+                <abcd21:Result>
+                  <abcd21:TaxonIdentified>
+                    <abcd21:HigherTaxa>
+                      <abcd21:HigherTaxon>
+                        <abcd21:HigherTaxonName>CAMPANULACEAE</abcd21:HigherTaxonName>
+                        <abcd21:HigherTaxonRank>familia</abcd21:HigherTaxonRank>
+                      </abcd21:HigherTaxon>
+                    </abcd21:HigherTaxa>
+                    <abcd21:ScientificName>
+                      <abcd21:FullScientificNameString>Campanula bononiensis L.</abcd21:FullScientificNameString>
+                      <abcd21:NameAtomised>
+                        <abcd21:Botanical>
+                          <abcd21:GenusOrMonomial>Campanula</abcd21:GenusOrMonomial>
+                          <abcd21:FirstEpithet>bononiensis</abcd21:FirstEpithet>
+                        </abcd21:Botanical>
+                      </abcd21:NameAtomised>
+                    </abcd21:ScientificName>
+                  </abcd21:TaxonIdentified>
+                </abcd21:Result>
+                <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+              </abcd21:Identification>
+            </abcd21:Identifications>
+            <abcd21:RecordBasis>MaterialSample</abcd21:RecordBasis>
+            <abcd21:KindOfUnit>DNA</abcd21:KindOfUnit>
+            <abcd21:SpecimenUnit>
+              <abcd21:Preparations>
+                <abcd21:preparation>
+                  <abcd21:preparationType>gDNA</abcd21:preparationType>
+                  <abcd21:preparationMaterials>DNeasy Plant Mini Spin Kit Qiagen</abcd21:preparationMaterials>
+                  <abcd21:preparationAgent>
+                    <abcd21:Person>
+                      <abcd21:FullName>Schories, Astrid</abcd21:FullName>
+                    </abcd21:Person>
+                  </abcd21:preparationAgent>
+                  <abcd21:preparationDate>2007-12-11T00:00:00</abcd21:preparationDate>
+                </abcd21:preparation>
+              </abcd21:Preparations>
+              <abcd21:Preservations>
+                <abcd21:preservation>
+                  <abcd21:preservationType>TE buffer</abcd21:preservationType>
+                  <abcd21:preservationTemperature>-80</abcd21:preservationTemperature>
+                </abcd21:preservation>
+              </abcd21:Preservations>
+            </abcd21:SpecimenUnit>
+            <abcd21:Associations>
+              <abcd21:UnitAssociation>
+                <abcd21:SourceInstitutionCode>BGBM</abcd21:SourceInstitutionCode>
+                <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
+                <abcd21:UnitID>B GT 0000966</abcd21:UnitID>
+                <abcd21:AssociationType>DNA and voucher from same in situ individual</abcd21:AssociationType>
+                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+              </abcd21:UnitAssociation>
+            </abcd21:Associations>
+            <abcd21:Gathering>
+              <abcd21:DateTime>
+                <abcd21:DateText>23.08.2007</abcd21:DateText>
+              </abcd21:DateTime>
+              <abcd21:Agents>
+                <abcd21:GatheringAgent>
+                  <abcd21:Person>
+                    <abcd21:FullName>M. Ristow</abcd21:FullName>
+                  </abcd21:Person>
+                </abcd21:GatheringAgent>
+              </abcd21:Agents>
+              <abcd21:LocalityText>Brandenburg. Oderhänge ca 2,2 km NW Mallnow, Hang SW P 47,9.</abcd21:LocalityText>
+              <abcd21:Country>
+                <abcd21:Name>Germany</abcd21:Name>
+                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
+              </abcd21:Country>
+              <abcd21:NamedAreas>
+                <abcd21:NamedArea>
+                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
+                </abcd21:NamedArea>
+              </abcd21:NamedAreas>
+              <abcd21:SiteCoordinateSets>
+                <abcd21:SiteCoordinates>
+                  <abcd21:CoordinatesLatLong>
+                    <abcd21:LongitudeDecimal>14.47166634</abcd21:LongitudeDecimal>
+                    <abcd21:LatitudeDecimal>52.46611023</abcd21:LatitudeDecimal>
+                  </abcd21:CoordinatesLatLong>
+                </abcd21:SiteCoordinates>
+              </abcd21:SiteCoordinateSets>
+              <abcd21:Altitude>
+                <abcd21:MeasurementOrFactAtomised>
+                  <abcd21:LowerValue>40m</abcd21:LowerValue>
+                </abcd21:MeasurementOrFactAtomised>
+              </abcd21:Altitude>
+            </abcd21:Gathering>
+            <abcd21:CollectorsFieldNumber>651/07</abcd21:CollectorsFieldNumber>
+            <abcd21:UnitExtensions>
+              <abcd21:UnitExtension>
+                <ggbn:GGBN>
+                  <ggbn:ratioOfAbsorbance260_280>1,63</ggbn:ratioOfAbsorbance260_280>
+                  <ggbn:ratioOfAbsorbance260_230>0,87</ggbn:ratioOfAbsorbance260_230>
+                  <ggbn:concentration Unit="ng/µl">10,66</ggbn:concentration>
+                  <ggbn:qualityCheckDate>2008-04-10T00:00:00</ggbn:qualityCheckDate>
+                </ggbn:GGBN>
+              </abcd21:UnitExtension>
+            </abcd21:UnitExtensions>
+          </abcd21:Unit>
+          <abcd21:Unit>
+            <abcd21:SourceInstitutionID>BGBM</abcd21:SourceInstitutionID>
+            <abcd21:SourceID>DNA Bank</abcd21:SourceID>
+            <abcd21:UnitID>DB 1482</abcd21:UnitID>
+            <abcd21:Identifications>
+              <abcd21:Identification>
+                <abcd21:Result>
+                  <abcd21:TaxonIdentified>
+                    <abcd21:HigherTaxa>
+                      <abcd21:HigherTaxon>
+                        <abcd21:HigherTaxonName>CAMPANULACEAE</abcd21:HigherTaxonName>
+                        <abcd21:HigherTaxonRank>familia</abcd21:HigherTaxonRank>
+                      </abcd21:HigherTaxon>
+                    </abcd21:HigherTaxa>
+                    <abcd21:ScientificName>
+                      <abcd21:FullScientificNameString>Campanula glomerata L.</abcd21:FullScientificNameString>
+                      <abcd21:NameAtomised>
+                        <abcd21:Botanical>
+                          <abcd21:GenusOrMonomial>Campanula</abcd21:GenusOrMonomial>
+                          <abcd21:FirstEpithet>glomerata</abcd21:FirstEpithet>
+                        </abcd21:Botanical>
+                      </abcd21:NameAtomised>
+                    </abcd21:ScientificName>
+                  </abcd21:TaxonIdentified>
+                </abcd21:Result>
+                <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+              </abcd21:Identification>
+            </abcd21:Identifications>
+            <abcd21:RecordBasis>MaterialSample</abcd21:RecordBasis>
+            <abcd21:KindOfUnit>DNA</abcd21:KindOfUnit>
+            <abcd21:SpecimenUnit>
+              <abcd21:Preparations>
+                <abcd21:preparation>
+                  <abcd21:preparationType>gDNA</abcd21:preparationType>
+                  <abcd21:preparationMaterials>DNeasy Plant Mini Spin Kit Qiagen</abcd21:preparationMaterials>
+                  <abcd21:preparationAgent>
+                    <abcd21:Person>
+                      <abcd21:FullName>Schories, Astrid</abcd21:FullName>
+                    </abcd21:Person>
+                  </abcd21:preparationAgent>
+                  <abcd21:preparationDate>2007-12-06T00:00:00</abcd21:preparationDate>
+                </abcd21:preparation>
+              </abcd21:Preparations>
+              <abcd21:Preservations>
+                <abcd21:preservation>
+                  <abcd21:preservationType>TE buffer</abcd21:preservationType>
+                  <abcd21:preservationTemperature>-80</abcd21:preservationTemperature>
+                </abcd21:preservation>
+              </abcd21:Preservations>
+            </abcd21:SpecimenUnit>
+            <abcd21:Associations>
+              <abcd21:UnitAssociation>
+                <abcd21:SourceInstitutionCode>BGBM</abcd21:SourceInstitutionCode>
+                <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
+                <abcd21:UnitID>B GT 0001042</abcd21:UnitID>
+                <abcd21:AssociationType>DNA and voucher from same in situ individual</abcd21:AssociationType>
+                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+              </abcd21:UnitAssociation>
+            </abcd21:Associations>
+            <abcd21:Gathering>
+              <abcd21:DateTime>
+                <abcd21:DateText>30.08.2007</abcd21:DateText>
+              </abcd21:DateTime>
+              <abcd21:Agents>
+                <abcd21:GatheringAgent>
+                  <abcd21:Person>
+                    <abcd21:FullName>M. Ristow</abcd21:FullName>
+                  </abcd21:Person>
+                </abcd21:GatheringAgent>
+              </abcd21:Agents>
+              <abcd21:LocalityText>Brandenburg. Oderhänge E Libbenichen, Grenzberg.</abcd21:LocalityText>
+              <abcd21:Country>
+                <abcd21:Name>Germany</abcd21:Name>
+                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
+              </abcd21:Country>
+              <abcd21:NamedAreas>
+                <abcd21:NamedArea>
+                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
+                </abcd21:NamedArea>
+              </abcd21:NamedAreas>
+              <abcd21:SiteCoordinateSets>
+                <abcd21:SiteCoordinates>
+                  <abcd21:CoordinatesLatLong>
+                    <abcd21:LongitudeDecimal>14.4574995</abcd21:LongitudeDecimal>
+                    <abcd21:LatitudeDecimal>52.47861099</abcd21:LatitudeDecimal>
+                  </abcd21:CoordinatesLatLong>
+                </abcd21:SiteCoordinates>
+              </abcd21:SiteCoordinateSets>
+              <abcd21:Altitude>
+                <abcd21:MeasurementOrFactAtomised>
+                  <abcd21:LowerValue>30m</abcd21:LowerValue>
+                </abcd21:MeasurementOrFactAtomised>
+              </abcd21:Altitude>
+            </abcd21:Gathering>
+            <abcd21:CollectorsFieldNumber>675/07</abcd21:CollectorsFieldNumber>
+            <abcd21:UnitExtensions>
+              <abcd21:UnitExtension>
+                <ggbn:GGBN>
+                  <ggbn:ratioOfAbsorbance260_280>1,63</ggbn:ratioOfAbsorbance260_280>
+                  <ggbn:ratioOfAbsorbance260_230>2,88</ggbn:ratioOfAbsorbance260_230>
+                  <ggbn:concentration Unit="ng/µl">5,01</ggbn:concentration>
+                  <ggbn:qualityCheckDate>2008-04-10T00:00:00</ggbn:qualityCheckDate>
+                </ggbn:GGBN>
+              </abcd21:UnitExtension>
+            </abcd21:UnitExtensions>
+          </abcd21:Unit>
+        </abcd21:Units>
+      </abcd21:DataSet>
+    </abcd21:DataSets>
