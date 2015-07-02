@@ -273,6 +273,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 //import associated units
                 DerivedUnit currentUnit = state.getDerivedUnitBase();
                 FieldUnit currentFieldUnit = state.getFieldUnit();
+                String currentPrefix = state.getPrefix();
                 NodeList unitAssociationList = item.getElementsByTagName(state.getPrefix()+"UnitAssociation");
                 for(int k=0;k<unitAssociationList.getLength();k++){
                     if(unitAssociationList.item(k) instanceof Element){
@@ -340,8 +341,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         }
                     }
                 }
-
                 state.reset();
+                state.setPrefix(currentPrefix);
             }
             if(state.getConfig().isDeduplicateReferences()){
                 getReferenceService().deduplicate(Reference.class, null, null);
