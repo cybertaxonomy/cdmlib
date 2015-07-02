@@ -168,7 +168,9 @@ public class Abcd206ImportReport {
         for(String message:infoMessages){
             out.println(message);
         }
-        out.close();
+        if(out!=System.out){
+            out.close();
+        }
     }
 
     private String formatSpecimen(UnitIdSpecimen specimen){
