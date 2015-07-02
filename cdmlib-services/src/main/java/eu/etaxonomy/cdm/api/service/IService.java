@@ -340,6 +340,15 @@ public interface IService<T extends ICdmBase>{
      */
     public DeleteResult delete(Collection<UUID> persistentObjectUUIDs);
 
+    /**
+     * Merges a list of detached objects and returns the new
+     * list of merged objects
+     *
+     * @param detachedObjects
+     * @return a list of merged objects
+     */
+    public List<T> merge(List<T> detachedObjects);
+
 
 
 }

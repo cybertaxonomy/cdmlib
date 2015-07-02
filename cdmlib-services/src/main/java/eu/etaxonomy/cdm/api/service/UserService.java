@@ -500,6 +500,11 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Override
+    public DeleteResult delete(UUID userUuid)  {
+        return delete(dao.load(userUuid));
+    }
+
+    @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
         Map<UUID, User> users = new HashMap<UUID, User>();
@@ -514,6 +519,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveOrUpdate(User transientObject) {
         return super.saveOrUpdate(transientObject);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    @Transactional(readOnly=false)
+    public User merge(User detachedObject) {
+        return super.merge(detachedObject);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    @Transactional(readOnly=false)
+    public List<User> merge(List<User> detachedObjects) {
+        return super.merge(detachedObjects);
     }
 
     @Override

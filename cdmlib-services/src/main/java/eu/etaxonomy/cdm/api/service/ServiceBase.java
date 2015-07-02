@@ -189,6 +189,16 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public List<T> merge(List<T> detachedObjects) {
+        List<T> mergedObjects = new ArrayList<T>();
+        for(T obj : detachedObjects) {
+            mergedObjects.add(dao.merge(obj));
+        }
+        return mergedObjects;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public  <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = dao.count(type);

@@ -139,6 +139,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	}
 
 	@Override
+	@Transactional(readOnly = false)
     public DeleteResult delete(UUID agentUUID){
 		AgentBase base = dao.load(agentUUID);
 		DeleteResult result = this.isDeletable(base, null);
@@ -168,7 +169,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
     public DeleteResult delete(AgentBase agent){
 		return delete(agent.getUuid());
 	}
-	
+
 	@Override
 	public Person convertTeam2Person(Team team) throws MergeException {
 		Person result = null;

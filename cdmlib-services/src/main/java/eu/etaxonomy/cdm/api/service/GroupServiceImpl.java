@@ -239,8 +239,9 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     }
 
     @Override
+    @Transactional(readOnly=false)
     public DeleteResult delete(UUID groupUUID ){
-    	
+
        String groupUUIDString = groupUUID.toString();
        //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
         this.deleteGroup(groupUUIDString);
