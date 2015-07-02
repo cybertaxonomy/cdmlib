@@ -32,6 +32,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
@@ -53,6 +55,10 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -74,6 +80,49 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private ITermService termService;
 
+	@SpringBeanByType
+	private ITaxonService taxonService;
+
+	@SpringBeanByType
+	private ITaxonNodeService taxonNodeService;
+
+	/**
+	 * Tests import import of two DNA unit belonging to two different taxa
+	 * @throws ParseException
+	 */
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testImportTwoDnaUnitsWithTwoTaxa() throws ParseException {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_2taxa.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 2, occurrenceService.count(DnaSample.class));
+        assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
+        /*
+         * Default classification
+         *  - Campanula
+         *   - Campanula glomerata
+         *   - Campanula bononiensis
+         */
+        assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
+        assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
+        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula glomerata", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+
+	}
 	/**
 	 * Tests import import of DNA unit and all its parameters
 	 * and sub derivatives (sequence, amplification, etc.)
