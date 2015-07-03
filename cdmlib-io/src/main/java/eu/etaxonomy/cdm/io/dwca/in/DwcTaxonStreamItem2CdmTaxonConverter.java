@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -67,8 +67,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	// temporary key for the case that no dataset information is supplied, TODO use something better
 	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
 
-	private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-	
+	private final NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+
 	/**
 	 * @param state
 	 */
@@ -77,25 +77,26 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
-		//TODO what if not transactional? 
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
+		//TODO what if not transactional?
 		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferenceDetail = null;
-		
+
 		//taxon
 		TaxonBase<?> taxonBase = getTaxonBase(csvTaxonRecord);
 		MappedCdmBase  mcb = new MappedCdmBase(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
 		resultList.add(mcb);
-		
+
 		//original source
 		String id = csvTaxonRecord.get(ID);
 		IdentifiableSource source = taxonBase.addSource(OriginalSourceType.Import, id, "Taxon", sourceReference, sourceReferenceDetail);
 		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
-		
+
 		//rank
 		NomenclaturalCode nomCode = getNomCode(csvTaxonRecord);
 		Rank rank = getRank(csvTaxonRecord, nomCode);
@@ -103,10 +104,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		//name && name published in
 		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
 		taxonBase.setName(name);
-		
+
 		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
-		
+
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
 			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
 		}
@@ -116,27 +117,27 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		//classification
 		handleDataset(csvTaxonRecord, taxonBase, resultList, sourceReference, sourceReferenceDetail);
-		
+
 		//NON core
 	    //term="http://purl.org/dc/terms/identifier"
 		//currently only LSIDs
-		handleIdentifier(csvTaxonRecord, taxonBase); 
-		
+		handleIdentifier(csvTaxonRecord, taxonBase);
+
 		//TaxonRemarks
 		handleTaxonRemarks(csvTaxonRecord, taxonBase);
-		
+
 		//TDWG_1
 		handleTdwgArea(csvTaxonRecord, taxonBase);
-		
+
 		//VernecularName
 		handleCommonNames(csvTaxonRecord, taxonBase);
 
 		//External Sources, ID's and References
 		handleIdentifiableObjects(csvTaxonRecord, taxonBase);
-		
-		
+
+
 		//		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
-//		         The following eight groups are recognized: Animalia, Archaea, Bacteria, Chromista, 
+//		         The following eight groups are recognized: Animalia, Archaea, Bacteria, Chromista,
 //		         Fungi, Plantae, Protozoa, Viruses -->
 //		    <field index='10' term='http://rs.tdwg.org/dwc/terms/kingdom'/>
 
@@ -167,7 +168,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 //		    <field index='19' term='http://rs.tdwg.org/dwc/terms/scientificNameAuthorship'/>
 //		==> see scientific name
-//		    
+//
 //		<!-- Acceptance status published in -->
 //		    <field index='20' term='http://purl.org/dc/terms/source'/>
 //		    <!-- Reference in which the scientific name was first published -->
@@ -184,20 +185,20 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	
+
 	/**
 	 * @param item
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
-		
-		
+
+
 		String references = item.get(TermUri.DC_REFERENCES);
-		
+
 		if (references == null || references == "") {
 			references = item.get(TermUri.DWC_NAME_PUBLISHED_IN_ID);//lorna temporary until Scratchpads move the reference to the correct place.
 		}
-		
+
 		if (StringUtils.isNotBlank(references)){
 			URI uri = makeUriIfIs(references);
 			if (uri != null){
@@ -207,8 +208,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				fireWarningEvent(String.format(message, references), item, 6);
 			}
 		}
-		
-		
+
+
 		//TODO: Finish properly
 		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
 		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
@@ -219,14 +220,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
-		
-		
-		
+
+
+
 	}
 
 
 	/**
-	 * If str is an uri it returns is as an {@link URI}. If not it returns <code>null</code>. 
+	 * If str is an uri it returns is as an {@link URI}. If not it returns <code>null</code>.
 	 * @param str
 	 * @return the URI.
 	 */
@@ -253,8 +254,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		//TODO: handle comma separated values
 		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
 		if (StringUtils.isNotBlank(commonName)){
-		
-			Language language = getLanguage(item);	
+
+			Language language = getLanguage(item);
 			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
 			if(taxonBase instanceof Taxon){
 				Taxon taxon = (Taxon) taxonBase;
@@ -285,7 +286,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				for(Taxon taxon : acceptedTaxaList){
 					TaxonDescription td = getTaxonDescription(taxon, false);
 					NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
-	
+
 					if (area == null){
 						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 					}
@@ -300,7 +301,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 			TaxonDescription td = getTaxonDescription(taxon, false);
 			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
-	
+
 			if (area == null){
 				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 			}
@@ -319,14 +320,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 */
 	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
 		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
-		Language language = getLanguage(item);	
+		Language language = getLanguage(item);
 		if(StringUtils.isNotBlank(comment)){
 				Annotation annotation = Annotation.NewInstance(comment, language);
 				taxonBase.addAnnotation(annotation);
 		}else{
-			String message = "Comment is empty or some error appeared while saving: %s";
-//			message = String.format(message);
-			fireWarningEvent(message, item, 1);
+//			String message = "Comment is empty or some error appeared while saving: %s";
+////			message = String.format(message);
+//			fireWarningEvent(message, item, 1);
 		}
 	}
 
@@ -344,44 +345,44 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					String message = "LSID is malformed and can't be handled as LSID: %s";
 					message = String.format(message, identifier);
 					fireWarningEvent(message, csvTaxonRecord, 4);
-				} 
+				}
 			}else{
 				String message = "Identifier type not supported: %s";
 				message = String.format(message, identifier);
 				fireWarningEvent(message, csvTaxonRecord, 4);
 			}
 		}
-		
+
 	}
 
 
 	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
-		
+
 		if (config.isDatasetsAsClassifications()){
 			String datasetId = CdmUtils.Nz(item.get(idTerm)).trim();
 			String datasetName = CdmUtils.Nz(item.get(strTerm)).trim();
 				if (CdmUtils.areBlank(datasetId, datasetName) ){
 				datasetId = NO_DATASET;
 			}
-			
+
 			//check id
 			boolean classificationExists = state.exists(idTerm.toString() , datasetId, Classification.class);
-			
+
 			//check name
 			if (!classificationExists){
 				classificationExists = state.exists(strTerm.toString() , datasetName, Classification.class);
 			}
-			
+
 			//if not exists, create new
 			if (! classificationExists){
 				String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
-				if (classificationName.equals(NO_DATASET)){					
+				if (classificationName.equals(NO_DATASET)){
 					classificationName = config.getClassificationName();
 					//classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
 				}
-				
+
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
 				Classification classification = Classification.NewInstance(classificationName);
 				//source
@@ -410,14 +411,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			String message = "DatasetUse type not yet implemented. Can't import dataset information.";
 			fireWarningEvent(message, item, 4);
 		}
-		
+
 		//remove to later check if all attributes were used
 		item.remove(idTerm);
 		item.remove(strTerm);
-		
+
 	}
 
-	
+
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
@@ -463,7 +464,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				nomCode = NomenclaturalCode.ICZN;
 			}
 		}
-		
+
 		//TODO further kingdoms
 		if (nomCode == null){
 			//TODO warning
@@ -505,12 +506,12 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				fireWarningEvent(message, item, 4);
 			}
 		}
-		
+
 		//namePublishedIn
 		TermUri idTerm = TermUri.DWC_NAME_PUBLISHED_IN_ID;
 		TermUri strTerm = TermUri.DWC_NAME_PUBLISHED_IN;
 		MappedCdmBase<Reference> nomRef = getReference(item, resultList, idTerm, strTerm, false);
-		
+
 		if (name != null){
 			if (nomRef != null){
 				name.setNomenclaturalReference(nomRef.getCdmBase());  //check if name already has a nomRef, shouldn't be the case usually
@@ -537,7 +538,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	private MappedCdmBase<Reference> getReference(StreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
 		Reference<?> newRef = null;
 		Reference<?> sourceCitation = null;
-		
+
 		MappedCdmBase<Reference> result = null;
 		if (exists(idTerm, item) || exists(strTerm, item)){
 			String refId = CdmUtils.Nz(item.get(idTerm)).trim();
@@ -586,9 +587,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		if (!nameBase.isInstanceOf(NonViralName.class)){
 			return;
 		}
-		NonViralName<?> nvName = CdmBase.deproxy(nameBase, NonViralName.class); 
+		NonViralName<?> nvName = CdmBase.deproxy(nameBase, NonViralName.class);
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
-		
+
 		if (! nvName.isProtectedTitleCache()){
 			if (StringUtils.isBlank(nvName.getAuthorshipCache())){
 				if (nvName.isInstanceOf(BotanicalName.class) || nvName.isInstanceOf(ZoologicalName.class)){
@@ -597,14 +598,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 						parser.parseAuthors(nvName, strAuthors);
 					} catch (StringNotParsableException e) {
 						nvName.setAuthorshipCache(strAuthors);
-					}		
+					}
 				}else{
 					nvName.setAuthorshipCache(strAuthors);
 				}
 				//TODO throw warning (scientific name should always include authorship) by DwC definition
 			}
 		}
-		
+
 	}
 
 
@@ -657,7 +658,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";
-		
+
 		if (taxStatus != null){
 			if (taxStatus.matches("accepted.*|valid")){
 				status += "A";
@@ -690,11 +691,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		} else{
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}
-			
+
 		return result;
 
 	}
-	
+
 
 	/**
 	 * @param item
@@ -721,7 +722,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
-		
+
 		//namePublishedIn
 		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_PUBLISHED_IN_ID.toString()))){
 			Set<String> keySet = getKeySet(key, fkMap);
@@ -733,7 +734,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				keySet.add(value);
 			}
 		}
-		
+
 		//nameAccordingTo
 		if (! config.isDatasetsAsSecundumReference()){
 			if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO_ID.toString()))){
@@ -745,7 +746,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				keySet.add(value);
 			}
 		}
-		
+
 		//dataset
 		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
 			Set<String> keySet = getKeySet(key, fkMap);
@@ -755,10 +756,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
@@ -772,17 +773,17 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 	result.add(TermUri.DWC_DATASET_NAME.toString());
 	 	return result;
 	}
-	
-	
-	
-	
+
+
+
+
 //** ***************************** TO STRING *********************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
 
 
-	
+
 }
