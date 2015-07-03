@@ -237,7 +237,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public UUID save(T newInstance) {
+    public T save(T newInstance) {
         return dao.save(newInstance);
     }
 

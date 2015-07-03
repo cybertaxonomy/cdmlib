@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -20,8 +20,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -36,14 +36,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestTaxonServices {
 
 	private static String dbName = "cdm_test_anahit";
-	
+
 	private static final String server = "192.168.2.10";
 	private static final String username = "edit";
 	private static final Logger logger = Logger.getLogger(TestTaxonServices.class);
 
 
 	public static ICdmDataSource CDM_DB(String dbname) {
-		
+
 		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
@@ -52,16 +52,16 @@ public class TestTaxonServices {
 
 	private static final ICdmDataSource db = TestTaxonServices.CDM_DB(dbName);
 
-	private static CdmApplicationController 
+	private static CdmApplicationController
     getCdmApplicationController(
     		ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
-    	
+
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
-		
+
 		return appCtr;
     }
 
-    
+
 	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
 
 //		logger.info("Testing makeTaxonSynonym()");
@@ -85,7 +85,7 @@ public class TestTaxonServices {
 //		appCtr.commitTransaction(txStatus);
 	}
 
-	
+
 	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
 
 		logger.info("Testing testRemoveNameRelationship()");
@@ -144,41 +144,41 @@ public class TestTaxonServices {
 	}
 
 	private void createNamedArea(CdmApplicationController appCtr) {
-		
+
 		logger.info("Start testing createNamedArea()");
 		TransactionStatus txStatus = appCtr.startTransaction();
-		
+
 		NamedArea namedArea = NamedArea.NewInstance("MyTerm", "MyLabel", "MyLabelAbbr");
-		UUID naid = appCtr.getTermService().save(namedArea);
-		
+		UUID naid = appCtr.getTermService().save(namedArea).getUuid();
+
 		Country woc = Country.NewInstance("NAR", "Narnia", "NN");
-		UUID wocid = appCtr.getTermService().save(woc);
-		
+		UUID wocid = appCtr.getTermService().save(woc).getUuid();
+
 		DefinedTermBase dtb = appCtr.getTermService().find(naid);
-//		DefinedTermBase dtb = 
+//		DefinedTermBase dtb =
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("dbcedb8b-ae38-45b0-a400-840babf68f9c"));
 		logger.debug("NamedArea: " + dtb.toString());
 //		dtb = TdwgArea.getAreaByTdwgAbbreviation("AGE-LP");
 		//logger.debug("TdwgArea: " + dtb.toString());
 		dtb = appCtr.getTermService().find(wocid);
-//		dtb = 
+//		dtb =
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("7cc278aa-b42a-4b5f-b7ad-0cbab0730da8"));
 		logger.debug("Country: " + dtb.toString());
 
 		appCtr.commitTransaction(txStatus);
 		logger.info("End testing createNamedArea()");
 	}
-	
+
     public static void main(String[] args) {
 
 		TestTaxonServices testClass = new TestTaxonServices();
-        CdmApplicationController cdmApp = 
+        CdmApplicationController cdmApp =
         	getCdmApplicationController(db, DbSchemaValidation.VALIDATE, false);
-        
+
         testClass.createNamedArea(cdmApp);
         //testClass.testMakeTaxonSynonym(cdmApp);
 		//testClass.testRemoveNameRelationship(cdmApp);
         cdmApp.close();
-		
+
 	}
 }

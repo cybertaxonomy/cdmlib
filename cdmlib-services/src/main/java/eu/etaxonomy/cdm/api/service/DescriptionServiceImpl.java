@@ -441,7 +441,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     @Override
     @Transactional(readOnly = false)
     public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
-        return descriptionElementDao.save(descriptionElement);
+        return descriptionElementDao.save(descriptionElement).getUuid();
     }
 
     /**

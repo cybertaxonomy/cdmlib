@@ -292,13 +292,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public UUID save(T newInstance) throws DataAccessException {
+    public T save(T newInstance) throws DataAccessException {
         if (newInstance == null){
         	logger.warn("Object to save should not be null. NOP");
         	return null;
         }
     	getSession().save(newInstance);
-        return newInstance.getUuid();
+        return newInstance;
     }
 
     @Override

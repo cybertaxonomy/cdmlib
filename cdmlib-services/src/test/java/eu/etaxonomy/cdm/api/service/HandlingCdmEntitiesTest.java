@@ -64,6 +64,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         "HOMOTYPICALGROUP"
     };
 
+    @Override
     @Ignore
     @Test
     @Transactional(TransactionMode.DISABLED)
@@ -73,7 +74,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         BotanicalName name = BotanicalName.NewInstance(null, "Abies alba", null, null, null, null, null, null, null);
         name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
-        UUID taxonUuid = taxonService.save(taxon);
+        UUID taxonUuid = taxonService.save(taxon).getUuid();
         printDataSetWithNull(System.out,false,null,includeTables);
     }
 
@@ -263,7 +264,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         Taxon taxon = Taxon.NewInstance(name, null);
 
-        UUID taxonUuid = taxonService.save(taxon);
+        UUID taxonUuid = taxonService.save(taxon).getUuid();
 
         List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[] {
                 "name"

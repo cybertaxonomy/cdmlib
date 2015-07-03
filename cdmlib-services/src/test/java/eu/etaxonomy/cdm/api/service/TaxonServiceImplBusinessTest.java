@@ -72,7 +72,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	public void setUp() throws Exception {
 		//service = new TaxonServiceImpl();
 		//nameService = new NameServiceImpl();
-		
+
 		t1n = NonViralName.NewInstance(null);
 		t1 = Taxon.NewInstance(t1n, reference);
 
@@ -215,20 +215,20 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		service.save(newInstances);
 		TaxonNameBase synonymName = s1.getName();
 		UUID synNameUUID = synonymName.getUuid();
-				
+
 		Taxon newTaxon = service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
 		//check removeTaxonBase()
 		//UUID s1UUID = service.update(s1);
-		UUID newTaxonUUID = service.save(newTaxon);
-	
-		
+		UUID newTaxonUUID = service.save(newTaxon).getUuid();
+
+
 		s1 =(Synonym)service.find(s1.getUuid());
 		newTaxon = (Taxon)service.find(newTaxonUUID);
 		assertNull(s1);
 		synonymName = nameService.find(synNameUUID);
 		assertFalse(synonymName.getTaxonBases().contains(s1));
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
-		
+
 	}
 //
 //	Moved to TaxonServiceImplTest
@@ -359,7 +359,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

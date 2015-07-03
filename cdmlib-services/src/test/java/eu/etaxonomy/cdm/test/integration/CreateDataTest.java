@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.integration;
 
@@ -50,9 +50,9 @@ public class CreateDataTest {
 	private CdmApplicationController app;
 	public static final String genusUuid = "c399e245-3def-427d-8502-afa0ae87e875";
 	public static final String genusNameUuid = "d399e245-3def-427d-8502-afa0ae87e875";
-	
+
 	private static boolean ignore = true;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		if (ignore){
@@ -84,26 +84,26 @@ public class CreateDataTest {
 		isCreated = true;
 		app.close();
 	}
-	
+
 	//just temporarly
 	public static ICdmDataSource cdm_test(){
 		//DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_test_andreasM"; 
+		String cdmDB = "cdm_test_andreasM";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
-	
-	
+
+
 	//just temporarly
 	public static ICdmDataSource paddie(){
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
 		String cdmServer = "PADDIE";
-		String cdmDB = "edit_test"; 
+		String cdmDB = "edit_test";
 		String cdmUserName = "andreas";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
-	
+
 	/**
 	 * initializes source
 	 * @return true, if connection establisehd
@@ -123,10 +123,10 @@ public class CreateDataTest {
 			return null;
 		}
 	}
-	
-	
+
+
 /* ********************* TESTS *********************************/
-	
+
 	@Ignore
 	@Test
 	public void testCreateTaxon(){
@@ -135,26 +135,26 @@ public class CreateDataTest {
 		Taxon genusTaxon = eu.etaxonomy.cdm.datagenerator.TaxonGenerator.getTestTaxon();
 		genusTaxon.setUuid(UUID.fromString(genusUuid));
 		genusTaxon.getName().setUuid(UUID.fromString(genusNameUuid));
-		
+
 //		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
-		
+
 		app.getTaxonService().save(genusTaxon);
 		//app.getTaxonService().saveTaxon(syn2);
 	}
-	
+
 	@Test
 	public void testLoadTaxon(){
 		if (ignore){return;}
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
-		
-		
-		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(genusNameUuid));
-		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
+
+
+		TaxonNameBase<?,?> genusName2 = app.getNameService().find(UUID.fromString(genusNameUuid));
+		Set<TaxonBase> set = genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
 		for (TaxonBase tb : set){
 			System.out.println(tb.getName());
 		}
-		
+
 		//taxon
 		Taxon genusTaxon = (Taxon)app.getTaxonService().find(UUID.fromString(genusUuid));
 		assertNotNull(genusTaxon);
@@ -165,7 +165,7 @@ public class CreateDataTest {
 		for (TaxonBase tb : taxaSet){
 			System.out.println(tb.getName());
 		}
-		
+
 		//taxonBases of Name
 		Set<TaxonBase> taxonBases = genusName.getTaxonBases();
 		logger.warn(taxonBases.size());
@@ -177,16 +177,16 @@ public class CreateDataTest {
 			child.getHomotypicSynonymsByHomotypicGroup();
 			child.getHomotypicSynonymsByHomotypicRelationship();
 		}
-		
+
 		Set<TaxonDescription> descriptions = genusTaxon.getDescriptions();
 		assertEquals(1, descriptions.size());
 		TaxonDescription firstDescription = descriptions.iterator().next();
-		
-		
+
+
 		Set<DescriptionElementBase> descriptionElements = firstDescription.getElements();
 		//assertEquals(2, descriptions.size());
-		
-		Language language = Language.DEFAULT(); 
+
+		Language language = Language.DEFAULT();
 		for (DescriptionElementBase descriptionElement : descriptionElements){
 			if (descriptionElement instanceof TextData){
 				TextData textData = (TextData)descriptionElement;
@@ -201,10 +201,10 @@ public class CreateDataTest {
 				fail();
 			}
 		}
-		
+
 	}
-	
-	
+
+
 	@Ignore
 	@Test
 	public void testSave(){
@@ -218,9 +218,9 @@ public class CreateDataTest {
 		BotanicalName newName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon newTaxon = Taxon.NewInstance(newName, genusTaxon.getSec());
 		genusTaxon.addTaxonomicChild(newTaxon, null, "5677");
-		UUID uuid = taxonService.save(newTaxon);
+		UUID uuid = taxonService.save(newTaxon).getUuid();
 		assertNotNull(uuid);
 	}
 
-	
+
 }

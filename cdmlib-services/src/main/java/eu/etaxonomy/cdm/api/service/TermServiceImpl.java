@@ -233,7 +233,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	public UUID saveLanguageData(LanguageStringBase languageData) {
-		return languageStringBaseDao.save(languageData);
+		return languageStringBaseDao.save(languageData).getUuid();
 	}
 
 	/* (non-Javadoc)

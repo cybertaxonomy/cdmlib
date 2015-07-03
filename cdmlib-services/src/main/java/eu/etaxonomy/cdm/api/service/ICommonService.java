@@ -274,7 +274,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param newInstance the new entity to be persisted
      * @return A generated UUID for the new persistent entity
      */
-    public UUID save(CdmBase newInstance);
+    public CdmBase save(CdmBase newInstance);
 
 
     /**

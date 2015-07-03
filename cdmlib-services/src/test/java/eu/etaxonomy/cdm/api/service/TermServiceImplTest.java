@@ -152,21 +152,21 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
      *    and thus will cause unitils empty the according tables
      */
     public void testListTerms() {
-        Pager<SpecimenTypeDesignationStatus> results = (Pager)termService.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
+        Pager<SpecimenTypeDesignationStatus> results = termService.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
         assertNotNull("Results should not be null",results);
     }
-	
+
     @Ignore
     @Test
     public void testTitleCacheUpdate(){
     	String uuid = "ae787603-3070-4298-9ca6-4cbe73378122";
     	UUID fromString = UUID.fromString(uuid);
     	DefinedTermBase<?> termBase = termService.find(fromString);
-    	
+
     	// change label
     	String expectedTitleCache = termBase.getLabel() + "append";
     	termBase.setLabel(expectedTitleCache);
-    	
+
     	commitAndStartNewTransaction(null);
 
     	termBase = termService.find(fromString);
@@ -177,47 +177,47 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	Representation representation = termBase.getRepresentation(Language.DEFAULT());
     	representation.setLabel(expecteTitleCacheAfterRepresentationChange);
     	termBase.addRepresentation(representation);
-    	
+
     	//this will create another termBase in the DB which has the same UUID -> test failure
 //    	termBase.addRepresentation(Representation.NewInstance(expecteTitleCacheAfterRepresentationChange, "", "", Language.DEFAULT()));////new Representation(expecteTitleCacheAfterRepresentationChange, "", "", Language.DEFAULT()));
 
-    	
+
     	commitAndStartNewTransaction(null);
-    	
+
     	termBase = termService.find(fromString);
     	assertEquals("Title cache did not update after adding a new representation for default language and saving the term", expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache());
     }
-    
-    
+
+
     @Test
     public void testDeleteTerms(){
     	final String[] tableNames = new String[]{
                 "DefinedTermBase","Representation"};
-   
+
     	//commitAndStartNewTransaction(tableNames);
     	/*TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
     	vocs.addTerm(DefinedTerm.NewInstance(TermType.State, "green", "green", "gn"));
     	UUID vocUUIDs = vocabularyService.save(vocs);*/
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
     	if (term.getCount() != 0){
-    		
+
     		DeleteResult result = termService.delete(term.getRecords().get(0));
     		assertTrue(result.isOk());
     		commitAndStartNewTransaction(tableNames);
        	}
     	TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
     	voc.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
-    	UUID vocUUID = vocabularyService.save(voc);
-    	
-    	voc = (TermVocabulary)vocabularyService.find(vocUUID);
+    	UUID vocUUID = vocabularyService.save(voc).getUuid();
+
+    	voc = vocabularyService.find(vocUUID);
     	Set<DefinedTerm> terms = voc.getTerms();
-    	DefinedTermBase termBase =(DefinedTerm)terms.iterator().next();
+    	DefinedTermBase termBase =terms.iterator().next();
     	UUID termUUID = termBase.getUuid();
     	termService.delete(termBase, null);
     	//commitAndStartNewTransaction(tableNames);
-    	termBase =  (DefinedTerm)termService.load(termUUID);
+    	termBase =  termService.load(termUUID);
     	assertNull(termBase);
-    	
+
     }
 
     /* (non-Javadoc)
@@ -226,7 +226,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
-	
+
 }

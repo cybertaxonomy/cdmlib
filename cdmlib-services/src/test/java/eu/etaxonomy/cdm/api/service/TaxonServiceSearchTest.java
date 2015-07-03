@@ -121,7 +121,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private INameService nameService;
     @SpringBeanByType
     private ICdmMassIndexer indexer;
-    
+
     @SpringBeanByType
     private ITaxonNodeService nodeService;
 
@@ -229,7 +229,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
-         
+
          configurator.setTitleSearchString("silver fir");
          configurator.setMatchMode(MatchMode.BEGINNING);
          configurator.setDoTaxa(false);
@@ -240,7 +240,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
          list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
-         
+
     }
 
     @SuppressWarnings("rawtypes")
@@ -757,7 +757,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // moving the taxon around, the rootnode is only a proxy
         alternateClassification.setRootNode(HibernateProxyHelper.deproxy(alternateClassification.getRootNode(), TaxonNode.class));
         alternateClassification.addChildNode(childNode, null, null);
-      
+
         classificationService.saveOrUpdate(alternateClassification);
         commitAndStartNewTransaction(null);
 
@@ -794,7 +794,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         cdata.addStateData(statedata);
         d_abies_balsamea.addElement(cdata);
 
-        UUID termUUID = termService.save(state);
+        UUID termUUID = termService.save(state).getUuid();
         descriptionService.save(d_abies_balsamea);
 
         commitAndStartNewTransaction(null);

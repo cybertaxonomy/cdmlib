@@ -235,7 +235,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGroup(Group group) {
-        return dao.save(group);
+        return dao.save(group).getUuid();
     }
 
     @Override

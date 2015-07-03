@@ -274,7 +274,7 @@ public interface IService<T extends ICdmBase>{
      * @param newInstance the new entity to be persisted
      * @return A generated UUID for the new persistent entity
      */
-    public UUID save(T newInstance);
+    public T save(T newInstance);
 
     /**
      * Save a new entity or update the persistent state of an existing

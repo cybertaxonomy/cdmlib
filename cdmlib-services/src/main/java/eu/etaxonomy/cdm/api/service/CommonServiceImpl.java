@@ -349,7 +349,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
     @Override
     @Transactional(readOnly = false)
-    public UUID save(CdmBase newInstance) {
+    public CdmBase save(CdmBase newInstance) {
         return genericDao.save(newInstance);
     }
 
