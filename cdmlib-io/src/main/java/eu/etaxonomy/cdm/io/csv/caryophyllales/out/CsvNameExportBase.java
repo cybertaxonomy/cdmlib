@@ -190,7 +190,9 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 			taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
 			
 			nameRecord.put("genusTaxon", taxon.getTitleCache());
-			nameRecord.put("secRef", taxon.getSec().getTitleCache());
+			if (taxon.getSec()!= null){
+				nameRecord.put("secRef", taxon.getSec().getTitleCache());
+			}
 			name = HibernateProxyHelper.deproxy(getNameService().load(taxon.getName().getUuid()), BotanicalName.class);
 			nameRecord.put("genusName",name.getTitleCache());
 			nameRecord.put("nameId", String.valueOf(name.getId()));
