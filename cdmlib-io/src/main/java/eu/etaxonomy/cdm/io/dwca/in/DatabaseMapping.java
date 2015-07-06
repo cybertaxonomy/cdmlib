@@ -38,8 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  */
 public class DatabaseMapping implements IImportMapping {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DatabaseMapping.class);
+    private static final Logger logger = Logger.getLogger(DatabaseMapping.class);
 
 	private static final String DATABASE_INTERNAL_IMPORT_MAPPING = "_internalImportMapping";
 	protected static final String TABLE_IMPORT_MAPPING  = "importmapping";
@@ -54,6 +53,9 @@ public class DatabaseMapping implements IImportMapping {
 
 	private static final String COL_DEST_ID = "destination_id";
 
+    private static final int SOURCE_KEY_LENGTH = 255;
+
+
 	private ICdmDataSource datasource;
 	private final String mappingId;
 	private final Map<String, Class> shortCuts = new HashMap<String, Class>();
@@ -65,13 +67,16 @@ public class DatabaseMapping implements IImportMapping {
 		putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
 
+    public DatabaseMapping(String mappingId) {
+        this(mappingId, null);
+    }
 
 	/**
 	 * @param database
 	 */
-	public DatabaseMapping(String mappingId) {
+	public DatabaseMapping(String mappingId, String file) {
 		super();
-		initDatasource();
+		initDatasource(file);
 		this.mappingId = mappingId;
 	}
 
@@ -83,23 +88,26 @@ public class DatabaseMapping implements IImportMapping {
 
 	public void putMapping(String namespace, String sourceKey, CdmKey<IdentifiableEntity<?>> cdmKey) {
 		try {
+		    String normalizedKey = normalizeKey(sourceKey);
+
 			deleteExistingMapping(namespace, sourceKey);
-			persistNotExistingMapping(namespace, sourceKey, cdmKey);
+			persistNotExistingMapping(namespace, normalizedKey, cdmKey);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private int persistNotExistingMapping(String sourceNamespace, String sourceId, CdmKey<IdentifiableEntity<?>> cdmKey) throws SQLException {
+	private int persistNotExistingMapping(String sourceNamespace, String normalizedKey, CdmKey<IdentifiableEntity<?>> cdmKey) throws SQLException {
 
 		//cdm namespace
 		String clazz = getCdmClassStr(cdmKey.clazz);
+
 		//insert
 		String insertMappingSql = " INSERT INTO %s (%s, %s, %s, %s, %s)" +
 			" VALUES ('%s','%s','%s','%s','%s')";
 		insertMappingSql = String.format(insertMappingSql,
 				TABLE_IMPORT_MAPPING, COL_TASK_ID, COL_SOURCE_NS, COL_SOURCE_ID, COL_DEST_NS, COL_DEST_ID,
-				this.mappingId, sourceNamespace, sourceId, clazz, cdmKey.id);
+				this.mappingId, sourceNamespace, normalizedKey, clazz, cdmKey.id);
 		return this.datasource.executeUpdate(insertMappingSql);
 	}
 
@@ -118,8 +126,9 @@ public class DatabaseMapping implements IImportMapping {
 
 
 	private int deleteExistingMapping(String sourceNamespace, String sourceId) throws SQLException {
+	    String normalizedKey = normalizeKey(sourceId);
 		String deleteMappingSql = " DELETE FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'";
-		deleteMappingSql = String.format(deleteMappingSql,TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID, sourceId);
+		deleteMappingSql = String.format(deleteMappingSql,TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID, normalizedKey);
 		return this.datasource.executeUpdate(deleteMappingSql);
 	}
 
@@ -142,12 +151,13 @@ public class DatabaseMapping implements IImportMapping {
 	@Override
 	public Set<CdmKey> get(String sourceNamespace, String sourceId) {
 		Set<CdmKey> result = new HashSet<CdmKey>();
+		String normalizedKey = normalizeKey(sourceId);
 		String selectMappingSql = " SELECT %s, %s FROM %s" +
 				" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ";
 		selectMappingSql = String.format(selectMappingSql,
 				COL_DEST_NS, COL_DEST_ID, TABLE_IMPORT_MAPPING,
 				COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace,
-				COL_SOURCE_ID , sourceId);
+				COL_SOURCE_ID , normalizedKey);
 		try {
 			ResultSet rs = this.datasource.executeQuery(selectMappingSql);
 			while (rs.next()){
@@ -178,11 +188,12 @@ public class DatabaseMapping implements IImportMapping {
 		String selectMappingSql = " SELECT count(*) as n FROM %s" +
 			" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' AND %s = '%s' ";
 
-		String cdmClass = getCdmClassStr(destinationClass);
 
+		String cdmClass = getCdmClassStr(destinationClass);
+		String normalizedKey = normalizeKey(sourceId);
 		selectMappingSql = String.format(selectMappingSql,
 			TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId,
-			COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID , sourceId, COL_DEST_NS, cdmClass);
+			COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID , normalizedKey, COL_DEST_NS, cdmClass);
 		try {
 			ResultSet rs = this.datasource.executeQuery(selectMappingSql);
 			rs.next();
@@ -194,15 +205,35 @@ public class DatabaseMapping implements IImportMapping {
 		}
 	}
 
+    /**
+     * Normalizes the key coming from the DwCA File.
+     * This includes handling ' and keys with length > 255
+     * @param sourceKey
+     * @return
+     */
+    private String normalizeKey(String key) {
+        if (key == null){
+            return null;
+        }
+        String result = key.replace("'", "''");
+        if (result.length() > SOURCE_KEY_LENGTH){
+            //TODO better use MD5 hash or similar
+            logger.info("Source key was trunkated: " + key);
+            result = result.substring(0, SOURCE_KEY_LENGTH);
+        }
+        return result;
+    }
+
 	@Override
 	public InMemoryMapping getPartialMapping( Map<String, Set<String>> namespacedSourceKeys) {
 		InMemoryMapping partialMapping = new InMemoryMapping();
 		for (Entry<String,Set<String>> entry  : namespacedSourceKeys.entrySet()){
 			String namespace = entry.getKey();
 			for (String sourceKey : entry.getValue() ){
-				Set<CdmKey> destObjects = this.get(namespace, sourceKey);
+			    String normalizedKey = normalizeKey(sourceKey);
+				Set<CdmKey> destObjects = this.get(namespace, normalizedKey);
 				for (CdmKey cdmKey : destObjects){
-					partialMapping.putMapping(namespace, sourceKey, cdmKey);
+					partialMapping.putMapping(namespace, normalizedKey, cdmKey);
 				}
 			}
 		}
@@ -236,8 +267,8 @@ public class DatabaseMapping implements IImportMapping {
 	}
 
 
-	private void initDatasource() {
-		getDatabase();
+	private void initDatasource(String file) {
+		getDatabase(file);
 		shortCuts.put("BotanicalName", BotanicalName.class);
 		shortCuts.put("ZoologicalName", ZoologicalName.class);
 		shortCuts.put("Taxon", Taxon.class);
@@ -251,13 +282,16 @@ public class DatabaseMapping implements IImportMapping {
 		}
 	}
 
-
 	public ICdmDataSource getDatabase(){
+	    return getDatabase(null);
+	}
+
+	public ICdmDataSource getDatabase(String path){
 		try {
 			try {
 				datasource = CdmPersistentDataSource.NewInstance(DATABASE_INTERNAL_IMPORT_MAPPING);
 			} catch (DataSourceNotFoundException e) {
-				datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b");
+				datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path, null);
 				CdmPersistentDataSource.save(DATABASE_INTERNAL_IMPORT_MAPPING, datasource);
 			}
 			datasource.executeQuery("SELECT * FROM " + TABLE_IMPORT_MAPPING);
@@ -267,7 +301,7 @@ public class DatabaseMapping implements IImportMapping {
 				String strCreateTable = "CREATE TABLE IF NOT EXISTS %s (";
 				strCreateTable += "%s nvarchar(36) NOT NULL,";
 				strCreateTable += "%s nvarchar(100) NOT NULL,";
-				strCreateTable += "%s nvarchar(100) NOT NULL,";
+				strCreateTable += "%s nvarchar(" + SOURCE_KEY_LENGTH + ") NOT NULL,";
 				strCreateTable += "%s nvarchar(100) NOT NULL,";
 				strCreateTable += "destination_id nvarchar(50) NOT NULL,";
 				strCreateTable += "PRIMARY KEY (task_id, source_namespace, source_id)";
