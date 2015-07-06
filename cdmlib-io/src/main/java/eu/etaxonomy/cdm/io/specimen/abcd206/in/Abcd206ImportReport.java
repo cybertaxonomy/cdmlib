@@ -151,11 +151,6 @@ public class Abcd206ImportReport {
             }
         }
         out.println("\n");
-        out.println("---Not imported---");
-        for(UnitIdSpecimen specimen:ignoredImports){
-            out.println(formatSpecimen(specimen));
-        }
-        out.println("\n");
         //all specimens
         Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
         for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
@@ -164,9 +159,15 @@ public class Abcd206ImportReport {
         }
         out.println("Specimens created: "+allSpecimens.size());
         out.println("\n");
+        out.println("---Not imported---");
+        for(UnitIdSpecimen specimen:ignoredImports){
+            out.println(formatSpecimen(specimen));
+        }
+        out.println("\n");
         out.println("---Info messages---");
         for(String message:infoMessages){
             out.println(message);
+            out.println("---");
         }
         if(out!=System.out){
             out.close();

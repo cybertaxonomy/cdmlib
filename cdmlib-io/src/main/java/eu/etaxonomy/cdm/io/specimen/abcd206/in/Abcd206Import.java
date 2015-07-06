@@ -116,243 +116,248 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
         report = new Abcd206ImportReport();
-        ICdmApplicationConfiguration cdmAppController = state.getCdmRepository()!=null?state.getCdmRepository():this;
+        try{
+            ICdmApplicationConfiguration cdmAppController = state.getCdmRepository()!=null?state.getCdmRepository():this;
 
-        state.setTx(startTransaction());
-        logger.info("INVOKE Specimen Import from ABCD2.06 XML ");
+            state.setTx(startTransaction());
+            logger.info("INVOKE Specimen Import from ABCD2.06 XML ");
 
-        SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
+            SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
 
-        List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
+            List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
 
-        if (state.getConfig().isInteractWithUser()){
-            Map<String,Reference> refMap = new HashMap<String, Reference>();
-            for (Reference reference : references) {
-                if (! StringUtils.isBlank(reference.getTitleCache())) {
-                    refMap.put(reference.getTitleCache(),reference);
-                }
-            }
-            state.setRef(sui.askForReference(refMap));
-
-            if (state.getRef() == null){
-                String cla = sui.createNewReference();
-                if (refMap.get(cla)!= null) {
-                    state.setRef(refMap.get(cla));
-                } else {
-                    state.setRef(ReferenceFactory.newGeneric());
-                    state.getRef().setTitle(cla);
-                }
-            }
-            else{
-                state.setRef(getReferenceService().find(state.getRef().getUuid()));
-            }
-        }else{
-            if (state.getRef()==null){
-                String name = NB(state.getConfig().getSourceReferenceTitle());
+            if (state.getConfig().isInteractWithUser()){
+                Map<String,Reference> refMap = new HashMap<String, Reference>();
                 for (Reference reference : references) {
                     if (! StringUtils.isBlank(reference.getTitleCache())) {
-                        if (reference.getTitleCache().equalsIgnoreCase(name)) {
-                            state.setRef(reference);
+                        refMap.put(reference.getTitleCache(),reference);
+                    }
+                }
+                state.setRef(sui.askForReference(refMap));
+
+                if (state.getRef() == null){
+                    String cla = sui.createNewReference();
+                    if (refMap.get(cla)!= null) {
+                        state.setRef(refMap.get(cla));
+                    } else {
+                        state.setRef(ReferenceFactory.newGeneric());
+                        state.getRef().setTitle(cla);
+                    }
+                }
+                else{
+                    state.setRef(getReferenceService().find(state.getRef().getUuid()));
+                }
+            }else{
+                if (state.getRef()==null){
+                    String name = NB(state.getConfig().getSourceReferenceTitle());
+                    for (Reference reference : references) {
+                        if (! StringUtils.isBlank(reference.getTitleCache())) {
+                            if (reference.getTitleCache().equalsIgnoreCase(name)) {
+                                state.setRef(reference);
+                            }
                         }
                     }
-                }
-                if (state.getRef() == null){
-                    state.setRef(ReferenceFactory.newGeneric());
-                    state.getRef().setTitle("ABCD classic");
-                }
-            }
-        }
-        save(state.getRef(), state);
-        state.getConfig().setSourceReference(state.getRef());
-
-        if(state.getConfig().getClassificationUuid()!=null){
-            //load classification from config if it exists
-            state.setClassification(getClassificationService().load(state.getConfig().getClassificationUuid()));
-        }
-        if(state.getClassification()==null){//no existing classification was set in config
-            List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
-            //get classification via user interaction
-            if (state.getConfig().isUseClassification() && state.getConfig().isInteractWithUser()){
-                Map<String,Classification> classMap = new HashMap<String, Classification>();
-                for (Classification tree : classificationList) {
-                    if (! StringUtils.isBlank(tree.getTitleCache())) {
-                        classMap.put(tree.getTitleCache(),tree);
+                    if (state.getRef() == null){
+                        state.setRef(ReferenceFactory.newGeneric());
+                        state.getRef().setTitle("ABCD classic");
                     }
                 }
-                state.setClassification(sui.askForClassification(classMap));
-                if (state.getClassification() == null){
-                    String cla = sui.createNewClassification();
-                    if (classMap.get(cla)!= null) {
-                        state.setClassification(classMap.get(cla));
-                    } else {
-                        state.setClassification(Classification.NewInstance(cla, state.getRef(), Language.DEFAULT()));
-                    }
-                }
-                save(state.getClassification(), state);
             }
-            // create default classification
-            if (state.getClassification() == null) {
-                String name = NB(state.getConfig().getClassificationName());
-                for (Classification classif : classificationList){
-                    if (classif.getTitleCache() != null && classif.getCitation() != null
-                            && classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(state.getRef())) {
-                        state.setClassification(classif);
-                    }
-                }
-                if (state.getClassification() == null){
-                    state.setClassification(Classification.NewInstance(name, state.getRef(), Language.DEFAULT()));
-                    //we do not need a default classification when creating an empty new one
-                    state.setDefaultClassification(state.getClassification());
-                }
-                save(state.getClassification(), state);
+            save(state.getRef(), state);
+            state.getConfig().setSourceReference(state.getRef());
+
+            if(state.getConfig().getClassificationUuid()!=null){
+                //load classification from config if it exists
+                state.setClassification(getClassificationService().load(state.getConfig().getClassificationUuid()));
             }
-        }
-
-        NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
-
-        if (unitsList != null) {
-            String message = "nb units to insert: " + unitsList.getLength();
-            logger.info(message);
-            updateProgress(state, message);
-            state.getConfig().getProgressMonitor().beginTask("Importing ABCD file", unitsList.getLength());
-
-            state.setDataHolder(new Abcd206DataHolder());
-            state.getDataHolder().reset();
-
-            Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix());
-
-            prepareCollectors(state, unitsList, abcdFieldGetter);
-
-            state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
-            state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
-            state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
-
-            for (int i = 0; i < unitsList.getLength(); i++) {
-                if(state.getConfig().getProgressMonitor().isCanceled()){
-                    break;
+            if(state.getClassification()==null){//no existing classification was set in config
+                List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
+                //get classification via user interaction
+                if (state.getConfig().isUseClassification() && state.getConfig().isInteractWithUser()){
+                    Map<String,Classification> classMap = new HashMap<String, Classification>();
+                    for (Classification tree : classificationList) {
+                        if (! StringUtils.isBlank(tree.getTitleCache())) {
+                            classMap.put(tree.getTitleCache(),tree);
+                        }
+                    }
+                    state.setClassification(sui.askForClassification(classMap));
+                    if (state.getClassification() == null){
+                        String cla = sui.createNewClassification();
+                        if (classMap.get(cla)!= null) {
+                            state.setClassification(classMap.get(cla));
+                        } else {
+                            state.setClassification(Classification.NewInstance(cla, state.getRef(), Language.DEFAULT()));
+                        }
+                    }
+                    save(state.getClassification(), state);
                 }
-                Element item = (Element) unitsList.item(i);
-                this.setUnitPropertiesXML( item, abcdFieldGetter, state);
-                updateProgress(state, "Importing data for unit "+state.getDataHolder().unitID+" ("+i+"/"+unitsList.getLength()+")");
-
-//                //check if unit is associated to a specimen
-//                SpecimenOrObservationBase<?> existingAssociatedSpecimen = null;
-//                if(state.getDataHolder().associatedUnitIds.size()==1){
-//                    String unitId = state.getDataHolder().associatedUnitIds.iterator().next();
-//                    existingAssociatedSpecimen = findExistingSpecimen(unitId, state);
-//                }
-//                else{
-//                    logger.warn("More than one associated unit found this unit!");
-//                }
-//                if(existingAssociatedSpecimen!=null && existingAssociatedSpecimen.isInstanceOf(DerivedUnit.class)){
-//                    state.setDerivedUnitBase(HibernateProxyHelper.deproxy(existingAssociatedSpecimen, DerivedUnit.class));
-//                    DerivedUnitFacade facade;
-//                    try {
-//                        facade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
-//                        state.setFieldUnit(facade.getFieldUnit(true));
-//                    } catch (DerivedUnitFacadeNotSupportedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-
-                // import DNA unit
-                if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
-                    AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), report, cdmAppController);
-                    //parent field unit
-                    FieldUnit fieldUnit = FieldUnit.NewInstance();
-                    state.setFieldUnit(fieldUnit);
-                    DnaSample dnaSample = dnaParser.parse(item, state);
-                    save(dnaSample, state);
-                    //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
-                    state.setDerivedUnitBase(dnaSample);
+                // create default classification
+                if (state.getClassification() == null) {
+                    String name = NB(state.getConfig().getClassificationName());
+                    for (Classification classif : classificationList){
+                        if (classif.getTitleCache() != null && classif.getCitation() != null
+                                && classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(state.getRef())) {
+                            state.setClassification(classif);
+                        }
+                    }
+                    if (state.getClassification() == null){
+                        state.setClassification(Classification.NewInstance(name, state.getRef(), Language.DEFAULT()));
+                        //we do not need a default classification when creating an empty new one
+                        state.setDefaultClassification(state.getClassification());
+                    }
+                    save(state.getClassification(), state);
                 }
+            }
 
-                //import default unit + field unit data
-                this.handleSingleUnit(state);
+            NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
 
-                //import associated units
-                DerivedUnit currentUnit = state.getDerivedUnitBase();
-                FieldUnit currentFieldUnit = state.getFieldUnit();
-                String currentPrefix = state.getPrefix();
-                NodeList unitAssociationList = item.getElementsByTagName(state.getPrefix()+"UnitAssociation");
-                for(int k=0;k<unitAssociationList.getLength();k++){
-                    if(unitAssociationList.item(k) instanceof Element){
-                        Element unitAssociation = (Element)unitAssociationList.item(k);
-                        UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
-                        UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
-                        if(associationWrapper!=null){
-                            NodeList associatedUnits = associationWrapper.getAssociatedUnits();
-                            for(int m=0;m<associatedUnits.getLength();m++){
-                                if(associatedUnits.item(m) instanceof Element){
-                                    state.reset();
-                                    this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
-                                    handleSingleUnit(state);
+            if (unitsList != null) {
+                String message = "nb units to insert: " + unitsList.getLength();
+                logger.info(message);
+                updateProgress(state, message);
+                state.getConfig().getProgressMonitor().beginTask("Importing ABCD file", unitsList.getLength());
 
-                                    DerivedUnit associatedUnit = state.getDerivedUnitBase();
-                                    FieldUnit associatedFieldUnit = state.getFieldUnit();
+                state.setDataHolder(new Abcd206DataHolder());
+                state.getDataHolder().reset();
 
-                                    //if the associated unit has no field unit then use the current field unit
-                                    DerivationEvent associatedDerivedFrom = associatedUnit.getDerivedFrom();
-                                    if(associatedDerivedFrom==null){
-                                        //default to accessioning
-                                        DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                        associatedFieldUnit = currentFieldUnit;
-                                    }
+                Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix());
 
-                                    //attach current unit and associated unit depending on association type
+                prepareCollectors(state, unitsList, abcdFieldGetter);
 
-                                    //parent-child relation:
-                                    //copy derivation event and connect parent and sub derivative
-                                    if(associationWrapper.getAssociationType().contains("individual")){
-                                        DerivationEvent derivedFromEvent = currentUnit.getDerivedFrom();
-                                        DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, derivedFromEvent.getType());
-                                        updatedDerivationEvent.setActor(derivedFromEvent.getActor());
-                                        updatedDerivationEvent.setDescription(derivedFromEvent.getDescription());
-                                        updatedDerivationEvent.setInstitution(derivedFromEvent.getInstitution());
-                                        updatedDerivationEvent.setTimeperiod(derivedFromEvent.getTimeperiod());
-                                        report.addDerivate(associatedUnit, currentUnit, state.getConfig());
-                                    }
-                                    //siblings relation
-                                    //connect current unit to field unit of associated unit
-                                    else if(associationWrapper.getAssociationType().contains("population")){
-                                        DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
-                                        if(currentDerivedFrom==null){
-                                            report.addInfoMessage("No derivation event found for unit "+AbcdImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
-                                            DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+                state.setAssociationRefs(new ArrayList<OriginalSourceBase<?>>());
+                state.setDescriptionRefs(new ArrayList<OriginalSourceBase<?>>());
+                state.setDerivedUnitSources(new ArrayList<OriginalSourceBase<?>>());
+
+                for (int i = 0; i < unitsList.getLength(); i++) {
+                    if(state.getConfig().getProgressMonitor().isCanceled()){
+                        break;
+                    }
+                    Element item = (Element) unitsList.item(i);
+                    this.setUnitPropertiesXML( item, abcdFieldGetter, state);
+                    updateProgress(state, "Importing data for unit "+state.getDataHolder().unitID+" ("+i+"/"+unitsList.getLength()+")");
+
+                    //                //check if unit is associated to a specimen
+                    //                SpecimenOrObservationBase<?> existingAssociatedSpecimen = null;
+                    //                if(state.getDataHolder().associatedUnitIds.size()==1){
+                    //                    String unitId = state.getDataHolder().associatedUnitIds.iterator().next();
+                    //                    existingAssociatedSpecimen = findExistingSpecimen(unitId, state);
+                    //                }
+                    //                else{
+                    //                    logger.warn("More than one associated unit found this unit!");
+                    //                }
+                    //                if(existingAssociatedSpecimen!=null && existingAssociatedSpecimen.isInstanceOf(DerivedUnit.class)){
+                    //                    state.setDerivedUnitBase(HibernateProxyHelper.deproxy(existingAssociatedSpecimen, DerivedUnit.class));
+                    //                    DerivedUnitFacade facade;
+                    //                    try {
+                    //                        facade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
+                    //                        state.setFieldUnit(facade.getFieldUnit(true));
+                    //                    } catch (DerivedUnitFacadeNotSupportedException e) {
+                    //                        e.printStackTrace();
+                    //                    }
+                    //                }
+
+                    // import DNA unit
+                    if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
+                        AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), report, cdmAppController);
+                        //parent field unit
+                        FieldUnit fieldUnit = FieldUnit.NewInstance();
+                        state.setFieldUnit(fieldUnit);
+                        DnaSample dnaSample = dnaParser.parse(item, state);
+                        save(dnaSample, state);
+                        //set dna as derived unit to avoid creating an extra specimen for this dna sample (instead just the field unit will be created)
+                        state.setDerivedUnitBase(dnaSample);
+                    }
+
+                    //import default unit + field unit data
+                    this.handleSingleUnit(state);
+
+                    //import associated units
+                    DerivedUnit currentUnit = state.getDerivedUnitBase();
+                    FieldUnit currentFieldUnit = state.getFieldUnit();
+                    String currentPrefix = state.getPrefix();
+                    NodeList unitAssociationList = item.getElementsByTagName(state.getPrefix()+"UnitAssociation");
+                    for(int k=0;k<unitAssociationList.getLength();k++){
+                        if(unitAssociationList.item(k) instanceof Element){
+                            Element unitAssociation = (Element)unitAssociationList.item(k);
+                            UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
+                            UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
+                            if(associationWrapper!=null){
+                                NodeList associatedUnits = associationWrapper.getAssociatedUnits();
+                                for(int m=0;m<associatedUnits.getLength();m++){
+                                    if(associatedUnits.item(m) instanceof Element){
+                                        state.reset();
+                                        this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                                        handleSingleUnit(state);
+
+                                        DerivedUnit associatedUnit = state.getDerivedUnitBase();
+                                        FieldUnit associatedFieldUnit = state.getFieldUnit();
+
+                                        //if the associated unit has no field unit then use the current field unit
+                                        DerivationEvent associatedDerivedFrom = associatedUnit.getDerivedFrom();
+                                        if(associatedDerivedFrom==null){
+                                            //default to accessioning
+                                            DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+                                            associatedFieldUnit = currentFieldUnit;
                                         }
-                                        else{
-                                            DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
-                                            updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                            updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                            updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                            updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
+
+                                        //attach current unit and associated unit depending on association type
+
+                                        //parent-child relation:
+                                        //copy derivation event and connect parent and sub derivative
+                                        if(associationWrapper.getAssociationType().contains("individual")){
+                                            DerivationEvent derivedFromEvent = currentUnit.getDerivedFrom();
+                                            DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, derivedFromEvent.getType());
+                                            updatedDerivationEvent.setActor(derivedFromEvent.getActor());
+                                            updatedDerivationEvent.setDescription(derivedFromEvent.getDescription());
+                                            updatedDerivationEvent.setInstitution(derivedFromEvent.getInstitution());
+                                            updatedDerivationEvent.setTimeperiod(derivedFromEvent.getTimeperiod());
+                                            report.addDerivate(associatedUnit, currentUnit, state.getConfig());
                                         }
-                                    }
+                                        //siblings relation
+                                        //connect current unit to field unit of associated unit
+                                        else if(associationWrapper.getAssociationType().contains("population")){
+                                            DerivationEvent currentDerivedFrom = currentUnit.getDerivedFrom();
+                                            if(currentDerivedFrom==null){
+                                                report.addInfoMessage("No derivation event found for unit "+AbcdImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
+                                                DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+                                            }
+                                            else{
+                                                DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
+                                                updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
+                                                updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
+                                                updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
+                                                updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
+                                            }
+                                        }
 
-                                    //the field unit of the last imported unit is the one that will be used
-                                    // delete the current one BUT NOT if it is the only field unit
-                                    if(currentFieldUnit!=associatedFieldUnit && currentFieldUnit!=null){
-                                        cdmAppController.getOccurrenceService().delete(currentFieldUnit);
-                                    }
+                                        //the field unit of the last imported unit is the one that will be used
+                                        // delete the current one BUT NOT if it is the only field unit
+                                        if(currentFieldUnit!=associatedFieldUnit && currentFieldUnit!=null){
+                                            cdmAppController.getOccurrenceService().delete(currentFieldUnit);
+                                        }
 
-                                    save(associatedUnit, state);
+                                        save(associatedUnit, state);
+                                    }
                                 }
                             }
                         }
                     }
+                    state.reset();
+                    state.setPrefix(currentPrefix);
                 }
-                state.reset();
-                state.setPrefix(currentPrefix);
+                if(state.getConfig().isDeduplicateReferences()){
+                    getReferenceService().deduplicate(Reference.class, null, null);
+                }
+                if(state.getConfig().isDeduplicateClassifications()){
+                    getClassificationService().deduplicate(Classification.class, null, null);
+                }
             }
-            if(state.getConfig().isDeduplicateReferences()){
-                getReferenceService().deduplicate(Reference.class, null, null);
-            }
-            if(state.getConfig().isDeduplicateClassifications()){
-                getClassificationService().deduplicate(Classification.class, null, null);
-            }
+            commitTransaction(state.getTx());
+            report.printReport(state.getConfig().getReportUri());
         }
-        commitTransaction(state.getTx());
-        report.printReport(state.getConfig().getReportUri());
+        catch(Exception e){
+            report.addInfoMessage("Exception during import:\n"+e.getMessage()+"\n"+e.getStackTrace());
+        }
         return;
     }
 
