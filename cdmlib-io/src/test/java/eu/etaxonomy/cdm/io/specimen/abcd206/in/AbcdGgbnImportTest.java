@@ -580,7 +580,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
 
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
 	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
 	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
 
