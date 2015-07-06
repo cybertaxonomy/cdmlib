@@ -17,7 +17,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -70,12 +70,45 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 					if (sec.getAuthorship().isInstanceOf(Team.class)){
 						Team authorTeam = HibernateProxyHelper.deproxy(sec.getAuthorship(), Team.class);
 						if (authorTeam.getTeamMembers().size() > 2){
-							result = authorTeam.getTeamMembers().get(0).getLastname() + " & al.";
+							if (authorTeam.getTeamMembers().get(0).getLastname() != null){
+						        result = authorTeam.getTeamMembers().get(0).getLastname() + " & al.";
+						    } else {
+						        result = authorTeam.getTeamMembers().get(0).getTitleCache();
+						        result = result + " & al.";
+						    }
 						} else if (authorTeam.getTeamMembers().size() == 2){
-							result = authorTeam.getTeamMembers().get(0).getLastname() + " & " + authorTeam.getTeamMembers().get(1).getLastname();
+							String firstAuthor;
+							if (authorTeam.getTeamMembers().get(0).getLastname() != null){
+								firstAuthor = authorTeam.getTeamMembers().get(0).getLastname();
+							}else{
+								firstAuthor = authorTeam.getTeamMembers().get(0).getTitleCache();
+							}
+							String secondAuthor;
+							if (authorTeam.getTeamMembers().get(1).getLastname() != null){
+								secondAuthor = authorTeam.getTeamMembers().get(1).getLastname();
+							}else{
+								secondAuthor = authorTeam.getTeamMembers().get(1).getTitleCache();
+							}
+							result = firstAuthor + " & " + secondAuthor;
+
 						} else{
-							result = authorTeam.getTeamMembers().get(0).getLastname();
+							if (authorTeam.getTeamMembers().get(0).getLastname() != null){
+						        result = authorTeam.getTeamMembers().get(0).getLastname();
+						    } else {
+						        result = authorTeam.getTeamMembers().get(0).getTitleCache();
+						    }
 						}
+						
+					} else {
+						Person author = HibernateProxyHelper.deproxy(sec.getAuthorship(), Person.class);
+						if (author.getLastname() != null){
+							result = author.getLastname();
+						} else{
+							result = author.getTitleCache();
+						}
+					}
+					if (result != null){
+						result = result.replaceAll("[A-Z]\\.", "");
 					}
 					if (sec.getYear() != null && result != null){
 						result = result.concat(" (" + sec.getYear()+")");
