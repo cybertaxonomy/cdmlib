@@ -73,15 +73,15 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Brandenburg. Oderhänge ca 2,2 km NW Mallnow, Hang SW P 47,9.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Germany</abcd21:Name>
-                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
+<!--               <abcd21:Country> -->
+<!--                 <abcd21:Name>Germany</abcd21:Name> -->
+<!--                 <abcd21:ISO3166Code>DE</abcd21:ISO3166Code> -->
+<!--               </abcd21:Country> -->
+<!--               <abcd21:NamedAreas> -->
+<!--                 <abcd21:NamedArea> -->
+<!--                   <abcd21:AreaName language="en">Europe</abcd21:AreaName> -->
+<!--                 </abcd21:NamedArea> -->
+<!--               </abcd21:NamedAreas> -->
               <abcd21:SiteCoordinateSets>
                 <abcd21:SiteCoordinates>
                   <abcd21:CoordinatesLatLong>
@@ -179,15 +179,15 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Brandenburg. Oderhänge E Libbenichen, Grenzberg.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Germany</abcd21:Name>
-                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
+<!--               <abcd21:Country> -->
+<!--                 <abcd21:Name>Germany</abcd21:Name> -->
+<!--                 <abcd21:ISO3166Code>DE</abcd21:ISO3166Code> -->
+<!--               </abcd21:Country> -->
+<!--               <abcd21:NamedAreas> -->
+<!--                 <abcd21:NamedArea> -->
+<!--                   <abcd21:AreaName language="en">Europe</abcd21:AreaName> -->
+<!--                 </abcd21:NamedArea> -->
+<!--               </abcd21:NamedAreas> -->
               <abcd21:SiteCoordinateSets>
                 <abcd21:SiteCoordinates>
                   <abcd21:CoordinatesLatLong>

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -53,19 +52,19 @@ public class DatabaseMapping implements IImportMapping {
 
 	private static final String COL_DEST_NS = "destination_namespace";
 
-	private static final String COL_DEST_ID = "destination_id"; 
-	
+	private static final String COL_DEST_ID = "destination_id";
+
 	private ICdmDataSource datasource;
-	private String mappingId;
-	private Map<String, Class> shortCuts = new HashMap<String, Class>();
-	private Map<Class, String> reverseShortCuts = new HashMap<Class, String>();
-	
-	
+	private final String mappingId;
+	private final Map<String, Class> shortCuts = new HashMap<String, Class>();
+	private final Map<Class, String> reverseShortCuts = new HashMap<Class, String>();
+
+
 	@Override
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity destinationObject){
 		putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
-		
+
 
 	/**
 	 * @param database
@@ -81,7 +80,7 @@ public class DatabaseMapping implements IImportMapping {
 		CdmKey<IdentifiableEntity<?>> cdmKey = new CdmKey(destinationObject);
 		putMapping(namespace, sourceKey, cdmKey);
 	}
-	
+
 	public void putMapping(String namespace, String sourceKey, CdmKey<IdentifiableEntity<?>> cdmKey) {
 		try {
 			deleteExistingMapping(namespace, sourceKey);
@@ -90,9 +89,9 @@ public class DatabaseMapping implements IImportMapping {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private int persistNotExistingMapping(String sourceNamespace, String sourceId, CdmKey<IdentifiableEntity<?>> cdmKey) throws SQLException {
-		
+
 		//cdm namespace
 		String clazz = getCdmClassStr(cdmKey.clazz);
 		//insert
@@ -130,14 +129,14 @@ public class DatabaseMapping implements IImportMapping {
 		deleteMappingSql = String.format(deleteMappingSql,TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId);
 		return this.datasource.executeUpdate(deleteMappingSql);
 	}
-	
+
 	public int size() throws SQLException {
 		String sql = " SELECT count(*) as n FROM %s WHERE %s = '%s' ";
 		sql = String.format(sql,TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId);
 		ResultSet rs = this.datasource.executeQuery(sql);
 		rs.next();
 		return rs.getInt("n");
-		
+
 	}
 
 	@Override
@@ -146,8 +145,8 @@ public class DatabaseMapping implements IImportMapping {
 		String selectMappingSql = " SELECT %s, %s FROM %s" +
 				" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ";
 		selectMappingSql = String.format(selectMappingSql,
-				COL_DEST_NS, COL_DEST_ID, TABLE_IMPORT_MAPPING, 
-				COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace, 
+				COL_DEST_NS, COL_DEST_ID, TABLE_IMPORT_MAPPING,
+				COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace,
 				COL_SOURCE_ID , sourceId);
 		try {
 			ResultSet rs = this.datasource.executeQuery(selectMappingSql);
@@ -157,9 +156,9 @@ public class DatabaseMapping implements IImportMapping {
 				if (id == null){
 					throw new RuntimeException("Destination id for import mapping is 'null'");
 				}
-				
+
 				Class clazz = getCdmClass(clazzStr);
-				
+
 				CdmKey<?> key = new CdmKey(clazz, Integer.valueOf(String.valueOf(id)));
 				result.add(key);
 			}
@@ -170,24 +169,25 @@ public class DatabaseMapping implements IImportMapping {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return result;
 	}
 
-	public boolean exists(String sourceNamespace, String sourceId, Class<?> destinationClass){
+	@Override
+    public boolean exists(String sourceNamespace, String sourceId, Class<?> destinationClass){
 		String selectMappingSql = " SELECT count(*) as n FROM %s" +
 			" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' AND %s = '%s' ";
-		
+
 		String cdmClass = getCdmClassStr(destinationClass);
-		
+
 		selectMappingSql = String.format(selectMappingSql,
-			TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId, 
+			TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId,
 			COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID , sourceId, COL_DEST_NS, cdmClass);
 		try {
 			ResultSet rs = this.datasource.executeQuery(selectMappingSql);
 			rs.next();
 			int n = rs.getInt("n");
-			
+
 			return n > 0;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -221,7 +221,7 @@ public class DatabaseMapping implements IImportMapping {
 		}
 	}
 
-	
+
 	/**
 	 * @param clazzStr
 	 * @return
@@ -234,8 +234,8 @@ public class DatabaseMapping implements IImportMapping {
 		}
 		return clazz;
 	}
-	
-	
+
+
 	private void initDatasource() {
 		getDatabase();
 		shortCuts.put("BotanicalName", BotanicalName.class);
@@ -251,7 +251,7 @@ public class DatabaseMapping implements IImportMapping {
 		}
 	}
 
-	
+
 	public ICdmDataSource getDatabase(){
 		try {
 			try {
@@ -262,7 +262,8 @@ public class DatabaseMapping implements IImportMapping {
 			}
 			datasource.executeQuery("SELECT * FROM " + TABLE_IMPORT_MAPPING);
 		} catch (SQLException e) {
-			try {
+			//create database structure
+		    try {
 				String strCreateTable = "CREATE TABLE IF NOT EXISTS %s (";
 				strCreateTable += "%s nvarchar(36) NOT NULL,";
 				strCreateTable += "%s nvarchar(100) NOT NULL,";
@@ -273,14 +274,14 @@ public class DatabaseMapping implements IImportMapping {
 				strCreateTable += ") ";
 				strCreateTable = String.format(strCreateTable, TABLE_IMPORT_MAPPING, COL_TASK_ID, COL_SOURCE_NS, COL_SOURCE_ID, COL_DEST_NS, COL_DEST_ID);
 				datasource.executeUpdate(strCreateTable);
+				logger.warn("Mapping database structure created");
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			e.printStackTrace();
 		}
 		return datasource;
 	}
 
-	
+
 }

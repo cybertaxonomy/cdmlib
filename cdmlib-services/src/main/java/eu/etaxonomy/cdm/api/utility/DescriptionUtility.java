@@ -63,6 +63,10 @@ public class DescriptionUtility {
      * {@link https://dev.e-taxonomy.eu/trac/ticket/5050})</li>
      * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker}
      * with one of the specified {@link MarkerType}s
+     * <li><b>Fallback Area filter</b>: Areas can be tagged as fallback area by assigning
+     * a {@link Marker} of the specified {@link MarkerType}.
+     * These areas will be skipped as long not a a Distribution for any of sub areas exists,
+     * see https://dev.e-taxonomy.eu/trac/ticket/4408 for a detailed discussion.</li>
      * </ol>
      *
      * @param distributions
@@ -74,16 +78,19 @@ public class DescriptionUtility {
      *            This rule can be run separately from the other filters.
      * @param hideMarkedAreas
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
+     * @param fallbackAreaMarkerType
+     *            {@link MarkerType} for the {@link Marker}s to identify fallback areas.
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas) {
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas, MarkerType fallbackAreaMarkerType) {
 
         Map<NamedArea, Set<Distribution>> filteredDistributions;
 
         Set<Distribution> removeCandidatesDistribution = new HashSet<Distribution>();
 
         boolean doHideMarkedAreas = hideMarkedAreas != null && !hideMarkedAreas.isEmpty();
+        boolean dofallbackAreas = fallbackAreaMarkerType != null;
 
         if(statusOrderPreference || doHideMarkedAreas) {
 
@@ -161,7 +168,7 @@ public class DescriptionUtility {
                 filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
             }
         } else {
-            // only run the Sub area preference rule
+            // no filtering happened until this point, therefor adding all given distributions
             filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
             for(Distribution distribution : distributions){
                 NamedArea area = distribution.getArea();
@@ -173,8 +180,26 @@ public class DescriptionUtility {
 
         }
 
+        // 3) keep or remove distributions for fallback areas
+        Set<NamedArea> removeCandidatesFallback = new HashSet<NamedArea>();
+        if(dofallbackAreas){
+            for(NamedArea key : filteredDistributions.keySet()){
+                if(removeCandidatesFallback.contains(key)){
+                    continue;
+                }
+                if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())
+                        && key.getPartOf().hasMarker(fallbackAreaMarkerType, true)){
+                    removeCandidatesFallback.add(key.getPartOf());
+                }
+            }
+            for(NamedArea removeKey : removeCandidatesFallback){
+                filteredDistributions.remove(removeKey);
+            }
+         }
 
-        // 3) Sub area preference rule
+
+
+        // 4) Sub area preference rule
         Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
         if(subAreaPreference){
             for(NamedArea key : filteredDistributions.keySet()){

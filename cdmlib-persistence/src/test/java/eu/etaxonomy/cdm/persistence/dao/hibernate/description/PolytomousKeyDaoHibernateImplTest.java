@@ -63,10 +63,10 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 		newRoot.addChild(child3);
 		newRoot.addChild(child2, 1);
 
-		UUID newKeyUuid = polytomousKeyDao.save(newKey);
+		newKey = polytomousKeyDao.save(newKey);
 
 		//doesn't make sense as long as there is no new session
-		PolytomousKey newKeyFromDb = polytomousKeyDao.findByUuid(newKeyUuid);
+		PolytomousKey newKeyFromDb = polytomousKeyDao.findByUuid(newKey.getUuid());
 //		List<PolytomousKeyNode> children = newKeyFromDb.getRoot().getChildren();
 //		Assert.assertEquals(child1.getUuid(), children.get(0).getUuid());
 //		Assert.assertNotSame(child1.getUuid(), children.get(0).getUuid());

@@ -4,18 +4,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
@@ -26,11 +20,11 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
 
     @SpringBeanByType
     IGroupService groupService;
-    
+
     @SpringBeanByType
     IUserService userService;
-    
-    
+
+
     @Test
     public void testDeleteGroup(){
     	GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance();
@@ -39,15 +33,15 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
     	group.addGrantedAuthority(testAuthority);
     	UUID groupUUID =  groupService.saveGroup(group);
     	User user1 = User.NewInstance("TestUser1", "pwd");
-    	UUID UserUUID =  userService.save(user1);
-    	
+    	UUID UserUUID =  userService.save(user1).getUuid();
+
 		groupService.delete(group);
-		
+
     	group = groupService.find(groupUUID);
     	assertNull(group);
     	user1 = userService.find(UserUUID);
     	assertNotNull(user1);
-    	
+
     }
 
 
@@ -57,7 +51,7 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

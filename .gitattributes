@@ -122,6 +122,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DefaultImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DeleteNonReferencedReferencesConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DeleteNonReferencedreferencesUpdater.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmExport.java -text

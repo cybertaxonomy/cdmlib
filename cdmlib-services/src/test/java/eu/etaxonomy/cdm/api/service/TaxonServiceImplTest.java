@@ -126,7 +126,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testGetTaxonByUuid() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
-        UUID uuid = service.save(expectedTaxon);
+        UUID uuid = service.save(expectedTaxon).getUuid();
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
     }
@@ -137,7 +137,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testSaveTaxon() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
-        UUID uuid = service.save(expectedTaxon);
+        UUID uuid = service.save(expectedTaxon).getUuid();
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
     }
@@ -145,7 +145,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testSaveOrUpdateTaxon() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
-        UUID uuid = service.save(expectedTaxon);
+        UUID uuid = service.save(expectedTaxon).getUuid();
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
@@ -162,7 +162,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testRemoveTaxon() {
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
-        UUID uuid = service.save(taxon);
+        UUID uuid = service.save(taxon).getUuid();
        // try {
 			service.deleteTaxon(taxon.getUuid(), null, null);
 		/*} catch (DataChangeNoRollbackException e) {
@@ -1087,7 +1087,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
         DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(child1, identifiedUnit);
         //UUID eventUUID = eventService.save(determinationEvent);
-        UUID identifiedUnitUUID = occurenceService.save(identifiedUnit);
+        UUID identifiedUnitUUID = occurenceService.save(identifiedUnit).getUuid();
 
 
         TaxonNode parentNode = node.getParent();
@@ -1155,7 +1155,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
@@ -1215,7 +1215,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
 
@@ -1254,7 +1254,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
 
@@ -1287,7 +1287,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
         //BotanicalName name = nameService.find(uuid);
         Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
         TaxonNode node = nodes.iterator().next();
@@ -1321,7 +1321,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
         Classification secondClassification = TaxonGenerator.getTestClassification("secondClassification");
         Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
         TaxonNode node = nodes.iterator().next();
@@ -1359,7 +1359,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
         //test childHandling MOVE_TO_PARENT:
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
 
@@ -1367,7 +1367,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode node =nodes.next();
         Classification classification = node.getClassification();
         classification.addParentChild(topMost, testTaxon, null, null);
-        UUID topMostUUID = service.save(topMost);
+        UUID topMostUUID = service.save(topMost).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
@@ -1397,7 +1397,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
         //test childHandling DELETE:
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
 
@@ -1406,7 +1406,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID taxonNodeUUID = node.getUuid();
         Classification classification = node.getClassification();
         classification.addParentChild(topMost, testTaxon, null, null);
-        UUID topMostUUID = service.save(topMost);
+        UUID topMostUUID = service.save(topMost).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
@@ -1437,7 +1437,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonDeletionConfiguratorDeleteMarker(){
         //test childHandling DELETE:
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
 
@@ -1445,7 +1445,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode node =nodes.next();
         Classification classification = node.getClassification();
         classification.addParentChild(topMost, testTaxon, null, null);
-        UUID topMostUUID = service.save(topMost);
+        UUID topMostUUID = service.save(topMost).getUuid();
         Marker marker = Marker.NewInstance(testTaxon, true, MarkerType.IS_DOUBTFUL());
         testTaxon.addMarker(marker);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
@@ -1476,14 +1476,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
 
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
         testTaxon.addMisappliedName(misappliedName, null, null);
-        UUID misappliedNameUUID = service.save(misappliedName);
+        UUID misappliedNameUUID = service.save(misappliedName).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(true);
@@ -1505,14 +1505,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedNameDoNotDelete(){
 
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
         testTaxon.addMisappliedName(misappliedName, null, null);
-        UUID misappliedNameUUID = service.save(misappliedName);
+        UUID misappliedNameUUID = service.save(misappliedName).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(false);
@@ -1535,14 +1535,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
 
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
-        UUID uuid = service.save(testTaxon);
+        UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedNameTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
         testTaxon.addMisappliedName(misappliedNameTaxon, null, null);
-        UUID misappliedNameUUID = service.save(misappliedNameTaxon);
+        UUID misappliedNameUUID = service.save(misappliedNameTaxon).getUuid();
         misappliedNameTaxon = (Taxon)service.find(misappliedNameUUID);
         UUID misNameUUID = misappliedNameTaxon.getName().getUuid();
 
@@ -1734,10 +1734,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
         taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 
-        uuidTaxWithoutSyn = service.save(taxWithoutSyn);
-        uuidSyn = service.save(synonym);
-        uuidSyn2 = service.save(synonym2);
-        uuidTaxWithSyn =service.save(taxWithSyn);
+        uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
+        uuidSyn = service.save(synonym).getUuid();
+        uuidSyn2 = service.save(synonym2).getUuid();
+        uuidTaxWithSyn =service.save(taxWithSyn).getUuid();
 
     }
 

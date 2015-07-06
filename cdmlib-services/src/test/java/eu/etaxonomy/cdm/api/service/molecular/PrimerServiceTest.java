@@ -38,7 +38,7 @@ public class PrimerServiceTest extends CdmTransactionalIntegrationTest {
     public void testGetPrimerUuidAndTitleCache(){
         String primerLabel = "MatK";
         Primer primer = Primer.NewInstance(primerLabel);
-        UUID uuid = primerService.save(primer);
+        UUID uuid = primerService.save(primer).getUuid();
 
         List<UuidAndTitleCache<Primer>> primerUuidAndTitleCache = primerService.getPrimerUuidAndTitleCache();
         assertEquals("Number of Primers in DB is incorrect.", 1, primerUuidAndTitleCache.size());
@@ -53,7 +53,7 @@ public class PrimerServiceTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

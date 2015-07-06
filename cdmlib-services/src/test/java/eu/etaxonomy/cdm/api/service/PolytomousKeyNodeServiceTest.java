@@ -1,16 +1,13 @@
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -21,10 +18,10 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 
 	@SpringBeanByType
 	IPolytomousKeyNodeService service;
-	
+
 	@SpringBeanByType
 	IPolytomousKeyService keyService;
-	
+
 	/****************** TESTS *****************************/
 
 	/**
@@ -35,24 +32,24 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 		Assert.assertNotNull(service);
 		Assert.assertNotNull(keyService);
 	}
-	
+
 	@Test
 	//@DataSet(value="CommonServiceImplTest.xml")
 	public final void testDelete(){
-		
+
 		PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
-		UUID uuidKey =	keyService.save(key);
+		UUID uuidKey =	keyService.save(key).getUuid();
 		PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
 		key.setRoot(node);
 		key.setStartNumber(0);
-		
+
 		PolytomousKeyNode child = PolytomousKeyNode.NewInstance("Test statement Nr 2");
 		//child.setKey(key);
-		
+
 		node.addChild(child,0);
-		UUID uuidNode = service.save(node);
-		
-		node = service.load(uuidNode);	
+		UUID uuidNode = service.save(node).getUuid();
+
+		node = service.load(uuidNode);
 		UUID uuidChild = node.getChildAt(0).getUuid();
 		assertNotNull(node);
 		service.delete(uuidNode, true);
@@ -60,7 +57,7 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 		assertNull(node);
 		node = service.load(UUID.fromString("f0dd12ed-ea77-419a-bce6-4282d0067c91"));
 		assertNull(node);
-		
+
 	}
 
     /* (non-Javadoc)
@@ -69,7 +66,7 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
-	
+
 }

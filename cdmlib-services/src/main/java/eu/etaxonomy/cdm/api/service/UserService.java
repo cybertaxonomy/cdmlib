@@ -201,9 +201,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         String password = passwordEncoder.encodePassword(rawPassword, salt);
         ((User)user).setPassword(password);
 
-        UUID userUUID = dao.save((User)user);
-
-
+        dao.save((User)user);
     }
 
 
@@ -442,13 +440,13 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Override
     @Transactional(readOnly=false)
    // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID save(User user) {
+    public User save(User user) {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);
         }else{
             updateUser(user);
         }
-        return user.getUuid();
+        return user;
     }
 
     /* (non-Javadoc)
@@ -468,7 +466,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
-        return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
+        return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority).getUuid();
     }
 
 
@@ -500,6 +498,11 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Override
+    public DeleteResult delete(UUID userUuid)  {
+        return delete(dao.load(userUuid));
+    }
+
+    @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
         Map<UUID, User> users = new HashMap<UUID, User>();
@@ -514,6 +517,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveOrUpdate(User transientObject) {
         return super.saveOrUpdate(transientObject);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    @Transactional(readOnly=false)
+    public User merge(User detachedObject) {
+        return super.merge(detachedObject);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    @Transactional(readOnly=false)
+    public List<User> merge(List<User> detachedObjects) {
+        return super.merge(detachedObjects);
     }
 
     @Override

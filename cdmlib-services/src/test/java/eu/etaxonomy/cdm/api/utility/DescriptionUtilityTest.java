@@ -44,6 +44,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     boolean subAreaPreference = false;
     boolean statusOrderPreference = false;
     Set<MarkerType> hideMarkedAreas = null;
+    MarkerType fallbackAreaMarkerType = null;
     NamedArea berlin = null;
 
     @Before
@@ -73,7 +74,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         distributions.add(computedDistribution);
 
         statusOrderPreference= true;
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
@@ -84,7 +85,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         distributions.add(parentComputedDistribution);
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(2, filteredDistributions.size());
 
     }
@@ -101,7 +102,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
@@ -123,19 +124,19 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
@@ -160,11 +161,40 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
-
     }
+
+    @Test
+    public void testFilterDistributions_fallbackAreaFilter(){
+
+        NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
+        jugoslavia.setIdInVocabulary("Ju");
+        NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
+        serbia.setIdInVocabulary("Sr");
+        serbia.setPartOf(jugoslavia);
+
+        Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
+        Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
+
+        distributions.add(distSerbia);
+        distributions.add(distJugoslavia);
+
+        // using TO_BE_CHECKED to mark Ju as fallback area
+        jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas,
+                MarkerType.TO_BE_CHECKED());
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
+    }
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

@@ -235,12 +235,13 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGroup(Group group) {
-        return dao.save(group);
+        return dao.save(group).getUuid();
     }
 
     @Override
+    @Transactional(readOnly=false)
     public DeleteResult delete(UUID groupUUID ){
-    	
+
        String groupUUIDString = groupUUID.toString();
        //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
         this.deleteGroup(groupUUIDString);

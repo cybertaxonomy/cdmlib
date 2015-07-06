@@ -11,7 +11,6 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.UUID;
 
@@ -25,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -33,8 +31,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -62,7 +58,7 @@ public class TestService {
 
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	private static CdmApplicationController appCtr;
-	
+
 	public void testAppController() {
 		logger.info("Create name objects...");
 		NonViralName<?> nvn = NonViralName.NewInstance(Rank.SPECIES());
@@ -133,7 +129,7 @@ public class TestService {
 	}
 
 	public void testTermApi(){
-		ITermService ts = (ITermService)appCtr.getTermService();
+		ITermService ts = appCtr.getTermService();
 		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//logger.warn(dt.toString());
 		//TODO: fix ts.listTerms(0,100)
@@ -147,22 +143,22 @@ public class TestService {
 	}
 
 	public void testDeleteTaxa(){
-		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
 		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.save(taxon1);
+		UUID uuidTaxon1 = taxonService.save(taxon1).getUuid();
 		logger.info("  UUID: " + uuidTaxon1);
-		UUID uuidTaxon2 = taxonService.save(taxon2);
+		UUID uuidTaxon2 = taxonService.save(taxon2).getUuid();
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
 		UUID uuid = null;
-		
+
 		DeleteResult result = taxonService.deleteTaxon(taxon1.getUuid(), null, null);
-		
-		if(!result.isOk()){ 
+
+		if(!result.isOk()){
          	Assert.fail();
        	}
 		logger.info("  UUID: " + uuid);
@@ -191,7 +187,7 @@ public class TestService {
 //	}
 
 	public void testDeleteRelationship(){
-		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
 		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
@@ -199,9 +195,9 @@ public class TestService {
 		parent.addTaxonomicChild(child, null, null);
 
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.save(parent);
+		UUID uuidTaxon1 = taxonService.save(parent).getUuid();
 		logger.info("  UUID: " + uuidTaxon1);
-		UUID uuidTaxon2 = taxonService.save(child);
+		UUID uuidTaxon2 = taxonService.save(child).getUuid();
 		logger.info("  UUID: " + uuidTaxon2);
 
 
@@ -215,13 +211,13 @@ public class TestService {
 	}
 
 	public void testTransientRank(){
-		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(transientRank);
 		Reference<?> ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.save(taxon);
+		UUID uuidTaxon1 = taxonService.save(taxon).getUuid();
 		logger.info("  UUID: " + uuidTaxon1);
 
 	}
@@ -240,7 +236,7 @@ public class TestService {
 
 
 	public void regenerateTaxonTitleCache(){
-		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		ITaxonService taxonService = appCtr.getTaxonService();
 		taxonService.updateTitleCache();
 	}
 

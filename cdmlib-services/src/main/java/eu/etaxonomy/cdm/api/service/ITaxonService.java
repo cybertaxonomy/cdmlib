@@ -133,7 +133,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param synonym
      * @param acceptedTaxon
      * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
-     * @return 
+     * @return
      */
     public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
 
@@ -234,7 +234,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
-    
+
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
      * All relations to taxa are updated correctly depending on the homotypic
@@ -854,6 +854,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
+    /**
+     * Removes a synonym.
+     *
+     * The method essentially loads the synonym and calls the
+     * {@link #deleteSynonym(Synonym, SynonymDeletionConfigurator) deleteSynonym} method
+     *
+     * @param synonymUuid
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteSynonym(UUID synonymUuid, SynonymDeletionConfigurator config);
 
     /**
      * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
@@ -928,8 +939,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param config
      * @return deleteResult
      */
-    DeleteResult deleteSynonym(Synonym synonym, Taxon taxon,
-            SynonymDeletionConfigurator config);
+    public DeleteResult deleteSynonym(Synonym synonym, Taxon taxon, SynonymDeletionConfigurator config);
+
+
 
     public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
@@ -978,7 +990,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
 
-	
+
+
+
 
 
 

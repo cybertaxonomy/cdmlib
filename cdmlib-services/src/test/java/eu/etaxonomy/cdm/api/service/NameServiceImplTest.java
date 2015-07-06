@@ -406,7 +406,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         specimen.setStoredUnder(name1);
 
         occurrenceService.save(specimen);
-        UUID uuidName1 = nameService.save(name1);
+        UUID uuidName1 = nameService.save(name1).getUuid();
 
         commitAndStartNewTransaction(tableNames);
         DeleteResult result = nameService.delete(name1);

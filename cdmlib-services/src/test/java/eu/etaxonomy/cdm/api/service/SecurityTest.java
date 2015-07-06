@@ -40,8 +40,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import com.mchange.util.AssertException;
-
 import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
@@ -238,7 +236,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         expectedTaxon.getName().setTitleCache("Newby admin", true);
-        UUID uuid = taxonService.save(expectedTaxon);
+        UUID uuid = taxonService.save(expectedTaxon).getUuid();
         commitAndStartNewTransaction(null);
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -284,7 +282,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, ReferenceFactory.newGeneric());
         Exception exception = null;
         try {
-            UUID uuid = taxonService.save(newTaxon);
+            UUID uuid = taxonService.save(newTaxon).getUuid();
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -764,10 +762,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
         taxonService.delete(taxon);
         commitAndStartNewTransaction(null);
-       
-       
-            
-       
+
+
+
+
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
@@ -831,16 +829,16 @@ public class SecurityTest extends AbstractSecurityTestBase{
         DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
         Assert.fail();
         }catch(PermissionDeniedException e){
-        	
+
         }
        endTransaction();
        startNewTransaction();
-       
+
 
         //Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
         taxon = (Taxon)taxonService.load(UUID_LACTUCA);
-        
+
         Assert.assertNotNull("The change must still exist", taxon);
         Assert.assertNotNull("The name must still exist",taxon.getName());
     }
@@ -937,7 +935,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         int numOfSynonymsBefore_styx = t_acherontia_styx.getSynonyms().size();
         int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
 
-       
+
         try {
             DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
 //            synonymUuid = synonym.getUuid();
@@ -961,7 +959,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // reload from db and check assertions
         t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
         Assert.assertEquals(numOfSynonymsBefore_styx +1 + numOfSynonymsBefore_lachesis, t_acherontia_styx.getSynonyms().size());
-        
+
         Assert.assertNotNull(nameService.load(name_acherontia_lachesis_uuid) );
         Assert.assertNull("The old TaxonNode should no longer exist", taxonNodeService.find(n_acherontia_lachesis.getUuid()));
     }
@@ -1214,7 +1212,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

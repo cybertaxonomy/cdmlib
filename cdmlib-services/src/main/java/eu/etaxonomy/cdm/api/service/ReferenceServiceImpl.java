@@ -1,16 +1,17 @@
 // $Id$
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +31,25 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = true)
 public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
 
-	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
+    static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 
-	@Autowired
-private ICdmGenericDao genericDao;
-	/**
-	 * Constructor
-	 */
-	public ReferenceServiceImpl(){
-		if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
-	}
+    @Autowired
+    private ICdmGenericDao genericDao;
+    /**
+     * Constructor
+     */
+    public ReferenceServiceImpl(){
+        if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
+    }
 
-	@Override
-	@Transactional(readOnly = false)
+    @Override
+    @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
-		if (clazz == null){
-			clazz = Reference.class;
-		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
-	}
+        if (clazz == null){
+            clazz = Reference.class;
+        }
+        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+    }
 
 
     @Override
@@ -59,46 +60,52 @@ private ICdmGenericDao genericDao;
     }
 
 
-	@Override
+    @Override
     @Autowired
-	protected void setDao(IReferenceDao dao) {
-		this.dao = dao;
-	}
+    protected void setDao(IReferenceDao dao) {
+        this.dao = dao;
+    }
 
-	@Override
+    @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle() {
 
-		return dao.getUuidAndTitle();
-	}
+        return dao.getUuidAndTitle();
+    }
 
-	@Override
+    @Override
     public List<Reference> getAllReferencesForPublishing(){
-		return dao.getAllNotNomenclaturalReferencesForPublishing();
-	}
+        return dao.getAllNotNomenclaturalReferencesForPublishing();
+    }
 
-	@Override
+    @Override
     public List<Reference> getAllNomenclaturalReferences() {
 
-		return dao.getAllNomenclaturalReferences();
-	}
+        return dao.getAllNomenclaturalReferences();
+    }
 
-	@Override
-	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
+    @Override
+    public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
 
-		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, null, propertyPaths);
+        List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, null, propertyPaths);
 
-		return taxonList;
-	}
+        return taxonList;
+    }
 
-	@Override
-	public DeleteResult delete(Reference reference) {
-		//check whether the reference is used somewhere
-		DeleteResult result = isDeletable(reference, null);
+    @Override
+    public DeleteResult delete(Reference reference) {
+        //check whether the reference is used somewhere
+        DeleteResult result = isDeletable(reference, null);
 
-		if (result.isOk()){
-			dao.delete(reference);
-		}
+        if (result.isOk()){
+            dao.delete(reference);
+        }
 
-		return result;
-	}
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public DeleteResult delete(UUID referenceUuid) {
+        return delete(dao.load(referenceUuid));
+    }
 }

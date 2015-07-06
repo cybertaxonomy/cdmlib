@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -27,9 +27,9 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaDataImportConfiguratorBase.class);
 //	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
-	
+
 //	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
-	
+
 	//taxon
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
@@ -39,21 +39,21 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 
 	//distribution
 	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
-	
+
 	//reference
 	private boolean guessNomenclaturalReferences = false;
 	private boolean handleAllRefsAsCitation = false;
-	
+
 	//validation
 	private boolean validateRankConsistency = true;
-	
+
 	public enum DatasetUse{
 		CLASSIFICATION,
 		SECUNDUM,
 		ORIGINAL_SOURCE
 	}
-	
-	
+
+
 	/**
 	 * @param uri
 	 * @param destination
@@ -64,9 +64,9 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 		this.setSource(uri);
 		this.setDestination(destination);
 	}
-	
+
 //************************** GETTER / SETTER **********************************/
-	
+
 	public boolean isDeduplicateNamePublishedIn() {
 		return deduplicateNamePublishedIn;
 	}
@@ -111,8 +111,8 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public boolean isDatasetsAsOriginalSource() {
 		return this.datasetUse.equals(DatasetUse.ORIGINAL_SOURCE);
 	}
-	
-	
+
+
 	public void setDatasetUse(DatasetUse datasetUse) {
 		this.datasetUse = datasetUse;
 	}
@@ -148,6 +148,4 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public void setUseParentAsAcceptedIfAcceptedNotExists(boolean useParentAsAcceptedIfAcceptedNotExists) {
 		this.useParentAsAcceptedIfAcceptedNotExists = useParentAsAcceptedIfAcceptedNotExists;
 	}
-	
-	
 }

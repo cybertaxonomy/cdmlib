@@ -30,7 +30,7 @@ public interface ICdmGenericDao {
 
 	public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException;
 
-	public UUID save(CdmBase newOrManagedObject) throws DataAccessException;
+	public CdmBase save(CdmBase newOrManagedObject) throws DataAccessException;
 
 	public UUID update(CdmBase transientObject) throws DataAccessException;
 

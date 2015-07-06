@@ -126,12 +126,12 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, subAreaPreference, statusOrderPreference, null);
+                distributions, subAreaPreference, statusOrderPreference, null, null);
 
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );
         logger.warn(result);
-        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:a:DEU.*"));
+        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
     }
 
     @Test
@@ -376,12 +376,12 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     public void testGetCondensedDistribution() {
 
         NamedArea germany = NamedArea.NewInstance("Germany", "", "GER");
-        NamedArea berlin = NamedArea.NewInstance("Berlin", "", "GER-B");
+        NamedArea berlin = NamedArea.NewInstance("Berlin", "", "GER(B)");
         berlin.setPartOf(germany);
-        NamedArea bawue = NamedArea.NewInstance("Baden Württemberg", "", "GER-BW");
+        NamedArea bawue = NamedArea.NewInstance("Baden Württemberg", "", "GER(BW)");
         bawue.setPartOf(germany);
         NamedArea france = NamedArea.NewInstance("France", "", "FR");
-        NamedArea ileDeFrance = NamedArea.NewInstance("Ile-de-France", "", "FR-J");
+        NamedArea ileDeFrance = NamedArea.NewInstance("Ile-de-France", "", "FR(J)");
         ileDeFrance.setPartOf(france);
         NamedArea italy = NamedArea.NewInstance("Italy", "", "IT");
         NamedArea spain = NamedArea.NewInstance("Spain", "", "S");
@@ -403,7 +403,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
                 CondensedDistributionRecipe.EuroPlusMed,
                 languages);
 
-        Assert.assertEquals("GER(B BW) ?IT [aFR cFR-J nS]", condensedDistribution.toString());
+        Assert.assertEquals("GER(B BW) ?IT [aFR cFR(J) nS]", condensedDistribution.toString());
     }
 
 

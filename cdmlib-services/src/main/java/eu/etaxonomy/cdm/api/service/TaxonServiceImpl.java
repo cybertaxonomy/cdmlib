@@ -932,6 +932,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteTaxon(UUID taxonUUID, TaxonDeletionConfigurator config, UUID classificationUuid)  {
 
     	if (config == null){
@@ -983,7 +984,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
                         if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
                             if (taxon.equals(taxRel.getToTaxon())){
-                            	
+
                                 this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
                             }
                         }
@@ -1019,7 +1020,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         //throw new ReferencedObjectUndeletableException(message);
                     }
                     removeDescriptions.add(desc);
-                    
+
 
                 }
                 for (TaxonDescription desc: removeDescriptions){
@@ -1238,18 +1239,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return result;
     }
 
+    @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID synUUID){
     	DeleteResult result = new DeleteResult();
     	Synonym syn = (Synonym)dao.load(synUUID);
-        
+
         return this.deleteSynonym(syn, null);
     }
 
-    @Transactional(readOnly = false)
+
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config) {
         return deleteSynonym(synonym, null, config);
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteSynonym(UUID synonymUuid, SynonymDeletionConfigurator config) {
+        return deleteSynonym((Synonym)dao.load(synonymUuid), config);
 
     }
 
@@ -3224,11 +3234,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
 		return moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
 	}
-	
+
 	@Override
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid, UUID toTaxonUuid){
 		UpdateResult result = new UpdateResult();
-		
+
 		Taxon fromTaxon = (Taxon)dao.load(fromTaxonUuid);
 		Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
 		  for(TaxonDescription description : fromTaxon.getDescriptions()){
@@ -3251,10 +3261,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
               dao.saveOrUpdate(fromTaxon);
               result.addUpdatedObject(toTaxon);
               result.addUpdatedObject(fromTaxon);
-             
+
           }
 
-		
+
 		return result;
 	}
 
@@ -3264,8 +3274,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		TaxonBase base = this.load(synonymUuid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(taxonUuid);
-		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class); 
-		
+		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
+
 		return this.deleteSynonym(syn, taxon, config);
 	}
 
@@ -3275,11 +3285,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		TaxonBase base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
-		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class); 
-		
+		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
+
 		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
 	}
 
 
-	
+
 }
