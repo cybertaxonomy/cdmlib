@@ -52,6 +52,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, CsvNameExportState, IExportTransformer> implements ICdmExport<CsvNameExportConfigurator, CsvNameExportState>{
 	private static final Logger logger = Logger.getLogger(CsvNameExportBase.class);
+	
+	final String NOT_DESIGNATED = "not designated";
 	public CsvNameExportBase() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
@@ -161,6 +163,7 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 			nameRecord.put("classification", genusNode.getClassification().getTitleCache());
 			familyNode = getTaxonNodeService().load(genusNode.getParent().getUuid(), propertyPathsFamilyNode);
 			familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
+			familyNode.getTaxon().setProtectedTitleCache(true);
 			nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
 			taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid(), propertyPaths);
 			taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
@@ -192,7 +195,10 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 			nameRecord.put("genusTaxon", taxon.getTitleCache());
 			if (taxon.getSec()!= null){
 				nameRecord.put("secRef", taxon.getSec().getTitleCache());
+			}else{
+				nameRecord.put("secRef", null);
 			}
+			
 			name = HibernateProxyHelper.deproxy(getNameService().load(taxon.getName().getUuid()), BotanicalName.class);
 			nameRecord.put("genusName",name.getTitleCache());
 			nameRecord.put("nameId", String.valueOf(name.getId()));
@@ -207,7 +213,7 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 			nameRecord.put("fullTitleCache",  name.getFullTitleCache());		
 			Set<TypeDesignationBase> typeDesSet =  name.getTypeDesignations();
 			Iterator<TypeDesignationBase> it = typeDesSet.iterator();
-			String typeNameString = "not desit.";
+			String typeNameString = NOT_DESIGNATED;
 			String statusString = null;
 			if (it.hasNext()){
 				typeDes = HibernateProxyHelper.deproxy(it.next(), NameTypeDesignation.class);
