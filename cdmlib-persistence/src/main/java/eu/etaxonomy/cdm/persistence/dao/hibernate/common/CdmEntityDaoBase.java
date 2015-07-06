@@ -247,7 +247,41 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public T merge(T transientObject) throws DataAccessException {
+        if(transientObject == null) {
+            return null;
+        }
         Session session = getSession();
+
+        User user = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+            user = (User)authentication.getPrincipal();
+            transientObject.setCreatedBy(user);
+        }
+
+        if(transientObject.getId() == 0) {
+            if (transientObject.getCreated() == null){
+                transientObject.setCreated(new DateTime());
+            }
+
+            if(transientObject.getCreatedBy() == null) {
+                if(user != null) {
+                    transientObject.setCreatedBy(user);
+                }
+            }
+        }
+
+        if (VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
+            VersionableEntity versionableEntity = (VersionableEntity)transientObject;
+
+            if(versionableEntity.getCreatedBy() != null) {
+                versionableEntity.setUpdated(new DateTime());
+                if(user != null) {
+                    versionableEntity.setUpdatedBy(user);
+                }
+            }
+        }
         @SuppressWarnings("unchecked")
 		T persistentObject = (T)session.merge(transientObject);
         if (logger.isDebugEnabled()){logger.debug("dao merge end");}

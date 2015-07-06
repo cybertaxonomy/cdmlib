@@ -1,16 +1,20 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.event.spi.MergeEvent;
+import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;
@@ -32,66 +36,95 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
  * @author a.mueller
  * @created 04.03.2009
  */
-public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
-	private static final long serialVersionUID = -5511287200489449838L;
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CacheStrategyGenerator.class);
+public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
+    private static final long serialVersionUID = -5511287200489449838L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(CacheStrategyGenerator.class);
 
+    @Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
         Object entity = event.getObject();
+        saveOrUpdateOrMerge(entity);
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent)
+     */
+    @Override
+    public void onMerge(MergeEvent event) throws HibernateException {
+
+        Object entity = event.getOriginal();
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent, java.util.Map)
+     */
+    @Override
+    public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
+        Object entity = event.getOriginal();
+        saveOrUpdateOrMerge(entity);
+
+    }
+
+    private void saveOrUpdateOrMerge(Object entity) {
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
             if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-	            ICdmBase cdmBase = (ICdmBase)entity;
-            	cdmBase = (ICdmBase)HibernateProxyHelperExtended.getProxyTarget(cdmBase);  //needed for debugging of integration tests that are in error by mistake 
-            	if(cdmBase.getId() == 0) {
-				    if (cdmBase.getCreated() == null){
-				    	cdmBase.setCreated(new DateTime());
-					}
-					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-				      User user = (User)authentication.getPrincipal();
-				      cdmBase.setCreatedBy(user);
-				    }
-				}
-	          }
+                ICdmBase cdmBase = (ICdmBase)entity;
+                cdmBase = (ICdmBase)HibernateProxyHelperExtended.getProxyTarget(cdmBase);  //needed for debugging of integration tests that are in error by mistake
 
-        	//non-viral-name caches
-        	if(NonViralName.class.isAssignableFrom(entityClazz)) {
-        		NonViralName<?> nonViralName = (NonViralName<?>)entity;
-        		nonViralName.getAuthorshipCache();
-        		nonViralName.getNameCache();
-        		nonViralName.getTitleCache();
-        		nonViralName.getFullTitleCache();
-        	//team-or-person caches
-            }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
-            	TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
-            	String nomTitle = teamOrPerson.getNomenclaturalTitle();
-            	if (teamOrPerson instanceof Team){
-            		Team team =CdmBase.deproxy(teamOrPerson, Team.class); 
-            		team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
-            	}else{
-            		teamOrPerson.setNomenclaturalTitle(nomTitle);
-            	}
-            	String titleCache = teamOrPerson.getTitleCache();
-            	if (! teamOrPerson.isProtectedTitleCache()){
-                	teamOrPerson.setTitleCache(titleCache, false);
-            	}
-            
-            //reference caches
-            }else if(Reference.class.isAssignableFrom(entityClazz)){
-            	Reference<?> ref = (Reference<?>)entity;
-            	ref.getAbbrevTitleCache();
-            	ref.getTitleCache();
-            //title cache
-            }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
-        		IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
-        		identifiableEntity.getTitleCache();
-            }else if(Amplification.class.isAssignableFrom(entityClazz)) {
-            	Amplification amplification = (Amplification)entity;
-            	amplification.updateCache();
+                if(cdmBase.getId() == 0) {
+                    if (cdmBase.getCreated() == null){
+                        cdmBase.setCreated(new DateTime());
+                    }
+
+                    if(cdmBase.getCreatedBy() == null) {
+                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+                            User user = (User)authentication.getPrincipal();
+                            cdmBase.setCreatedBy(user);
+                        }
+                    }
+                }
             }
-        	
+
+            //non-viral-name caches
+            if(NonViralName.class.isAssignableFrom(entityClazz)) {
+                NonViralName<?> nonViralName = (NonViralName<?>)entity;
+                nonViralName.getAuthorshipCache();
+                nonViralName.getNameCache();
+                nonViralName.getTitleCache();
+                nonViralName.getFullTitleCache();
+                //team-or-person caches
+            }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
+                TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
+                String nomTitle = teamOrPerson.getNomenclaturalTitle();
+                if (teamOrPerson instanceof Team){
+                    Team team =CdmBase.deproxy(teamOrPerson, Team.class);
+                    team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
+                }else{
+                    teamOrPerson.setNomenclaturalTitle(nomTitle);
+                }
+                String titleCache = teamOrPerson.getTitleCache();
+                if (! teamOrPerson.isProtectedTitleCache()){
+                    teamOrPerson.setTitleCache(titleCache, false);
+                }
+
+                //reference caches
+            }else if(Reference.class.isAssignableFrom(entityClazz)){
+                Reference<?> ref = (Reference<?>)entity;
+                ref.getAbbrevTitleCache();
+                ref.getTitleCache();
+                //title cache
+            }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
+                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
+                identifiableEntity.getTitleCache();
+            }else if(Amplification.class.isAssignableFrom(entityClazz)) {
+                Amplification amplification = (Amplification)entity;
+                amplification.updateCache();
+            }
+
         }
     }
 }

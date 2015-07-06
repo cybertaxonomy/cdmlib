@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
@@ -24,18 +24,19 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SaveEntityListener.class);
 
-	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
+	@Override
+    public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
-		
+
         if (entity != null){
-        	
+
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-				
+
 				ICdmBase cdmBase = (ICdmBase)entity;
 				cdmBase.setCreated(new DateTime());
-				
+
 			}
-        }		
+        }
 	}
 }
