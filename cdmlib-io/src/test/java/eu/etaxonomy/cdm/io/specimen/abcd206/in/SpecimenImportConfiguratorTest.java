@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -437,15 +438,59 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	public void testIgnoreAuthorship(){
+	public void testImportNewTaxaToDefaultClassification(){
 	    UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
 	    UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
+
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577_two_units_almost_same.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    //test initial state
+	    Taxon taxon = (Taxon) taxonService.load(taxonUUID);
+	    assertNotNull(taxon);
+	    Classification classification = classificationService.load(classificationUUID);
+	    assertNotNull(classification);
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, taxonService.count(Taxon.class));
+
+	    importConfigurator.setClassificationUuid(classificationUUID);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class));
+	    assertEquals(2, taxonService.count(Taxon.class));
+	    assertEquals(2, classificationService.count(Classification.class));
+
+	}
+
+
+    /**
+     * Test should NOT create new taxa of the same name but have different authors.
+     */
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../TermsDataSet-with_auditing_info.xml"),
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
+    })
+	public void testIgnoreAuthorship(){
+        UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
+        UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
 
 //        Classification classification = Classification.NewInstance("Checklist");
 //        classification.setUuid(classificationUUID);
 //
 //        Reference<?> secReference = ReferenceFactory.newGeneric();
-//        Team team = Team.NewTitledInstance("Hal.", "Hal.");
+//        Team team = Team.NewTitledInstance("different author", "different author");
 //        secReference.setAuthorship(team);
 //
 //        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
@@ -527,11 +572,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    @Ignore
     @Test
     public void createTestDataSet() throws FileNotFoundException {
         UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
@@ -541,13 +582,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         classification.setUuid(classificationUUID);
 
         Reference<?> secReference = ReferenceFactory.newGeneric();
-        Team team = Team.NewTitledInstance("Hal.", "Hal.");
+        Team team = Team.NewTitledInstance("different author", "different author");
         secReference.setAuthorship(team);
 
-        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
+        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.SPECIES());
         taxonName.setGenusOrUninomial("Campanula");
         taxonName.setSpecificEpithet("versicolor");
-        taxonName.setInfraSpecificEpithet("tomentella");
 
         Taxon taxon = Taxon.NewInstance(taxonName, secReference);
         taxon.setUuid(taxonUUID);

@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd:DataSets>
+      <abcd:DataSet>
+        <abcd:Units>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0066577</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula versicolor var. tomentella Hal.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>versicolor</abcd:FirstEpithet>
+                          <abcd:InfraspecificEpithet>tomentella</abcd:InfraspecificEpithet>
+                          <abcd:Rank>var.</abcd:Rank>
+                          <abcd:AuthorTeam>Hal.</abcd:AuthorTeam>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:SpecimenUnit>
+              <abcd:NomenclaturalTypeDesignations>
+                <abcd:NomenclaturalTypeDesignation>
+                  <abcd:TypeStatus>type</abcd:TypeStatus>
+                </abcd:NomenclaturalTypeDesignation>
+              </abcd:NomenclaturalTypeDesignations>
+            </abcd:SpecimenUnit>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>Herbarium Berolinense</abcd:SourceID>
+            <abcd:UnitID>B 10 0066578</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>CAMPANULACEAE</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Campanula patula</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>patula</abcd:FirstEpithet>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>PreservedSpecimen</abcd:RecordBasis>
+            <abcd:KindOfUnit>herbarium sheet</abcd:KindOfUnit>
+            <abcd:SpecimenUnit>
+              <abcd:NomenclaturalTypeDesignations>
+                <abcd:NomenclaturalTypeDesignation>
+                  <abcd:TypeStatus>type</abcd:TypeStatus>
+                </abcd:NomenclaturalTypeDesignation>
+              </abcd:NomenclaturalTypeDesignations>
+            </abcd:SpecimenUnit>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>
