@@ -591,6 +591,21 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	}
 
+    /**
+     * Imports two DNA units belonging to the same taxon into an existing
+     * classification. The taxon is not part of the classification so the
+     * default classification will be created. The result should be:
+     * existing classification (0 taxa), default classification (1 taxon)
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
+    })
+	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
+
+	}
+
 	@Test
 	@Ignore
 	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
