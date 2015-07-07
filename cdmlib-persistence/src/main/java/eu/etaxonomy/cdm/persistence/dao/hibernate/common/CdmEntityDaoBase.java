@@ -42,19 +42,14 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.type.Type;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
@@ -251,37 +246,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return null;
         }
         Session session = getSession();
-
-        User user = null;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-            user = (User)authentication.getPrincipal();
-            transientObject.setCreatedBy(user);
-        }
-
-        if(transientObject.getId() == 0) {
-            if (transientObject.getCreated() == null){
-                transientObject.setCreated(new DateTime());
-            }
-
-            if(transientObject.getCreatedBy() == null) {
-                if(user != null) {
-                    transientObject.setCreatedBy(user);
-                }
-            }
-        }
-
-        if (VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
-            VersionableEntity versionableEntity = (VersionableEntity)transientObject;
-
-            if(versionableEntity.getCreatedBy() != null) {
-                versionableEntity.setUpdated(new DateTime());
-                if(user != null) {
-                    versionableEntity.setUpdatedBy(user);
-                }
-            }
-        }
         @SuppressWarnings("unchecked")
 		T persistentObject = (T)session.merge(transientObject);
         if (logger.isDebugEnabled()){logger.debug("dao merge end");}
@@ -298,15 +262,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
             if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
             Session session = getSession();
-            if(transientObject.getId() != 0 && VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
-                VersionableEntity versionableEntity = (VersionableEntity)transientObject;
-                versionableEntity.setUpdated(new DateTime());
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-                  User user = (User)authentication.getPrincipal();
-                  versionableEntity.setUpdatedBy(user);
-                }
-            }
             session.saveOrUpdate(transientObject);
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate end");}
             return transientObject.getUuid();

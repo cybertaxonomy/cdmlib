@@ -17,20 +17,14 @@ import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
-import org.joda.time.DateTime;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 
 /**
  * @author a.mueller
@@ -52,9 +46,8 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeE
      */
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-
         Object entity = event.getOriginal();
-
+        saveOrUpdateOrMerge(entity);
     }
 
     /* (non-Javadoc)
@@ -62,32 +55,12 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeE
      */
     @Override
     public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
-        Object entity = event.getOriginal();
-        saveOrUpdateOrMerge(entity);
 
     }
 
     private void saveOrUpdateOrMerge(Object entity) {
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
-            if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-                ICdmBase cdmBase = (ICdmBase)entity;
-                cdmBase = (ICdmBase)HibernateProxyHelperExtended.getProxyTarget(cdmBase);  //needed for debugging of integration tests that are in error by mistake
-
-                if(cdmBase.getId() == 0) {
-                    if (cdmBase.getCreated() == null){
-                        cdmBase.setCreated(new DateTime());
-                    }
-
-                    if(cdmBase.getCreatedBy() == null) {
-                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-                            User user = (User)authentication.getPrincipal();
-                            cdmBase.setCreatedBy(user);
-                        }
-                    }
-                }
-            }
 
             //non-viral-name caches
             if(NonViralName.class.isAssignableFrom(entityClazz)) {
