@@ -91,8 +91,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
-    private static final String DEFAULT_CLASSIFICATION_ABCD = "Default Classification ABCD";
-
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
     private final boolean DEBUG = true;
@@ -117,13 +115,30 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     public void doInvoke(Abcd206ImportState state) {
         report = new Abcd206ImportReport();
         try{
-            ICdmApplicationConfiguration cdmAppController = state.getCdmRepository()!=null?state.getCdmRepository():this;
-
             state.setTx(startTransaction());
             logger.info("INVOKE Specimen Import from ABCD2.06 XML ");
 
+            //init cd repository
+            if(state.getCdmRepository()==null){
+                state.setCdmRepository(this);
+            }
+//            //init default classification
+//            final String defaultClassificationAbcd = "Default Classification ABCD";
+//            for (Classification classif : getClassificationService().list(Classification.class, null, null, null, null)){
+//                if (classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd) && classif.getCitation().equals(state.getRef())) {
+//                    state.setDefaultClassification(classif);
+//                    break;
+//                }
+//            }
+//            if(state.getDefaultClassification()==null){
+//                state.setDefaultClassification(Classification.NewInstance(defaultClassificationAbcd, state.getRef(), Language.DEFAULT()));
+//                save(state.getDefaultClassification(), state);
+//            }
+
+
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
 
+            //init import reference
             List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
 
             if (state.getConfig().isInteractWithUser()){
@@ -191,7 +206,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                     save(state.getClassification(), state);
                 }
-                // create default classification
+                // use default classification as the classification to import into
                 if (state.getClassification() == null) {
                     String name = NB(state.getConfig().getClassificationName());
                     for (Classification classif : classificationList){
@@ -207,6 +222,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                     save(state.getClassification(), state);
                 }
+            }
+            // set default classification for new taxa
+            if(state.getDefaultClassification()==null){
+                state.setDefaultClassification(Classification.NewInstance(state.getConfig().getClassificationName()));
+                save(state.getDefaultClassification(), state);
             }
 
             NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
@@ -258,7 +278,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                     // import DNA unit
                     if(state.getDataHolder().kindOfUnit!=null && state.getDataHolder().kindOfUnit.equalsIgnoreCase("dna")){
-                        AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), report, cdmAppController);
+                        AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), report, state.getCdmRepository());
                         //parent field unit
                         FieldUnit fieldUnit = FieldUnit.NewInstance();
                         state.setFieldUnit(fieldUnit);
@@ -279,7 +299,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     for(int k=0;k<unitAssociationList.getLength();k++){
                         if(unitAssociationList.item(k) instanceof Element){
                             Element unitAssociation = (Element)unitAssociationList.item(k);
-                            UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, cdmAppController);
+                            UnitAssociationParser unitAssociationParser = new UnitAssociationParser(state.getPrefix(), report, state.getCdmRepository());
                             UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation, state);
                             if(associationWrapper!=null){
                                 NodeList associatedUnits = associationWrapper.getAssociatedUnits();
@@ -333,7 +353,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                         //the field unit of the last imported unit is the one that will be used
                                         // delete the current one BUT NOT if it is the only field unit
                                         if(currentFieldUnit!=associatedFieldUnit && currentFieldUnit!=null){
-                                            cdmAppController.getOccurrenceService().delete(currentFieldUnit);
+                                            state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit);
                                         }
 
                                         save(associatedUnit, state);
@@ -1766,7 +1786,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (!exist){
             if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
-                addParentTaxon(taxon, state, preferredFlag, getDefaultClassification(state));
+                addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification());
             }
             else{
                 addParentTaxon(taxon, state, preferredFlag, state.getClassification());
@@ -2342,26 +2362,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
-    }
-
-    /**
-     * Gets the default classification. If <code>null</code> creates it
-     * @param state the current import state
-     * @return the default classification
-     */
-    public Classification getDefaultClassification(Abcd206ImportState state) {
-        if(state.getDefaultClassification()==null){
-            List<Classification> classificationList = getClassificationService().list(Classification.class, null, null, null, null);
-            for (Classification classif : classificationList){
-                if (classif.getTitleCache().equalsIgnoreCase(DEFAULT_CLASSIFICATION_ABCD) && classif.getCitation().equals(state.getRef())) {
-                    state.setDefaultClassification(classif);
-                    break;
-                }
-            }
-            state.setDefaultClassification(Classification.NewInstance(DEFAULT_CLASSIFICATION_ABCD, state.getRef(), Language.DEFAULT()));
-            save(state.getDefaultClassification(), state);
-        }
-        return state.getDefaultClassification();
     }
 
 }
