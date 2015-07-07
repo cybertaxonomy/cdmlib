@@ -158,6 +158,13 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return the term
      * @throws IllegalArgumentException if id or vocabularyUuid is <code>null</code>
      */
-    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) 
+    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz)
     	throws IllegalArgumentException;
+
+    /**
+     * @param termUuid
+     * @param config
+     * @return
+     */
+    public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
 }

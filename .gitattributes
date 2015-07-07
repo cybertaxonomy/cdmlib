@@ -107,6 +107,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/package.info -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdater.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdaterConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdaterWithNewCacheStrategy.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultExport.java -text
@@ -1042,6 +1043,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/SectionDefa
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/WebPageDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseShortSecCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/generate/PolytomousKeyGenerator.java -text

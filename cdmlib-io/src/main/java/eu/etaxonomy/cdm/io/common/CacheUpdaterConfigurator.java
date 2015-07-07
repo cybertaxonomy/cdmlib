@@ -27,6 +27,9 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CacheUpdaterConfigurator.class);
 
+	
+	private boolean updateCacheStrategies = false;
+	
 	public static CacheUpdaterConfigurator NewInstance(ICdmDataSource destination){
 		return new CacheUpdaterConfigurator(destination, false);
 	}
@@ -57,6 +60,19 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 		return result;
 	}
 
+	public static CacheUpdaterConfigurator NewInstance(ICdmDataSource destination, Collection<String> classListNames, boolean doUpdateCacheStrategies) throws ClassNotFoundException{
+		CacheUpdaterConfigurator result = new CacheUpdaterConfigurator(destination, false);
+		List<Class<? extends IdentifiableEntity>> classList = new ArrayList<Class<? extends IdentifiableEntity>>();
+		for (String className : classListNames){
+			Class clazz = Class.forName(className);
+			classList.add(clazz);
+		}
+		result.setClassList(classList);
+		result.setUpdateCacheStrategy(doUpdateCacheStrategies);
+		return result;
+	}
+
+	
 
 	//DescriptionBase
 	private boolean doTaxonDescription = true;
@@ -343,9 +359,15 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 
 	@Override
 	protected void makeIoClassList() {
-		ioClassList = new Class[]{
-				 CacheUpdater.class
-		};	
+		if (this.doUpdateCacheStrategy()){
+			ioClassList = new Class[]{
+					 CacheUpdaterWithNewCacheStrategy.class
+			};
+		}else{
+			ioClassList = new Class[]{
+					 CacheUpdater.class
+			};
+			}
 	}
 
 	@Override
@@ -364,8 +386,13 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 		//not needed here
 		return null;
 	}
-
 	
-
+	public boolean doUpdateCacheStrategy() {
+		return updateCacheStrategies;
+	}
+	
+	public void setUpdateCacheStrategy(boolean doUpdateCacheStrategies){
+		this.updateCacheStrategies = doUpdateCacheStrategies;
+	}
 	
 }

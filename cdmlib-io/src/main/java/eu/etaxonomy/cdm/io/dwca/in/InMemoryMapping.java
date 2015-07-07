@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -27,22 +27,22 @@ public class InMemoryMapping implements IImportMapping {
 
 	/**
 	 * Locally stored foreign key mapping, first object defines a namespace in the source, 2nd Object is
-	 * a key in the source that is unique within the given namespace, the 
+	 * a key in the source that is unique within the given namespace, the
 	 */
 	private Map<String, Map<String, Set<CdmKey>>> mapping = new HashMap<String, Map<String,Set<CdmKey>>>();
-	
+
 	@Override
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity destinationObject){
 		putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
-		
+
 
 	@Override
 	public void putMapping(String namespace, String sourceKey, IdentifiableEntity destinationObject){
 		CdmKey<IdentifiableEntity<?>> cdmKey = new CdmKey(destinationObject);
 		putMapping(namespace, sourceKey, cdmKey);
 	}
-	
+
 	public void putMapping(String namespace, String sourceKey, CdmKey<IdentifiableEntity<?>> cdmKey){
 		Map<String, Set<CdmKey>> namespaceMap = mapping.get(namespace);
 		if (namespaceMap == null){
@@ -54,24 +54,27 @@ public class InMemoryMapping implements IImportMapping {
 			keySet = new HashSet<InMemoryMapping.CdmKey>();
 			namespaceMap.put(sourceKey, keySet);
 		}
-		
+
 		keySet.add(cdmKey);
 	}
-	
+
 	@Override
 	public Set<CdmKey> get(String namespace, String sourceKey){
 		Set<CdmKey> result = new HashSet<InMemoryMapping.CdmKey>();
 		Map<String, Set<CdmKey>> namespaceMap = mapping.get(namespace);
 		if (namespaceMap != null){
-			Set<CdmKey> keySet = namespaceMap.get(sourceKey);
+		    Set<CdmKey> keySet = namespaceMap.get(sourceKey);
 			if (keySet != null){
 				result = keySet;
 			}
 		}
 		return result;
 	}
-	
-	public boolean exists(String namespace, String sourceKey,Class<?> destinationClass){
+
+
+
+    @Override
+    public boolean exists(String namespace, String sourceKey,Class<?> destinationClass){
 		Set<CdmKey> keySet = this.get(namespace, sourceKey);
 		for (CdmKey<?> key: keySet){
 			if (destinationClass == null || destinationClass.isAssignableFrom(key.clazz)){
@@ -115,10 +118,22 @@ public class InMemoryMapping implements IImportMapping {
 		return result;
 	}
 
+	public boolean writeToDbMapping(DatabaseMapping dbMapping){
+//	    logger.info("Start writing mapping to dbMapping");
+	    for (String nameSpace : mapping.keySet()){
+	        Map<String, Set<CdmKey>> internalMapping = mapping.get(nameSpace);
+	        for (String sourceId : internalMapping.keySet()){
+	            Set<CdmKey> cdmKeys = internalMapping.get(sourceId);
+	            for (CdmKey cdmKey: cdmKeys) {
+                    dbMapping.putMapping(nameSpace, sourceId, cdmKey);
+                }
+	        }
+	    }
+//	     logger.info("Finished writing mapping to dbMapping");
+	    return true;
+	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#finalize()
-	 */
+
 	@Override
 	public void finish() {
 		mapping = null;
