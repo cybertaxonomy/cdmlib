@@ -252,6 +252,17 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	}
 
 	@Override
+	@Deprecated
+	@Transactional(readOnly = false)
+	public DeleteResult delete(UUID termUuid){
+	    DeleteResult result = new DeleteResult();
+
+	    TermDeletionConfigurator defaultConfig = new TermDeletionConfigurator();
+	    result = delete(dao.load(termUuid), defaultConfig);
+	    return result;
+	}
+
+	@Override
 	public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config){
 		if (config == null){
 			config = new TermDeletionConfigurator();
@@ -379,6 +390,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			result.setStatus(Status.ERROR);
 		}
 		return result;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config){
+	    return delete(dao.load(termUuid), config);
 	}
 
 	@Override
