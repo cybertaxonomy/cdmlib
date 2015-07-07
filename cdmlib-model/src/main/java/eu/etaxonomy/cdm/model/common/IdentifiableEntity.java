@@ -607,15 +607,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
-        	
+
         	 thisNameCache = thisNameCache.replaceAll("\u00D7", "");
-        	 thisNameCache = thisNameCache.replaceAll("[“\"\\u0022]", "");
-        	 
-        	 
+        	 thisNameCache = thisNameCache.replaceAll("[ï¿½\"\\u0022]", "");
+
+
         	 specifiedNameCache = specifiedNameCache.replaceAll("\u00D7", "");
-        	 specifiedNameCache = specifiedNameCache.replaceAll("[“\"\\u0022]", "");
-        	 
-        	 
+        	 specifiedNameCache = specifiedNameCache.replaceAll("[ï¿½\"\\u0022]", "");
+
+
              result = thisNameCache.compareTo(specifiedNameCache);
          }
 
@@ -623,10 +623,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
          if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
         	 thisTitleCache = thisTitleCache.replaceAll("\u00D7", "");
-        	 thisTitleCache = thisTitleCache.replaceAll("[“\"\\u0022]", "");
-        	      	 
+        	 thisTitleCache = thisTitleCache.replaceAll("[ï¿½\"\\u0022]", "");
+
         	 specifiedTitleCache = specifiedTitleCache.replaceAll("\u00D7", "");
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll("[“\"\\u0022]", "");
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll("[ï¿½\"\\u0022]", "");
              result = thisTitleCache.compareTo(specifiedTitleCache);
          }
 
@@ -639,34 +639,34 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          return result;
      }
 
-        /**
-         * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
-         * several strings corresponding to <i>this</i> identifiable entity
-         * (in particular taxon name caches and author strings).
-         *
-         * @return  the cache strategy used for <i>this</i> identifiable entity
-         * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-         */
-        public S getCacheStrategy() {
-            return this.cacheStrategy;
-        }
-        /**
-         * @see 	#getCacheStrategy()
-         */
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
+     * several strings corresponding to <i>this</i> identifiable entity
+     * (in particular taxon name caches and author strings).
+     *
+     * @return  the cache strategy used for <i>this</i> identifiable entity
+     * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+     */
+    public S getCacheStrategy() {
+        return this.cacheStrategy;
+    }
+    /**
+     * @see 	#getCacheStrategy()
+     */
 
-        public void setCacheStrategy(S cacheStrategy) {
-            this.cacheStrategy = cacheStrategy;
-        }
+    public void setCacheStrategy(S cacheStrategy) {
+        this.cacheStrategy = cacheStrategy;
+    }
 
-        @Override
-        public String generateTitle() {
-            if (getCacheStrategy() == null){
-                //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
-                return this.getClass() + ": " + this.getUuid();
-            }else{
-                return getCacheStrategy().getTitleCache(this);
-            }
+    @Override
+    public String generateTitle() {
+        if (getCacheStrategy() == null){
+            //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+            return this.getClass() + ": " + this.getUuid();
+        }else{
+            return getCacheStrategy().getTitleCache(this);
         }
+    }
 
 //****************** CLONE ************************************************/
 

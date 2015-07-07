@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.taxon;
 
@@ -23,19 +23,22 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends StrategyBase implements
 		IIdentifiableEntityCacheStrategy<T> {
+    private static final long serialVersionUID = 5769890979070021350L;
+    final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
 
-	final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
-	
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
+	@Override
 	public String getTitleCache(T taxonBase) {
 		String title;
-		if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
+		if (taxonBase.isProtectedTitleCache()){
+		    return taxonBase.getTitleCache();
+		}else if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
 			String namePart = getNamePart(taxonBase);
-			
+
 			title = namePart + " sec. ";
 			title += getSecundumPart(taxonBase);
 		}else{
@@ -56,9 +59,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 		String result;
 		Reference<?> sec = taxonBase.getSec();
 		if (sec != null){
-			if (sec.getCacheStrategy() != null && 
-					sec.getAuthorship() != null && 
-					isNotBlank(sec.getAuthorship().getTitleCache()) && 
+			if (sec.getCacheStrategy() != null &&
+					sec.getAuthorship() != null &&
+					isNotBlank(sec.getAuthorship().getTitleCache()) &&
 					isNotBlank(sec.getYear())){
 				result = sec.getCacheStrategy().getCitation(sec);
 //				 sec.getAuthorTeam().getTitleCache() + sec.getYear();
@@ -83,7 +86,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 			result = nvn.getNameCache();
 		}
 		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
-			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim(); 
+			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();
 		}
 		return result;
 	}
