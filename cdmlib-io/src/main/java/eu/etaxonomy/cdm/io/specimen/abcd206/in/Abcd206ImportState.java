@@ -91,6 +91,19 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
     }
 
     public Classification getDefaultClassification() {
+        if(defaultClassification==null){
+            final String defaultClassificationAbcd = "Default Classification ABCD";
+            for (Classification classif : cdmRepository.getClassificationService().list(Classification.class, null, null, null, null)){
+                if (classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd) && classif.getCitation().equals(getRef())) {
+                    defaultClassification = classif;
+                    break;
+                }
+            }
+            if(defaultClassification==null){
+                defaultClassification = Classification.NewInstance(defaultClassificationAbcd);
+                cdmRepository.getClassificationService().save(defaultClassification);
+            }
+        }
         return defaultClassification;
     }
 

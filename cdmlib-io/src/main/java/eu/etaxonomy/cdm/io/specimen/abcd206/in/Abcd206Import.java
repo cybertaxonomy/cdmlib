@@ -122,19 +122,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(state.getCdmRepository()==null){
                 state.setCdmRepository(this);
             }
-//            //init default classification
-//            final String defaultClassificationAbcd = "Default Classification ABCD";
-//            for (Classification classif : getClassificationService().list(Classification.class, null, null, null, null)){
-//                if (classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd) && classif.getCitation().equals(state.getRef())) {
-//                    state.setDefaultClassification(classif);
-//                    break;
-//                }
-//            }
-//            if(state.getDefaultClassification()==null){
-//                state.setDefaultClassification(Classification.NewInstance(defaultClassificationAbcd, state.getRef(), Language.DEFAULT()));
-//                save(state.getDefaultClassification(), state);
-//            }
-
 
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
 
@@ -219,14 +206,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         state.setClassification(Classification.NewInstance(name, state.getRef(), Language.DEFAULT()));
                         //we do not need a default classification when creating an empty new one
                         state.setDefaultClassification(state.getClassification());
+                        save(state.getDefaultClassification(), state);
                     }
                     save(state.getClassification(), state);
                 }
-            }
-            // set default classification for new taxa
-            if(state.getDefaultClassification()==null){
-                state.setDefaultClassification(Classification.NewInstance(state.getConfig().getClassificationName()));
-                save(state.getDefaultClassification(), state);
             }
 
             NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
