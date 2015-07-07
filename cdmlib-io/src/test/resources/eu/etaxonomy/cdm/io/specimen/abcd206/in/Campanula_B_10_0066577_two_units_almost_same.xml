@@ -17,14 +17,11 @@
                       </abcd:HigherTaxon>
                     </abcd:HigherTaxa>
                     <abcd:ScientificName>
-                      <abcd:FullScientificNameString>Campanula versicolor var. tomentella Hal.</abcd:FullScientificNameString>
+                      <abcd:FullScientificNameString>Campanula versicolor</abcd:FullScientificNameString>
                       <abcd:NameAtomised>
                         <abcd:Botanical>
                           <abcd:GenusOrMonomial>Campanula</abcd:GenusOrMonomial>
                           <abcd:FirstEpithet>versicolor</abcd:FirstEpithet>
-                          <abcd:InfraspecificEpithet>tomentella</abcd:InfraspecificEpithet>
-                          <abcd:Rank>var.</abcd:Rank>
-                          <abcd:AuthorTeam>Hal.</abcd:AuthorTeam>
                         </abcd:Botanical>
                       </abcd:NameAtomised>
                     </abcd:ScientificName>

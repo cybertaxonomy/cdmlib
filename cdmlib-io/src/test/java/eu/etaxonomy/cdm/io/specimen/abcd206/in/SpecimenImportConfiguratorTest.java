@@ -436,8 +436,15 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
     }
 
+	/**
+	 * Test imports one unit with an already existing taxon and one with a new taxon.
+	 * The new taxon should be added to a newly created default classification.
+	 */
 	@Test
-	@DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
 	public void testImportNewTaxaToDefaultClassification(){
 	    UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
 	    UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
@@ -460,15 +467,35 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull(taxon);
 	    Classification classification = classificationService.load(classificationUUID);
 	    assertNotNull(classification);
+	    assertEquals(1, taxon.getTaxonNodes().size());
+	    TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
+	    assertEquals(classification, taxonNode.getClassification());
+
 	    assertEquals(1, classificationService.count(Classification.class));
 	    assertEquals(1, taxonService.count(Taxon.class));
 
 	    importConfigurator.setClassificationUuid(classificationUUID);
+//	    importConfigurator.setIgnoreAuthorship(true);
 	    boolean result = defaultImport.invoke(importConfigurator);
 	    assertTrue("Return value for import.invoke should be true", result);
+
+	    //re-load classification to avoid session conflicts
+	    classification = classificationService.load(classificationUUID);
+
 	    assertEquals(2, occurrenceService.count(DerivedUnit.class));
-	    assertEquals(2, taxonService.count(Taxon.class));
+//	    assertEquals(2, taxonService.count(Taxon.class));
 	    assertEquals(2, classificationService.count(Classification.class));
+
+	    //get default classification
+	    List<Classification> list = classificationService.list(Classification.class, null, null, null, null);
+	    Classification defaultClassification = null;
+	    for (Classification c : list) {
+            if(c.getUuid()!=classificationUUID){
+                defaultClassification = c;
+            }
+        }
+	    assertEquals(1, classification.getAllNodes().size());
+	    assertEquals(2, defaultClassification.getAllNodes().size());
 
 	}
 
@@ -478,8 +505,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      */
 	@Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../TermsDataSet-with_auditing_info.xml"),
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
         @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
     })
 	public void testIgnoreAuthorship(){
@@ -574,6 +600,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
     @Override
     @Test
+    @Ignore
     public void createTestDataSet() throws FileNotFoundException {
         UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
         UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
@@ -585,7 +612,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         Team team = Team.NewTitledInstance("different author", "different author");
         secReference.setAuthorship(team);
 
-        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.SPECIES());
+        NonViralName<?> taxonName = NonViralName.NewInstance(null);
         taxonName.setGenusOrUninomial("Campanula");
         taxonName.setSpecificEpithet("versicolor");
 
