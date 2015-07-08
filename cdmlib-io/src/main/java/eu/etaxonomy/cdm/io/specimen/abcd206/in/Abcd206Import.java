@@ -1757,23 +1757,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     private void addTaxonNode(Taxon taxon, Abcd206ImportState state, boolean preferredFlag) {
         logger.info("link taxon to a taxonNode "+taxon.getTitleCache());
-        boolean exist = false;
-        Set<TaxonNode> allNodes = state.getClassification().getAllNodes();
-        for (TaxonNode p : allNodes){
-            try{
-                if(p.getTaxon().equals(taxon)) {
-                    exist =true;
+        //only add nodes if not already existing in current classification or default classification
+
+        //check if node exists in current classification
+        if (!hasTaxonNodeInClassification(taxon, state.getClassification())){
+            if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
+                //check if node exists in default classification
+                if(!hasTaxonNodeInClassification(taxon, state.getDefaultClassification())){
+                    addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification());
                 }
             }
-            catch(Exception e){
-                logger.warn("TaxonNode doesn't seem to have a taxon");
-            }
-        }
-        if (!exist){
-            if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
-                addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification());
-            }
-            else{
+            else {
+                //add non-existing taxon current classification
                 addParentTaxon(taxon, state, preferredFlag, state.getClassification());
             }
         }

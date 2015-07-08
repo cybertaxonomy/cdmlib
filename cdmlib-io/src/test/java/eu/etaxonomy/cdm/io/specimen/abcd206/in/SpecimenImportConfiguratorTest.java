@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -49,7 +48,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -580,14 +578,18 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull(taxon);
 	    Classification classification = classificationService.load(classificationUUID);
 	    assertNotNull(classification);
-	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, classification.getAllNodes().size());//taxon node
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
 
 	    importConfigurator.setIgnoreAuthorship(true);
 	    importConfigurator.setClassificationUuid(classificationUUID);
 	    boolean result = defaultImport.invoke(importConfigurator);
 	    assertTrue("Return value for import.invoke should be true", result);
 
-	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, classification.getAllNodes().size());//taxon node
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
 
 	}
 
@@ -595,7 +597,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * Imports two DNA units belonging to the same taxon into an existing
      * classification. The taxon is not part of the classification so the
      * default classification will be created. The result should be:
-     * existing classification (0 taxa), default classification (1 taxon)
+     * existing classification (0 taxa), default classification (2 taxa [genus+species])
      */
     @Test
     @DataSets({
@@ -603,6 +605,44 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
+        UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        //test initial state
+        Classification classification = classificationService.load(classificationUUID);
+        assertNotNull(classification);
+        assertEquals(0, classification.getAllNodes().size());
+        assertEquals(1, classificationService.count(Classification.class));
+
+
+        importConfigurator.setIgnoreAuthorship(true);
+        importConfigurator.setClassificationUuid(classificationUUID);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+
+        assertEquals(0, classification.getAllNodes().size());
+        assertEquals(2, classificationService.count(Classification.class));
+
+        Classification defaultClassification = null;
+        for (Classification c : classificationService.list(Classification.class, null, null, null, null)) {
+            if(!c.getUuid().equals(classificationUUID)){
+                defaultClassification = c;
+            }
+        }
+        assertNotNull(defaultClassification);
+        assertEquals(3, defaultClassification.getAllNodes().size());
 
 	}
 
@@ -617,28 +657,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     @Test
     @Ignore
     public void createTestDataSet() throws FileNotFoundException {
-        UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
-        UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
+        UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
 
         Classification classification = Classification.NewInstance("Checklist");
         classification.setUuid(classificationUUID);
 
-        Reference<?> secReference = ReferenceFactory.newGeneric();
-        Team team = Team.NewTitledInstance("different author", "different author");
-        secReference.setAuthorship(team);
-
-        NonViralName<?> taxonName = NonViralName.NewInstance(null);
-        taxonName.setGenusOrUninomial("Campanula");
-        taxonName.setSpecificEpithet("versicolor");
-
-        Taxon taxon = Taxon.NewInstance(taxonName, secReference);
-        taxon.setUuid(taxonUUID);
-
-        classification.addChildTaxon(taxon, secReference, "");
-
-        taxonService.save(taxon);
-        nameService.save(taxonName);
-        referenceService.save(secReference);
+        classificationService.save(classification);
 
         commitAndStartNewTransaction(null);
 
@@ -664,7 +688,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
                     "TaxonNode",
                     "Classification",
                     "LanguageString"
-            }, "testIgnoreAuthorship");
+            }, "testImportTwoUnitsOfSameTaxonIntoExistingClassification");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
