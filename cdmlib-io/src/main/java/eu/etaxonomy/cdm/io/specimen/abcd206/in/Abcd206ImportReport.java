@@ -91,7 +91,7 @@ public class Abcd206ImportReport {
     }
 
     public void addException(String message, Exception e) {
-        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.getStackTrace());
+        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.toString());
     }
 
     public void addInfoMessage(String message) {
