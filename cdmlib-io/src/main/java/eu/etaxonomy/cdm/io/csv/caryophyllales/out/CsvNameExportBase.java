@@ -2,6 +2,9 @@ package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +41,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -66,11 +68,14 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 		TransactionStatus txStatus = startTransaction(true);
 		
 		PrintWriter writer = null;
-		ByteArrayOutputStream byteArrayOutputStream;
-		
-			byteArrayOutputStream = config.getByteOutputStream();
+		 
 			try {
-				writer = new PrintWriter(config.getDestination());
+				OutputStream os = new FileOutputStream(config.getDestination());
+			    os.write(239);
+			    os.write(187);
+			    os.write(191);
+				writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
+				
 				List<HashMap<String, String>> result;
 				if (config.isNamesOnly()){
 					result = getNameService().getNameRecords();
@@ -93,7 +98,7 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 			
 				writer.close();
 			
-			} catch (FileNotFoundException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
