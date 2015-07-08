@@ -30,15 +30,18 @@ import org.w3c.dom.NodeList;
  */
 public class AbcdParseUtility {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
 
 
-    public static URI parseFirstUri(NodeList nodeList) throws IllegalArgumentException{
+    public static URI parseFirstUri(NodeList nodeList){
         URI uri = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
-            uri = URI.create(textContent);
+            try {
+                uri = URI.create(textContent);
+            } catch (IllegalArgumentException e) {
+                //nothing
+            }
         }
         return uri;
     }
@@ -65,14 +68,21 @@ public class AbcdParseUtility {
         return null;
     }
 
-    public static Double parseDouble(Node node) throws NullPointerException, NumberFormatException{
+    public static Double parseDouble(Node node){
+        String message = "Could not parse double value for node " + node.getNodeName();
         Double doubleValue = null;
-        String textContent = node.getTextContent();
-        //remove 1000 dots
-        textContent = textContent.replace(".","");
-        //convert commmas
-        textContent = textContent.replace(",",".");
-        doubleValue = Double.parseDouble(textContent);
+        try{
+            String textContent = node.getTextContent();
+            //remove 1000 dots
+            textContent = textContent.replace(".","");
+            //convert commmas
+            textContent = textContent.replace(",",".");
+            doubleValue = Double.parseDouble(textContent);
+        } catch (NullPointerException npe){
+            logger.error(message, npe);
+        } catch (NumberFormatException nfe){
+            logger.error(message, nfe);
+        }
         return doubleValue;
     }
 
@@ -99,27 +109,31 @@ public class AbcdParseUtility {
      * @param fileName: the file's location
      * @return the list of root nodes ("Unit")
      */
-    public static NodeList parseUnitsNodeList(Abcd206ImportState state) throws Exception {
+    public static NodeList parseUnitsNodeList(Abcd206ImportState state) {
         InputStream inputStream = state.getConfig().getSource();
         NodeList unitList = null;
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
 
-        Document document = builder.parse(inputStream);
-        Element root = document.getDocumentElement();
-        unitList = root.getElementsByTagName("Unit");
-        if (unitList.getLength()>0) {
-            state.setPrefix("");
-            return unitList;
-        }
-        unitList = root.getElementsByTagName("abcd:Unit");
-        if (unitList.getLength()>0) {
-            state.setPrefix("abcd:");
-            return unitList;
-        }
-        unitList = root.getElementsByTagName("abcd21:Unit");
-        if (unitList.getLength()>0) {
-            state.setPrefix("abcd21:");
+            Document document = builder.parse(inputStream);
+            Element root = document.getDocumentElement();
+            unitList = root.getElementsByTagName("Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("");
+                return unitList;
+            }
+            unitList = root.getElementsByTagName("abcd:Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("abcd:");
+                return unitList;
+            }
+            unitList = root.getElementsByTagName("abcd21:Unit");
+            if (unitList.getLength()>0) {
+                state.setPrefix("abcd21:");
+            }
+        } catch (Exception e) {
+            logger.warn(e);
         }
         return unitList;
     }
