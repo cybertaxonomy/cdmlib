@@ -358,7 +358,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             commitTransaction(state.getTx());
         }
         catch(Exception e){
-            report.addInfoMessage("Exception during import:\n"+e.getMessage()+"\n"+e.getStackTrace());
+            report.addException("Exception during import!", e);
         }
         finally{
             report.printReport(state.getConfig().getReportUri());

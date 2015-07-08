@@ -62,9 +62,16 @@ public class UnitAssociationParser {
                 InputStream inputStream = serviceWrapper.query(query, datasetAccessPoint);
                 if(inputStream!=null){
                     state.getConfig().setSource(inputStream);
-                    NodeList associatedUnits = AbcdParseUtility.parseUnitsNodeList(state);
+                    NodeList associatedUnits = null;
+                    try {
+                        associatedUnits = AbcdParseUtility.parseUnitsNodeList(state);
+                    } catch (Exception e) {
+                        String exceptionMessage = "An exception occurred during parsing of associated units!";
+                        logger.error(exceptionMessage, e);
+                        report.addException(exceptionMessage, e);
+                    }
 
-                    if(associatedUnits.getLength()>1){
+                    if(associatedUnits!=null && associatedUnits.getLength()>1){
                         String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitId);
                         logger.warn(moreThanOneUnitFoundMessage);
                         report.addInfoMessage(moreThanOneUnitFoundMessage);

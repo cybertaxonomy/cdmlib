@@ -90,9 +90,10 @@ public class Abcd206ImportReport {
         ignoredImports.add(new UnitIdSpecimen(unitId, derivedUnit));
     }
 
-    /**
-     * @param message
-     */
+    public void addException(String message, Exception e) {
+        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.getStackTrace());
+    }
+
     public void addInfoMessage(String message) {
         infoMessages.add(message);
     }
