@@ -81,15 +81,6 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Bayern, LK Oberallgäu, oberhalb Steineberg, TK 8427/3.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Germany</abcd21:Name>
-                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
               <abcd21:SiteCoordinateSets>
                 <abcd21:SiteCoordinates>
                   <abcd21:CoordinatesLatLong>
@@ -193,15 +184,6 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Bayern. Oberstdorf, Gundsattel NNE Kanzelwand, am Hauptwanderweg.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Germany</abcd21:Name>
-                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
               <abcd21:SiteCoordinateSets>
                 <abcd21:SiteCoordinates>
                   <abcd21:CoordinatesLatLong>
