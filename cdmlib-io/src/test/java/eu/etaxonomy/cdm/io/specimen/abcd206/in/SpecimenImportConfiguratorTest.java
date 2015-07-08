@@ -601,7 +601,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      */
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("../../../TermsDataSet-with_auditing_info.xml"),
         @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
