@@ -129,7 +129,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 
 	protected static NomenclaturalStatusType getTermByUuid(UUID uuid){
-	    if (termMap == null && termMap.isEmpty() && zooTermMap == null && zooTermMap.isEmpty()){
+	    if ((termMap == null || termMap.isEmpty()) && (zooTermMap == null || zooTermMap.isEmpty())){
 	        return getTermByClassAndUUID(NomenclaturalStatusType.class, uuid);
 
 	    }

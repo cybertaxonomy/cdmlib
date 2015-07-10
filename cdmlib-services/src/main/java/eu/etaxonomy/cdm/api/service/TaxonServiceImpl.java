@@ -1310,6 +1310,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         if (result.isOk()){
+
             synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
 
             //remove synonymRelationship
@@ -1330,6 +1331,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             //remove synonym (if necessary)
 
+            result.addUpdatedObject(taxon);
             if (synonym.getSynonymRelations().isEmpty()){
                 TaxonNameBase<?,?> name = synonym.getName();
                 synonym.setName(null);

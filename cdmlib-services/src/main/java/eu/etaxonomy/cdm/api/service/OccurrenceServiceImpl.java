@@ -1163,6 +1163,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid){
+        SingleRead singleRead = CdmBase.deproxy(dao.load(singleReadUuid), SingleRead.class);
+        Sequence sequence = CdmBase.deproxy(dao.load(sequenceUuid), Sequence.class);
+        return deleteSingleRead(singleRead, sequence);
+    }
+
+    @Override
     public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config) {
         DeleteResult deleteResult = new DeleteResult();
         String deleteMolecularNotAllowed = "Deleting molecular data is not allowed in config";
@@ -1190,6 +1198,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
         }
         return deleteResult;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config) {
+        return deleteDerivateHierarchy(dao.load(fromUuid),config);
     }
 
 //    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){

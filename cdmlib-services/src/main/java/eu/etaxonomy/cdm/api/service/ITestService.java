@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+
 /**
  * Service interface for the testing of client applications using the service
  * layer remotely (like the Taxonomic Editor)
@@ -20,10 +22,12 @@ package eu.etaxonomy.cdm.api.service;
 public interface ITestService {
 
 
-    public  void waitFor(long timeToWaitInMs) throws InterruptedException ;
+    public void waitFor(long timeToWaitInMs) throws InterruptedException ;
 
     public UpdateResult returnResult(UpdateResult result);
 
     public UpdateResult throwException(Exception ex);
+
+    public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei);
 
 }

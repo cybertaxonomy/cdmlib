@@ -371,6 +371,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config);
 
     /**
+     * Deletes the specified specimen and all sub derivates by first loading the corresponding uuids
+     * and then calling {@link #deleteDerivateHierarchy(CdmBase, SpecimenDeleteConfigurator) deleteDerivateHierarchy}
+     * @param fromUuid uuid of the specimen which should be deleted with all its sub derivates
+     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
+     * @return {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config);
+
+    /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
      * @param specimen the specimen for which the associations are retrieved
      * @param limit
@@ -479,6 +488,17 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
     public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
+
+    /**
+     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult},
+     * by first loading the corresponding uuids and then calling {@link #deleteSingleRead(SingleRead, Sequence) deleteSingleRead}
+     * @param singleReadUuid uuid of the single read to delete
+     * @param sequenceUuid uuid of the sequence to which the single read belongs
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
+
+
 
 
 }
