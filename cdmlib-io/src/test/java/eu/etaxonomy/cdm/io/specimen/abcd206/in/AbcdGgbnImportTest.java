@@ -125,6 +125,33 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 	/**
+	 * Tests import import of 59 DNA unit
+	 */
+	@Test
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testImport59Units() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        importConfigurator.setIgnoreAuthorship(true);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
+
+	}
+
+	/**
 	 * Tests import import of DNA unit and all its parameters
 	 * and sub derivatives (sequence, amplification, etc.)
 	 * @throws ParseException
