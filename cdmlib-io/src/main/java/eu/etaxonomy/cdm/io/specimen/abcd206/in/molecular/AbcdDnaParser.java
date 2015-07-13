@@ -143,7 +143,7 @@ public class AbcdDnaParser {
 
                 String preservationType = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preservationType"));
 
-                Double preservationTemperature = AbcdParseUtility.parseFirstDouble(((Element) node).getElementsByTagName(prefix+"preservationTemperature"));
+                Double preservationTemperature = AbcdParseUtility.parseFirstDouble(((Element) node).getElementsByTagName(prefix+"preservationTemperature"), report);
                 preservation.setTemperature(preservationTemperature);
             }
         }

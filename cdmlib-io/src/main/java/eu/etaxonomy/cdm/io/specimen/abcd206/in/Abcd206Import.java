@@ -212,7 +212,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
 
-            NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state);
+            NodeList unitsList = AbcdParseUtility.parseUnitsNodeList(state, report);
 
             if (unitsList != null) {
                 String message = "nb units to insert: " + unitsList.getLength();

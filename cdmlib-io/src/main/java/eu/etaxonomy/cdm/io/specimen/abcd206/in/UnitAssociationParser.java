@@ -47,9 +47,9 @@ public class UnitAssociationParser {
         //unit id
         String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
         //data access point
-        URI datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"DatasetAccessPoint"));
+        URI datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"DatasetAccessPoint"), report);
         if(datasetAccessPoint==null){
-            datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"));
+            datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"), report);
         }
         //association type
         String associationType = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociationType"));
@@ -64,7 +64,7 @@ public class UnitAssociationParser {
                     state.getConfig().setSource(inputStream);
                     NodeList associatedUnits = null;
                     try {
-                        associatedUnits = AbcdParseUtility.parseUnitsNodeList(state);
+                        associatedUnits = AbcdParseUtility.parseUnitsNodeList(state, report);
                     } catch (Exception e) {
                         String exceptionMessage = "An exception occurred during parsing of associated units!";
                         logger.error(exceptionMessage, e);

@@ -33,14 +33,16 @@ public class AbcdParseUtility {
     private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
 
 
-    public static URI parseFirstUri(NodeList nodeList){
+    public static URI parseFirstUri(NodeList nodeList, Abcd206ImportReport report){
         URI uri = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
             try {
                 uri = URI.create(textContent);
             } catch (IllegalArgumentException e) {
-                //nothing
+                if(report!=null){
+                    report.addException("Exception during URI parsing!", e);
+                }
             }
         }
         return uri;
@@ -61,14 +63,14 @@ public class AbcdParseUtility {
         return string;
     }
 
-    public static Double parseFirstDouble(NodeList nodeList){
+    public static Double parseFirstDouble(NodeList nodeList, Abcd206ImportReport report){
         if(nodeList.getLength()>0){
-            return parseDouble(nodeList.item(0));
+            return parseDouble(nodeList.item(0), report);
         }
         return null;
     }
 
-    public static Double parseDouble(Node node){
+    public static Double parseDouble(Node node, Abcd206ImportReport report){
         String message = "Could not parse double value for node " + node.getNodeName();
         Double doubleValue = null;
         try{
@@ -80,8 +82,14 @@ public class AbcdParseUtility {
             doubleValue = Double.parseDouble(textContent);
         } catch (NullPointerException npe){
             logger.error(message, npe);
+            if(report!=null){
+                report.addException(message, npe);
+            }
         } catch (NumberFormatException nfe){
             logger.error(message, nfe);
+            if(report!=null){
+                report.addException(message, nfe);
+            }
         }
         return doubleValue;
     }
@@ -109,7 +117,7 @@ public class AbcdParseUtility {
      * @param fileName: the file's location
      * @return the list of root nodes ("Unit")
      */
-    public static NodeList parseUnitsNodeList(Abcd206ImportState state) {
+    public static NodeList parseUnitsNodeList(Abcd206ImportState state, Abcd206ImportReport report) {
         InputStream inputStream = state.getConfig().getSource();
         NodeList unitList = null;
         try {
@@ -134,6 +142,9 @@ public class AbcdParseUtility {
             }
         } catch (Exception e) {
             logger.warn(e);
+            if(report!=null){
+                report.addException("Exception during parsing of nodeList!", e);
+            }
         }
         return unitList;
     }
