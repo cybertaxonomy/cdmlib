@@ -168,7 +168,7 @@ public class DescriptionUtility {
                 filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
             }
         } else {
-            // no filtering happened until this point, therefor adding all given distributions
+            // no filtering happened until this point, therefore adding all given distributions
             filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
             for(Distribution distribution : distributions){
                 NamedArea area = distribution.getArea();
