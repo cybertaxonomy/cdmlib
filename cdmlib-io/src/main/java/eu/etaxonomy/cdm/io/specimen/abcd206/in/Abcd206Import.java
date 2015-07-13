@@ -296,8 +296,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                         FieldUnit associatedFieldUnit = state.getFieldUnit();
 
                                         //if the associated unit has no field unit then use the current field unit
-                                        DerivationEvent associatedDerivedFrom = associatedUnit.getDerivedFrom();
-                                        if(associatedDerivedFrom==null){
+                                        if(associatedFieldUnit==null){
                                             //default to accessioning
                                             DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
                                             associatedFieldUnit = currentFieldUnit;
@@ -324,7 +323,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                 report.addInfoMessage("No derivation event found for unit "+AbcdImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
                                                 DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
                                             }
-                                            else{
+                                            if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
                                                 DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
                                                 updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
                                                 updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
@@ -387,7 +386,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(state.getConfig().isIgnoreImportOfExistingSpecimens()){
                 SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(state.getDataHolder().unitID, state);
                 if(existingSpecimen!=null && existingSpecimen.isInstanceOf(DerivedUnit.class)){
-                    state.setDerivedUnitBase(HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class));
+                    DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
+                    state.setDerivedUnitBase(derivedUnit);
+                    java.util.Collection<FieldUnit> fieldUnits = cdmAppController.getOccurrenceService().getFieldUnits(derivedUnit.getUuid());
+                    if(fieldUnits.size()==1){
+                       state.setFieldUnit(fieldUnits.iterator().next());
+                    }
                     return;
                 }
                 // create facade
@@ -1762,18 +1766,35 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         //only add nodes if not already existing in current classification or default classification
 
         //check if node exists in current classification
-        if (!hasTaxonNodeInClassification(taxon, state.getClassification())){
+        //NOTE: we cannot use hasTaxonNodeInClassification() here because we are first creating it here
+        if (!existsInClassification(taxon, state.getClassification())){
             if(state.getConfig().isMoveNewTaxaToDefaultClassification()){
                 //check if node exists in default classification
-                if(!hasTaxonNodeInClassification(taxon, state.getDefaultClassification())){
+                if(!existsInClassification(taxon, state.getDefaultClassification())){
                     addParentTaxon(taxon, state, preferredFlag, state.getDefaultClassification());
                 }
             }
             else {
-                //add non-existing taxon current classification
+                //add non-existing taxon to current classification
                 addParentTaxon(taxon, state, preferredFlag, state.getClassification());
             }
         }
+    }
+
+    private boolean existsInClassification(Taxon taxon, Classification classification){
+        boolean exist = false;
+        Set<TaxonNode> allNodes = classification.getAllNodes();
+        for (TaxonNode p : allNodes){
+            try{
+                if(p.getTaxon().equals(taxon)) {
+                    exist = true;
+                }
+            }
+            catch(Exception e){
+                logger.warn("TaxonNode doesn't seem to have a taxon");
+            }
+        }
+        return exist;
     }
 
     private boolean hasTaxonNodeInClassification(Taxon taxon, Classification classification){
