@@ -2,12 +2,11 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.6.3-SNAPSHOT</version>
+    <version>3.7-SNAPSHOT</version>
   <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
-  <version>3.6.3-SNAPSHOT</version>
   <name>CDM Domain Model</name>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
