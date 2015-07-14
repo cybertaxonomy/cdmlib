@@ -52,7 +52,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private String defaultAuthor="";
     private boolean allowReuseOtherClassifications =true;
     private boolean addMediaAsMediaSpecimen = false;
-    private boolean determinationOnFieldUnitLevel = false;
     private boolean deduplicateReferences = false;
     private boolean deduplicateClassifications = false;
     private boolean ignoreAuthorship = false;
@@ -336,14 +335,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public void setAddMediaAsMediaSpecimen(boolean addMediaAsMediaSpecimen) {
         this.addMediaAsMediaSpecimen = addMediaAsMediaSpecimen;
-    }
-
-    public boolean isDeterminationOnFieldUnitLevel() {
-        return determinationOnFieldUnitLevel;
-    }
-
-    public void setDeterminationOnFieldUnitLevel(boolean determinationOnFieldUnitLevel) {
-        this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
     }
 
 

@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
@@ -47,7 +46,6 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private Abcd206DataHolder dataHolder;
 	private DerivedUnit derivedUnitBase;
-	private FieldUnit fieldUnit;
 
 	private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
 	private boolean associationSourcesSet=false;
@@ -136,14 +134,6 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         this.derivedUnitBase = derivedUnitBase;
     }
 
-    public FieldUnit getFieldUnit() {
-        return fieldUnit;
-    }
-
-    public void setFieldUnit(FieldUnit fieldUnit) {
-        this.fieldUnit = fieldUnit;
-    }
-
     public List<OriginalSourceBase<?>> getAssociationRefs() {
         return associationRefs;
     }
@@ -219,6 +209,5 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
     public void reset() {
         getDataHolder().reset();
         derivedUnitBase = null;
-        fieldUnit = null;
     }
 }
