@@ -14,5 +14,5 @@
 
   <!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
   <context:component-scan base-package="eu/etaxonomy/cdm/io"/>
-
+  
 </beans>

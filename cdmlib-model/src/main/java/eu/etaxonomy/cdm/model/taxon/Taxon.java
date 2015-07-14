@@ -130,7 +130,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @NotNull
 //    @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
@@ -1849,4 +1849,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     public void clearDescriptions() {
 		this.descriptions = new HashSet<TaxonDescription>();
 	}
+    
+    @Override
+    public void setCacheStrategy(IIdentifiableEntityCacheStrategy<Taxon> cacheStrategy){
+    	this.cacheStrategy = cacheStrategy;
+    }
 }

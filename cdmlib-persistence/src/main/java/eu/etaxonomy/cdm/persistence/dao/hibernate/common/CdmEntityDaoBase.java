@@ -329,7 +329,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        persistentObject = (T) getSession().merge(persistentObject);
+       persistentObject = (T) getSession().merge(persistentObject);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();
     }

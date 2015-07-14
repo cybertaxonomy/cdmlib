@@ -537,7 +537,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          String thisGenusString = "";
          String specifiedGenusString = "";
          int thisrank_order = 0;
-
+         final String HYBRID_SIGN = "\u00D7";
+         final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
          //TODO we can remove all the deproxies here except for the first one
          identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
          if(identifiableEntity instanceof NonViralName) {
@@ -608,12 +609,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
 
-        	 thisNameCache = thisNameCache.replaceAll("\u00D7", "");
-        	 thisNameCache = thisNameCache.replaceAll("[�\"\\u0022]", "");
+        	 thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
+        	 thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
 
 
-        	 specifiedNameCache = specifiedNameCache.replaceAll("\u00D7", "");
-        	 specifiedNameCache = specifiedNameCache.replaceAll("[�\"\\u0022]", "");
+        	 specifiedNameCache = specifiedNameCache.replaceAll(HYBRID_SIGN, "");
+        	 specifiedNameCache = specifiedNameCache.replaceAll(QUOT_SIGN, "");
 
 
              result = thisNameCache.compareTo(specifiedNameCache);
@@ -622,11 +623,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          // Compare title cache of taxon names
 
          if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
-        	 thisTitleCache = thisTitleCache.replaceAll("\u00D7", "");
-        	 thisTitleCache = thisTitleCache.replaceAll("[�\"\\u0022]", "");
+        	 thisTitleCache = thisTitleCache.replaceAll(HYBRID_SIGN, "");
+        	 thisTitleCache = thisTitleCache.replaceAll(QUOT_SIGN, "");
 
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll("\u00D7", "");
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll("[�\"\\u0022]", "");
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll(HYBRID_SIGN, "");
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll(QUOT_SIGN, "");
              result = thisTitleCache.compareTo(specifiedTitleCache);
          }
 

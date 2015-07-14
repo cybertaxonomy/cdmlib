@@ -9,8 +9,25 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class DeleteNonReferencedReferencesConfigurator extends ImportConfiguratorBase<DefaultImportState<DeleteNonReferencedReferencesConfigurator>, Object> implements IImportConfigurator{
 
+	private boolean doReferences = true;
+	private boolean doAuthors = true;	
 	
-	
+	public boolean isDoReferences() {
+		return doReferences;
+	}
+
+	public void setDoReferences(boolean doReferences) {
+		this.doReferences = doReferences;
+	}
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
+	}
+
 	public DeleteNonReferencedReferencesConfigurator(
 			IInputTransformer transformer) {
 		super(transformer);
