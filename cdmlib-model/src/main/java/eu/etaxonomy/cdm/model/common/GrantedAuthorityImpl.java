@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -49,7 +50,7 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
     }
 
     public void setAuthority(String authority) {
-        this.authority = authority;
+    	this.authority = authority;
     }
 
     /**

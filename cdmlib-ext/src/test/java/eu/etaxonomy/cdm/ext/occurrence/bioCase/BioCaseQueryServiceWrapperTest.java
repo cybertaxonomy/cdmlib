@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;

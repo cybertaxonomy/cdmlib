@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ValidationExecutorTest {
@@ -55,10 +54,9 @@ public class ValidationExecutorTest {
 	 * Test behavior when the ValidationExecutor's task queue fills up. Make sure task queue
 	 * overruns do not throw an exception. To test this, we rapidly fill the queue with tasks
 	 * that we know will take some time to complete. See {@link LongRunningCheckCaseValidator}.
-	 
+	 */
 	//TODO does this work already?
 	@Test
-	@Ignore
 	public void testRejectedExecution(){
 		try {
 			// Bit awkward, but since unit tests themselves also run in a separate thread,
@@ -91,7 +89,7 @@ public class ValidationExecutorTest {
 			e.printStackTrace();
 		}
 	}
-*/
+
 
 	@Test
 	public void testBeforeExecute(){
