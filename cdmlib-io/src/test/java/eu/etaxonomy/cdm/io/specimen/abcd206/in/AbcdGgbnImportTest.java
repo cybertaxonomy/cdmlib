@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -128,6 +129,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * Tests import import of 59 DNA unit
 	 */
 	@Test
+	@Ignore
 	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
