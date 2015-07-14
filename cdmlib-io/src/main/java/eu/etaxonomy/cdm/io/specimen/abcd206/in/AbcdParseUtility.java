@@ -113,12 +113,12 @@ public class AbcdParseUtility {
     }
 
     /**
-     * Return the list of root nodes for an ABCD XML file
+     * Return the wrapper with the list of root nodes for an ABCD XML file
      * @param fileName: the file's location
-     * @return the list of root nodes ("Unit")
+     * @return a wrapper with a list of root nodes ("Unit")
      */
-    public static NodeList parseUnitsNodeList(Abcd206ImportState state, Abcd206ImportReport report) {
-        InputStream inputStream = state.getConfig().getSource();
+    public static UnitAssociationWrapper parseUnitsNodeList(InputStream inputStream, Abcd206ImportReport report) {
+        UnitAssociationWrapper unitAssociationWrapper = new UnitAssociationWrapper();
         NodeList unitList = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -128,17 +128,20 @@ public class AbcdParseUtility {
             Element root = document.getDocumentElement();
             unitList = root.getElementsByTagName("Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("");
-                return unitList;
+                unitAssociationWrapper.setPrefix("");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
+                return unitAssociationWrapper;
             }
             unitList = root.getElementsByTagName("abcd:Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("abcd:");
-                return unitList;
+                unitAssociationWrapper.setPrefix("abcd:");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
+                return unitAssociationWrapper;
             }
             unitList = root.getElementsByTagName("abcd21:Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("abcd21:");
+                unitAssociationWrapper.setPrefix("abcd21:");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
             }
         } catch (Exception e) {
             logger.warn(e);
@@ -146,7 +149,7 @@ public class AbcdParseUtility {
                 report.addException("Exception during parsing of nodeList!", e);
             }
         }
-        return unitList;
+        return unitAssociationWrapper;
     }
 
 }

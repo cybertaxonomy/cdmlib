@@ -16,7 +16,6 @@ import java.net.URI;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -43,7 +42,7 @@ public class UnitAssociationParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public UnitAssociationWrapper parse(Element unitAssociation, Abcd206ImportState state){
+    public UnitAssociationWrapper parse(Element unitAssociation){
         //unit id
         String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
         //data access point
@@ -61,23 +60,24 @@ public class UnitAssociationParser {
             try {
                 InputStream inputStream = serviceWrapper.query(query, datasetAccessPoint);
                 if(inputStream!=null){
-                    state.getConfig().setSource(inputStream);
-                    NodeList associatedUnits = null;
+                    UnitAssociationWrapper unitAssociationWrapper = null;
                     try {
-                        associatedUnits = AbcdParseUtility.parseUnitsNodeList(state, report);
+                        unitAssociationWrapper = AbcdParseUtility.parseUnitsNodeList(inputStream, report);
                     } catch (Exception e) {
                         String exceptionMessage = "An exception occurred during parsing of associated units!";
                         logger.error(exceptionMessage, e);
                         report.addException(exceptionMessage, e);
                     }
 
-                    if(associatedUnits!=null && associatedUnits.getLength()>1){
-                        String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitId);
-                        logger.warn(moreThanOneUnitFoundMessage);
-                        report.addInfoMessage(moreThanOneUnitFoundMessage);
+                    if(unitAssociationWrapper!=null){
+                        unitAssociationWrapper.setAssociationType(associationType);
+                        if(unitAssociationWrapper.getAssociatedUnits()!=null && unitAssociationWrapper.getAssociatedUnits().getLength()>1){
+                            String moreThanOneUnitFoundMessage = String.format("More than one unit was found for unit association to %s", unitId);
+                            logger.warn(moreThanOneUnitFoundMessage);
+                            report.addInfoMessage(moreThanOneUnitFoundMessage);
+                        }
                     }
-
-                    return new UnitAssociationWrapper(associatedUnits, associationType);
+                    return unitAssociationWrapper;
                 }
                 else{
                     logger.error(unableToLoadMessage);

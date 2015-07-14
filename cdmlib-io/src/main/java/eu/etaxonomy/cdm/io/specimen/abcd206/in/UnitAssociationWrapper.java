@@ -22,11 +22,7 @@ public class UnitAssociationWrapper {
 
     private NodeList associatedUnits;
     private String associationType;
-
-    public UnitAssociationWrapper(NodeList associatedUnits, String associationType) {
-        this.associatedUnits = associatedUnits;
-        this.associationType = associationType;
-    }
+    private String prefix;
 
     public NodeList getAssociatedUnits() {
         return associatedUnits;
@@ -42,6 +38,14 @@ public class UnitAssociationWrapper {
 
     public void setAssociationType(String associationType) {
         this.associationType = associationType;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
 }
