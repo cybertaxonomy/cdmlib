@@ -467,8 +467,8 @@
         <artifactId>jgitflow-maven-plugin</artifactId>
         <version>1.0-m5.1</version>
         <configuration>
-          <pushHotfixes>false</pushHotfixes>
-          <pushReleases>false</pushReleases> 
+          <pushHotfixes>true</pushHotfixes>
+          <pushReleases>true</pushReleases> 
           <enableSshAgent>true</enableSshAgent>
           <allowSnapshots>true</allowSnapshots>
           <allowUntracked>true</allowUntracked>
