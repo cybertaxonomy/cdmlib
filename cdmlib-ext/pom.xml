@@ -12,7 +12,6 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-ext</artifactId>
-  <version>3.8-SNAPSHOT</version>
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
   <scm>
