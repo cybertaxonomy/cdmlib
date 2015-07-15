@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>3.6.3-SNAPSHOT</version>
+  <version>3.13</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -461,6 +461,29 @@
             the goal here -->
           <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
+      </plugin>
+            <plugin>
+        <groupId>external.atlassian.jgitflow</groupId>
+        <artifactId>jgitflow-maven-plugin</artifactId>
+        <version>1.0-m5.1</version>
+        <configuration>
+          <pushHotfixes>true</pushHotfixes>
+          <pushReleases>true</pushReleases> 
+          <enableSshAgent>true</enableSshAgent>
+          <allowSnapshots>true</allowSnapshots>
+          <allowUntracked>true</allowUntracked>
+        </configuration>
+        <dependencies>
+          <!-- 
+                upgrading dependency jsch.agent.version of jgit-flow plugin to 0.1.53 
+                in order have ssl key exchange algorithms compatible with openssh 6.7 
+             -->
+          <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.53</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
     <!-- -->

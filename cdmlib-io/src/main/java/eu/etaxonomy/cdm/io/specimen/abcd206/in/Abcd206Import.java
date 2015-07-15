@@ -84,6 +84,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author p.kelbert
@@ -1613,6 +1614,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         Abcd206ImportConfigurator config = state.getConfig();
 
         //check atomised name data for rank
+        //new name will be created
         NonViralName<?> atomisedTaxonName = null;
         if (rank==null && unitIndexInAbcdFile>=0 && (state.getDataHolder().atomisedIdentificationList != null || state.getDataHolder().atomisedIdentificationList.size() > 0)) {
             atomisedTaxonName = setTaxonNameByType(state.getDataHolder().atomisedIdentificationList.get(unitIndexInAbcdFile), scientificName, state);
@@ -1627,8 +1629,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             rank = Rank.SPECIES();
         }
 
+
         if(config.isReuseExistingTaxaWhenPossible()){
-            NonViralName<?> parsedName = parseScientificName(scientificName, state);
+            NonViralName<?> parsedName = parseScientificName(scientificName, state, report);
             if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
@@ -1640,19 +1643,29 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 //search for existing names
                 List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
                 taxonName = getBestMatchingName(scientificName, names);
+                //still nothing found -> try with the atomised name full title cache
+                if(taxonName==null && atomisedTaxonName!=null){
+                    names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                    taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names);
+                    //still nothing found -> try with the atomised name title cache
+                    if(taxonName==null){
+                        names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                        taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names);
+                    }
+                }
             }
         }
-        else if (config.isParseNameAutomatically()){
-            taxonName = parseScientificName(scientificName, state);
-            if(taxonName!=null){
-                report.addName(taxonName);
-                logger.info("Created new taxon name "+taxonName);
-            }
-        }
+
         if(taxonName==null && atomisedTaxonName!=null){
             taxonName = atomisedTaxonName;
             report.addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
+            if(taxonName.hasProblem()){
+                report.addInfoMessage(String.format("Created %s with parsing problems", taxonName));
+            }
+            if(!atomisedTaxonName.getTitleCache().equals(scientificName)){
+                report.addInfoMessage(String.format("Taxon %s was parsed as %s", scientificName, atomisedTaxonName.getTitleCache()));
+            }
         }
         else if(taxonName==null){
             //create new taxon name
@@ -1913,11 +1926,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     /**
      * Parse automatically the scientific name
-     * @param state
-     * @param scientificName: the scientific name to parse
+     * @param scientificName the scientific name to parse
+     * @param state the current import state
+     * @param report the import report
      * @return a parsed name
      */
-    private NonViralName<?> parseScientificName(String scientificName, Abcd206ImportState state) {
+    private NonViralName<?> parseScientificName(String scientificName, Abcd206ImportState state, Abcd206ImportReport report) {
         NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
         NonViralName<?> taxonName = null;
         boolean problem = false;
@@ -1951,7 +1965,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
         if (problem) {
-            logger.info("Parsing with problem in parseScientificName " + scientificName);
+            String message = String.format("Parsing problems for %s", scientificName);
+            if(taxonName!=null){
+                for (ParserProblem parserProblem : taxonName.getParsingProblems()) {
+                    message += "\n\t- "+parserProblem;
+                }
+            }
+            report.addInfoMessage(message);
+            logger.info(message);
             return null;
         }
         return taxonName;
@@ -2033,7 +2054,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
         else if (state.getDataHolder().nomenclatureCode.equals("Botanical")) {
-            BotanicalName taxonName = (BotanicalName) parseScientificName(fullName, state);
+            BotanicalName taxonName = (BotanicalName) parseScientificName(fullName, state, report);
             if (taxonName != null){
                 return taxonName;
             }
@@ -2047,17 +2068,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             try {
                 taxonName.setRank(Rank.getRankByName(getFromMap(atomisedMap, "Rank")));
             } catch (Exception e) {
-                if (taxonName.getGenusOrUninomial() != null){
-                    taxonName.setRank(Rank.GENUS());
-                }
-                else if (taxonName.getInfraGenericEpithet() != null){
-                    taxonName.setRank(Rank.SUBGENUS());
+                if (taxonName.getInfraSpecificEpithet() != null){
+                    taxonName.setRank(Rank.SUBSPECIES());
                 }
                 else if (taxonName.getSpecificEpithet() != null){
                     taxonName.setRank(Rank.SPECIES());
                 }
-                else if (taxonName.getInfraSpecificEpithet() != null){
-                    taxonName.setRank(Rank.SUBSPECIES());
+                else if (taxonName.getInfraGenericEpithet() != null){
+                    taxonName.setRank(Rank.SUBGENUS());
+                }
+                else if (taxonName.getGenusOrUninomial() != null){
+                    taxonName.setRank(Rank.GENUS());
                 }
             }
             Team team = null;
