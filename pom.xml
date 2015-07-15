@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>3.13</version>
+  <version>3.7.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -462,10 +462,10 @@
           <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
       </plugin>
-            <plugin>
+      <plugin>
         <groupId>external.atlassian.jgitflow</groupId>
         <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m5.1</version>
+        <version>1.0-m6</version>
         <configuration>
           <pushHotfixes>true</pushHotfixes>
           <pushReleases>true</pushReleases> 
@@ -635,37 +635,37 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-commons</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-model</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-persistence</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-services</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-io</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-remote</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-remote-webapp</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
@@ -675,12 +675,12 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-ext</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-print</artifactId>
-        <version>${project.version}</version>
+        <version>3.7</version>
       </dependency>
       <!--*********** JAXB********* -->
       <dependency>
