@@ -4,13 +4,12 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-		<version>3.6.3-SNAPSHOT</version>
+		<version>3.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-io</artifactId>
-  <version>3.6.3-SNAPSHOT</version>
   <name>CDM Import/Export</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
