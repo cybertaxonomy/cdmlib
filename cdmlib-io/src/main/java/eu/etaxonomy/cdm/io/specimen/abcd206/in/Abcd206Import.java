@@ -84,6 +84,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author p.kelbert
@@ -1956,9 +1957,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
         if (problem) {
-            String message = String.format("Parsing problems for %s.", scientificName);
+            String message = String.format("Parsing problems for %s", scientificName);
             if(taxonName!=null){
-                message += taxonName.getParsingProblems();
+                for (ParserProblem parserProblem : taxonName.getParsingProblems()) {
+                    message += "\n\t- "+parserProblem;
+                }
             }
             report.addInfoMessage(message);
             logger.info(message);
