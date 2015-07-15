@@ -6,12 +6,13 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.7-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-commons</artifactId>
+  <version>3.7-SNAPSHOT</version>
   <name>CDM Commons</name>
   <description>EDIT CDM library - Commons</description>
   <scm>
