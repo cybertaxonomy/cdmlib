@@ -9,8 +9,7 @@
   </parent>
 
   <groupId>eu.etaxonomy</groupId>
-  <artifactId>cdmlib-remote-webapp</artifactId>
-  <version>3.7</version>
+  <artifactId>cdmlib-remote-webapp</artifactId>  
   <name>CDM Remote Webapp</name>
   <packaging>war</packaging>
 

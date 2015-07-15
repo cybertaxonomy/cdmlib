@@ -9,7 +9,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-print</artifactId>
-  <version>3.7</version>
   <packaging>jar</packaging>
   <name>CDM Print Publisher</name>
   <description>EDIT CDM Print Publishing Framework</description>

@@ -7,7 +7,6 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
-  <version>3.7</version>
   <name>CDM Domain Model</name>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
