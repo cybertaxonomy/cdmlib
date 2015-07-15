@@ -38,9 +38,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 
     private static String sourceReferenceTitle = null;
-    @Deprecated
-    //FIXME what does this do?
-    private boolean parseNameAutomatically = false;
     private boolean reuseExistingMetadata = true;
     private String taxonReference = null;
     private boolean addIndividualsAssociationsSuchAsSpecimenAndObservations = true;
@@ -83,7 +80,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         ioClassList = new Class[]{
                 Abcd206Import.class,
         };
-    };
+    }
 
     public static Abcd206ImportConfigurator NewInstance(URI uri,ICdmDataSource destination){
         return new Abcd206ImportConfigurator(null, uri, destination, false);
@@ -132,9 +129,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-     */
     @Override
     public Abcd206ImportState getNewState() {
         return new Abcd206ImportState(this);
@@ -158,9 +152,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         }
     }
 
-    /**
-     * @param file
-     */
     @Override
     public void setSource(InputStream is) {
     	this.sourceUri = null;
@@ -171,9 +162,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     	return this.sourceUri;
     }
 
-    /**
-     * @param file
-     */
     public void setSourceUri(URI sourceUri) {
         this.sourceUri = sourceUri;
         super.setSource(null);
@@ -190,9 +178,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.sourceReferenceTitle=name;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-     */
     @Override
     public Reference getSourceReference() {
         //TODO
@@ -209,14 +194,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
             logger.info("getTaxonReference not yet fully implemented");
         }
         return sourceReference;
-    }
-    @Deprecated
-    public void setParseNameAutomatically(boolean doParsing){
-        this.parseNameAutomatically=doParsing;
-    }
-    @Deprecated
-    public boolean isParseNameAutomatically(){
-        return this.parseNameAutomatically;
     }
 
     public void setReuseExistingMetadata(boolean reuseMetadata){
@@ -256,31 +233,20 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return reuseExistingDescriptiveGroups;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#isDoMatchTaxa()
-     */
     @Override
     public boolean isReuseExistingTaxaWhenPossible() {
         return reuseExistingTaxaWhenPossible;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#setDoMatchTaxa(boolean)
-     */
     @Override
     public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
         this.reuseExistingTaxaWhenPossible = doMatchTaxa;
     }
 
-    /**
-     * @return
-     */
     public Map<UUID, UUID> getTaxonToDescriptionMap() {
         // TODO Auto-generated method stub
         return taxonToDescriptionMap ;
     }
-
-
 
     public Map<String, Team> getTeams() {
         return titleCacheTeam;
@@ -298,12 +264,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.titleCachePerson = titleCachePerson;
     }
 
-    /**
-     * @param string
-     */
     public void setDefaultAuthor(String string) {
         defaultAuthor=string;
-
     }
 
     public String getDefaultAuthor(){
@@ -326,9 +288,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return namedAreaDecisions.get(areaStr);
     }
 
-    /**
-     * @return the doAddMediaAsMediaSpecimen
-     */
     public boolean isAddMediaAsMediaSpecimen() {
         return addMediaAsMediaSpecimen;
     }
@@ -336,7 +295,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     public void setAddMediaAsMediaSpecimen(boolean addMediaAsMediaSpecimen) {
         this.addMediaAsMediaSpecimen = addMediaAsMediaSpecimen;
     }
-
 
     public boolean isDeduplicateClassifications() {
         return deduplicateClassifications;
