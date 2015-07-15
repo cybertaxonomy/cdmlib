@@ -635,37 +635,37 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-commons</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-model</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-persistence</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-services</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-io</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-remote</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-remote-webapp</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
@@ -675,12 +675,12 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-ext</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-print</artifactId>
-        <version>3.8-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!--*********** JAXB********* -->
       <dependency>
