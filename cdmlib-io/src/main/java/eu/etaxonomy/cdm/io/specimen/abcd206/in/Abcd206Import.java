@@ -1643,10 +1643,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 //search for existing names
                 List<TaxonNameBase> names = getNameService().listByTitle(TaxonNameBase.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
                 taxonName = getBestMatchingName(scientificName, names);
-                //still nothing found -> try with the atomised name
+                //still nothing found -> try with the atomised name full title cache
                 if(taxonName==null && atomisedTaxonName!=null){
-                    names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                    names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                     taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names);
+                    //still nothing found -> try with the atomised name title cache
+                    if(taxonName==null){
+                        names = getNameService().listByTitle(TaxonNameBase.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                        taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names);
+                    }
                 }
             }
         }
@@ -1655,8 +1660,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             taxonName = atomisedTaxonName;
             report.addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
-            if(!atomisedTaxonName.getNameCache().equals(scientificName)){
-                report.addInfoMessage(String.format("Taxon %s was parsed as %s", scientificName, atomisedTaxonName.getNameCache()));
+            if(taxonName.hasProblem()){
+                report.addInfoMessage(String.format("Created %s with parsing problems", taxonName));
+            }
+            if(!atomisedTaxonName.getTitleCache().equals(scientificName)){
+                report.addInfoMessage(String.format("Taxon %s was parsed as %s", scientificName, atomisedTaxonName.getTitleCache()));
             }
         }
         else if(taxonName==null){
@@ -2060,17 +2068,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             try {
                 taxonName.setRank(Rank.getRankByName(getFromMap(atomisedMap, "Rank")));
             } catch (Exception e) {
-                if (taxonName.getGenusOrUninomial() != null){
-                    taxonName.setRank(Rank.GENUS());
-                }
-                else if (taxonName.getInfraGenericEpithet() != null){
-                    taxonName.setRank(Rank.SUBGENUS());
+                if (taxonName.getInfraSpecificEpithet() != null){
+                    taxonName.setRank(Rank.SUBSPECIES());
                 }
                 else if (taxonName.getSpecificEpithet() != null){
                     taxonName.setRank(Rank.SPECIES());
                 }
-                else if (taxonName.getInfraSpecificEpithet() != null){
-                    taxonName.setRank(Rank.SUBSPECIES());
+                else if (taxonName.getInfraGenericEpithet() != null){
+                    taxonName.setRank(Rank.SUBGENUS());
+                }
+                else if (taxonName.getGenusOrUninomial() != null){
+                    taxonName.setRank(Rank.GENUS());
                 }
             }
             Team team = null;
