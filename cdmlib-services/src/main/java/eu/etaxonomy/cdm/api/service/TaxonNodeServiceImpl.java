@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -81,21 +81,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
-        if (sortMode == null){
-            sortMode = NodeSortMode.RankAndAlphabeticalOrder;
-        }
-        Comparator<TaxonNode> comparator = null;
-        if (sortMode.equals(NodeSortMode.NaturalOrder)){
-            comparator = new TaxonNaturalComparator();
-
-        } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
-        	comparator = new TaxonNodeByNameComparator();
-
-        } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
-        	comparator = new TaxonNodeComparator();
-
-        }
-        if (comparator != null){
+        if (sortMode != null){
+            Comparator<TaxonNode> comparator = null;
+            if (sortMode.equals(NodeSortMode.NaturalOrder)){
+                comparator = new TaxonNaturalComparator();
+            } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
+            	comparator = new TaxonNodeByNameComparator();
+            } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
+            	comparator = new TaxonNodeByRankAndNameComparator();
+            }
         	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
