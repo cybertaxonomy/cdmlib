@@ -1467,12 +1467,22 @@ public class NonViralNameParserImplTest {
 	@Test  //#5072
 	public final void testLongRunningParsing(){
 	    DateTime start = DateTime.now();
-	    System.out.println("start");
 	    String nameStr = "Nazeris fujianensis JIAYAO HU, LIZHEN LI, MEIJUN ZHAO,2010";  //name from CoL that created problems
         NonViralName<?> name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
 	    DateTime end = DateTime.now();
         Duration duration = new Duration(start, end);
         long seconds = duration.getStandardSeconds();
+        //this is the critical part of the test that must not be changed
+        Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
+
+
+        start = DateTime.now();
+        System.out.println("start");
+        nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson, D. Bou";
+        name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
+        end = DateTime.now();
+        duration = new Duration(start, end);
+        seconds = duration.getStandardSeconds();
         //this is the critical part of the test that must not be changed
         Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
 	}
