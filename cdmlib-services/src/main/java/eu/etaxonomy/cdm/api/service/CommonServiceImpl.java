@@ -63,6 +63,11 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         return genericDao.find(clazz, id);
     }
 
+    @Override
+    public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths){
+        return  genericDao.find(clazz, id, propertyPaths);
+    }
+
 
     @Override
     public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
@@ -294,6 +299,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     @Override
     public Object initializeCollection(UUID ownerUuid, String fieldName) {
         return genericDao.initializeCollection(ownerUuid, fieldName);
+
+    }
+
+    @Override
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths) {
+        return genericDao.initializeCollection(ownerUuid, fieldName, propertyPaths);
 
     }
 

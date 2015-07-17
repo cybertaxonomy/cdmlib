@@ -22,7 +22,6 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -183,7 +182,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade( CascadeType.SAVE_UPDATE)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
 	@JoinColumn(name = "parent_id" /*
 									 * , insertable=false, updatable=false,

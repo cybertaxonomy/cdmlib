@@ -140,6 +140,13 @@ public interface ICdmGenericDao {
 	public <T extends CdmBase> T find(Class<T> clazz, int id);
 
 	/**
+     * @param clazz
+     * @param id
+     * @param propertyPaths
+     * @return
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths);
+	/**
 	 * Returns the result of an hql query
 	 * TODO implement parameters
 	 * @deprecated this is not clean implementation as it is hibernate related.
@@ -192,6 +199,15 @@ public interface ICdmGenericDao {
      * @throws DataAccessException
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * @param ownerUuid
+     * @param fieldName
+     * @param appendedPropertyPaths
+     * @return
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths);
 
     /**
      * Initializes a collection or map.
@@ -261,6 +277,9 @@ public interface ICdmGenericDao {
      * @return true if the value object exists in the collection, false o/w
      */
     public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
+
+
+
 
 
 }

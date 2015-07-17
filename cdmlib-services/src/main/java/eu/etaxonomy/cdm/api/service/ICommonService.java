@@ -167,6 +167,15 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public CdmBase find(Class<? extends CdmBase> clazz, int id);
 
+    /**
+     * @param clazz
+     * @param id
+     * @param propertyPaths
+     * @return
+     */
+    public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths);
+
+
 	public List getHqlResult(String hqlQuery);
 
 
@@ -178,6 +187,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @return initialised collection or map
      */
     public Object initializeCollection(UUID ownerUuid, String fieldName);
+
+    /**
+     * @param ownerUuid
+     * @param fieldName
+     * @param propertyPaths
+     * @return
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths);
 
 	/**
 	 * Checks if a collection or map is empty.
@@ -284,4 +301,8 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+
+
+
+
 }

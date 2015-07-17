@@ -981,7 +981,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
 
-	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
+	public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
 			UUID newTaxonUUID, boolean moveHomotypicGroup,
 			SynonymRelationshipType newSynonymRelationshipType,
 			Reference reference, String referenceDetail, boolean keepReference)
@@ -989,6 +989,41 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
+
+    /**
+     * @param synonymUuid
+     * @param acceptedTaxonUuid
+     * @param deleteSynonym
+     * @param copyCitationInfo
+     * @param citation
+     * @param microCitation
+     * @return
+     * @throws HomotypicalGroupChangeException
+     */
+    public Taxon changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, boolean deleteSynonym,
+            boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException;
+
+    /**
+     * @param synonymUuid
+     * @param toTaxonUuid
+     * @param taxonRelationshipType
+     * @param citation
+     * @param microcitation
+     * @return
+     */
+    public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid, UUID toTaxonUuid, TaxonRelationshipType taxonRelationshipType,
+            Reference citation, String microcitation);
+
+    /**
+     * @param fromTaxonUuid
+     * @param toTaxonUuid
+     * @param oldRelationshipType
+     * @param synonymRelationshipType
+     * @return
+     * @throws DataChangeNoRollbackException
+     */
+    public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
+            TaxonRelationshipType oldRelationshipType, SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
 
 
 

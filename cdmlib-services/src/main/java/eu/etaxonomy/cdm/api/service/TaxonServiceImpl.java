@@ -304,8 +304,39 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return newAcceptedTaxon;
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public Taxon changeSynonymToAcceptedTaxon(UUID synonymUuid,
+            UUID acceptedTaxonUuid,
+            boolean deleteSynonym,
+            boolean copyCitationInfo,
+            Reference citation,
+            String microCitation) throws HomotypicalGroupChangeException {
+        Synonym synonym = CdmBase.deproxy(dao.load(synonymUuid), Synonym.class);
+        Taxon acceptedTaxon = CdmBase.deproxy(dao.load(acceptedTaxonUuid), Taxon.class);
+        return changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym, copyCitationInfo, citation, microCitation);
+    }
 
     @Override
+    @Transactional(readOnly = false)
+    public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid,
+            UUID toTaxonUuid,
+            TaxonRelationshipType taxonRelationshipType,
+            Reference citation,
+            String microcitation){
+
+        UpdateResult result = new UpdateResult();
+        Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
+        Synonym synonym = (Synonym) dao.load(synonymUuid);
+        Taxon relatedTaxon = changeSynonymToRelatedTaxon(synonym, toTaxon, taxonRelationshipType, citation, microcitation);
+        result.setCdmEntity(relatedTaxon);
+        result.addUpdatedObject(relatedTaxon);
+        result.addUpdatedObject(toTaxon);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation){
 
         // Get name from synonym
@@ -1503,11 +1534,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
+    @Transactional(readOnly = false)
+    public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
+            Taxon newTaxon,
+            boolean moveHomotypicGroup,
+            SynonymRelationshipType newSynonymRelationshipType,
+            Reference reference,
+            String referenceDetail,
+            boolean keepReference) throws HomotypicalGroupChangeException {
 
-        Synonym synonym = oldSynonymRelation.getSynonym();
-        Taxon fromTaxon = oldSynonymRelation.getAcceptedTaxon();
+        Synonym synonym = (Synonym) dao.load(oldSynonymRelation.getSynonym().getUuid());
+        Taxon fromTaxon = (Taxon) dao.load(oldSynonymRelation.getAcceptedTaxon().getUuid());
         //TODO what if there is no name ?? Concepts may be cached (e.g. via TCS import)
         TaxonNameBase<?,?> synonymName = synonym.getName();
         TaxonNameBase<?,?> fromTaxonName = fromTaxon.getName();
@@ -2938,6 +2975,25 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid,
+            UUID toTaxonUuid,
+            TaxonRelationshipType oldRelationshipType,
+            SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
+        UpdateResult result = new UpdateResult();
+        Taxon fromTaxon = (Taxon) dao.load(fromTaxonUuid);
+        Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
+        Synonym synonym = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymRelationshipType);
+        result.setCdmEntity(synonym);
+        result.addUpdatedObject(fromTaxon);
+        result.addUpdatedObject(toTaxon);
+        result.addUpdatedObject(synonym);
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
             SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
         // Create new synonym using concept name
@@ -3228,11 +3284,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 	@Override
-	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
+	@Transactional(readOnly = false)
+	public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
 
+	    UpdateResult result = new UpdateResult();
 		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
-		return moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
+		SynonymRelationship sr = moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
+		result.setCdmEntity(sr);
+		result.addUpdatedObject(sr);
+		result.addUpdatedObject(newTaxon);
+		return result;
 	}
 
 	@Override
@@ -3280,6 +3342,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
 			UUID acceptedTaxonUuid) {
 		TaxonBase base = this.load(synonymUUid);
