@@ -294,7 +294,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        Pager<TermDto> pager = service.pageNamedAreasInUse(includeAllParents, pageSize, pageNumber);
+        Pager<TermDto> pager = service.pageNamedAreasInUse(includeAllParents, pagerParams.getPageSize(), pagerParams.getPageIndex());
 
         localizeTerms(pager);
 

@@ -695,9 +695,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     @Override
     public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
             Integer pageNumber){
-
-        List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, pageSize, pageNumber);
-        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, results);
+        List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, null, null);
+        int startIndex= pageNumber * pageSize;
+        int toIndex = Math.min(startIndex + pageSize, results.size());
+        List<TermDto> page = results.subList(startIndex, toIndex);
+        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, page);
     }
 
 
