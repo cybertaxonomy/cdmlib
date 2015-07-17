@@ -87,9 +87,7 @@ public class DescriptionUtility {
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas, MarkerType fallbackAreaMarkerType) {
 
-        Map<NamedArea, Set<Distribution>> filteredDistributions;
-
-        Set<Distribution> removeCandidatesDistribution = new HashSet<Distribution>();
+        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(100); // start with a big map from the beginning!
 
         boolean doHideMarkedAreas = hideMarkedAreas != null && !hideMarkedAreas.isEmpty();
         boolean dofallbackAreas = fallbackAreaMarkerType != null;
@@ -100,11 +98,10 @@ public class DescriptionUtility {
             Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
             Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
 
-            // 1) sort by computed / not computed
             boolean doSkip = false;
             for(Distribution distribution : distributions){
 
-                // 1.1) skip distributions having an area with markers matching hideMarkedAreas
+                // 1) skip distributions having an area with markers matching hideMarkedAreas
                 NamedArea area = distribution.getArea();
                 if(area == null) {
                     logger.debug("skipping distribution with NULL area");
@@ -129,26 +126,34 @@ public class DescriptionUtility {
                     }
 
                 }
-
-                // separate computed and edited Distributions
-                if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
-                    if(!computedDistributions.containsKey(area)){
-                        computedDistributions.put(area, new HashSet<Distribution>());
-                    }
-                    computedDistributions.get(area).add(distribution);
-                } else {
-                    if(!otherDistributions.containsKey(area)){
-                        otherDistributions.put(area, new HashSet<Distribution>());
-                    }
-                    otherDistributions.get(area).add(distribution);
+                if(!filteredDistributions.containsKey(area)){
+                    filteredDistributions.put(area, new HashSet<Distribution>());
                 }
+                filteredDistributions.get(area).add(distribution);
             } // loop over Distributions
 
 
             // -------------------------------------------------------------------
-            // filter rule 1
+            // 2) remove not computed distributions for areas for which a computed
+            //    distributions exists
             //
-            // remove not computed areas for which a computed area exists
+            // separate computed and edited Distributions
+            for (NamedArea area : filteredDistributions.keySet()) {
+                for (Distribution distribution : filteredDistributions.get(area)) {
+                    // this is only required for rule 1
+                    if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
+                        if(!computedDistributions.containsKey(area)){
+                            computedDistributions.put(area, new HashSet<Distribution>());
+                        }
+                        computedDistributions.get(area).add(distribution);
+                    } else {
+                        if(!otherDistributions.containsKey(area)){
+                            otherDistributions.put(area, new HashSet<Distribution>());
+                        }
+                        otherDistributions.get(area).add(distribution);
+                    }
+                }
+            }
             for(NamedArea keyComputed : computedDistributions.keySet()){
                 otherDistributions.remove(keyComputed);
             }
@@ -182,7 +187,7 @@ public class DescriptionUtility {
         }
 
         // -------------------------------------------------------------------
-        // statusOrderPreference
+        // 3) statusOrderPreference
         if (statusOrderPreference) {
             Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<NamedArea, Set<Distribution>>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
@@ -194,7 +199,7 @@ public class DescriptionUtility {
 
 
         // -------------------------------------------------------------------
-        // 3) keep or remove distributions for fallback areas
+        // 4) keep or remove distributions for fallback areas
         Set<NamedArea> removeCandidatesFallback = new HashSet<NamedArea>();
         if(dofallbackAreas){
             for(NamedArea key : filteredDistributions.keySet()){
