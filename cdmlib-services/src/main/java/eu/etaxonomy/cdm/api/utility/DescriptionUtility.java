@@ -47,7 +47,9 @@ public class DescriptionUtility {
      * (Computed description elements are identified by the {@link
      * MarkerType.COMPUTED()}). This means if a entered or imported status
      * information exist for the same area for which computed data is available,
-     * the computed data has to be given preference over other data.</li>
+     * the computed data has to be given preference over other data.
+     * <b>NOTE:</b>This rule will only be executed together with statusOrderPreference
+     * or hideMarkedAreas. If only subAreaPreference is chosen this rule will omitted, though.</li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
@@ -128,6 +130,7 @@ public class DescriptionUtility {
 
                 }
 
+                // separate computed and edited Distributions
                 if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
                     if(!computedDistributions.containsKey(area)){
                         computedDistributions.put(area, new HashSet<Distribution>());
@@ -139,33 +142,32 @@ public class DescriptionUtility {
                     }
                     otherDistributions.get(area).add(distribution);
                 }
+            } // loop over Distributions
+
+
+            // -------------------------------------------------------------------
+            // filter rule 1
+            //
+            // remove not computed areas for which a computed area exists
+            for(NamedArea keyComputed : computedDistributions.keySet()){
+                otherDistributions.remove(keyComputed);
             }
-
-            // if there are computed elements apply the filter rules
-            if(computedDistributions.size() > 0){
-
-                // 2) apply filter rules
-                // 2.a) prepare removal of all not computed areas for which a computed area exists
-                for(NamedArea keyComputed : computedDistributions.keySet()){
-                    otherDistributions.remove(keyComputed);
-                }
-
-            }
+            // -------------------------------------------------------------------
 
             filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(otherDistributions.size() + computedDistributions.size());
 
-            // finally remove computed distributions if necessary and combine computed and non computed distributions again
-            // and apply the Status order preference filter
-            for(Distribution removeDistribution : removeCandidatesDistribution){
-                computedDistributions.remove(removeDistribution.getArea()); //FIXME is this correct? or should we only remove the specific distribution???
-            }
+            // combine computed and non computed Distributions again
             for(NamedArea key : computedDistributions.keySet()){
-                filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(computedDistributions.get(key)));
+                if(!filteredDistributions.containsKey(key)) {
+                    filteredDistributions.put(key, new HashSet<Distribution>());
+                }
+                filteredDistributions.get(key).addAll(computedDistributions.get(key));
             }
-
-            // add the non computed distributions to combine them again and apply the Status order preference filter
             for(NamedArea key : otherDistributions.keySet()){
-                filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
+                if(!filteredDistributions.containsKey(key)) {
+                    filteredDistributions.put(key, new HashSet<Distribution>());
+                }
+                filteredDistributions.get(key).addAll(otherDistributions.get(key));
             }
         } else {
             // no filtering happened until this point, therefore adding all given distributions
@@ -177,9 +179,21 @@ public class DescriptionUtility {
                 }
                 filteredDistributions.get(area).add(distribution);
             }
-
         }
 
+        // -------------------------------------------------------------------
+        // statusOrderPreference
+        if (statusOrderPreference) {
+            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<NamedArea, Set<Distribution>>(filteredDistributions.size());
+            for(NamedArea key : filteredDistributions.keySet()){
+                tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
+            }
+            filteredDistributions = tmpMap;
+        }
+        // -------------------------------------------------------------------
+
+
+        // -------------------------------------------------------------------
         // 3) keep or remove distributions for fallback areas
         Set<NamedArea> removeCandidatesFallback = new HashSet<NamedArea>();
         if(dofallbackAreas){
@@ -196,9 +210,10 @@ public class DescriptionUtility {
                 filteredDistributions.remove(removeKey);
             }
          }
+        // -------------------------------------------------------------------
 
 
-
+        // -------------------------------------------------------------------
         // 4) Sub area preference rule
         Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
         if(subAreaPreference){
@@ -214,10 +229,9 @@ public class DescriptionUtility {
                 filteredDistributions.remove(removeKey);
             }
          }
-
+        // -------------------------------------------------------------------
 
         return valuesOfAllInnerSets(filteredDistributions.values());
-
     }
 
     /**
@@ -242,10 +256,14 @@ public class DescriptionUtility {
 
     /**
      * Implements the Status order preference filter for a given set to Distributions.
-     * The distributions should all be for the same area
+     * The distributions should all be for the same area.
+     * The method returns a site of distributions since multiple Distributions
+     * with the same status are possible. For example if the same status has been
+     * published in more than one literature references.
      *
      * @param distributions
-     * @return the distribution with the highest status
+     *
+     * @return the set of distributions with the highest status
      */
     private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
 
