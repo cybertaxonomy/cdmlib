@@ -152,7 +152,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+                hideMarkedAreas, fallbackAreaMarkerType, true, statusOrderPreference, subAreaPreference);
 
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
@@ -235,7 +235,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, false, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+                distributions, hideMarkedAreas, fallbackAreaMarkerType, true, statusOrderPreference, false);
 
 
 
@@ -357,8 +357,8 @@ public class EditGeoService implements IEditGeoService {
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
         // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
-        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, false,
-                statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas,
+                fallbackAreaMarkerType, true, statusOrderPreference, false);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -374,7 +374,7 @@ public class EditGeoService implements IEditGeoService {
 
         if (parts.contains(InfoPart.mapUriParams)) {
             // only apply the subAreaPreference rule for the maps
-            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, subAreaPreference, false, null, null);
+            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, null, null, true, false, subAreaPreference);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

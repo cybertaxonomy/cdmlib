@@ -351,7 +351,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, false, statusOrderPreference, hideMarkedAreas, null);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hideMarkedAreas, null, true, statusOrderPreference, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 
