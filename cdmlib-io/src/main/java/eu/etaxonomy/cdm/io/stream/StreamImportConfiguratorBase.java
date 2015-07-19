@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.stream;
 
 
+import java.util.UUID;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -41,6 +43,8 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 
     private String databaseMappingFile;
+
+    private UUID stateUuid;
 
 	/**
 	 * Constructor.
@@ -132,6 +136,20 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
      */
     public void setDatabaseMappingFile(String databaseMappingFile) {
         this.databaseMappingFile = databaseMappingFile;
+    }
+
+
+    /**
+     * @return the stateUuid
+     */
+    public UUID getStateUuid() {
+        return stateUuid;
+    }
+    /**
+     * @param stateuuid
+     */
+    public void setStateUuid(UUID stateUuid) {
+        this.stateUuid = stateUuid;
     }
 
 

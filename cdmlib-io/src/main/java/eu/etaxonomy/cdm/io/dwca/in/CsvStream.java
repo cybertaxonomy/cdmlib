@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,23 +36,24 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
-	private CSVReader csvReader;
-	private ArchiveEntryBase archiveEntry;
-	private TermUri term;
+	private final CSVReader csvReader;
+	private final ArchiveEntryBase archiveEntry;
+	private final TermUri term;
 	private int line = 0;
-	
+
 	private StreamItem next;
-	
+
 	public CsvStream (CSVReader csvReader, ArchiveEntryBase archiveEntry, int startLine){
 		this.csvReader = csvReader;
 		this.archiveEntry = archiveEntry;
 		String rowType = archiveEntry.getRowType();
 		term = TermUri.valueOfUriString(rowType);
 		line = startLine;
-		
+
 		//FIXME what if null?
 	}
-	
+
+	@Override
 	public boolean hasNext(){
 		if (next != null){
 			return true;
@@ -61,17 +62,18 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 			return (next != null);
 		}
 	}
-	
+
+	@Override
 	public StreamItem read(){
 //		line++;
 		return readMe();
 	}
-	
-	
+
+	@Override
 	public String getItemLocation() {
 		return CdmUtils.concat("/", this.getStreamLocation() ,String.valueOf(line));
 	}
-	
+
 	private StreamItem readMe(){
 		StreamItem resultItem;
 		Map<String, String> resultMap;
@@ -129,8 +131,8 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 				}else{
 					throw new RuntimeException("Unhandled archiveEntry type");
 				}
-	
-				
+
+
 			} catch (IOException e) {
 				//TODO handle as event
 				throw new RuntimeException(e);
@@ -141,15 +143,15 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 			}else {
 				return resultItem;
 			}
-			
+
 		}
 	}
-	
+
 	public int getLine(){
 		return line;
 	}
-	
-	
+
+
 	/**
 	 * @return the term
 	 */
@@ -162,9 +164,9 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 	public String getStreamLocation() {
 		return this.archiveEntry.getFiles().getLocation();
 	}
-	
+
 //******************************** TO STRING **************************************/
-	
+
 	@Override
 	public String toString(){
 		if (archiveEntry == null){
@@ -174,6 +176,6 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 		}
 	}
 
-	
-	
+
+
 }

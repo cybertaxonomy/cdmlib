@@ -33,12 +33,14 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
 	private boolean isNoQuotes = false;
 
 	private boolean doTaxa = true;
-	private boolean doTaxonRelationships = true;
+
+    private boolean doTaxonRelationships = true;
 	private boolean doExtensions = true;
 	private boolean doSplitRelationshipImport = false;
 	private boolean doSynonymRelationships = true;
 	private boolean doHigherRankRelationships = true;
 	private boolean doLowerRankRelationships = true;
+	private boolean keepMappingForFurtherImports = false;
 
 
 	@Override
@@ -178,5 +180,18 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
         this.doLowerRankRelationships = doLowerRankRelationships;
     }
 
+
+    /**
+     * @return the keepMappingForFurtherImports
+     */
+    public boolean isKeepMappingForFurtherImports() {
+        return keepMappingForFurtherImports;
+    }
+    /**
+     * @param keepMapping
+     */
+    public void setKeepMappingForFurtherImports(boolean keepMapping) {
+        keepMappingForFurtherImports = keepMapping;
+    }
 
 }

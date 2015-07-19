@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,16 +36,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
-						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	private static final String SINGLE_CLASSIFICATION_ID = "1";
+public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
+
+    private static final String SINGLE_CLASSIFICATION_ID = "1";
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";
 
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
-	
+
 	/**
 	 * @param state
 	 */
@@ -54,13 +55,21 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	}
 
 
-	public IReader<MappedCdmBase> map(StreamItem item){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+    @Override
+    public boolean toBeUsed(StreamItem item) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csvRecord = item.map;
 		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = csvRecord.get(ID);
 		TaxonBase<?> taxonBase = getTaxonBase(id, item, null, state);
 		if (taxonBase == null){
@@ -68,34 +77,34 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			warning = String.format(warning, id);
 			fireWarningEvent(warning, item, 8);
 		}else{
-			
+
 			MappedCdmBase mcb = new MappedCdmBase(taxonBase);
 			resultList.add(mcb);
-			
+
 			handleAcceptedNameUsage(item, state, taxonBase, id);
-			
+
 			handleParentNameUsage(item, state, taxonBase, id, resultList);
-			
+
 			handleKingdom(item, state);
-			
+
 			handlePhylum(item, state);
-			
+
 			handleClass(item, state);
-			
+
 			handleOrder(item, state);
-			
+
 			handleFamily(item, state);
-			
+
 			handleGenus(item, state);
-			
+
 			handleSubGenus(item, state);
-			
+
 		}
 		csvRecord.remove(ID);
-		
-		
+
+
 //		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
-//		         The following eight groups are recognized: Animalia, Archaea, Bacteria, Chromista, 
+//		         The following eight groups are recognized: Animalia, Archaea, Bacteria, Chromista,
 //		         Fungi, Plantae, Protozoa, Viruses -->
 //		    <field index='10' term='http://rs.tdwg.org/dwc/terms/kingdom'/>
 
@@ -104,7 +113,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 
 //		    <!-- Infraspecific epithet -->
 //		    <field index='18' term='http://rs.tdwg.org/dwc/terms/infraspecificEpithet'/>
-	
+
 //			<!-- Acceptance status published in -->
 //		    <field index='20' term='http://purl.org/dc/terms/source'/>
 
@@ -114,14 +123,14 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 //		    <!-- Scrutiny date -->
 //		    <field index='23' term='http://purl.org/dc/terms/modified'/>
 //		    <!-- Additional data for the taxon -->
-		
+
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
 		return new ListReader<MappedCdmBase>(resultList);
 	}
-	
-	
+
+
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
@@ -131,43 +140,43 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 
 	private void handleSubGenus(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handleGenus(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handleFamily(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handleOrder(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handleClass(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handlePhylum(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	private void handleKingdom(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -215,7 +224,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			}
 		}
 
-		
+
 	}
 
 
@@ -227,14 +236,14 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
 				datasetKey = DwcTaxonStreamItem2CdmTaxonConverter.NO_DATASET;
 			}
-			
+
 			resultSet.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
 			resultSet.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
 		//TODO accordingToAsClassification
 		//single classification
 		}else{
 			resultSet.addAll(state.get(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, Classification.class));
-			
+
 			//classification does not yet exist
 			if (resultSet.isEmpty()){
 				Classification newClassification = Classification.NewInstance("Darwin Core Classification");
@@ -281,11 +290,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			//mapping to itself needs no further handling
 		}else{
 			String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
-			
+
 			Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-				
+
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
 				} else{
@@ -345,7 +354,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 		//classification
 		if (config.isDatasetsAsClassifications()){
 			boolean hasDefinedClassification = false;
@@ -370,19 +379,19 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 		//TODO cont.
 	}
-	
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
- 		
+
 		result.add(TermUri.DWC_TAXON.toString());
-		
+
 		result.add(TermUri.DWC_ACCEPTED_NAME_USAGE_ID.toString());
  		result.add(TermUri.DWC_PARENT_NAME_USAGE_ID.toString());
- 		
+
  		result.add(TermUri.DWC_NAME_ACCORDING_TO_ID.toString());
  		result.add(TermUri.DWC_NAME_ACCORDING_TO.toString());
  		if (config.isDatasetsAsClassifications()){
@@ -391,17 +400,18 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
  		}else{
  			result.add(SINGLE_CLASSIFICATION);
  		}
- 		
+
  		return result;
 	}
-	
+
 
 //************************************* TO STRING ********************************************
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
+
 
 
 }
