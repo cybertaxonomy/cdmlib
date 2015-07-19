@@ -326,6 +326,12 @@ public class NonViralNameParserImplTest {
 		assertFalse(authorname.hasProblem());
 		assertEquals("Basionym author should have 3 authors", 2, ((Team)authorname.getExBasionymAuthorship()).getTeamMembers().size());
         Assert.assertTrue("ExbasionymAuthorship must have more members'", ((Team)authorname.getExBasionymAuthorship()).isHasMoreMembers());
+
+        //author with 2 capitals
+        fullNameString = "Campanula rhodensis A. DC.";
+        NonViralName name = parser.parseFullName(fullNameString);
+        assertFalse(name.hasProblem());
+
 	}
 
 	@Test
@@ -1564,16 +1570,15 @@ public class NonViralNameParserImplTest {
 	public final void testNomenclaturalStatus() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
 		name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
-
 		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
-
 		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
-
 		Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+	}
 
-
+	@Test
+	public final void testSpecificAuthors(){
+//	    Campanula rhodensis A. DC.
 	}
 
 }
