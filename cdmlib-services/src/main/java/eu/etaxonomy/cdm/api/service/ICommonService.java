@@ -157,6 +157,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
+
+    /**
+     * @param clazz
+     * @param id
+     * @return
+     */
+    public CdmBase findWithUpdate(Class<? extends CdmBase> clazz, int id);
+
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
 	 * @see ICdmGenericDao#find(Class, int)
@@ -301,8 +309,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
-
-
 
 
 }

@@ -59,6 +59,11 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
 
     @Override
+    public CdmBase findWithUpdate(Class<? extends CdmBase> clazz, int id){
+        return genericDao.find(clazz, id);
+    }
+
+    @Override
     public CdmBase find(Class<? extends CdmBase> clazz, int id){
         return genericDao.find(clazz, id);
     }
