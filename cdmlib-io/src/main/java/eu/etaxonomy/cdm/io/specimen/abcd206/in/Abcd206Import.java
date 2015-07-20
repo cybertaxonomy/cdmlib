@@ -88,6 +88,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author p.kelbert
+ * @author pplitzner
  * @created 20.10.2008
  */
 @Component
@@ -293,6 +294,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.setDerivedUnitBase(derivedUnit);
                     derivedUnitFacade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
                     importAssociatedUnits(state, item, derivedUnitFacade);
+                    report.addIgnoredImport(state.getDataHolder().unitID, derivedUnit);
                     return;
                 }
             }
