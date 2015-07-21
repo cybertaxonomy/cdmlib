@@ -152,7 +152,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, fallbackAreaMarkerType, true, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
 
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
@@ -235,7 +235,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hideMarkedAreas, fallbackAreaMarkerType, true, statusOrderPreference, false);
+                distributions, hideMarkedAreas, true, statusOrderPreference, false);
 
 
 
@@ -358,7 +358,7 @@ public class EditGeoService implements IEditGeoService {
 
         // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas,
-                fallbackAreaMarkerType, true, statusOrderPreference, false);
+                true, statusOrderPreference, false);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -374,7 +374,7 @@ public class EditGeoService implements IEditGeoService {
 
         if (parts.contains(InfoPart.mapUriParams)) {
             // only apply the subAreaPreference rule for the maps
-            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, null, null, true, false, subAreaPreference);
+            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, null, true, false, subAreaPreference);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

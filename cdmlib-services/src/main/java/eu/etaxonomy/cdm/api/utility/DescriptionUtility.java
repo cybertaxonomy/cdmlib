@@ -74,8 +74,6 @@ public class DescriptionUtility {
      *            the distributions to filter
      * @param hiddenAreaMarkerTypes
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
-     * @param fallbackAreaMarkerType
-     *            {@link MarkerType} for the {@link Marker}s to identify fallback areas.
      * @param preferComputed
      *            Computed distributions for the same area will be preferred over edited distributions.
      *            <b>This parameter should always be set to <code>true</code>.</b>
@@ -87,11 +85,9 @@ public class DescriptionUtility {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, MarkerType fallbackAreaMarkerType, boolean preferComputed, boolean statusOrderPreference, boolean subAreaPreference) {
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference, boolean subAreaPreference) {
 
         Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(100); // start with a big map from the beginning!
-
-        boolean dofallbackAreas = fallbackAreaMarkerType != null;
 
         // sort Distributions by the area
         for(Distribution distribution : distributions){
@@ -109,12 +105,37 @@ public class DescriptionUtility {
 
         // -------------------------------------------------------------------
         // 1) skip distributions having an area with markers matching hideMarkedAreas
+        //    but keep distributions for fallback areas
         if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
             Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
             for(NamedArea area : filteredDistributions.keySet()) {
                 for(MarkerType markerType : hiddenAreaMarkerTypes){
                     if(area.hasMarker(markerType, true)){
-                        areasHiddenByMarker.add(area);
+                        boolean showAsFallbackArea = false;
+                        // if at least one sub area is not hidden by a marker
+                        // this area is a fall back area for this sub area
+                        for(NamedArea subArea : area.getIncludes()) {
+                            if(areasHiddenByMarker.contains(subArea)) {
+                                // already known to be hidden
+                                continue;
+                            }
+                            if (subArea.hasMarker(markerType, true)) {
+                                // TODO here we would need to check for all hiddenAreaMarkerTypes!
+                                if(filteredDistributions.containsKey(subArea)) {
+                                    areasHiddenByMarker.add(subArea);
+                                }
+                            }
+                            // this subarea is not marked to be hidden
+                            // so the parent area must be visible if there is no
+                            // data for the subarea
+                            showAsFallbackArea = !filteredDistributions.containsKey(subArea) || showAsFallbackArea;
+                        }
+                        if (!showAsFallbackArea) {
+                            // this area does not need to be shown as
+                            // fallback for another area
+                            // so it will be hidden.
+                            areasHiddenByMarker.add(area);
+                        }
                     }
                 }
             }
@@ -124,32 +145,14 @@ public class DescriptionUtility {
         }
         // -------------------------------------------------------------------
 
-        // -------------------------------------------------------------------
-        // 4) keep or remove distributions for fallback areas
-        if(dofallbackAreas){
-            Set<NamedArea> removeCandidatesFallback = new HashSet<NamedArea>();
-            for(NamedArea key : filteredDistributions.keySet()){
-                if(removeCandidatesFallback.contains(key)){
-                    continue;
-                }
-                if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())
-                        && key.getPartOf().hasMarker(fallbackAreaMarkerType, true)){
-                    removeCandidatesFallback.add(key.getPartOf());
-                }
-            }
-            for(NamedArea removeKey : removeCandidatesFallback){
-                filteredDistributions.remove(removeKey);
-            }
-         }
-        // -------------------------------------------------------------------
 
+        // -------------------------------------------------------------------
+        // 2) remove not computed distributions for areas for which computed
+        //    distributions exists
+        //
         if(preferComputed) {
             Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
             Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
-            // -------------------------------------------------------------------
-            // 2) remove not computed distributions for areas for which computed
-            //    distributions exists
-            //
             // separate computed and edited Distributions
             for (NamedArea area : filteredDistributions.keySet()) {
                 for (Distribution distribution : filteredDistributions.get(area)) {
@@ -184,8 +187,8 @@ public class DescriptionUtility {
                 }
                 filteredDistributions.get(key).addAll(otherDistributions.get(key));
             }
-            // -------------------------------------------------------------------
         }
+        // -------------------------------------------------------------------
 
 
         // -------------------------------------------------------------------
