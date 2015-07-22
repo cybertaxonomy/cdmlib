@@ -1066,7 +1066,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         if (config.isDeleteChildren()) {
             Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
-            for (DerivationEvent derivationEvent : derivationEvents) {
+            //clone to avoid concurrent modification
+            //can happen if the child is deleted and deleted its own derivedFrom event
+            Set<DerivationEvent> derivationEventsClone = new HashSet<DerivationEvent>(derivationEvents);
+            for (DerivationEvent derivationEvent : derivationEventsClone) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
                 for (DerivedUnit derivedUnit : derivatives) {
                     delete(derivedUnit, config);
