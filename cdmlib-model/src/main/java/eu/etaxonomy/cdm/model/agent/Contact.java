@@ -21,7 +21,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -80,8 +79,8 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key  
-	private List<String> urls = new ArrayList<String>();
+    @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
+	private final List<String> urls = new ArrayList<String>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
@@ -100,9 +99,9 @@ public class Contact implements Serializable, Cloneable {
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	protected Set<Address> addresses;
+	protected Set<Address> addresses = new HashSet<Address>();
 
-	
+
 	public static Contact NewInstance() {
 		return new Contact();
 	}
@@ -187,7 +186,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address address : contact2.getAddresses()){
 				try {
 					if (this.addresses == null){
-						this.addresses = new HashSet<Address>(); 
+						this.addresses = new HashSet<Address>();
 					}
 					this.addresses.add((Address)address.clone());
 				} catch (CloneNotSupportedException e) {
@@ -215,9 +214,6 @@ public class Contact implements Serializable, Cloneable {
 	 * @see     Address
 	 */
 	public Set<Address> getAddresses(){
-		if(this.addresses == null) {
-			this.addresses = new HashSet<Address>();
-		}
 		return this.addresses;
 	}
 
@@ -302,7 +298,7 @@ public class Contact implements Serializable, Cloneable {
 	public List<String> getUrls(){
 		return this.urls;
 	}
-	
+
 	/**
 	 * @see  #getUrls()
 	 */
