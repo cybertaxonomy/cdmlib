@@ -43,12 +43,13 @@ public class DescriptionUtility {
      * Filters the given set of {@link Distribution}s for publication purposes
      * The following rules are respected during the filtering:
      * <ol>
-     * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker}
-     * with one of the specified {@link MarkerType}s
-     * <li><b>Fallback Area filter</b>: Areas can be tagged as fallback area by assigning
-     * a {@link Marker} of the specified {@link MarkerType}.
-     * These areas will be skipped as long not a a Distribution for any of sub areas exists,
-     * see https://dev.e-taxonomy.eu/trac/ticket/4408 for a detailed discussion.</li>
+     * <li><b>Marked area filter</b>: Skip distributions for areas having a {@code TRUE} {@link Marker}
+     * with one of the specified {@link MarkerType}s. Existing sub-areas of a marked area must also be marked
+     * with the same marker type, otherwise the marked area acts as a <b>fallback area</b> for the sub areas.
+     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one of
+     * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
+     * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
+     * https://dev.e-taxonomy.eu/trac/ticket/4408</li>
      * <li><b>Prefer computed rule</b>:Computed distributions are preferred over entered or imported elements.
      * (Computed description elements are identified by the {@link
      * MarkerType.COMPUTED()}). This means if a entered or imported status
