@@ -116,20 +116,17 @@ public class DescriptionUtility {
                         // if at least one sub area is not hidden by a marker
                         // this area is a fall back area for this sub area
                         for(NamedArea subArea : area.getIncludes()) {
-                            if(areasHiddenByMarker.contains(subArea)) {
-                                // already known to be hidden
-                                continue;
-                            }
-                            if (subArea.hasMarker(markerType, true)) {
+                            if (!areasHiddenByMarker.contains(subArea) && subArea.hasMarker(markerType, true)) {
                                 // TODO here we would need to check for all hiddenAreaMarkerTypes!
                                 if(filteredDistributions.containsKey(subArea)) {
                                     areasHiddenByMarker.add(subArea);
                                 }
                             }
-                            // this subarea is not marked to be hidden
-                            // so the parent area must be visible if there is no
+                            // if this subarea is not marked to be hidden
+                            // the parent area must be visible if there is no
                             // data for the subarea
-                            showAsFallbackArea = !filteredDistributions.containsKey(subArea) || showAsFallbackArea;
+                            boolean subAreaVisible = filteredDistributions.containsKey(subArea) &&  !areasHiddenByMarker.contains(subArea);
+                            showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
                         }
                         if (!showAsFallbackArea) {
                             // this area does not need to be shown as
