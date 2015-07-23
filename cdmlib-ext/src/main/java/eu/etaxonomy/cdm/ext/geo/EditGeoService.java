@@ -121,7 +121,6 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
@@ -131,7 +130,6 @@ public class EditGeoService implements IEditGeoService {
                 subAreaPreference,
                 statusOrderPreference,
                 hideMarkedAreas,
-                fallbackAreaMarkerType,
                 presenceAbsenceTermColors,
                 langs);
 
@@ -147,7 +145,6 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
@@ -155,7 +152,8 @@ public class EditGeoService implements IEditGeoService {
                 hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
 
 
-        String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+        String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
+                filteredDistributions,
                 areaMapping,
                 presenceAbsenceTermColors,
                 null, langs);
@@ -180,7 +178,7 @@ public class EditGeoService implements IEditGeoService {
         return getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference,
                 statusOrderPreference,
-                hideMarkedAreas, null,
+                hideMarkedAreas,
                 presenceAbsenceTermColors,
                 langs);
     }
@@ -328,7 +326,6 @@ public class EditGeoService implements IEditGeoService {
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe){
 

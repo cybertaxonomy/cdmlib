@@ -144,7 +144,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
-            @RequestParam(value = "fallbackAreaMarkerType", required = false) MarkerType fallbackAreaMarkerType,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -174,7 +173,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference,
-                hideMarkedAreas, fallbackAreaMarkerType, presenceAbsenceTermColors, langs);
+                hideMarkedAreas, presenceAbsenceTermColors, langs);
         mv.addObject(uriParams);
 
         return mv;

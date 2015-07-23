@@ -72,7 +72,6 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
@@ -95,7 +94,6 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
@@ -201,7 +199,6 @@ public interface IEditGeoService {
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe);
 
