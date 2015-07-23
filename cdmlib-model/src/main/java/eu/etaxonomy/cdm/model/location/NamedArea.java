@@ -88,7 +88,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
-    
+
 	//Continent UUIDs
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
@@ -100,12 +100,12 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
 
-    
+
     public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
     public static final UUID uuidContinentVocabulary = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
     public static final UUID uuidWaterbodyVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
 
-	
+
 	private static final UUID uuidArcticOcean = UUID.fromString("af4271e5-8897-4e6f-9db7-54ea4f28cfc0");
 	private static final UUID uuidAtlanticOcean = UUID.fromString("77e79804-1b17-4c99-873b-933fe216e3da");
 	private static final UUID uuidPacificOcean = UUID.fromString("3d68a327-104c-49d5-a2d8-c71c6600181b");
@@ -117,16 +117,16 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	private static final UUID uuidRedSea = UUID.fromString("ee69385e-6c80-405c-be6e-974e9fd1e297");
 	private static final UUID uuidPersianGulf = UUID.fromString("8dc16e70-74b8-4143-95cf-a659a319a854");
 
-    
-    
+
+
     private static Map<String, UUID> tdwgAbbrevMap = null;
     private static Map<String, UUID> tdwglabelMap = null;
 
     private static Map<UUID, NamedArea> tdwgTermMap = null;
-    private static Map<UUID, NamedArea> continentMap = null;		
-    private static Map<UUID, NamedArea> waterbodyMap = null;		
+    private static Map<UUID, NamedArea> continentMap = null;
+    private static Map<UUID, NamedArea> waterbodyMap = null;
 
-    
+
     private static Map<UUID, NamedArea> termMap = null;
 
 	public static final NamedArea ARCTICOCEAN () { return waterbodyMap.get(uuidArcticOcean );}
@@ -140,7 +140,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	public static final NamedArea REDSEA () { return waterbodyMap.get(uuidRedSea );}
 	public static final NamedArea PERSIANGULF () { return waterbodyMap.get(uuidPersianGulf );}
 
-    
+
 //************************* FACTORY METHODS ****************************************/
 
     /**
@@ -181,8 +181,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaLevel level;
 
-	
-//********************************** Constructor *******************************************************************/	
+
+//********************************** Constructor *******************************************************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -359,7 +359,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 //        }
         return newInstance;
     }
-    
+
 	@Override
 	protected int partOfCsvLineIndex(){
 		return 7;
@@ -375,25 +375,25 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
    		continentMap = null;
    		waterbodyMap = null;
     }
-    
+
 	@Deprecated //preliminary, will be removed in future
     protected static NamedArea getContinentByUuid(UUID uuid){
 		if (continentMap == null){
 			return null;
 		}else{
-			return (NamedArea)continentMap.get(uuid);
+			return continentMap.get(uuid);
 		}
 	}
-	
+
     @Deprecated //preliminary, will be removed in future
     protected static NamedArea getWaterbodyByUuid(UUID uuid){
 		if (waterbodyMap == null){
 			return null;
 		}else{
-			return (NamedArea)waterbodyMap.get(uuid);
+			return waterbodyMap.get(uuid);
 		}
     }
-    
+
     @Deprecated //preliminary, will be removed in future
     protected static NamedArea getTdwgTermByUuid(UUID uuid){
         if (tdwgTermMap == null){
@@ -402,7 +402,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         }
         return tdwgTermMap.get(uuid);
     }
-    
+
     @Deprecated //preliminary, will be removed in future
     public static NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation){
         if (tdwgAbbrevMap == null){
@@ -448,7 +448,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return false;
         }
     }
-    
+
 	public static final NamedArea EUROPE(){
 		return getContinentByUuid(uuidEurope);
 	}
@@ -480,26 +480,26 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	public static final NamedArea AUSTRALASIA(){
 		return getContinentByUuid(uuidAustralasia);
 	}
-	
+
 	public static final NamedArea PACIFIC(){
 		return getContinentByUuid(uuidPacific);
 	}
 
-	
+
 	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
 		continentMap = new HashMap<UUID, NamedArea>();
 		for (NamedArea term : termVocabulary.getTerms()){
-			continentMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+			continentMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
 		waterbodyMap = new HashMap<UUID, NamedArea>();
 		for (NamedArea term : termVocabulary.getTerms()){
-			waterbodyMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+			waterbodyMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
-	
+
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
         tdwgTermMap = new HashMap<UUID, NamedArea>();
         for (NamedArea term : tdwgTermVocabulary.getTerms()){
@@ -508,7 +508,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         }
 
 	}
-	
+
    protected static void addTdwgArea(NamedArea area){
         if (area == null){
             logger.warn("tdwg area is null");
@@ -580,7 +580,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
      * This way also areas that have children belonging to different levels can be handled.<BR>
      * The root node is always an empty area node which holds the list of top level areaLevels.
      * AreaLevels with no level defined are handled as if they have a separate level (level="null").
-     * 
+     *
      * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.api.service.DistributionTree}
      *
      * @param areaList
@@ -617,8 +617,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return null;
         }
 
-///****************** toString ***********************************************/        
-        
+///****************** toString ***********************************************/
+
         @Override
         public String toString() {
             return toString(false, 0);
@@ -764,7 +764,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @Override
     public String toString(){
-        String result, label, level = "";
+        String result, label, IdInVocabulary, level = "";
 
         if (this.level != null){
             level = this.level.getLabel();
@@ -772,7 +772,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             level = "no level";
         }
         label = this.getLabel();
-        result = "[" + level + ", " + label + "]";
+        IdInVocabulary = getIdInVocabulary();
+        IdInVocabulary = IdInVocabulary != null ? '<' + IdInVocabulary + '>' : "";
+        result = "[" + level + ", " +  IdInVocabulary + label + "]";
 
         return result;
     }
