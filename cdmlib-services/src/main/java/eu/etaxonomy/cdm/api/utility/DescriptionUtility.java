@@ -203,8 +203,8 @@ public class DescriptionUtility {
 
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
-        Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
         if(subAreaPreference){
+            Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
             for(NamedArea key : filteredDistributions.keySet()){
                 if(removeCandidatesArea.contains(key)){
                     continue;
