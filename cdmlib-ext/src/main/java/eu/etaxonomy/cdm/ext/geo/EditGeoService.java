@@ -350,6 +350,9 @@ public class EditGeoService implements IEditGeoService {
         if(!initStrategy.contains("markers.markerType")) {
             initStrategy.add("markers.markerType");
         }
+        if(omitLevels == null) {
+            omitLevels = new HashSet<NamedAreaLevel>(0);
+        }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 

@@ -224,6 +224,9 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @return
      */
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
+        if(omitLevelIds.isEmpty()) {
+            return false;
+        }
         Serializable areaLevelId;
         NamedAreaLevel areaLevel = area.getLevel();
         if (areaLevel instanceof HibernateProxy) {
@@ -231,7 +234,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         } else {
             areaLevelId = areaLevel==null ? null : areaLevel.getId();
         }
-        return omitLevelIds.isEmpty() || omitLevelIds.contains(areaLevelId);
+        return omitLevelIds.contains(areaLevelId);
     }
 
 
