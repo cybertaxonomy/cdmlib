@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.dwca.in.FilteredStream;
 import eu.etaxonomy.cdm.io.dwca.in.IConverter;
 import eu.etaxonomy.cdm.io.dwca.in.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.dwca.in.IReader;
+import eu.etaxonomy.cdm.io.dwca.in.ItemFilter;
 import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
 import eu.etaxonomy.cdm.io.dwca.in.StreamPartitioner;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -69,7 +70,8 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 			int partitionSize = state.getConfig().getDefaultPartitionSize();
 
-			FilteredStream filteredStream = new FilteredStream(recordStream, null);
+			ItemFilter<StreamItem> filter = null;
+			IItemStream filteredStream = filter == null ? recordStream : new FilteredStream(recordStream, filter);
 			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<StreamItem>(filteredStream,
 					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 

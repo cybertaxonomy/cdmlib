@@ -72,9 +72,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	}
 
 	private void handleNextPartition(){
-	    ItemFilter<ITEM> filter;
-	    filter = converter instanceof ItemFilter<?> ? (ItemFilter<ITEM>)converter : null;
-		List<ITEM> lookaheadArray = new ArrayList<ITEM>();
+	    List<ITEM> lookaheadArray = new ArrayList<ITEM>();
 		while (this.inStream.hasNextLookAhead(partitionSize)){
 			lookaheadArray.add(this.inStream.readLookAhead());
 		}
