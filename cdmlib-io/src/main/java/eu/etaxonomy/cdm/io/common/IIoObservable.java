@@ -1,10 +1,11 @@
 package eu.etaxonomy.cdm.io.common;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
-public interface IIoObservable {
+public interface IIoObservable extends Serializable {
 
 	/**
 	 * Sets the observers for this object
@@ -18,7 +19,7 @@ public interface IIoObservable {
 	 * @return
 	 */
 	public abstract boolean addObserver(IIoObserver observer);
-	
+
 	/**
 	 * Adds a set of new observer for this object.
 	 * @param observer
@@ -33,12 +34,12 @@ public interface IIoObservable {
 	 * @return
 	 */
 	public abstract boolean removeObserver(IIoObserver observer);
-	
+
 	/**
 	 *  Clears the observer list so that this object no longer has any observers.
 	 */
 	public void removeObservers();
-	
+
 
 	/**
 	 * Returns the number of observers of this Observable object.

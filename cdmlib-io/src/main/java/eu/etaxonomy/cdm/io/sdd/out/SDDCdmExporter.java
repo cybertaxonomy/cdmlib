@@ -1,14 +1,15 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.sdd.out;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -56,9 +56,8 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 
 	private String ioName = null;
 
-	
 	/**
-	 * 
+	 *
 	 */
 	public SDDCdmExporter() {
 		super();
@@ -68,7 +67,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -77,9 +76,9 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	public void doInvoke(SDDExportState state){
 //		protected boolean doInvoke(IExportConfigurator config,
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
-	
+
 		SDDExportConfigurator sddExpConfig = state.getConfig();
-		
+
 		String dbname = sddExpConfig.getSource() != null ? sddExpConfig.getSource().getName() : "unknown";
     	String fileName = sddExpConfig.getDestinationNameString();
 		logger.warn("Serializing DB " + dbname + " to file " + fileName);
@@ -101,27 +100,27 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 			logger.error("Error retrieving data");
 			e.printStackTrace();
 		}
-		
+
 		File fy = new File(fileName);
-		
-		
+
+
 		if ( fy.exists() )
 		{
 			logger.warn("LORNA FILE EXISTS");
 
 		  if(fy.canWrite()) {
-			  
+
 				try {
 					logger.warn("LORNA FILE PATH" + fy.getCanonicalPath());
 					logger.warn("LORNA ABS PATH" + fy.getAbsolutePath());
-					
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		  }
 		} else {
-			
+
 			logger.warn("FILE DOESNT EXIST " + fy.getAbsoluteFile().exists());
 			logger.warn("LORNA FILE DOESNT EXIST");
 			try {
@@ -131,40 +130,44 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 				e.printStackTrace();
 			}
 		}
-		// File f = new File(fileName);
-		try {
-			FileOutputStream fosy = new FileOutputStream(ResourceUtils.getFile(fileName));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 		logger.warn("All data retrieved");
 
 		try {
-			sddDocumentBuilder = new SDDDocumentBuilder();
-			logger.warn("LORNA the filename is " + fileName);
-			File f = new File(fileName);
-			// File f = new File(fileName);
-			//FileOutputStream fos = new FileOutputStream(f);
-			FileOutputStream fos = new FileOutputStream(ResourceUtils.getFile(fileName));
-			logger.warn("Created fos");
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-			//sddDocumentBuilder.marshal(dataSet, f);//lorna
-			sddDocumentBuilder.marshal(dataSet, fileName);
+		    sddDocumentBuilder = new SDDDocumentBuilder();
+		    switch(sddExpConfig.getTarget()) {
+		    case FILE:
 
-			// TODO: Split into one file per data set member to see whether performance improves?
+		        logger.warn("LORNA the filename is " + fileName);
+		        File f = new File(fileName);
+		        // File f = new File(fileName);
+		        //FileOutputStream fos = new FileOutputStream(f);
+		        FileOutputStream fos = new FileOutputStream(ResourceUtils.getFile(fileName));
+		        logger.warn("Created fos");
+		        PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+		        //sddDocumentBuilder.marshal(dataSet, f);//lorna
+		        sddDocumentBuilder.marshal(dataSet, fileName);
 
-			logger.info("XML file written");
-			logger.info("Filename is: " + fileName);
+		        // TODO: Split into one file per data set member to see whether performance improves?
+
+		        logger.info("XML file written");
+		        logger.info("Filename is: " + fileName);
+		        break;
+		    case EXPORT_DATA:
+		        exportStream = new ByteArrayOutputStream();
+                sddDocumentBuilder.marshal(dataSet, exportStream);
+		        break;
+		    default:
+		        break;
+		    }
 
 		} catch (Exception e) {
 			logger.warn("LORNA the filename is " + fileName);
 			logger.error("Marshalling error");
 			e.printStackTrace();
-		} 
+		}
 		commitTransaction(txStatus);
-		
+
 		return;
 
 	}
@@ -175,7 +178,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		SDDExportConfigurator sddExpConfig = (SDDExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = sddExpConfig.getMaxRows();
-		// TODO: 
+		// TODO:
 		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		int agentRows = numberOfRows;
@@ -190,9 +193,9 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		int languageDataRows = numberOfRows;
 		int termVocabularyRows = numberOfRows;
 		int homotypicalGroupRows = numberOfRows;
-		
+
 		logger.warn("LORNA no of rows: " + numberOfRows);
-		
+
 
 		if (sddExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
@@ -208,7 +211,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		}
 
 		if (sddExpConfig.isDoTerms() == true) {
-			if (definedTermBaseRows == 0) { 
+			if (definedTermBaseRows == 0) {
 				definedTermBaseRows = getTermService().count(DefinedTermBase.class);
 				logger.warn("LORNA defined term base rows: " + definedTermBaseRows);
 				}
@@ -263,7 +266,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 			}
 		}
 
-		// TODO: 
+		// TODO:
 		// retrieve taxa and synonyms separately
 		// need correct count for taxa and synonyms
 //		if (taxonBaseRows == 0) { taxonBaseRows = getTaxonService().count(TaxonBase.class); }
@@ -301,7 +304,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 				logger.debug("The Media object " + med);// + med.getTitle().getLanguageLabel());
 				//logger.warn("LORNA " + med.getTitle().getText());
 			}*/
-			
+
 			sddDataSet.setMedia(getMediaService().list(null,mediaRows, 0,null,null));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
@@ -328,5 +331,6 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	protected boolean isIgnore(SDDExportState state) {
 		return false;
 	}
-	
+
+
 }
