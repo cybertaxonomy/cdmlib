@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.io.service;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
+import eu.etaxonomy.cdm.io.common.ImportResult;
 
 /**
  * @author cmathew
@@ -20,5 +23,27 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 public interface IIOService {
 
     public ExportResult export(IExportConfigurator configurator);
+
+    /**
+     * @param configurator
+     * @param importData
+     * @param type
+     * @return
+     */
+    public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type);
+
+    /**
+     * @param configurator
+     * @param importData
+     * @return
+     */
+    public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData);
+
+    /**
+     * @param configurator
+     * @param importData
+     * @return
+     */
+    public ImportResult importDataFromInputStream(IImportConfigurator configurator, byte[] importData);
 
 }

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2376,6 +2378,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
+    }
+
+    @Override
+    public byte[] getByteArray() {
+        ByteArrayOutputStream importStream = new ByteArrayOutputStream();
+        report.printReport(new PrintStream(importStream));
+        return importStream.toByteArray();
     }
 
 }

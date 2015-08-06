@@ -100,7 +100,7 @@ public class Abcd206ImportReport {
 
     public void printReport(URI reportUri) {
         PrintStream out;
-        if(reportUri!=null){
+        if(reportUri != null){
             try {
                 out = new PrintStream(new File(reportUri));
             } catch (FileNotFoundException e) {
@@ -111,6 +111,12 @@ public class Abcd206ImportReport {
         else{
             out = System.out;
         }
+        printReport(out);
+    }
+
+
+    public void printReport(PrintStream out) {
+
         out.println("++++++++Import Report+++++++++");
         out.println("---Created Taxon Names ("+createdNames.size()+")---");
         for (TaxonNameBase<?, ?> taxonName : createdNames) {

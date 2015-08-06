@@ -25,6 +25,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public interface IImportConfigurator extends IIoConfigurator {
 
+    public static enum SOURCE_TYPE {
+        URI,
+        INPUTSTREAM
+    }
     public static enum CHECK{
         CHECK_ONLY,
         IMPORT_WITHOUT_CHECK,
@@ -136,6 +140,7 @@ public interface IImportConfigurator extends IIoConfigurator {
     public Reference getSourceReference();
 
 
+
     /**
      * Any object that represents the Source. The implementing class must cast this to
      * the correct class type
@@ -159,7 +164,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
     public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 
-    public Class<ICdmIO>[] getIoClassList();
+    public Class<ICdmImport>[] getIoClassList();
 
 //	public String[] getIoBeans();
 //	public void setIoBeans(String[] ioBeans);

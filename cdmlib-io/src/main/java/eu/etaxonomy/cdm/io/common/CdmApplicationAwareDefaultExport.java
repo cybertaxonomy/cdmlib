@@ -96,10 +96,10 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
         } else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
             boolean success =  doCheck(config);
             if(success) {
-               doExport(config, result);
-            } else {
-                result.setSuccess(success);
+               success = doExport(config, result);
             }
+            result.setSuccess(success);
+
         } else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
             doExport(config, result);
         } else{

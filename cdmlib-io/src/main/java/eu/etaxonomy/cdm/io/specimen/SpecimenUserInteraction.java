@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,9 +53,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 21 juin 2013
  *
  */
-public class SpecimenUserInteraction implements ItemListener {
+public class SpecimenUserInteraction implements ItemListener, Serializable {
 
-    Logger log = Logger.getLogger(getClass());
+    private static Logger log = Logger.getLogger(SpecimenUserInteraction.class);
 
     public Classification askForClassification(Map<String, Classification> classMap){
         List<String> possibilities = new ArrayList<String>(classMap.keySet());

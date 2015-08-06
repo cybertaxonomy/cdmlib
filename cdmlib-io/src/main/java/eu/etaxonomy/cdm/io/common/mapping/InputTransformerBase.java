@@ -1,15 +1,16 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @created 15.03.2010
  * @version 1.0
  */
-public class InputTransformerBase implements IInputTransformer {
+public class InputTransformerBase implements IInputTransformer, Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(InputTransformerBase.class);
 
@@ -50,7 +51,7 @@ public class InputTransformerBase implements IInputTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 
 	}
-	
+
 
 	@Override
 	public State getStateByKey(String key) throws UndefinedTransformerMethodException {
@@ -101,7 +102,7 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getMarkerTypeUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNameTypeDesignationStatusByKey is not implemented in implementing transformer class";
@@ -113,7 +114,7 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getNameTypeDesignationStatusUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
 		if (StringUtils.isBlank(key)){return null;
@@ -147,8 +148,8 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getSpecimenTypeDesignationStatusUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
-	
+
+
 	@Override
 	public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
@@ -179,13 +180,13 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getNamedAreaLevelByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaLevelUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
@@ -198,7 +199,7 @@ public class InputTransformerBase implements IInputTransformer {
 			throw new UndefinedTransformerMethodException(warning);
 		}
 	}
-	
+
 	@Override
 	public UUID getReferenceSystemUuid(String key) throws UndefinedTransformerMethodException {
 
@@ -215,8 +216,8 @@ public class InputTransformerBase implements IInputTransformer {
 	@Override
 	public UUID getRankUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getRankUuid is not implemented in implementing transformer class";
-		throw new UndefinedTransformerMethodException(warning);	
+		throw new UndefinedTransformerMethodException(warning);
 	}
-	
-	
+
+
 }

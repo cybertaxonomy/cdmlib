@@ -1,22 +1,34 @@
 // $Id$
 /**
-* Copyright (C) 2015 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2015 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
+import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.SOURCE_TYPE;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportResult;
 
 /**
  * @author cmathew
@@ -24,11 +36,17 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
  *
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class IOServiceImpl implements IIOService {
 
     @Autowired
     CdmApplicationAwareDefaultExport cdmExport;
+
+    @Autowired
+    @Qualifier("defaultImport")
+    CdmApplicationAwareDefaultImport cdmImport;
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.service.IExportService#export(eu.etaxonomy.cdm.io.common.IExportConfigurator)
@@ -37,6 +55,64 @@ public class IOServiceImpl implements IIOService {
     public ExportResult export(IExportConfigurator config) {
         config.setTarget(TARGET.EXPORT_DATA);
         return cdmExport.execute(config);
+    }
+
+
+
+    @Override
+    public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
+        ImportResult result;
+        switch(type) {
+        case URI:
+            return importDataFromUri(configurator, importData);
+        case INPUTSTREAM:
+            return importDataFromInputStream(configurator,importData);
+        default :
+            throw new RuntimeException("Source type is not recongnised");
+        }
+    }
+
+    @Override
+    public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {
+        ImportResult result;
+
+        ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
+        String suffix = ".import";
+        String prefix = "cdm-";
+        FileOutputStream stream = null;
+
+        try {
+            Path tempFilePath = Files.createTempFile(prefix, suffix);
+            stream = new FileOutputStream(tempFilePath.toFile());
+            stream.write(importData);
+            config.setSource(tempFilePath.toUri());
+            result = cdmImport.execute(config);
+            Files.delete(tempFilePath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ImportResult importDataFromInputStream(IImportConfigurator configurator, byte[] importData) {
+        ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
+        ImportResult result;
+        try {
+            config.setSource(new ByteArrayInputStream(importData));
+            result = cdmImport.execute(config);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
 }

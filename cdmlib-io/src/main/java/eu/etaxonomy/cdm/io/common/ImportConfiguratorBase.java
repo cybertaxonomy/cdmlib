@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @Component
 public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOURCE> extends IoConfiguratorBase implements IImportConfigurator{
-	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
+
 
 	//check
 	private CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -77,7 +76,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 
-	protected Class<ICdmIO>[] ioClassList;
+	protected Class<ICdmImport>[] ioClassList;
 
 	protected ICdmIO[] ioList;
 
@@ -142,7 +141,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public boolean isValid(){
 		boolean result = true;
 		if (getSource() == null){
-			logger.warn("Connection to source could not be established");
+			//logger.warn("Connection to source could not be established");
 			result = false;
 		}
 //Not valid any more as the importer may already have a destination
@@ -172,12 +171,12 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 //		this.state = state;
 //	}
 
-	public void setIoClassList(ICdmIO[] ioList){
+	public void setIoClassList(ICdmImport[] ioList){
 		this.ioList = ioList;
 	}
 
 	@Override
-    public Class<ICdmIO>[] getIoClassList(){
+    public Class<ICdmImport>[] getIoClassList(){
 		if (ioClassList == null){
 			makeIoClassList();
 		}
@@ -187,7 +186,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	/**
 	 * @param ioClassList
 	 */
-	public void setIoClassList(Class<ICdmIO>[] ioClassList){
+	public void setIoClassList(Class<ICdmImport>[] ioClassList){
 		this.ioClassList = ioClassList;
 	}
 
@@ -348,10 +347,8 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		try {
 			return clazz.getMethod(methodName, List.class) ;
 		} catch (SecurityException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

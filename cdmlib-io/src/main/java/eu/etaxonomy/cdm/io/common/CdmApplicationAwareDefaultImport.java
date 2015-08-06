@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -90,6 +89,26 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
     }
 
 
+    public ImportResult execute(IImportConfigurator config){
+        ImportResult result = new ImportResult();
+        if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
+            result.setSuccess(doCheck(config));
+        }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
+            boolean success =  doCheck(config);
+            if(success) {
+               success = doImport(config, result);
+            }
+            result.setSuccess(success);
+        } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
+            doImport(config, result);
+        } else{
+            logger.error("Unknown CHECK type");
+            return null;
+        }
+        return result;
+    }
+
+
     @SuppressWarnings("unchecked")
     protected <S extends IImportConfigurator> boolean doCheck(S  config){
         boolean result = true;
@@ -109,10 +128,10 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         state.initialize(config);
 
         //do check for each class
-        for (Class<ICdmIO> ioClass: config.getIoClassList()){
+        for (Class<ICdmImport> ioClass: config.getIoClassList()){
             try {
                 String ioBeanName = getComponentBeanName(ioClass);
-                ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
+                ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
@@ -147,18 +166,24 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }
     }
 
+    protected <S extends IImportConfigurator>  boolean doImport(S config){
+        ImportResult result = new ImportResult();
+        return doImport(config, result);
+    }
 
     /**
      * Executes the whole
      */
-    protected <S extends IImportConfigurator>  boolean doImport(S config){
+    protected <S extends IImportConfigurator>  boolean doImport(S config, ImportResult importResult){
         boolean result = true;
         //validate
         if (config == null){
             logger.warn("Configuration is null");
+            importResult.setSuccess(false);
             return false;
         }else if (! config.isValid()){
             logger.warn("Configuration is not valid");
+            importResult.setSuccess(false);
             return false;
         }
 
@@ -172,14 +197,15 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         state.setSuccess(true);
         //do invoke for each class
-        for (Class<ICdmIO> ioClass: config.getIoClassList()){
+        for (Class<ICdmImport> ioClass: config.getIoClassList()){
             try {
                 String ioBeanName = getComponentBeanName(ioClass);
-                ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
+                ICdmImport cdmIo = applicationContext.getBean(ioBeanName, ICdmImport.class);
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
                     result &= cdmIo.invoke(state);
+                    importResult.addReport(cdmIo.getByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
                     logger.error("cdmIO was null");
@@ -213,6 +239,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         logger.info("End import from source '" + config.getSourceNameString()
                 + "' to destination '" + config.getDestinationNameString() + "'"+
                 (result? "(successful)":"(with errors)")) ;
+        importResult.setSuccess(result);
         return result;
     }
 
@@ -223,7 +250,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
      * @return
      * @throws IllegalArgumentException if the class does not have a "Component" annotation
      */
-    public static String getComponentBeanName(Class<ICdmIO> ioClass) throws IllegalArgumentException {
+    public static String getComponentBeanName(Class<ICdmImport> ioClass) throws IllegalArgumentException {
         Component component = ioClass.getAnnotation(Component.class);
         if (component == null){
             throw new IllegalArgumentException("Class " + ioClass.getName() + " is missing a @Component annotation." );
@@ -247,7 +274,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }else{
         	logger.warn("No authentication token available");
         }
-        
+
     }
 
 }
