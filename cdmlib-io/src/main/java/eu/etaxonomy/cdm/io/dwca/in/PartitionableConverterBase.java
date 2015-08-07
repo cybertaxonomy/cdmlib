@@ -1,15 +1,14 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,9 +23,9 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
-import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -37,16 +36,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * FIXME URI
  */
-public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> 
-		/*implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> */ {
-	
+public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
+      implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
+
 	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
 
 	protected STATE state;
 	protected CONFIG config;  //for convenience only (must always be same as state.getConfig())
-	
-	
-	
+
+
+
 	public PartitionableConverterBase(STATE state) {
 		super();
 		this.state = state;
@@ -56,16 +55,16 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected void fireWarningEvent(String message, StreamItem item, Integer severity) {
 		fireWarningEvent(message, getDataLocation(item), severity, 1);
 	}
-	
+
 	private String getDataLocation(StreamItem item) {
 		String location = item.getLocation();
 		return location;
 	}
-	
+
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
 		fireWarningEvent(message, dataLocation, severity, 1);
 	}
-	
+
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
 		stackDepth++;
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
@@ -78,17 +77,17 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		} catch (ClassNotFoundException e) {
 			declaringClass = this.getClass();
 		}
-		
-		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation, 
+
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation,
 				lineNumber, severity, methodName);
-		
+
 		//for performance improvement one may read:
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
-		
+
 		fire(event);
 	}
-	
+
 	protected void fire(IIoEvent event){
 		Set<IIoObserver> observers = state.getConfig().getObservers();
 		for (IIoObserver observer: observers){
@@ -98,7 +97,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 			logger.warn(event.getMessage() +  " (no observer for message!).");
 		}
 	}
-	
+
 
 
 	/**
@@ -107,9 +106,9 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected String getValue(StreamItem item, TermUri term) {
 		return item.get(term.getUriString());
 	}
-	
+
 	/**
-	 * Checks if the given term has a value in item that is not blank (null, empty or whitespace only). 
+	 * Checks if the given term has a value in item that is not blank (null, empty or whitespace only).
 	 * @param term
 	 * @param item
 	 * @return true if value is not blank
@@ -117,12 +116,17 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected boolean exists(TermUri term, StreamItem item) {
 		return ! StringUtils.isBlank(getValue(item, term));
 	}
-	
 
-	
-	public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream) {
+
+	@Override
+    public ItemFilter<StreamItem> getItemFilter(){
+	    return null;
+	}
+
+	@Override
+    public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream) {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		
+
 		while (instream.hasNext()){
 			StreamItem next = instream.read();
 			makeForeignKeysForItem(next, result);
@@ -130,7 +134,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		return result;
 	}
 
-	
+
 	/**
 	 * Fills the the foreign key map with foreign keys required for this item.
 	 * @param next
@@ -138,7 +142,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	 */
 	protected abstract void makeForeignKeysForItem(StreamItem next, Map<String, Set<String>> foreignKeyMap);
 
-	
+
 	/**
 	 * False if string is null, empty or whitespace only. True otherwise.
 	 * @param string String to test.
@@ -146,7 +150,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected boolean hasValue(String string) {
 		return StringUtils.isNotBlank(string);
 	}
-	
+
 
 	/**
 	 * Returns the key set for a given key or creates a new one.
@@ -162,7 +166,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 		return keySet;
 	}
-	
+
 
 	protected <T extends TaxonBase> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
@@ -181,7 +185,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 			return taxonList.get(0);
 		}
 	}
-	
+
 
 	protected TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery) {
 		TaxonDescription result = null;
@@ -198,13 +202,13 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 		return result;
 	}
-	
+
 	protected boolean isNotBlank(String str){
 		return StringUtils.isNotBlank(str);
 	}
-	
+
 	protected boolean isBlank(String str){
 		return StringUtils.isBlank(str);
 	}
-	
+
 }

@@ -36,8 +36,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
-						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
+public class DwcTaxonCsv2CdmTaxonRelationConverter
+        extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
+        implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
 
     private static final String SINGLE_CLASSIFICATION_ID = "1";
 
@@ -56,7 +57,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 
 
     @Override
-    public boolean toBeUsed(StreamItem item) {
+    public boolean toBeRemovedFromStream(StreamItem item) {
         // TODO Auto-generated method stub
         return false;
     }

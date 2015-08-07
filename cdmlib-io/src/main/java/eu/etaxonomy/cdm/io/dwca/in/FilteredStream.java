@@ -60,7 +60,7 @@ public class FilteredStream implements IItemStream {
 	    }
 		while (reader.hasNext()){
 		    next = reader.read();
-		    if (filter == null || filter.toBeUsed(next)){
+		    if (filter == null || ! filter.toBeRemovedFromStream(next)){
 		        return true;
 		    }
 		}

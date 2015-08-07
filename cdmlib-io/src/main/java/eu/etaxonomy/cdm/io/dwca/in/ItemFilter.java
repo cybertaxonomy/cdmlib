@@ -25,5 +25,5 @@ public interface ItemFilter<ITEM extends Object> {
      * @param item
      * @return
      */
-    public boolean toBeUsed(ITEM item);
+    public boolean toBeRemovedFromStream(ITEM item);
 }
