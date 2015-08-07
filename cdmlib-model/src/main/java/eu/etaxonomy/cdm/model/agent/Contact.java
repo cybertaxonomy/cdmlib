@@ -80,7 +80,7 @@ public class Contact implements Serializable, Cloneable {
     @XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
-	private final List<String> urls = new ArrayList<String>();
+	private List<String> urls = new ArrayList<String>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
