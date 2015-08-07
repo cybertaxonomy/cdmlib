@@ -97,24 +97,15 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 
 	abstract protected void makeIoClassList();
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTransformer()
-	 */
 	@Override
     public IInputTransformer getTransformer() {
 		return this.transformer;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#setTransformer(eu.etaxonomy.cdm.io.common.mapping.IInputTransformer)
-	 */
 	@Override
     public void setTransformer(IInputTransformer transformer){
 		this.transformer = transformer;
 	}
-
-
-
 
 	/**
 	 * @param source the source to set
@@ -122,7 +113,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	public void setSource(SOURCE source) {
 		this.source = source;
 	}
-
 
 	/**
 	 * @param source the source to get
@@ -132,11 +122,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		return source;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isValid()
-	 */
 	@Override
     public boolean isValid(){
 		boolean result = true;
@@ -157,19 +142,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 
 /* ****************** GETTER/SETTER **************************/
 
-//	/**
-//	 * @return the state
-//	 */
-//	public STATE getState() {
-//		return state;
-//	}
-//
-//	/**
-//	 * @param state the state to set
-//	 */
-//	public void setState(STATE state) {
-//		this.state = state;
-//	}
 
 	public void setIoClassList(ICdmImport[] ioList){
 		this.ioList = ioList;
@@ -287,10 +259,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.nomenclaturalCode = nomenclaturalCode;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTreeUuid()
-	 */
 	@Override
     public UUID getClassificationUuid() {
 		return classificationUuid;
@@ -354,10 +322,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		return null;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
-	 */
 	@Override
     public String getDestinationNameString() {
 		if (this.getDestination() == null) {
@@ -367,9 +331,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -407,17 +368,11 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.sourceRefUuid = sourceRefUuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isOmitTermLoading()
-	 */
 	@Override
 	public boolean isOmitTermLoading() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isCreateNew()
-	 */
 	@Override
 	public boolean isCreateNew(){
 		return false;
