@@ -246,6 +246,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         synonym.setName(taxonName);
         acceptedTaxon.setName(synonymName);
+        saveOrUpdate(synonym);
+        saveOrUpdate(acceptedTaxon);
         result.addUpdatedObject(acceptedTaxon);
         result.addUpdatedObject(synonym);
 		return result;
