@@ -125,6 +125,32 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula glomerata", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
 
 	}
+
+	/**
+	 * Added this test because there was a unique key on the citations_id column of table
+	 * SEQUENCE_REFERENCE which makes no sense.
+	 */
+    @Test
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportTwoSequencesWithSameReference() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.cgi";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        importConfigurator.setMapUnitIdToCatalogNumber(true);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+    }
+
 	/**
 	 * Tests import import of 59 DNA unit
 	 */
