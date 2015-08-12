@@ -133,7 +133,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportTwoSequencesWithSameReference() {
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.cgi";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 

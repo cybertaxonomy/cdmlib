@@ -78,15 +78,6 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Italy, Prov. Lombardia, Lago di Como-di Lecco, Monte San Primo S of Bellagio, close to the mountain-top.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Italy</abcd21:Name>
-                <abcd21:ISO3166Code>IT</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
               <abcd21:Altitude>
                 <abcd21:MeasurementOrFactAtomised>
                   <abcd21:LowerValue>1581 m</abcd21:LowerValue>
@@ -100,7 +91,6 @@
                   <ggbn:concentration Unit="ng/µl" />
                   <ggbn:Amplifications>
                     <ggbn:amplification>
-                      <ggbn:marker>petD</ggbn:marker>
                       <ggbn:Sequencings>
                         <ggbn:sequencing>
                           <ggbn:geneticAccession>
@@ -196,15 +186,6 @@
                 </abcd21:GatheringAgent>
               </abcd21:Agents>
               <abcd21:LocalityText>Italy, Prov. Lombardia, Valle Toscolano between Lago di Garda and Lago di Valvestino, NW of Gargnano.</abcd21:LocalityText>
-              <abcd21:Country>
-                <abcd21:Name>Italy</abcd21:Name>
-                <abcd21:ISO3166Code>IT</abcd21:ISO3166Code>
-              </abcd21:Country>
-              <abcd21:NamedAreas>
-                <abcd21:NamedArea>
-                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
-                </abcd21:NamedArea>
-              </abcd21:NamedAreas>
               <abcd21:Altitude>
                 <abcd21:MeasurementOrFactAtomised>
                   <abcd21:LowerValue>1426 m</abcd21:LowerValue>
@@ -218,7 +199,6 @@
                   <ggbn:concentration Unit="ng/µl" />
                   <ggbn:Amplifications>
                     <ggbn:amplification>
-                      <ggbn:marker>petD</ggbn:marker>
                       <ggbn:Sequencings>
                         <ggbn:sequencing>
                           <ggbn:geneticAccession>
