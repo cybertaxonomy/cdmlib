@@ -49,13 +49,27 @@ public class BioCaseQueryGenerator {
       <count>false</count>
   </search>
 </request>
+
+<?xml version='1.0' encoding='UTF-8'?>
+<request xmlns='http://www.biocase.org/schemas/protocol/1.3'>
+  <header><type>search</type></header>
+  <search>
+    <requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat>
+    <responseFormat start='0' limit='10'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat>
+      <filter>
+<like path='/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString'>A*</like>
+      </filter>
+      <count>false</count>
+  </search>
+</request>
 */
 
+    private static final String ABCD_SCHEMA_2_0 = "http://www.tdwg.org/schemas/abcd/2.06";
+    private static final String ABCD_SCHEMA_2_1 = "http://www.tdwg.org/schemas/abcd/2.1";
     private static final String FALSE = "false";
     private static final String PATH = "path";
     private static final String LIMIT = "limit";
     private static final String START = "start";
-    private static final String ABCD_SCHEMA_2_0 = "http://www.tdwg.org/schemas/abcd/2.06";
     private static final String COUNT = "count";
     private static final String LIKE = "like";
     private static final String EQUALS = "equals";
@@ -81,9 +95,13 @@ public class BioCaseQueryGenerator {
     /**
      * Generates an XML query according to the BioCASe protocol.
      * @param query the {@link OccurenceQuery} to transform to XML
-     * @return the query XML {@link Document} according BioCASe protocol
+     * @param abcdSchema The abcdSchema with which you want to query
+     * @return the query XML {@link Document} according to the BioCASe protocol
      */
-    public static Document generateXMLQuery(OccurenceQuery query){
+    public static Document generateXMLQuery(OccurenceQuery query, String abcdSchema){
+        if(abcdSchema==null){
+            abcdSchema = ABCD_SCHEMA_2_0;
+        }
         Document document = new Document();
         Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
         Element elHeader = new Element(HEADER);
@@ -102,12 +120,12 @@ public class BioCaseQueryGenerator {
 
         elRequest.addContent(elSearch);
         elSearch.addContent(elRequestFormat);
-        elRequestFormat.addContent(ABCD_SCHEMA_2_0);
+        elRequestFormat.addContent(abcdSchema);
 
         elSearch.addContent(elResponseFormat);
         elResponseFormat.setAttribute(START, "0");
         elResponseFormat.setAttribute(LIMIT, "100");
-        elResponseFormat.addContent(ABCD_SCHEMA_2_0);
+        elResponseFormat.addContent(abcdSchema);
 
         elSearch.addContent(elFilter);
         elFilter.addContent(elAnd);
