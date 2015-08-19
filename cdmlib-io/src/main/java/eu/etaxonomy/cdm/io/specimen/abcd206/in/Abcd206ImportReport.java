@@ -43,7 +43,7 @@ public class Abcd206ImportReport {
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
     private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
     private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
-    private final List<UnitIdSpecimen> ignoredImports = new ArrayList<UnitIdSpecimen>();
+    private final List<UnitIdSpecimen> alreadyExistingSpecimens = new ArrayList<UnitIdSpecimen>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
@@ -86,8 +86,8 @@ public class Abcd206ImportReport {
         taxonToAssociatedSpecimens.put(taxon, associatedSpecimens);
     }
 
-    public void addIgnoredImport(String unitId, DerivedUnit derivedUnit){
-        ignoredImports.add(new UnitIdSpecimen(unitId, derivedUnit));
+    public void addAlreadyExistingSpecimen(String unitId, DerivedUnit derivedUnit){
+        alreadyExistingSpecimens.add(new UnitIdSpecimen(unitId, derivedUnit));
     }
 
     public void addException(String message, Exception e) {
@@ -166,8 +166,8 @@ public class Abcd206ImportReport {
         }
         out.println("Specimens created: "+allSpecimens.size());
         out.println("\n");
-        out.println("---Not imported---");
-        for(UnitIdSpecimen specimen:ignoredImports){
+        out.println("---Already existing specimen (not imported)---");
+        for(UnitIdSpecimen specimen:alreadyExistingSpecimens){
             out.println(formatSpecimen(specimen));
         }
         out.println("\n");

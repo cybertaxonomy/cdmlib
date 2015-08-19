@@ -296,7 +296,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.setDerivedUnitBase(derivedUnit);
                     derivedUnitFacade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
                     importAssociatedUnits(state, item, derivedUnitFacade);
-                    report.addIgnoredImport(state.getDataHolder().unitID, derivedUnit);
+                    report.addAlreadyExistingSpecimen(AbcdImportUtility.getUnitID(derivedUnit, state.getConfig()), derivedUnit);
                     return;
                 }
             }
