@@ -64,6 +64,7 @@ public class FilteredStream implements IItemStream {
 		        return true;
 		    }
 		}
+		next = null;
 	    return false;
 	}
 

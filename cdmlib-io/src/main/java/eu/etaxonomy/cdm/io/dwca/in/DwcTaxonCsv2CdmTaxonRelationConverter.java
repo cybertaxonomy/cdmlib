@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class DwcTaxonCsv2CdmTaxonRelationConverter
         extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
-        implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
+        implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
     private static final String SINGLE_CLASSIFICATION_ID = "1";
 
@@ -55,15 +55,17 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		super(state);
 	}
 
-
     @Override
-    public boolean toBeRemovedFromStream(StreamItem item) {
-        // TODO Auto-generated method stub
-        return false;
+    public ItemFilter<StreamItem> getItemFilter() {
+        if (!config.isDoSplitRelationshipImport()){
+            return null;
+        }else{
+            return new DwcTaxonStreamItem2CdmTaxonConverter(state, true);  //the converter also is implementing the ItemFilter interfacem, this way we guarantee that the evaluation if the item is a synonym, lower or higher taxon is the same during taxon creation and relationship creation
+        }
     }
 
 
-	@Override
+    @Override
     public IReader<MappedCdmBase> map(StreamItem item){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
 
@@ -141,43 +143,30 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 
 	private void handleSubGenus(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handleGenus(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handleFamily(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handleOrder(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handleClass(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handlePhylum(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
-
 
 	private void handleKingdom(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
-
 	}
 
 
@@ -286,7 +275,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	 * @param taxStatus
 	 */
 	private void handleAcceptedNameUsageParam(StreamItem item,
-			DwcaDataImportStateBase state, TaxonBase<?> taxonBase, String id, String accId) {
+	        DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id, String accId) {
 		if (id.equals(accId)){
 			//mapping to itself needs no further handling
 		}else{
@@ -303,9 +292,9 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				}
 				// FIXME : no information regarding misapplied name available at this point,
 				//         hence a regexp check for 'misapplied' is done to add them as a relationship
-			} else if(taxonBase.isInstanceOf(Taxon.class) && taxStatus.matches("misapplied.*")) {
+			} else if(taxonBase.isInstanceOf(Taxon.class) && taxStatus != null && taxStatus.matches("misapplied.*")) {
 				if (accTaxon == null){
-					fireWarningEvent("NON-ID accepted (misapplied) Name Usage not yet implemented or taxon for name usage id not available", item, 4);
+					fireWarningEvent("NON-ID based accepted (misapplied) name usage not yet implemented or taxon for name usage id not available", item, 4);
 				} else{
 					Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 					accTaxon.addMisappliedName(taxon,null,null);

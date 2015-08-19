@@ -30,6 +30,11 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 
 //	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
 
+	private boolean doSplitRelationshipImport = false;
+	private boolean doSynonymRelationships = true;
+	private boolean doHigherRankRelationships = true;
+	private boolean doLowerRankRelationships = true;
+
 	//taxon
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
@@ -148,4 +153,61 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
 	public void setUseParentAsAcceptedIfAcceptedNotExists(boolean useParentAsAcceptedIfAcceptedNotExists) {
 		this.useParentAsAcceptedIfAcceptedNotExists = useParentAsAcceptedIfAcceptedNotExists;
 	}
+
+
+    /**
+     * @return the doSplitRelationshipImport
+     */
+    public boolean isDoSplitRelationshipImport() {
+        return doSplitRelationshipImport;
+    }
+
+    /**
+     * @param doSplitRelationshipImport the doSplitRelationshipImport to set
+     */
+    public void setDoSplitRelationshipImport(boolean doSplitRelationshipImport) {
+        this.doSplitRelationshipImport = doSplitRelationshipImport;
+    }
+
+    /**
+     * @return the doSynonymRelationships
+     */
+    public boolean isDoSynonymRelationships() {
+        return doSynonymRelationships;
+    }
+
+    /**
+     * @param doSynonymRelationships the doSynonymRelationships to set
+     */
+    public void setDoSynonymRelationships(boolean doSynonymRelationships) {
+        this.doSynonymRelationships = doSynonymRelationships;
+    }
+
+    /**
+     * @return the doHigherRankRelationships
+     */
+    public boolean isDoHigherRankRelationships() {
+        return doHigherRankRelationships;
+    }
+
+    /**
+     * @param doHigherRankRelationships the doHigherRankRelationships to set
+     */
+    public void setDoHigherRankRelationships(boolean doHigherRankRelationships) {
+        this.doHigherRankRelationships = doHigherRankRelationships;
+    }
+
+    /**
+     * @return the doLowerRankRelationships
+     */
+    public boolean isDoLowerRankRelationships() {
+        return doLowerRankRelationships;
+    }
+
+    /**
+     * @param doLowerRankRelationships the doLowerRankRelationships to set
+     */
+    public void setDoLowerRankRelationships(boolean doLowerRankRelationships) {
+        this.doLowerRankRelationships = doLowerRankRelationships;
+    }
 }

@@ -117,7 +117,9 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		return ! StringUtils.isBlank(getValue(item, term));
 	}
 
-
+    /*
+     * To be implemented by subclasses if needed.
+     */
 	@Override
     public ItemFilter<StreamItem> getItemFilter(){
 	    return null;

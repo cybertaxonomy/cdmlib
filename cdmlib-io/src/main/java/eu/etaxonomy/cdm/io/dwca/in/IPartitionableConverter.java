@@ -34,6 +34,11 @@ public interface IPartitionableConverter<IN extends IConverterInput<StreamItem>,
 	 */
 	public Set<String> requiredSourceNamespaces();
 
+	/**
+	 * Returns an item filter if a stream needs to be filtered (e.g. for partial imports).
+	 * <code>null</code> otherwise.
+	 * @return
+	 */
 	public ItemFilter<IN> getItemFilter();
 
 

@@ -60,10 +60,16 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>  extends PartitionableConverterBase<CONFIG, STATE> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	private static final Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>
+        extends PartitionableConverterBase<CONFIG, STATE>
+        implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
 
-	private static final String ID = "id";
+    private static final Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+
+    //if this converter is used as filter we may not want to delete item parts during evaluation
+    boolean isFilterOnly = false;
+
+    private static final String ID = "id";
 	// temporary key for the case that no dataset information is supplied, TODO use something better
 	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
 
@@ -76,6 +82,38 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		super(state);
 	}
 
+    public DwcTaxonStreamItem2CdmTaxonConverter(STATE state, boolean isFilter) {
+        super(state);
+        this.isFilterOnly = isFilter;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.dwca.in.ItemFilter#toBeRemovedFromStream(java.lang.Object)
+     */
+    @Override
+    public boolean toBeRemovedFromStream(StreamItem item) {
+        if (!config.isDoSplitRelationshipImport()){
+            return false;
+        }else{
+            if (isSynonym(item)){
+                return ! this.config.isDoSynonymRelationships();
+            }else{
+                NomenclaturalCode nomCode = getNomCode(item);
+                Rank rank = getRank(item, nomCode);
+                boolean isHigherRank = rank == null || rank.isHigher(Rank.GENUS()) || rank.isGenus();
+                if (isHigherRank){
+                    return ! config.isDoHigherRankRelationships();
+                }else{
+                    return ! config.isDoLowerRankRelationships();
+                }
+            }
+        }
+    }
+
+    private boolean isSynonym(StreamItem item) {
+        TaxonBase<?> taxonBase = getTaxonBase(item);
+        return taxonBase instanceof Synonym;
+    }
 
 	@Override
     public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
@@ -413,9 +451,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 
 		//remove to later check if all attributes were used
-		item.remove(idTerm);
-		item.remove(strTerm);
-
+		removeItemInfo(item, idTerm);
+		removeItemInfo(item, strTerm);
 	}
 
 
@@ -649,6 +686,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	/**
 	 * Creates an empty taxon object with a given status.
+	 * <i>Empty</i> taxon means, without a defined name or sec.
 	 * @param item
 	 * @return
 	 */
@@ -669,7 +707,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			} else{
 				status += "?";
 			}
-			item.remove(TermUri.DWC_TAXONOMIC_STATUS);
+			removeItemInfo(item, TermUri.DWC_TAXONOMIC_STATUS);
 		}
 		if (! CdmUtils.isBlank(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
 			// acceptedNameUsageId = id
@@ -697,7 +735,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	/**
+
+    /**
 	 * @param item
 	 * @return
 	 */
@@ -775,6 +814,15 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
+    /**
+     * @param item
+     * @param dwcTaxonomicStatus
+     */
+    private void removeItemInfo(StreamItem item, TermUri dwcTaxonomicStatus) {
+        if (!isFilterOnly){
+            item.remove(dwcTaxonomicStatus);
+        }
+    }
 
 
 //** ***************************** TO STRING *********************************************/
@@ -783,6 +831,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	public String toString(){
 		return this.getClass().getName();
 	}
+
 
 
 

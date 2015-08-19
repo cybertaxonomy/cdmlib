@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 
+
 /**
  * Interface which allows filtering of stream items.
  * @author a.mueller
@@ -26,4 +27,5 @@ public interface ItemFilter<ITEM extends Object> {
      * @return
      */
     public boolean toBeRemovedFromStream(ITEM item);
+
 }
