@@ -100,7 +100,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
             }else{
                 NomenclaturalCode nomCode = getNomCode(item);
                 Rank rank = getRank(item, nomCode);
-                boolean isHigherRank = rank == null || rank.isHigher(Rank.GENUS()) || rank.isGenus();
+                boolean isHigherRank = rank == null || rank.isHigher(Rank.SPECIES());
                 if (isHigherRank){
                     return ! config.isDoHigherRankRelationships();
                 }else{
