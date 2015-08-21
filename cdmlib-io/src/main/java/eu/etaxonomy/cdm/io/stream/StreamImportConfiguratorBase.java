@@ -30,7 +30,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 14.05.2013
  */
 public abstract class StreamImportConfiguratorBase<STATE extends StreamImportStateBase, SOURCE extends Object> extends ImportConfiguratorBase<STATE, SOURCE> implements IImportConfigurator {
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = 4200675007263433594L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StreamImportConfiguratorBase.class);
 
 	//partitions
@@ -44,6 +46,7 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 
     private String databaseMappingFile;
 
+    //the unique state for StreamImportStateBase, which is also used for StreamImportStateBase
     private UUID stateUuid;
 
 	/**
@@ -63,10 +66,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 		};
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		if (this.sourceReference == null){
