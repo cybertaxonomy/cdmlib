@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,41 +39,51 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 
 	@Override
 	public DeleteResult delete(UUID nodeUUID, boolean deleteChildren){
-		DeleteResult result = new DeleteResult();
-		PolytomousKeyNode node = dao.findByUuid(nodeUUID);
-		node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
-		if(node == null) {
-		    return null;
-		}
-		List<PolytomousKeyNode> children = node.getChildren();
-		PolytomousKeyNode parent = node.getParent();
-		parent = HibernateProxyHelper.deproxy(parent, PolytomousKeyNode.class);
+        DeleteResult result = new DeleteResult();
+        PolytomousKeyNode node = dao.findByUuid(nodeUUID);
+        node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
+        if(node == null) {
+            return null;
+        }
+        List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
+        for (PolytomousKeyNode child: node.getChildren()){
+            children.add(child);
+        }
+        PolytomousKeyNode parent = node.getParent();
+        parent = HibernateProxyHelper.deproxy(parent, PolytomousKeyNode.class);
 
-		if(!deleteChildren){
+        if(!deleteChildren){
 
-			for (PolytomousKeyNode child: children){
-				parent.addChild(child);
-				parent.removeChild(node);
-				dao.update(child);
-				result.addUpdatedObject(child);
-			}
+            for (PolytomousKeyNode child: children){
+                if (!child.equals(node)){
+                    parent.addChild(child);
+                    dao.update(child);
+                    result.addUpdatedObject(child);
+                }
 
-			dao.update(node);
-			result.addUpdatedObject(node);
-		}
-		if (node.getParent()!= null){
-			node.getParent().removeChild(node);
-		}
-		if (node.getKey().getRoot().equals(node)){
-			node.getKey().setRoot(null);
-		}
-		if (dao.delete(node) == null){
-			result.setAbort();
-		}
-		dao.saveOrUpdate(parent);
-		result.addUpdatedObject(parent);
-		return result;
+            }
 
-	}
+
+            dao.update(node);
+            result.addUpdatedObject(node);
+        }
+        if (parent!= null){
+            parent.removeChild(node);
+            dao.update(parent);
+        }
+        if (node.getKey().getRoot().equals(node)){
+            node.getKey().setRoot(null);
+        }
+        if (node.getTaxon() != null){
+            node.removeTaxon();
+        }
+        if (dao.delete(node) == null){
+            result.setAbort();
+        }
+        dao.saveOrUpdate(parent);
+        result.addUpdatedObject(parent);
+        return result;
+
+    }
 
 }

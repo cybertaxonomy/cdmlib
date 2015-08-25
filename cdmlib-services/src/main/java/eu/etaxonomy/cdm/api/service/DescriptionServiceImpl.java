@@ -687,9 +687,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
             if (! isCopy){
                 description.removeElement(element);
+                dao.saveOrUpdate(description);
             }
 
         }
+        dao.saveOrUpdate(targetDescription);
+
     }
 
     @Override

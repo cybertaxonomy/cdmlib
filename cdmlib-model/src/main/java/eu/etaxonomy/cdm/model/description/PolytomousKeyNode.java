@@ -414,9 +414,16 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 *
 	 * @param parent
 	 */
-	protected void setParent(PolytomousKeyNode parent) {
-		this.parent = parent;
-	}
+	   protected void setParent(PolytomousKeyNode parent) {
+	        PolytomousKeyNode oldParent = this.parent;
+	        if (oldParent != null){
+	            if (oldParent.getChildren().contains(this)){
+	                    oldParent.removeChild(this);
+	            }
+	        }
+	        this.parent = parent;
+
+	    }
 
 	/**
 	 * Returns the (ordered) list of feature nodes which are children nodes of
@@ -868,6 +875,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			return null;
 		}
 	}
+
+    /**
+     *
+     */
+    public void removeTaxon() {
+        this.taxon = null;
+
+    }
 
 
 }
