@@ -244,6 +244,16 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public <T extends IMergable> void merge(int mergeFirstId, int mergeSecondId, Class<? extends CdmBase> clazz) throws MergeException {
+        IMergeStrategy mergeStrategy;
+        T mergeFirst = (T) genericDao.find(clazz, mergeFirstId);
+        T mergeSecond = (T) genericDao.find(clazz, mergeSecondId);
+        mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
+        merge(mergeFirst, mergeSecond, mergeStrategy);
+    }
+
+    @Override
     public <T extends IMergable> void merge(T mergeFirst, T mergeSecond) throws MergeException {
         IMergeStrategy mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         merge(mergeFirst, mergeSecond, mergeStrategy);

@@ -310,5 +310,13 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
 
+    /**
+     * @param mergeFirstId
+     * @param mergeSecondId
+     * @param clazz
+     * @throws MergeException
+     */
+    public <T extends IMergable> void merge(int mergeFirstId, int mergeSecondId, Class<? extends CdmBase> clazz) throws MergeException;
+
 
 }
