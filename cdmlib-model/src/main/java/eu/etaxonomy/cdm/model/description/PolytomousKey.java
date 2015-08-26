@@ -124,6 +124,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
     private PolytomousKeyNode root;
 
     @XmlElement(name = "StartNumber")
+    @Audited
     private int startNumber = 1;
 
 
