@@ -372,7 +372,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 
 	@Override
-    protected void initListener(){
+    public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent ev) {
@@ -604,7 +604,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		} else{
 			this.type = type;
 		}
-		
+
 	}
 
 	/**

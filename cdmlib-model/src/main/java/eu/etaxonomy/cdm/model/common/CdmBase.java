@@ -198,6 +198,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         propertyChangeSupport.firePropertyChange(evt);
     }
 
+    public void initListener() {
+
+    }
     /**
      * Adds an item to a set of <code>this</code> object and fires the according
      * {@link PropertyChangeEvent}. Workaround as long as add and remove is not yet

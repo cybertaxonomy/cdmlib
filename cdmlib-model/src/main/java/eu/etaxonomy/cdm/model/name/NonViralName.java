@@ -408,7 +408,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     }
 
     @Override
-    protected void initListener(){
+    public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
