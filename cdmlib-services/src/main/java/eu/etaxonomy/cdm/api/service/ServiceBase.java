@@ -72,7 +72,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public DeleteResult delete(UUID persistentObjectUUID) {
     	DeleteResult result = new DeleteResult();
     	try{
-    		T persistentObject = dao.load(persistentObjectUUID);
+    		T persistentObject = dao.findByUuid(persistentObjectUUID);
     		dao.delete(persistentObject);
     	} catch(DataAccessException e){
     		result.setError();
@@ -88,7 +88,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         boolean atLeastOneOK = false;
         for(UUID persistentObjectUUID : persistentObjectUUIDs) {
             try {
-                T persistentObject = dao.load(persistentObjectUUID);
+                T persistentObject = dao.findByUuid(persistentObjectUUID);
                 dao.delete(persistentObject);
             } catch(DataAccessException e){
                 result.setStatus(Status.ERROR);
