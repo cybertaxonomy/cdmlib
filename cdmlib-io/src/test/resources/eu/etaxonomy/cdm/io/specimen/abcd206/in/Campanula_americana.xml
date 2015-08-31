@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd21:DataSets>
+      <abcd21:DataSet>
+        <abcd21:Units>
+          <abcd21:Unit>
+            <abcd21:SourceInstitutionID>BGBM</abcd21:SourceInstitutionID>
+            <abcd21:SourceID>DNA Bank</abcd21:SourceID>
+            <abcd21:UnitID>DB 16188</abcd21:UnitID>
+            <abcd21:Identifications>
+              <abcd21:Identification>
+                <abcd21:Result>
+                  <abcd21:TaxonIdentified>
+                    <abcd21:HigherTaxa>
+                      <abcd21:HigherTaxon>
+                        <abcd21:HigherTaxonName>CAMPANULACEAE</abcd21:HigherTaxonName>
+                        <abcd21:HigherTaxonRank>familia</abcd21:HigherTaxonRank>
+                      </abcd21:HigherTaxon>
+                    </abcd21:HigherTaxa>
+                    <abcd21:ScientificName>
+                      <abcd21:FullScientificNameString>Campanula americana hort. ex Steud.</abcd21:FullScientificNameString>
+                      <abcd21:NameAtomised>
+                        <abcd21:Botanical>
+                          <abcd21:GenusOrMonomial>Campanula</abcd21:GenusOrMonomial>
+                          <abcd21:FirstEpithet>americana</abcd21:FirstEpithet>
+                        </abcd21:Botanical>
+                      </abcd21:NameAtomised>
+                    </abcd21:ScientificName>
+                  </abcd21:TaxonIdentified>
+                </abcd21:Result>
+                <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+              </abcd21:Identification>
+            </abcd21:Identifications>
+            <abcd21:RecordBasis>MaterialSample</abcd21:RecordBasis>
+            <abcd21:KindOfUnit>DNA</abcd21:KindOfUnit>
+            <abcd21:SpecimenUnit>
+              <abcd21:Loan>
+                <abcd21:blockedUntil>2016-07-01T00:00:00</abcd21:blockedUntil>
+              </abcd21:Loan>
+              <abcd21:Preparations>
+                <abcd21:preparation>
+                  <abcd21:preparationType>gDNA</abcd21:preparationType>
+                  <abcd21:preparationMaterials>NucleoSpin Plant II Macherey &amp; Nagel</abcd21:preparationMaterials>
+                  <abcd21:preparationAgent>
+                    <abcd21:Person>
+                      <abcd21:FullName>Weigand, A.</abcd21:FullName>
+                    </abcd21:Person>
+                  </abcd21:preparationAgent>
+                  <abcd21:sampleDesignations>
+                    <abcd21:sampleDesignation>CAM195</abcd21:sampleDesignation>
+                  </abcd21:sampleDesignations>
+                </abcd21:preparation>
+              </abcd21:Preparations>
+              <abcd21:Preservations>
+                <abcd21:preservation>
+                  <abcd21:preservationType>TE buffer</abcd21:preservationType>
+                  <abcd21:preservationTemperature>-80</abcd21:preservationTemperature>
+                </abcd21:preservation>
+              </abcd21:Preservations>
+            </abcd21:SpecimenUnit>
+            <abcd21:Associations>
+              <abcd21:UnitAssociation>
+                <abcd21:SourceInstitutionCode>BGBM</abcd21:SourceInstitutionCode>
+                <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
+                <abcd21:UnitID>B 10 0356875</abcd21:UnitID>
+                <abcd21:AssociationType>DNA and voucher from same in situ population</abcd21:AssociationType>
+                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+              </abcd21:UnitAssociation>
+            </abcd21:Associations>
+            <abcd21:Gathering>
+              <abcd21:DateTime>
+                <abcd21:DateText>19.07.1999</abcd21:DateText>
+              </abcd21:DateTime>
+              <abcd21:Agents>
+                <abcd21:GatheringAgent>
+                  <abcd21:Person>
+                    <abcd21:FullName>J. Stone &amp; J. Miller</abcd21:FullName>
+                  </abcd21:Person>
+                </abcd21:GatheringAgent>
+              </abcd21:Agents>
+              <abcd21:LocalityText>Missouri. Jefferson County, Mammoth Creek, Missouri Conservation Dept. Land. Along Mammoth Road, 2,5mi S of State Road H at the big River, S of Hillsborro .</abcd21:LocalityText>
+              <abcd21:SiteCoordinateSets>
+                <abcd21:SiteCoordinates>
+                  <abcd21:CoordinatesLatLong>
+                    <abcd21:LongitudeDecimal>-90.6999969482</abcd21:LongitudeDecimal>
+                    <abcd21:LatitudeDecimal>38.1666679382</abcd21:LatitudeDecimal>
+                  </abcd21:CoordinatesLatLong>
+                </abcd21:SiteCoordinates>
+              </abcd21:SiteCoordinateSets>
+            </abcd21:Gathering>
+            <abcd21:CollectorsFieldNumber>1325</abcd21:CollectorsFieldNumber>
+            <abcd21:UnitExtensions>
+              <abcd21:UnitExtension>
+                <ggbn:GGBN>
+                  <ggbn:concentration ggbn:Unit="ng/µl">29,15</ggbn:concentration>
+                  <ggbn:Amplifications>
+                    <ggbn:amplification>
+                      <ggbn:Sequencings>
+                        <ggbn:sequencing>
+                          <ggbn:geneticAccession>
+                            <ggbn:geneticAccessionNumber>JX914734</ggbn:geneticAccessionNumber>
+                            <ggbn:geneticAccessionNumberURI>http://www.ncbi.nlm.nih.gov/nuccore/JX914734</ggbn:geneticAccessionNumberURI>
+                          </ggbn:geneticAccession>
+                          <ggbn:References>
+                            <ggbn:Reference>
+                              <ggbn:ReferenceCitation>Mansion, G., Parolly, G., Crowl, A.A., Mavrodiev, E., Cellinese, N., Oganesian, M., Fraunhofer, K., Kamari, G., Phitos, D., Haberle, R., Akaydin, G., Ikinci, N., Borsch,T. (2012): How to Handle Speciose Clades? Mass Taxon-Sampling as a Strategy towards Illuminating the Natural History of Campanula (Campanuloideae). PLoS ONE 7 (11):  E50076.</ggbn:ReferenceCitation>
+                              <ggbn:ReferenceURI>http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050076</ggbn:ReferenceURI>
+                            </ggbn:Reference>
+                          </ggbn:References>
+                        </ggbn:sequencing>
+                      </ggbn:Sequencings>
+                    </ggbn:amplification>
+                  </ggbn:Amplifications>
+                </ggbn:GGBN>
+              </abcd21:UnitExtension>
+            </abcd21:UnitExtensions>
+          </abcd21:Unit>
+        </abcd21:Units>
+      </abcd21:DataSet>
+    </abcd21:DataSets>
