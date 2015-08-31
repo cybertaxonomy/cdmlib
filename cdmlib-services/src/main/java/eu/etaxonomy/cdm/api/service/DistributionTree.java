@@ -20,9 +20,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -77,13 +80,20 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     /**
      * @param distList
      * @param omitLevels
+     * @param hiddenAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
+     *      are omitted from the hierarchy and the sub areas are moving one level up.
+     *      For more details on fall back areas see <b>Marked area filter</b> of
+     *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      */
-    public void orderAsTree(Collection<Distribution> distList, Set<NamedAreaLevel> omitLevels){
+    public void orderAsTree(Collection<Distribution> distList, Set<NamedAreaLevel> omitLevels, Set<MarkerType> hiddenAreaMarkerTypes){
 
         Set<NamedArea> areas = new HashSet<NamedArea>(distList.size());
         for (Distribution distribution : distList) {
             areas.add(distribution.getArea());
         }
+        // preload all areas which are a parent of another one, this is a performance improvement
         loadAllParentAreas(areas);
 
         Set<Integer> omitLevelIds = new HashSet<Integer>(omitLevels.size());
@@ -93,14 +103,14 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
         for (Distribution distribution : distList) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds);
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds, areas, hiddenAreaMarkerTypes);
             addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
         }
     }
 
     /**
      * This method will cause all parent areas to be loaded into the session cache to that
-     * all initialization of the NamedArea term instances in nessecary. This improves the
+     * all initialization of the NamedArea term instances in necessary. This improves the
      * performance of the tree building
      */
     private void loadAllParentAreas(Set<NamedArea> areas) {
@@ -189,11 +199,20 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
 
     /**
+     * Areas for which no distribution data is available and which are marked as hidden (Marker) are omitted, see #5112
+     *
      * @param area
+     * @param distributionAreas the areas for which distribution data exists (after filtering by
+     *  {@link eu.etaxonomy.cdm.api.utility.DescriptionUtility#filterDistributions()} )
+     * @param hiddenAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
+     *      are omitted. For more details on fall back areas see <b>Marked area filter</b> of
+     *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param omitLevels
      * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds){
+    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas, Set<MarkerType> hiddenAreaMarkerTypes){
         List<NamedArea> result = new ArrayList<NamedArea>();
         if (!matchesLevels(area, omitLevelIds)){
             result.add(area);
@@ -211,7 +230,14 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         while (area.getPartOf() != null) {
             area = area.getPartOf();
             if (!matchesLevels(area, omitLevelIds)){
-                result.add(0, area);
+                if(!distributionAreas.contains(area) &&
+                    DescriptionUtility.checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("positive fallback area detection, skipping " + area );
+                    }
+                } else {
+                    result.add(0, area);
+                }
             }
         }
 
