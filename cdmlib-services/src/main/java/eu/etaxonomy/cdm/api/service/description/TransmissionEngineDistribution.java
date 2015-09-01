@@ -305,6 +305,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             monitor = new NullProgressMonitor();
         }
 
+        // only for debugging:
+        //logger.setLevel(Level.TRACE);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+
         logger.info("Hibernate JDBC Batch size: "
                 + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
