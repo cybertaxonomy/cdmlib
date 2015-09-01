@@ -305,7 +305,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
+            Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
         List<Distribution> distList = new ArrayList<Distribution>();
@@ -351,11 +351,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hideMarkedAreas, true, statusOrderPreference, false);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes, true, statusOrderPreference, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList);
+        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList, hiddenAreaMarkerTypes);
     }
 
 

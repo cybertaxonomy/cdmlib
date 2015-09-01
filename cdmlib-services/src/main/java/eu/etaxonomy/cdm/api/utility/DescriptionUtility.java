@@ -74,7 +74,8 @@ public class DescriptionUtility {
      * @param distributions
      *            the distributions to filter
      * @param hiddenAreaMarkerTypes
-     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
+     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
+     *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
      * @param preferComputed
      *            Computed distributions for the same area will be preferred over edited distributions.
      *            <b>This parameter should always be set to <code>true</code>.</b>
@@ -110,30 +111,27 @@ public class DescriptionUtility {
         if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
             Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
             for(NamedArea area : filteredDistributions.keySet()) {
-                for(MarkerType markerType : hiddenAreaMarkerTypes){
-                    if(area.hasMarker(markerType, true)){
-                        boolean showAsFallbackArea = false;
-                        // if at least one sub area is not hidden by a marker
-                        // this area is a fall back area for this sub area
-                        for(NamedArea subArea : area.getIncludes()) {
-                            if (!areasHiddenByMarker.contains(subArea) && subArea.hasMarker(markerType, true)) {
-                                // TODO here we would need to check for all hiddenAreaMarkerTypes!
-                                if(filteredDistributions.containsKey(subArea)) {
-                                    areasHiddenByMarker.add(subArea);
-                                }
+                if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
+                    boolean showAsFallbackArea = false;
+                    // if at least one sub area is not hidden by a marker
+                    // this area is a fall back area for this sub area
+                    for(NamedArea subArea : area.getIncludes()) {
+                        if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
+                            if(filteredDistributions.containsKey(subArea)) {
+                                areasHiddenByMarker.add(subArea);
                             }
-                            // if this subarea is not marked to be hidden
-                            // the parent area must be visible if there is no
-                            // data for the subarea
-                            boolean subAreaVisible = filteredDistributions.containsKey(subArea) &&  !areasHiddenByMarker.contains(subArea);
-                            showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
                         }
-                        if (!showAsFallbackArea) {
-                            // this area does not need to be shown as
-                            // fallback for another area
-                            // so it will be hidden.
-                            areasHiddenByMarker.add(area);
-                        }
+                        // if this subarea is not marked to be hidden
+                        // the parent area must be visible if there is no
+                        // data for the subarea
+                        boolean subAreaVisible = filteredDistributions.containsKey(subArea) &&  !areasHiddenByMarker.contains(subArea);
+                        showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
+                    }
+                    if (!showAsFallbackArea) {
+                        // this area does not need to be shown as
+                        // fallback for another area
+                        // so it will be hidden.
+                        areasHiddenByMarker.add(area);
                     }
                 }
             }
@@ -223,20 +221,44 @@ public class DescriptionUtility {
     }
 
     /**
+     * @param hiddenAreaMarkerTypes
+     * @param area
+     * @param isMarkedHidden
+     * @return
+     */
+    public static boolean checkAreaMarkedHidden(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
+        if(hiddenAreaMarkerTypes != null) {
+            for(MarkerType markerType : hiddenAreaMarkerTypes){
+                if(area.hasMarker(markerType, true)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Orders the given Distribution elements in a hierarchical structure.
      * This method will not filter out any of the Distribution elements.
      * @param termDao
      * @param omitLevels
+     * @param hiddenAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
+     *      are omitted from the hierarchy and the sub areas are moving one level up.
+     *      For more details on fall back areas see <b>Marked area filter</b> of
+     *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param distList
      * @return
      */
-    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
+    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions,
+            Set<MarkerType> hiddenAreaMarkerTypes) {
 
         DistributionTree tree = new DistributionTree(termDao);
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
-        tree.orderAsTree(distributions, omitLevels);
+        tree.orderAsTree(distributions, omitLevels, hiddenAreaMarkerTypes);
         tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;

@@ -325,7 +325,7 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe){
 
@@ -357,7 +357,7 @@ public class EditGeoService implements IEditGeoService {
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
         // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
-        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas,
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
                 true, statusOrderPreference, false);
 
         if(parts.contains(InfoPart.elements)) {
@@ -365,7 +365,7 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if(parts.contains(InfoPart.tree)) {
-            dto.setTree(DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions));
+            dto.setTree(DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions, hiddenAreaMarkerTypes));
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
