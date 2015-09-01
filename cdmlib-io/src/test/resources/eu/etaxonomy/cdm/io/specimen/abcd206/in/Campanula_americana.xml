@@ -17,7 +17,7 @@
                       </abcd21:HigherTaxon>
                     </abcd21:HigherTaxa>
                     <abcd21:ScientificName>
-                      <abcd21:FullScientificNameString>Campanula americana hort. ex Steud.</abcd21:FullScientificNameString>
+                      <abcd21:FullScientificNameString>Campanula ..g... americana --- hort. ttt ex Steud.</abcd21:FullScientificNameString>
                       <abcd21:NameAtomised>
                         <abcd21:Botanical>
                           <abcd21:GenusOrMonomial>Campanula</abcd21:GenusOrMonomial>
@@ -57,15 +57,6 @@
                 </abcd21:preservation>
               </abcd21:Preservations>
             </abcd21:SpecimenUnit>
-            <abcd21:Associations>
-              <abcd21:UnitAssociation>
-                <abcd21:SourceInstitutionCode>BGBM</abcd21:SourceInstitutionCode>
-                <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
-                <abcd21:UnitID>B 10 0356875</abcd21:UnitID>
-                <abcd21:AssociationType>DNA and voucher from same in situ population</abcd21:AssociationType>
-                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
-              </abcd21:UnitAssociation>
-            </abcd21:Associations>
             <abcd21:Gathering>
               <abcd21:DateTime>
                 <abcd21:DateText>19.07.1999</abcd21:DateText>
@@ -88,31 +79,6 @@
               </abcd21:SiteCoordinateSets>
             </abcd21:Gathering>
             <abcd21:CollectorsFieldNumber>1325</abcd21:CollectorsFieldNumber>
-            <abcd21:UnitExtensions>
-              <abcd21:UnitExtension>
-                <ggbn:GGBN>
-                  <ggbn:concentration ggbn:Unit="ng/µl">29,15</ggbn:concentration>
-                  <ggbn:Amplifications>
-                    <ggbn:amplification>
-                      <ggbn:Sequencings>
-                        <ggbn:sequencing>
-                          <ggbn:geneticAccession>
-                            <ggbn:geneticAccessionNumber>JX914734</ggbn:geneticAccessionNumber>
-                            <ggbn:geneticAccessionNumberURI>http://www.ncbi.nlm.nih.gov/nuccore/JX914734</ggbn:geneticAccessionNumberURI>
-                          </ggbn:geneticAccession>
-                          <ggbn:References>
-                            <ggbn:Reference>
-                              <ggbn:ReferenceCitation>Mansion, G., Parolly, G., Crowl, A.A., Mavrodiev, E., Cellinese, N., Oganesian, M., Fraunhofer, K., Kamari, G., Phitos, D., Haberle, R., Akaydin, G., Ikinci, N., Borsch,T. (2012): How to Handle Speciose Clades? Mass Taxon-Sampling as a Strategy towards Illuminating the Natural History of Campanula (Campanuloideae). PLoS ONE 7 (11):  E50076.</ggbn:ReferenceCitation>
-                              <ggbn:ReferenceURI>http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050076</ggbn:ReferenceURI>
-                            </ggbn:Reference>
-                          </ggbn:References>
-                        </ggbn:sequencing>
-                      </ggbn:Sequencings>
-                    </ggbn:amplification>
-                  </ggbn:Amplifications>
-                </ggbn:GGBN>
-              </abcd21:UnitExtension>
-            </abcd21:UnitExtensions>
           </abcd21:Unit>
         </abcd21:Units>
       </abcd21:DataSet>

@@ -127,35 +127,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	/**
-	 * @throws ParseException
-	 */
-	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	public void testImportAmericana() {
-	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
-	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
-
-	    boolean result = defaultImport.invoke(importConfigurator);
-	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
-	    assertEquals("Number of dna samples is incorrect", 2, occurrenceService.count(DnaSample.class));
-	    assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
-	    taxonNodeService.list(TaxonNode.class, null, null, null, null);
-	    occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
-
-	}
-
-	/**
 	 * Added this test because there was a unique key on the citations_id column of table
 	 * SEQUENCE_REFERENCE which makes no sense.
 	 */

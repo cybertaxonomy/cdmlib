@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,16 +42,20 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -646,6 +651,45 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertEquals(3, defaultClassification.getAllNodes().size());
 
 	}
+
+    /**
+     * Tests import of unit belonging to a taxon with a non-parsable name. Since
+     * no rank can be deduced from the name there will be no taxon hierarchy
+     * created but only the single taxon
+     *
+     * @throws ParseException
+     */
+    @Test
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportNonParsableName() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+        taxonNodeService.list(TaxonNode.class, null, null, null, null);
+        occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
+        /*
+         * Default classification
+         *   - Campanula ..g... americana --- hort. ttt ex Steud.
+         */
+        assertEquals("Number of taxon nodes is incorrect", 2, taxonNodeService.count(TaxonNode.class));
+        assertEquals("Number of taxa is incorrect", 1, taxonService.count(TaxonBase.class));
+        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula ..g... americana --- hort. ttt ex Steud.", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+    }
 
 	@Test
 	@Ignore
