@@ -94,7 +94,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
 
-    /**classification
+    /**
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
      */
