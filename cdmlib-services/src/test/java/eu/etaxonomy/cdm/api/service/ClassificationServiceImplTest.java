@@ -141,8 +141,10 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals("Acacia subgen. Aculeiferum Pedley", nodes.get(2).getTaxon().getName().getTitleCache());
         Assert.assertEquals("Acacia sect. Botrycephalae Yuji Sasaki", nodes.get(3).getTaxon().getName().getTitleCache());
         Assert.assertEquals("Acacia subgen. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(4).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(5).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(6).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia acicularis Willd.", nodes.get(5).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(6).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(7).getTaxon().getName().getTitleCache());
+        //TODO add Hybrid taxon
 
 
 
