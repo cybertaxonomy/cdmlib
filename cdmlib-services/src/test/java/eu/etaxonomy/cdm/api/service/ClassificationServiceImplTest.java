@@ -11,21 +11,18 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -103,37 +100,17 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     @DataSet
     public final void testTaxonNodeByNameComparator() {
         taxonNodeComparator = new TaxonNodeByNameComparator();
-        Classification classification = service.find(UUID.fromString(CLASSIFICATION_UUID));
 
-//    	try {
-//			printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase"});
-//		} catch (FileNotFoundException e) {
-//			/* IGNORE */
-//		}
-
-        //List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.GENUS(), NODE_INIT_STRATEGY);
-
-        List<TaxonNode> taxonNodes = service.getAllNodes();
-        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
-        for (TaxonNode node: taxonNodes){
-            TaxonNode nodeDeproxy = HibernateProxyHelper.deproxy(node, TaxonNode.class);
-            nodes.add(taxonNodeService.load(nodeDeproxy.getUuid(), NODE_INIT_STRATEGY));
-
-        }
-
+        List<TaxonNode> nodes = service.getAllNodes();
         Collections.sort(nodes, taxonNodeComparator);
 
-
-        logger.setLevel(Level.DEBUG);
+//        logger.setLevel(Level.DEBUG);
         if(logger.isDebugEnabled()){
             logger.debug("-------------");
 	        for (TaxonNode node: nodes){
 	        	if (node!= null && node.getTaxon() != null && node.getTaxon().getName()!= null){
 	                logger.debug(node.getTaxon().getName().getTitleCache() + " [" + node.getTaxon().getName().getRank() + "]");
 	        	}
-	            /*for (TaxonNode child : node.getChildNodes()){
-	                    logger.debug(child.getTaxon().getName().getTitleCache());
-	            }*/
 	        }
         }
 
@@ -145,7 +122,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(6).getTaxon().getName().getTitleCache());
         Assert.assertEquals("Acacia mearnsii Benth", nodes.get(7).getTaxon().getName().getTitleCache());
         //TODO add Hybrid taxon
-
 
 
         /*
