@@ -138,7 +138,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
             titleCache = String.valueOf(taxonNode.getId());
         }
         if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
-        System.out.println(titleCache);
+//        System.out.println(titleCache);
         return titleCache;
     }
 
