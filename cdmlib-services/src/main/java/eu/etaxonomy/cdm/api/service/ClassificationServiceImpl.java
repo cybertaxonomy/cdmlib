@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -105,21 +106,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    @Deprecated
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths){
-
-        List<TaxonNode> rootNodes = dao.listRankSpecificRootNodes(classification, rank, limit , start, propertyPaths);
-
-        //sort nodes by TaxonName
-        Collections.sort(rootNodes, taxonNodeComparator);
-
-        // initialize all nodes
-        defaultBeanInitializer.initializeAll(rootNodes, propertyPaths);
-
-        return rootNodes;
-    }
-
-    @Override
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
             Integer pageIndex, List<String> propertyPaths) {
         return pageRankSpecificRootNodes(classification, rank, pageSize, pageIndex, propertyPaths).getRecords();
@@ -128,17 +114,41 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     @Override
     public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
             Integer pageIndex, List<String> propertyPaths) {
-        Long numberOfResults = dao.countRankSpecificRootNodes(classification, rank);
+        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, rank);
+        long totalNumberOfResults = numberOfResults[0] + (numberOfResults.length > 1 ? numberOfResults[1] : 0);
 
         List<TaxonNode> results = new ArrayList<TaxonNode>();
-        if (numberOfResults > 0) { // no point checking again
 
-            results = dao.listRankSpecificRootNodes(classification, rank, PagerUtils.limitFor(pageSize),
-                    PagerUtils.startFor(pageSize, pageIndex), propertyPaths);
+        if (AbstractPagerImpl.hasResultsInRange(totalNumberOfResults, pageIndex, pageSize)) { // no point checking again
+            Integer limit = PagerUtils.limitFor(pageSize);
+            Integer start = PagerUtils.startFor(pageSize, pageIndex);
+
+            Integer remainingLimit = limit;
+            int[] queryIndexes = rank == null ? new int[]{0} : new int[]{0,1};
+
+            for(int queryIndex: queryIndexes) {
+                if(start != null && start > numberOfResults[queryIndex]) {
+                    // start in next query with new start value
+                    start = start - (int)numberOfResults[queryIndex];
+                    continue;
+                }
+
+                List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification, rank, remainingLimit, start, propertyPaths, queryIndex);
+                results.addAll(perQueryResults);
+                if(remainingLimit != null ){
+                    remainingLimit = remainingLimit - results.size();
+                    if(remainingLimit <= 0) {
+                        // no need to run further queries if first query returned enough items!
+                        break;
+                    }
+                    // start at with fist item of next query to fetch the remaining items
+                    start = 0;
+                }
+            }
         }
 
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults.intValue(), pageSize, results);
+        return new DefaultPagerImpl<TaxonNode>(pageIndex, (int) totalNumberOfResults, pageSize, results);
 
     }
 
