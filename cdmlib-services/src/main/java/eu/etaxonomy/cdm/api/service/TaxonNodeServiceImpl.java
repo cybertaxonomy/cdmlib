@@ -526,4 +526,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     }
 
+    @Override
+    @Transactional
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid){
+        UpdateResult result = new UpdateResult();
+        for (UUID taxonNodeUuid: taxonNodeUuids){
+            result.includeResult(moveTaxonNode(taxonNodeUuid,newParentNodeUuid));
+        }
+        return result;
+    }
+
 }

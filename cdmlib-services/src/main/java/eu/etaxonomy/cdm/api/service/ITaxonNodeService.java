@@ -130,4 +130,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
 
+    /**
+     * @param taxonNodeUuids
+     * @param newParentNodeUuid
+     * @return
+     */
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid);
+
 }

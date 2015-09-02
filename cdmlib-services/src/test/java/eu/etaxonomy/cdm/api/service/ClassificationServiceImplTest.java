@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +25,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -97,13 +99,16 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         //List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.GENUS(), NODE_INIT_STRATEGY);
 
         List<TaxonNode> taxonNodes = service.getAllNodes();
+        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
         for (TaxonNode node: taxonNodes){
-            taxonNodeService.load(node.getUuid(), NODE_INIT_STRATEGY);
+            TaxonNode nodeDeproxy = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+            nodes.add(taxonNodeService.load(nodeDeproxy.getUuid(), NODE_INIT_STRATEGY));
+
         }
-        TaxonNode nodeGenus = taxonNodeService.find(UUID.fromString("19a4fce2-8be5-4ec7-a6a7-f3974047ba5f"));
-        int index = taxonNodes.indexOf(nodeGenus);
-        taxonNodes.remove(index);
-        Collections.sort(taxonNodes, taxonNodeComparator);
+       // TaxonNode nodeGenus = taxonNodeService.find(UUID.fromString("19a4fce2-8be5-4ec7-a6a7-f3974047ba5f"));
+       // int index = taxonNodes.indexOf(nodeGenus);
+      //  taxonNodes.remove(index);
+        Collections.sort(nodes, taxonNodeComparator);
 
         /**
          * expected order is:
@@ -117,7 +122,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         logger.setLevel(Level.DEBUG);
         if(logger.isDebugEnabled()){
             logger.debug("-------------");
-	        for (TaxonNode node: taxonNodes){
+	        for (TaxonNode node: nodes){
 	        	if (node!= null && node.getTaxon() != null && node.getTaxon().getName()!= null){
 	                logger.debug(node.getTaxon().getName().getTitleCache() );
 	        	}
@@ -127,7 +132,14 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 	        }
         }
 
-        Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(1).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(1).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia subg. Aculeiferum Pedley", nodes.get(2).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia sect. Botrycephalae Yuji Sasaki", nodes.get(3).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(4).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(5).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(6).getTaxon().getName().getTitleCache());
+
+
 
         /*
         ((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);
@@ -159,7 +171,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
-        
+
         taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 
@@ -323,6 +335,6 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

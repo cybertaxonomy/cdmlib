@@ -423,6 +423,50 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	}
+
+	@Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public final void testDeleteNodeWithReusedTaxon(){
+        classification = classificationService.load(classificationUuid);
+        node1 = taxonNodeService.load(node1Uuid);
+        node2 = taxonNodeService.load(rootNodeUuid);
+        node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+
+
+        Classification classification2 = Classification.NewInstance("Classification2");
+        TaxonNode nodeClassification2 =classification2.addChildTaxon(node1.getTaxon(), null, null);
+
+        classificationService.save(classification2);
+        List<TaxonNode> nodesOfClassification2 = taxonNodeService.listAllNodesForClassification(classification2, null, null);
+        UUID nodeUUID = nodesOfClassification2.get(0).getUuid();
+        TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
+        newNode = taxonNodeService.load(uuidNewNode);
+        UUID taxUUID = newNode.getTaxon().getUuid();
+        UUID nameUUID = newNode.getTaxon().getName().getUuid();
+
+        DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
+        if (!result.isOk()){
+            Assert.fail();
+        }
+        newNode = taxonNodeService.load(uuidNewNode);
+        node1 = taxonNodeService.load(node1Uuid);
+        assertNull(newNode);
+        assertNull(node1);
+        taxonNodeService.load(nodeUUID);
+
+        t1 = (Taxon) taxonService.load(t1Uuid);
+        assertNotNull(t1);
+        Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
+        assertNull(newTaxon);
+        BotanicalName name = (BotanicalName)nameService.load(nameUUID);
+        assertNull(name);
+
+
+    }
+
+
+
 	@Test
 	@DataSet
 	public final void testDeleteNodes(){

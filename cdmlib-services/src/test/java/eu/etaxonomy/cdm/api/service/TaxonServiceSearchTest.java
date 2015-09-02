@@ -550,6 +550,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    @Ignore
     public final void testFindByDescriptionElementFullText_TextData() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
