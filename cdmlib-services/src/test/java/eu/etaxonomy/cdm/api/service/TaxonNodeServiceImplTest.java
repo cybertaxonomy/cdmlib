@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -426,6 +427,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@Ignore
     public final void testDeleteNodeWithReusedTaxon(){
         classification = classificationService.load(classificationUuid);
         node1 = taxonNodeService.load(node1Uuid);
