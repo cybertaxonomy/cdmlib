@@ -147,7 +147,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         String processLabel = "accumulating distributions";
 
-        final Rank _lowerRank = lowerRank != null ? lowerRank : Rank.UNRANKED_INFRASPECIFIC();
+        final Rank _lowerRank = lowerRank != null ? lowerRank : Rank.UNKNOWN_RANK(); // this is the lowest rank
         final Rank _upperRank = upperRank != null ? upperRank : Rank.GENUS();
 
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
