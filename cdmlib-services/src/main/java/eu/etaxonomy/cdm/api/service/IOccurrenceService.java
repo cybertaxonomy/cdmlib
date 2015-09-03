@@ -317,7 +317,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param sequence the Sequence to move
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
-    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence);
+    public UpdateResult moveSequence(DnaSample from, DnaSample to, Sequence sequence);
+
+
+    /**
+     * @param fromUuid
+     * @param toUuid
+     * @param sequenceUuid
+     * @return
+     */
+    public UpdateResult moveSequence(UUID fromUuid, UUID toUuid, UUID sequenceUuid);
 
     /**
      * Moves the given {@link DerivedUnit} from one {@link SpecimenOrObservationBase} to another.

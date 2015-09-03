@@ -24,7 +24,10 @@ import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
@@ -50,12 +53,31 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
     }
 
     @Override
-    public boolean moveSingleRead(Sequence from, Sequence to, SingleRead singleRead) {
+    public UpdateResult moveSingleRead(Sequence from, Sequence to, SingleRead singleRead) {
+        UpdateResult result = new UpdateResult();
         from.removeSingleRead(singleRead);
         saveOrUpdate(from);
         to.addSingleRead(singleRead);
         saveOrUpdate(to);
-        return true;
+        result.setStatus(Status.OK);
+        result.addUpdatedObject(from);
+        result.addUpdatedObject(to);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveSingleRead(UUID fromUuid, UUID toUuid, UUID singleReadUuid) {
+        SingleRead singleRead = null;
+        Sequence from = CdmBase.deproxy(dao.load(fromUuid), Sequence.class);
+        Sequence to = CdmBase.deproxy(dao.load(toUuid), Sequence.class);
+        for(SingleRead sr : from.getSingleReads()) {
+            if(sr.getUuid().equals(singleReadUuid)) {
+                singleRead = sr;
+                break;
+            }
+        }
+        return moveSingleRead(from, to , singleRead);
     }
 
     @Override

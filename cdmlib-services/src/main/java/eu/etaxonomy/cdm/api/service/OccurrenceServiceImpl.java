@@ -799,21 +799,31 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly = false)
-    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+    public UpdateResult moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+        return moveSequence(from.getUuid(), to.getUuid(), sequence.getUuid());
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveSequence(UUID fromUuid, UUID toUuid, UUID sequenceUuid) {
         // reload specimens to avoid session conflicts
-        from = (DnaSample) load(from.getUuid());
-        to = (DnaSample) load(to.getUuid());
-        sequence = sequenceService.load(sequence.getUuid());
+        DnaSample from = (DnaSample) load(fromUuid);
+        DnaSample to = (DnaSample) load(toUuid);
+        Sequence sequence = sequenceService.load(sequenceUuid);
 
         if (from == null || to == null || sequence == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
                     "Operation was move "+sequence+ " from "+from+" to "+to);
         }
+        UpdateResult result = new UpdateResult();
         from.removeSequence(sequence);
         saveOrUpdate(from);
         to.addSequence(sequence);
         saveOrUpdate(to);
-        return true;
+        result.setStatus(Status.OK);
+        result.addUpdatedObject(from);
+        result.addUpdatedObject(to);
+        return result;
     }
 
     @Override

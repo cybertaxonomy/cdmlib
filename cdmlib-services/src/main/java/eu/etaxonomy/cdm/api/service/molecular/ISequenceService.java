@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -33,7 +34,17 @@ public interface ISequenceService extends IAnnotatableService<Sequence>{
      * @param singleRead the SingleRead to move
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
-    public boolean moveSingleRead(Sequence from, Sequence to, SingleRead singleRead);
+    public UpdateResult moveSingleRead(Sequence from, Sequence to, SingleRead singleRead);
+
+
+    /**
+     * @param fromUuid
+     * @param toUuid
+     * @param singleReadUuid
+     * @return
+     */
+    public UpdateResult moveSingleRead(UUID fromUuid, UUID toUuid, UUID singleReadUuid);
+
 
     /**
      * Creates and returns a map with {@link SingleRead}s as keys.
@@ -48,5 +59,6 @@ public interface ISequenceService extends IAnnotatableService<Sequence>{
      * @return
      */
     public DeleteResult delete(UUID fromUuid, SpecimenDeleteConfigurator config);
+
 
 }
