@@ -119,10 +119,9 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals("Acacia sect. Botrycephalae Yuji Sasaki", nodes.get(3).getTaxon().getName().getTitleCache());
         Assert.assertEquals("Acacia subgen. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(4).getTaxon().getName().getTitleCache());
         Assert.assertEquals("Acacia acicularis Willd.", nodes.get(5).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(6).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(7).getTaxon().getName().getTitleCache());
-        //TODO add Hybrid taxon
-
+        Assert.assertEquals("×Acacia acicularis Willd. subsp. acicularis", nodes.get(6).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(7).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(8).getTaxon().getName().getTitleCache());
 
         /*
         ((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);
@@ -159,6 +158,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         // |  |------- Acacia cuspidifolia Maslin                              [Species]
         // |  |------- Acacia mearnsii Benth                                   [Species]
         // |---------- Acacia acicularis Willd.                                [Species]
+        //             |-- ×Acacia acicularis Willd. subsp. acicularis         [Subspecies]
         //
         // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
@@ -174,6 +174,12 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 10, 0, NODE_INIT_STRATEGY);
         Assert.assertEquals(4, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 0, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 1, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 2, NODE_INIT_STRATEGY);
+        Assert.assertEquals(0, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(3, taxonNodes.size());
@@ -181,6 +187,9 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), 10, 0, NODE_INIT_STRATEGY);
         Assert.assertEquals(3, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), 2, 1, NODE_INIT_STRATEGY);
+        Assert.assertEquals(1, taxonNodes.size());
+
 
     }
 
@@ -352,6 +361,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         // |  |------- Acacia cuspidifolia Maslin                              [Species]
         // |  |------- Acacia mearnsii Benth                                   [Species]
         // |---------- Acacia acicularis Willd.                                [Species]
+        //             |-- ×Acacia acicularis Willd. subsp. acicularis         [Subspecies]
         //
         // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
@@ -392,11 +402,17 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         acacia_acicularis_n.setAuthorshipCache("Willd.", true);
         Taxon acacia_acicularis_t = Taxon.NewInstance(acacia_acicularis_n, sec);
 
+        BotanicalName xacacia_acicularis_n = BotanicalName.NewInstance(Rank.SUBSPECIES(), "Acacia", null,"acicularis", "acicularis", null, sec, null, null);
+        xacacia_acicularis_n.setAuthorshipCache("Willd.", true);
+        xacacia_acicularis_n.setMonomHybrid(true);
+        System.out.println(xacacia_acicularis_n.getTitleCache());
+        Taxon xacacia_acicularis_t = Taxon.NewInstance(xacacia_acicularis_n, sec);
+
         TaxonNode acacia_tn = classification.addChildTaxon(acacia_t, sec, null);
         TaxonNode acacia_subg_phyllodineae_tn = acacia_tn.addChildTaxon(acacia_subg_phyllodineae_t, sec, null);
         acacia_subg_phyllodineae_tn.addChildTaxon(acacia_setc_botrycephalae_t, sec, null);
         acacia_tn.addChildTaxon(acacia_subg_aculeiferum_t, sec, null);
-        acacia_tn.addChildTaxon(acacia_mearnsii_t, sec, null);
+        acacia_tn.addChildTaxon(acacia_mearnsii_t, sec, null).addChildTaxon(xacacia_acicularis_t, sec, null);
         acacia_tn.addChildTaxon(acacia_cuspidifolia_t, sec, null);
         classification.addChildTaxon(acacia_acicularis_t, sec, null);
 
