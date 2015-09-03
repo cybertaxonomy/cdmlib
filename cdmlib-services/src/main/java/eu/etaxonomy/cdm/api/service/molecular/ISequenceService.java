@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.api.service.molecular;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 
@@ -38,5 +41,12 @@ public interface ISequenceService extends IAnnotatableService<Sequence>{
      * @return a map of SingleReads as keys and the Sequences linking to them
      */
     public Map<SingleRead, Collection<Sequence>> getSingleReadSequencesMap();
+
+    /**
+     * @param fromUuid
+     * @param config
+     * @return
+     */
+    public DeleteResult delete(UUID fromUuid, SpecimenDeleteConfigurator config);
 
 }

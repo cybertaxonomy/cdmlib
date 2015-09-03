@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
@@ -35,6 +39,9 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
 public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISequenceDao> implements ISequenceService{
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
+
+    @Autowired
+    IOccurrenceService occurrenceService;
 
     @Override
     @Autowired
@@ -65,5 +72,11 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
             }
         }
         return singleReadToSequences;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult delete(UUID fromUuid, SpecimenDeleteConfigurator config) {
+        return occurrenceService.deleteDerivateHierarchy(dao.load(fromUuid),config);
     }
 }

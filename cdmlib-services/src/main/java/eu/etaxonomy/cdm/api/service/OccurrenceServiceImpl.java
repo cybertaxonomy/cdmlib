@@ -1138,6 +1138,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
                         for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
+                            deleteResult.addUpdatedObject(specimenOrObservationBase);
                         }
                     }
                 }
@@ -1161,6 +1162,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         //delete from sequence
         sequence.removeSingleRead(singleRead);
+        deleteResult.addUpdatedObject(sequence);
         deleteResult.setStatus(Status.OK);
         return deleteResult;
     }
@@ -1168,8 +1170,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid){
-        SingleRead singleRead = CdmBase.deproxy(dao.load(singleReadUuid), SingleRead.class);
-        Sequence sequence = CdmBase.deproxy(dao.load(sequenceUuid), Sequence.class);
+        SingleRead singleRead = null;
+        Sequence sequence = CdmBase.deproxy(sequenceService.load(sequenceUuid), Sequence.class);
+        for(SingleRead sr : sequence.getSingleReads()) {
+            if(sr.getUuid().equals(singleReadUuid)) {
+                singleRead = sr;
+                break;
+            }
+        }
         return deleteSingleRead(singleRead, sequence);
     }
 
@@ -1184,8 +1192,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 return deleteResult;
             }
             Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
-            sequence.getDnaSample().removeSequence(sequence);
+            DnaSample dnaSample = sequence.getDnaSample();
+            dnaSample.removeSequence(sequence);
             deleteResult = sequenceService.delete(sequence);
+            deleteResult.addUpdatedObject(dnaSample);
         }
         else if(from instanceof SingleRead){
             SingleRead singleRead = (SingleRead)from;
