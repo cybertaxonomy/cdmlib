@@ -867,8 +867,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             result.setStatus(Status.OK);
             result.addUpdatedObject(from);
             result.addUpdatedObject(to);
+        } else {
+            result.setStatus(Status.ERROR);
         }
-        result.setStatus(Status.ERROR);
         return result;
     }
 
