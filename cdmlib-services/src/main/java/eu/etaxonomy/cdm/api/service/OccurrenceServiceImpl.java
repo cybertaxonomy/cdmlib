@@ -798,6 +798,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
         // reload specimens to avoid session conflicts
         from = (DnaSample) load(from.getUuid());
@@ -816,17 +817,24 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
+        return moveDerivate(from.getUuid(), to.getUuid(), derivate.getUuid()).isOk();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid) {
         // reload specimens to avoid session conflicts
-        from = load(from.getUuid());
-        to = load(to.getUuid());
-        derivate = (DerivedUnit) load(derivate.getUuid());
+        SpecimenOrObservationBase<?> from = load(specimenFromUuid);
+        SpecimenOrObservationBase<?> to = load(specimenToUuid);
+        DerivedUnit derivate = (DerivedUnit) load(derivateUuid);
 
         if (from == null || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
             		"Operation was move "+derivate+ " from "+from+" to "+to);
         }
-
+        UpdateResult result = new UpdateResult();
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();
         SpecimenOrObservationType toType = to.getRecordBasis();
         // check if type is a sub derivate type
@@ -856,9 +864,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
             saveOrUpdate(from);
             saveOrUpdate(to);
-            return true;
+            result.setStatus(Status.OK);
+            result.addUpdatedObject(from);
+            result.addUpdatedObject(to);
         }
-        return false;
+        result.setStatus(Status.ERROR);
+        return result;
     }
 
     @Override

@@ -326,6 +326,14 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param derivate the DerivedUnit to move
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
+    public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid);
+
+    /**
+     * @param from
+     * @param to
+     * @param derivate
+     * @return
+     */
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
     /**
@@ -497,8 +505,5 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
     public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
-
-
-
 
 }
