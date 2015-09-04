@@ -185,7 +185,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(1, lapsana_communis_alpina.getDescriptions().size());
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, classification, null);
+        engine.accumulate(AggregationMode.byAreas, superAreas, lowerRank, upperRank, classification, null);
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());

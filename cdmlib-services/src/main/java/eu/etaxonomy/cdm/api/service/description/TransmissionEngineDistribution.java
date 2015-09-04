@@ -335,14 +335,19 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
         }
+        double end1 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByArea() : " + (end1 - start) / (1000) + "s");
+
+        double start2 = System.currentTimeMillis();
         monitor.subTask("Accumulating distributions to higher ranks");
         if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byRanks));
         }
 
-        double end = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulation: " + (end - start) / (1000) + "s");
+        double end2 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByRank() : " + (end2 - start2) / (1000) + "s");
+        logger.info("Time elapsed for accumulate(): " + (end2 - start) / (1000) + "s");
     }
 
     /**
