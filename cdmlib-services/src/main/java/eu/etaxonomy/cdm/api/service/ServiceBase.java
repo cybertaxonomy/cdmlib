@@ -122,6 +122,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
+    public List<T> listByIds(Set<Integer> idSet, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        return dao.listByIds(idSet, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public T find(UUID uuid) {
         return uuid == null ? null : dao.findByUuid(uuid);
     }

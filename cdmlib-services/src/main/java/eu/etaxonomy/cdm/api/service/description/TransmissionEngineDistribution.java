@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -54,7 +56,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * The TransmissionEngineDistribution is meant to be used from within a service class.
@@ -100,6 +105,17 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     final boolean ONLY_FISRT_BATCH = false;
 
 
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
+            "description.markers.markerType",
+            "description.elements.markers.markerType",
+            "description.elements.area",
+            "description.elements.sources.citation.authorship",
+            "description.elements.sources.nameUsedInSource",
+            "description.elements.multilanguageText",
+            "name.status.type",
+    });
+
+
     /**
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
@@ -117,6 +133,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     @Autowired
     private IClassificationService classificationService;
+
+    @Autowired
+    private IClassificationDao classificationDao;
 
     @Autowired
     private INameService mameService;
@@ -311,44 +330,61 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             monitor = new NullProgressMonitor();
         }
 
-        // take start time for performance testing
-        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
-        double start = System.currentTimeMillis();
+        logger.setLevel(Level.INFO); // TRACE will slow down a lot since it forces loading all term representations
+
+        logger.info("Hibernate JDBC Batch size: "
+                + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
         // only for debugging:
         logger.setLevel(Level.INFO);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
 
-        logger.info("Hibernate JDBC Batch size: "
-                + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
+        Set<Classification> classifications = new HashSet<Classification>();
+        if(classification == null) {
+            classifications.addAll(classificationService.listClassifications(null, null, null, null));
+        } else {
+            classifications.add(classification);
+        }
 
-        int workTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
-        monitor.beginTask("Accumulating distributions", workTicks + 1 );
+        int aggregationWorkTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
 
+        // take start time for performance testing
+        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
+        double start = System.currentTimeMillis();
 
-        monitor.subTask("updating Priorities");
+        monitor.beginTask("Accumulating distributions", (classifications.size() * aggregationWorkTicks) + 1 );
         updatePriorities();
         monitor.worked(1);
-        monitor.setTaskName("Accumulating distributions");
 
-        monitor.subTask("Accumulating distributions to super areas");
-        if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
-            accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
-                    mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
+        for(Classification _classification : classifications) {
+
+            ClassificationLookupDTO classificationLookupDao = classificationDao.classificationLookup(_classification);
+
+            monitor.subTask("Accumulating distributions to super areas for " + _classification.getTitleCache());
+            if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
+                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, 200),
+                        mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
+            }
+            monitor.subTask("Accumulating distributions to higher ranks for " + _classification.getTitleCache());
+
+            double end1 = System.currentTimeMillis();
+
+            logger.info("Time elapsed for accumulateByArea() : " + (end1 - start) / (1000) + "s");
+
+            double start2 = System.currentTimeMillis();
+            if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
+                accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
+                        mode.equals(AggregationMode.byRanks));
+            }
+
+            double end2 = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulateByRank() : " + (end2 - start2) / (1000) + "s");
+            logger.info("Time elapsed for accumulate(): " + (end2 - start) / (1000) + "s");
+
+            if(ONLY_FISRT_BATCH) {
+                break;
+            }
         }
-        double end1 = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulateByArea() : " + (end1 - start) / (1000) + "s");
-
-        double start2 = System.currentTimeMillis();
-        monitor.subTask("Accumulating distributions to higher ranks");
-        if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
-            accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
-                    mode.equals(AggregationMode.byRanks));
-        }
-
-        double end2 = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulateByRank() : " + (end2 - start2) / (1000) + "s");
-        logger.info("Time elapsed for accumulate(): " + (end2 - start) / (1000) + "s");
     }
 
     /**
@@ -371,10 +407,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *
      * @param superAreas
      *      the areas to which the subordinate areas should be projected
-     * @param classification
-     *      limit the accumulation process to a specific classification (not yet implemented)
+     * @param classificationLookupDao
+     *
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
+    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 1000;
 
@@ -388,9 +424,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         List<NamedArea> superAreaList = (List)termService.find(superAreaUuids);
 
         // visit all accepted taxa
-        Pager<Taxon> taxonPager = null;
+        subMonitor.beginTask("Accumulating by area ",  classificationLookupDao.getTaxonIds().size());
+        Iterator<Integer> taxonIdIterator = classificationLookupDao.getTaxonIds().iterator();
+
         int pageIndex = 0;
-        boolean isLastPage = false;
+        while (taxonIdIterator.hasNext()) {
         while (!isLastPage) {
 
             if(txStatus == null) {
@@ -398,45 +436,43 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 txStatus = startTransaction(false);
             }
 
-            //TODO limit by classification if not null
-            taxonPager = taxonService.page(Taxon.class, batchSize, pageIndex++, null, null);
-
-            if(taxonPager.getCurrentIndex() == 0){
-                subMonitor.beginTask("Accumulating by area ",  taxonPager.getCount().intValue());
+            // load taxa for this batch
+            List<TaxonBase> taxa = new ArrayList<TaxonBase>(batchSize);
+            Set<Integer> taxonIds = new HashSet<Integer>(batchSize);
+            while(taxonIdIterator.hasNext() && taxonIds.size() < batchSize ) {
+                taxonIds.add(taxonIdIterator.next());
             }
 
-            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+//            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 
-            if (taxonPager.getRecords().size() == 0){
-                break;
-            }
-            isLastPage = taxonPager.getRecords().size() < batchSize;
+            taxa = taxonService.listByIds(taxonIds, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
-            for(Taxon taxon : taxonPager.getRecords()) {
+            for(TaxonBase taxon : taxa) {
                 if(logger.isDebugEnabled()){
-                    logger.debug("accumulateByArea() - taxon :" + taxon.getTitleCache());
+                    logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
                 }
 
-                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
-                List<Distribution> distributions = distributionsFor(taxon);
+                TaxonDescription description = findComputedDescription((Taxon)taxon, doClearDescriptions);
+                List<Distribution> distributions = distributionsFor((Taxon)taxon);
 
                 // Step through superAreas for accumulation of subAreas
                 for (NamedArea superArea : superAreaList){
 
                     // accumulate all sub area status
                     PresenceAbsenceTerm accumulatedStatus = null;
+                    // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
                     Set<NamedArea> subAreas = getSubAreasFor(superArea);
                     for(NamedArea subArea : subAreas){
                         if(logger.isTraceEnabled()){
-                            logger.trace("accumulateByArea() - \t\t" + subArea.getLabel());
+                            logger.trace("accumulateByArea() - \t\t" + termToString(subArea));
                         }
                         // step through all distributions for the given subArea
                         for(Distribution distribution : distributions){
                             if(distribution.getArea() != null && distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
                                 PresenceAbsenceTerm status = distribution.getStatus();
                                 if(logger.isTraceEnabled()){
-                                    logger.trace("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
+                                    logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));
                                 }
                                 // skip all having a status value different of those in byAreaIgnoreStatusList
                                 if (getByAreaIgnoreStatusList().contains(status)){
@@ -448,7 +484,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     } // next sub area
                     if (accumulatedStatus != null) {
                         if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByArea() - \t >> " + superArea.getLabel() + ": " + accumulatedStatus.getLabel());
+                            logger.debug("accumulateByArea() - \t >> " + termToString(superArea) + ": " + termToString(accumulatedStatus));
                         }
                         // store new distribution element for superArea in taxon description
                         Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
@@ -464,7 +500,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
             } // next taxon
 
-            taxonPager = null;
             flushAndClear();
 
             // commit for every batch, otherwise the persistent context
@@ -479,6 +514,32 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         } // next batch of taxa
 
         subMonitor.done();
+    }
+
+    /**
+     * @param taxon
+     * @param logger2
+     * @return
+     */
+    private String taxonToString(TaxonBase taxon) {
+        if(logger.isTraceEnabled()) {
+            return taxon.getTitleCache();
+        } else {
+            return taxon.toString();
+        }
+    }
+
+    /**
+     * @param taxon
+     * @param logger2
+     * @return
+     */
+    private String termToString(OrderedTermBase<?> term) {
+        if(logger.isTraceEnabled()) {
+            return term.getLabel() + " [" + term.getIdInVocabulary() + "]";
+        } else {
+            return term.getIdInVocabulary();
+        }
     }
 
    /**
@@ -520,7 +581,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         for (Rank rank : ranks) {
 
             if(logger.isDebugEnabled()){
-                logger.debug("accumulateByRank() - at Rank '" + rank.getLabel() + "'");
+                logger.debug("accumulateByRank() - at Rank '" + termToString(rank) + "'");
             }
 
             Pager<TaxonNode> taxonPager = null;
@@ -562,13 +623,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                         Taxon taxon = taxonNode.getTaxon();
                         if (taxaProcessedIds.contains(taxon.getId())) {
                             if(logger.isDebugEnabled()){
-                                logger.debug("accumulateByRank() - skipping already processed taxon :" + taxon.getTitleCache());
+                                logger.debug("accumulateByRank() - skipping already processed taxon :" + taxonToString(taxon));
                             }
                             continue;
                         }
                         taxaProcessedIds.add(taxon.getId());
                         if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxon.getTitleCache());
+                            logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxonToString(taxon));
                         }
 
                         // Step through direct taxonomic children for accumulation
@@ -578,7 +639,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
                             getSession().setReadOnly(taxonNode, true);
                             if(logger.isTraceEnabled()){
-                                logger.trace("                   subtaxon :" + subTaxonNode.getTaxon().getTitleCache());
+                                logger.trace("                   subtaxon :" + taxonToString(subTaxonNode.getTaxon()));
                             }
 
                             for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
@@ -765,8 +826,15 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      * @return
      */
     private List<Distribution> distributionsFor(Taxon taxon) {
-        return descriptionService
-                .listDescriptionElementsForTaxon(taxon, null, Distribution.class, null, null, null);
+        List<Distribution> distributions = new ArrayList<Distribution>();
+        for(TaxonDescription description: taxon.getDescriptions()) {
+            for(DescriptionElementBase deb : description.getElements()) {
+                if(deb instanceof Distribution) {
+                    distributions.add((Distribution)deb);
+                }
+            }
+        }
+        return distributions;
     }
 
     /**

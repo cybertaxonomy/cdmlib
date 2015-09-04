@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * @author a.mueller
@@ -63,7 +64,9 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
 
-    public abstract Long countChildrenOf(Taxon taxon, Classification classification);
+    public Long countChildrenOf(Taxon taxon, Classification classification);
+
+    public ClassificationLookupDTO classificationLookup(Classification classification);
 
     /**
      * @param taxon

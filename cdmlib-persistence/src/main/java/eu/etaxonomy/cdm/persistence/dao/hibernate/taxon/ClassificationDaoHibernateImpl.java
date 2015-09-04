@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * @author a.mueller
@@ -252,6 +253,33 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         super.delete(persistentObject);
 
         return persistentObject.getUuid();
+    }
+
+    @Override
+    public ClassificationLookupDTO classificationLookup(Classification classification) {
+
+        ClassificationLookupDTO classificationLookupDTO = new ClassificationLookupDTO(classification);
+
+        // only for debugging:
+//        logger.setLevel(Level.TRACE);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+
+        String hql = "select t.id, n.rank, tp.id from TaxonNode as tn join tn.classification as c join tn.taxon as t join t.name as n "
+                + " left join tn.parent as tnp left join tnp.taxon as tp "
+                + " where c = :classification";
+        Query query = getSession().createQuery(hql);
+        query.setParameter("classification", classification);
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        for(Object[] row : result) {
+            Integer parentId = null;
+//            if(row.length == 3) { // TODO check necessary?
+//                parentId = (Integer) row[2];
+//            }
+            classificationLookupDTO.add((Integer)row[0], (Rank)row[1], parentId);
+        }
+
+        return classificationLookupDTO ;
     }
 
 
