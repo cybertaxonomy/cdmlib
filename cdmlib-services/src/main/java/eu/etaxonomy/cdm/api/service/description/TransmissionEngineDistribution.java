@@ -93,6 +93,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
+    /**
+     * only used for performance testing
+     */
+    final boolean ONLY_FISRT_BATCH = false;
+
 
     /**
      * A map which contains the status terms as key and the priority as value
@@ -305,6 +310,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             monitor = new NullProgressMonitor();
         }
 
+        // take start time for performance testing
+        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
+        double start = System.currentTimeMillis();
+
         // only for debugging:
         //logger.setLevel(Level.TRACE);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
@@ -331,6 +340,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byRanks));
         }
+
+        double end = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulation: " + (end - start) / (1000) + "s");
     }
 
     /**
@@ -373,7 +385,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         Pager<Taxon> taxonPager = null;
         int pageIndex = 0;
         boolean isLastPage = false;
-        while (!isLastPage) {
+        while (!isLastPage || (pageIndex == 1 && ONLY_FISRT_BATCH)) {
 
             if(txStatus == null) {
                 // transaction has been comitted at the end of this batch, start a new one
@@ -505,7 +517,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             int pageIndex = 0;
             boolean isLastPage = false;
             SubProgressMonitor taxonSubMonitor = null;
-            while (!isLastPage) {
+            while (!isLastPage || (pageIndex == 1 && ONLY_FISRT_BATCH)) {
 
                 if(txStatus == null) {
                     // transaction has been comitted at the end of this batch, start a new one
@@ -597,6 +609,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             taxonSubMonitor.done();
             subMonitor.worked(1);
 
+            if(ONLY_FISRT_BATCH) {
+                break;
+            }
         } // next Rank
 
         subMonitor.done();
