@@ -171,7 +171,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
             result.setAbort();
             return result;
         }
-        return null;
+        return result;
 	}
 
 }
