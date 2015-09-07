@@ -370,6 +370,17 @@
     </property>
   </bean>
   
+  <bean id="httpAmplificationService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="amplificationServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.molecular.IAmplificationService
+      </value>
+    </property>
+  </bean>
+  
   <bean id="httpSequenceService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
