@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  *
@@ -143,6 +144,8 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     private List<PresenceAbsenceTerm> byRankIgnoreStatusList = null;
 
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
+
+    private final List<OrderHint> emptyOrderHints = new ArrayList<OrderHint>(0);
 
 
     /**
@@ -440,16 +443,18 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 
-            taxa = taxonService.listByIds(taxonIds, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+            taxa = taxonService.listByIds(taxonIds, null, null, emptyOrderHints, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
-            for(TaxonBase taxon : taxa) {
+            for(TaxonBase taxonBase : taxa) {
                 if(logger.isDebugEnabled()){
-                    logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
+                    logger.debug("accumulateByArea() - taxon :" + taxonToString(taxonBase));
                 }
 
-                TaxonDescription description = findComputedDescription((Taxon)taxon, doClearDescriptions);
-                List<Distribution> distributions = distributionsFor((Taxon)taxon);
+                Taxon taxon = (Taxon)taxonBase;
+                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
+                List<Distribution> distributions = distributionsFor(taxon);
+
 
                 // Step through superAreas for accumulation of subAreas
                 for (NamedArea superArea : superAreaList){
@@ -509,32 +514,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         } // next batch of taxa
 
         subMonitor.done();
-    }
-
-    /**
-     * @param taxon
-     * @param logger2
-     * @return
-     */
-    private String taxonToString(TaxonBase taxon) {
-        if(logger.isTraceEnabled()) {
-            return taxon.getTitleCache();
-        } else {
-            return taxon.toString();
-        }
-    }
-
-    /**
-     * @param taxon
-     * @param logger2
-     * @return
-     */
-    private String termToString(OrderedTermBase<?> term) {
-        if(logger.isTraceEnabled()) {
-            return term.getLabel() + " [" + term.getIdInVocabulary() + "]";
-        } else {
-            return term.getIdInVocabulary();
-        }
     }
 
    /**
@@ -831,6 +810,32 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             }
         }
         return distributions;
+    }
+
+    /**
+     * @param taxon
+     * @param logger2
+     * @return
+     */
+    private String taxonToString(TaxonBase taxon) {
+        if(logger.isTraceEnabled()) {
+            return taxon.getTitleCache();
+        } else {
+            return taxon.toString();
+        }
+    }
+
+    /**
+     * @param taxon
+     * @param logger2
+     * @return
+     */
+    private String termToString(OrderedTermBase<?> term) {
+        if(logger.isTraceEnabled()) {
+            return term.getLabel() + " [" + term.getIdInVocabulary() + "]";
+        } else {
+            return term.getIdInVocabulary();
+        }
     }
 
     /**
