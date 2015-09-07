@@ -380,7 +380,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 		            }
 
-		            result.addUpdatedObject(taxonNode.getParent());
+		            result.addUpdatedObject(parent);
 		            if(result.getCdmEntity() == null){
 		                result.setCdmEntity(taxonNode);
                     }
