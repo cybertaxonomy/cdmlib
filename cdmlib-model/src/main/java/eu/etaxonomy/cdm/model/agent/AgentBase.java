@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,8 +28,8 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * according to its own knowledge and goals and which may be approached.
  * Agents can be authors for nomenclatural or bibliographical references as well
  * as creators of pictures or field collectors or administrators of collections.
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:57
@@ -61,24 +61,21 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	private static final long serialVersionUID = 7732768617469448829L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentBase.class);
-	
+
 	@XmlElement(name = "Contact")
     @Embedded
     @Merge(MergeMode.MERGE)
     @Match(MatchMode.IGNORE)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-	private Contact contact;
-	
-	/** 
+	private Contact contact = new Contact();
+
+	/**
 	 * Returns the {@link Contact contact} of <i>this</i> person.
 	 * The contact contains several ways to approach <i>this</i> person.
 	 *
 	 * @see 	Contact
 	 */
 	public Contact getContact(){
-		if(contact == null) {
-			this.contact = new Contact();
-		}
 		return this.contact;
 	}
 	/**
@@ -87,7 +84,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}
-	
+
 
 	/**
 	 * Returns the existing contact, or if it does not exists a new contact.
@@ -109,8 +106,8 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 			return contact;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds a new address to this agent
 	 * @param street
@@ -238,8 +235,8 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	public void removeUrl(URI url) {
 		getNewOrExistingContact(false).removeUrl(url);
 	}
-	
-	
-	
-	
+
+
+
+
 }
