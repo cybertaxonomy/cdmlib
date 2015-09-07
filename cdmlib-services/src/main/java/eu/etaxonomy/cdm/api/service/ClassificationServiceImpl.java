@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -576,5 +577,13 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 		}
 		return childNodes;
 	}
+
+   /**
+     * {@inheritDoc}
+     */
+    @Override
+   public ClassificationLookupDTO classificationLookup(Classification classification) {
+       return dao.classificationLookup(classification);
+   }
 
 }
