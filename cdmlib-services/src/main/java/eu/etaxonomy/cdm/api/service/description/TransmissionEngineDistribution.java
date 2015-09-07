@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -315,7 +316,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         double start = System.currentTimeMillis();
 
         // only for debugging:
-        //logger.setLevel(Level.TRACE);
+        logger.setLevel(Level.INFO);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
 
         logger.info("Hibernate JDBC Batch size: "
@@ -390,7 +391,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         Pager<Taxon> taxonPager = null;
         int pageIndex = 0;
         boolean isLastPage = false;
-        while (!isLastPage || (pageIndex == 1 && ONLY_FISRT_BATCH)) {
+        while (!isLastPage) {
 
             if(txStatus == null) {
                 // transaction has been comitted at the end of this batch, start a new one
@@ -471,6 +472,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             commitTransaction(txStatus);
             txStatus = null;
 
+            if(ONLY_FISRT_BATCH) {
+                break;
+            }
+
         } // next batch of taxa
 
         subMonitor.done();
@@ -522,7 +527,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             int pageIndex = 0;
             boolean isLastPage = false;
             SubProgressMonitor taxonSubMonitor = null;
-            while (!isLastPage || (pageIndex == 1 && ONLY_FISRT_BATCH)) {
+            while (!isLastPage) {
 
                 if(txStatus == null) {
                     // transaction has been comitted at the end of this batch, start a new one
@@ -609,6 +614,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 commitTransaction(txStatus);
                 txStatus = null;
 
+                if(ONLY_FISRT_BATCH) {
+                    break;
+                }
             } // next batch
 
             taxonSubMonitor.done();
