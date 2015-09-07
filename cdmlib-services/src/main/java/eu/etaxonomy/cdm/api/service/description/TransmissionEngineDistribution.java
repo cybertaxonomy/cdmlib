@@ -58,11 +58,9 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
- * The TransmissionEngineDistribution is meant to be used from within a service class.
  *
  * <h2>GENERAL NOTES </h2>
  * <em>TODO: These notes are directly taken from original Transmission Engine Occurrence
@@ -92,7 +90,6 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  * @date Feb 22, 2013
  */
 @Service
-
 public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
@@ -102,17 +99,18 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     /**
      * only used for performance testing
      */
-    final boolean ONLY_FISRT_BATCH = false;
+    final boolean ONLY_FISRT_BATCH = true;
 
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "description.markers.markerType",
             "description.elements.markers.markerType",
             "description.elements.area",
+            "description.elements.status",
             "description.elements.sources.citation.authorship",
-            "description.elements.sources.nameUsedInSource",
-            "description.elements.multilanguageText",
-            "name.status.type",
+//            "description.elements.sources.nameUsedInSource",
+//            "description.elements.multilanguageText",
+//            "name.status.type",
     });
 
 
@@ -133,9 +131,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     @Autowired
     private IClassificationService classificationService;
-
-    @Autowired
-    private IClassificationDao classificationDao;
 
     @Autowired
     private INameService mameService;
@@ -358,30 +353,32 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
         for(Classification _classification : classifications) {
 
-            ClassificationLookupDTO classificationLookupDao = classificationDao.classificationLookup(_classification);
+            ClassificationLookupDTO classificationLookupDao = classificationService.classificationLookup(_classification);
+
+            double end1 = System.currentTimeMillis();
+            logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
+            double start2 = System.currentTimeMillis();
 
             monitor.subTask("Accumulating distributions to super areas for " + _classification.getTitleCache());
             if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, 200),
-                        mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
+                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, 200), true);
             }
             monitor.subTask("Accumulating distributions to higher ranks for " + _classification.getTitleCache());
 
-            double end1 = System.currentTimeMillis();
+            double end2 = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulateByArea() : " + (end2 - start2) / (1000) + "s");
 
-            logger.info("Time elapsed for accumulateByArea() : " + (end1 - start) / (1000) + "s");
-
-            double start2 = System.currentTimeMillis();
+            double start3 = System.currentTimeMillis();
             if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
-                        mode.equals(AggregationMode.byRanks));
+                accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200), mode.equals(AggregationMode.byRanks));
             }
 
-            double end2 = System.currentTimeMillis();
-            logger.info("Time elapsed for accumulateByRank() : " + (end2 - start2) / (1000) + "s");
-            logger.info("Time elapsed for accumulate(): " + (end2 - start) / (1000) + "s");
+            double end3 = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
+            logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
 
             if(ONLY_FISRT_BATCH) {
+                monitor.done();
                 break;
             }
         }
@@ -427,9 +424,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         subMonitor.beginTask("Accumulating by area ",  classificationLookupDao.getTaxonIds().size());
         Iterator<Integer> taxonIdIterator = classificationLookupDao.getTaxonIds().iterator();
 
-        int pageIndex = 0;
         while (taxonIdIterator.hasNext()) {
-        while (!isLastPage) {
 
             if(txStatus == null) {
                 // transaction has been comitted at the end of this batch, start a new one
@@ -601,7 +596,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 if(taxonSubMonitor == null) {
                     taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
                     taxonSubMonitor.beginTask("Accumulating by rank " + rank.getLabel(), taxonPager.getCount().intValue());
-
                 }
 
                 if(taxonPager != null){
@@ -680,7 +674,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
             } // next batch
 
-            taxonSubMonitor.done();
+            if(taxonSubMonitor != null) { // TODO taxonSubpager, this check should not be needed
+                taxonSubMonitor.done();
+            }
             subMonitor.worked(1);
 
             if(ONLY_FISRT_BATCH) {
