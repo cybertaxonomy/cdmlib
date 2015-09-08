@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -65,6 +66,11 @@ public interface ICdmApplicationConfiguration{
 
 	public Object getBean(String string);
 
+
+	   /**
+     * @return
+     */
+    public IAnnotationService getAnnotationService();
 
 	/**
 	 * @return

@@ -33,6 +33,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -412,8 +413,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	/* ****** Services ******** */
 	@Override
+	public final IAnnotationService getAnnotationService(){
+	    return configuration.getAnnotationService();
+	}
+
+	@Override
 	public final INameService getNameService(){
-		return configuration.getNameService();
+	    return configuration.getNameService();
 	}
 
 
