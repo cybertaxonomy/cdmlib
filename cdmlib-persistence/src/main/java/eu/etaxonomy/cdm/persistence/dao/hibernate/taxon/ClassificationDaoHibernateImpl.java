@@ -273,9 +273,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         List<Object[]> result = query.list();
         for(Object[] row : result) {
             Integer parentId = null;
-//            if(row.length == 3) { // TODO check necessary?
-//                parentId = (Integer) row[2];
-//            }
+            parentId = (Integer) row[2];
             classificationLookupDTO.add((Integer)row[0], (Rank)row[1], parentId);
         }
 

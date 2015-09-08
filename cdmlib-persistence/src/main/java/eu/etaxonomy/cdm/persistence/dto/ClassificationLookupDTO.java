@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,8 +27,8 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 public class ClassificationLookupDTO {
 
     private final Map<Integer, Integer> taxonIdToParentId = new HashMap<Integer, Integer>();
-    private final Map<Rank,Collection<Integer>> taxonIdByRank = new HashMap<Rank, Collection<Integer>>();
-    private final Map<Integer,Collection<Integer>> childTaxonMap = new HashMap<Integer,Collection<Integer>>();
+    private final Map<Rank,Set<Integer>> taxonIdByRank = new HashMap<Rank, Set<Integer>>();
+    private final Map<Integer,Set<Integer>> childTaxonMap = new HashMap<Integer,Set<Integer>>();
     private Classification classification = null;
 
     /**
@@ -40,14 +41,14 @@ public class ClassificationLookupDTO {
     /**
      * @return the taxonIdByRank
      */
-    public Map<Rank, Collection<Integer>> getTaxonIdByRank() {
+    public Map<Rank, Set<Integer>> getTaxonIdByRank() {
         return taxonIdByRank;
     }
 
     /**
      * @return the childTaxonMap
      */
-    public Map<Integer, Collection<Integer>> getChildTaxonMap() {
+    public Map<Integer, Set<Integer>> getChildTaxonMap() {
         return childTaxonMap;
     }
 
@@ -92,6 +93,15 @@ public class ClassificationLookupDTO {
             taxonIdToParentId.remove(taxonId);
             childTaxonMap.remove(parentId);
         }
+    }
+
+    /**
+     * @param ranks
+     */
+    public void filter(List<Rank> ranks) {
+       for(Rank rank : ranks) {
+           dropRank(rank);
+       }
     }
 
 }
