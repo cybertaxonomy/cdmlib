@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -662,13 +663,15 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 
     @Override
-    public void moveDescriptionElementsToDescription(
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
             boolean isCopy) {
 
+        UpdateResult result = new UpdateResult();
         if (descriptionElements.isEmpty() ){
-            return ;
+            return result;
         }
 
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
@@ -689,10 +692,45 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
                 description.removeElement(element);
                 dao.saveOrUpdate(description);
             }
+            result.addUpdatedObject(description);
 
         }
         dao.saveOrUpdate(targetDescription);
+        result.addUpdatedObject(targetDescription);
+        return result;
+    }
 
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            UUID targetDescriptionUuid,
+            boolean isCopy) {
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            descriptionElements.add(descriptionElementDao.load(deUuid));
+        }
+        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
+
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            UUID targetTaxonUuid,
+            String moveMessage,
+            boolean isCopy) {
+        Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        targetDescription.setTitleCache(moveMessage, true);
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        targetDescription.addAnnotation(annotation);
+
+        targetDescription = dao.save(targetDescription);
+        return moveDescriptionElementsToDescription(descriptionElementUUIDs, targetDescription.getUuid(), isCopy);
     }
 
     @Override
