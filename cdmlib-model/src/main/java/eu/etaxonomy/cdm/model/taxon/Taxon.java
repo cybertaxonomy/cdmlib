@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
@@ -93,8 +93,10 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     @ClassBridge(impl = GroupByTaxonClassBridge.class),
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
-public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
+public class Taxon
+            extends TaxonBase<ITaxonCacheStrategy<Taxon>>
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
+
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -282,8 +284,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         ReflectionUtils.setField(field, description, null);
         descriptions.remove(description);
     }
-    
-    
+
+
     public void removeDescription(TaxonDescription description, boolean removeElements){
     	if (removeElements){
     		Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>(description.getElements());
@@ -1849,9 +1851,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     public void clearDescriptions() {
 		this.descriptions = new HashSet<TaxonDescription>();
 	}
-    
+
     @Override
-    public void setCacheStrategy(IIdentifiableEntityCacheStrategy<Taxon> cacheStrategy){
+    public void setCacheStrategy(ITaxonCacheStrategy<Taxon> cacheStrategy){
     	this.cacheStrategy = cacheStrategy;
     }
 }

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,30 +32,27 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- * @created 21.09.2009
- * @version 1.0
+ * @created 09.09.2015
+ * NOTE: This test is currently more or less a copy of {@link TaxonBaseDefaultCacheStrategyTest}
+ * It does NOT yet test the specifics of the class under test.
+ *
  */
-public class TaxonBaseDefaultCacheStrategyTest {
+public class TaxonShortSecCacheStrategyTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(TaxonShortSecCacheStrategyTest.class);
 
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
-	BotanicalName name;
-	Reference<?> sec;
+	private BotanicalName name;
+	private Reference<?> sec;
+	private static ITaxonCacheStrategy shortStrategy;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	    shortStrategy = new TaxonBaseShortSecCacheStrategy<TaxonBase>();
 	}
 
 	/**
@@ -94,15 +90,16 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+		TaxonBase taxonBase = Taxon.NewInstance(name, sec);
+		taxonBase.setCacheStrategy(shortStrategy);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
 		String appendedPhrase = "aff. 'schippii'";
 		taxonBase.setAppendedPhrase(appendedPhrase);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
-		taxonBase.setDoubtful(true);
-        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
+
+
 	}
 
 	//test missing "&" in title cache  #3822
