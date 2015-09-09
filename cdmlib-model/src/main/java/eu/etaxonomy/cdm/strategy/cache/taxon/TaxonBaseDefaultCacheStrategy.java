@@ -88,22 +88,22 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 //		return result;
 //	}
 
-	/**
-	 * @param name
-	 */
-	private String getNamePart(TaxonBase<?> taxonBase) {
-		TaxonNameBase<?,?> nameBase = taxonBase.getName();
-		String result = nameBase.getTitleCache();
-		//use name cache instead of title cache if required
-		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
-			NonViralName<?> nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
-			result = nvn.getNameCache();
-		}
-		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
-			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();
-		}
-		return result;
-	}
+//	/**
+//	 * @param name
+//	 */
+//	private String getNamePart(TaxonBase<?> taxonBase) {
+//		TaxonNameBase<?,?> nameBase = taxonBase.getName();
+//		String result = nameBase.getTitleCache();
+//		//use name cache instead of title cache if required
+//		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
+//			NonViralName<?> nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
+//			result = nvn.getNameCache();
+//		}
+//		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
+//			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();
+//		}
+//		return result;
+//	}
 
     @Override
     public List<TaggedText> getTaggedTitle(T taxonBase) {
@@ -139,6 +139,25 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
+    private List<TaggedText> getNameTags(T taxonBase) {
+        List<TaggedText> tags = new ArrayList<TaggedText>();
+        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = taxonBase.getName();
+        if (name != null){
+            if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
+                NonViralName<?> nvn = HibernateProxyHelper.deproxy(name, NonViralName.class);
+                List<TaggedText> nameCacheTags = nvn.getCacheStrategy().getTaggedName(nvn);
+                tags.addAll(nameCacheTags);
+            }else{
+                List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);
+                tags.addAll(nameTags);
+            }
+            if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
+                tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
+            }
+        }
+        return tags;
+    }
+
     private List<TaggedText> getSecundumTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
@@ -161,24 +180,6 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText> getNameTags(T taxonBase) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
-        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = taxonBase.getName();
-        if (name != null){
-            if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
-                NonViralName<?> nvn = HibernateProxyHelper.deproxy(name, NonViralName.class);
-                List<TaggedText> nameCacheTags = nvn.getCacheStrategy().getTaggedName(nvn);
-                tags.addAll(nameCacheTags);
-            }else{
-                List<TaggedText> nameTags = name.getTaggedName();
-                tags.addAll(nameTags);
-            }
-            if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
-                tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
-            }
-        }
-        return tags;
-    }
 
     @Override
     public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules) {

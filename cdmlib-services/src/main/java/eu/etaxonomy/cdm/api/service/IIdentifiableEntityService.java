@@ -217,7 +217,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * matching object pairs are found but only a subset. But it must guarantee that only matching objects are merged.
      *<BR> Matching is defined by the given matching strategy or if no matching strategy is given the default matching
      *strategy is used.
-     *<BR>Clazz must implement {@link IMatchable} and {@link IMergable} otherwise no deduplication is performed.
+     *<BR>clazz must implement {@link IMatchable} and {@link IMergable} otherwise no deduplication is performed.
      *<BR>The current implementation in IdentifiableServiceBase tries to match and merge all objects with an identical non
      *empty titleCache.
      * @param clazz
@@ -226,7 +226,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return the number of merges performed during deduplication
      */
     public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
-    
+
 
     /**
      * Return a Pager of objects with distinct titleCache strings filtered by the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -239,10 +239,10 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return
      */
     public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
-    
+
 
     /**
-     * Returns an Sourceable object according the 
+     * Returns an Sourceable object according the
      * @param clazz
      * @param idInSource
      * @param idNamespace
@@ -254,14 +254,14 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 
     /**
      * Returns a Pager for {@link FindByIdentifierDTO DTOs} that hold the identifier including type, title and uuid
-     * and the according CDM Object information (uuid, title and the object itself (optional)).  
-     * 
+     * and the according CDM Object information (uuid, title and the object itself (optional)).
+     *
      * all {@link IdentifiableEntity identifiable entities} which have the according
-     * identifier attached  
+     * identifier attached
      * @param clazz the identifiable entity subclass, may be null
      * @param identifier the identifier as {@link String}
      * @param identifierType the identifier type, maybe null
-     * @param matchmode 
+     * @param matchmode
      * @param includeCdmEntity if true the CDM entity is also returned (this may slow down performance for large datasets)
      * @param pageSize
      * @param pageNumber
