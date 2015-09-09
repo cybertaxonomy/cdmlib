@@ -369,6 +369,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         FieldUnitDTO fieldUnitDTO = new FieldUnitDTO();
 
+        fieldUnitDTO.setUuid(fieldUnit.getUuid());
+
         if (fieldUnit.getGatheringEvent() != null) {
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
             // Country
