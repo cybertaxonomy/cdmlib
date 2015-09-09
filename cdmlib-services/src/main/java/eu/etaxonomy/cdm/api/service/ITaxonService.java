@@ -990,18 +990,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
 
-    /**
-     * @param synonymUuid
-     * @param acceptedTaxonUuid
-     * @param deleteSynonym
-     * @param copyCitationInfo
-     * @param citation
-     * @param microCitation
-     * @return
-     * @throws HomotypicalGroupChangeException
-     */
-    public Taxon changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, boolean deleteSynonym,
-            boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException;
 
     /**
      * @param synonymUuid
@@ -1024,6 +1012,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
+
+    /**
+     * @param synonymUuid
+     * @param acceptedTaxonUuid
+     * @param newParentNodeUuid
+     * @param deleteSynonym
+     * @param copyCitationInfo
+     * @param citation
+     * @param microCitation
+     * @return
+     * @throws HomotypicalGroupChangeException
+     */
+    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, UUID newParentNodeUuid,
+            boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation)
+            throws HomotypicalGroupChangeException;
 
 
 

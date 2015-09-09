@@ -125,6 +125,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -149,6 +150,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     public static final String INFERRED_GENUS_NAMESPACE = "Inferred genus";
 
+    @Autowired
+    private ITaxonNodeDao taxonNodeDao;
 
     @Autowired
     private ITaxonNameDao nameDao;
@@ -273,7 +276,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
-
+        dao.save(newAcceptedTaxon);
         SynonymRelationshipType relTypeForGroup = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
         Set<NameRelationship> basionymsAndReplacedSynonyms = synonymHomotypicGroup.getBasionymAndReplacedSynonymRelations();
@@ -287,7 +290,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 heteroSynonym.replaceAcceptedTaxon(newAcceptedTaxon, relTypeForGroup, copyCitationInfo, citation, microCitation);
             }
         }
-
+        dao.saveOrUpdate(acceptedTaxon);
         //synonym.getName().removeTaxonBase(synonym);
 
         if (deleteSynonym){
@@ -308,15 +311,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     @Transactional(readOnly = false)
-    public Taxon changeSynonymToAcceptedTaxon(UUID synonymUuid,
+    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid,
             UUID acceptedTaxonUuid,
+            UUID newParentNodeUuid,
             boolean deleteSynonym,
             boolean copyCitationInfo,
             Reference citation,
             String microCitation) throws HomotypicalGroupChangeException {
+        UpdateResult result = new UpdateResult();
         Synonym synonym = CdmBase.deproxy(dao.load(synonymUuid), Synonym.class);
         Taxon acceptedTaxon = CdmBase.deproxy(dao.load(acceptedTaxonUuid), Taxon.class);
-        return changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym, copyCitationInfo, citation, microCitation);
+        Taxon taxon =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym, copyCitationInfo, citation, microCitation);
+        TaxonNode newParentNode = taxonNodeDao.load(newParentNodeUuid);
+        TaxonNode newNode = newParentNode.addChildTaxon(taxon, null, null);
+        taxonNodeDao.save(newNode);
+        result.addUpdatedObject(taxon);
+        result.addUpdatedObject(acceptedTaxon);
+        result.setCdmEntity(newNode);
+        return result;
     }
 
     @Override
