@@ -43,6 +43,10 @@ public enum TagEnum {
 	 */
 	reference,
 	/**
+     * a secundum reference (for TaxonBase)
+     */
+    secReference,
+	/**
 	 * Volume, page number etc. of a reference
 	 */
 	microreference,
