@@ -29,6 +29,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
@@ -433,6 +434,36 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         defaultBeanInitializer.initialize(bean, propertyPaths);
         return bean;
 	}
+
+	@Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid){
+	    return find(clazz, uuid, null);
+	}
+
+    @Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths){
+        Session session = getSession();
+        Criteria crit = session.createCriteria(type);
+        crit.add(Restrictions.eq("uuid", uuid));
+        crit.addOrder(Order.desc("created"));
+        @SuppressWarnings("unchecked")
+        List<T> results = crit.list();
+        if (results.isEmpty()){
+            return null;
+        }else{
+            if(results.size() > 1){
+                logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+            }
+            T result = results.get(0);
+            if (result == null || propertyPaths == null){
+                return result;
+            }else{
+                defaultBeanInitializer.initialize(result, propertyPaths);
+                return result;
+            }
+        }
+    }
+
 
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,

@@ -315,8 +315,17 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param mergeSecondId
      * @param clazz
      * @throws MergeException
+     * @Deprecated the preferred method is to use uuids {@link #merge(UUID, UUID, Class)}
      */
+    @Deprecated
     public <T extends IMergable> void merge(int mergeFirstId, int mergeSecondId, Class<? extends CdmBase> clazz) throws MergeException;
 
+    /**
+     * @param mergeFirstUuid uuid of the first object to merge
+     * @param mergeSecondUuid UUID of the second object to merge
+     * @param clazz
+     * @throws MergeException
+     */
+    public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
 
 }
