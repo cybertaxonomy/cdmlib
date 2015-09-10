@@ -88,19 +88,28 @@ public class ClassificationLookupDTO {
         Collection<Integer> idsForRank = taxonIdByRank.get(rank);
         taxonIdByRank.remove(rank);
 
-        for(Integer taxonId : idsForRank) {
-            Integer parentId = taxonIdToParentId.get(taxonId);
-            taxonIdToParentId.remove(taxonId);
-            childTaxonMap.remove(parentId);
+        if(idsForRank != null) {
+            for(Integer taxonId : idsForRank) {
+                Integer parentId = taxonIdToParentId.get(taxonId);
+                taxonIdToParentId.remove(taxonId);
+                childTaxonMap.remove(parentId);
+            }
         }
     }
 
     /**
-     * @param ranks
+     * Drops all ranks from the classifiacationLookupDTO except those
+     * listed in ranks.
+     *
+     * @param includeRanks
      */
-    public void filter(List<Rank> ranks) {
-       for(Rank rank : ranks) {
-           dropRank(rank);
+    public void filterInclude(List<Rank> includeRanks) {
+
+       Set<Rank> rankSet = new HashSet<Rank>(taxonIdByRank.keySet());
+       for(Rank rank : rankSet) {
+           if(!includeRanks.contains(rank)) {
+               dropRank(rank);
+           }
        }
     }
 

@@ -356,7 +356,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         for(Classification _classification : classifications) {
 
             ClassificationLookupDTO classificationLookupDao = classificationService.classificationLookup(_classification);
-            classificationLookupDao.filter(ranks);
+            classificationLookupDao.filterInclude(ranks);
 
             double end1 = System.currentTimeMillis();
             logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
@@ -667,6 +667,8 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
  * @return
  */
 private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
+
+    TransactionStatus txStatus = startTransaction(false);
     Rank currentRank = lowerRank;
     List<Rank> ranks = new ArrayList<Rank>();
     ranks.add(currentRank);
@@ -674,6 +676,8 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         currentRank = findNextHigherRank(currentRank);
         ranks.add(currentRank);
     }
+    commitTransaction(txStatus);
+    txStatus = null;
     return ranks;
 }
 
