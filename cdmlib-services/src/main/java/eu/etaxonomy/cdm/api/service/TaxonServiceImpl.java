@@ -1191,7 +1191,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                     }
 
+            }else {
+                taxon.setName(null);
             }
+
 
 //        	TaxonDescription
            /* Set<TaxonDescription> descriptions = taxon.getDescriptions();

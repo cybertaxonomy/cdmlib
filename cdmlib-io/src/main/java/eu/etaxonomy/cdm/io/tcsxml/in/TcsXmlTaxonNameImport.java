@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component("tcsXmlTaxonNameIO")
@@ -561,10 +563,19 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	private void makeYear(TaxonNameBase name, Element elYear, ResultWrapper<Boolean> success){
 		if (elYear != null){
 			String year = elYear.getTextNormalize();
-			if (name instanceof ZoologicalName){
-				((ZoologicalName)name).setPublicationYear(getIntegerYear(year));
-			}else{
-				logger.debug("Year can be set only for a zoological name");
+			if (year != null){
+    			if (name instanceof ZoologicalName){
+    				((ZoologicalName)name).setPublicationYear(getIntegerYear(year));
+    			}else{
+    			    TimePeriod period = TimePeriod.NewInstance(getIntegerYear(year));
+    			    if (name.getNomenclaturalReference()!= null){
+    			        name.getNomenclaturalReference().setDatePublished(period);
+    			    } else{
+    			        Reference nomRef = ReferenceFactory.newGeneric();
+    			        nomRef.setDatePublished(period);
+    			    }
+    				logger.debug("Year can be set only for a zoological name, add the year to the nomenclatural reference.");
+    			}
 			}
 		}
 	}
