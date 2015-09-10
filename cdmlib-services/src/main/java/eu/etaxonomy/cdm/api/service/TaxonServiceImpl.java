@@ -1150,6 +1150,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         if (!resultNodes.isOk()){
                         	result.addExceptions(resultNodes.getExceptions());
                         	result.setStatus(resultNodes.getStatus());
+                        } else {
+                            result.addUpdatedObjects(resultNodes.getUpdatedObjects());
                         }
                     }
                     if (!success){
