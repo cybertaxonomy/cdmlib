@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -141,7 +142,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
     private List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
-        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = taxonBase.getName();
+        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName(),TaxonNameBase.class);
+
         if (name != null){
             if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
                 NonViralName<?> nvn = HibernateProxyHelper.deproxy(name, NonViralName.class);
