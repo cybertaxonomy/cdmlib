@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Initializes the various title and name caches of cdm types.
@@ -82,6 +83,8 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             } else if(!bean.isProtectedTitleCache()){
                 n.getTitleCache();
             }
+        } else if(bean instanceof TaxonBase)  {
+            ((TaxonBase)bean).getTaggedTitle();
         } else if(!bean.isProtectedTitleCache()){
             // ---> all other IdentifiableEntity
             bean.getTitleCache();
@@ -102,6 +105,11 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                 result += String.format(" LEFT JOIN FETCH %s.basionymAuthorship ", beanAlias);
                 result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorship ", beanAlias);
             }
+        }
+        if (TaxonBase.class.isAssignableFrom(clazz)){
+            // TODO with the TaxonBase.getTaggedTtile() this is getting much more complicated
+            result += String.format(" JOIN FETCH %s.sec secRef LEFT JOIN FETCH secRef.authorship ", beanAlias);
+            // TODO initialize all instances related to the name titleCache, see above
         }
 
         // throw an exception since LEFT JOIN FETCH is not really working for titleCaches
