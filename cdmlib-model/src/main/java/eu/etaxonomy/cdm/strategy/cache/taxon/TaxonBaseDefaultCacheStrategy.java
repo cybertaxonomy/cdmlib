@@ -146,8 +146,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         if (name != null){
             if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
-                NonViralName<?> nvn = HibernateProxyHelper.deproxy(name, NonViralName.class);
-                List<TaggedText> nameCacheTags = nvn.getCacheStrategy().getTaggedName(nvn);
+                List<TaggedText> nameCacheTags = name.getCacheStrategy().getTaggedName(name);
                 tags.addAll(nameCacheTags);
             }else{
                 List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);
