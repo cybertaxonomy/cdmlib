@@ -45,67 +45,6 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return getTitleCache(taxonBase, null);
     }
 
-
-//	@Override
-//	public String getTitleCache(T taxonBase) {
-//		String title;
-//		if (taxonBase.isProtectedTitleCache()){
-//		    return taxonBase.getTitleCache();
-//		}else if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
-//			String namePart = getNamePart(taxonBase);
-//
-//			title = namePart + " sec. ";
-//			title += getSecundumPart(taxonBase);
-//		}else{
-//			title = taxonBase.toString();
-//		}
-//		if (taxonBase.isDoubtful()){
-//			title = "?" + title;
-//		}
-//		return title;
-//	}
-
-//	/**
-//	 * @param taxonBase
-//	 * @param title
-//	 * @return
-//	 */
-//	private String getSecundumPart(T taxonBase) {
-//		String result;
-//		Reference<?> sec = taxonBase.getSec();
-//		if (sec != null){
-//			if (sec.getCacheStrategy() != null &&
-//					sec.getAuthorship() != null &&
-//					isNotBlank(sec.getAuthorship().getTitleCache()) &&
-//					isNotBlank(sec.getYear())){
-//				result = sec.getCacheStrategy().getCitation(sec);
-////				 sec.getAuthorTeam().getTitleCache() + sec.getYear();
-//			}else{
-//				result = taxonBase.getSec().getTitleCache();
-//			}
-//		}else{
-//			result = "???";
-//		}
-//		return result;
-//	}
-
-//	/**
-//	 * @param name
-//	 */
-//	private String getNamePart(TaxonBase<?> taxonBase) {
-//		TaxonNameBase<?,?> nameBase = taxonBase.getName();
-//		String result = nameBase.getTitleCache();
-//		//use name cache instead of title cache if required
-//		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
-//			NonViralName<?> nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
-//			result = nvn.getNameCache();
-//		}
-//		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
-//			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();
-//		}
-//		return result;
-//	}
-
     @Override
     public List<TaggedText> getTaggedTitle(T taxonBase) {
         if (taxonBase == null){
