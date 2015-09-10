@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -92,6 +93,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
     public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
+
+    /**
+     * only used for performance testing
+     */
+    final boolean ONLY_FISRT_BATCH = false;
 
 
     /**
@@ -305,8 +311,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             monitor = new NullProgressMonitor();
         }
 
+        // take start time for performance testing
+        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
+        double start = System.currentTimeMillis();
+
         // only for debugging:
-        //logger.setLevel(Level.TRACE);
+        logger.setLevel(Level.INFO);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
 
         logger.info("Hibernate JDBC Batch size: "
@@ -326,11 +336,19 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
         }
+        double end1 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByArea() : " + (end1 - start) / (1000) + "s");
+
+        double start2 = System.currentTimeMillis();
         monitor.subTask("Accumulating distributions to higher ranks");
         if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
                     mode.equals(AggregationMode.byRanks));
         }
+
+        double end2 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByRank() : " + (end2 - start2) / (1000) + "s");
+        logger.info("Time elapsed for accumulate(): " + (end2 - start) / (1000) + "s");
     }
 
     /**
@@ -453,6 +471,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             // may grow too much and eats up all the heap
             commitTransaction(txStatus);
             txStatus = null;
+
+            if(ONLY_FISRT_BATCH) {
+                break;
+            }
 
         } // next batch of taxa
 
@@ -592,11 +614,17 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 commitTransaction(txStatus);
                 txStatus = null;
 
+                if(ONLY_FISRT_BATCH) {
+                    break;
+                }
             } // next batch
 
             taxonSubMonitor.done();
             subMonitor.worked(1);
 
+            if(ONLY_FISRT_BATCH) {
+                break;
+            }
         } // next Rank
 
         subMonitor.done();

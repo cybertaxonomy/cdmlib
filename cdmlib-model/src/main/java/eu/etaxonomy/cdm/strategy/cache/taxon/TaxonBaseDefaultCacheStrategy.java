@@ -165,20 +165,20 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         Reference<?> ref = taxonBase.getSec();
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
-        if (ref != null){
+        String secRef;
+        if (ref == null){
+            secRef = "???";
+        }else{
             if (ref.getCacheStrategy() != null &&
                     ref.getAuthorship() != null &&
                     isNotBlank(ref.getAuthorship().getTitleCache()) &&
                     isNotBlank(ref.getYear())){
-                String citation = ref.getCacheStrategy().getCitation(ref);
-//                   sec.getAuthorTeam().getTitleCache() + sec.getYear();
-                tags.add(new TaggedText(TagEnum.reference, citation));
+                secRef = ref.getCacheStrategy().getCitation(ref);
             }else{
-                tags.add(new TaggedText(TagEnum.reference, ref.getTitleCache()));
+                secRef = ref.getTitleCache();
             }
-        }else{
-            tags.add(new TaggedText(TagEnum.reference, "???"));
         }
+        tags.add(new TaggedText(TagEnum.secReference, secRef));
         return tags;
     }
 
@@ -193,7 +193,4 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             return result;
         }
     }
-
-
-
 }
