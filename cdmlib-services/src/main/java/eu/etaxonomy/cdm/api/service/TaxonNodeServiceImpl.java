@@ -447,6 +447,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     		if (result.isOk()){
     			return result;
     		}
+    	} else {
+    	    result.addUpdatedObject(taxon);
     	}
 
     	result.setCdmEntity(node);
