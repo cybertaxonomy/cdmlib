@@ -32,6 +32,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -74,6 +75,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
 
 	protected ApplicationContext applicationContext;
+
+	@Autowired
+    //@Qualifier("nameService")
+    private IAnnotationService annotationService;
 
 	@Autowired
 	//@Qualifier("nameService")
@@ -183,7 +188,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 
 	@Override
 	public final Object getBean(String name){
-		return this.applicationContext.getBean(name);
+	    return this.applicationContext.getBean(name);
+	}
+
+	@Override
+	public IAnnotationService getAnnotationService(){
+	    return this.annotationService;
 	}
 
 	@Override

@@ -129,15 +129,55 @@ public interface ICdmGenericDao {
 	 * Return the persistent instance of the given entity class with the given identifier,
 	 * or null if there is no such persistent instance. (If the instance is already
 	 * associated with the session, return that instance. This method never returns
-	 * an uninitialized instance.)
+	 * an uninitialized instance.)<BR>
 	 * TODO: the behaviour for abstract high level classes (such as CdmBase itself)
 	 * is not yet tested.
 	 * @see Session#get(Class, java.io.Serializable)
 	 * @param clazz the CdmBase class
 	 * @param id the identifier
 	 * @return the CdmBase instance
+	 * @see #find(Class, UUID)
+     * @see #find(Class, int, List)
 	 */
 	public <T extends CdmBase> T find(Class<T> clazz, int id);
+
+	/**
+     * A generic method to retrieve any CdmBase object by its id and class.<BR>
+     * Return the persistent instance of the given entity class with the given identifier,
+     * or null if there is no such persistent instance. (If the instance is already
+     * associated with the session, return that instance. This method never returns
+     * an uninitialized instance.)
+     * @see Session#get(Class, java.io.Serializable)
+     * @param clazz the CdmBase class
+     * @param uuid the identifier
+     * @return the CdmBase instance
+     * @see #find(Class, int)
+     * @see #find(Class, UUID, List)
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid);
+
+	/**
+     * Does the same as {@link #find(Class, int)} but also initializes the returned
+     * object according to the property path.
+     *
+     * @param clazz class of the object to be loaded and initialized
+     * @param id the identifier
+     * @param propertyPaths the property path for initialization
+     * @return The initialized object
+     * @see #find(Class, UUID)
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths);
+
+    /**
+     * Does the same as {@link #find(Class, UUID)} but also initializes the returned
+     * object according to the property path.
+     * @param clazz
+     * @param uuid
+     * @param propertyPaths
+     * @return
+     * @see #find(Class, UUID)
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths);
 
 	/**
 	 * Returns the result of an hql query
@@ -192,6 +232,15 @@ public interface ICdmGenericDao {
      * @throws DataAccessException
      */
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * @param ownerUuid
+     * @param fieldName
+     * @param appendedPropertyPaths
+     * @return
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths);
 
     /**
      * Initializes a collection or map.
@@ -261,6 +310,9 @@ public interface ICdmGenericDao {
      * @return true if the value object exists in the collection, false o/w
      */
     public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
+
+
+
 
 
 }

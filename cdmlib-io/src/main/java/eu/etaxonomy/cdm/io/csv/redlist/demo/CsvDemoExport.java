@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -99,15 +100,27 @@ public class CsvDemoExport extends CsvDemoBase {
                 performJsonXMLPagination(state, config, txStatus, classificationSet, recordList);
             }
 
-
-	        if(!config.getDestination().isDirectory()){
-	            try {
-                    writer = new PrintWriter(config.getDestination());
-                    performCSVExport(state, config, txStatus, classificationSet, progressMonitor, writer);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+            try {
+                switch(config.getTarget()) {
+                case FILE:
+                    if(!config.getDestination().isDirectory()){
+                        writer = new PrintWriter(config.getDestination());
+                    }
+                    break;
+                case EXPORT_DATA:
+                    exportStream = new ByteArrayOutputStream();;
+                    writer = new PrintWriter(exportStream);
+                    break;
+                default :
+                    break;
                 }
-	        }
+                if(writer != null) {
+                    performCSVExport(state, config, txStatus, classificationSet, progressMonitor, writer);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
 	    } catch (ClassCastException e) {
 	        e.printStackTrace();
 	    }
@@ -208,9 +221,9 @@ public class CsvDemoExport extends CsvDemoBase {
 	    			if (! this.recordExists(taxon)){
 
 	    				handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
-	    				if(config.getDestination() != null){
+	    				//if(config.getDestination() != null){
 	    					record.write(writer);
-	    				}
+	    				//}
 	    				this.addExistingRecord(taxon);
 	    			}
 	    			//misapplied names

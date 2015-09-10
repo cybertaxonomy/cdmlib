@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -89,7 +90,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID node1Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 	private static final UUID node2Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
 
-	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
+	private static final UUID node4Uuid = UUID.fromString("2fbf7bf5-22dd-4c1a-84e4-c8c93d1f0342");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 	private static final UUID rootNodeUuid = UUID.fromString("324a1a77-689c-44be-8e65-347d835f4111");
@@ -97,6 +98,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	private Taxon t1;
 	private Taxon t2;
+	private Taxon t4;
 //	private Synonym s1;
 	private SynonymRelationshipType synonymRelationshipType;
 	private Reference<?> reference;
@@ -104,6 +106,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Classification classification;
 	private TaxonNode node1;
 	private TaxonNode node2;
+
+    private TaxonNode node4;
 
 	/**
 	 * @throws java.lang.Exception
@@ -121,6 +125,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
+		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
 //		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
@@ -162,6 +167,19 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
 		DeleteResult result;
+
+		t4 = node4.getTaxon();
+        UUID uuidT4 = t4.getUuid();
+        t4 = (Taxon) taxonService.load(uuidT4);
+        TaxonNameBase name4 = nameService.load(t4.getName().getUuid());
+        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymRelationshipType, reference, referenceDetail);
+        if (result.isError() || result.isAbort()){
+            Assert.fail();
+        }
+        t4 = (Taxon)taxonService.find(uuidT4);
+        assertNull(t4);
+
+
 		//Taxon can't be deleted because of the polytomous key node
 
 		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
@@ -186,10 +204,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 				taxon = HibernateProxyHelper.deproxy(updatedObject, Taxon.class);
 				Set<Synonym> syns =  taxon.getSynonyms();
 				assertNotNull(syns);
-				assertEquals(3,syns.size());
+				assertEquals(4,syns.size());
 
 				Set<TaxonNameBase> typifiedNames =taxon.getHomotypicGroup().getTypifiedNames();
-				assertEquals(typifiedNames.size(),3);
+				assertEquals(typifiedNames.size(),4);
 				assertTrue(taxon.getHomotypicGroup().equals( nameT1.getHomotypicalGroup()));
 
 				assertEquals(taxon, t2);
@@ -423,6 +441,51 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	}
+
+	@Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@Ignore
+    public final void testDeleteNodeWithReusedTaxon(){
+        classification = classificationService.load(classificationUuid);
+        node1 = taxonNodeService.load(node1Uuid);
+        node2 = taxonNodeService.load(rootNodeUuid);
+        node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+
+
+        Classification classification2 = Classification.NewInstance("Classification2");
+        TaxonNode nodeClassification2 =classification2.addChildTaxon(node1.getTaxon(), null, null);
+
+        classificationService.save(classification2);
+        List<TaxonNode> nodesOfClassification2 = taxonNodeService.listAllNodesForClassification(classification2, null, null);
+        UUID nodeUUID = nodesOfClassification2.get(0).getUuid();
+        TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
+        newNode = taxonNodeService.load(uuidNewNode);
+        UUID taxUUID = newNode.getTaxon().getUuid();
+        UUID nameUUID = newNode.getTaxon().getName().getUuid();
+
+        DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
+        if (!result.isOk()){
+            Assert.fail();
+        }
+        newNode = taxonNodeService.load(uuidNewNode);
+        node1 = taxonNodeService.load(node1Uuid);
+        assertNull(newNode);
+        assertNull(node1);
+        taxonNodeService.load(nodeUUID);
+
+        t1 = (Taxon) taxonService.load(t1Uuid);
+        assertNotNull(t1);
+        Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
+        assertNull(newTaxon);
+        BotanicalName name = (BotanicalName)nameService.load(nameUUID);
+        assertNull(name);
+
+
+    }
+
+
+
 	@Test
 	@DataSet
 	public final void testDeleteNodes(){

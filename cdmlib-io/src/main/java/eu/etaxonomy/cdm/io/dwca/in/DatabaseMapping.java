@@ -246,7 +246,7 @@ public class DatabaseMapping implements IImportMapping {
 		try {
 			int count = size();
 			deleteAll();
-			System.out.println("Finish" +  count +  ":" + size());
+			logger.info("Finalize database mapping " +  count +  ": " + size());
 		} catch (SQLException e) {
 			throw new RuntimeException();
 		}
@@ -289,9 +289,13 @@ public class DatabaseMapping implements IImportMapping {
 	public ICdmDataSource getDatabase(String path){
 		try {
 			try {
-				datasource = CdmPersistentDataSource.NewInstance(DATABASE_INTERNAL_IMPORT_MAPPING);
+			    if (path == null){
+			        datasource = CdmPersistentDataSource.NewInstance(DATABASE_INTERNAL_IMPORT_MAPPING);
+			    }else{
+			        makeDatasource(path);
+			    }
 			} catch (DataSourceNotFoundException e) {
-				datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path, null);
+				makeDatasource(path);
 				CdmPersistentDataSource.save(DATABASE_INTERNAL_IMPORT_MAPPING, datasource);
 			}
 			datasource.executeQuery("SELECT * FROM " + TABLE_IMPORT_MAPPING);
@@ -310,12 +314,19 @@ public class DatabaseMapping implements IImportMapping {
 				datasource.executeUpdate(strCreateTable);
 				logger.warn("Mapping database structure created");
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				throw new RuntimeException(e1);
 			}
 		}
 		return datasource;
 	}
+
+    /**
+     * @param path
+     */
+    private void makeDatasource(String path) {
+        datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path, null);
+    }
 
 
 }

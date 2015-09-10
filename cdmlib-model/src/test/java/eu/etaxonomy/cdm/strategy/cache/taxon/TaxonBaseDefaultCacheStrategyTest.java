@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.mueller
  * @created 21.09.2009
- * @version 1.0
  */
 public class TaxonBaseDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -101,8 +100,8 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
-
-
+		taxonBase.setDoubtful(true);
+        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 	}
 
 	//test missing "&" in title cache  #3822

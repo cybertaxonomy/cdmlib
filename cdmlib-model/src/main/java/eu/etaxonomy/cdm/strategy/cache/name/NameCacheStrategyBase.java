@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author AM
- *
  */
 public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends StrategyBase implements INameCacheStrategy<T> {
     @SuppressWarnings("unused")
@@ -43,33 +42,22 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
      * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)
      * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
      */
+    @Override
     public abstract String getTitleCache(T name);
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
-     */
+    @Override
     public abstract String getTitleCache(T name, HTMLTagRules rules);
 
-    
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
+    @Override
     public abstract String getFullTitleCache(T name);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
-     */
+    @Override
     public abstract String getFullTitleCache(T name, HTMLTagRules rules);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
+    @Override
     public abstract List<TaggedText> getTaggedTitle(T taxonNameBase);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedFullTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
+    @Override
     public abstract List<TaggedText> getTaggedFullTitle(T taxonNameBase);
 
 }

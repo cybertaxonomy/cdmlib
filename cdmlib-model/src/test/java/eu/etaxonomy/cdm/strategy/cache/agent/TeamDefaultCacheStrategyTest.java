@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 /**
  * @author a.mueller
  * @created 29.09.2009
- * @version 1.0
  */
 public class TeamDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -127,7 +126,7 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertTrue("team3 nomenclatural title must not be empty", StringUtils.isNotBlank(team3.getNomenclaturalTitle()));
 
 		team2.setHasMoreMembers(true);
-		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, Dr1. P1FN P1LN, P3NomT et al.'", "P2NomT, Dr1. P1FN P1LN, P3NomT et al.", team2.getNomenclaturalTitle());
+		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, Dr1. P1FN P1LN, P3NomT & al.'", "P2NomT, Dr1. P1FN P1LN, P3NomT & al.", team2.getNomenclaturalTitle());
 
 
 		//don't take next test to serious, may be also something different, but not empty
@@ -147,11 +146,11 @@ public class TeamDefaultCacheStrategyTest {
 		//person3
 		Assert.assertNotNull("team3 title cache must not to be null", team3.getTitleCache());
 		Assert.assertTrue("team3 title cache must not be empty", StringUtils.isNotBlank(team3.getTitleCache()));
-		
-		team2.setHasMoreMembers(true);
-		Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT et al.'", "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT et al.", team2.getTitleCache());
 
-		
+		team2.setHasMoreMembers(true);
+		Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.'", "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.", team2.getTitleCache());
+
+
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 title cache should should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getTitleCache());
 

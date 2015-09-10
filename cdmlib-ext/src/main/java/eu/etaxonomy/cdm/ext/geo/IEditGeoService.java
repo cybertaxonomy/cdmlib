@@ -72,7 +72,6 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
@@ -95,7 +94,6 @@ public interface IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
@@ -192,7 +190,7 @@ public interface IEditGeoService {
     * @param taxonUUID
     * @param subAreaPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
-    * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param hiddenAreaMarkerTypes see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
     * @param presenceAbsenceTermColors
     * @param languages
@@ -200,8 +198,7 @@ public interface IEditGeoService {
     * @return
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe);
 

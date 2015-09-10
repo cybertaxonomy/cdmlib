@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,7 +44,8 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
@@ -90,7 +92,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             impl = AcceptedTaxonBridge.class),
     @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, Cloneable {
+public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
 
@@ -202,6 +204,13 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 //		return title;
 //	}
 
+    @Transient
+    public List<TaggedText> getTaggedTitle(){
+        return getCacheStrategy().getTaggedTitle(this);
+    }
+
+
+
     /**
      * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
      */
@@ -209,9 +218,6 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
         return this.name;
     }
 
-    /*
-     * @see #getName
-     */
     public void setName(TaxonNameBase name) {
         if (this.name != null){
             this.name.getTaxonBases().remove(this);
@@ -322,6 +328,21 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
     @Transient
     public abstract boolean isOrphaned();
+
+
+    /**
+     * @return
+     */
+    @Transient
+    public Rank getNullSafeRank() {
+        return name == null ? null : name.getRank();
+    }
+
+    @Override
+    public void setCacheStrategy(S cacheStrategy) {
+        this.cacheStrategy = cacheStrategy;
+    }
+
 //*********************** CLONE ********************************************************/
 
     /**
@@ -346,14 +367,6 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
         }
 
 
-    }
-
-    /**
-     * @return
-     */
-    @Transient
-    public Rank getNullSafeRank() {
-        return name == null ? null : name.getRank();
     }
 
 

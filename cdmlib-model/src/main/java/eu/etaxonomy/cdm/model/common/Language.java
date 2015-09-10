@@ -1143,6 +1143,9 @@ public class Language extends DefinedTermBase<Language> {
 
 
     public static final Language DEFAULT(){
+        if(defaultLanguage == null) {
+           return getDefaultLanguage();
+        }
         return defaultLanguage;
     }
 
@@ -1290,7 +1293,10 @@ public class Language extends DefinedTermBase<Language> {
      * @return
      */
     public static Language getDefaultLanguage() {
-    	return (Language)getCacher().load(uuidEnglish);
+        if(getCacher() != null) {
+            return (Language)getCacher().load(uuidEnglish);
+        }
+    	return null;
     }
 
     /**

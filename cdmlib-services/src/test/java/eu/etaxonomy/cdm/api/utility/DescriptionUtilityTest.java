@@ -74,7 +74,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         distributions.add(computedDistribution);
 
         statusOrderPreference= true;
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
@@ -85,7 +85,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         distributions.add(parentComputedDistribution);
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(2, filteredDistributions.size());
 
     }
@@ -102,7 +102,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
@@ -124,19 +124,19 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
@@ -161,19 +161,19 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas, fallbackAreaMarkerType);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
     }
 
     @Test
-    public void testFilterDistributions_fallbackAreaFilter(){
+    public void testFilterDistributions_fallbackArea_hidden(){
 
         NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
         jugoslavia.setIdInVocabulary("Ju");
         NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
         serbia.setIdInVocabulary("Sr");
-        serbia.setPartOf(jugoslavia);
+        jugoslavia.addIncludes(serbia);
 
         Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
         Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
@@ -184,14 +184,82 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         // using TO_BE_CHECKED to mark Ju as fallback area
         jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                subAreaPreference,
-                statusOrderPreference,
+        hideMarkedAreas = new HashSet<MarkerType>();
+        hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
+
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions,
                 hideMarkedAreas,
-                MarkerType.TO_BE_CHECKED());
+                true,
+                statusOrderPreference,
+                subAreaPreference);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
+    }
+
+    @Test
+    public void testFilterDistributions_fallbackArea_shown_1(){
+
+        NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
+        jugoslavia.setIdInVocabulary("Ju");
+        NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
+        serbia.setIdInVocabulary("Sr");
+        jugoslavia.addIncludes(serbia);
+
+        Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
+        Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
+
+        distributions.add(distSerbia);
+        distributions.add(distJugoslavia);
+
+        // using TO_BE_CHECKED to mark Ju as fallback area
+        jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+        // this hides serbia so jugoslavia should be shown
+        serbia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+
+        hideMarkedAreas = new HashSet<MarkerType>();
+        hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
+
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions,
+                hideMarkedAreas,
+                true,
+                statusOrderPreference,
+                subAreaPreference);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
+    }
+
+    @Test
+    public void testFilterDistributions_fallbackArea_shown_2(){
+
+        NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
+        jugoslavia.setIdInVocabulary("Ju");
+        NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
+        serbia.setIdInVocabulary("Sr");
+        jugoslavia.addIncludes(serbia);
+
+        Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
+        distributions.add(distJugoslavia);
+        // no Distribution for any of the sub areas of jugoslavia, so it should be shown
+
+        // using TO_BE_CHECKED to mark Ju as fallback area
+        jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+
+        hideMarkedAreas = new HashSet<MarkerType>();
+        hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
+
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions,
+                hideMarkedAreas,
+                true,
+                statusOrderPreference,
+                subAreaPreference);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
     }
 
 

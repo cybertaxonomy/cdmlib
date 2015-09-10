@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,10 +23,10 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LookAheadStream.class);
-	
-	private Queue<ITEM> fifo = new LinkedBlockingQueue<ITEM>();
-	
-	private INamespaceReader<ITEM> stream;
+
+	private final Queue<ITEM> fifo = new LinkedBlockingQueue<ITEM>();
+
+	private final INamespaceReader<ITEM> stream;
 
 	public LookAheadStream(INamespaceReader<ITEM> stream) {
 		super();
@@ -35,33 +35,34 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 			throw new RuntimeException("Stream may not be null.");
 		}
 	}
-	
-	public ITEM read(){
+
+	@Override
+    public ITEM read(){
 		if (! fifo.isEmpty()){
 			return fifo.remove();
 		}else{
 			return stream.read();
 		}
 	}
-	
+
+	public ITEM readLookAhead(int max){
+	    if (max > fifo.size()){
+	        ITEM result = stream.read();
+	        fifo.add(result);
+	        return result;
+	    }else{
+	        return null;
+	    }
+	}
+
 	public ITEM readLookAhead(){
 		ITEM result = stream.read();
-		fifo.add(result);
-		return result;
+	    fifo.add(result);
+	    return result;
 	}
-	
-	public ITEM readLookAhead(int max){
-		if (max > fifo.size()){
-			ITEM result = stream.read();
-			fifo.add(result);
-			return result;
-		}else{
-			return null;
-		}
-	}
-	
+
 	public boolean hasNextLookAhead(int max){
-		if (max > fifo.size() && stream.hasNext()){
+		if (fifo.size() < max && stream.hasNext()){
 			return true;
 		}else{
 			return false;
@@ -71,11 +72,12 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	public int sizeLookAhead(){
 		return fifo.size();
 	}
-	
+
 	public boolean isLookingAhead(){
 		return ! fifo.isEmpty();
 	}
 
+	@Override
 	public boolean hasNext() {
 		return ! fifo.isEmpty() || stream.hasNext();
 	}
@@ -85,5 +87,4 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 		return stream.getTerm();
 	}
 
-	
 }

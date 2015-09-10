@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,6 +90,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author p.kelbert
+ * @author pplitzner
  * @created 20.10.2008
  */
 @Component
@@ -293,6 +296,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.setDerivedUnitBase(derivedUnit);
                     derivedUnitFacade = DerivedUnitFacade.NewInstance(state.getDerivedUnitBase());
                     importAssociatedUnits(state, item, derivedUnitFacade);
+                    report.addAlreadyExistingSpecimen(AbcdImportUtility.getUnitID(derivedUnit, state.getConfig()), derivedUnit);
                     return;
                 }
             }
@@ -1622,16 +1626,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 rank = atomisedTaxonName.getRank();
             }
         }
-        if(rank==null){
-            String message = "No rank specified for "+state.getDerivedUnitBase()+". Assuming species.";
-            report.addInfoMessage(message);
-            logger.warn(message);
-            rank = Rank.SPECIES();
-        }
-
-
         if(config.isReuseExistingTaxaWhenPossible()){
-            NonViralName<?> parsedName = parseScientificName(scientificName, state, report);
+            NonViralName<?> parsedName = atomisedTaxonName;
+            if(parsedName==null){
+                parsedName = parseScientificName(scientificName, state, report);
+            }
             if(config.isIgnoreAuthorship() && parsedName!=null && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
@@ -1823,59 +1822,61 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         Taxon species = null;
         Taxon subspecies = null;
         Taxon parent = null;
-        if (rank.isLower(Rank.GENUS() )){
-            String prefix = nvname.getGenusOrUninomial();
-            TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix, Rank.GENUS(), preferredFlag, state, -1);
-            genus = getOrCreateTaxonForName(taxonName, state);
-            if (preferredFlag) {
-                parent = saveOrUpdateClassification(null, genus, classification, state);
-            }
-
-        }
-        if (rank.isLower(Rank.SUBGENUS())){
-            String prefix = nvname.getGenusOrUninomial();
-            String name = nvname.getInfraGenericEpithet();
-            if (name != null){
-                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SUBGENUS(), preferredFlag, state, -1);
-                subgenus = getOrCreateTaxonForName(taxonName, state);
+        if(rank!=null){
+            if (rank.isLower(Rank.GENUS() )){
+                String genusOrUninomial = nvname.getGenusOrUninomial();
+                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
+                genus = getOrCreateTaxonForName(taxonName, state);
                 if (preferredFlag) {
-                    parent = saveOrUpdateClassification(genus, subgenus, classification, state);
-                }            }
-        }
-        if (rank.isLower(Rank.SPECIES())){
-            if (subgenus!=null){
+                    parent = linkParentChildNode(null, genus, classification, state);
+                }
+
+            }
+            if (rank.isLower(Rank.SUBGENUS())){
                 String prefix = nvname.getGenusOrUninomial();
                 String name = nvname.getInfraGenericEpithet();
-                String spe = nvname.getSpecificEpithet();
-                if (spe != null){
-                    TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name+" "+spe, Rank.SPECIES(), preferredFlag, state, -1);
-                    species = getOrCreateTaxonForName(taxonName, state);
-                    if (preferredFlag) {
-                        parent = saveOrUpdateClassification(subgenus, species, classification, state);
-                    }
-                }
-            }
-            else{
-                String prefix = nvname.getGenusOrUninomial();
-                String name = nvname.getSpecificEpithet();
                 if (name != null){
-                    TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SPECIES(), preferredFlag, state, -1);
-                    species = getOrCreateTaxonForName(taxonName, state);
+                    TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SUBGENUS(), preferredFlag, state, -1);
+                    subgenus = getOrCreateTaxonForName(taxonName, state);
                     if (preferredFlag) {
-                        parent = saveOrUpdateClassification(genus, species, classification, state);
+                        parent = linkParentChildNode(genus, subgenus, classification, state);
+                    }            }
+            }
+            if (rank.isLower(Rank.SPECIES())){
+                if (subgenus!=null){
+                    String prefix = nvname.getGenusOrUninomial();
+                    String name = nvname.getInfraGenericEpithet();
+                    String spe = nvname.getSpecificEpithet();
+                    if (spe != null){
+                        TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name+" "+spe, Rank.SPECIES(), preferredFlag, state, -1);
+                        species = getOrCreateTaxonForName(taxonName, state);
+                        if (preferredFlag) {
+                            parent = linkParentChildNode(subgenus, species, classification, state);
+                        }
+                    }
+                }
+                else{
+                    String prefix = nvname.getGenusOrUninomial();
+                    String name = nvname.getSpecificEpithet();
+                    if (name != null){
+                        TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(prefix+" "+name, Rank.SPECIES(), preferredFlag, state, -1);
+                        species = getOrCreateTaxonForName(taxonName, state);
+                        if (preferredFlag) {
+                            parent = linkParentChildNode(genus, species, classification, state);
+                        }
                     }
                 }
             }
-        }
-        if (rank.isLower(Rank.INFRASPECIES())){
-            TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(nvname.getFullTitleCache(), Rank.SUBSPECIES(), preferredFlag, state, -1);
-            subspecies = getOrCreateTaxonForName(taxonName, state);
-            if (preferredFlag) {
-                parent = saveOrUpdateClassification(species, subspecies, classification, state);
+            if (rank.isLower(Rank.INFRASPECIES())){
+                TaxonNameBase<?,?> taxonName = getOrCreateTaxonName(nvname.getFullTitleCache(), Rank.SUBSPECIES(), preferredFlag, state, -1);
+                subspecies = getOrCreateTaxonForName(taxonName, state);
+                if (preferredFlag) {
+                    parent = linkParentChildNode(species, subspecies, classification, state);
+                }
             }
         }
         if (preferredFlag && parent!=taxon) {
-            saveOrUpdateClassification(parent, taxon, classification, state);
+            linkParentChildNode(parent, taxon, classification, state);
         }
     }
 
@@ -1887,7 +1888,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param classification
      * @param state
      */
-    private Taxon saveOrUpdateClassification(Taxon parent, Taxon child, Classification classification, Abcd206ImportState state) {
+    private Taxon linkParentChildNode(Taxon parent, Taxon child, Classification classification, Abcd206ImportState state) {
         TaxonNode node =null;
         if (parent != null) {
             parent = (Taxon) getTaxonService().find(parent.getUuid());
@@ -1946,19 +1947,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 problem = true;
             }
         }
-        if (state.getDataHolder().nomenclatureCode.toString().equals("Botanical") || state.getDataHolder().nomenclatureCode.toString().contains("ICBN")) {
+        else if (state.getDataHolder().nomenclatureCode.toString().equals("Botanical") || state.getDataHolder().nomenclatureCode.toString().contains("ICBN")) {
             taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, null);
             if (taxonName.hasProblem()) {
                 problem = true;
             }
         }
-        if (state.getDataHolder().nomenclatureCode.toString().equals("Bacterial") || state.getDataHolder().nomenclatureCode.toString().contains("ICBN")) {
+        else if (state.getDataHolder().nomenclatureCode.toString().equals("Bacterial") || state.getDataHolder().nomenclatureCode.toString().contains("ICBN")) {
             taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, null);
             if (taxonName.hasProblem()) {
                 problem = true;
             }
         }
-        if (state.getDataHolder().nomenclatureCode.toString().equals("Cultivar") || state.getDataHolder().nomenclatureCode.toString().contains("ICNCP")) {
+        else if (state.getDataHolder().nomenclatureCode.toString().equals("Cultivar") || state.getDataHolder().nomenclatureCode.toString().contains("ICNCP")) {
             taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, null);
             if (taxonName.hasProblem()) {
                 problem = true;
@@ -1973,7 +1974,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             report.addInfoMessage(message);
             logger.info(message);
-            return null;
         }
         return taxonName;
 
@@ -2063,7 +2063,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             taxonName.setFullTitleCache(fullName, true);
             taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
-            taxonName.setInfraGenericEpithet(NB(getFromMap(atomisedMap, "FirstEpithet")));
+            taxonName.setSpecificEpithet(NB(getFromMap(atomisedMap, "FirstEpithet")));
             taxonName.setInfraSpecificEpithet(NB(getFromMap(atomisedMap, "InfraSpeEpithet")));
             try {
                 taxonName.setRank(Rank.getRankByName(getFromMap(atomisedMap, "Rank")));
@@ -2374,6 +2374,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
+    }
+
+    @Override
+    public byte[] getByteArray() {
+        ByteArrayOutputStream importStream = new ByteArrayOutputStream();
+        report.printReport(new PrintStream(importStream));
+        return importStream.toByteArray();
     }
 
 }

@@ -52,21 +52,23 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     @Override
     @SuppressWarnings("unchecked")
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            Integer limit, Integer start, List<String> propertyPaths){
+            Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
 
         List<TaxonNode> results = new ArrayList<TaxonNode>();
         Query[] queries = prepareRankSpecificRootNodes(classification, rank, false);
 
-        for(Query q : queries) {
+        // since this method is using two queries sequentially the handling of limit and start
+        // is a bit more complex
+        // the prepareRankSpecificRootNodes returns 1 or 2 queries
+
+        Query q = queries[queryIndex];
             if(limit != null) {
                 q.setMaxResults(limit);
                 if(start != null) {
                     q.setFirstResult(start);
                 }
             }
-
-            results.addAll(q.list());
-        }
+            results = q.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -74,20 +76,26 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @Override
-    public long countRankSpecificRootNodes(Classification classification, Rank rank) {
+    public long[] countRankSpecificRootNodes(Classification classification, Rank rank) {
 
-        long result = 0;
+        long[] result = new long[(rank == null ? 1 : 2)];
         Query[] queries = prepareRankSpecificRootNodes(classification, rank, true);
+        int i = 0;
         for(Query q : queries) {
-            result += (Long)q.uniqueResult();
+            result[i++] = (Long)q.uniqueResult();
         }
         return result;
     }
 
     /**
+     * See <a href="http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes">
+     * http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes</a>
+     *
      * @param classification
      * @param rank
      * @return
+     *      one or two Queries as array, depending on the <code>rank</code> parameter:
+     *      <code>rank == null</code>: array with one item, <code>rank != null</code>: array with two items.
      */
     private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank, boolean doCount) {
         Query query1;
@@ -108,7 +116,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         } else {
             // this is for the cases
             //   - exact match of the ranks
-            //   - rank is lower but has no parents
+            //   - rank of root node is lower but is has no parents
             String hql1 = "SELECT " + selectWhat + " FROM TaxonNode tn " +
                 " WHERE " +
                 " (tn.taxon.name.rank = :rank" +
@@ -117,7 +125,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 + whereClassification ;
 
             // this is for the case
-            //   - rank is lower and has parent with higher rank
+            //   - rank of root node is lower and it has a parent with higher rank
             String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.parent as parent" +
                     " WHERE " +
                     " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"

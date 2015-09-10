@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
-public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>> implements IRelated<SynonymRelationship>{
+public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> implements IRelated<SynonymRelationship>{
 	private static final long serialVersionUID = -454067515022159757L;
 
 	@SuppressWarnings("unused")

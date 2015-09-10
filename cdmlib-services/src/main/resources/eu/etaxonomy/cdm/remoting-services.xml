@@ -19,8 +19,10 @@
       <!-- The configuration of the services is imported from httpInvokerServices.xml -->
       <props>
         <prop key="/remoting/agent.service">httpAgentService</prop>
+        <prop key="/remoting/amplification.service">httpAmplificationService</prop>
         <prop key="/remoting/annotation.service">httpAnnotationService</prop>
         <prop key="/remoting/auditevent.service">httpAuditEventService</prop>
+        <prop key="/remoting/base.service">httpBaseService</prop>
         <prop key="/remoting/classification.service">httpClassificationService</prop>
         <prop key="/remoting/collection.service">httpCollectionService</prop>
         <prop key="/remoting/common.service">httpCommonService</prop>
@@ -41,8 +43,9 @@
         <prop key="/remoting/occurrence.service">httpOccurrenceService</prop>
         <prop key="/remoting/polytomouskeynode.service">httpPolytomousKeyNodeService</prop>
         <prop key="/remoting/polytomouskey.service">httpPolytomousKeyService</prop>
-        <prop key="/remoting/reference.service">httpReferenceService</prop>
-        <prop key="/remoting/service.service">httpServiceService</prop>
+        <prop key="/remoting/primer.service">httpPrimerService</prop>
+        <prop key="/remoting/reference.service">httpReferenceService</prop>        
+        <prop key="/remoting/sequence.service">httpSequenceService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
         <prop key="/remoting/taxon.service">httpTaxonService</prop>
         <prop key="/remoting/term.service">httpTermService</prop>
@@ -51,6 +54,7 @@
         <prop key="/remoting-public/user.service">httpUserService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
+        <prop key="/remoting/io.service">httpIOService</prop>
         <prop key="/remoting/test.service">httpTestService</prop>
       </props>
     </property>

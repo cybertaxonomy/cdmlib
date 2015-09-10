@@ -126,7 +126,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, subAreaPreference, statusOrderPreference, null, null);
+                distributions, null, true, statusOrderPreference, subAreaPreference);
 
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );

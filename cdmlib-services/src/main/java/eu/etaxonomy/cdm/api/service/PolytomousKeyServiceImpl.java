@@ -22,9 +22,11 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -34,6 +36,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	private IIdentificationKeyDao identificationKeyDao;
 	private ITaxonDao taxonDao;
+	private IPolytomousKeyNodeDao nodeDao;
 
 
 	@Override
@@ -51,6 +54,11 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	protected void setDao(ITaxonDao taxonDao) {
 		this.taxonDao = taxonDao;
 	}
+
+	@Autowired
+    protected void setDao(IPolytomousKeyNodeDao nodeDao) {
+        this.nodeDao = nodeDao;
+    }
 
 
 	/* (non-Javadoc)
@@ -142,6 +150,28 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	        polytomousKey.getRoot().refreshNodeNumbering();
 	    }
 	    return result;
+	}
+
+	@Override
+	public DeleteResult delete(PolytomousKey key){
+	    DeleteResult result = new DeleteResult();
+	    PolytomousKeyNode root = key.getRoot();
+	    key.setRoot(null);
+	    try{
+	        nodeDao.delete(root);
+	    }catch(Exception e){
+	        result.addException(e);
+	        result.setAbort();
+	        return result;
+	    }
+	    try{
+	        dao.delete(key);
+	    }catch(Exception e){
+            result.addException(e);
+            result.setAbort();
+            return result;
+        }
+        return result;
 	}
 
 }

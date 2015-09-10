@@ -44,18 +44,16 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 				fireWarningEvent (message, csvStream.toString(), 14);
 			}
 		}
-		state.finish();
+		if (!state.getConfig().isKeepMappingForFurtherImports()){
+		    state.finish();
+		}
 		return;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportBase#getConverter(eu.etaxonomy.cdm.io.dwca.TermUri, eu.etaxonomy.cdm.io.dwca.in.StreamImportStateBase)
-	 */
 	@Override
 	protected IPartitionableConverter<StreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, DwcaImportState state) {
 		if (namespace.equals(TermUri.DWC_TAXON)){
-			if (! state.isTaxaCreated()){
+			if (state.getConfig().isDoTaxa() && ! state.isTaxaCreated()){
 				return new DwcTaxonStreamItem2CdmTaxonConverter(state);
 			}else{
 				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);

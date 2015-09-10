@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,15 +26,15 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  *
  */
 public class TaggedText {
-	
+
 	private String text;
 	private TagEnum type;
-	
-	
+
+
 	public static TaggedText NewWhitespaceInstance(){
 		return new TaggedText(TagEnum.separator, " ");
 	}
-	
+
 	public String getText() {
 		return text;
 	}
@@ -60,49 +60,49 @@ public class TaggedText {
 // *************************** DELEGATES ************************************/
 
 	@Transient
-	public boolean isName() {
+	protected boolean isName() {
 		return type.isName();
 	}
 	@Transient
-	public boolean isRank() {
+	protected boolean isRank() {
 		return type.isRank();
 	}
 	@Transient
-	public boolean isAuthors() {
+	protected boolean isAuthors() {
 		return type.isAuthors();
 	}
 	@Transient
-	public boolean isAppendedPhrase() {
+	protected boolean isAppendedPhrase() {
 		return type.isAppendedPhrase();
 	}
 	@Transient
-	public boolean isReference() {
+	protected boolean isReference() {
 		return type.isReference();
 	}
 	@Transient
-	public boolean isYear() {
+	protected boolean isYear() {
 		return type.isYear();
 	}
 	@Transient
-	public boolean isFullName() {
+	protected boolean isFullName() {
 		return type.isFullName();
 	}
 	@Transient
-	public boolean isNomStatus() {
+	protected boolean isNomStatus() {
 		return type.isNomStatus();
 	}
 	@Transient
-	public boolean isSeparator() {
+	protected boolean isSeparator() {
 		return type.isSeparator();
 	}
 	@Transient
-	public boolean isHybridSign() {
+	protected boolean isHybridSign() {
 		return type.isHybridSign();
 	}
-	
-	
-// ********************** toString() ***********************************************/	
-	
+
+
+// ********************** toString() ***********************************************/
+
 	@Override
 	public String toString(){
 		String result = CdmUtils.concat(":", type.toString(), text);
@@ -112,5 +112,5 @@ public class TaggedText {
 			return result;
 		}
 	}
-	
+
 }

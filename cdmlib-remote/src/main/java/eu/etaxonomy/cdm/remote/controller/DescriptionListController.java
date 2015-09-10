@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 
 /**
  * TODO write controller documentation
@@ -99,6 +100,8 @@ public class DescriptionListController extends IdentifiableListController<Descri
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<Feature>(termService));
+        binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<NamedAreaLevel>(termService));
+        binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<Rank>(termService));
     }
 
 
@@ -106,20 +109,22 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * Runs the {@link TransmissionEngineDistribution} in a separate Thread and
      * responds with a redirect to a progress monitor REST service end point.
      * <p>
-     * <b>NOTE</b> this is still a special implementation for the Euro+Med project.
-     * The parameters for the <i>superAreas</i>, the areas to which the subordinate areas should be projected,
-     * <i>lowerRank</i>, <i>upperRank</i> are hardcoded to: <code>TDWG_LEVEL3 areas, SUBSPECIES, GENUS</code>
      *
      * @param mode
-     *            one of <code>byAreas</code>, <code>byRanks</code>,
-     *            <code>byAreasAndRanks</code>
+     *      one of <code>byAreas</code>, <code>byRanks</code>,
+     *      <code>byAreasAndRanks</code>
      * @param frontendBaseUrl
-     *            the cdm server instance base URL, this is needed for the a
-     *            proper redirect URL when the service is running behind a
-     *            reverse HTTP proxy
+     *      the cdm server instance base URL, this is needed for the a
+     *      proper redirect URL when the service is running behind a
+     *      reverse HTTP proxy
      * @param priority
-     *            the priority for the Thread to spawn, see
-     *            {@link Thread#setPriority(int)}, defaults to 3
+     *      the priority for the Thread to spawn, see
+     *      {@link Thread#setPriority(int)}, defaults to 3
+     * @param targetAreaLevel
+     *      The level of target areas to project the distributions to.
+     * @param lowerRank
+     * @param upperRank
+     *
      * @param request
      * @param response
      * @return
@@ -130,6 +135,9 @@ public class DescriptionListController extends IdentifiableListController<Descri
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
+            @RequestParam(value = "targetAreaLevel", required = true) final NamedAreaLevel targetAreaLevel,
+            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
+            @RequestParam(value = "upperRank", required = false) Rank upperRank,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -139,23 +147,23 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         String processLabel = "accumulating distributions";
 
+        final Rank _lowerRank = lowerRank != null ? lowerRank : Rank.UNKNOWN_RANK(); // this is the lowest rank
+        final Rank _upperRank = upperRank != null ? upperRank : Rank.GENUS();
+
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
         final List<String> term_init_strategy = Arrays.asList(new String []{
                 "representations"
         });
 
-        //area level
-        final NamedAreaLevel areaLevel = NamedAreaLevel.TDWG_LEVEL3();
-
         if (!progressMonitorController.isMonitorRunning(transmissionEngineMonitorUuid)) {
             transmissionEngineMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread() {
                 @Override
                 public void run() {
-                    Pager<NamedArea> areaPager = termService.list(areaLevel, (NamedAreaType) null,
+                    Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
-                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), Rank.UNRANKED_INFRASPECIFIC(), Rank.GENUS(),
+                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
                             null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                 }
             };
@@ -294,7 +302,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        Pager<TermDto> pager = service.pageNamedAreasInUse(includeAllParents, pageSize, pageNumber);
+        Pager<TermDto> pager = service.pageNamedAreasInUse(includeAllParents, pagerParams.getPageSize(), pagerParams.getPageIndex());
 
         localizeTerms(pager);
 

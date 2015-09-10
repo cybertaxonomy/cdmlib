@@ -174,7 +174,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         initListener();
     }
 
-    protected void initListener(){
+    @Override
+    public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent ev) {

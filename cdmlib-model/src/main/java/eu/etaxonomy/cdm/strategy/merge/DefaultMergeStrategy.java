@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -49,14 +49,14 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	}
 
 	private boolean onlyReallocateReferences = false;
-	
+
 	protected MergeMode defaultMergeMode = MergeMode.FIRST;
 	protected MergeMode defaultCollectionMergeMode = MergeMode.ADD;
-	
+
 	protected Map<String, MergeMode> mergeModeMap = new HashMap<String, MergeMode>();
 	protected Class<? extends CdmBase> mergeClass;
 	protected Map<String, Field> mergeFields;
-	
+
 	protected DefaultMergeStrategy(Class<? extends CdmBase> mergeClazz) {
 		super();
 		if (mergeClazz == null){
@@ -78,12 +78,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 
 //	@Override
 //	public void setOnlyReallocateLinks(boolean onlyReallocateReferences) {
-//		this.onlyReallocateReferences = onlyReallocateReferences; 
+//		this.onlyReallocateReferences = onlyReallocateReferences;
 //	}
 
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private void initMergeModeMap() {
 		for (Field field: mergeFields.values()){
@@ -100,7 +100,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	protected UUID getUuid() {
 		return uuid;
 	}
-	
+
 	/**
 	 * @return the merge class
 	 */
@@ -132,7 +132,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			return result;
 		}
 	}
-	
+
 	@Override
 	public void setMergeMode(String propertyName, MergeMode mergeMode) throws MergeException{
 		if (mergeFields.containsKey(propertyName)){
@@ -142,8 +142,8 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			throw new MergeException("The class " + mergeClass.getName() + " does not contain a field with name " + propertyName);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void setDefaultMergeMode(MergeMode defaultMergeMode) {
 		this.defaultMergeMode = defaultMergeMode;
@@ -160,7 +160,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	 * Tests if a property is an identifier property
 	 * @param propertyName
 	 * @param mergeMode
-	 * @throws MergeException 
+	 * @throws MergeException
 	 */
 	private void checkIdentifier(String propertyName, MergeMode mergeMode) throws MergeException {
 		if (mergeMode != MergeMode.FIRST){
@@ -174,7 +174,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException {
 		return this.invoke(mergeFirst, mergeSecond, null);
 	}
-	
+
 	@Override
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException {
 		Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
@@ -211,10 +211,10 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 
-	
+
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeInterfaceField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
 		String propertyName = field.getName();
@@ -223,12 +223,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
-		
+
 	}
 
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeEnumField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
 		String propertyName = field.getName();
@@ -237,12 +237,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
-		
+
 	}
-	
+
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeSingleCdmBaseField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
 		String propertyName = field.getName();
@@ -251,25 +251,25 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
-		
+
 	}
-	
+
 	private <T extends IMergable> void mergeCdmBaseValue(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
 		if (true){
 			Object value = getMergeValue(mergeFirst, mergeSecond, field);
 			if (value instanceof ICdmBase || value == null){
-				field.set(mergeFirst, (ICdmBase)value);
+				field.set(mergeFirst, value);
 			}else{
 				throw new MergeException("Merged value must be of type CdmBase but is not: " + value.getClass());
 			}
 		}else{
 			throw new MergeException("Not supported mode");
 		}
-	}	
+	}
 
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeUserTypeField(T mergeFirst, T mergeSecond, Field field) throws Exception {
 		String propertyName = field.getName();
@@ -289,11 +289,11 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 	}
-	
+
 	/**
 	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
 	 */
 	private Method getMergeMethod(Class<?> fieldType) throws SecurityException, NoSuchMethodException {
 		Method mergeMethod = fieldType.getDeclaredMethod("merge", fieldType);
@@ -303,8 +303,8 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 
 
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeCollectionField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception {
 		String propertyName = field.getName();
@@ -316,19 +316,19 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 	}
 
-	private <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
+	protected <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
 		Class<?> fieldType = field.getType();
 		if (mergeMode == MergeMode.ADD || mergeMode == MergeMode.ADD_CLONE){
 			//FIXME
 			Method addMethod = getAddMethod(field);
 			Method removeMethod = getAddMethod(field, true);
-			
+
 			if (Set.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)){
 				Collection<ICdmBase> secondCollection = (Collection<ICdmBase>)field.get(mergeSecond);
 				List<ICdmBase> removeList = new ArrayList<ICdmBase>();
 				if(secondCollection != null) {
 				for (ICdmBase obj : secondCollection){
-					Object objectToAdd; 
+					Object objectToAdd;
 					if (mergeMode == MergeMode.ADD){
 						objectToAdd = obj;
 					}else if(mergeMode == MergeMode.ADD_CLONE){
@@ -359,18 +359,18 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 					Method relatedFromMethod = RelationshipBase.class.getDeclaredMethod("getRelatedFrom");
 					relatedFromMethod.setAccessible(true);
 					Object relatedFrom = relatedFromMethod.invoke(relation);
-					
+
 					Method relatedToMethod = RelationshipBase.class.getDeclaredMethod("getRelatedTo");
 					relatedToMethod.setAccessible(true);
 					Object relatedTo = relatedToMethod.invoke(relation);
-					
+
 					if (relatedFrom.equals(mergeSecond)){
-						Method setRelatedMethod = RelationshipBase.class.getDeclaredMethod("setRelatedFrom", IRelated.class);	
+						Method setRelatedMethod = RelationshipBase.class.getDeclaredMethod("setRelatedFrom", IRelated.class);
 						setRelatedMethod.setAccessible(true);
 						setRelatedMethod.invoke(relation, mergeFirst);
 					}
 					if (relatedTo.equals(mergeSecond)){
-						Method setRelatedMethod = RelationshipBase.class.getDeclaredMethod("setRelatedTo", IRelated.class);	
+						Method setRelatedMethod = RelationshipBase.class.getDeclaredMethod("setRelatedTo", IRelated.class);
 						setRelatedMethod.setAccessible(true);
 						setRelatedMethod.invoke(relation, mergeFirst);
 					}
@@ -390,12 +390,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			throw new MergeException("Other merge modes for collections not yet implemented");
 		}
 	}
-	
-	
+
+
 	private Method getAddMethod(Field field) throws MergeException{
 		return getAddMethod(field, false);
 	}
-	
+
 	public static Method getAddMethod(Field field, boolean remove) throws MergeException{
 		Method result;
 		Class<?> parameterClass = getCollectionType(field);
@@ -424,10 +424,10 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 		return result;
 	}
-	
+
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergePrimitiveField(T mergeFirst, T mergeSecond, Field field) throws Exception {
 		String propertyName = field.getName();
@@ -438,12 +438,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			field.set(mergeFirst, value);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
-		
+
 	}
-	
+
 	/**
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	private <T extends IMergable> void mergeStringField(T mergeFirst, T mergeSecond, Field field) throws Exception {
 		String propertyName = field.getName();
@@ -454,7 +454,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			field.set(mergeFirst, value);
 		}
 		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
-		
+
 	}
 
 	/**
@@ -478,9 +478,9 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	 * @param toMerge
 	 * @param field
 	 * @param mergeMode
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	protected <T extends IMergable> Object getMergeValue(T mergeFirst, T mergeSecond, 
+	protected <T extends IMergable> Object getMergeValue(T mergeFirst, T mergeSecond,
 			Field field) throws Exception {
 		MergeMode mergeMode =  this.getMergeMode(field.getName());
 		try {
@@ -494,7 +494,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 				return ((String)field.get(mergeFirst) + (String)field.get(mergeSecond));
 			}else if (mergeMode == MergeMode.AND){
 				return ((Boolean)field.get(mergeFirst) && (Boolean)field.get(mergeSecond));
-			}else if (mergeMode == MergeMode.OR){ 
+			}else if (mergeMode == MergeMode.OR){
 				return ((Boolean)field.get(mergeFirst) || (Boolean)field.get(mergeSecond));
 			}else{
 				throw new IllegalStateException("Unknown MergeMode");
@@ -504,9 +504,9 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 
-	
+
 	private static Class getCollectionType(Field field) throws MergeException{
-		Type genericType = (ParameterizedType)field.getGenericType();
+		Type genericType = field.getGenericType();
 		if (genericType instanceof ParameterizedType/*Impl*/){
 			ParameterizedType paraType = (ParameterizedType)genericType;
 			Type rawType = paraType.getRawType();

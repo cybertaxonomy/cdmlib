@@ -1222,6 +1222,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
 
     public HomotypicalGroup getHomotypicalGroup() {
+        if (homotypicalGroup == null){
+            homotypicalGroup = new HomotypicalGroup();
+            homotypicalGroup.typifiedNames.add(this);
+        }
     	return homotypicalGroup;
     }
 

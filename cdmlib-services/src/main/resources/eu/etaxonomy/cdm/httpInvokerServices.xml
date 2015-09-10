@@ -203,7 +203,7 @@
     </property>
   </bean>
 
-  <bean id="httpServiceService"
+  <bean id="httpBaseService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="serviceImpl" />
@@ -366,6 +366,39 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.molecular.IPrimerService
+      </value>
+    </property>
+  </bean>
+  
+  <bean id="httpAmplificationService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="amplificationServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.molecular.IAmplificationService
+      </value>
+    </property>
+  </bean>
+  
+  <bean id="httpSequenceService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="sequenceServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.molecular.ISequenceService
+      </value>
+    </property>
+  </bean>
+  
+  <bean id="httpIOService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="IOServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.io.service.IIOService
       </value>
     </property>
   </bean>

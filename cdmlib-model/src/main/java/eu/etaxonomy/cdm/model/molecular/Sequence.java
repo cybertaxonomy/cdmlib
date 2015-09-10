@@ -425,11 +425,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	public void removeSingleReadAlignment(SingleReadAlignment singleReadAlignment) {
 		this.singleReadAlignments.remove(singleReadAlignment);
-		//TODO setting this to NULL violates an SQL constraint
-		//to check: run OccurrenceServiceTest.testDeleteStepByStep()
-//		if (this.equals(singleReadAlignment.getConsensusSequence())){
-//			singleReadAlignment.setConsensusAlignment(null);
-//		}
+		if (this.equals(singleReadAlignment.getConsensusSequence())){
+			singleReadAlignment.setConsensusAlignment(null);
+		}
 	}
 //	/**
 //	 * @see #getSingleReads()

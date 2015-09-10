@@ -199,6 +199,15 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
     /**
+     * This method was initially added to {@link CdmBase} to fix #5161.
+     * It can be overridden by subclasses such as {@link IdentifiableEntity}
+     * to explicitly initialize listeners. This is needed e.g. after de-serialization
+     * as listeners are not serialized due to the @Transient annotation.
+     * However, it can be generally used for other use-cases as well
+     */
+    public void initListener() {}
+
+    /**
      * Adds an item to a set of <code>this</code> object and fires the according
      * {@link PropertyChangeEvent}. Workaround as long as add and remove is not yet
      * implemented in aspectJ.

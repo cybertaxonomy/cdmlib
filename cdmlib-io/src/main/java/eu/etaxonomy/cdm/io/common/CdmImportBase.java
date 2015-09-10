@@ -1331,5 +1331,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
+	@Override
+    public byte[] getByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

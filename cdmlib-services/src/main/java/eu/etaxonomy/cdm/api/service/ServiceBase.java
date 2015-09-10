@@ -25,7 +25,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -70,33 +69,19 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID persistentObjectUUID) {
-    	DeleteResult result = new DeleteResult();
-    	try{
-    		T persistentObject = dao.load(persistentObjectUUID);
-    		dao.delete(persistentObject);
-    	} catch(DataAccessException e){
-    		result.setError();
-    		result.addException(e);
-    	}
-        return result;
+        T persistentObject = dao.findByUuid(persistentObjectUUID);
+        return delete(persistentObject);
     }
 
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(Collection<UUID> persistentObjectUUIDs) {
         DeleteResult result = new DeleteResult();
-        boolean atLeastOneOK = false;
         for(UUID persistentObjectUUID : persistentObjectUUIDs) {
-            try {
-                T persistentObject = dao.load(persistentObjectUUID);
-                dao.delete(persistentObject);
-            } catch(DataAccessException e){
-                result.setStatus(Status.ERROR);
-                result.addException(e);
-            }
-            atLeastOneOK = true;
+            T persistentObject = dao.findByUuid(persistentObjectUUID);
+            DeleteResult dr = delete(persistentObject);
+            result.includeResult(dr);
         }
-
         return result;
     }
 

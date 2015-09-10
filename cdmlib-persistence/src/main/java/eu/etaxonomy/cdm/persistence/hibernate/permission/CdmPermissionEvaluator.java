@@ -40,7 +40,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return accessDecisionManager;
     }
 
-    private CdmPermissionEvaluator() {
+    public CdmPermissionEvaluator() {
 
     }
 

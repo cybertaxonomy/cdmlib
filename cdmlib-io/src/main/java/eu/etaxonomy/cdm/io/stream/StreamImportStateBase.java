@@ -39,15 +39,23 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public abstract class StreamImportStateBase<CONFIG extends StreamImportConfiguratorBase, IO extends StreamImportBase> extends ImportStateBase<CONFIG, IO>{
 	private static final Logger logger = Logger.getLogger(StreamImportStateBase.class);
 
-	private final UUID uuid = UUID.randomUUID();
+	private UUID uuid = UUID.randomUUID();
 
 	boolean taxaCreated;
 	private Map<String, Map<String, IdentifiableEntity>> partitionStore;
 
-	private final IImportMapping mapping = getConfig().getMappingType().getMappingInstance(uuid.toString(), getConfig().getDatabaseMappingFile());
+	private final IImportMapping mapping;
 
 	public StreamImportStateBase(CONFIG config) {
 		super(config);
+		if (config.getStateUuid()!= null){
+		    uuid = config.getStateUuid();
+		}else{
+		    String message = "State uuid: " + uuid.toString();
+		    logger.warn(message);
+		    System.out.println(message);
+		}
+		mapping = getConfig().getMappingType().getMappingInstance(uuid.toString(), getConfig().getDatabaseMappingFile());
 	}
 
 	/**
@@ -145,7 +153,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 		//retrieve cdm objects per class
 		Map<Class, Map<Integer, IdentifiableEntity>> classMap = new HashMap<Class, Map<Integer,IdentifiableEntity>>();
-		for (Class<?> cdmClass :destinationNamespaceMap.keySet()){
+		for (Class<?> cdmClass : destinationNamespaceMap.keySet()){
 			IIdentifiableEntityService<?> classService = getCurrentIO().getServiceByClass(cdmClass);
 			Set<Integer> idSet = destinationNamespaceMap.get(cdmClass);
 			List<? extends IdentifiableEntity> relatedObjects = classService.findById(idSet);

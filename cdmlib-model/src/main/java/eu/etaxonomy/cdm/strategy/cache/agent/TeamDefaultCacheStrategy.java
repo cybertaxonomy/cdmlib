@@ -23,11 +23,16 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
-	private static final String FINAL_TEAM_CONCATINATION = " & ";
+    private static final long serialVersionUID = 8375295443642690479L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
+
+
+    private static final String FINAL_TEAM_CONCATINATION = " & ";
 	private static final String STD_TEAM_CONCATINATION = ", ";
-	private static final long serialVersionUID = 8375295443642690479L;
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
+	private static final String ET_AL_TEAM_CONCATINATION_FULL = " & ";
+	private static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
+
 
 	final static UUID uuid = UUID.fromString("1cbda0d1-d5cc-480f-bf38-40a510a3f223");
 
@@ -60,7 +65,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		if (teamMembers.size() == 0){
 			result = team.getTitleCache();
 		}else if (team.isHasMoreMembers()){
-		    result += " et al.";
+		    result += ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
 		}
 		return result;
 	}
@@ -80,7 +85,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		if (teamMembers.size() == 0){
 			result = EMPTY_TEAM;
 		} else if (team.isHasMoreMembers()){
-		    result += " et al.";
+		    result += ET_AL_TEAM_CONCATINATION_FULL + "al.";
 		}
 		return result;
 	}

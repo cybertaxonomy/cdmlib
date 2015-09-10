@@ -125,6 +125,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
         HomotypicalGroup group = synonymName.getHomotypicalGroup();
+        group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
         if (synonymRelationshipType == null){
             if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
                 synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -135,8 +136,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         //set homotypic group
         HomotypicalGroup newAcceptedTaxonHomotypicalgroup = newAcceptedTaxon.getHomotypicGroup();
-       HibernateProxyHelper.deproxy(newAcceptedTaxonHomotypicalgroup);
-       HibernateProxyHelper.deproxy(newAcceptedTaxon.getName());
+        newAcceptedTaxonHomotypicalgroup = HibernateProxyHelper.deproxy(newAcceptedTaxonHomotypicalgroup, HomotypicalGroup.class);
+        TaxonNameBase newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonNameBase.class);
         // Move Synonym Relations to new Taxon
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
@@ -153,7 +154,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
             SynonymRelationshipType srt;
             if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
-                    && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
+                    && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxonName.getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
             	if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
@@ -230,11 +231,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         oldTaxon.clearDescriptions();
 
         taxonService.update(newAcceptedTaxon);
+        //oldTaxon.removeTaxonNode(oldTaxonNode);
+        taxonService.update(oldTaxon);
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
-//        conf.setDeleteNameIfPossible(false);
+        conf.setDeleteNameIfPossible(false);
 
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, null);
@@ -380,7 +383,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 		            }
 
-		            result.addUpdatedObject(taxonNode.getParent());
+		            result.addUpdatedObject(parent);
 		            if(result.getCdmEntity() == null){
 		                result.setCdmEntity(taxonNode);
                     }
@@ -485,11 +488,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean moveToParent){
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid){
     	UpdateResult result = new UpdateResult();
-    	if (moveToParent){
-    	   return moveTaxonNode(taxonNodeUuid, targetNodeUuid);
-       }else{
+
 
     	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
     	   TaxonNode targetNode = dao.load(targetNodeUuid);
@@ -499,7 +500,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
            result.addUpdatedObject(taxonNode.getParent());
            result.setCdmEntity(taxonNode);
     	   parent.addChildNode(taxonNode, sortIndex+1, taxonNode.getReference(),  taxonNode.getMicroReference());
-       }
+    	   dao.saveOrUpdate(parent);
 
         return result;
     }
@@ -519,11 +520,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return result;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid) {
-        return moveTaxonNode(dao.load(taxonNodeUuid), dao.load(newParentTaxonNodeUuid));
 
+
+    @Override
+    @Transactional
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid){
+        UpdateResult result = new UpdateResult();
+        TaxonNode targetNode = dao.load(newParentNodeUuid);
+        for (UUID taxonNodeUuid: taxonNodeUuids){
+            TaxonNode taxonNode = dao.load(taxonNodeUuid);
+            result.includeResult(moveTaxonNode(taxonNode,targetNode));
+        }
+        return result;
     }
 
 }

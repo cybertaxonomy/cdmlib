@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import eu.etaxonomy.cdm.io.common.IExportData;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -119,8 +120,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "languageStrings"
 })
 @XmlRootElement(name = "DataSet")
-public class DataSet {
-	
+public class DataSet implements IExportData {
+
 	@XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
@@ -158,21 +159,21 @@ public class DataSet {
     	//    	@XmlElement(name = "TdwgArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = TdwgArea.class),
     	@XmlElement(name = "TextFormat", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextFormat.class),
     	@XmlElement(name = "Country", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Country.class)
-    	
+
     })
     protected List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
-	
+
 	@XmlElementWrapper(name = "TermVocabularies")
     @XmlElements({
         @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = TermVocabulary.class),
         @XmlElement(name = "OrderedTermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = OrderedTermVocabulary.class)
     })
-        
+
     protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
-	
-	
+
+
     @XmlElementWrapper(name = "Agents")
-    @XmlElements({             
+    @XmlElements({
         @XmlElement(name = "Team", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Team.class),
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
@@ -183,30 +184,30 @@ public class DataSet {
     @XmlElementWrapper(name = "Collections")
     @XmlElement(name = "Collection", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0")
     protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<eu.etaxonomy.cdm.model.occurrence.Collection>();
-        
+
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElements({
       @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
-    
+
     @XmlElementWrapper(name = "PolytomousKeys")
     @XmlElements({
       @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
     })
     protected List<PolytomousKey> polytomousKeys = new ArrayList<PolytomousKey>();
-    
-    
+
+
     @XmlElementWrapper(name = "Classifications")
     @XmlElement(name = "Classification", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<Classification> classifications = new ArrayList<Classification>();
-    
+
     @XmlElementWrapper(name = "TaxonNodes")
     @XmlElement(name = "TaxonNodes", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>();
-   
+
     protected List<LanguageString> languageStrings =new ArrayList<LanguageString>();
-      
+
 
     @XmlElementWrapper(name = "Occurrences")
     @XmlElements({
@@ -215,14 +216,14 @@ public class DataSet {
     	@XmlElement(name = "FieldUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldUnit.class)
     })
     protected List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
-    
+
     @XmlElementWrapper(name = "EventBases")
     @XmlElements({
     	@XmlElement(name = "DerivationEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEvent.class),
     	@XmlElement(name = "GatheringEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = GatheringEvent.class)
     })
     protected List<EventBase> eventBases = new ArrayList<EventBase>();
-    
+
     @XmlElementWrapper(name = "References")
     @XmlElements({
     	@XmlElement(name = "Reference", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Reference.class)
@@ -235,7 +236,7 @@ public class DataSet {
     	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
     })
     protected List<TypeDesignationBase> typeDesignations = new ArrayList<TypeDesignationBase>();
-    	
+
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
     	@XmlElement(name = "BacterialName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BacterialName.class),
@@ -261,30 +262,30 @@ public class DataSet {
       @XmlElement(name = "PhylogeneticTree", namespace = "http://etaxonomy.eu/cdm/model/molecular/1.0", type = PhylogeneticTree.class)
     })
     protected List<Media> media = new ArrayList<Media>();
-        
+
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
     protected List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
-    
+
     @XmlElementWrapper(name = "Users")
     @XmlElement(name = "User", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     protected List<User> users = new ArrayList<User>();
-    
+
     @XmlElementWrapper(name = "Groups")
     @XmlElement(name = "Group", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     protected List<Group> groups = new ArrayList<Group>();
-    
+
     @XmlElementWrapper(name = "GrantedAuthorities")
     @XmlElement(name = "GrantedAuthority", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = GrantedAuthorityImpl.class)
     protected List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 
     /**
      * Gets the value of the agents property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<Agent> }
-     *     
+     *
      */
     public List<AgentBase> getAgents() {
         return agents;
@@ -292,11 +293,11 @@ public class DataSet {
 
     /**
      * Sets the value of the agents property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<Agent> }
-     *     
+     *
      */
     public void setAgents(List<AgentBase> value) {
         this.agents = value;
@@ -304,11 +305,11 @@ public class DataSet {
 
     /**
      * Gets the value of the collections property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<eu.etaxonomy.cdm.model.occurrence.Collection> }
-     *     
+     *
      */
     public List<eu.etaxonomy.cdm.model.occurrence.Collection> getCollections() {
         return collections;
@@ -316,11 +317,11 @@ public class DataSet {
 
     /**
      * Sets the value of the collections property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<eu.etaxonomy.cdm.model.occurrence.Collection> }
-     *     
+     *
      */
     public void setCollections(List<eu.etaxonomy.cdm.model.occurrence.Collection> value) {
         this.collections = value;
@@ -328,11 +329,11 @@ public class DataSet {
 
     /**
      * Gets the value of the terms property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<TermBase> }
-     *     
+     *
      */
     public List<DefinedTermBase> getTerms() {
         return terms;
@@ -340,11 +341,11 @@ public class DataSet {
 
     /**
      * Sets the value of the terms property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<TermBase> }
-     *     
+     *
      */
     public void setTerms(List<DefinedTermBase> value) {
         this.terms = value;
@@ -352,38 +353,38 @@ public class DataSet {
 
     /**
      * Gets the value of the term vocabularies property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<TermVocabulary> }
-     *     
+     *
      */
-    
+
     public List<TermVocabulary<DefinedTermBase>> getTermVocabularies() {
         return termVocabularies;
     }
 
     /**
      * Sets the value of the term vocabularies property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<TermVocabulary> }
-     *     
+     *
      */
     public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
         this.termVocabularies = value;
     }
-    
-    
+
+
 
     /**
      * Gets the value of the taxonomicNames property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<axonNameBase> }
-     *     
+     *
      */
     public List<TaxonNameBase> getTaxonomicNames() {
         return taxonomicNames;
@@ -391,23 +392,23 @@ public class DataSet {
 
     /**
      * Sets the value of the taxonomicNames property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<TaxonNameBase> }
-     *     
+     *
      */
     public void setTaxonomicNames(List<TaxonNameBase> value) {
         this.taxonomicNames = value;
     }
-    
+
     /**
      * Gets the value of the eventBases property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<EventBase> }
-     *     
+     *
      */
     public List<EventBase> getEventBases() {
         return eventBases;
@@ -415,11 +416,11 @@ public class DataSet {
 
     /**
      * Sets the value of the eventBases property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<EventBase> }
-     *     
+     *
      */
     public void setEventBases(List<EventBase> value) {
         this.eventBases = value;
@@ -427,11 +428,11 @@ public class DataSet {
 
     /**
      * Gets the value of the occurrences property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<SpecimenOrObservationBase> }
-     *     
+     *
      */
     public List<SpecimenOrObservationBase> getOccurrences() {
         return occurrences;
@@ -439,22 +440,22 @@ public class DataSet {
 
     /**
      * Sets the value of the occurrences property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<SpecimenOrObservationBase> }
-     *     
+     *
      */
     public void setOccurrences(List<SpecimenOrObservationBase> value) {
         this.occurrences = value;
     }
     /*
     * Gets the value of the occurrences property.
-    * 
+    *
     * @return
     *     possible object is
     *     {@link List<LanguageStringBase> }
-    *     
+    *
     */
    public List<LanguageString> getLanguageStrings() {
        return languageStrings;
@@ -462,22 +463,22 @@ public class DataSet {
 
    /**
     * Sets the value of the occurrences property.
-    * 
+    *
     * @param value
     *     allowed object is
     *     {@link List<SpecimenOrObservationBase> }
-    *     
+    *
     */
    public void setLanguageStrings(List<LanguageString> value) {
        this.languageStrings = value;
    }
     /**
      * Gets the value of the references property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<Reference> }
-     *     
+     *
      */
     public List<Reference> getReferences() {
         return references;
@@ -485,11 +486,11 @@ public class DataSet {
 
     /**
      * Sets the value of the references property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<Reference> }
-     *     
+     *
      */
     public void setReferences(List<Reference> value) {
         this.references = value;
@@ -497,24 +498,24 @@ public class DataSet {
 
     /**
      * Gets the value of the featureTrees property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public List<FeatureTree> getFeatureTrees() {
         return featureTrees;
     }
-    
+
 
     /**
      * Gets the value of the polytomousKeys property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<PolytomousKey> }
-     *     
+     *
      */
     public List<PolytomousKey> getPolytomousKeys() {
         return polytomousKeys;
@@ -522,48 +523,48 @@ public class DataSet {
 
     /**
      * Sets the value of the featureTrees property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public void setClassifications(List<Classification> value) {
     	this.classifications = value;
     }
-    
-    
+
+
     /**
      * Gets the value of the featureTrees property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public List<Classification> getClassifications() {
         return classifications;
     }
     /**
      * Sets the value of the featureTrees property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public void setTaxonNodes(List<TaxonNode> value) {
     	this.taxonNodes = value;
     }
-    
-    
+
+
     /**
      * Gets the value of the featureTrees property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public List<TaxonNode> getTaxonNodes() {
         return taxonNodes;
@@ -571,35 +572,35 @@ public class DataSet {
 
     /**
      * Sets the value of the featureTrees property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<FeatureTree> }
-     *     
+     *
      */
     public void setFeatureTrees(List<FeatureTree> value) {
     	this.featureTrees = value;
     }
-    
+
     /**
      * Sets the value of the polytomousKeys property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<PolytomousKey> }
-     *     
+     *
      */
     public void setPolytomousKeys(List<PolytomousKey> value) {
     	this.polytomousKeys = value;
     }
-    
+
     /**
      * Adds the taxonBases in value to the taxonBases property list.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Collection<TaxonBase> }
-     *     
+     *
      */
     public void addTaxonBases(Collection<TaxonBase<?>> value) {
     	this.taxonBases.addAll(value);
@@ -607,11 +608,11 @@ public class DataSet {
 
     /**
      * Gets the value of the taxonBases property as {@link Collection<TaxonBase> }
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<TaxonBase> }
-     *     
+     *
      */
     public List<TaxonBase<?>> getTaxonBases() {
     	return taxonBases;
@@ -619,11 +620,11 @@ public class DataSet {
 
     /**
      * Sets the value of the taxonBases property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<TaxonBase> }
-     *     
+     *
      */
     public void setTaxonBases(List<TaxonBase<?>> value) {
         this.taxonBases = value;
@@ -631,9 +632,9 @@ public class DataSet {
 
     /**
      * Adds the taxonBase in value to the taxonBases property list.
-     * 
+     *
      * @param value
-     *     
+     *
      */
     public void addTaxonBase(TaxonBase value) {
     		this.taxonBases.add(value);
@@ -641,11 +642,11 @@ public class DataSet {
 
     /**
      * Adds the media in value to the media property list.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Collection<VersionableEntity> }
-     *     
+     *
      */
     public <T extends Media> void addMedia(Collection<T> value) {
     	for (T medium: value) {
@@ -655,11 +656,11 @@ public class DataSet {
 
     /**
      * Gets the value of the  property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<ReferencedEntityBase> }
-     *     
+     *
      */
     public List<Media> getMedia() {
         return media;
@@ -667,24 +668,24 @@ public class DataSet {
 
     /**
      * Sets the value of the referencedEntities property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<ReferencedEntityBase> }
-     *     
+     *
      */
     public void setMedia(List<Media> value) {
         this.media = new ArrayList<Media>();
         media.addAll(value);
     }
-    
+
     /**
      * Gets the value of the synonyms property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<Synonym> }
-     *     
+     *
      */
     public List<HomotypicalGroup> getHomotypicalGroups() {
         return homotypicalGroups;
@@ -692,11 +693,11 @@ public class DataSet {
 
     /**
      * Sets the value of the synonyms property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<Synonym> }
-     *     
+     *
      */
     public void setHomotypicalGroups(List<HomotypicalGroup> value) {
         this.homotypicalGroups = value;
@@ -704,23 +705,23 @@ public class DataSet {
 
     /**
      * Gets the value of the typeDesignations property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<TypeDesignationBase> }
-     *     
+     *
      */
     public List<TypeDesignationBase> getTypeDesignations() {
     	return typeDesignations;
     }
-    
+
     /**
      * Sets the value of the typeDesignations property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<TypeDesignationBase> }
-     *     
+     *
      */
 	public void addTypeDesignations(List<TypeDesignationBase> typeDesignations) {
 		this.typeDesignations.addAll(typeDesignations);
@@ -728,11 +729,11 @@ public class DataSet {
 
 	/**
      * Gets the value of the users property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<User> }
-     *     
+     *
      */
 	public List<User> getUsers() {
 		return users;
@@ -740,11 +741,11 @@ public class DataSet {
 
 	/**
      * Sets the value of the users property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<User> }
-     *     
+     *
      */
 	public void setUsers(List<User> users) {
 		this.users = users;
@@ -752,11 +753,11 @@ public class DataSet {
 
 	/**
      * Gets the value of the groups property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<Group> }
-     *     
+     *
      */
 	public List<Group> getGroups() {
 		return groups;
@@ -764,11 +765,11 @@ public class DataSet {
 
 	/**
      * Sets the value of the groups property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<Group> }
-     *     
+     *
      */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
@@ -776,11 +777,11 @@ public class DataSet {
 
 	/**
      * Gets the value of the grantedAuthorities property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link List<GrantedAuthority> }
-     *     
+     *
      */
 	public List<GrantedAuthority> getGrantedAuthorities() {
 		return grantedAuthorities;
@@ -788,11 +789,11 @@ public class DataSet {
 
 	/**
      * Sets the value of the grantedAuthorities property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link List<GrantedAuthority> }
-     *     
+     *
      */
 	public void setGrantedAuthorities(List<GrantedAuthority> grantedAuthorities) {
 		this.grantedAuthorities = grantedAuthorities;
@@ -800,6 +801,6 @@ public class DataSet {
 
 	public void addUser(User deproxy) {
 		this.users.add(deproxy);
-		
-	}    
+
+	}
 }

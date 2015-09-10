@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,17 +12,12 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
@@ -35,26 +30,19 @@ import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.CdmSingleAttributeXmlMapperBase;
-import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
@@ -70,29 +58,30 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
-	
+
 	@Autowired
 	IpniService service;
-	
-	protected abstract void doInvoke(TcsXmlImportState state);
-	
+
+	@Override
+    protected abstract void doInvoke(TcsXmlImportState state);
+
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 //	 */
 //	@Override
-//	protected boolean doInvoke(IImportConfigurator config, 
-//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//	protected boolean doInvoke(IImportConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores){
 //		TcsXmlImportState state = ((TcsXmlImportConfigurator)config).getState();
 //		state.setConfig((TcsXmlImportConfigurator)config);
 //		return doInvoke(state);
 //	}
-	
-	
+
+
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
-		boolean result = true;	
+		boolean result = true;
 		for (CdmSingleAttributeXmlMapperBase mapper : classMappers){
 			Object value = getValue(mapper, parentElement);
 			//write to destination
@@ -105,7 +94,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return true;
 	}
-	
+
 	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){
 		String sourceAttribute = mapper.getSourceAttribute();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
@@ -119,16 +108,16 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		Object value = child.getTextTrim();
 		return value;
 	}
-	
+
 	protected boolean checkAdditionalContents(Element parentElement, CdmSingleAttributeXmlMapperBase[] classMappers, CdmSingleAttributeXmlMapperBase[] operationalMappers, CdmSingleAttributeXmlMapperBase[] unclearMappers){
 		List<Content> additionalContentList = new ArrayList<Content>();
 		List<Content> contentList = parentElement.getContent();
 		List<CdmSingleAttributeXmlMapperBase> mapperList = new ArrayList<CdmSingleAttributeXmlMapperBase>();
-		
+
 		mapperList.addAll(Arrays.asList(classMappers));
 		mapperList.addAll(Arrays.asList(operationalMappers));
 		mapperList.addAll(Arrays.asList(unclearMappers));
-		
+
 		for(Content content: contentList){
 			boolean contentExists = false;
 			if (content instanceof Element){
@@ -138,7 +127,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 						break;
 					}
 				}
-				
+
 			}else if (content instanceof Text){
 				//empty Text
 				if (((Text)content).getTextNormalize().equals("")){
@@ -147,7 +136,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 					//
 				}
 			}
-			
+
 			if (contentExists == false){
 				additionalContentList.add(content);
 			}
@@ -157,10 +146,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return (additionalContentList.size() == 0);
 	}
-	
+
 	protected Element getDataSetElement(TcsXmlImportConfigurator tcsConfig){
 		Element root = tcsConfig.getSourceRoot();
-		
+
 		if (! "DataSet".equals(root.getName())){
 			logger.error("Root element is not 'DataSet'");
 			return null;
@@ -174,10 +163,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			return null;
 		}
 		//TODO prevent multiple elements
-		
+
 		return root;
 	}
-	
+
 //	static public boolean checkFirstTwoFunctionElements(List<Object> objList){
 //		if (! (objList.get(0) instanceof TcsXmlImportConfigurator)){
 //			logger.error("first method object has wrong type. Must be " + TcsXmlImportConfigurator.class.getSimpleName() + " but is " + (objList.get(0) == null ? "null": objList.get(0).getClass().getSimpleName()));
@@ -189,8 +178,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 //		}
 //		return true;
 //	}
-	
-	
+
+
 	protected boolean testAdditionalElements(Element parentElement, List<String> excludeList){
 		boolean result = true;
 		List<Element> list = parentElement.getChildren();
@@ -202,8 +191,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-	
-	
+
+
 	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
 		T result = null;
 		String linkType = element.getAttributeValue("linkType");
@@ -241,8 +230,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-	
-	
+
+
 	protected Reference makeAccordingTo(Element elAccordingTo, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		Reference result = null;
 		if (elAccordingTo != null){
@@ -253,7 +242,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			childName = "Simple";
 			obligatory = true;
 			Element elSimple = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
-			
+
 			if (elAccordingToDetailed != null){
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
@@ -264,8 +253,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-	
-	
+
+
 	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		Reference result = null;
 		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
@@ -275,13 +264,13 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			boolean obligatory = false;
 			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
 			makeAccordingToAuthorTeam(elAuthorTeam, success);
-			
+
 			//PublishedIn
 			childName = "PublishedIn";
 			obligatory = false;
 			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
 			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
-			
+
 			//MicroReference
 			childName = "MicroReference";
 			obligatory = false;
@@ -290,7 +279,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				String microReference = elMicroReference.getTextNormalize();
 				if (CdmUtils.Nz(microReference).equals("")){
 					//TODO
-					logger.warn("MicroReference not yet implemented for AccordingToDetailed");	
+					logger.warn("MicroReference not yet implemented for AccordingToDetailed");
 				}
 			}
 		}
@@ -305,28 +294,28 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	protected void testNoMoreElements(){
 		//TODO
 		//logger.info("testNoMoreElements Not yet implemented");
 	}
-	
-	
-	
 
-	
+
+
+
+
 	@SuppressWarnings("unchecked")
 	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		TeamOrPersonBase<?> result = null; 
+		TeamOrPersonBase<?> result = null;
 		String childName;
 		boolean obligatory;
 		if (elNameCitation != null){
 			Namespace ns = elNameCitation.getNamespace();
-			
+
 			childName = "Authors";
 			obligatory = false;
 			Element elAuthors = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
@@ -369,15 +358,15 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			return null;
 		}
 	}
-	
-	
 
-	
-	
 
-	
-	
-	
+
+
+
+
+
+
+
 	protected Integer getIntegerYear(String year){
 		try {
 			Integer result = Integer.valueOf(year);
@@ -394,11 +383,11 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		} else {
 			return ref;
 		}
-		
-	}
-	
 
-	
+	}
+
+
+
 	protected void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
 			//logger.warn("makeTypification not yet implemented");
@@ -406,73 +395,86 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 	}
 
-	
+
 	protected void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
 		//Status
-			
+
 		if (elPublicationStatus != null){
-			//logger.warn("makePublicationStatus not yet implemented");
-			//success.setValue(false);
+			String pubStat = elPublicationStatus.getAttributeValue("Note");
+
 		}
 	}
-	
+
 	protected void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			//logger.warn("makeProviderLink not yet implemented");
 			//success.setValue(false);
 		}
 	}
-	
 
-	protected void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+
+	protected void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success, TcsXmlImportState state){
 		if (elProviderSpecificData != null){
-			
-			/*Namespace ns = elProviderSpecificData.getNamespace();
-			
+
+			Namespace ns = elProviderSpecificData.getNamespace();
+
 			String childName = "ipniData";
 			boolean obligatory = true;
-			Element elIpniData = XmlHelp.getSingleChildElement(success, elProviderSpecificData, childName, ns, obligatory);
-			
+			List<Element> elIpniData = elProviderSpecificData.getChildren();
+			Element el =  elIpniData.get(0);
+
+
 			childName = "citationType";
-			Element elCitationType = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
-			
+			ns = el.getNamespace();
+
+			Element elCitationType = XmlHelp.getSingleChildElement(success, el, childName, ns, obligatory);
+
 			childName = "referenceRemarks";
-			Element elReferenceRemarks = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
-			
+			Element elReferenceRemarks = XmlHelp.getSingleChildElement(success, el, childName, ns, obligatory);
+
 			childName = "suppressed";
-			Element elSuppressed = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
-			
+			Element elSuppressed = XmlHelp.getSingleChildElement(success, el, childName, ns, obligatory);
+
 			childName = "score";
-			Element elScore = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
-			
+			Element elScore = XmlHelp.getSingleChildElement(success, el, childName, ns, obligatory);
+
 			childName = "nomenclaturalSynonym";
-			Element elNomenclaturalSynonym = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
-			
+			Element elNomenclaturalSynonym = XmlHelp.getSingleChildElement(success, el, childName, ns, obligatory);
+			 ns = elProviderSpecificData.getNamespace();
 			childName = "RelatedName";
 			Element elRelatedName = XmlHelp.getSingleChildElement(success, elNomenclaturalSynonym, childName, ns, obligatory);
-			
+
 			//create homotypic synonym
-			
-			*/
-			
+			if (elRelatedName != null){
+    			String id =elRelatedName.getAttributeValue("ref");
+    			System.out.println(removeVersionOfRef(id));
+    			if (name.getTaxa().iterator().hasNext()){
+    			    Taxon taxon = (Taxon) name.getTaxa().iterator().next();
+    			    //if taxon already exist
+    			    taxon.addHomotypicSynonym((Synonym)state.getStore(TAXON_STORE).get(removeVersionOfRef(id)), null, null);
+    			    //otherwise add to a map for homotypic synonyms
+    			}
+			}
+
 		}
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TcsXmlImportState state){
+	@Override
+    protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoTaxonNames();
 	}
-	
-	
+
+
 	protected static final Reference<?> unknownSec(){
 		Reference<?> result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}
-	
+
 
 
 }

@@ -43,18 +43,37 @@ public class UnitAssociationParser {
     }
 
     public UnitAssociationWrapper parse(Element unitAssociation){
+        if(prefix.equals("abcd:")){
+
+        }
+        else if(prefix.equals("abcd21:")){
+
+        }
         //unit id
         String unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"UnitID"));
+        if(unitId==null){
+            unitId = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociatedUnitID"));//abcd 2.0.6
+        }
+        //institution code
+        String institutionCode = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"SourceInstitutionCode"));
+        if(institutionCode==null){
+            institutionCode = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociatedUnitSourceInstitutionCode"));//abcd 2.0.6
+        }
+        //institution name
+        String institutionName = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"SourceName"));
+        if(institutionName==null){
+            institutionName = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociatedUnitSourceName"));//abcd 2.0.6
+        }
         //data access point
         URI datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"DatasetAccessPoint"), report);
         if(datasetAccessPoint==null){
-            datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"), report);
+            datasetAccessPoint = AbcdParseUtility.parseFirstUri(unitAssociation.getElementsByTagName(prefix+"Comment"), report);//abcd 2.0.6
         }
         //association type
         String associationType = AbcdParseUtility.parseFirstTextContent(unitAssociation.getElementsByTagName(prefix+"AssociationType"));
 
         String unableToLoadMessage = String.format("Unable to load unit %s from %s", unitId, datasetAccessPoint);
-        if(datasetAccessPoint!=null){
+        if(unitId!=null && datasetAccessPoint!=null){
             BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
             OccurenceQuery query = new OccurenceQuery(unitId);
             try {
