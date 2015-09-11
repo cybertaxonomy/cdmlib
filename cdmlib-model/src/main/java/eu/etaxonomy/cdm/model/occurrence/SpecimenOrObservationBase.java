@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,6 +52,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -60,6 +63,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -456,6 +460,26 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         logger.warn("GetOriginalUnit not yet implemented");
         return null;
     }
+
+    @Transient
+    public Collection<DescriptionElementBase> characterData() {
+        Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
+        Set<DescriptionBase> descriptions = this.getDescriptions();
+        for (DescriptionBase<?> descriptionBase : descriptions) {
+            if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
+                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
+                Set<DescriptionElementBase> elements = specimenDescription.getElements();
+                for (DescriptionElementBase descriptionElementBase : elements) {
+                    if(descriptionElementBase.getFeature().isSupportsCategoricalData()
+                            ||descriptionElementBase.getFeature().isSupportsQuantitativeData()){
+                        states.add(descriptionElementBase);
+                    }
+                }
+            }
+        }
+        return states;
+    }
+
 
 
 //******************** CLONE **********************************************/
