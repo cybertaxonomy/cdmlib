@@ -1274,6 +1274,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Deprecated //this is not a service layer task so it may be removed in future versions
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen) {
         if (specimen != null) {
             return specimen.characterData();
