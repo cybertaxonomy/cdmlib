@@ -461,6 +461,27 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return null;
     }
 
+
+    public boolean hasCharacterData() {
+        Set<DescriptionBase> descriptions = this.getDescriptions();
+        for (DescriptionBase<?> descriptionBase : descriptions) {
+            if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
+                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
+                Set<DescriptionElementBase> elements = specimenDescription.getElements();
+                for (DescriptionElementBase descriptionElementBase : elements) {
+                    if (descriptionElementBase.isCharacterData()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a list of all description items which
+     * @return
+     */
     @Transient
     public Collection<DescriptionElementBase> characterData() {
         Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
@@ -470,8 +491,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
                 Set<DescriptionElementBase> elements = specimenDescription.getElements();
                 for (DescriptionElementBase descriptionElementBase : elements) {
-                    if(descriptionElementBase.getFeature().isSupportsCategoricalData()
-                            ||descriptionElementBase.getFeature().isSupportsQuantitativeData()){
+                    if(descriptionElementBase.isCharacterData()){
                         states.add(descriptionElementBase);
                     }
                 }
