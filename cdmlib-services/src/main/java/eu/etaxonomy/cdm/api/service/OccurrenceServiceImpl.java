@@ -1274,24 +1274,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Deprecated //this is not a service layer task so it may be removed in future versions
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen) {
-        Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
         if (specimen != null) {
-            Set<DescriptionBase> descriptions = specimen.getDescriptions();
-            for (DescriptionBase<?> descriptionBase : descriptions) {
-                if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
-                    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
-                    Set<DescriptionElementBase> elements = specimenDescription.getElements();
-                    for (DescriptionElementBase descriptionElementBase : elements) {
-                        if(descriptionElementBase.getFeature().isSupportsCategoricalData()
-                                ||descriptionElementBase.getFeature().isSupportsQuantitativeData()){
-                            states.add(descriptionElementBase);
-                        }
-                    }
-                }
-            }
+            return specimen.characterData();
+        }else{
+            return new ArrayList<DescriptionElementBase>();
         }
-        return states;
     }
 
     @Override
