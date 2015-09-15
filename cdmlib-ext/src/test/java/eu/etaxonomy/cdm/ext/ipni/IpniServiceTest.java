@@ -193,7 +193,6 @@ public class IpniServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNameID(){
 		ICdmApplicationConfiguration services = null;
 		IpniServiceNamesConfigurator config = null;
