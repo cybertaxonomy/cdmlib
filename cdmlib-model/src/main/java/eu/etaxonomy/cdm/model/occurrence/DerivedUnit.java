@@ -350,13 +350,13 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
     public String getMostSignificantIdentifier() {
-        if (getAccessionNumber() != null && !getAccessionNumber().isEmpty()) {
+        if (StringUtils.isNotBlank(getAccessionNumber())) {
             return getAccessionNumber();
         }
-        else if(getBarcode()!=null && getBarcode().isEmpty()){
+        else if(StringUtils.isNotBlank(getBarcode())){
             return getBarcode();
         }
-        else if(getCatalogNumber()!=null && getCatalogNumber().isEmpty()){
+        else if(StringUtils.isNotBlank(getCatalogNumber())){
             return getCatalogNumber();
         }
         return null;
