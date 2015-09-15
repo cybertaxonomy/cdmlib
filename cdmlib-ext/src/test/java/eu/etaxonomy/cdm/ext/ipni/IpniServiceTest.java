@@ -61,6 +61,7 @@ public class IpniServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetAuthors(){
 		ICdmApplicationConfiguration services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
