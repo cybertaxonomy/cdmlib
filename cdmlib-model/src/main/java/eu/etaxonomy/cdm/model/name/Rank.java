@@ -961,6 +961,16 @@ public class Rank extends OrderedTermBase<Rank> {
         }
     }
 
+    // FIXME:Remoting This is a ugly hack and need to be removed
+    // once the static initialisation is refactored
+    public static void initDefaultTerms() {
+        TermVocabulary<Rank> vocabulary = getTermByUuid(uuidKingdom).getVocabulary();
+        if(idInVocMap != null) {
+            idInVocMap.clear();
+        }
+        (new Rank()).setDefaultTerms(vocabulary);
+    }
+
     /**
      * @param term
      */
