@@ -1801,13 +1801,14 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public Map<Language, LanguageString> getDerivedUnitDefinitions() {
-		testDerivedUnit();
-		return this.derivedUnit.getDefinition();
+		return ! checkDerivedUnit()? null : this.derivedUnit.getDefinition();
 	}
 
 
 	public String getDerivedUnitDefinition(Language language) {
-		testDerivedUnit();
+		if (! checkDerivedUnit()){
+			return null;
+		}
 		Map<Language, LanguageString> languageMap = derivedUnit.getDefinition();
 		LanguageString languageString = languageMap.get(language);
 		if (languageString != null) {
@@ -1909,7 +1910,9 @@ public class DerivedUnitFacade {
 	}
 
 	public SpecimenDescription getDerivedUnitImageGallery(boolean createIfNotExists) {
-		testDerivedUnit();
+		if (!checkDerivedUnit()){
+			return null;
+		}
 		TextData textData;
 		try {
 			textData = inititializeTextDataWithSupportTest(Feature.IMAGE(),
@@ -1972,7 +1975,9 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public List<Media> getDerivedUnitMedia() {
-		testDerivedUnit();
+		if (! checkDerivedUnit()){
+			return new ArrayList<Media>();
+		}
 		try {
 			List<Media> result = getMediaList(derivedUnit, false);
 			return result == null ? new ArrayList<Media>() : result;
@@ -1993,8 +1998,7 @@ public class DerivedUnitFacade {
 	// Accession Number
 	@Transient
 	public String getAccessionNumber() {
-		testDerivedUnit();
-		return derivedUnit.getAccessionNumber();
+		return ! checkDerivedUnit()? null : derivedUnit.getAccessionNumber();
 	}
 
 	public void setAccessionNumber(String accessionNumber) {
@@ -2004,8 +2008,7 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public String getCatalogNumber() {
-		testDerivedUnit();
-		return derivedUnit.getCatalogNumber();
+		return ! checkDerivedUnit()? null : derivedUnit.getCatalogNumber();
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
@@ -2015,8 +2018,7 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public String getBarcode() {
-		testDerivedUnit();
-		return derivedUnit.getBarcode();
+		return ! checkDerivedUnit()? null : derivedUnit.getBarcode();
 	}
 
 	public void setBarcode(String barcode) {
@@ -2069,8 +2071,7 @@ public class DerivedUnitFacade {
 	// Stored under name
 	@Transient
 	public TaxonNameBase getStoredUnder() {
-		testDerivedUnit();
-		return derivedUnit.getStoredUnder();
+		return ! checkDerivedUnit()? null : derivedUnit.getStoredUnder();
 	}
 
 	public void setStoredUnder(TaxonNameBase storedUnder) {
@@ -2210,8 +2211,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public String getOriginalLabelInfo() {
-		testDerivedUnit();
-		return derivedUnit.getOriginalLabelInfo();
+		return ! checkDerivedUnit()? null : derivedUnit.getOriginalLabelInfo();
 	}
 	public void setOriginalLabelInfo(String originalLabelInfo) {
 		testDerivedUnit();
@@ -2274,8 +2274,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Collection getCollection() {
-		testDerivedUnit();
-		return derivedUnit.getCollection();
+		return ! checkDerivedUnit()? null :  derivedUnit.getCollection();
 	}
 
 	/**
@@ -2348,13 +2347,12 @@ public class DerivedUnitFacade {
 	 * @param collection
 	 * @param catalogNumber
 	 * @param accessionNumber
-	 * @param collectorsNumber
 	 * @param storedUnder
 	 * @param preservation
 	 * @return
 	 */
 	public DerivedUnit addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber, TaxonNameBase storedUnder, PreservationMethod preservation) {
+			String accessionNumber, TaxonNameBase storedUnder, PreservationMethod preservation){
 		testDerivedUnit();
 		DerivedUnit duplicate = DerivedUnit.NewPreservedSpecimenInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(CREATE));
@@ -2367,14 +2365,15 @@ public class DerivedUnitFacade {
 	}
 
 	public void addDuplicate(DerivedUnit duplicateSpecimen) {
-		// TODO check derivedUnitType
 		testDerivedUnit();
 		getDerivationEvent(CREATE).addDerivative(duplicateSpecimen);
 	}
 
 	@Transient
 	public Set<DerivedUnit> getDuplicates() {
-		testDerivedUnit();
+		if (! checkDerivedUnit()){
+			return new HashSet<DerivedUnit>();
+		}
 		Set<DerivedUnit> result = new HashSet<DerivedUnit>();
 		if (hasDerivationEvent()) {
 			for (DerivedUnit derivedUnit : getDerivationEvent(CREATE)
@@ -2408,8 +2407,15 @@ public class DerivedUnitFacade {
 	}
 
 
-
-	private void testDerivedUnit() {
+	private boolean checkDerivedUnit()  {
+		if (derivedUnit == null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	private void testDerivedUnit() /* throws MethodNotSupportedByDerivedUnitTypeException */ {
 		if (derivedUnit == null){
 			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field unit");
 		}
