@@ -1198,14 +1198,14 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be exactly 2 definition", 2,
                 specimenFacade.getDerivedUnitDefinitions().size());
         specimenFacade.removeDerivedUnitDefinition(Language.FRENCH());
-        Assert.assertEquals("There should remain exactly 1 definition", 1,
+		Assert.assertEquals("There should remain exactly 1 definition", 1,
                 specimenFacade.getDerivedUnitDefinitions().size());
         Assert.assertEquals(
                 "The remaining German definition should be 'Sehr interessant'",
                 "Sehr interessant",
-                specimenFacade.getDerivedUnitDefinition(Language.GERMAN()));
-        specimenFacade.removeDerivedUnitDefinition(Language.GERMAN());
-        Assert.assertEquals("There should remain no definition", 0,
+		        specimenFacade.getDerivedUnitDefinition(Language.GERMAN()));
+		specimenFacade.removeDerivedUnitDefinition(Language.GERMAN());
+		Assert.assertEquals("There should remain no definition", 0,
                 specimenFacade.getDerivedUnitDefinitions().size());
     }
 
@@ -1325,7 +1325,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         Media media1 = Media.NewInstance();
         specimenFacade.addDerivedUnitMedia(media1);
-        Assert.assertEquals("There should be exactly one specimen media", 1,
+		Assert.assertEquals("There should be exactly one specimen media", 1,
                 specimenFacade.getDerivedUnitMedia().size());
         Assert.assertEquals("The only media should be media 1", media1,
                 specimenFacade.getDerivedUnitMedia().get(0));
@@ -1335,7 +1335,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         Media media2 = Media.NewInstance();
         specimenFacade.addDerivedUnitMedia(media2);
-        Assert.assertEquals("There should be exactly 2 specimen media", 2,
+		Assert.assertEquals("There should be exactly 2 specimen media", 2,
                 specimenFacade.getDerivedUnitMedia().size());
         Assert.assertEquals("The first media should be media1", media1,
                 specimenFacade.getDerivedUnitMedia().get(0));
@@ -1365,9 +1365,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetSetAccessionNumber() {
         Assert.assertEquals("Accession number must be same", accessionNumber,
-                specimenFacade.getAccessionNumber());
+                specimenFacade.getAccessionNumber());  
         specimenFacade.setAccessionNumber("A12345693");
-        Assert.assertEquals("New accession number must be 'A12345693'",
+		Assert.assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
     
@@ -1381,7 +1381,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Catalog number must be same", catalogNumber,
                 specimenFacade.getCatalogNumber());
         specimenFacade.setCatalogNumber("B12345693");
-        Assert.assertEquals("New catalog number must be 'B12345693'",
+		Assert.assertEquals("New catalog number must be 'B12345693'",
                 "B12345693", specimenFacade.getCatalogNumber());
     }
 
@@ -1549,7 +1549,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertSame(
                 "The derivation event should be 'newDerivationEvent'",
                 newDerivationEvent, newSpecimen2.getDerivedFrom());
-        specimenFacade.addDuplicate(newSpecimen2);
+       	specimenFacade.addDuplicate(newSpecimen2);
         Assert.assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
         Assert.assertNotSame(
                 "The derivation event should not be 'newDerivationEvent' anymore",
@@ -1562,7 +1562,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.getDuplicates().size());
         Assert.assertSame("The only duplicate should be 'newSpecimen2' now",
                 newSpecimen2, specimenFacade.getDuplicates().iterator().next());
-        specimenFacade.addDuplicate(specimenFacade.innerDerivedUnit());
+       	specimenFacade.addDuplicate(specimenFacade.innerDerivedUnit());
         Assert.assertEquals(
                 "There should be still 1 duplicate because the facade specimen is not a duplicate",
                 1, specimenFacade.getDuplicates().size());
@@ -1573,12 +1573,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         TaxonNameBase<?,?> storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
         DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
-                catalogNumber, accessionNumber, storedUnder,
-                method);
+				catalogNumber, accessionNumber, storedUnder,
+			    method);
         Assert.assertEquals("There should be 2 duplicates now", 2,
                 specimenFacade.getDuplicates().size());
         specimenFacade.removeDuplicate(newSpecimen2);
-        Assert.assertEquals("There should be 1 duplicates now", 1,
+		Assert.assertEquals("There should be 1 duplicates now", 1,
                 specimenFacade.getDuplicates().size());
         Collection sameCollection = specimenFacade.getDuplicates().iterator().next().getCollection();
         Assert.assertSame("Collections should be same", newCollection, sameCollection);
@@ -1697,9 +1697,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
