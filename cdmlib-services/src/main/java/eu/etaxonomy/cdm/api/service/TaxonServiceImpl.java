@@ -1086,7 +1086,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                    // message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion or define a classification where it should be deleted or adapt the taxon deletion configurator.";
                    // throw new ReferencedObjectUndeletableException(message);
                 //}
-            }else{
+         }else{
                 if (taxon.getTaxonNodes().size() != 0){
                     Set<TaxonNode> nodes = taxon.getTaxonNodes();
                     Iterator<TaxonNode> iterator = nodes.iterator();
