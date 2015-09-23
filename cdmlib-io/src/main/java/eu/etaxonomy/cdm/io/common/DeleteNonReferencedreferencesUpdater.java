@@ -10,7 +10,9 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 @Component
-public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator,DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+
+public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+
 
 	@Override
 	protected void doInvoke(
@@ -67,5 +69,6 @@ public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNo
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }
