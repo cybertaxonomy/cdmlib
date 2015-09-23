@@ -231,7 +231,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         oldTaxon.clearDescriptions();
 
         taxonService.update(newAcceptedTaxon);
-        //oldTaxon.removeTaxonNode(oldTaxonNode);
+
         taxonService.update(oldTaxon);
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
