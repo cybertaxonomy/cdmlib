@@ -246,6 +246,16 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
+    public T merge(T transientObject, boolean returnTransientEntity) throws DataAccessException {
+        T persistentObject = merge(transientObject);
+        if(returnTransientEntity) {
+            return transientObject;
+        } else {
+            return persistentObject;
+        }
+    }
+
+    @Override
     public T merge(T transientObject) throws DataAccessException {
         Session session = getSession();
         @SuppressWarnings("unchecked")

@@ -50,6 +50,7 @@ public class CdmListenerIntegrator implements Integrator {
 		eventRegistry.prependListeners(EventType.SAVE, new CacheStrategyGenerator(), new SaveEntityListener());
 		eventRegistry.prependListeners(EventType.UPDATE, new CacheStrategyGenerator(), new UpdateEntityListener());
 		eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator(), new SaveOrUpdateEntityListener());
+		eventRegistry.appendListeners(EventType.MERGE, new PostMergeEntityListener());
 		eventRegistry.appendListeners(EventType.DELETE, new CdmDeleteListener());
 		eventRegistry.appendListeners(EventType.POST_LOAD, new CdmPostDataChangeObservableListener());
 //with validation

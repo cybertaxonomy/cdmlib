@@ -349,6 +349,13 @@ public interface IService<T extends ICdmBase>{
      */
     public List<T> merge(List<T> detachedObjects);
 
+    /**
+     * @param newInstance
+     * @param returnTransientEntity
+     * @return
+     */
+    public T merge(T newInstance, boolean returnTransientEntity);
+
 
 
 }
