@@ -44,10 +44,10 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-        Long numberOfResults = dao.countByTaxonomicScope(taxon.getUuid(), type);
+        Long numberOfResults = dao.countByTaxonomicScope(taxon, type);
         List<T> results = new ArrayList<T>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
-            results = dao.findByTaxonomicScope(taxon.getUuid(), type, pageSize, pageNumber, propertyPaths);
+            results = dao.findByTaxonomicScope(taxon, type, pageSize, pageNumber, propertyPaths);
         }
         return new DefaultPagerImpl<T>(pageNumber, numberOfResults.intValue(), pageSize, results);
     }

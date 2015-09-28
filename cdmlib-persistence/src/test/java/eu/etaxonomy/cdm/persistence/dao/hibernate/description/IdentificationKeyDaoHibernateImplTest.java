@@ -22,7 +22,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
@@ -30,7 +32,8 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	IIdentificationKeyDao identificationKeyDao;
-
+	@SpringBeanByType
+	ITaxonDao taxonDao;
 	UUID taxonUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
 	@Before
@@ -45,19 +48,21 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void testFindByTaxonomicScope() {
-		Long count1 = identificationKeyDao.countByTaxonomicScope(taxonUuid, IIdentificationKey.class);
+		TaxonBase taxon = taxonDao.findByUuid(taxonUuid);
+
+		Long count1 = identificationKeyDao.countByTaxonomicScope(taxon, IIdentificationKey.class);
 		Assert.assertTrue(count1.equals(2l));
-		List<IIdentificationKey> list1 = identificationKeyDao.findByTaxonomicScope(taxonUuid, IIdentificationKey.class, null, null, null);
+		List<IIdentificationKey> list1 = identificationKeyDao.findByTaxonomicScope(taxon, IIdentificationKey.class, null, null, null);
 		Assert.assertEquals(list1.size(), 2);
 
-		Long count2 = identificationKeyDao.countByTaxonomicScope(taxonUuid, MediaKey.class);
+		Long count2 = identificationKeyDao.countByTaxonomicScope(taxon, MediaKey.class);
 		Assert.assertTrue(count2.equals(2l));
-		List<MediaKey> list2 = identificationKeyDao.findByTaxonomicScope(taxonUuid, MediaKey.class, null, null, null);
+		List<MediaKey> list2 = identificationKeyDao.findByTaxonomicScope(taxon, MediaKey.class, null, null, null);
 		Assert.assertEquals(list2.size(), 2);
 
-		Long count3 = identificationKeyDao.countByTaxonomicScope(taxonUuid, PolytomousKey.class);
+		Long count3 = identificationKeyDao.countByTaxonomicScope(taxon, PolytomousKey.class);
 		Assert.assertTrue(count3.equals(0l));
-		List<PolytomousKey> list3 = identificationKeyDao.findByTaxonomicScope(taxonUuid, PolytomousKey.class, null, null, null);
+		List<PolytomousKey> list3 = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, null, null, null);
 		Assert.assertEquals(list3.size(), 0);
 	}
 

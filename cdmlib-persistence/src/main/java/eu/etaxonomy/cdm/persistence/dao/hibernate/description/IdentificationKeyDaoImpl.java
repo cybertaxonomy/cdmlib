@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -55,11 +55,11 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	 */
 	@Override
 	public <T extends IIdentificationKey> List<T> findByTaxonomicScope(
-	        UUID taxonUuid, Class<T> type, Integer pageSize,
+			TaxonBase taxon, Class<T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 
-		Query query = getSession().createQuery("select key from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)");
-		query.setParameter("taxon_uuid", taxonUuid);
+		Query query = getSession().createQuery("select key from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts = (:taxon)");
+		query.setParameter("taxon", taxon);
 		List<T> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -69,10 +69,10 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	 * @see eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao#findKeysConvering(eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
 	 */
 	@Override
-	public <T extends IIdentificationKey> Long countByTaxonomicScope(UUID taxonUuid, Class<T> type) {
+	public <T extends IIdentificationKey> Long countByTaxonomicScope(TaxonBase taxon, Class<T> type) {
 
-		Query query = getSession().createQuery("select count(key) from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)");
-		query.setParameter("taxon_uuid", taxonUuid);
+		Query query = getSession().createQuery("select count(key) from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts = (:taxon)");
+		query.setParameter("taxon", taxon);
 		List<Long> list = query.list();
 		Long count = 0l;
 		for(Long perTypeCount : list){
