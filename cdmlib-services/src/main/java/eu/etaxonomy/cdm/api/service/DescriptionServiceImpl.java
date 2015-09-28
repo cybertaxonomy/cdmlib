@@ -730,7 +730,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         targetDescription.addAnnotation(annotation);
 
         targetDescription = dao.save(targetDescription);
-        return moveDescriptionElementsToDescription(descriptionElementUUIDs, targetDescription.getUuid(), isCopy);
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            descriptionElements.add(descriptionElementDao.load(deUuid));
+        }
+
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
     }
 
     @Override
