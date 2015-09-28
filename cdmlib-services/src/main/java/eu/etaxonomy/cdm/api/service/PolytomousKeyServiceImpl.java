@@ -119,10 +119,9 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 			Integer pageNumber, List<String> propertyPaths, List<String> nodePaths) {
 
 		List<PolytomousKey> list = new ArrayList<PolytomousKey>();
-		taxon = taxonDao.findById(taxon.getId());
-		Long numberOfResults = identificationKeyDao.countByTaxonomicScope(taxon, PolytomousKey.class);
+		Long numberOfResults = identificationKeyDao.countByTaxonomicScope(taxon.getUuid(), PolytomousKey.class);
 		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
-			list = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, pageSize, pageNumber, propertyPaths);
+			list = identificationKeyDao.findByTaxonomicScope(taxon.getUuid(), PolytomousKey.class, pageSize, pageNumber, propertyPaths);
 		}
 		if (nodePaths != null) {
 			for (PolytomousKey polytomousKey : list) {
