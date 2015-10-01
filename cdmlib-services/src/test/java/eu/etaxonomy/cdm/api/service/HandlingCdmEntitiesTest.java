@@ -26,6 +26,11 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -348,5 +353,26 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         taxonService.merge(taxon);
 
+    }
+
+
+    @Test
+    public final void testTaxonDescriptionMerge() {
+
+        BotanicalName name = BotanicalName.NewInstance(null, "Abies alba", null, null, null, null, null, null, null);
+        Taxon taxon = Taxon.NewInstance(name, null);
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+
+        TextData textData = TextData.NewInstance();
+
+        textData.setFeature(Feature.ECOLOGY());
+        description.addElement(textData);
+
+        DescriptionElementSource descriptionElementSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        // Un-commenting the following line will reproduce the exception seen in #5256
+        //textData.addSource(descriptionElementSource);
+
+
+        taxonService.merge(taxon);
     }
 }
