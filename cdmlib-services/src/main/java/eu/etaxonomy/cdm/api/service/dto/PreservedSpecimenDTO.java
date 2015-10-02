@@ -22,6 +22,8 @@ import java.util.Map;
  */
 public class PreservedSpecimenDTO extends DerivateDTO{
 
+    private static final long serialVersionUID = -8138686023034532991L;
+
     private String accessionNumber;
     private String uuid;
     private List<String> associatedTaxa;

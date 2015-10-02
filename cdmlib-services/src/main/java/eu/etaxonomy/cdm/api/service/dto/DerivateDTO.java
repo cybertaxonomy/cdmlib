@@ -9,17 +9,19 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import org.hibernate.envers.tools.Pair;
 
 /**
  * @author pplitzner
  * @date Mar 27, 2015
  *
  */
-public abstract class DerivateDTO {
+public abstract class DerivateDTO implements Serializable{
+
+    private static final long serialVersionUID = 373446709259729891L;
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
@@ -64,7 +66,7 @@ public abstract class DerivateDTO {
                     return 1;
                 }
                 if(o1!=null && o2!=null){
-                    return o1.getFirst().compareTo(o2.getFirst());
+                    return o1.getA().compareTo(o2.getA());
                 }
                 return 0;
             }

@@ -10,6 +10,9 @@ public class FieldUnitDTO extends DerivateDTO{
     private UUID uuid;
 
 	//Row Attributes
+    private static final long serialVersionUID = -4537819092486130385L;
+
+    //Row Attributes
 	private String country;
 	private String collection;
 	private String date;
@@ -18,12 +21,18 @@ public class FieldUnitDTO extends DerivateDTO{
 	private String protologue;
 
 	private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+
     public UUID getUuid() {
         return uuid;
     }
+
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
+
+    /**
+     * @return the country
+     */
     public String getCountry() {
         return country;
     }

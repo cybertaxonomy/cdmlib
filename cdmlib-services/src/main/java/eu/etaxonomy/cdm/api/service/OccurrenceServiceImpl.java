@@ -393,7 +393,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Partial gatheringDate = gatheringEvent.getGatheringDate();
             String dateString = null;
             if (gatheringDate != null) {
-                gatheringDate.toString();
+                dateString = gatheringDate.toString();
             }
             else if(gatheringEvent.getTimeperiod()!=null && gatheringEvent.getTimeperiod().getFreeText()!=null){
                 dateString = gatheringEvent.getTimeperiod().getFreeText();
