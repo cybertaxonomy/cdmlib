@@ -249,6 +249,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public T merge(T transientObject, boolean returnTransientEntity) throws DataAccessException {
         T persistentObject = merge(transientObject);
         if(returnTransientEntity) {
+            if(transientObject != null && persistentObject != null) {
+                transientObject.setId(persistentObject.getId());
+            }
             return transientObject;
         } else {
             return persistentObject;
