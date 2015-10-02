@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -110,6 +111,17 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a Pager of media instances
      */
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Returns all media attached to this occurence and its children. Also takes
+     * {@link MediaSpecimen} and molecular images into account.
+     *
+     * @param occurence the occurence and its children from which the media to get
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager of media instances
+     */
+    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of determinations that have been made for a given occurence and for a given taxon concept

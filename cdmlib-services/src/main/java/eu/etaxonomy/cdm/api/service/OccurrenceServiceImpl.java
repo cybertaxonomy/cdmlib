@@ -227,6 +227,42 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        List<Media> media = new ArrayList<Media>();
+        //media specimens
+        if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
+            MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
+            media.add(mediaSpecimen.getMediaSpecimen());
+        }
+        // pherograms & gelPhotos
+        if (rootOccurence.isInstanceOf(DnaSample.class)) {
+            DnaSample dnaSample = CdmBase.deproxy(rootOccurence, DnaSample.class);
+            Set<Sequence> sequences = dnaSample.getSequences();
+            //we do show only those gelPhotos which lead to a consensus sequence
+            for (Sequence sequence : sequences) {
+                Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                for (SingleRead singleRead : sequence.getSingleReads()){
+                    AmplificationResult amplification = singleRead.getAmplificationResult();
+                    dnaRelatedMedia.add(amplification.getGelPhoto());
+                    dnaRelatedMedia.add(singleRead.getPherogram());
+                    dnaRelatedMedia.remove(null);
+                }
+                media.addAll(dnaRelatedMedia);
+            }
+        }
+        if(rootOccurence.isInstanceOf(DerivedUnit.class)){
+            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(rootOccurence, DerivedUnit.class);
+            for (DerivationEvent derivationEvent : derivedUnit.getDerivationEvents()) {
+                for (DerivedUnit childDerivative : derivationEvent.getDerivatives()) {
+                    media.addAll(getMediainHierarchy(childDerivative, pageSize, pageNumber, propertyPaths).getRecords());
+                }
+            }
+        }
+        return new DefaultPagerImpl<Media>(pageNumber, media.size(), pageSize, media);
+    }
+
+    @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();

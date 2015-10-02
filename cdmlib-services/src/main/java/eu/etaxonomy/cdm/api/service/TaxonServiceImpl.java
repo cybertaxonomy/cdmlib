@@ -95,10 +95,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
-import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -158,6 +154,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private INameService nameService;
+
+    @Autowired
+    private IOccurrenceService occurrenceService;
 
     @Autowired
     private ITaxonNodeService nodeService;
@@ -899,32 +898,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }
 
-                // Collection
-                //TODO why may collections have media attached? #
                 if (occurrence.isInstanceOf(DerivedUnit.class)) {
                     DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    // Collection
+                    //TODO why may collections have media attached? #
                     if (derivedUnit.getCollection() != null){
                         taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
                 }
-
-                // pherograms & gelPhotos
-                if (occurrence.isInstanceOf(DnaSample.class)) {
-                    DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
-                    Set<Sequence> sequences = dnaSample.getSequences();
-                    //we do show only those gelPhotos which lead to a consensus sequence
-                    for (Sequence sequence : sequences) {
-                        Set<Media> dnaRelatedMedia = new HashSet<Media>();
-                        for (SingleRead singleRead : sequence.getSingleReads()){
-                            AmplificationResult amplification = singleRead.getAmplificationResult();
-                            dnaRelatedMedia.add(amplification.getGelPhoto());
-                            dnaRelatedMedia.add(singleRead.getPherogram());
-                            dnaRelatedMedia.remove(null);
-                        }
-                        taxonMedia.addAll(dnaRelatedMedia);
-                    }
-                }
-
+                //media in hierarchy
+                taxonMedia.addAll(occurrenceService.getMediainHierarchy(occurrence, null, null, propertyPath).getRecords());
             }
         }
 
