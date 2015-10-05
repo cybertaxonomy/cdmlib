@@ -783,6 +783,32 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid){
+        UpdateResult result = new UpdateResult();
+        TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
+
+        Taxon sourceTaxon = description.getTaxon();
+        String moveMessage = String.format("Description moved from %s", sourceTaxon);
+        if(description.isProtectedTitleCache()){
+            String separator = "";
+            if(!StringUtils.isBlank(description.getTitleCache())){
+                separator = " - ";
+            }
+            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+        }
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        description.addAnnotation(annotation);
+        Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        targetTaxon.addDescription(description);
+        result.addUpdatedObject(targetTaxon);
+        result.addUpdatedObject(sourceTaxon);
+        dao.merge(description);
+        return result;
+
+    }
 
 
 }

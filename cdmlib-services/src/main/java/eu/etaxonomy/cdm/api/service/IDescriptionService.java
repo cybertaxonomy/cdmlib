@@ -601,5 +601,10 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
             String moveMessage, boolean isCopy);
 
-
+    /**
+     * @param descriptionUUID
+     * @param targetTaxonUuid
+     * @return
+     */
+    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
 }
