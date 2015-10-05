@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 
@@ -55,22 +54,7 @@ public abstract class DerivateDTO implements Serializable{
 
     public void addCharacterData(String character, String state){
       if(characterData==null){
-          characterData = new TreeSet<Pair<String,String>>(new Comparator<Pair<String,String>>() {
-
-            @Override
-            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
-                if(o1==null && o2!=null){
-                    return -1;
-                }
-                if(o1!=null && o2==null){
-                    return 1;
-                }
-                if(o1!=null && o2!=null){
-                    return o1.getA().compareTo(o2.getA());
-                }
-                return 0;
-            }
-        });
+          characterData = new TreeSet<Pair<String,String>>(new StringPairComparator());
       }
       characterData.add(new Pair<String, String>(character, state));
     }
