@@ -805,7 +805,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         targetTaxon.addDescription(description);
         result.addUpdatedObject(targetTaxon);
         result.addUpdatedObject(sourceTaxon);
-        dao.merge(description);
+       // dao.merge(description);
         return result;
 
     }
