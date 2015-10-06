@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@Api(value="progress", description="provides access to information on long runing processes. "
-        + "Uris to the resources exposed by this controller are provieded in the responses to the"
+@Api(value="progress", description="provides access to information on long running processes. "
+        + "URIs to the resources exposed by this controller are provided in the responses to the"
         + "HTTP requests that trigger long term processes.")
 @RequestMapping(value="/progress/")
 public class ProgressMonitorController {
@@ -147,7 +147,7 @@ public class ProgressMonitorController {
     }
 
     /**
-     * provides the relative path to the ProgressMonitor specified by its uuid.
+     * provides the relative path to the ProgressMonitor specified by its UUID.
      * File extensions like .xml, .json used during the initial request will be
      * preserved in order to not to break the content type negotiation.
      *
@@ -173,7 +173,9 @@ public class ProgressMonitorController {
         if (monitors.containsKey(uuid)) {
             mv.addObject(monitors.get(uuid));
         } else {
-            response.sendError(404, "No such progress monitor found. The process being monitored may have been completed and the according monitor may have been removed due to the clean up timepout.");
+            response.sendError(404, "No such progress monitor found. The process being monitored may "
+                    + "have been completed and the according monitor may have been removed due to "
+                    + "the clean up timepout.");
         }
 
         return mv;
