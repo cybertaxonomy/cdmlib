@@ -49,9 +49,21 @@ public class PostMergeEntityListener implements MergeEventListener {
             CdmBase original = (CdmBase) event.getOriginal();
             CdmBase result = (CdmBase) event.getResult();
             if(original != null && Hibernate.isInitialized(original) && original.getId() == 0 &&
-                    result != null && Hibernate.isInitialized(result)) {
+                    result != null && Hibernate.isInitialized(result) && result.getId() > 0) {
                 original.setId(result.getId());
-
+                //FIXME: Once the EventType.SAVE_UPDATE listeners are cleaned up
+                //       the same calls should be made on the result object
+                //       followed by a copy (uncomment code below) to the
+                //       original object
+//                try {
+//                    BeanUtils.copyProperties(original, result);
+//                } catch (IllegalAccessException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (InvocationTargetException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
             }
         }
     }
