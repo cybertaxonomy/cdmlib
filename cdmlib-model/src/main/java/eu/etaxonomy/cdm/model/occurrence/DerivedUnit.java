@@ -349,6 +349,19 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		}
 	}
 
+    public String getMostSignificantIdentifier() {
+        if (StringUtils.isNotBlank(getAccessionNumber())) {
+            return getAccessionNumber();
+        }
+        else if(StringUtils.isNotBlank(getBarcode())){
+            return getBarcode();
+        }
+        else if(StringUtils.isNotBlank(getCatalogNumber())){
+            return getCatalogNumber();
+        }
+        return null;
+    }
+
 // ******* GETTER / SETTER for preserved specimen only ******************/
 
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){

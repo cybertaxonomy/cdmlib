@@ -33,14 +33,16 @@ public class AbcdParseUtility {
     private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
 
 
-    public static URI parseFirstUri(NodeList nodeList){
+    public static URI parseFirstUri(NodeList nodeList, Abcd206ImportReport report){
         URI uri = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
             try {
                 uri = URI.create(textContent);
             } catch (IllegalArgumentException e) {
-                //nothing
+                if(report!=null){
+                    report.addException("Exception during URI parsing!", e);
+                }
             }
         }
         return uri;
@@ -61,14 +63,14 @@ public class AbcdParseUtility {
         return string;
     }
 
-    public static Double parseFirstDouble(NodeList nodeList){
+    public static Double parseFirstDouble(NodeList nodeList, Abcd206ImportReport report){
         if(nodeList.getLength()>0){
-            return parseDouble(nodeList.item(0));
+            return parseDouble(nodeList.item(0), report);
         }
         return null;
     }
 
-    public static Double parseDouble(Node node){
+    public static Double parseDouble(Node node, Abcd206ImportReport report){
         String message = "Could not parse double value for node " + node.getNodeName();
         Double doubleValue = null;
         try{
@@ -80,8 +82,14 @@ public class AbcdParseUtility {
             doubleValue = Double.parseDouble(textContent);
         } catch (NullPointerException npe){
             logger.error(message, npe);
+            if(report!=null){
+                report.addException(message, npe);
+            }
         } catch (NumberFormatException nfe){
             logger.error(message, nfe);
+            if(report!=null){
+                report.addException(message, nfe);
+            }
         }
         return doubleValue;
     }
@@ -105,12 +113,12 @@ public class AbcdParseUtility {
     }
 
     /**
-     * Return the list of root nodes for an ABCD XML file
+     * Return the wrapper with the list of root nodes for an ABCD XML file
      * @param fileName: the file's location
-     * @return the list of root nodes ("Unit")
+     * @return a wrapper with a list of root nodes ("Unit")
      */
-    public static NodeList parseUnitsNodeList(Abcd206ImportState state) {
-        InputStream inputStream = state.getConfig().getSource();
+    public static UnitAssociationWrapper parseUnitsNodeList(InputStream inputStream, Abcd206ImportReport report) {
+        UnitAssociationWrapper unitAssociationWrapper = new UnitAssociationWrapper();
         NodeList unitList = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -120,22 +128,28 @@ public class AbcdParseUtility {
             Element root = document.getDocumentElement();
             unitList = root.getElementsByTagName("Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("");
-                return unitList;
+                unitAssociationWrapper.setPrefix("");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
+                return unitAssociationWrapper;
             }
             unitList = root.getElementsByTagName("abcd:Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("abcd:");
-                return unitList;
+                unitAssociationWrapper.setPrefix("abcd:");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
+                return unitAssociationWrapper;
             }
             unitList = root.getElementsByTagName("abcd21:Unit");
             if (unitList.getLength()>0) {
-                state.setPrefix("abcd21:");
+                unitAssociationWrapper.setPrefix("abcd21:");
+                unitAssociationWrapper.setAssociatedUnits(unitList);
             }
         } catch (Exception e) {
             logger.warn(e);
+            if(report!=null){
+                report.addException("Exception during parsing of nodeList!", e);
+            }
         }
-        return unitList;
+        return unitAssociationWrapper;
     }
 
 }

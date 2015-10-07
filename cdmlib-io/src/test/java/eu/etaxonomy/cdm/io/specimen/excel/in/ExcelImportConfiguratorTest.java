@@ -20,7 +20,7 @@ import java.net.URL;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
+
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -69,7 +69,7 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
-
+/*
 	@Test
     @DataSets({
             @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
@@ -84,7 +84,7 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(FieldUnit.class));
 
 	}
-
+*/
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
      */

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,9 +16,11 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.dwca.in.FilteredStream;
 import eu.etaxonomy.cdm.io.dwca.in.IConverter;
 import eu.etaxonomy.cdm.io.dwca.in.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.dwca.in.IReader;
+import eu.etaxonomy.cdm.io.dwca.in.ItemFilter;
 import eu.etaxonomy.cdm.io.dwca.in.MappedCdmBase;
 import eu.etaxonomy.cdm.io.dwca.in.StreamPartitioner;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -36,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * 
+ *
  * @author a.mueller
  *
  */
@@ -48,15 +50,15 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		Reference<?> sourceRef = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sourceRef);
 	}
-	
-	
+
+
 	/**
 	 * @param state
 	 * @param itemStream
 	 */
 	protected void handleSingleRecord(STATE state, IItemStream recordStream) {
 		recordStream.addObservers(state.getConfig().getObservers());
-		
+
 		if (state.getConfig().isUsePartitions()){
 			IPartitionableConverter<StreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(recordStream.getTerm(), state);
 			if (partitionConverter == null){
@@ -65,16 +67,19 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 				fireWarningEvent (warning, recordStream.toString(), 12);
 				return;
 			}
-			
+
 			int partitionSize = state.getConfig().getDefaultPartitionSize();
-			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<StreamItem>(recordStream, 
+
+			ItemFilter<StreamItem> filter = partitionConverter.getItemFilter();
+			IItemStream filteredStream = filter == null ? recordStream : new FilteredStream(recordStream, filter);
+			StreamPartitioner<StreamItem> partitionStream = new StreamPartitioner<StreamItem>(filteredStream,
 					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
-			
+
 			int i = 1;
 			while (partitionStream.hasNext()){
 				//FIXME more generic handling of transactions
 				TransactionStatus tx = startTransaction();
-				
+
 				try {
 					IReader<MappedCdmBase> partStream = partitionStream.read();
 
@@ -93,28 +98,28 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 						codeLocation = "No stacktrace";
 					}
 					message = message + " in: " +  codeLocation;
-					fireWarningEvent(message , String.valueOf(recordStream.getItemLocation()) , 12);
+					fireWarningEvent(message , String.valueOf(filteredStream.getItemLocation()) , 12);
 					this.rollbackTransaction(tx);
 				}
-				
+
 			}
 			logger.debug("Partition stream is empty");
 		}else {
-				
+
 			while (recordStream.hasNext()){
 					TransactionStatus tx = startTransaction();
-					
+
 					StreamItem item = recordStream.read();
 					handleStreamItem(state, item);
-					
+
 					commitTransaction(tx);
 			}
 		}
 
 		finalizeStream(recordStream, state);
 	}
-	
-	
+
+
 	/**
 	 * @param itemStream
 	 * @param state
@@ -122,7 +127,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	protected void finalizeStream(IItemStream itemStream, STATE state) {
 		fireWarningEvent("Stream finished", itemStream.getItemLocation(), 0);
 	}
-	
+
 
 	/**
 	 * @param state
@@ -139,8 +144,8 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		handleResults(state, resultReader, item.getLocation());
 		return;
 	}
-	
-	
+
+
 	/**
 	 * @param state
 	 * @param item
@@ -148,20 +153,20 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	 */
 	private void handleResults(STATE state, IReader<MappedCdmBase> resultReader, String location) {
 		while (resultReader.hasNext()){
-			
+
 			MappedCdmBase<?> mappedCdmBase = resultReader.read();
 			CdmBase cdmBase = mappedCdmBase.getCdmBase();
 			save(cdmBase, state, location);
 			if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
 				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
-				
+
 				String namespace = mappedCdmBase.getNamespace();
 				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
 			}
 		}
 	}
 
-	
+
 
 //	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
 //		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partitionStream.getTerm(), state);
@@ -169,21 +174,21 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 //			state.setSuccess(false);
 //			return;
 //		}
-//		
+//
 //		IReader<CsvStreamItem> lookaheadStream = partitionStream.getLookaheadReader();
 //		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 //		IImportMapping mapping = state.getMapping();
 //		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
 //		state.loadRelatedObjects(partialMapping);
-//		
+//
 //		ConcatenatingReader<MappedCdmBase> reader = new ConcatenatingReader<MappedCdmBase>();
-// 		
+//
 //		IReader<CsvStreamItem> inputStream = partitionStream.read();
 //		while (inputStream.hasNext()){
 //			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read());
 //			reader.add(resultReader);
 //		}
-//			
+//
 //		while (reader.hasNext()){
 //			MappedCdmBase mappedCdmBase = (reader.read());
 //			CdmBase cdmBase = mappedCdmBase.getCdmBase();
@@ -223,23 +228,23 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 			} catch (IllegalArgumentException e) {
 				fireWarningEvent(e.getMessage(), location, 12);
 			}
-			
+
 //			System.out.println(cdmBase.toString());
 			//end preliminary
-			
+
 			//TODO
 		}
 	}
 
 	protected abstract IPartitionableConverter<StreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, STATE state);
-	
-	
+
+
 	/**
 	 * Returns an appropriate service to persist data of a certain class.
 	 * If an appropriate service can't be found an {@link IllegalArgumentException} is thrown.
-	 * 
+	 *
 	 * TODO move to a more general place to make it available to everyone.
-	 * 
+	 *
 	 * @param app
 	 * @param clazz
 	 * @return
@@ -270,9 +275,9 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		warning = String.format(warning, (clazz == null ? "-" : clazz.getName()));
 		throw new IllegalArgumentException(warning);
 	}
-	
-	
-	
+
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmImportBase#getFeature(eu.etaxonomy.cdm.io.common.ImportStateBase, java.util.UUID, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
@@ -292,5 +297,5 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 	}
 
 
-	
+
 }

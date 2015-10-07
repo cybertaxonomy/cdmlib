@@ -34,31 +34,53 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 	}
 
 	@Test
-	//@DataSet(value="CommonServiceImplTest.xml")
-	public final void testDelete(){
+    //@DataSet(value="CommonServiceImplTest.xml")
+    public final void testDelete(){
 
-		PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
-		UUID uuidKey =	keyService.save(key).getUuid();
-		PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
-		key.setRoot(node);
-		key.setStartNumber(0);
+        PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
+        UUID uuidKey =  keyService.save(key).getUuid();
+        PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
+        key.setRoot(node);
+        key.setStartNumber(0);
 
-		PolytomousKeyNode child = PolytomousKeyNode.NewInstance("Test statement Nr 2");
-		//child.setKey(key);
+        PolytomousKeyNode child = PolytomousKeyNode.NewInstance("Test statement Nr 2");
+        //child.setKey(key);
 
-		node.addChild(child,0);
-		UUID uuidNode = service.save(node).getUuid();
+        node.addChild(child,0);
+        UUID uuidNode = service.save(node).getUuid();
 
-		node = service.load(uuidNode);
-		UUID uuidChild = node.getChildAt(0).getUuid();
-		assertNotNull(node);
-		service.delete(uuidNode, true);
-		node = service.load(uuidNode);
-		assertNull(node);
-		node = service.load(UUID.fromString("f0dd12ed-ea77-419a-bce6-4282d0067c91"));
-		assertNull(node);
+        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement Nr 3");
+        //child.setKey(key);
 
-	}
+        child.addChild(child1,0);
+        UUID uuidChild = service.save(child).getUuid();
+
+        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement Nr 4");
+        //child.setKey(key);
+
+        child1.addChild(child2,0);
+        UUID uuidChild1 = service.save(child1).getUuid();
+
+
+        node = service.load(uuidChild1);
+        UUID uuidChild2 = node.getChildAt(0).getUuid();
+        assertNotNull(node);
+        service.delete(uuidChild1, false);
+        node = service.load(uuidChild1);
+        assertNull(node);
+        node = service.load(uuidChild2);
+        assertNotNull(node);
+
+        node = service.load(uuidChild);
+
+        assertNotNull(node);
+        service.delete(uuidChild, true);
+        node = service.load(uuidChild);
+        assertNull(node);
+        node = service.load(uuidChild2);
+        assertNull(node);
+
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()

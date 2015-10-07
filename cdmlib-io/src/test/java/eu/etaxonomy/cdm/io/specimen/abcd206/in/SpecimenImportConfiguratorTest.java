@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -40,18 +42,20 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -435,17 +439,87 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
     }
 
+	/**
+	 * Test imports one unit with an already existing taxon and one with a new taxon.
+	 * The new taxon should be added to a newly created default classification.
+	 */
 	@Test
-	@DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	public void testIgnoreAuthorship(){
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+	public void testImportNewTaxaToDefaultClassification(){
 	    UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
 	    UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
+
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577_two_units_almost_same.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    //test initial state
+	    Taxon taxon = (Taxon) taxonService.load(taxonUUID);
+	    assertNotNull(taxon);
+	    Classification classification = classificationService.load(classificationUUID);
+	    assertNotNull(classification);
+	    assertEquals(1, taxon.getTaxonNodes().size());
+	    TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
+	    assertEquals(classification, taxonNode.getClassification());
+
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, taxonService.count(Taxon.class));
+
+	    importConfigurator.setClassificationUuid(classificationUUID);
+//	    importConfigurator.setIgnoreAuthorship(true);
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);
+
+	    //re-load classification to avoid session conflicts
+	    classification = classificationService.load(classificationUUID);
+
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class));
+//	    assertEquals(2, taxonService.count(Taxon.class));
+	    assertEquals(2, classificationService.count(Classification.class));
+
+	    //get default classification
+	    List<Classification> list = classificationService.list(Classification.class, null, null, null, null);
+	    Classification defaultClassification = null;
+	    for (Classification c : list) {
+            if(c.getUuid()!=classificationUUID){
+                defaultClassification = c;
+            }
+        }
+	    assertEquals(1, classification.getAllNodes().size());
+	    assertEquals(2, defaultClassification.getAllNodes().size());
+
+	}
+
+
+    /**
+     * Test should NOT create new taxa of the same name but have different authors.
+     */
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
+    })
+	public void testIgnoreAuthorship(){
+        UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
+        UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
 
 //        Classification classification = Classification.NewInstance("Checklist");
 //        classification.setUuid(classificationUUID);
 //
 //        Reference<?> secReference = ReferenceFactory.newGeneric();
-//        Team team = Team.NewTitledInstance("Hal.", "Hal.");
+//        Team team = Team.NewTitledInstance("different author", "different author");
 //        secReference.setAuthorship(team);
 //
 //        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
@@ -509,16 +583,113 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull(taxon);
 	    Classification classification = classificationService.load(classificationUUID);
 	    assertNotNull(classification);
-	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, classification.getAllNodes().size());//taxon node
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
 
 	    importConfigurator.setIgnoreAuthorship(true);
 	    importConfigurator.setClassificationUuid(classificationUUID);
 	    boolean result = defaultImport.invoke(importConfigurator);
 	    assertTrue("Return value for import.invoke should be true", result);
 
-	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//Classification + Taxon node = 2 nodes
+	    assertEquals(1, classificationService.count(Classification.class));
+	    assertEquals(1, classification.getAllNodes().size());//taxon node
+	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
 
 	}
+
+    /**
+     * Imports two DNA units belonging to the same taxon into an existing
+     * classification. The taxon is not part of the classification so the
+     * default classification will be created. The result should be:
+     * existing classification (0 taxa), default classification (2 taxa [genus+species])
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("../../../TermsDataSet-with_auditing_info.xml"),
+        @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
+    })
+	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
+        UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        //test initial state
+        Classification classification = classificationService.load(classificationUUID);
+        assertNotNull(classification);
+        assertEquals(0, classification.getAllNodes().size());
+        assertEquals(1, classificationService.count(Classification.class));
+
+
+        importConfigurator.setIgnoreAuthorship(true);
+        importConfigurator.setClassificationUuid(classificationUUID);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+
+        assertEquals(0, classification.getAllNodes().size());
+        assertEquals(2, classificationService.count(Classification.class));
+
+        Classification defaultClassification = null;
+        for (Classification c : classificationService.list(Classification.class, null, null, null, null)) {
+            if(!c.getUuid().equals(classificationUUID)){
+                defaultClassification = c;
+            }
+        }
+        assertNotNull(defaultClassification);
+        assertEquals(3, defaultClassification.getAllNodes().size());
+
+	}
+
+    /**
+     * Tests import of unit belonging to a taxon with a non-parsable name. Since
+     * no rank can be deduced from the name there will be no taxon hierarchy
+     * created but only the single taxon
+     *
+     * @throws ParseException
+     */
+    @Test
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportNonParsableName() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+        taxonNodeService.list(TaxonNode.class, null, null, null, null);
+        occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
+        /*
+         * Default classification
+         *   - Campanula ..g... americana --- hort. ttt ex Steud.
+         */
+        assertEquals("Number of taxon nodes is incorrect", 2, taxonNodeService.count(TaxonNode.class));
+        assertEquals("Number of taxa is incorrect", 1, taxonService.count(TaxonBase.class));
+        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula ..g... americana --- hort. ttt ex Steud.", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+    }
 
 	@Test
 	@Ignore
@@ -527,36 +698,16 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    @Ignore
     @Test
+    @Ignore
     public void createTestDataSet() throws FileNotFoundException {
-        UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
-        UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
+        UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
 
         Classification classification = Classification.NewInstance("Checklist");
         classification.setUuid(classificationUUID);
 
-        Reference<?> secReference = ReferenceFactory.newGeneric();
-        Team team = Team.NewTitledInstance("Hal.", "Hal.");
-        secReference.setAuthorship(team);
-
-        NonViralName<?> taxonName = NonViralName.NewInstance(Rank.VARIETY());
-        taxonName.setGenusOrUninomial("Campanula");
-        taxonName.setSpecificEpithet("versicolor");
-        taxonName.setInfraSpecificEpithet("tomentella");
-
-        Taxon taxon = Taxon.NewInstance(taxonName, secReference);
-        taxon.setUuid(taxonUUID);
-
-        classification.addChildTaxon(taxon, secReference, "");
-
-        taxonService.save(taxon);
-        nameService.save(taxonName);
-        referenceService.save(secReference);
+        classificationService.save(classification);
 
         commitAndStartNewTransaction(null);
 
@@ -582,7 +733,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
                     "TaxonNode",
                     "Classification",
                     "LanguageString"
-            }, "testIgnoreAuthorship");
+            }, "testImportTwoUnitsOfSameTaxonIntoExistingClassification");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

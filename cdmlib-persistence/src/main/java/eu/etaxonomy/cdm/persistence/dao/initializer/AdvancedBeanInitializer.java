@@ -533,6 +533,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             if (ownerClass.startsWith("FeatureNode") && param.equals("children")) {
                 return "childNodes";
             }
+            if (ownerClass.startsWith("Media") && param.equals("description")) {
+                return "allDescriptions";
+            }
             else{
                 return param;
             }

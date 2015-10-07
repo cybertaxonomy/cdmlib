@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.model.molecular;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -39,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "SingleReadAlignment")
 @Entity
 @Audited
-public class SingleReadAlignment extends VersionableEntity {
+public class SingleReadAlignment extends VersionableEntity implements Serializable {
 	private static final long serialVersionUID = 6141518347067279304L;
 
 	/** @see #getDnaMarker() */
@@ -76,7 +78,7 @@ public class SingleReadAlignment extends VersionableEntity {
     private boolean reverseComplement;
 
 
-	public static class Shift implements Cloneable{
+	public static class Shift implements Cloneable, Serializable {
 		public int position;
 		public int shift;
 

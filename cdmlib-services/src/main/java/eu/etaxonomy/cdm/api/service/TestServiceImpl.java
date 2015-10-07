@@ -9,7 +9,14 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author cmathew
@@ -18,6 +25,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TestServiceImpl implements ITestService {
+
+    @Autowired
+    ITaxonNodeService taxonNodeService;
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITestService#wait(int)
@@ -41,6 +51,20 @@ public class TestServiceImpl implements ITestService {
     @Override
     public UpdateResult throwException(Exception ex) {
         throw new RuntimeException(ex);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITestService#addChild(eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei) {
+        TaxonNode taxonNode = taxonNodeService.find(taxonNodeCei.getId());
+        taxonNode.addChildTaxon(Taxon.NewInstance(null, null), null, null);
+        UpdateResult result = new UpdateResult();
+        result.addUpdatedCdmId(taxonNodeCei);
+        result.setStatus(Status.OK);
+        return result;
     }
 
 }

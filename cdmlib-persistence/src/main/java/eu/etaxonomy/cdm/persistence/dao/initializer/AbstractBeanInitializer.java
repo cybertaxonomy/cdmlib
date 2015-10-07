@@ -274,6 +274,16 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
+    /**
+     * Initializes the property of the given bean and returns the bean which is returned be that property.
+     *
+     * @param bean
+     * @param propertyDescriptor
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     */
     protected Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if(propertyDescriptor == null || bean == null){

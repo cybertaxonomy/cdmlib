@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -101,9 +101,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private static int modCount = 1000;
 
-	private UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
-	
-	
+	private final UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
+
+
 	private Map<String,Person> authors = new HashMap<String,Person>();
 	private Map<String,String> citations = new HashMap<String,String>();
 	private Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
@@ -122,7 +122,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
 	private Map<String,DerivedUnit> specimens = new HashMap<String,DerivedUnit>();
 	private Map<String,DefinedTerm> modifiers = new HashMap<String,DefinedTerm>();
-	
+
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 	private Set<TermVocabulary<?>> vocabularies = new HashSet<TermVocabulary<?>>();
 
@@ -130,17 +130,17 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 //	private Set<Feature> featureSet = new HashSet<Feature>();
 	private Set<Reference<?>> sources = new HashSet<Reference<?>>();
-	private Reference<?> sec = ReferenceFactory.newDatabase();
+	private final Reference<?> sec = ReferenceFactory.newDatabase();
 	private Reference<?> sourceReference = null;
 
 	private Language datasetLanguage = null;
 	private WorkingSet workingSet = null;
 
-	private Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
+	private final Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
 
 	private String generatorName = "";
 	private String generatorVersion = "";
-	
+
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
@@ -150,9 +150,41 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Rights copyright = null;
 
 	private int taxonNamesCount = 0;
-	
+
 	public SDDImport(){
 		super();
+	}
+
+	private void init() {
+	    authors = new HashMap<String,Person>();
+	    citations = new HashMap<String,String>();
+	    defaultUnitPrefixes = new HashMap<String,String>();
+	    editors = new HashMap<String,Person>();
+	    featureNodes = new HashMap<String,FeatureNode>();
+	    features = new HashMap<String,Feature>();
+	    locations = new HashMap<String,String>();
+	    mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
+	    mediaObject_Role = new HashMap<String,String>();
+	    publications = new HashMap<String,Reference<?>>();
+	    states = new HashMap<String,State>();
+	    taxonDescriptions = new HashMap<String,TaxonDescription>();
+	    taxonNameBases = new HashMap<String,NonViralName<?>>();
+	    units = new HashMap<String,MeasurementUnit>();
+	    taxonNodes = new HashMap<String,TaxonNode>();
+	    namedAreas = new HashMap<String,NamedArea>();
+	    specimens = new HashMap<String,DerivedUnit>();
+	    modifiers = new HashMap<String,DefinedTerm>();
+
+	    markerTypes = new HashSet<MarkerType>();
+	    vocabularies = new HashSet<TermVocabulary<?>>();
+
+	    descriptiveConcepts = new HashSet<Feature>();
+	    annotationTypes = new HashSet<AnnotationType>();
+	    sources = new HashSet<Reference<?>>();
+	    statisticalMeasures = new HashSet<StatisticalMeasure>();
+	    featureData = new HashSet<VersionableEntity>();
+	    featureTrees = new HashSet<FeatureTree>();
+	    classifications = new HashSet<Classification>();
 	}
 
 	@Override
@@ -166,13 +198,13 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	//	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 	@Override
 	public void doInvoke(SDDImportState state){
-		
+	    init();
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
 		IProgressMonitor progressMonitor = sddConfig.getProgressMonitor();
-				
+
 		logger.info("start Datasets ...");
-		
+
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
 		Namespace sddNamespace = sddConfig.getSddNamespace();
@@ -187,7 +219,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		logger.info("start Dataset ...");
 		progressMonitor.beginTask("Importing SDD data", elDatasets.size());
 		for (Element elDataset : elDatasets){
-			importDataset(elDataset, sddNamespace, state);			
+			importDataset(elDataset, sddNamespace, state);
 //			if ((++i % modCount) == 0){ logger.info("dataset(s) handled: " + i);}
 //			logger.info(i + " dataset(s) handled");
 			progressMonitor.worked(1);
@@ -201,7 +233,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(SDDImportState state){
+	@Override
+    protected boolean isIgnore(SDDImportState state){
 		return false;
 	}
 
@@ -232,16 +265,16 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	       </Representation>
 		 */
 
-		
-		
+
+
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
 		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-		
+
 		//new
 		Representation representation = Representation.NewInstance(detail, label, null, datasetLanguage);
 		workingSet.addRepresentation(representation);
-		
+
 
 		//old
 //		sec.setTitleCache(label, true);
@@ -251,7 +284,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 //			annotation.setAnnotationType(AnnotationType.EDITORIAL());
 //			sec.addAnnotation(annotation);
 //		}
-		
+
 
 		List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
@@ -275,7 +308,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	// imports the representation (label, detail, lang) of a particular SDD element
 	protected void importRepresentation(Element parent, Namespace sddNamespace, VersionableEntity ve, String id, SDDImportState state){
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
-		
+
 		Map<Language,List<String>> langLabDet = new HashMap<Language,List<String>>();
 
 		handleRepresentationLabels(sddNamespace, elRepresentation, langLabDet);
@@ -336,9 +369,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			langLabDet.put(language, labDet);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param media
 	 * @param langLabDet
 	 */
@@ -356,7 +389,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	/**
 	 * Handles representations for terms. Adds one representation per language in langLabDet.
-	 * 
+	 *
 	 * @param ve
 	 * @param langLabDet
 	 */
@@ -456,7 +489,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * @param langLabDet
 	 * @return
 	 */
-	private void makeRepresentationForIdentifiableEntity(Namespace sddNamespace, IdentifiableEntity<?> ie, 
+	private void makeRepresentationForIdentifiableEntity(Namespace sddNamespace, IdentifiableEntity<?> ie,
 					Element elRepresentation, Map<Language, List<String>> langLabDet) {
 		List<String> labDet = null;
 
@@ -505,7 +538,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		return language;
 	}
-	
+
 
 	// imports the representation (label, detail, lang) of a particular SDD element
 	protected void importTechnicalMetadata(Element root, Namespace sddNamespace, SDDImportConfigurator sddConfig){
@@ -539,7 +572,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	// imports the complete dataset information
 	protected void importDataset(Element elDataset, Namespace sddNamespace, SDDImportState state){			// <Dataset xml:lang="en-us">
-		
+
 		workingSet = WorkingSet.NewInstance();
 		importDatasetLanguage(elDataset,state);
 		importDatasetRepresentation(elDataset, sddNamespace);
@@ -550,23 +583,23 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		importDescriptiveConcepts(elDataset, sddNamespace, state);
 		importCharacters(elDataset, sddNamespace, state);
 		importCharacterTrees(elDataset, sddNamespace, state);
-		
+
 		MarkerType editorMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerEditor, "editor", "Editor", "edt");
-		MarkerType geographicAreaMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerSDDGeographicArea, "SDDGeographicArea", "SDDGeographicArea", "ga"); 
+		MarkerType geographicAreaMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerSDDGeographicArea, "SDDGeographicArea", "SDDGeographicArea", "ga");
 		MarkerType descriptiveConceptMarkerType = getMarkerType(state, SDDTransformer.uuidMarkerDescriptiveConcept, "DescriptiveConcept", "Descriptive Concept", "DC");
 		markerTypes.add(editorMarkerType);
 		markerTypes.add(geographicAreaMarkerType);
 		markerTypes.add(descriptiveConceptMarkerType);
-		
+
 		//saving of all imported data into the CDM db
 		saveVocabularies();
 		saveFeatures();
 		saveModifiers();
 		saveStates();
 		saveMarkerType();
-		saveAreas(geographicAreaMarkerType);		
+		saveAreas(geographicAreaMarkerType);
 		saveUnits();
-		saveStatisticalMeasure();		
+		saveStatisticalMeasure();
 		saveAnnotationType();
 
 		importCodedDescriptions(elDataset, sddNamespace, state);
@@ -576,8 +609,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		importTaxonHierarchies(elDataset, sddNamespace, state);
 		importGeographicAreas(elDataset, sddNamespace, state);
 		importSpecimens(elDataset,sddNamespace, state);
-		
-		
+
+
 		if ((authors != null)||(editors != null)) {
 			Team team = Team.NewInstance();
 			if (authors != null) {
@@ -602,15 +635,15 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			sourceReference.addRights(copyright);
 			sec.addRights(copyright);
 		}
-		
+
 		// Returns a CdmApplicationController created by the values of this configuration.
 		IDescriptionService descriptionService = getDescriptionService();
-		
+
 		for (TaxonDescription taxonDescription : taxonDescriptions.values()){
 			// Persists a Description
 			descriptionService.save(taxonDescription);
 		}
-		
+
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
@@ -636,13 +669,13 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			}
 		}
 		saveFeatures();
-		
+
 		for (Reference<?> publication : publications.values()){
-			getReferenceService().save(publication); 
+			getReferenceService().save(publication);
 		}
-		
+
 		for (Reference<?> source : sources){
-			getReferenceService().save(source); 
+			getReferenceService().save(source);
 		}
 
 		for (FeatureTree featureTree : featureTrees) {
@@ -656,29 +689,29 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			getOccurrenceService().save(specimen);
 		}
 		logger.info("end of persistence ...");
-		
+
 		return;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void saveVocabularies() {
 		for (TermVocabulary<?> vocabulary : vocabularies ){
 			getVocabularyService().save(vocabulary);
 		}
-		
+
 	}
 
 	private void saveAnnotationType() {
 		for (AnnotationType annotationType: annotationTypes){
-			getTermService().saveOrUpdate(annotationType); 
+			getTermService().saveOrUpdate(annotationType);
 		}
 	}
 
 	private void saveStatisticalMeasure() {
 		for (StatisticalMeasure sm : statisticalMeasures){
-			getTermService().save(sm); 
+			getTermService().save(sm);
 		}
 	}
 
@@ -686,7 +719,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		if (units != null) {
 			for (MeasurementUnit unit : units.values()){
 				if (unit != null) {
-					getTermService().save(unit); 
+					getTermService().save(unit);
 				}
 			}
 		}
@@ -739,7 +772,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			datasetLanguage = Language.DEFAULT();
 		}
 	}
-	
+
 	// imports the specimens
 	protected void importSpecimens(Element elDataset, Namespace sddNamespace, SDDImportState cdmState) {
 		logger.info("start Specimens ...");
@@ -927,7 +960,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		/*for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
 			featureSet.add(f.next()); //XIM Why this line ?
 		}*/
-		
+
 		return;
 
 	}
@@ -956,9 +989,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
 				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State, null, null, null, null);
-				
+
 				vocabularies.add(termVocabularyState);
-				
+
 				int k = 0;
 				//for each StateDefinition
 				for (Element elStateDefinition : elStateDefinitions){
@@ -982,7 +1015,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 			} catch (Exception e) {
 				logger.warn("Import of CategoricalCharacter " + j + " failed.");
-				cdmState.setUnsuccessfull(); 
+				cdmState.setUnsuccessfull();
 			}
 
 			if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
@@ -1106,11 +1139,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	// imports the descriptions of taxa
 	protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportState cdmState){
-				
+
 		// <CodedDescriptions>
 		logger.info("start CodedDescriptions ...");
 		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
-		
+
 		// <CodedDescription id="D101">
 		if (elCodedDescriptions != null) {
 			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
@@ -1169,9 +1202,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			if (taxon != null) {
 				taxon.addDescription(taxonDescription);
 			}
-//			
+//
 			workingSet.addDescription(taxonDescription);
-			
+
 //OLD			taxonDescription.setDescriptiveSystem(featureSet);
 
 			taxonDescriptions.put(idCD, taxonDescription);//FIXME
@@ -1197,11 +1230,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
-		
+
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
-		
+
 		if(taxon != null){
 			nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
 //							taxonNameBases.put(id ,tnb);
@@ -1210,7 +1243,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		} else {
 			nonViralName.addSource(source);
 			taxonNameBases.put(id ,nonViralName);
-			taxonNamesCount++;						
+			taxonNamesCount++;
 			logger.info("creating new Taxon from TaxonName " + nonViralName.getTitleCache());
 			taxon = Taxon.NewInstance(nonViralName, sec);
 		}
@@ -1225,28 +1258,28 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * @param taxon
 	 * @return
 	 */
-	private Taxon handleCDScope(Namespace sddNamespace, SDDImportState cdmState, 
+	private Taxon handleCDScope(Namespace sddNamespace, SDDImportState cdmState,
 			String idCD, Element elScope) {
 		Taxon taxon = null;
 		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
 		String ref = elTaxonName.getAttributeValue("ref");
 		NonViralName<?> nonViralName = taxonNameBases.get(ref);
-		
+
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
-		
+
 		if(taxon != null){
 			logger.info("using existing Taxon" + taxon.getTitleCache());
 			if(!nonViralName.getUuid().equals(taxon.getName().getUuid())){
 				logger.warn("TaxonNameBase entity of existing taxon does not match Name in list -> replacing Name in list");
 				nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
-			}				
-		} else {							
+			}
+		} else {
 			logger.info("creating new Taxon from TaxonName '" + nonViralName.getTitleCache()+"'");
 			taxon = Taxon.NewInstance(nonViralName, sec);
 		}
-		
+
 		//citation
 		Element elCitation = elScope.getChild("Citation",sddNamespace);
 		if (elCitation != null) {
@@ -1323,7 +1356,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			// <Measure type="Min" value="2.3"/>
 			List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
 			int l = 0;
-			
+
 			//for each State
 			for (Element elMeasure : elMeasures){
 				if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
@@ -1388,7 +1421,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			// <State ref="s3"/>
 			List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
 			int l = 0;
-			
+
 			//for each State
 			for (Element elState : elStates){
 				if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
@@ -1461,7 +1494,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							} catch (Exception e) {
 								//FIXME
 								logger.warn("Import of Link " + k + " failed.");
-								success = false; 
+								success = false;
 							}
 
 							if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
@@ -1480,7 +1513,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				} catch (Exception e) {
 					//FIXME
 					logger.warn("Import of Agent " + j + " failed.");
-					cdmState.setUnsuccessfull(); 
+					cdmState.setUnsuccessfull();
 				}
 
 				if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
@@ -1563,19 +1596,19 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 						ImageInfo imageMetaData = null;
 						ImageFile image = null;
-						
+
 						if (href.substring(0,7).equals("http://")) {
 							try{
 								URL url = new URL(href);
-								
+
 								imageMetaData = ImageInfo.NewInstance(url.toURI(), 0);
 								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
 							} catch (IOException ioe) {
 								logger.warn("(IO ex: " + id + "): " + ioe.getMessage());
-								
-							} 
+
+							}
 						} else {
 							String sns = cdmState.getConfig().getSourceNameString();
 							File f = new File(sns);
@@ -1634,7 +1667,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					//FIXME
 					logger.warn("Could not attach MediaObject " + j + "(SDD: " + id + ") to several objects: " + e.getMessage());
 					cdmState.setUnsuccessfull();
-				} 
+				}
 
 				if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);
 
@@ -1735,7 +1768,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					}
 					featureTrees.add(featureTree);
 					if (workingSet.getDescriptiveSystem() != null){
-						//TODO how to handle multiple 
+						//TODO how to handle multiple
 						logger.warn("Multiple feature trees not yet supported");
 					}else{
 						workingSet.setDescriptiveSystem(featureTree);
@@ -1806,7 +1839,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				Element elCharacter = elCharNode.getChild("Character", sddNamespace);
 				Element elDependencyRules = elCharNode.getChild("DependencyRules", sddNamespace);
 				FeatureNode fn = FeatureNode.NewInstance();
-				
+
 				if (elDependencyRules!=null){
 					Element elInapplicableIf = elCharNode.getChild("InapplicableIf", sddNamespace);
 					if (elInapplicableIf!=null){
@@ -1831,7 +1864,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						}
 					}
 				}
-				
+
 				if (elParent!=null){
 					String refP = elParent.getAttributeValue("ref");
 					if ((refP!=null)&&(!refP.equals(""))) {
@@ -1848,7 +1881,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					fn.setFeature(character);
 					featureNodes.put(refC, fn);
 				}
-			}		
+			}
 		}
 	}
 
@@ -1867,10 +1900,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 						Classification classification =  Classification.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", cdmState);
-					
+
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
-						
+
 						for (Element elNode : listNodes){
 							String idN = elNode.getAttributeValue("id");
 							TaxonNameBase<?,?> tnb = null;
@@ -1878,7 +1911,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 								Element elTaxonName = elNode.getChild("TaxonName", sddNamespace);
 								String refTN = elTaxonName.getAttributeValue("ref");
 								tnb = taxonNameBases.get(refTN);
-								Taxon taxon = (Taxon) tnb.getTaxa().iterator().next() ;
+								Taxon taxon = tnb.getTaxa().iterator().next() ;
 								Element elParent = elNode.getChild("Parent", sddNamespace);
 								if (elParent!=null){
 									String refP = elParent.getAttributeValue("ref");
@@ -1912,15 +1945,15 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 		}
 	}
-	
-	
-	// imports the <GeographicAreas> block 
+
+
+	// imports the <GeographicAreas> block
 	protected void importGeographicAreas(Element elDataset, Namespace sddNamespace, SDDImportState cdmState) {
 		Element elGeographicAreas = elDataset.getChild("GeographicAreas",sddNamespace);
 		if (elGeographicAreas != null) {
 			List<Element> listGeographicAreas = elGeographicAreas.getChildren("GeographicArea", sddNamespace);
 			int j = 0;
-						
+
 			for (Element elGeographicArea : listGeographicAreas){
 
 				String id = elGeographicArea.getAttributeValue("id");
@@ -1931,4 +1964,13 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			if ((++j % modCount) == 0){ logger.info("GeographicAreas handled: " + j);}
 							}
 							}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmImport#getByteArray()
+     */
+    @Override
+    public byte[] getByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

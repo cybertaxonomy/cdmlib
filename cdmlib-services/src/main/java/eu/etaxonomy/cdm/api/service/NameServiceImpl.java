@@ -139,6 +139,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
      */
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config) {
     	DeleteResult result = new DeleteResult();
        	TaxonNameBase name = dao.load(nameUUID);

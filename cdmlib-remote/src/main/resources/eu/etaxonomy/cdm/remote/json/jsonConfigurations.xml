@@ -301,8 +301,8 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.taxon.Taxon">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBeanProcessor" />
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonBase">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBaseBeanProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
           <bean

@@ -98,7 +98,7 @@ public class AbcdGgbnParser {
         NodeList concentrationList = element.getElementsByTagName(prefix+"concentration");
         if(concentrationList.getLength()==1){
             Node concentration = concentrationList.item(0);
-            dnaQuality.setConcentration(AbcdParseUtility.parseDouble(concentration));
+            dnaQuality.setConcentration(AbcdParseUtility.parseDouble(concentration, report));
             if(concentration instanceof Element){
                 String unit = ((Element) concentration).getAttribute("Unit");
                 //TODO
@@ -107,10 +107,10 @@ public class AbcdGgbnParser {
         }
 
         NodeList ratioOfAbsorbance260_280List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_280");
-        dnaQuality.setRatioOfAbsorbance260_280(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_280List));
+        dnaQuality.setRatioOfAbsorbance260_280(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_280List, report));
 
         NodeList ratioOfAbsorbance260_230List = element.getElementsByTagName(prefix+"ratioOfAbsorbance260_230");
-        dnaQuality.setRatioOfAbsorbance260_230(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_230List));
+        dnaQuality.setRatioOfAbsorbance260_230(AbcdParseUtility.parseFirstDouble(ratioOfAbsorbance260_230List, report));
 
         NodeList qualityCheckDateList = element.getElementsByTagName(prefix+"qualityCheckDate");
         if(qualityCheckDateList.item(0)!=null){
@@ -220,14 +220,14 @@ public class AbcdGgbnParser {
                 NodeList consensusSequencesList = sequencing.getElementsByTagName(prefix+"consensusSequence");
                 sequence.setConsensusSequence(SequenceString.NewInstance(AbcdParseUtility.parseFirstTextContent(consensusSequencesList)));
                 //sequence length
-                Double consensusSequenceLength = AbcdParseUtility.parseFirstDouble(sequencing.getElementsByTagName(prefix+"consensusSequenceLength"));
+                Double consensusSequenceLength = AbcdParseUtility.parseFirstDouble(sequencing.getElementsByTagName(prefix+"consensusSequenceLength"), report);
                 if(sequence.getConsensusSequence()!=null && consensusSequenceLength!=null){
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
                     sequence.getConsensusSequence().setLength(consensusSequenceLength.intValue());
                 }
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
-                URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList);
+                URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
                 Media contigFile = Media.NewInstance(uri, null, null, null);
                 sequence.setContigFile(contigFile);
 
@@ -292,7 +292,7 @@ public class AbcdGgbnParser {
                     }
                     //read pherogram URI
                     NodeList chromatogramFileURIList = singleSequencing.getElementsByTagName(prefix+"chromatogramFileURI");
-                    singleRead.setPherogram(Media.NewInstance(AbcdParseUtility.parseFirstUri(chromatogramFileURIList), null, null, null));
+                    singleRead.setPherogram(Media.NewInstance(AbcdParseUtility.parseFirstUri(chromatogramFileURIList, report), null, null, null));
                     NodeList sequencingPrimersList = singleSequencing.getElementsByTagName(prefix+"SequencingPrimers");
                     parseSequencingPrimers(sequencingPrimersList, singleRead, amplification);
                 }

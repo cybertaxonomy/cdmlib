@@ -8,20 +8,12 @@
 
   <!-- Pattern to intercept URL requests -->
 
-  <security:http auto-config="true" authentication-manager-ref="authenticationManager">
-    <security:intercept-url pattern="/remoting/**" access="ROLE_ADMIN,ROLE_PROJECT_MANAGER,ROLE_USER_MANAGER,ROLE_PUBLISH" />
+  <security:http auto-config="true" authentication-manager-ref="authenticationManager" use-expressions="true">
+    <!-- check for full authentication for remoting services -->
+    <!-- (from http://docs.spring.io/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#el-access) -->
+    <security:intercept-url pattern="/remoting/**" access="isFullyAuthenticated()" />
     <security:http-basic />
   </security:http>
 
-
-  <!-- Pattern to build a security filter chain -->
-
-  <!-- <bean id="remotingSpringSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy"> -->
-  <!-- <constructor-arg> -->
-  <!-- <list> -->
-  <!-- <security:filter-chain pattern="/remoting/**" filters="none"/> -->
-  <!-- </list> -->
-  <!-- </constructor-arg> -->
-  <!-- </bean> -->
 
 </beans>

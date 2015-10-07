@@ -105,16 +105,21 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
                 NonViralName<?> nonViralName = (NonViralName<?>)name;
                 if (nonViralName.getGenusOrUninomial() != null){
-                	if (name.isInfraSpecific() && nonViralName.getSpecificEpithet() != null 
+                    titleCache = nonViralName.getGenusOrUninomial();
+                    if (name.isSpecies() && nonViralName.getSpecificEpithet() != null){
+                        titleCache = titleCache + " " + nonViralName.getSpecificEpithet();
+                    }
+                	if (name.isInfraSpecific() && nonViralName.getSpecificEpithet() != null
                 			&& nonViralName.getInfraSpecificEpithet() != null){
                 		if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
+                		titleCache = titleCache + " " + nonViralName.getInfraSpecificEpithet();
                 		if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                 			titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                 		}
                 	}
                 	if (name.isInfraGeneric() && nonViralName.getInfraGenericEpithet() != null){
                 		if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
-                		titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                		titleCache = titleCache + " " + nonViralName.getInfraGenericEpithet();
                 	}
                 	if (nonViralName.isSpeciesAggregate() && nonViralName.getSpecificEpithet() != null){
                 		if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
@@ -133,6 +138,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
             titleCache = String.valueOf(taxonNode.getId());
         }
         if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
+//        System.out.println(titleCache);
         return titleCache;
     }
 

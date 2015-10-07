@@ -12,6 +12,11 @@ package eu.etaxonomy.cdm.api.facade;
 import org.apache.log4j.Logger;
 
 /**
+ * This exception should be thrown if a derived unit facade can not be created or 
+ * initialized because the underlying data complexity is not supported by the facade.
+ * 
+ * @see MethodNotSupportedByDerivedUnitTypeException
+ * 
  * @author a.mueller
  * @date 17.05.2010
  *

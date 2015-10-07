@@ -43,11 +43,19 @@ public class DescriptionUtility {
      * Filters the given set of {@link Distribution}s for publication purposes
      * The following rules are respected during the filtering:
      * <ol>
-     * <li>Computed elements are preferred over entered or imported elements.
+     * <li><b>Marked area filter</b>: Skip distributions for areas having a {@code TRUE} {@link Marker}
+     * with one of the specified {@link MarkerType}s. Existing sub-areas of a marked area must also be marked
+     * with the same marker type, otherwise the marked area acts as a <b>fallback area</b> for the sub areas.
+     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one of
+     * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
+     * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
+     * https://dev.e-taxonomy.eu/trac/ticket/4408</li>
+     * <li><b>Prefer computed rule</b>:Computed distributions are preferred over entered or imported elements.
      * (Computed description elements are identified by the {@link
      * MarkerType.COMPUTED()}). This means if a entered or imported status
      * information exist for the same area for which computed data is available,
-     * the computed data has to be given preference over other data.</li>
+     * the computed data has to be given preference over other data.
+     * see parameter <code>preferComputed</code></li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
@@ -61,147 +69,140 @@ public class DescriptionUtility {
      * This rule affects any distribution,
      * that is to computed and edited equally. For more details see
      * {@link https://dev.e-taxonomy.eu/trac/ticket/5050})</li>
-     * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker}
-     * with one of the specified {@link MarkerType}s
-     * <li><b>Fallback Area filter</b>: Areas can be tagged as fallback area by assigning
-     * a {@link Marker} of the specified {@link MarkerType}.
-     * These areas will be skipped as long not a a Distribution for any of sub areas exists,
-     * see https://dev.e-taxonomy.eu/trac/ticket/4408 for a detailed discussion.</li>
      * </ol>
      *
      * @param distributions
      *            the distributions to filter
-     * @param subAreaPreference
-     *            enables the <b>Sub area preference rule</b> if set to true
+     * @param hiddenAreaMarkerTypes
+     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
+     *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
+     * @param preferComputed
+     *            Computed distributions for the same area will be preferred over edited distributions.
+     *            <b>This parameter should always be set to <code>true</code>.</b>
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
      *            This rule can be run separately from the other filters.
-     * @param hideMarkedAreas
-     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
-     * @param fallbackAreaMarkerType
-     *            {@link MarkerType} for the {@link Marker}s to identify fallback areas.
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas, MarkerType fallbackAreaMarkerType) {
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference, boolean subAreaPreference) {
 
-        Map<NamedArea, Set<Distribution>> filteredDistributions;
+        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(100); // start with a big map from the beginning!
 
-        Set<Distribution> removeCandidatesDistribution = new HashSet<Distribution>();
-
-        boolean doHideMarkedAreas = hideMarkedAreas != null && !hideMarkedAreas.isEmpty();
-        boolean dofallbackAreas = fallbackAreaMarkerType != null;
-
-        if(statusOrderPreference || doHideMarkedAreas) {
-
-            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
-            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
-            Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
-
-            // 1) sort by computed / not computed
-            boolean doSkip = false;
-            for(Distribution distribution : distributions){
-
-                // 1.1) skip distributions having an area with markers matching hideMarkedAreas
-                NamedArea area = distribution.getArea();
-                if(area == null) {
-                    logger.debug("skipping distribution with NULL area");
-                    continue;
-                } if(areasHiddenByMarker.contains(area)){
-                    logger.debug("skipping distribution with marked area, area previously recognized and cached");
-                    continue;
-                }else {
-                    doSkip = false;
-                    if(doHideMarkedAreas){
-                        for(MarkerType markerType : hideMarkedAreas){
-                            if(area.hasMarker(markerType, true)){
-                                areasHiddenByMarker.add(area);
-                                logger.debug("skipping distribution with marked area");
-                                doSkip = true;
-                                continue;
-                            }
-                        }
-                    }
-                    if(doSkip){
-                        continue;
-                    }
-
-                }
-
-                if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
-                    if(!computedDistributions.containsKey(area)){
-                        computedDistributions.put(area, new HashSet<Distribution>());
-                    }
-                    computedDistributions.get(area).add(distribution);
-                } else {
-                    if(!otherDistributions.containsKey(area)){
-                        otherDistributions.put(area, new HashSet<Distribution>());
-                    }
-                    otherDistributions.get(area).add(distribution);
-                }
+        // sort Distributions by the area
+        for(Distribution distribution : distributions){
+            NamedArea area = distribution.getArea();
+            if(area == null) {
+                logger.debug("skipping distribution with NULL area");
+                continue;
             }
 
-            // if there are computed elements apply the filter rules
-            if(computedDistributions.size() > 0){
-
-                // 2) apply filter rules
-                // 2.a) prepare removal of all not computed areas for which a computed area exists
-                for(NamedArea keyComputed : computedDistributions.keySet()){
-                    otherDistributions.remove(keyComputed);
-                }
-
+            if(!filteredDistributions.containsKey(area)){
+                filteredDistributions.put(area, new HashSet<Distribution>());
             }
-
-            filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(otherDistributions.size() + computedDistributions.size());
-
-            // finally remove computed distributions if necessary and combine computed and non computed distributions again
-            // and apply the Status order preference filter
-            for(Distribution removeDistribution : removeCandidatesDistribution){
-                computedDistributions.remove(removeDistribution.getArea()); //FIXME is this correct? or should we only remove the specific distribution???
-            }
-            for(NamedArea key : computedDistributions.keySet()){
-                filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(computedDistributions.get(key)));
-            }
-
-            // add the non computed distributions to combine them again and apply the Status order preference filter
-            for(NamedArea key : otherDistributions.keySet()){
-                filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
-            }
-        } else {
-            // no filtering happened until this point, therefor adding all given distributions
-            filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
-            for(Distribution distribution : distributions){
-                NamedArea area = distribution.getArea();
-                if(!filteredDistributions.containsKey(area)){
-                    filteredDistributions.put(area, new HashSet<Distribution>());
-                }
-                filteredDistributions.get(area).add(distribution);
-            }
-
+            filteredDistributions.get(area).add(distribution);
         }
 
-        // 3) keep or remove distributions for fallback areas
-        Set<NamedArea> removeCandidatesFallback = new HashSet<NamedArea>();
-        if(dofallbackAreas){
+        // -------------------------------------------------------------------
+        // 1) skip distributions having an area with markers matching hideMarkedAreas
+        //    but keep distributions for fallback areas
+        if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
+            Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
+            for(NamedArea area : filteredDistributions.keySet()) {
+                if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
+                    boolean showAsFallbackArea = false;
+                    // if at least one sub area is not hidden by a marker
+                    // this area is a fall back area for this sub area
+                    for(NamedArea subArea : area.getIncludes()) {
+                        if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
+                            if(filteredDistributions.containsKey(subArea)) {
+                                areasHiddenByMarker.add(subArea);
+                            }
+                        }
+                        // if this subarea is not marked to be hidden
+                        // the parent area must be visible if there is no
+                        // data for the subarea
+                        boolean subAreaVisible = filteredDistributions.containsKey(subArea) &&  !areasHiddenByMarker.contains(subArea);
+                        showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
+                    }
+                    if (!showAsFallbackArea) {
+                        // this area does not need to be shown as
+                        // fallback for another area
+                        // so it will be hidden.
+                        areasHiddenByMarker.add(area);
+                    }
+                }
+            }
+            for(NamedArea area :areasHiddenByMarker) {
+                filteredDistributions.remove(area);
+            }
+        }
+        // -------------------------------------------------------------------
+
+
+        // -------------------------------------------------------------------
+        // 2) remove not computed distributions for areas for which computed
+        //    distributions exists
+        //
+        if(preferComputed) {
+            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
+            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
+            // separate computed and edited Distributions
+            for (NamedArea area : filteredDistributions.keySet()) {
+                for (Distribution distribution : filteredDistributions.get(area)) {
+                    // this is only required for rule 1
+                    if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
+                        if(!computedDistributions.containsKey(area)){
+                            computedDistributions.put(area, new HashSet<Distribution>());
+                        }
+                        computedDistributions.get(area).add(distribution);
+                    } else {
+                        if(!otherDistributions.containsKey(area)){
+                            otherDistributions.put(area, new HashSet<Distribution>());
+                        }
+                        otherDistributions.get(area).add(distribution);
+                    }
+                }
+            }
+            for(NamedArea keyComputed : computedDistributions.keySet()){
+                otherDistributions.remove(keyComputed);
+            }
+            // combine computed and non computed Distributions again
+            filteredDistributions.clear();
+            for(NamedArea key : computedDistributions.keySet()){
+                if(!filteredDistributions.containsKey(key)) {
+                    filteredDistributions.put(key, new HashSet<Distribution>());
+                }
+                filteredDistributions.get(key).addAll(computedDistributions.get(key));
+            }
+            for(NamedArea key : otherDistributions.keySet()){
+                if(!filteredDistributions.containsKey(key)) {
+                    filteredDistributions.put(key, new HashSet<Distribution>());
+                }
+                filteredDistributions.get(key).addAll(otherDistributions.get(key));
+            }
+        }
+        // -------------------------------------------------------------------
+
+
+        // -------------------------------------------------------------------
+        // 3) statusOrderPreference
+        if (statusOrderPreference) {
+            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<NamedArea, Set<Distribution>>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
-                if(removeCandidatesFallback.contains(key)){
-                    continue;
-                }
-                if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())
-                        && key.getPartOf().hasMarker(fallbackAreaMarkerType, true)){
-                    removeCandidatesFallback.add(key.getPartOf());
-                }
+                tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
             }
-            for(NamedArea removeKey : removeCandidatesFallback){
-                filteredDistributions.remove(removeKey);
-            }
-         }
+            filteredDistributions = tmpMap;
+        }
+        // -------------------------------------------------------------------
 
 
-
+        // -------------------------------------------------------------------
         // 4) Sub area preference rule
-        Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
         if(subAreaPreference){
+            Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
             for(NamedArea key : filteredDistributions.keySet()){
                 if(removeCandidatesArea.contains(key)){
                     continue;
@@ -214,10 +215,26 @@ public class DescriptionUtility {
                 filteredDistributions.remove(removeKey);
             }
          }
-
+        // -------------------------------------------------------------------
 
         return valuesOfAllInnerSets(filteredDistributions.values());
+    }
 
+    /**
+     * @param hiddenAreaMarkerTypes
+     * @param area
+     * @param isMarkedHidden
+     * @return
+     */
+    public static boolean checkAreaMarkedHidden(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
+        if(hiddenAreaMarkerTypes != null) {
+            for(MarkerType markerType : hiddenAreaMarkerTypes){
+                if(area.hasMarker(markerType, true)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -225,16 +242,23 @@ public class DescriptionUtility {
      * This method will not filter out any of the Distribution elements.
      * @param termDao
      * @param omitLevels
+     * @param hiddenAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
+     *      are omitted from the hierarchy and the sub areas are moving one level up.
+     *      For more details on fall back areas see <b>Marked area filter</b> of
+     *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param distList
      * @return
      */
-    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
+    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions,
+            Set<MarkerType> hiddenAreaMarkerTypes) {
 
         DistributionTree tree = new DistributionTree(termDao);
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
-        tree.orderAsTree(distributions, omitLevels);
+        tree.orderAsTree(distributions, omitLevels, hiddenAreaMarkerTypes);
         tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
@@ -242,10 +266,14 @@ public class DescriptionUtility {
 
     /**
      * Implements the Status order preference filter for a given set to Distributions.
-     * The distributions should all be for the same area
+     * The distributions should all be for the same area.
+     * The method returns a site of distributions since multiple Distributions
+     * with the same status are possible. For example if the same status has been
+     * published in more than one literature references.
      *
      * @param distributions
-     * @return the distribution with the highest status
+     *
+     * @return the set of distributions with the highest status
      */
     private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
 

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +29,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
@@ -424,6 +424,48 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 
 	@Override
+	public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths){
+	    Session session;
+	    session =  getSession();
+	    T bean = (T)session.get(clazz, id);
+	    if(bean == null){
+            return bean;
+        }
+        defaultBeanInitializer.initialize(bean, propertyPaths);
+        return bean;
+	}
+
+	@Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid){
+	    return find(clazz, uuid, null);
+	}
+
+    @Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths){
+        Session session = getSession();
+        Criteria crit = session.createCriteria(type);
+        crit.add(Restrictions.eq("uuid", uuid));
+        crit.addOrder(Order.desc("created"));
+        @SuppressWarnings("unchecked")
+        List<T> results = crit.list();
+        if (results.isEmpty()){
+            return null;
+        }else{
+            if(results.size() > 1){
+                logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+            }
+            T result = results.get(0);
+            if (result == null || propertyPaths == null){
+                return result;
+            }else{
+                defaultBeanInitializer.initialize(result, propertyPaths);
+                return result;
+            }
+        }
+    }
+
+
+	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
 			IMatchStrategy matchStrategy) throws MatchException {
 
@@ -722,8 +764,14 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 
     @Override
-    public Object initializeCollection(UUID ownerUuid, String fieldName)  {
-        List<String> propertyPaths = Arrays.asList(new String[] {fieldName});
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths)  {
+        List<String> propertyPaths = new ArrayList<String>();
+        propertyPaths.add(fieldName);
+        if(appendedPropertyPaths != null && !appendedPropertyPaths.isEmpty()) {
+            for(String app : appendedPropertyPaths) {
+                propertyPaths.add(fieldName + "." + app);
+            }
+        }
         CdmBase cdmBase = load(ownerUuid, propertyPaths);
         Field field = ReflectionUtils.findField(cdmBase.getClass(), fieldName);
         field.setAccessible(true);
@@ -738,6 +786,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         } else {
             throw new IllegalArgumentException("Field name provided does not correspond to a collection or map");
         }
+    }
+
+    @Override
+    public Object initializeCollection(UUID ownerUuid, String fieldName)  {
+        return initializeCollection(ownerUuid, fieldName, null);
     }
 
     @Override
@@ -811,6 +864,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
 		dataGenerator.fillWithData(getSession());
 	}
+
 
 
 }

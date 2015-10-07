@@ -1143,7 +1143,10 @@ public class Language extends DefinedTermBase<Language> {
 
 
     public static final Language DEFAULT(){
-        return getDefaultLanguage();
+        if(defaultLanguage == null) {
+           return getDefaultLanguage();
+        }
+        return defaultLanguage;
     }
 
     public static final Language CSV_LANGUAGE(){
@@ -1290,7 +1293,10 @@ public class Language extends DefinedTermBase<Language> {
      * @return
      */
     public static Language getDefaultLanguage() {
-    	return getLanguageFromUuid(uuidEnglish);
+        if(getCacher() != null) {
+            return (Language)getCacher().load(uuidEnglish);
+        }
+    	return null;
     }
 
     /**

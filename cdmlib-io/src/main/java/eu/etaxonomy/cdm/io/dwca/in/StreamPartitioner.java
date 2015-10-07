@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,13 +30,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<IReader<MappedCdmBase>>{
 	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
-	
-	private int partitionSize;
-	private LookAheadStream<ITEM> inStream;
-	private IPartitionableConverter converter;
-	private StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state;
+
+	private final int partitionSize;
+	private final LookAheadStream<ITEM> inStream;
+	private final IPartitionableConverter converter;
+	private final StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state;
 	private ConcatenatingReader<MappedCdmBase> outStream;
-	
+
 	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, StreamImportStateBase state, Integer size){
 		 this.inStream = new LookAheadStream<ITEM>(input);
 		 this.converter = converter;
@@ -44,52 +44,49 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		 this.state = state;
 		 initNewOutStream();
 	}
-	
+
 
 	private void initNewOutStream(){
 		outStream = new ConcatenatingReader<MappedCdmBase>();
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#hasNext()
-	 */
-	public boolean hasNext() {
+
+	@Override
+    public boolean hasNext() {
 		if (this.outStream.hasNext()){
 			return true;
 		}else{
 			return inStream.hasNext();  //TODO what, if converter returns no ouput for inStream.hasNext() ??
-			//but be aware that requesting the next object from the next partition crosses the transactional borders 
+			//but be aware that requesting the next object from the next partition crosses the transactional borders
 		}
 	}
-	
+
 	@Override
 	public IReader<MappedCdmBase> read() {
 		logger.debug("Start partitioner read");
 		handleNextPartition();
 		IReader<MappedCdmBase> result = this.outStream;
-		
+
 		initNewOutStream();
 		logger.debug("End partitioner read");
 		return result;
 	}
-	
-	private void handleNextPartition(){
 
-		List<ITEM> lookaheadArray = new ArrayList<ITEM>();
+	private void handleNextPartition(){
+	    List<ITEM> lookaheadArray = new ArrayList<ITEM>();
 		while (this.inStream.hasNextLookAhead(partitionSize)){
 			lookaheadArray.add(this.inStream.readLookAhead());
 		}
-		
+
 		IReader<ITEM> lookaheadStream = new ListReader<ITEM>(lookaheadArray);
-		
+
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
 		InMemoryMapping partialMapping = mapping.getPartialMapping(foreignKeys);
 		Reference<?> sourceRef = state.getCurrentIO().getReferenceService().find(state.getConfig().getSourceRefUuid());
 		partialMapping.putMapping(TermUri.CDM_SOURCE_REFERENCE.toString(), state.getConfig().getSourceRefUuid().toString(), sourceRef);
-		
+
 		state.loadRelatedObjects(partialMapping);
-				
+
 		while (inStream.isLookingAhead() && inStream.hasNext()){
 			IReader<MappedCdmBase> resultReader = converter.map(inStream.read());
 			List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();  //maybe better let converter return list from the beginning
@@ -100,12 +97,12 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 			}
 			outStream.add(new ListReader<MappedCdmBase>(resultList));
 		}
-			
+
 		return;
 
 	}
 
-	
+
 	/**
 	 * Add new items to the local mapping
 	 * @param item
@@ -114,7 +111,8 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		CdmBase cdmBase = item.getCdmBase();
 		if (cdmBase.getId() == 0){
 			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
-				if (converter.requiredSourceNamespaces().contains(item.getNamespace())){
+			    Set<String> requiredSourceNamespaces = converter.requiredSourceNamespaces();
+				if (requiredSourceNamespaces.contains(item.getNamespace())){
 					state.addRelatedObject(item.getNamespace(), item.getSourceId(),  item.getCdmBase());
 				}
 			}
@@ -126,6 +124,6 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	public TermUri getTerm() {
 		return inStream.getTerm();
 	}
-	
+
 
 }

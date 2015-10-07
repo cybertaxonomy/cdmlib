@@ -227,6 +227,42 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        List<Media> media = new ArrayList<Media>();
+        //media specimens
+        if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
+            MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
+            media.add(mediaSpecimen.getMediaSpecimen());
+        }
+        // pherograms & gelPhotos
+        if (rootOccurence.isInstanceOf(DnaSample.class)) {
+            DnaSample dnaSample = CdmBase.deproxy(rootOccurence, DnaSample.class);
+            Set<Sequence> sequences = dnaSample.getSequences();
+            //we do show only those gelPhotos which lead to a consensus sequence
+            for (Sequence sequence : sequences) {
+                Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                for (SingleRead singleRead : sequence.getSingleReads()){
+                    AmplificationResult amplification = singleRead.getAmplificationResult();
+                    dnaRelatedMedia.add(amplification.getGelPhoto());
+                    dnaRelatedMedia.add(singleRead.getPherogram());
+                    dnaRelatedMedia.remove(null);
+                }
+                media.addAll(dnaRelatedMedia);
+            }
+        }
+        if(rootOccurence.isInstanceOf(DerivedUnit.class)){
+            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(rootOccurence, DerivedUnit.class);
+            for (DerivationEvent derivationEvent : derivedUnit.getDerivationEvents()) {
+                for (DerivedUnit childDerivative : derivationEvent.getDerivatives()) {
+                    media.addAll(getMediainHierarchy(childDerivative, pageSize, pageNumber, propertyPaths).getRecords());
+                }
+            }
+        }
+        return new DefaultPagerImpl<Media>(pageNumber, media.size(), pageSize, media);
+    }
+
+    @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
@@ -798,35 +834,53 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+    @Transactional(readOnly = false)
+    public UpdateResult moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+        return moveSequence(from.getUuid(), to.getUuid(), sequence.getUuid());
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveSequence(UUID fromUuid, UUID toUuid, UUID sequenceUuid) {
         // reload specimens to avoid session conflicts
-        from = (DnaSample) load(from.getUuid());
-        to = (DnaSample) load(to.getUuid());
-        sequence = sequenceService.load(sequence.getUuid());
+        DnaSample from = (DnaSample) load(fromUuid);
+        DnaSample to = (DnaSample) load(toUuid);
+        Sequence sequence = sequenceService.load(sequenceUuid);
 
         if (from == null || to == null || sequence == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
                     "Operation was move "+sequence+ " from "+from+" to "+to);
         }
+        UpdateResult result = new UpdateResult();
         from.removeSequence(sequence);
         saveOrUpdate(from);
         to.addSequence(sequence);
         saveOrUpdate(to);
-        return true;
+        result.setStatus(Status.OK);
+        result.addUpdatedObject(from);
+        result.addUpdatedObject(to);
+        return result;
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
+        return moveDerivate(from.getUuid(), to.getUuid(), derivate.getUuid()).isOk();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid) {
         // reload specimens to avoid session conflicts
-        from = load(from.getUuid());
-        to = load(to.getUuid());
-        derivate = (DerivedUnit) load(derivate.getUuid());
+        SpecimenOrObservationBase<?> from = load(specimenFromUuid);
+        SpecimenOrObservationBase<?> to = load(specimenToUuid);
+        DerivedUnit derivate = (DerivedUnit) load(derivateUuid);
 
         if (from == null || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
             		"Operation was move "+derivate+ " from "+from+" to "+to);
         }
-
+        UpdateResult result = new UpdateResult();
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();
         SpecimenOrObservationType toType = to.getRecordBasis();
         // check if type is a sub derivate type
@@ -856,9 +910,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
             saveOrUpdate(from);
             saveOrUpdate(to);
-            return true;
+            result.setStatus(Status.OK);
+            result.addUpdatedObject(from);
+            result.addUpdatedObject(to);
+        } else {
+            result.setStatus(Status.ERROR);
         }
-        return false;
+        return result;
     }
 
     @Override
@@ -1066,7 +1124,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         if (config.isDeleteChildren()) {
             Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
-            for (DerivationEvent derivationEvent : derivationEvents) {
+            //clone to avoid concurrent modification
+            //can happen if the child is deleted and deleted its own derivedFrom event
+            Set<DerivationEvent> derivationEventsClone = new HashSet<DerivationEvent>(derivationEvents);
+            for (DerivationEvent derivationEvent : derivationEventsClone) {
                 Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
                 for (DerivedUnit derivedUnit : derivatives) {
                     delete(derivedUnit, config);
@@ -1135,6 +1196,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
                         for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
+                            deleteResult.addUpdatedObject(specimenOrObservationBase);
                         }
                     }
                 }
@@ -1158,8 +1220,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         //delete from sequence
         sequence.removeSingleRead(singleRead);
+        deleteResult.addUpdatedObject(sequence);
         deleteResult.setStatus(Status.OK);
         return deleteResult;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid){
+        SingleRead singleRead = null;
+        Sequence sequence = CdmBase.deproxy(sequenceService.load(sequenceUuid), Sequence.class);
+        for(SingleRead sr : sequence.getSingleReads()) {
+            if(sr.getUuid().equals(singleReadUuid)) {
+                singleRead = sr;
+                break;
+            }
+        }
+        return deleteSingleRead(singleRead, sequence);
     }
 
     @Override
@@ -1173,8 +1250,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 return deleteResult;
             }
             Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
-            sequence.getDnaSample().removeSequence(sequence);
+            DnaSample dnaSample = sequence.getDnaSample();
+            dnaSample.removeSequence(sequence);
             deleteResult = sequenceService.delete(sequence);
+            deleteResult.addUpdatedObject(dnaSample);
         }
         else if(from instanceof SingleRead){
             SingleRead singleRead = (SingleRead)from;
@@ -1190,6 +1269,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
         }
         return deleteResult;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config) {
+        return deleteDerivateHierarchy(dao.load(fromUuid),config);
     }
 
 //    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
@@ -1225,24 +1310,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    @Deprecated //this is not a service layer task so it may be removed in future versions
     public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen) {
-        Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
         if (specimen != null) {
-            Set<DescriptionBase> descriptions = specimen.getDescriptions();
-            for (DescriptionBase<?> descriptionBase : descriptions) {
-                if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
-                    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
-                    Set<DescriptionElementBase> elements = specimenDescription.getElements();
-                    for (DescriptionElementBase descriptionElementBase : elements) {
-                        if(descriptionElementBase.getFeature().isSupportsCategoricalData()
-                                ||descriptionElementBase.getFeature().isSupportsQuantitativeData()){
-                            states.add(descriptionElementBase);
-                        }
-                    }
-                }
-            }
+            return specimen.characterData();
+        }else{
+            return new ArrayList<DescriptionElementBase>();
         }
-        return states;
     }
 
     @Override

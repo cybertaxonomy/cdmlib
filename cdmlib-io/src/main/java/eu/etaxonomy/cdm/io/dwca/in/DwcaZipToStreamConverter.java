@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,8 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 
 	private final String META_XML = "meta.xml";
 	protected static final boolean IS_CORE = true;
-	
-	private List<TermUri> extensionList = Arrays.asList(
+
+	private final List<TermUri> extensionList = Arrays.asList(
 			TermUri.EOL_AGENT,
 			TermUri.DWC_RESOURCE_RELATIONSHIP,
 			TermUri.GBIF_TYPES_AND_SPECIMEN,
@@ -66,23 +65,22 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			TermUri.GBIF_DESCRIPTION,
 			TermUri.GBIF_DISTRIBUTION,
 			TermUri.GBIF_IMAGE
-			
+
 	);
-			
-	
-	private URI dwcaZip;
-	private Map<String, DwcaMetaDataRecord> metaRecords = new HashMap<String, DwcaMetaDataRecord>(); 
+
+	private final URI dwcaZip;
+	private final Map<String, DwcaMetaDataRecord> metaRecords = new HashMap<String, DwcaMetaDataRecord>();
 	private Archive archive;
-	
-/// ******************** FACTORY ********************************/	
-	
+
+/// ******************** FACTORY ********************************/
+
 	public static DwcaZipToStreamConverter NewInstance(URI dwcaZip){
 		return new DwcaZipToStreamConverter(dwcaZip);
 	}
-	
+
 
 //************************ CONSTRUCTOR *********************************/
-	
+
 	/**
 	 * Constructor
 	 * @param dwcaZip
@@ -91,22 +89,22 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		this.dwcaZip = dwcaZip;
 		initArchive();
 	}
-	
+
 
 	protected Archive getArchive(){
 			return this.archive;
 	}
-	
+
 	public CsvStream getCoreStream(STATE state) throws IOException{
 		initArchive();
 		ArchiveEntryBase core = archive.getCore();
 		return makeStream(core, state);
 	}
-	
+
 	public CsvStream getStream(String rowType, STATE state) throws IOException{
 		initArchive();
-		
-		ArchiveEntryBase archiveEntry = null; 
+
+		ArchiveEntryBase archiveEntry = null;
 		List<Extension> extensions = archive.getExtension();
 		for (Extension extension : extensions){
 			if (rowType.equalsIgnoreCase(extension.getRowType())){
@@ -116,7 +114,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		}
 		return makeStream(archiveEntry, state);
 	}
-	
+
 	public CsvStream getStream(TermUri rowType, STATE state) throws IOException{
 		return getStream(rowType.getUriString(), state);
 	}
@@ -125,29 +123,35 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		//core
 		List<CsvStream> streamList = new ArrayList<CsvStream>();
 		try {
-			streamList.add(getCoreStream(state)); //for taxa and names
+			if (state.getConfig().isDoTaxa()){
+			    streamList.add(getCoreStream(state)); //for taxa and names
+			}
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
 			//FIXME fire event (also in following code)
 			logger.warn(String.format(message, "taxa", e.getMessage()));
 			state.setSuccess(false);
-		} 
+		}
 		//core relationships
 		try {
-			streamList.add(getCoreStream(state));//for taxon and name relations
+			if (state.getConfig().isDoTaxonRelationships()){
+			    streamList.add(getCoreStream(state)); //for taxon and name relations
+			}
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
 			logger.warn(String.format(message, "taxon relations", e.getMessage()));
 			state.setSuccess(false);
-		} 
+		}
 		//extensions
 		for (TermUri extension : extensionList){
 			CsvStream extensionStream;
 			try {
-				extensionStream = getStream(extension, state);
-				if (extensionStream != null){
-					streamList.add(extensionStream);
-				}
+	            if (state.getConfig().isDoExtensions()){
+	                extensionStream = getStream(extension, state);
+	                if (extensionStream != null){
+	                    streamList.add(extensionStream);
+	                }
+	            }
 			} catch (IOException e) {
 				String message = "Extension stream not available for extension %s: %s";
 				logger.warn(String.format(message, extension.getUriString(), e.getMessage()));
@@ -162,7 +166,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	/**
 	 * Creates the CsvStream for an archive entry. Returns null if archive entry is null.
 	 * @param archiveEntry
-	 * @param state 
+	 * @param state
 	 * @return
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
@@ -171,7 +175,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		if (archiveEntry == null){
 			return null;
 		}
-				 
+
 		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVParser.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
 		// default is a kind of 'null' quote, which tells opencsv to ignore the enclosing quotes
 		char fieldsEnclosedBy = CSVWriter.NO_QUOTE_CHARACTER;
@@ -182,16 +186,16 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
 		String encoding = archiveEntry.getEncoding();
 		int skipLines = ignoreHeader? 1 : 0;
-		
+
 		String fileLocation = archiveEntry.getFiles().getLocation();
 		InputStream coreCsvInputStream = makeInputStream(fileLocation);
-		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding); 
+		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding);
 		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy, skipLines);
 		CsvStream csvStream = new CsvStream(csvReader, archiveEntry, skipLines);
-		
+
 		//		InputStream s;
 //		s.
-		
+
 		return csvStream;
 	}
 
@@ -200,11 +204,11 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		if (archive == null){
 			try {
 				InputStream metaInputStream = makeInputStream(META_XML);
-				
+
 				JAXBContext jaxbContext = JAXBContext.newInstance("eu.etaxonomy.cdm.io.dwca.jaxb");
 				Unmarshaller unmarshaller =  jaxbContext.createUnmarshaller();
 				archive = (Archive)unmarshaller.unmarshal(metaInputStream);
-	
+
 				validateArchive(archive);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -226,7 +230,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		if (archive.getCore().getFieldsEnclosedBy() != null && archive.getCore().getFieldsEnclosedBy().length() > 1){
 			throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character");
 		}
-		
+
 	}
 
 //
@@ -235,23 +239,23 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 //	 * @throws IOException
 //	 */
 //	private InputStream makeInputStream(String name) throws IOException {
-//		
+//
 //		ZipInputStream zin = new ZipInputStream(dwcaZip.toURL().openStream());
 //		ZipEntry ze = zin.getNextEntry();
 //		while (!ze.getName().equals(name)) {
 //		    zin.closeEntry(); // not sure whether this is necessary
 //		    ze = zin.getNextEntry();
 //		}
-//		
+//
 //		CheckedInputStream cis = new CheckedInputStream(in, cksum)
-//		
+//
 //		InputStream metaInputStream = zip.getInputStream(ze);
 //		return metaInputStream;
-//	
+//
 //		InputStream metaInputStream = zip.getInputStream(metaEntry);
 //		return metaInputStream;
 //	}
-//	
+//
 
 	/**
 	 * @return
@@ -264,11 +268,11 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			throw new IOException(String.format(message, dwcaZip.toString()));
 		}
 		ZipFile zip = new ZipFile(file, ZipFile.OPEN_READ);
-		
+
 		//Enumeration<? extends ZipEntry> zipEntries = zip.entries();
 		//ze = new ZipEntry(name);
 		ZipEntry metaEntry = zip.getEntry(name);
-		
+
 		//Lorna added this to deal with Scratchpads dwca.zip files which when unzipped have a directory dwca/ which contains the files
 		if (metaEntry == null) {
 			metaEntry = zip.getEntry("dwca/" + name);
@@ -282,6 +286,6 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	}
 
 
-	
-	
+
+
 }

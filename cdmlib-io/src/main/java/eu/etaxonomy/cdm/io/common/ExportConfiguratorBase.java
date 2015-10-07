@@ -25,6 +25,10 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 
 	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
+	private TARGET target = TARGET.FILE;
+
+	private final boolean startTransaction = true;
+
 	private ICdmDataSource source;
 	private DESTINATION destination;
 	protected IDatabase sourceReference;
@@ -117,6 +121,16 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 		this.check = check;
 	}
 
+	@Override
+	public TARGET getTarget() {
+	    return this.target;
+	}
+
+	@Override
+	public void setTarget(TARGET target) {
+	    this.target = target;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IExportConfigurator#getDbSchemaValidation()
 	 */
@@ -176,7 +190,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 //			logger.warn("Connection to CDM could not be established");
 //			result = false;
 //		}
-		if (destination == null){
+		if (destination == null && getTarget() != TARGET.EXPORT_DATA){
 			logger.warn("Invalid export destination");
 			result = false;
 		}

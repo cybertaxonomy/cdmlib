@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,12 +14,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.stream.IItemStream;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * 
+ *
  * @author a.mueller
  *
  */
@@ -32,7 +31,7 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 	protected void doInvoke(DwcaImportState state) {
 		URI source = state.getConfig().getSource();
 		makeSourceRef(state);
-		
+
 		DwcaZipToStreamConverter<DwcaImportState> dwcaStreamConverter = DwcaZipToStreamConverter.NewInstance(source);
 		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getEntriesStream(state);
 		while (zipEntryStream.hasNext()){
@@ -45,18 +44,16 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 				fireWarningEvent (message, csvStream.toString(), 14);
 			}
 		}
-		state.finish();
+		if (!state.getConfig().isKeepMappingForFurtherImports()){
+		    state.finish();
+		}
 		return;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportBase#getConverter(eu.etaxonomy.cdm.io.dwca.TermUri, eu.etaxonomy.cdm.io.dwca.in.StreamImportStateBase)
-	 */
 	@Override
 	protected IPartitionableConverter<StreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, DwcaImportState state) {
 		if (namespace.equals(TermUri.DWC_TAXON)){
-			if (! state.isTaxaCreated()){
+			if (state.getConfig().isDoTaxa() && ! state.isTaxaCreated()){
 				return new DwcTaxonStreamItem2CdmTaxonConverter(state);
 			}else{
 				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);
@@ -79,7 +76,7 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 			return null;
 		}
 	}
-	
+
 
 //	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
 //		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partitionStream.getTerm(), state);
@@ -87,21 +84,21 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 //			state.setSuccess(false);
 //			return;
 //		}
-//		
+//
 //		IReader<CsvStreamItem> lookaheadStream = partitionStream.getLookaheadReader();
 //		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 //		IImportMapping mapping = state.getMapping();
 //		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
 //		state.loadRelatedObjects(partialMapping);
-//		
+//
 //		ConcatenatingReader<MappedCdmBase> reader = new ConcatenatingReader<MappedCdmBase>();
-// 		
+//
 //		IReader<CsvStreamItem> inputStream = partitionStream.read();
 //		while (inputStream.hasNext()){
 //			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read());
 //			reader.add(resultReader);
 //		}
-//			
+//
 //		while (reader.hasNext()){
 //			MappedCdmBase mappedCdmBase = (reader.read());
 //			CdmBase cdmBase = mappedCdmBase.getCdmBase();
@@ -120,7 +117,7 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 //		}
 //		return;
 //	}
-	
+
 	@Override
 	protected boolean doCheck(DwcaImportState state) {
 		return state.isCheck();
@@ -131,5 +128,5 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 		return false;
 	}
 
-	
+
 }

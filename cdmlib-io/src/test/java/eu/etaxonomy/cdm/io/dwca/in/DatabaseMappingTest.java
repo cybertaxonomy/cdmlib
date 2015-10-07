@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
  */
 public class DatabaseMappingTest {
 	private static final Logger logger = Logger.getLogger(DatabaseMappingTest.class);
-	
-	
+
+
 	private DatabaseMapping mapping;
-	
+
 	private final String mappingId = "MappingKey123";
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -51,16 +51,16 @@ public class DatabaseMappingTest {
 	public void setUp() throws Exception {
 		mapping = new DatabaseMapping(mappingId);
 	}
-	
+
 //******************* TESTS *****************************/
-	
-	@Test 
+
+	@Test
 	@Ignore
 	public void testGetDatabase(){
-		
+
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
-		String sql = "INSERT INTO " +DatabaseMapping.TABLE_IMPORT_MAPPING+ "( task_id, source_namespace, source_id, destination_namespace, destination_id)  ";
+		String sql = "INSERT INTO " + DatabaseMapping.TABLE_IMPORT_MAPPING+ "( task_id, source_namespace, source_id, destination_namespace, destination_id)  ";
 		sql += "VALUES ( 'mappingID', 'ns1', 'source1', 'destNs', 'dest1')";
 		try {
 			datasource.executeUpdate(sql);
@@ -69,14 +69,14 @@ public class DatabaseMappingTest {
 			logger.warn("Error occurred");
 		}
 	}
-	
-	@Test 
+
+	@Test
 	@Ignore
 	public void testPutGetExists(){
-		
+
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
-		
+
 		BotanicalName botName1 = BotanicalName.NewInstance(null);
 		int id = 23;
 		botName1.setId(id);
@@ -86,14 +86,14 @@ public class DatabaseMappingTest {
 		Set<CdmKey> result = mapping.get(sourceNS, sourceId);
 		Assert.assertNotNull("Result should not be null", result);
 		Assert.assertFalse("Result should not be empty", result.isEmpty());
-		
+
 		boolean exists = mapping.exists(sourceNS, sourceId, BotanicalName.class);
 		Assert.assertTrue("Mapping should exist", exists);
 		exists = mapping.exists(sourceNS + "xyz", sourceId, BotanicalName.class);
 		Assert.assertFalse("Mapping with wrong namespace should not exist", exists);
 		exists = mapping.exists(sourceNS + "xyz", sourceId, BotanicalName.class);
 		Assert.assertFalse("Mapping with wrong ID should not exist", exists);
-		
+
 	}
 
 }

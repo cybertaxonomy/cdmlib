@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.ConvertMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -198,9 +199,11 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Override
 	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
 		Team team = Team.NewInstance();
-		IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
+		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
 		strategy.setDefaultMergeMode(MergeMode.SECOND);
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
+		strategy.setDeleteSecondObject(false);
+
 
 		if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
@@ -209,6 +212,8 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			this.save(team);
 			team.setProtectedNomenclaturalTitleCache(true);
 			genericDao.merge(team, person, strategy);
+			team.addTeamMember(person);
+			this.save(team);
 //			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);

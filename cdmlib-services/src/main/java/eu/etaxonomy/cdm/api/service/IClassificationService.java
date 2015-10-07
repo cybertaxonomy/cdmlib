@@ -89,27 +89,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *
      * @param classification may be null for all classifications
      * @param rank the set to null for to get the root nodes of classifications
-     * @param limit The maximum number of objects returned (can be null for all matching objects)
-     * @param start The offset from the start of the result set (0 - based, can be null -
-     * 		equivalent of starting at the beginning of the recordset)
-     * @param propertyPaths
-     * @return
-     * @deprecated use {@link #listRankSpecificRootNodes(Classification, Rank, Integer, Integer, List)} instead
-     */
-    @Deprecated
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
-
-
-    /**
-     * Loads all TaxonNodes of the specified classification for a given Rank or lower.
-     * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
-     * Rank the according node associated with the next lower Rank is taken as root node in this case.
-     * So the nodes returned may reference Taxa with different Ranks.
-     *
-     * If the <code>rank</code> is null the absolute root nodes will be returned.
-     *
-     * @param classification may be null for all classifications
-     * @param rank the set to null for to get the root nodes of classifications
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
@@ -259,7 +238,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param treeNode
      * @return
      */
-   
+
     public UUID removeTreeNode(ITaxonTreeNode treeNode);
 
     /**

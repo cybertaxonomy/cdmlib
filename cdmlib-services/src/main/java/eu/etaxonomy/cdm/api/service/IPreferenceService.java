@@ -8,6 +8,7 @@
 */ 
 package eu.etaxonomy.cdm.api.service;
 
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 
 /**

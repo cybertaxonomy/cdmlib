@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,6 +33,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -323,6 +326,12 @@ public class NonViralNameParserImplTest {
 		assertFalse(authorname.hasProblem());
 		assertEquals("Basionym author should have 3 authors", 2, ((Team)authorname.getExBasionymAuthorship()).getTeamMembers().size());
         Assert.assertTrue("ExbasionymAuthorship must have more members'", ((Team)authorname.getExBasionymAuthorship()).isHasMoreMembers());
+
+        //author with 2 capitals
+        fullNameString = "Campanula rhodensis A. DC.";
+        NonViralName name = parser.parseFullName(fullNameString);
+        assertFalse(name.hasProblem());
+
 	}
 
 	@Test
@@ -1462,6 +1471,74 @@ public class NonViralNameParserImplTest {
 
 	}
 
+	@Test  //#5072
+	public final void testLongRunningParsingCapitals(){
+	    DateTime start = DateTime.now();
+	    String nameStr = "Nazeris fujianensis JIAYAO HU, LIZHEN LI, MEIJUN ZHAO,2010";  //name from CoL that created problems
+        NonViralName<?> name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICZN, null);
+	    DateTime end = DateTime.now();
+        Duration duration = new Duration(start, end);
+        long seconds = duration.getStandardSeconds();
+        //this is the critical part of the test that must not be changed
+        Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
+
+ 	}
+
+	@Test  //#5072
+	//http://www.regular-expressions.info/catastrophic.html
+    public final void testLongRunningParsing(){
+
+	    //name only
+        String nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson & D. Bou";
+        DateTime start = DateTime.now();
+        NonViralName<?> name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
+        DateTime end = DateTime.now();
+        Duration duration = new Duration(start, end);
+        long seconds = duration.getStandardSeconds();
+        //this is the critical part of the test that must not be changed
+        Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
+        //the following may be discussed
+        Assert.assertFalse("Name should parse without problems",name.hasProblem());
+
+
+        //with reference
+        nameStr = "Dictyocoela berillonum R.S. Terry, J.E. Sm., R.G. Sharpe, T. Rigaud, D.T.J. Littlewood, J.E. Ironside, D. Rollinson & D. Bou in Species Fauna Atlantica Of Blues Animals 3: p.345. 1758.";
+        start = DateTime.now();
+        name = parser.parseReferencedName(nameStr, NomenclaturalCode.ICNAFP, null);
+        end = DateTime.now();
+        duration = new Duration(start, end);
+        seconds = duration.getStandardSeconds();
+        //this is the critical part of the test that must not be changed
+        Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
+        //the following may be discussed
+        Assert.assertFalse("Name should parse without problems",name.hasProblem());
+    }
+
+    @Test  //#5072
+    public final void testLongRunningParsingAuthors(){
+        //http://www.regular-expressions.info/catastrophic.html
+        //
+        //Länge des Nachnamens macht keinen Unterschied
+        //Anzahl der "AuthorParts scheint entscheidend
+        // & am Ende macht es langsamger (16s), als nur ","(6s))
+
+        String authorStr = "R.S. Terry J.E. Sm. R.G. Sharpe T. Rigaud T.H. Rigseaud D.T. Li, R.G. Sharpe, T. Rigaud, D.T.J. Littlewood & D. Bou";
+        TeamOrPersonBase[] authorArray = new TeamOrPersonBase[4];
+        try {
+            DateTime start = DateTime.now();
+            parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, BotanicalName.class);
+            DateTime end = DateTime.now();
+            Duration duration = new Duration(start, end);
+            long seconds = duration.getStandardSeconds();
+//            System.out.println(seconds);
+            //this is the critical part of the test that must not be changed
+            Assert.assertTrue("Parsing of name should take less then 3 seconds but took " + seconds, seconds < 3);
+        } catch (StringNotParsableException e) {
+            e.printStackTrace();
+            Assert.fail("Authors should be parsable");
+        }
+
+    }
 
 
 	/**
@@ -1493,16 +1570,15 @@ public class NonViralNameParserImplTest {
 	public final void testNomenclaturalStatus() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
 		name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-
 		BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
-
 		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
-
 		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
-
 		Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+	}
 
-
+	@Test
+	public final void testSpecificAuthors(){
+//	    Campanula rhodensis A. DC.
 	}
 
 }

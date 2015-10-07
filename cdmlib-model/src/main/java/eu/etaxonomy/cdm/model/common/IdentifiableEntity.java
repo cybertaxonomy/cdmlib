@@ -174,7 +174,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         initListener();
     }
 
-    protected void initListener(){
+    @Override
+    public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent ev) {
@@ -537,7 +538,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          String thisGenusString = "";
          String specifiedGenusString = "";
          int thisrank_order = 0;
-
+         final String HYBRID_SIGN = "\u00D7";
+         final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
          //TODO we can remove all the deproxies here except for the first one
          identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
          if(identifiableEntity instanceof NonViralName) {
@@ -607,26 +609,26 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
-        	
-        	 thisNameCache = thisNameCache.replaceAll("\u00D7", "");
-        	 thisNameCache = thisNameCache.replaceAll("[“\"\\u0022]", "");
-        	 
-        	 
-        	 specifiedNameCache = specifiedNameCache.replaceAll("\u00D7", "");
-        	 specifiedNameCache = specifiedNameCache.replaceAll("[“\"\\u0022]", "");
-        	 
-        	 
+
+        	 thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
+        	 thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
+
+
+        	 specifiedNameCache = specifiedNameCache.replaceAll(HYBRID_SIGN, "");
+        	 specifiedNameCache = specifiedNameCache.replaceAll(QUOT_SIGN, "");
+
+
              result = thisNameCache.compareTo(specifiedNameCache);
          }
 
          // Compare title cache of taxon names
 
          if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
-        	 thisTitleCache = thisTitleCache.replaceAll("\u00D7", "");
-        	 thisTitleCache = thisTitleCache.replaceAll("[“\"\\u0022]", "");
-        	      	 
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll("\u00D7", "");
-        	 specifiedTitleCache = specifiedTitleCache.replaceAll("[“\"\\u0022]", "");
+        	 thisTitleCache = thisTitleCache.replaceAll(HYBRID_SIGN, "");
+        	 thisTitleCache = thisTitleCache.replaceAll(QUOT_SIGN, "");
+
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll(HYBRID_SIGN, "");
+        	 specifiedTitleCache = specifiedTitleCache.replaceAll(QUOT_SIGN, "");
              result = thisTitleCache.compareTo(specifiedTitleCache);
          }
 
@@ -639,34 +641,34 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          return result;
      }
 
-        /**
-         * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
-         * several strings corresponding to <i>this</i> identifiable entity
-         * (in particular taxon name caches and author strings).
-         *
-         * @return  the cache strategy used for <i>this</i> identifiable entity
-         * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-         */
-        public S getCacheStrategy() {
-            return this.cacheStrategy;
-        }
-        /**
-         * @see 	#getCacheStrategy()
-         */
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
+     * several strings corresponding to <i>this</i> identifiable entity
+     * (in particular taxon name caches and author strings).
+     *
+     * @return  the cache strategy used for <i>this</i> identifiable entity
+     * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+     */
+    public S getCacheStrategy() {
+        return this.cacheStrategy;
+    }
+    /**
+     * @see 	#getCacheStrategy()
+     */
 
-        public void setCacheStrategy(S cacheStrategy) {
-            this.cacheStrategy = cacheStrategy;
-        }
+    public void setCacheStrategy(S cacheStrategy) {
+        this.cacheStrategy = cacheStrategy;
+    }
 
-        @Override
-        public String generateTitle() {
-            if (getCacheStrategy() == null){
-                //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
-                return this.getClass() + ": " + this.getUuid();
-            }else{
-                return getCacheStrategy().getTitleCache(this);
-            }
+    @Override
+    public String generateTitle() {
+        if (getCacheStrategy() == null){
+            //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+            return this.getClass() + ": " + this.getUuid();
+        }else{
+            return getCacheStrategy().getTitleCache(this);
         }
+    }
 
 //****************** CLONE ************************************************/
 

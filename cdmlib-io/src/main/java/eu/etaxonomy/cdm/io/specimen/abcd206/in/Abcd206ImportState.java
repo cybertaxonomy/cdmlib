@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
@@ -47,7 +46,6 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private Abcd206DataHolder dataHolder;
 	private DerivedUnit derivedUnitBase;
-	private FieldUnit fieldUnit;
 
 	private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
 	private boolean associationSourcesSet=false;
@@ -91,6 +89,20 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
     }
 
     public Classification getDefaultClassification() {
+        if(defaultClassification==null){
+            final String defaultClassificationAbcd = "Default Classification ABCD";
+            for (Classification classif : cdmRepository.getClassificationService().list(Classification.class, null, null, null, null)){
+                if (classif.getTitleCache()!=null && classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd)
+                        && classif.getCitation()!=null && classif.getCitation().equals(getRef())) {
+                    defaultClassification = classif;
+                    break;
+                }
+            }
+            if(defaultClassification==null){
+                defaultClassification = Classification.NewInstance(defaultClassificationAbcd);
+                cdmRepository.getClassificationService().save(defaultClassification);
+            }
+        }
         return defaultClassification;
     }
 
@@ -120,14 +132,6 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
     public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
         this.derivedUnitBase = derivedUnitBase;
-    }
-
-    public FieldUnit getFieldUnit() {
-        return fieldUnit;
-    }
-
-    public void setFieldUnit(FieldUnit fieldUnit) {
-        this.fieldUnit = fieldUnit;
     }
 
     public List<OriginalSourceBase<?>> getAssociationRefs() {
@@ -205,6 +209,5 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
     public void reset() {
         getDataHolder().reset();
         derivedUnitBase = null;
-        fieldUnit = null;
     }
 }

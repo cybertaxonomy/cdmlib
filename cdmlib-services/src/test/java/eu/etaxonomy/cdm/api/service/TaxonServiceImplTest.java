@@ -278,6 +278,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         NonViralName<?> s1n = NonViralName.NewInstance(null);
         Synonym s1 = Synonym.NewInstance(s1n, reference);
         t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
+        service.saveOrUpdate(t1);
 
         SynonymRelationship synonymRelation = t1.getSynonymRelations().iterator().next();
 

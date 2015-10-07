@@ -55,6 +55,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "derivedFrom.type",
             "derivedFrom.originals.*",
             "derivedFrom.originals.determinations.taxon",
+            "derivedFrom.originals.gatheringEvent.exactLocation.$",
             "derivedFrom.gatheringEvent.exactLocation.$",
             "specimenTypeDesignations.*",
             "specimenTypeDesignations.citation.*",
@@ -94,9 +95,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         ModelAndView mv = new ModelAndView();
 
-        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
-
-        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, initStrategy);
+        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, getInitializationStrategy());
         if(sob instanceof DerivedUnit){
             DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             mv.addObject(derivationEvent);
@@ -114,8 +113,6 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
         logger.info("doGetDerivateHierarchy() " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
-
-        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof FieldUnit){
@@ -136,8 +133,6 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
         logger.info("doGetSpecimenDerivates() " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
-
-        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof DerivedUnit){

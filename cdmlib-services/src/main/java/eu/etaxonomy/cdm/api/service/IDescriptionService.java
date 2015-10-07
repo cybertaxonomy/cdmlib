@@ -540,8 +540,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param targetDescription
      * @param isPaste if true, the elements are only copied (cloned) and not removed from the
      * 	old description
+     * @return
      */
-    public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
+    public UpdateResult moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
 
     /**
      * Pager method to get all {@link NamedAreas} instances which are currently used
@@ -579,5 +580,26 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid);
+
+
+    /**
+     * @param descriptionElementUUIDs
+     * @param targetDescriptionUuid
+     * @param isCopy
+     * @return
+     */
+    public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetDescriptionUuid,
+            boolean isCopy);
+
+    /**
+     * @param descriptionElementUUIDs
+     * @param targetTaxonUuid
+     * @param moveMessage
+     * @param isCopy
+     * @return
+     */
+    public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
+            String moveMessage, boolean isCopy);
+
 
 }

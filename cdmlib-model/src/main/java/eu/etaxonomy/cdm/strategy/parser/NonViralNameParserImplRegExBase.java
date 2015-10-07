@@ -41,11 +41,13 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String fWs = "\\s*"; //facultative whitespcace
 
     public static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
+    protected static String capital2LetterWord = "\\p{javaUpperCase}\\p{javaLowerCase}+";
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
     protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
 
     protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
+    protected static String capital2charDotWord = "(" + capital2LetterWord + "\\.?|\\p{javaUpperCase}\\.)"; //capitalWord with facultativ '.' but minimum 2 characters (single capital word like 'L' is not allowed
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultativ '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
@@ -82,11 +84,11 @@ public abstract class NonViralNameParserImplRegExBase  {
 
 
     //AuthorString
-	protected static String authorPart = "(" + "(O'|d'|D'|L'|'t|ten\\s||le\\s|zur\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
+	protected static String authorPart = "(" + "(O'|d'|D'|L'|'t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f\\.|fil\\.|secundus)?" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
-    protected static String notFinalTeamSplitter = "(" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
-    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)" +  fWs;
+    protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
+    protected static String authorTeam = fWs + "((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)" +  fWs;
     protected static String exString = "(ex\\.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
@@ -215,7 +217,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     					"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
     protected static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.)";
-    protected static String pNomStatusOpus = "opus\\."+fWs+"utique"+fWs+"oppr\\.";
+    protected static String pNomStatusOpus = "opus\\." + fWs + "utique" + fWs + "oppr\\.";
 
     protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + ")";
     protected static String pNomStatusPhrase1 = "," + fWs + pNomStatus;
@@ -228,7 +230,6 @@ public abstract class NonViralNameParserImplRegExBase  {
 //pro syn.
 //provisional synonym
 //fossil name
-
 
 
     //cultivars and hybrids

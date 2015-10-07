@@ -306,11 +306,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	 * @param entitiesToUpdate
 	 * @param entity
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateTitleCacheForSingleEntity(
 			IIdentifiableEntityCacheStrategy<T> cacheStrategy,
 			List<T> entitiesToUpdate, T entity) {
 
-		assert (entity.isProtectedTitleCache() == false );
+		//assert (entity.isProtectedTitleCache() == false );
 
 		//exclude recursive inreferences
 		if (entity.isInstanceOf(Reference.class)){
@@ -330,14 +331,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				entityCacheStrategy = ReferenceFactory.newReference(((Reference<?>)entity).getType()).getCacheStrategy();
 			}
 		}
-		entity.setCacheStrategy(entityCacheStrategy);
+		
 
 
 		//old titleCache
 		entity.setProtectedTitleCache(true);
+		
 		String oldTitleCache = entity.getTitleCache();
 		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
-
+		entity.setCacheStrategy(entityCacheStrategy);
 		//NonViralNames and Reference have more caches //TODO handle in NameService
 		String oldNameCache = null;
 		String oldFullTitleCache = null;
@@ -387,6 +389,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		if ( oldTitleCache == null   || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
+			
 			if (newCache == null){
 				logger.warn("newCache should never be null");
 			}

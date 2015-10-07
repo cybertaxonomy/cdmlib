@@ -157,6 +157,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
+
+    /**
+     * @param clazz
+     * @param id
+     * @return
+     */
+    public CdmBase findWithUpdate(Class<? extends CdmBase> clazz, int id);
+
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
 	 * @see ICdmGenericDao#find(Class, int)
@@ -166,6 +174,15 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @return the CdmBase object defined by clazz and id
 	 */
 	public CdmBase find(Class<? extends CdmBase> clazz, int id);
+
+    /**
+     * @param clazz
+     * @param id
+     * @param propertyPaths
+     * @return
+     */
+    public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths);
+
 
 	public List getHqlResult(String hqlQuery);
 
@@ -178,6 +195,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @return initialised collection or map
      */
     public Object initializeCollection(UUID ownerUuid, String fieldName);
+
+    /**
+     * @param ownerUuid
+     * @param fieldName
+     * @param propertyPaths
+     * @return
+     */
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths);
 
 	/**
 	 * Checks if a collection or map is empty.
@@ -284,4 +309,23 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      *         of those entities
      */
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+
+    /**
+     * @param mergeFirstId
+     * @param mergeSecondId
+     * @param clazz
+     * @throws MergeException
+     * @Deprecated the preferred method is to use uuids {@link #merge(UUID, UUID, Class)}
+     */
+    @Deprecated
+    public <T extends IMergable> void merge(int mergeFirstId, int mergeSecondId, Class<? extends CdmBase> clazz) throws MergeException;
+
+    /**
+     * @param mergeFirstUuid uuid of the first object to merge
+     * @param mergeSecondUuid UUID of the second object to merge
+     * @param clazz
+     * @throws MergeException
+     */
+    public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
+
 }

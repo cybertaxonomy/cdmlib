@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.sdd.out;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -85,7 +86,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * Writes the SDD XML file.
- * 
+ *
  * @author h.fradin
  * @created 10.12.2008
  * @version 1.0
@@ -113,7 +114,7 @@ public class SDDDocumentBuilder {
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
 	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
 	private final Map<DerivedUnit, String> specimens = new HashMap<DerivedUnit, String>();
-	
+
 	private final Map<VersionableEntity, String> features = new HashMap<VersionableEntity, String>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
@@ -215,7 +216,7 @@ public class SDDDocumentBuilder {
 		writeCDMtoSDD(sddDestination);
 
 	}
-	
+
 	public void marshal(SDDDataSet cdmSource, String sddDestinationFileName)
 			throws IOException {
 
@@ -227,9 +228,29 @@ public class SDDDocumentBuilder {
 
 	}
 
+    public void marshal(SDDDataSet dataSet, OutputStream stream) throws IOException {
+        this.cdmSource = dataSet;
+        logger.info("Start marshalling");
+        try {
+            buildDocument();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        OutputFormat format = new OutputFormat(document, "UTF-8", true);
+
+        writer = new OutputStreamWriter(stream, "UTF-8");
+
+        xmlserializer = new XMLSerializer(writer, format);
+        domi = xmlserializer.asDOMSerializer(); // As a DOM Serializer
+
+        domi.serialize(document.getDocumentElement());
+
+        writer.close();
+    }
 	/**
 	 * Write the DOM document.
-	 * 
+	 *
 	 * @param base
 	 * @throws IOException
 	 */
@@ -261,7 +282,7 @@ public class SDDDocumentBuilder {
 
 	/**
 	 * Builds the whole document.
-	 * 
+	 *
 	 * @param base
 	 *            the Base
 	 * @throws ParseException
@@ -369,7 +390,7 @@ public class SDDDocumentBuilder {
 		Iterator<Annotation> iterator = annotations.iterator();
 		String detailText = null;
 		if (iterator.hasNext()) {
-			Annotation annotation = (Annotation) iterator.next();
+			Annotation annotation = iterator.next();
 			detailText = annotation.getText();
 		}
 
@@ -603,7 +624,7 @@ public class SDDDocumentBuilder {
 
 	/**
 	 * Creates a Label element
-	 * 
+	 *
 	 * @param base
 	 * @param element
 	 */
@@ -1209,7 +1230,7 @@ public class SDDDocumentBuilder {
 							taxonNodesCount = buildReference(taxonnode,
 									taxonNodes, ID, elNode, "tn", taxonNodesCount);
 							ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
-							taxonNamesCount = buildReference(taxonnode.getTaxon().getName(), 
+							taxonNamesCount = buildReference(taxonnode.getTaxon().getName(),
 									taxonNames, REF, elTaxonName, "t", taxonNamesCount);
 							elNode.appendChild(elTaxonName);
 							elTaxonHierarchy.appendChild(elNode);
@@ -1315,8 +1336,9 @@ public class SDDDocumentBuilder {
 				elDependecyRules.appendChild(elOnlyApplicableIf);
 				dependencies = true;
 			}
-			if (dependencies == true)
-				elCharNode.appendChild(elDependecyRules);
+			if (dependencies == true) {
+                elCharNode.appendChild(elDependecyRules);
+            }
 			charactersCount = buildReference(fref, characters, REF,
 					elCharacter, "c", charactersCount);
 			elCharNode.appendChild(elCharacter);
@@ -1415,8 +1437,8 @@ public class SDDDocumentBuilder {
 						if (!id.equals("")) {
 							if (!references.containsValue(id)) {
 								element.setAttribute(refOrId, id);
-							} else
-								while (element.getAttribute(refOrId).equals("")) {
+							} else {
+                                while (element.getAttribute(refOrId).equals("")) {
 									if (!references.containsValue(prefix
 											+ (count + 1))) {
 										element.setAttribute(refOrId, prefix
@@ -1424,8 +1446,9 @@ public class SDDDocumentBuilder {
 									}
 									count++;
 								}
-						} else
-							while (element.getAttribute(refOrId).equals("")) {
+                            }
+						} else {
+                            while (element.getAttribute(refOrId).equals("")) {
 								if (!references.containsValue(prefix
 										+ (count + 1))) {
 									element.setAttribute(refOrId, prefix
@@ -1433,28 +1456,32 @@ public class SDDDocumentBuilder {
 								}
 								count++;
 							}
-					} else
-						while (element.getAttribute(refOrId).equals("")) {
+                        }
+					} else {
+                        while (element.getAttribute(refOrId).equals("")) {
 							if (!references.containsValue(prefix + (count + 1))) {
 								element.setAttribute(refOrId, prefix
 										+ (count + 1));
 							}
 							count++;
 						}
-				} else
-					while (element.getAttribute(refOrId).equals("")) {
+                    }
+				} else {
+                    while (element.getAttribute(refOrId).equals("")) {
 						if (!references.containsValue(prefix + (count + 1))) {
 							element.setAttribute(refOrId, prefix + (count + 1));
 						}
 						count++;
 					}
-			} else
-				while (element.getAttribute(refOrId).equals("")) {
+                }
+			} else {
+                while (element.getAttribute(refOrId).equals("")) {
 					if (!references.containsValue(prefix + (count + 1))) {
 						element.setAttribute(refOrId, prefix + (count + 1));
 					}
 					count++;
 				}
+            }
 			references.put(ve, element.getAttribute(refOrId));
 		}
 		return count;

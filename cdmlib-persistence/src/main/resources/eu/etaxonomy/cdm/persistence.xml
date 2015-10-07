@@ -17,7 +17,7 @@
       <property name="namingStrategy">
         <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
       </property>
-
+		
 <!--  <property name="entityInterceptor">
         <bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateInterceptor" />
       </property>

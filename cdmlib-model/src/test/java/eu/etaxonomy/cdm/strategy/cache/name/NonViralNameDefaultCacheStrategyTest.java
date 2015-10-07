@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -126,7 +127,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
         //TODO not yet completed
     }
-    
+
     @Test
     public void testGattungsAutonyme() {
     	BotanicalName botName = BotanicalName.NewInstance(Rank.SECTION_BOTANY());
@@ -135,11 +136,11 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 		botName.setInfraGenericEpithet(strTaraxacum);
 		botName.setAuthorshipCache("Author");
 		Assert.assertFalse(botName.getFullTitleCache().contains("bot."));
-		//TODO #4288 
+		//TODO #4288
 		System.out.println(botName.getFullTitleCache());
     }
-        
-    
+
+
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
@@ -188,7 +189,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("", "Genus sect. Infragenus", botName.getNameCache());
         botName.setRank(Rank.SUBSECTION_BOTANY());
         Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
-        
+
         //zool. specific ranks (we don't have markers here therefore no problem should exist
         ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SECTION_ZOOLOGY());
         zooName.setGenusOrUninomial("Genus");
@@ -196,7 +197,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("", "Genus", zooName.getNameCache());
         zooName.setRank(Rank.SUBSECTION_ZOOLOGY());
         Assert.assertEquals("", "Genus", zooName.getNameCache());
-        
+
     }
 
     /**
@@ -289,7 +290,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
 
     }
-    
+
     //TODO add more tests when specification is clearer
     @Test
     public void testOriginalSpelling() {
@@ -297,11 +298,11 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	NonViralName<?> originalName = (NonViralName<?>)speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getNameCache());
-    	
+
     	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
     	Assert.assertEquals("Abies alba 'alpa'", speciesName.getNameCache());
     	originalName.setGenusOrUninomial("Apies");
-    	
+
     	speciesName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
     	Assert.assertEquals("Abies alba 'Apies alpa'", speciesName.getNameCache());
@@ -519,7 +520,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
         //test ordinary infrageneric
         List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
-        String subGenusNameCache = NonViralNameDefaultCacheStrategy.createString(subGenusNameCacheTagged);
+        String subGenusNameCache = TaggedCacheHelper.createString(subGenusNameCacheTagged);
         assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
         String subGenusTitle = strategy.getTitleCache(nonViralName);
         assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
@@ -532,7 +533,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
         List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
 
-        String aggrNameCache = strategy.createString(aggrNameCacheTagged);
+        String aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
         String aggrNameTitle = strategy.getTitleCache(nonViralName);
         Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
@@ -549,7 +550,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
 
         aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
-        aggrNameCache = strategy.createString(aggrNameCacheTagged);
+        aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
 
         aggrNameTitle = strategy.getTitleCache(nonViralName);
@@ -565,11 +566,11 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         nonViralName.setSpecificEpithet("myspecies");
         nonViralName.setInfraGenericEpithet(null);
         nonViralName.setAuthorshipCache("L.");
-        
+
         aggrNameCacheTagged = strategy.getTaggedTitle(nonViralName);
-        aggrNameCache = strategy.createString(aggrNameCacheTagged);
+        aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus myspecies L.'.", "Genus myspecies L.", aggrNameCache);
-        
+
     }
 
     /**
@@ -597,7 +598,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         //to be continued
 
     }
-    
+
     @Test
     public void testTitleCacheHtmlTagged(){
     	HTMLTagRules rules = new HTMLTagRules().addRule(TagEnum.name, "i");
@@ -610,9 +611,9 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
     	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
     	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
-    	
+
     }
-    
+
     @Test //#2888
     public void testAutonymWithExAuthor(){
     	BotanicalName name = BotanicalName.NewInstance(Rank.FORM());
@@ -623,7 +624,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	name.setCombinationAuthorship(combTeam);
     	Team exCombTeam = Team.NewTitledInstance("Excomb", "Excomb");
     	name.setExCombinationAuthorship(exCombTeam);
-    	
+
     	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
     }
 

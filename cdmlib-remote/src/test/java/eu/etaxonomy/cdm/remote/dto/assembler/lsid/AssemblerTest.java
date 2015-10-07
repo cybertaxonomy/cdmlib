@@ -35,6 +35,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -182,6 +183,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
+    @Ignore
     @Test
     public void testDeepMapping() {
         for(int i = 0; i < 3; i++) {
@@ -214,6 +216,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",13,taxonConcept.getHasRelationship().size());
     }
 
+    @Ignore
     @Test
     public void testLazyInitializationExceptionWithProxy() throws Exception {
 
@@ -234,6 +237,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",taxonConcept.getAccordingTo());
     }
 
+    @Ignore
     @Test
     public void testLazyInitializationExceptionWithPersistentCollection() throws Exception {
 
@@ -253,6 +257,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship().isEmpty());
     }
 
+    @Ignore
     @Test
     public void testSpeciesProfileModelMapping() {
 
@@ -266,6 +271,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(speciesProfileModel.getHasInformation().size(),2);
     }
 
+    @Ignore
     @Test
     public void testSimpleDarwinCoreMapping() {
 
@@ -285,6 +291,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
     }
 
+    @Ignore
     @Test
     public void testOAIDublinCoreMapping() {
 

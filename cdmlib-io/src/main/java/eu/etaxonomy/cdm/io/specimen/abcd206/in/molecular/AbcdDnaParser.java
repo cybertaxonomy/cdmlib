@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 
 /**
@@ -50,8 +51,9 @@ public class AbcdDnaParser {
     }
 
     public DnaSample parse(Element item, Abcd206ImportState state) {
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
         DnaSample dnaSample = DnaSample.NewInstance();
-        DerivationEvent.NewSimpleInstance(state.getFieldUnit(), dnaSample, DerivationEventType.DNA_EXTRACTION());
+        DerivationEvent.NewSimpleInstance(fieldUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         //specimen unit
         NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
@@ -143,7 +145,7 @@ public class AbcdDnaParser {
 
                 String preservationType = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preservationType"));
 
-                Double preservationTemperature = AbcdParseUtility.parseFirstDouble(((Element) node).getElementsByTagName(prefix+"preservationTemperature"));
+                Double preservationTemperature = AbcdParseUtility.parseFirstDouble(((Element) node).getElementsByTagName(prefix+"preservationTemperature"), report);
                 preservation.setTemperature(preservationTemperature);
             }
         }

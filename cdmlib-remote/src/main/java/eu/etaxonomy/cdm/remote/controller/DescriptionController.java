@@ -277,7 +277,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @RequestParam("part") Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
+            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
@@ -299,7 +299,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, null, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getInitializationStrategy(), recipe);
+                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getInitializationStrategy(), recipe);
 
             mv.addObject(dto);
 

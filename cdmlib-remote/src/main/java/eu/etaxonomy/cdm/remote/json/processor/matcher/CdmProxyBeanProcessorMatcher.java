@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * can handle HibernateProxys
@@ -52,8 +52,8 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
 
         // TODO implement generically by making use of CdmBaseType
-        if (Taxon.class.isAssignableFrom(target)) {
-            return DEFAULT.getMatch(Taxon.class, set);
+        if (TaxonBase.class.isAssignableFrom(target)) {
+            return DEFAULT.getMatch(TaxonBase.class, set);
         }
         if (TaxonNameBase.class.isAssignableFrom(target)) {
             return DEFAULT.getMatch(TaxonNameBase.class, set);

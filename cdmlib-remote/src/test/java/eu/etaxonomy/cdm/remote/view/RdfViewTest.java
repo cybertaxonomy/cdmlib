@@ -51,10 +51,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 
 	@SpringBeanByName
 	private Marshaller rdfMarshaller;
-	
+
     @SpringBeanByType
     private Mapper mapper;
-    
+
 	private Rdf rdf;
 	private TaxonConcept taxonConcept;
 	private SpeciesProfileModel speciesProfileModel;
@@ -150,10 +150,11 @@ public class RdfViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(outputStream.toByteArray()));
 //		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
-	
+
+	@Ignore
 	@Test
 	public void testNameInformationRdf() throws Exception {
-		
+
 		Map model = new HashMap<String,List<NameInformation>>();
 		List niList = new ArrayList();
 		NameInformation ni = new NameInformation();
@@ -173,17 +174,17 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		rdfView.setMapper(mapper);
 		rdfView.setRdfMarshaller(marshaller);
 		rdf = rdfView.buildRdf(model);
-		
+
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8" ));
-		rdfMarshaller.marshal(rdf, new StreamResult(writer));		
+		rdfMarshaller.marshal(rdf, new StreamResult(writer));
 		writer.close();
 		System.out.println(new String(outputStream.toByteArray()));
-		
+
 		String resource = "/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf";
 		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
-	
-	
+
+
 
 }

@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -110,6 +111,17 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a Pager of media instances
      */
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Returns all media attached to this occurence and its children. Also takes
+     * {@link MediaSpecimen} and molecular images into account.
+     *
+     * @param occurence the occurence and its children from which the media to get
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager of media instances
+     */
+    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
@@ -317,7 +329,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param sequence the Sequence to move
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
-    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence);
+    public UpdateResult moveSequence(DnaSample from, DnaSample to, Sequence sequence);
+
+
+    /**
+     * @param fromUuid
+     * @param toUuid
+     * @param sequenceUuid
+     * @return
+     */
+    public UpdateResult moveSequence(UUID fromUuid, UUID toUuid, UUID sequenceUuid);
 
     /**
      * Moves the given {@link DerivedUnit} from one {@link SpecimenOrObservationBase} to another.
@@ -325,6 +346,14 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param to the SpecimenOrObservationBase to which the DerivedUnit will be added
      * @param derivate the DerivedUnit to move
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
+     */
+    public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid);
+
+    /**
+     * @param from
+     * @param to
+     * @param derivate
+     * @return
      */
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
@@ -369,6 +398,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
     public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config);
+
+    /**
+     * Deletes the specified specimen and all sub derivates by first loading the corresponding uuids
+     * and then calling {@link #deleteDerivateHierarchy(CdmBase, SpecimenDeleteConfigurator) deleteDerivateHierarchy}
+     * @param fromUuid uuid of the specimen which should be deleted with all its sub derivates
+     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
+     * @return {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
@@ -480,5 +518,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
 
+    /**
+     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult},
+     * by first loading the corresponding uuids and then calling {@link #deleteSingleRead(SingleRead, Sequence) deleteSingleRead}
+     * @param singleReadUuid uuid of the single read to delete
+     * @param sequenceUuid uuid of the sequence to which the single read belongs
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
 
 }

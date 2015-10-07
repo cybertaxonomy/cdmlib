@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,31 +29,31 @@ public class CsvDemoExportState extends XmlExportState<CsvDemoExportConfigurator
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvDemoExportState.class);
 
-	private List<CsvDemoMetaDataRecord> metaRecords = new ArrayList<CsvDemoMetaDataRecord>();
+	private final List<CsvDemoMetaDataRecord> metaRecords = new ArrayList<CsvDemoMetaDataRecord>();
 	private boolean isZip = false;
 	private ZipOutputStream zos;
-	
+
 	public CsvDemoExportState(CsvDemoExportConfigurator config) {
 		super(config);
 		File file = config.getDestination();
-		if (! config.getDestination().isDirectory()){
+		if (file != null && ! config.getDestination().isDirectory()){
 			try{
 				isZip = true;
 				if (! file.exists()){
 						file.createNewFile();
 				}
-				
+
 			  	zos  = new ZipOutputStream( new FileOutputStream(file) ) ;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
-	
+
 	public void addMetaRecord(CsvDemoMetaDataRecord record){
 		metaRecords.add(record);
 	}
-	
+
 	public List<CsvDemoMetaDataRecord> getMetaRecords(){
 		return metaRecords;
 	}
@@ -81,7 +81,7 @@ public class CsvDemoExportState extends XmlExportState<CsvDemoExportConfigurator
 			zos.close();
 		}
 	}
-	
+
 
 
 }

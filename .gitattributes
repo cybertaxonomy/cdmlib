@@ -107,6 +107,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/package.info -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdater.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdaterConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CacheUpdaterWithNewCacheStrategy.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultExport.java -text
@@ -122,6 +123,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DefaultImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DeleteNonReferencedReferencesConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DeleteNonReferencedreferencesUpdater.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmExport.java -text
@@ -1040,6 +1043,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/SectionDefa
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/WebPageDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseShortSecCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/generate/PolytomousKeyGenerator.java -text
@@ -2342,6 +2346,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IncludedTaxonC
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/SpecimenDeleteConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/SwitchAgentConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/SynonymDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonBaseDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text

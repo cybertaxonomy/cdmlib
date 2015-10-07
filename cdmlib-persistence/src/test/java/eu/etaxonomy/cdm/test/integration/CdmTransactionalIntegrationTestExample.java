@@ -69,9 +69,9 @@ public class CdmTransactionalIntegrationTestExample extends CdmTransactionalInte
     endTransaction();
 
     // use the fileNameAppendix if you are creating a data set file which need to be named differently
-    // from the standard name. Fir example if a single test method needs different data then the other
+    // from the standard name. For example if a single test method needs different data then the other
     // methods the test class you may want to set the fileNameAppendix when creating the data for this method.
-    String fileNameAppendix = "";
+    String fileNameAppendix = null;
 
     // 3.
     writeDbUnitDataSetFile(new String[] {

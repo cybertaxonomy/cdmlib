@@ -18,12 +18,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -123,6 +125,60 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula glomerata", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
 
 	}
+
+	/**
+	 * Added this test because there was a unique key on the citations_id column of table
+	 * SEQUENCE_REFERENCE which makes no sense.
+	 */
+    @Test
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportTwoSequencesWithSameReference() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        importConfigurator.setMapUnitIdToCatalogNumber(true);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+    }
+
+	/**
+	 * Tests import import of 59 DNA unit
+	 */
+	@Test
+	@Ignore
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testImport59Units() {
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        importConfigurator.setIgnoreAuthorship(true);
+        boolean result = defaultImport.invoke(importConfigurator);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
+        assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
+
+	}
+
 	/**
 	 * Tests import import of DNA unit and all its parameters
 	 * and sub derivatives (sequence, amplification, etc.)
@@ -380,40 +436,74 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    //TODO field unit
 	}
 
-	/**
-	 * Tests import of DNA unit and attaching it to an existing specimen to which
-	 * it has a UnitAssociation. The derived unit should not be imported because it already exists in the data base.
-	 */
+    /**
+     * Tests import of DNA unit and attaching it to an existing specimen to
+     * which it has a parent-child UnitAssociation. The derived unit should not
+     * be imported because it already exists in the data base. The field unit
+     * should not be overwritten by the FieldUnit of the DnaSample.
+     */
 	@Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-	public void testAttachDnaSampleToExistingDerivedUnit(){
+	public void testAttachDnaSampleToExistingDerivedUnit_parentChild(){
+	    UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
 
-//        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        derivedUnit.setAccessionNumber("B 10 0066577");
-//        derivedUnit.setTitleCache("testUnit1", true);
-//
-//        derivedUnit.setUuid(derivedUnit1Uuid );
-//
-//        occurrenceService.save(derivedUnit);
-//
-//        commitAndStartNewTransaction(null);
-//
-//        setComplete();
-//        endTransaction();
-//
-//
-//        try {
-//            writeDbUnitDataSetFile(new String[] {
-//                    "SpecimenOrObservationBase",
-//            }, "testAttachDnaSampleToDerivedUnit");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
+	    URL url = this.getClass().getResource(inputFile);
+	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
+	    Abcd206ImportConfigurator importConfigurator = null;
+	    try {
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    assertNotNull("Configurator could not be created", importConfigurator);
+
+	    boolean result = defaultImport.invoke(importConfigurator);
+	    assertTrue("Return value for import.invoke should be true", result);occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
+	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+
+
+	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
+	    assertTrue(derivedUnits.contains(derivedUnit));
+
+	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
+	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
+
+	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+
+	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
+	    Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid());
+	    assertEquals(1, fieldUnits.size());
+	    FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
+        assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
+        assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
+
+	}
+
+	/**
+	 * Tests import of DNA unit and attaching it to an existing specimen to which
+	 * it has a sibling UnitAssociation. The derived unit should not be imported because it already exists in the data base.
+	 * The DnaSample should be attached to the existing FieldUnit of the DerivedUnit
+	 */
+	@Test
+	@DataSets({
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+	    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	})
+	public void testAttachDnaSampleToExistingDerivedUnit_sibling(){
+        UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
+	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -444,6 +534,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+        FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
+        Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid());
+        assertEquals(1, fieldUnits.size());
+        FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
+        assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
+        assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
 
 	}
 
@@ -489,6 +585,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     })
 	public void testNoAttachDnaSampleToDerivedUnit(){
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
+	    UUID fieldUnit1Uuid = UUID.fromString("b5f58da5-4442-4001-9d13-33f41518b72a");
 
 //        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
 //        derivedUnit.setAccessionNumber("B 10 0066577");
@@ -532,17 +629,19 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
-	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
 	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
 
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
 	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
 	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
+	    SpecimenOrObservationBase dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
+	    assertTrue(!specimenFieldUnit.equals(dnaSampleFieldUnit));
 
 	}
 

@@ -26,12 +26,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -141,7 +143,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded
     private DescriptionBase inDescription;
-    
+
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();
 
@@ -240,8 +242,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     /**
-	 * The point in time, the time period or the season for which this description element 
-	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 * The point in time, the time period or the season for which this description element
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period.
 	 */
 	public TimePeriod getTimeperiod() {
 		return timeperiod;
@@ -261,6 +263,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * Returns the set of {@link Modifier modifiers} used to qualify the validity of
      * <i>this</i> description element. This is only metainformation.
      */
+    @Override
     public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
@@ -272,6 +275,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @param modifier	the modifier to be added to <i>this</i> description element
      * @see    	   		#getModifiers()
      */
+    @Override
     public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
@@ -283,6 +287,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
+    @Override
     public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
@@ -315,6 +320,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @deprecated 			should follow the put semantic of maps, this method will be removed in v4.0
      * 						Use the {@link #putModifyingText(LanguageString) putModifyingText} method
      */
+    @Deprecated
     public LanguageString addModifyingText(LanguageString description){
         return this.putModifyingText(description);
     }
@@ -345,6 +351,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
      * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method
      */
+    @Deprecated
     public LanguageString addModifyingText(String text, Language language){
         return this.putModifyingText(language, text);
     }
@@ -381,6 +388,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
      */
+    @Override
     public Set<DescriptionElementSource> getSources() {
         return this.sources;
     }
@@ -388,6 +396,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
      */
+    @Override
     public void addSource(DescriptionElementSource source) {
         if (source != null){
             DescriptionElementBase oldSourcedObj = source.getSourcedObj();
@@ -402,6 +411,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceType, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
      */
+    @Override
     public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
@@ -416,8 +426,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     		addSource(source);
     	}
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
      */
@@ -434,7 +444,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     /**
      * Adds a {@link IOriginalSource source} to this description element.
      * @param type the type of the source
-     * @param idInSource the id used in the source 
+     * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
      * @param citation the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
@@ -449,6 +459,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
      */
+    @Override
     public void removeSource(DescriptionElementSource source) {
         this.sources.remove(source);
     }
@@ -531,6 +542,18 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         DescriptionElementBase result = (DescriptionElementBase)clone();
         description.addElement(result);
         return result;
+    }
+
+    /**
+     * Is this description item of a class type which is considere to
+     * represent character data? These classes are {@link QuantitativeData}
+     * and {@link CategoricalData}.
+     * To be overriden by these classes.
+     */
+    @Transient
+    @XmlTransient
+    public boolean isCharacterData() {
+        return false;
     }
 
 

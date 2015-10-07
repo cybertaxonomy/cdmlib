@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +30,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -71,6 +74,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     private ITaxonDao taxonDao;
 
     @Autowired
+   
     private IHomotypicalGroupDao homotypicalGroupDao;
 
     public TaxonNameDaoHibernateImpl() {
@@ -862,6 +866,7 @@ public List<HashMap<String,String>> getNameRecords(){
 
 
     }
+
 
 
 

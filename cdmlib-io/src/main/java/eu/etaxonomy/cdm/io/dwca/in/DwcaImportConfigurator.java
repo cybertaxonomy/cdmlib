@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,24 +26,32 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
-	
+
 	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
-	
+
 	//csv config
 	private boolean isNoQuotes = false;
-	
 
-	@SuppressWarnings("unchecked")
+	private boolean doTaxa = true;
+
+    private boolean doTaxonRelationships = true;
+	private boolean doExtensions = true;
+
+	private boolean keepMappingForFurtherImports = false;
+
+
+	@Override
+    @SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			DwcaImport.class
 		};
 	}
-	
+
 	public static DwcaImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new DwcaImportConfigurator(uri, destination);
 	}
-	
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -54,11 +62,9 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
 		this.setSource(uri);
 		this.setDestination(destination);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
-	public DwcaImportState getNewState() {
+
+	@Override
+    public DwcaImportState getNewState() {
 		return new DwcaImportState(this);
 	}
 
@@ -75,6 +81,58 @@ public class DwcaImportConfigurator extends DwcaDataImportConfiguratorBase<DwcaI
     public void setNoQuotes(boolean isNoQuotes) {
             this.isNoQuotes = isNoQuotes;
     }
-	
-	
+
+    /**
+     * @return the doTaxonRelationships
+     */
+    public boolean isDoTaxonRelationships() {
+        return doTaxonRelationships;
+    }
+
+    public void setDoTaxonRelationships(boolean doTaxonRelationships) {
+        this.doTaxonRelationships = doTaxonRelationships;
+    }
+
+    /**
+     * @return the doOnlyTaxonRelationships
+     */
+    public boolean isDoTaxa() {
+        return doTaxa;
+    }
+
+    /**
+     * @param doOnlyTaxonRelationships the doOnlyTaxonRelationships to set
+     */
+    public void setDoTaxa(boolean doTaxa) {
+        this.doTaxa = doTaxa;
+    }
+
+    /**
+     * @return the doExtensions
+     */
+    public boolean isDoExtensions() {
+        return doExtensions;
+    }
+
+    /**
+     * @param doExtensions the doExtensions to set
+     */
+    public void setDoExtensions(boolean doExtensions) {
+        this.doExtensions = doExtensions;
+    }
+
+
+    /**
+     * @return the keepMappingForFurtherImports
+     */
+    public boolean isKeepMappingForFurtherImports() {
+        return keepMappingForFurtherImports;
+    }
+    /**
+     * @param keepMapping
+     */
+    public void setKeepMappingForFurtherImports(boolean keepMapping) {
+        keepMappingForFurtherImports = keepMapping;
+    }
+
 }

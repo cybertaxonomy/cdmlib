@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.model.NewEntityListener;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
@@ -90,6 +91,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Transient
     @XmlTransient
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    @Transient
+    @XmlTransient
+    private static NewEntityListener newEntityListener;
 
     //@XmlAttribute(name = "id", required = true)
     @XmlTransient
@@ -146,6 +151,16 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         this.created = new DateTime().withMillisOfSecond(0);
     }
 
+    public static void setNewEntityListener(NewEntityListener nel) {
+        newEntityListener = nel;
+    }
+
+    public static void fireOnCreateEvent(CdmBase cdmBase) {
+        if(newEntityListener != null) {
+            newEntityListener.onCreate(cdmBase);
+        }
+    }
+
     /**
      * see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
      * @param listener
@@ -197,6 +212,15 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     public void firePropertyChange(PropertyChangeEvent evt) {
         propertyChangeSupport.firePropertyChange(evt);
     }
+
+    /**
+     * This method was initially added to {@link CdmBase} to fix #5161.
+     * It can be overridden by subclasses such as {@link IdentifiableEntity}
+     * to explicitly initialize listeners. This is needed e.g. after de-serialization
+     * as listeners are not serialized due to the @Transient annotation.
+     * However, it can be generally used for other use-cases as well
+     */
+    public void initListener() {}
 
     /**
      * Adds an item to a set of <code>this</code> object and fires the according

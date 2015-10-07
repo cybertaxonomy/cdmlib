@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -305,7 +306,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
+            Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
         List<Distribution> distList = new ArrayList<Distribution>();
@@ -351,11 +352,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, false, statusOrderPreference, hideMarkedAreas, null);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes, true, statusOrderPreference, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList);
+        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList, hiddenAreaMarkerTypes);
     }
 
 
@@ -662,13 +663,15 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 
     @Override
-    public void moveDescriptionElementsToDescription(
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
             boolean isCopy) {
 
+        UpdateResult result = new UpdateResult();
         if (descriptionElements.isEmpty() ){
-            return ;
+            return result;
         }
 
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
@@ -687,17 +690,57 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
             if (! isCopy){
                 description.removeElement(element);
+                dao.saveOrUpdate(description);
             }
+            result.addUpdatedObject(description);
 
         }
+        dao.saveOrUpdate(targetDescription);
+        result.addUpdatedObject(targetDescription);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            UUID targetDescriptionUuid,
+            boolean isCopy) {
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            descriptionElements.add(descriptionElementDao.load(deUuid));
+        }
+        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
+
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            UUID targetTaxonUuid,
+            String moveMessage,
+            boolean isCopy) {
+        Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        targetDescription.setTitleCache(moveMessage, true);
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        targetDescription.addAnnotation(annotation);
+
+        targetDescription = dao.save(targetDescription);
+        return moveDescriptionElementsToDescription(descriptionElementUUIDs, targetDescription.getUuid(), isCopy);
     }
 
     @Override
     public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
             Integer pageNumber){
-
-        List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, pageSize, pageNumber);
-        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, results);
+        List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, null, null);
+        int startIndex= pageNumber * pageSize;
+        int toIndex = Math.min(startIndex + pageSize, results.size());
+        List<TermDto> page = results.subList(startIndex, toIndex);
+        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, page);
     }
 
 

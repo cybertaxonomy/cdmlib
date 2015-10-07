@@ -59,8 +59,18 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
 
     @Override
+    public CdmBase findWithUpdate(Class<? extends CdmBase> clazz, int id){
+        return genericDao.find(clazz, id);
+    }
+
+    @Override
     public CdmBase find(Class<? extends CdmBase> clazz, int id){
         return genericDao.find(clazz, id);
+    }
+
+    @Override
+    public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths){
+        return  genericDao.find(clazz, id, propertyPaths);
     }
 
 
@@ -234,6 +244,27 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
+    @Transactional(readOnly = false)
+    @Deprecated
+    public <T extends IMergable> void merge(int mergeFirstId, int mergeSecondId, Class<? extends CdmBase> clazz) throws MergeException {
+        IMergeStrategy mergeStrategy;
+        T mergeFirst = (T) genericDao.find(clazz, mergeFirstId);
+        T mergeSecond = (T) genericDao.find(clazz, mergeSecondId);
+        mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
+        merge(mergeFirst, mergeSecond, mergeStrategy);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException {
+        IMergeStrategy mergeStrategy;
+        T mergeFirst = (T) genericDao.find(clazz, mergeFirstUuid);
+        T mergeSecond = (T) genericDao.find(clazz, mergeSecondUuid);
+        mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
+        merge(mergeFirst, mergeSecond, mergeStrategy);
+    }
+
+    @Override
     public <T extends IMergable> void merge(T mergeFirst, T mergeSecond) throws MergeException {
         IMergeStrategy mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         merge(mergeFirst, mergeSecond, mergeStrategy);
@@ -294,6 +325,12 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     @Override
     public Object initializeCollection(UUID ownerUuid, String fieldName) {
         return genericDao.initializeCollection(ownerUuid, fieldName);
+
+    }
+
+    @Override
+    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths) {
+        return genericDao.initializeCollection(ownerUuid, fieldName, propertyPaths);
 
     }
 

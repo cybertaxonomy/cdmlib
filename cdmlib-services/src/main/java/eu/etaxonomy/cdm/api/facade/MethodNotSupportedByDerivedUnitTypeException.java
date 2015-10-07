@@ -12,6 +12,12 @@ package eu.etaxonomy.cdm.api.facade;
 import org.apache.log4j.Logger;
 
 /**
+ * This exception should be thrown if a derived unit facade does not support a certain
+ * method because its derived unit type (specimenOrObservation type) does not support
+ * the functionality.
+ * 
+ * @see DerivedUnitFacadeNotSupportedException
+ * 
  * @author a.mueller
  * @date 17.05.2010
  *

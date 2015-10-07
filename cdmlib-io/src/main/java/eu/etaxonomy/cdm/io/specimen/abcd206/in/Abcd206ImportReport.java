@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -43,7 +44,7 @@ public class Abcd206ImportReport {
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
     private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<Taxon, List<UnitIdSpecimen>>();
     private final Map<UnitIdSpecimen, List<UnitIdSpecimen>> derivateMap = new HashMap<UnitIdSpecimen, List<UnitIdSpecimen>>();
-    private final List<UnitIdSpecimen> ignoredImports = new ArrayList<UnitIdSpecimen>();
+    private final List<UnitIdSpecimen> alreadyExistingSpecimens = new ArrayList<UnitIdSpecimen>();
     private final List<TaxonNameBase<?, ?>> createdNames = new ArrayList<TaxonNameBase<?,?>>();
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
@@ -86,20 +87,21 @@ public class Abcd206ImportReport {
         taxonToAssociatedSpecimens.put(taxon, associatedSpecimens);
     }
 
-    public void addIgnoredImport(String unitId, DerivedUnit derivedUnit){
-        ignoredImports.add(new UnitIdSpecimen(unitId, derivedUnit));
+    public void addAlreadyExistingSpecimen(String unitId, DerivedUnit derivedUnit){
+        alreadyExistingSpecimens.add(new UnitIdSpecimen(unitId, derivedUnit));
     }
 
-    /**
-     * @param message
-     */
+    public void addException(String message, Exception e) {
+        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.toString());
+    }
+
     public void addInfoMessage(String message) {
         infoMessages.add(message);
     }
 
     public void printReport(URI reportUri) {
         PrintStream out;
-        if(reportUri!=null){
+        if(reportUri != null){
             try {
                 out = new PrintStream(new File(reportUri));
             } catch (FileNotFoundException e) {
@@ -110,17 +112,47 @@ public class Abcd206ImportReport {
         else{
             out = System.out;
         }
+        printReport(out);
+    }
+
+
+    public void printReport(PrintStream out) {
+
         out.println("++++++++Import Report+++++++++");
+      //all specimens
+        Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
+        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
+        for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
+            UnitIdSpecimen parentSpecimen = entry.getKey();
+            incrementSpecimenTypeCount(specimenTypeToCount, parentSpecimen);
+            allSpecimens.add(parentSpecimen);
+            for (UnitIdSpecimen childSpecimen : entry.getValue()) {
+                incrementSpecimenTypeCount(specimenTypeToCount, childSpecimen);
+                allSpecimens.add(childSpecimen);
+            }
+        }
+        out.println("Specimens created: "+allSpecimens.size());
+        for(Entry<SpecimenOrObservationType, Integer> entry:specimenTypeToCount.entrySet()){
+            SpecimenOrObservationType type = entry.getKey();
+            out.println(type+": "+entry.getValue());
+        }
+        out.println("\n");
+
+        //taxon name
         out.println("---Created Taxon Names ("+createdNames.size()+")---");
         for (TaxonNameBase<?, ?> taxonName : createdNames) {
             out.println(taxonName.getTitleCache());
         }
         out.println("\n");
+
+        //taxa
         out.println("---Created Taxa ("+createdTaxa.size()+")---");
         for (Taxon taxon : createdTaxa) {
             out.println(taxon.getTitleCache());
         }
         out.println("\n");
+
+        //taxon nodes
         out.println("---Created Taxon Nodes ("+createdTaxonNodes.size()+")---");
         for (TaxonNode taxonNode : createdTaxonNodes) {
             String nodeString = taxonNode.toString();
@@ -136,6 +168,15 @@ public class Abcd206ImportReport {
             out.println(nodeString);
         }
         out.println("\n");
+
+        //not imported
+        out.println("---Already existing specimen (not imported)---");
+        for(UnitIdSpecimen specimen:alreadyExistingSpecimens){
+            out.println(formatSpecimen(specimen));
+        }
+        out.println("\n");
+
+        //taxa with associated specimens
         out.println("---Taxa with associated specimens---");
         for(Entry<Taxon, List<UnitIdSpecimen>> entry:taxonToAssociatedSpecimens.entrySet()){
             Taxon taxon = entry.getKey();
@@ -151,26 +192,29 @@ public class Abcd206ImportReport {
             }
         }
         out.println("\n");
-        out.println("---Not imported---");
-        for(UnitIdSpecimen specimen:ignoredImports){
-            out.println(formatSpecimen(specimen));
-        }
         out.println("\n");
-        //all specimens
-        Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
-        for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
-            allSpecimens.add(entry.getKey());
-            allSpecimens.addAll(entry.getValue());
-        }
-        out.println("Specimens created: "+allSpecimens.size());
-        out.println("\n");
+        //info messages
         out.println("---Info messages---");
         for(String message:infoMessages){
             out.println(message);
+            out.println("---");
         }
         if(out!=System.out){
             out.close();
         }
+    }
+
+    private void incrementSpecimenTypeCount(Map<SpecimenOrObservationType, Integer> specimenTypeToCount,
+            UnitIdSpecimen specimen) {
+        SpecimenOrObservationType specimenType = specimen.getSpecimen().getRecordBasis();
+        Integer count = specimenTypeToCount.get(specimenType);
+        if(count==null){
+            count = 1;
+        }
+        else{
+            count++;
+        }
+        specimenTypeToCount.put(specimenType, count);
     }
 
     private String formatSpecimen(UnitIdSpecimen specimen){
