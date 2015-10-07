@@ -1296,6 +1296,22 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.listIndividualsAssociations(specimen, null, null, null, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
+            if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
+                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                associatedTaxa.add(taxonDescription.getTaxon());
+            }
+        }
+        return associatedTaxa;
+    }
+
     @Override
     public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {

@@ -420,6 +420,17 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * Retrieves all associated taxa for the given specimen
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
      * @param specimen the type specimen
      * @param limit
