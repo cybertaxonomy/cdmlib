@@ -183,7 +183,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = false)
     public List<T> merge(List<T> detachedObjects) {
-        return merge(detachedObjects);
+        List<T> mergedObjects = new ArrayList<T>();
+        for(T obj : detachedObjects) {
+            mergedObjects.add(dao.merge(obj));
+        }
+        return mergedObjects;
     }
 
     @Override
