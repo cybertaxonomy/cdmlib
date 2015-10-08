@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -175,20 +176,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public T merge(T newInstance, boolean returnTransientEntity) {
+    public MergeResult<T> merge(T newInstance, boolean returnTransientEntity) {
         return dao.merge(newInstance, returnTransientEntity);
     }
 
     @Override
     @Transactional(readOnly = false)
     public List<T> merge(List<T> detachedObjects) {
-        return merge(detachedObjects, false);
+        return merge(detachedObjects);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public List<T> merge(List<T> detachedObjects, boolean returnTransientEntity) {
-        List<T> mergedObjects = new ArrayList<T>();
+    public List<MergeResult<T>> merge(List<T> detachedObjects, boolean returnTransientEntity) {
+        List<MergeResult<T>> mergedObjects = new ArrayList<MergeResult<T>>();
         for(T obj : detachedObjects) {
             mergedObjects.add(dao.merge(obj, returnTransientEntity));
         }

@@ -24,6 +24,7 @@ import org.hibernate.event.spi.MergeEvent;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -370,7 +371,7 @@ public interface IService<T extends ICdmBase>{
      * @param returnTransientEntity
      * @return
      */
-    public List<T> merge(List<T> detachedObjects, boolean returnTransientEntity);
+    public List<MergeResult<T>> merge(List<T> detachedObjects, boolean returnTransientEntity);
 
     /**
      * This method allows for the possibility of returning the input transient
@@ -378,20 +379,16 @@ public interface IService<T extends ICdmBase>{
      *
      * WARNING : This method should never be used when the objective of the merge
      * is to attach to an existing session which is the standard use case.
-     * This method should only be used in the
-     * case of an external call which does not use hibernate sessions and is
-     * only interested in the entity as a POJO. Apart from the session information
-     * the only other difference between the transient and persisted object is in the case
-     * of new objects (id=0) where hibernate sets the id after commit. This id is copied
-     * over to the transient entity in {@link PostMergeEntityListener#onMerge(MergeEvent,Map)}
-     * making the two objects identical and allowing the transient object to be used further
-     * as a POJO
+     * This method should only be used in the case of an external call which does
+     * not use hibernate sessions and is only interested in the entity as a POJO.
+     * This method returns the root merged transient entity as well as all newly merged
+     * persistent entities within the return object.
      *
      * @param newInstance
      * @param returnTransientEntity
      * @return
      */
-    public T merge(T newInstance, boolean returnTransientEntity);
+    public MergeResult<T> merge(T newInstance, boolean returnTransientEntity);
 
 
 

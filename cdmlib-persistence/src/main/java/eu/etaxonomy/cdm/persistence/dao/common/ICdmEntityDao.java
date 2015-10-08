@@ -17,12 +17,11 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.event.spi.MergeEvent;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -56,21 +55,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * WARNING : This method should never be used when the objective of the merge
      * is to attach to an existing session which is the standard use case.
-     * This method should only be used in the
-     * case of an external call which does not use hibernate sessions and is
-     * only interested in the entity as a POJO. Apart from the session information
-     * the only other difference between the transient and persisted object is in the case
-     * of new objects (id=0) where hibernate sets the id after commit. This id is copied
-     * over to the transient entity in {@link PostMergeEntityListener#onMerge(MergeEvent,Map)}
-     * making the two objects identical and allowing the transient object to be used further
-     * as a POJO
+     * This method should only be used in the case of an external call which does
+     * not use hibernate sessions and is only interested in the entity as a POJO.
+     * This method returns the root merged transient entity as well as all newly merged
+     * persistent entities within the return object.
      *
      * @param transientObject
      * @param returnTransientEntity
      * @return transient or persistent object depending on the value of returnTransientEntity
      * @throws DataAccessException
      */
-    public T merge(T transientObject, boolean returnTransientEntity) throws DataAccessException;
+    public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException;
 
     /**
      * Obtains the specified LockMode on the supplied object
