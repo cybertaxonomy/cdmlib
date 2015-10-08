@@ -307,6 +307,16 @@ public interface IService<T extends ICdmBase>{
     public UUID update(T transientObject);
 
     /**
+     * Simply calls the load method.
+     * Required specifically for the editor to allow load calls which
+     * can also update the session cache.
+     *
+     * @param uuid
+     * @return
+     */
+    public T loadWithUpdate(UUID uuid);
+
+    /**
      * Method that lists the objects matching the example provided.
      * The includeProperties property is used to specify which properties of the example are used.
      *
@@ -389,9 +399,5 @@ public interface IService<T extends ICdmBase>{
      * @return
      */
     public MergeResult<T> merge(T newInstance, boolean returnTransientEntity);
-
-
-
-
 
 }

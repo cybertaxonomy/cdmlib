@@ -164,6 +164,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
+    public T loadWithUpdate(UUID uuid) {
+        return load(uuid);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public T load(UUID uuid, List<String> propertyPaths){
         return uuid == null ? null : dao.load(uuid, propertyPaths);
     }

@@ -492,17 +492,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      * ================================================ */
 
     @Override
+    @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public DeleteResult delete(User persistentObject)  {
         return super.delete(persistentObject);
     }
 
     @Override
+    @Transactional(readOnly=false)
     public DeleteResult delete(UUID userUuid)  {
         return delete(dao.load(userUuid));
     }
 
     @Override
+    @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
         Map<UUID, User> users = new HashMap<UUID, User>();
