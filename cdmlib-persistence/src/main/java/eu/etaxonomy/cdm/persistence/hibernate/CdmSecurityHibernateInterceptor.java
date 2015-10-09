@@ -64,6 +64,18 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 //        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
 //        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
 
+        Set<String> defaultExculdes = new HashSet<String>();
+        defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeObservableListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
+        defaultExculdes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
+
+        for ( CdmBaseType type: CdmBaseType.values()){
+            exculdeMap.put(type.getBaseClass(), new HashSet<String>());
+            exculdeMap.get(type.getBaseClass()).addAll(defaultExculdes);
+        }
+        exculdeMap.put(CdmBase.class, new HashSet<String>());
+        exculdeMap.get(CdmBase.class).addAll(defaultExculdes);
+
+
         /*
          * default fields required for each type for which excludes are defined
          */
@@ -107,7 +119,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         if (previousState == null){
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
-        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(CdmBaseType.baseTypeFor(cdmEntity.getClass())))) {
+        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(baseType(cdmEntity)))) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
@@ -120,6 +132,11 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             }
         }
         return true;
+    }
+
+    private Class<? extends CdmBase> baseType(CdmBase cdmEntity) {
+        Class<? extends CdmBase> basetype = CdmBaseType.baseTypeFor(cdmEntity.getClass());
+        return basetype == null ? CdmBase.class : basetype;
     }
 
 

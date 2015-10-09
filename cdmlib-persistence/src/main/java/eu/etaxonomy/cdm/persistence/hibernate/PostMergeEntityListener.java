@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 public class PostMergeEntityListener implements MergeEventListener {
+    private static final long serialVersionUID = 1565797119368313987L;
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<Session, Set<CdmBase>>();
 
@@ -43,18 +44,11 @@ public class PostMergeEntityListener implements MergeEventListener {
         return newEntitiesMap.get(session);
     }
 
-
-    /* (non-Javadoc)
-     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent)
-     */
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent, java.util.Map)
-     */
     @Override
     public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
         // any new entities are added to a map which is retrieved at the end of the
