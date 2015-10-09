@@ -276,13 +276,15 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        TaxonNameBase n_acherontia_thetis = taxon.getName();
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonNameBase<?,?> n_acherontia_thetis = taxon.getName();
 
-        Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, ReferenceFactory.newGeneric());
+        Reference<?> sec = ReferenceFactory.newGeneric();
+        sec.setUuid(UUID.fromString("bd7e4a15-6403-49a9-a6df-45b46fa99efd"));
+        Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, sec);
         Exception exception = null;
         try {
-            UUID uuid = taxonService.save(newTaxon).getUuid();
+            taxonService.save(newTaxon);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);

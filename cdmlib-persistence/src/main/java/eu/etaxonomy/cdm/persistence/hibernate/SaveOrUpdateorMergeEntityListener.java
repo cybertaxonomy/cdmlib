@@ -19,9 +19,7 @@ import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 
 
 @SuppressWarnings("serial")
@@ -34,18 +32,12 @@ public class SaveOrUpdateorMergeEntityListener implements SaveOrUpdateEventListe
         saveOrUpdateOrMerge(entity, event.getSession());
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent)
-     */
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
         Object entity = event.getOriginal();
         saveOrUpdateOrMerge(entity,event.getSession());
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.event.spi.MergeEventListener#onMerge(org.hibernate.event.spi.MergeEvent, java.util.Map)
-     */
     @Override
     public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
 
@@ -53,21 +45,22 @@ public class SaveOrUpdateorMergeEntityListener implements SaveOrUpdateEventListe
 
     private void saveOrUpdateOrMerge(Object entity, Session session) {
 
-        if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
-
-            if (entity instanceof ITreeNode) {
-                ITreeNode<?> node = (ITreeNode<?>)entity;
-                reindex(node);
-
-            }
-
-            if (entity instanceof DeterminationEvent) {
-                DeterminationEvent detEv = (DeterminationEvent)entity;
-                if (detEv.getTaxon() != null && detEv.getTaxonName() == null && detEv.getTaxon().getName() != null){
-                    detEv.setTaxonName(detEv.getTaxon().getName());
-                }
-            }
-        }
+        //moved to CdmPreDataChangeObservableListener
+//        if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
+//
+//            if (entity instanceof ITreeNode) {
+//                ITreeNode<?> node = (ITreeNode<?>)entity;
+//                reindex(node);
+//
+//            }
+//
+//            if (entity instanceof DeterminationEvent) {
+//                DeterminationEvent detEv = (DeterminationEvent)entity;
+//                if (detEv.getTaxon() != null && detEv.getTaxonName() == null && detEv.getTaxon().getName() != null){
+//                    detEv.setTaxonName(detEv.getTaxon().getName());
+//                }
+//            }
+//        }
     }
 
     static String sep = ITreeNode.separator;
