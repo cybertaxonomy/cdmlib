@@ -275,7 +275,6 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Override
     public void setCreated(DateTime created) {
         if (created != null){
-            new DateTime();
             created = created.withMillisOfSecond(0);
             //created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
         }
