@@ -216,30 +216,30 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         return result;
     }
 
-
-	@Override
-    public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("TermVocabularyDao.listEmpty(Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
-		List<Integer> intermediateResults;
-
-		intermediateResults = getEmptyVocIds();
-
-		Criteria criteria = getSession().createCriteria(type);
-		criteria.add(Restrictions.in("id", intermediateResults));
-
-		if(limit != null) {
-		    criteria.setMaxResults(limit);
-	        if(start != null) {
-	    	    criteria.setFirstResult(start);
-	        }
-		}
-
-		this.addOrder(criteria, orderHints);
-
-		List<TermVocabulary> result = criteria.list();
-	    defaultBeanInitializer.initializeAll(result, propertyPaths);
-		return result;
-	}
+//
+//	@Override
+//    public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
+//		checkNotInPriorView("TermVocabularyDao.listEmpty(Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
+//		List<Integer> intermediateResults;
+//
+//		intermediateResults = getEmptyVocIds();
+//
+//		Criteria criteria = getSession().createCriteria(type);
+//		criteria.add(Restrictions.in("id", intermediateResults));
+//
+//		if(limit != null) {
+//		    criteria.setMaxResults(limit);
+//	        if(start != null) {
+//	    	    criteria.setFirstResult(start);
+//	        }
+//		}
+//
+//		this.addOrder(criteria, orderHints);
+//
+//		List<TermVocabulary> result = criteria.list();
+//	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+//		return result;
+//	}
 
 	@Override
 	public void missingTermUuids(

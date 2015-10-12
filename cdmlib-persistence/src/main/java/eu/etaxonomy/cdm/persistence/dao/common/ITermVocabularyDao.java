@@ -111,16 +111,16 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @return a list of term vocabularies
      */
 	public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubtypes, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Returns all empty vocabularies.
-	 * @param limit
-	 * @param start
-	 * @param orderHints
-	 * @param propertyPaths
-	 * @return
-	 */
-	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
+//
+//	/**
+//	 * Returns all empty vocabularies.
+//	 * @param limit
+//	 * @param start
+//	 * @param orderHints
+//	 * @param propertyPaths
+//	 * @return
+//	 */
+//	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Fills the response map with those term uuids which do exist in the requested map

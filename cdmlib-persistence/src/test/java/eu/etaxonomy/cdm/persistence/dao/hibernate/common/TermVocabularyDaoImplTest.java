@@ -123,17 +123,17 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		List<TermVocabulary<? extends Language>> languageVocabulariesAndEmpty = dao.listByTermClass(Language.class, true, true, null, null, null, null);
 		assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
 	}
-
-	@Test
-	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
-	public void testListVocabularyEmpty() {
-		//test class with no subclasses
-		List<TermVocabulary> emptyVocs = dao.listEmpty(null, null, null, null);
-		assertFalse("There should be at least one vocabulary containing no terms",emptyVocs.isEmpty());
-		assertEquals("There should be only one vocabulary containing terms of class Rank",1,emptyVocs.size());
-		UUID uuidEmptyVoc = UUID.fromString("f253962f-d787-4b16-b2d2-e645da73ae4f");
-		assertEquals("The empty vocabulary should be the one defined", uuidEmptyVoc, emptyVocs.get(0).getUuid());
-	}
+//
+//	@Test
+//	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
+//	public void testListVocabularyEmpty() {
+//		//test class with no subclasses
+//		List<TermVocabulary> emptyVocs = dao.listEmpty(null, null, null, null);
+//		assertFalse("There should be at least one vocabulary containing no terms",emptyVocs.isEmpty());
+//		assertEquals("There should be only one vocabulary containing terms of class Rank",1,emptyVocs.size());
+//		UUID uuidEmptyVoc = UUID.fromString("f253962f-d787-4b16-b2d2-e645da73ae4f");
+//		assertEquals("The empty vocabulary should be the one defined", uuidEmptyVoc, emptyVocs.get(0).getUuid());
+//	}
 
 	@Test
 	public void testMissingTermUuids() {
