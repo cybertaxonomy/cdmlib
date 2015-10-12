@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -36,19 +35,14 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 //@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 
-	
 	@SpringBeanByType
 	private IVocabularyService vocabularyService;
-
-	
-
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-	}
+	public void setUp() throws Exception {}
 
 
     /**
@@ -79,7 +73,7 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
         		vocabularyService.findByTermType(TermType.SpecimenTypeDesignationStatus);
         assertTrue(typeDesignationVocabularyList.size() == 1);
         OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = (OrderedTermVocabulary<SpecimenTypeDesignationStatus>)typeDesignationVocabularyList.get(0);
-        
+
         assertNotNull(typeDesignationVocabulary);
         assertEquals(16, typeDesignationVocabulary.size());
         SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
@@ -89,14 +83,7 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 //      assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));   //as we do not use second level cache this is not required
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

@@ -49,8 +49,47 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	private ITermVocabularyDao dao;
 
 	@Before
-	public void setUp() {
-	}
+	public void setUp() {}
+
+   @Test
+    public void testListVocabularyByType() {
+        //test class with no subclasses
+        List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
+        assertFalse("There should be at least one vocabulary containing terms of type Rank", rankVocabularies.isEmpty());
+        assertEquals("There should be only one vocabulary containing terms of type Rank", 1, rankVocabularies.size());
+
+        //include subtype, but termtype has no subtype
+        rankVocabularies = dao.listByTermType(TermType.Rank, true, null, null, null, null);
+        assertFalse("There should be at least one vocabulary containing terms of type Rank", rankVocabularies.isEmpty());
+        assertEquals("There should be only one vocabulary containing terms of type Rank", 1, rankVocabularies.size());
+
+        //with different classes
+        List<TermVocabulary> namedAreaVocabularies = dao.listByTermType(TermType.NamedArea, true, null, null, null, null);
+        int subclassedSize = namedAreaVocabularies.size();
+        assertEquals("There should be 4 vocabularies (TdwgAreas, Continents, Waterbody, Countries)", 4, subclassedSize);
+
+        //with sub types
+        List<TermVocabulary> scopeVocabularies = dao.listByTermType(TermType.Scope, true, null, null, null, null);
+        int subtypeSize = scopeVocabularies.size();
+        assertEquals("There should be 6 vocabularies (Scope, Sex, Stage, 3 x KindOfUnit)", 6, subtypeSize);
+
+        List<TermVocabulary> scopeOnlyVocabularies = dao.listByTermType(TermType.Scope, false, null, null, null, null);
+        assertEquals("Scope only vocabularies w/o subtypes should be 1", 1, scopeOnlyVocabularies.size());
+        List<TermVocabulary> stageVocabularies = dao.listByTermType(TermType.Stage, false, null, null, null, null);
+        assertEquals("Stage only vocabularies should be 1", 1, stageVocabularies.size());
+    }
+
+
+    @Test
+    @DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
+    public void testListVocabularyByTypeEmpty() {
+        List<TermVocabulary> emptyNamedAreas = dao.listByTermType(TermType.NamedArea, true, null, null, null, null);
+        assertEquals("There should be no vocabulary, as we do not return ALL empty vocabularies of ANY type anymore", 0, emptyNamedAreas.size());
+
+        List<TermVocabulary> languageVocabulariesAndEmpty = dao.listByTermType(TermType.Language, true, null, null, null, null);
+        assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
+    }
+
 
 	@Test
 	public void testListVocabularyByClass() {
@@ -58,7 +97,6 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		List<TermVocabulary<? extends Rank>> rankVocabularies = dao.listByTermClass(Rank.class, false, false, null, null, null, null);
 		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
 		assertEquals("There should be only one vocabulary containing terms of class Rank",1,rankVocabularies.size());
-
 
 		rankVocabularies = dao.listByTermClass(Rank.class, true, false, null, null, null, null);
 		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
@@ -73,7 +111,6 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		List<TermVocabulary<? extends Country>> countryVocabularies = dao.listByTermClass(Country.class, false, false, null, null, null, null);
 		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + countryVocabularies.size();
 		assertEquals("number of NamedArea and subclasses should be same as sum of all single vocabularies", subclassedSize, sumOfSingleSizes);
-
 	}
 
 	@Test
