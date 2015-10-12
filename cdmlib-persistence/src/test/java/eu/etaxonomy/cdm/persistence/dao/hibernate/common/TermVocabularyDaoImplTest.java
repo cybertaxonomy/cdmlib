@@ -31,9 +31,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -89,51 +86,6 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
         List<TermVocabulary> languageVocabulariesAndEmpty = dao.listByTermType(TermType.Language, true, null, null, null, null);
         assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
     }
-
-
-	@Test
-	public void testListVocabularyByClass() {
-		//test class with no subclasses
-		List<TermVocabulary<? extends Rank>> rankVocabularies = dao.listByTermClass(Rank.class, false, false, null, null, null, null);
-		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
-		assertEquals("There should be only one vocabulary containing terms of class Rank",1,rankVocabularies.size());
-
-		rankVocabularies = dao.listByTermClass(Rank.class, true, false, null, null, null, null);
-		assertFalse("There should be at least one vocabulary containing terms of class Rank",rankVocabularies.isEmpty());
-		assertEquals("There should be only one vocabulary containing terms of class Rank",1,rankVocabularies.size());
-
-		//with subclasses
-		List<TermVocabulary<? extends NamedArea>> namedAreaVocabularies = dao.listByTermClass(NamedArea.class, true, false, null, null, null, null);
-		int subclassedSize = namedAreaVocabularies.size();
-		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 4, subclassedSize);
-
-		List<TermVocabulary<? extends NamedArea>> namedAreaOnlyVocabularies = dao.listByTermClass(NamedArea.class, false, false, null, null, null, null);
-		List<TermVocabulary<? extends Country>> countryVocabularies = dao.listByTermClass(Country.class, false, false, null, null, null, null);
-		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + countryVocabularies.size();
-		assertEquals("number of NamedArea and subclasses should be same as sum of all single vocabularies", subclassedSize, sumOfSingleSizes);
-	}
-
-	@Test
-	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
-	public void testListVocabularyByClassEmpty() {
-		//test include empty
-		List<TermVocabulary<? extends NamedArea>> namedAreaVocabulariesAndEmpty = dao.listByTermClass(NamedArea.class, true, true, null, null, null, null);
-		assertEquals("There should be 1 vocabulary (the empty one)", 1, namedAreaVocabulariesAndEmpty.size());
-
-		List<TermVocabulary<? extends Language>> languageVocabulariesAndEmpty = dao.listByTermClass(Language.class, true, true, null, null, null, null);
-		assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
-	}
-//
-//	@Test
-//	@DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
-//	public void testListVocabularyEmpty() {
-//		//test class with no subclasses
-//		List<TermVocabulary> emptyVocs = dao.listEmpty(null, null, null, null);
-//		assertFalse("There should be at least one vocabulary containing no terms",emptyVocs.isEmpty());
-//		assertEquals("There should be only one vocabulary containing terms of class Rank",1,emptyVocs.size());
-//		UUID uuidEmptyVoc = UUID.fromString("f253962f-d787-4b16-b2d2-e645da73ae4f");
-//		assertEquals("The empty vocabulary should be the one defined", uuidEmptyVoc, emptyVocs.get(0).getUuid());
-//	}
 
 	@Test
 	public void testMissingTermUuids() {

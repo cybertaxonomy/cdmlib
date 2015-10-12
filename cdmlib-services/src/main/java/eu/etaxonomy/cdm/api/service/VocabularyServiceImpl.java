@@ -48,19 +48,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
-	@Override
-    @Deprecated
-    public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		boolean includeSubclasses = false;
-		boolean includeEmptyVocs = false;
-		return (List)listByTermClass(clazz, includeSubclasses, includeEmptyVocs, limit, start, orderHints, propertyPaths);
-	}
-
-	@Override
-	@Deprecated
-	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return dao.listByTermClass(clazz, includeSubclasses, includeEmptyVocs,limit, start, orderHints, propertyPaths);
-	}
 
     @Override
     public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubTypes,

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -122,59 +120,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		return getTerms(termVocabulary, pageSize, pageNumber, null, null);
 	}
 
-	@Override
-    @Deprecated
-	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("TermVocabularyDao.listByTermClass2(Class<TERM> clazz, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
-		List<Integer> intermediateResults;
-
-		if (includeSubclasses){
-			String hql = " SELECT DISTINCT trm.vocabulary.id " +
-					" FROM %s trm " +
-					" GROUP BY trm.vocabulary ";
-			hql = String.format(hql, clazz.getSimpleName());
-			Query query = getSession().createQuery(hql);
-			intermediateResults = query.list();
-		}else{
-			Criteria criteria = getSession().createCriteria(type);
-			criteria.createAlias("terms", "trms").add(Restrictions.eq("trms.class", clazz.getSimpleName()));
-			criteria.setProjection(Projections.id());
-			intermediateResults = criteria.list();
-		}
-		if (includeEmptyVocs){
-			intermediateResults.addAll(getEmptyVocIds());
-		}
-
-		if(intermediateResults.size() == 0) {
-			return new ArrayList<TermVocabulary<? extends TERM>>();
-		}
-
-		Criteria criteria = getSession().createCriteria(type);
-		criteria.add(Restrictions.in("id", intermediateResults));
-
-		if(limit != null) {
-		    criteria.setMaxResults(limit);
-	        if(start != null) {
-	    	    criteria.setFirstResult(start);
-	        }
-		}
-
-		this.addOrder(criteria, orderHints);
-
-		List<TermVocabulary<? extends TERM>> result = criteria.list();
-	    defaultBeanInitializer.initializeAll(result, propertyPaths);
-		return result;
-	}
-
-
-//  public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
-//
-//      Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termType= :termType");
-//      query.setParameter("termType", termType);
-//
-//      return (List<TermVocabulary<T>>)query.list();
-//
-//  }
 
     @Override
     public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
@@ -215,31 +160,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
-
-//
-//	@Override
-//    public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
-//		checkNotInPriorView("TermVocabularyDao.listEmpty(Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
-//		List<Integer> intermediateResults;
-//
-//		intermediateResults = getEmptyVocIds();
-//
-//		Criteria criteria = getSession().createCriteria(type);
-//		criteria.add(Restrictions.in("id", intermediateResults));
-//
-//		if(limit != null) {
-//		    criteria.setMaxResults(limit);
-//	        if(start != null) {
-//	    	    criteria.setFirstResult(start);
-//	        }
-//		}
-//
-//		this.addOrder(criteria, orderHints);
-//
-//		List<TermVocabulary> result = criteria.list();
-//	    defaultBeanInitializer.initializeAll(result, propertyPaths);
-//		return result;
-//	}
 
 	@Override
 	public void missingTermUuids(
@@ -303,18 +223,5 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		}
 
 		return;
-	}
-
-	/**
-	 * @return
-	 */
-	private List<Integer> getEmptyVocIds() {
-		List<Integer> intermediateResults;
-		String hql = " SELECT voc.id " +
-				" FROM TermVocabulary voc " +
-				" WHERE voc.terms.size = 0 ";
-		Query query = getSession().createQuery(hql);
-		intermediateResults = query.list();
-		return intermediateResults;
 	}
 }

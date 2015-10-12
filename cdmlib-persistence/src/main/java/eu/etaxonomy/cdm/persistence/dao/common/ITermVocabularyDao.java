@@ -62,30 +62,6 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	 */
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	/**
-     * Returns term vocabularies that contain terms of a certain class e.g. Feature, Modifier, State.
-     *
-     * @param <TERMCLASS>
-     * @param clazz the term class of the terms in the vocabulary
-     * @param includeSubclasses if <code>true</code> all subclasses of clazz will be included for computation of the result
-     * @param includeEmptyVocs if <code>true</code> all vocabularies that do not contain any term will be included in the result
-     * @param limit The maximum number of vocabularies returned (can be null for all vocabularies)
-     * @param start The offset from the start of the result set (0 - based, can be null - equivalent of starting at the beginning of the recordset)
-     * @param orderHints
-     *            Supports path like <code>orderHints.propertyNames</code> which
-	 *            include *-to-one properties like createdBy.username or
-	 *            authorTeam.persistentTitleCache
-     * @param propertyPaths properties to be initialized
-     * @return a list of term vocabularies
-     */
-	/**
-     * @deprecated This method is deprecated as we are using {@link TermType} now.
-     * It may be removed in a future version.
-     */
-	@Deprecated
-	public <TERMCLASS extends DefinedTermBase> List<TermVocabulary<? extends TERMCLASS>> listByTermClass(Class<TERMCLASS> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-
-
     /**
      * Return a List of vocabularies that belong to the term type supplied
      *
@@ -111,16 +87,6 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @return a list of term vocabularies
      */
 	public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubtypes, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-//
-//	/**
-//	 * Returns all empty vocabularies.
-//	 * @param limit
-//	 * @param start
-//	 * @param orderHints
-//	 * @param propertyPaths
-//	 * @return
-//	 */
-//	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Fills the response map with those term uuids which do exist in the requested map
