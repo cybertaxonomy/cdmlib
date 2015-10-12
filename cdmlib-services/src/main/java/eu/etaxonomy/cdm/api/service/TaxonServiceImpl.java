@@ -1345,7 +1345,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         DeleteResult nameDeleteresult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
                         if (nameDeleteresult.isAbort()){
                         	result.addExceptions(nameDeleteresult.getExceptions());
-                        	result.addUpdatedObject(name);
+                        	result.addRelatedObject(name);
                         }
 
                 }
