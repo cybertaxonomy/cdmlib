@@ -410,7 +410,7 @@ public class TimePeriod implements Cloneable, Serializable {
         if (partial == null){
             partial = new Partial();
         }
-        if (value == null){
+        if (value == null || value == 0){
             return partial.without(type);
         }else{
             checkFieldValues(value, type, partial);
@@ -446,8 +446,14 @@ public class TimePeriod implements Cloneable, Serializable {
         int max = 9999999;
         if (type.equals(MONTH_TYPE)){
             max = 12;
+            if (value == 0 && partial.indexOf(DAY_TYPE) == -1){
+                return;
+            }
         }
         if (type.equals(DAY_TYPE)){
+            if (value == 0){
+                return;
+            }
             max = 31;
             Integer month = null;
             if (partial.isSupported(MONTH_TYPE)){
@@ -461,6 +467,12 @@ public class TimePeriod implements Cloneable, Serializable {
                 }
             }
         }
+        if (type.equals(YEAR_TYPE)){
+            if (value == 0 && partial.getValue(partial.indexOf(MONTH_TYPE)) == 0){
+                return;
+            }
+        }
+
         if ( (value < 1 || value > max) ){
             throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
         }
