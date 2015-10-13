@@ -1056,7 +1056,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
         Classification classification = classificationDao.findByUuid(classificationUuid);
-        assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification));
+        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
+        assertNotNull(result);
+        assertEquals(5, result.size());
+        UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+        List<UUID> excludeUUids = new ArrayList<UUID>();
+        excludeUUids.add(excludeUUID);
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids);
+        assertEquals(4, result.size());
+
     }
 
 

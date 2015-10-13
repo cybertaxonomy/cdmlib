@@ -176,7 +176,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classification
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa);
 
     /**
      * @param taxon

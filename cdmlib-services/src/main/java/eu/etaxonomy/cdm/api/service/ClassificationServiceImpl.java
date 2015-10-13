@@ -293,8 +293,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa);
     }
 
     @Override
