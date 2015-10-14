@@ -19,6 +19,7 @@ import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 
 
@@ -46,21 +47,13 @@ public class SaveOrUpdateorMergeEntityListener implements SaveOrUpdateEventListe
     private void saveOrUpdateOrMerge(Object entity, Session session) {
 
         //moved to CdmPreDataChangeListener
-//        if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
-//
-//            if (entity instanceof ITreeNode) {
-//                ITreeNode<?> node = (ITreeNode<?>)entity;
-//                reindex(node);
-//
-//            }
-//
-//            if (entity instanceof DeterminationEvent) {
-//                DeterminationEvent detEv = (DeterminationEvent)entity;
-//                if (detEv.getTaxon() != null && detEv.getTaxonName() == null && detEv.getTaxon().getName() != null){
-//                    detEv.setTaxonName(detEv.getTaxon().getName());
-//                }
-//            }
-//        }
+        if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
+            if (entity instanceof ITreeNode) {
+                ITreeNode<?> node = (ITreeNode<?>)entity;
+                reindex(node);
+
+            }
+        }
     }
 
     static String sep = ITreeNode.separator;
