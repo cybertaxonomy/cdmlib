@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -65,6 +66,11 @@ public class TestServiceImpl implements ITestService {
         result.addUpdatedCdmId(taxonNodeCei);
         result.setStatus(Status.OK);
         return result;
+    }
+
+    @Override
+    public String execLongRunningMethod(IRemotingProgressMonitor monitor) {
+
     }
 
 }
