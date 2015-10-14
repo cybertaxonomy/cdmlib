@@ -45,7 +45,7 @@ public class SaveOrUpdateorMergeEntityListener implements SaveOrUpdateEventListe
 
     private void saveOrUpdateOrMerge(Object entity, Session session) {
 
-        //moved to CdmPreDataChangeObservableListener
+        //moved to CdmPreDataChangeListener
 //        if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
 //
 //            if (entity instanceof ITreeNode) {

@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 7 Jul 2015
  *
  */
-public class CdmPreDataChangeObservableListener implements PreInsertEventListener, PreUpdateEventListener {
+public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpdateEventListener {
     private static final long serialVersionUID = -7581071903134036209L;
 
     static String sep = ITreeNode.separator;

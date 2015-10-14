@@ -68,8 +68,8 @@ public class CdmListenerIntegrator implements Integrator {
 		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener());
 		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener());
 
-		eventRegistry.appendListeners(EventType.PRE_INSERT, new CdmPreDataChangeObservableListener());
-		eventRegistry.appendListeners(EventType.PRE_UPDATE, new CdmPreDataChangeObservableListener());
+		eventRegistry.appendListeners(EventType.PRE_INSERT, new CdmPreDataChangeListener());
+		eventRegistry.appendListeners(EventType.PRE_UPDATE, new CdmPreDataChangeListener());
 	}
 
 
