@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.service;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -23,6 +25,15 @@ import eu.etaxonomy.cdm.io.common.ImportResult;
 public interface IIOService {
 
     public ExportResult export(IExportConfigurator configurator);
+
+
+    /**
+     * @param configurator
+     * @param importData
+     * @param type
+     * @return
+     */
+    public UUID monitImportData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type);
 
     /**
      * @param configurator
@@ -45,5 +56,6 @@ public interface IIOService {
      * @return
      */
     public ImportResult importDataFromInputStream(IImportConfigurator configurator, byte[] importData);
+
 
 }

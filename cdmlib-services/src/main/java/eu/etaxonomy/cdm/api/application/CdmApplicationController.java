@@ -1,3 +1,4 @@
+
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -437,7 +439,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	@Override
 	public final ITaxonNodeService getTaxonNodeService(){
-	    return configuration.getTaxonNodeService();
+		return configuration.getTaxonNodeService();
 	}
 
 
@@ -571,6 +573,15 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	}
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IProgressMonitorService getProgressMonitorService() {
+        return configuration.getProgressMonitorService();
+    }
+
+
 	@Override
 	public IEntityValidationService getEntityValidationService(){
 		return configuration.getEntityValidationService();
@@ -622,7 +633,6 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	public ICdmPermissionEvaluator getPermissionEvaluator(){
 		return configuration.getPermissionEvaluator();
 	}
-
 
 	/**
 	 * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication,
@@ -683,4 +693,6 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 		txManager.commit(txStatus);
 		return;
 	}
+
 }
+

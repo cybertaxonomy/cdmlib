@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -154,6 +155,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IPolytomousKeyService polytomousKeyService;
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
+	@Autowired
+	private IProgressMonitorService progressMonitorService;
 	@Autowired
 	private IEntityValidationService entityValidationService;
 	@Autowired
@@ -360,6 +363,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return polytomousKeyNodeService;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IProgressMonitorService getProgressMonitorService() {
+        return progressMonitorService;
+    }
+
 	@Override
 	public IWorkingSetService getWorkingSetService(){
 		return workingSetService;
@@ -432,5 +443,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 	}
+
 
 }

@@ -1,12 +1,14 @@
 
 package eu.etaxonomy.cdm.common.monitor;
 
+import java.io.Serializable;
+
 
 
 /**
- * This progress monitor interface is ad adaptation of the eclipse 
+ * This progress monitor interface is ad adaptation of the eclipse
  * org.eclipse.core.runtime.IProgressMonitor ;
- * 
+ *
  * The <code>IProgressMonitor</code> interface is implemented
  * by objects that monitor the progress of an activity; the methods
  * in this interface are invoked by code that performs the activity.
@@ -40,7 +42,7 @@ package eu.etaxonomy.cdm.common.monitor;
  * Clients may implement this interface.
  * </p>
  */
-public interface IProgressMonitor {
+public interface IProgressMonitor extends Serializable {
 
 	/** Constant indicating an unknown amount of work.
 	 */
@@ -49,18 +51,18 @@ public interface IProgressMonitor {
 	/**
 	 * Notifies that the main task is beginning.  This must only be called once
 	 * on a given progress monitor instance.
-	 * 
+	 *
 	 * @param name the name (or description) of the main task
 	 * @param totalWork the total number of work units into which
-	 *  the main task is been subdivided. If the value is <code>UNKNOWN</code> 
-	 *  the implementation is free to indicate progress in a way which 
+	 *  the main task is been subdivided. If the value is <code>UNKNOWN</code>
+	 *  the implementation is free to indicate progress in a way which
 	 *  doesn't require the total number of work units in advance.
 	 */
 	public void beginTask(String name, int totalWork);
 
 	/**
-	 * Notifies that the work is done; that is, either the main task is completed 
-	 * or the user canceled it. This method may be called more than once 
+	 * Notifies that the work is done; that is, either the main task is completed
+	 * or the user canceled it. This method may be called more than once
 	 * (implementations should be prepared to handle this case).
 	 */
 	public void done();
@@ -79,7 +81,7 @@ public interface IProgressMonitor {
 
 	/**
 	 * Sets the cancel state to the given value.
-	 * 
+	 *
 	 * @param value <code>true</code> indicates that cancelation has
 	 *     been requested (but not necessarily acknowledged);
 	 *     <code>false</code> clears this flag
@@ -88,8 +90,8 @@ public interface IProgressMonitor {
 	public void setCanceled(boolean value);
 
 	/**
-	 * Sets the task name to the given value. This method is used to 
-	 * restore the task label after a nested operation was executed. 
+	 * Sets the task name to the given value. This method is used to
+	 * restore the task label after a nested operation was executed.
 	 * Normally there is no need for clients to call this method.
 	 *
 	 * @param name the name (or description) of the main task
@@ -114,30 +116,30 @@ public interface IProgressMonitor {
 	 * @param work a non-negative number of work units just completed
 	 */
 	public void worked(int work);
-	
+
     /**
      * Internal method to handle scaling correctly. This method
-     * must not be called by a client. Clients should 
+     * must not be called by a client. Clients should
      * always use the method </code>worked(int)</code>.
-     * 
+     *
      * @param work the amount of work done
      */
     public void internalWorked(double work);
-	
-	
+
+
 	/**
 	 * Notifies about a warning
 	 * @param message
 	 */
 	public void warning(String message);
-	
+
 	/**
 	 * Notifies about a warning that was caused by an exception.
 	 * @param message
 	 * @param throwable
 	 */
 	public void warning(String message, Throwable throwable);
-	
+
 }
 
 
