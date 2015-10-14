@@ -10,12 +10,9 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.event.spi.MergeEvent;
-import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
@@ -24,27 +21,17 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 
 
 @SuppressWarnings("serial")
-public class SaveOrUpdateorMergeEntityListener implements SaveOrUpdateEventListener, MergeEventListener {
+public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener{
 
     @Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
         //System.err.println("SaveOrUpdateListener" + event.getEntity().getClass());
         Object entity = event.getObject();
-        saveOrUpdateOrMerge(entity, event.getSession());
+        saveOrUpdate(entity, event.getSession());
     }
 
-    @Override
-    public void onMerge(MergeEvent event) throws HibernateException {
-        Object entity = event.getOriginal();
-        saveOrUpdateOrMerge(entity,event.getSession());
-    }
 
-    @Override
-    public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
-
-    }
-
-    private void saveOrUpdateOrMerge(Object entity, Session session) {
+    private void saveOrUpdate(Object entity, Session session) {
 
         //moved to CdmPreDataChangeListener
         if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
