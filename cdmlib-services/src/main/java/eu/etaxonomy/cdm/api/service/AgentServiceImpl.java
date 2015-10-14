@@ -172,6 +172,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	}
 
 	@Override
+	@Transactional(readOnly = false)
+	public Person convertTeam2Person(UUID teamUuid) throws MergeException {
+	    Team team = CdmBase.deproxy(dao.load(teamUuid), Team.class);
+	    return convertTeam2Person(team);
+	}
+
+	@Override
 	public Person convertTeam2Person(Team team) throws MergeException {
 		Person result = null;
 		team = CdmBase.deproxy(team, Team.class);
@@ -194,6 +201,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 
 		return result;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public Team convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException {
+	    Person person = CdmBase.deproxy(dao.load(personUuid), Person.class);
+	    return convertPerson2Team(person);
 	}
 
 	@Override
