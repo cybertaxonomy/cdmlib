@@ -40,7 +40,9 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -67,8 +69,8 @@ public class User extends CdmBase implements UserDetails {
     private static final long serialVersionUID = 6582191171369439163L;
     private static final Logger logger = Logger.getLogger(User.class);
 
- // **************************** FACTORY *****************************************/   
-    
+ // **************************** FACTORY *****************************************/
+
     public static User NewInstance(String username, String pwd){
         User user = new User();
         user.setUsername(username);
@@ -98,7 +100,7 @@ public class User extends CdmBase implements UserDetails {
     }
 
 //***************************** Fields *********************** /
-    
+
     @XmlElement(name = "Username")
     @Column(unique = true)
     @Field(analyze = Analyze.NO)
@@ -159,13 +161,13 @@ public class User extends CdmBase implements UserDetails {
     private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
 
 //***************************** Constructor *********************** /
-    
+
     protected User(){
         super();
     }
-    
+
 // ***************************** METHODS ******************************/
-    
+
     /**
      * Initializes or refreshes the collection of authorities, See
      * {@link #getAuthorities()}
@@ -284,6 +286,14 @@ public class User extends CdmBase implements UserDetails {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public static User getCurrentAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+            return (User)authentication.getPrincipal();
+        }
+        return null;
     }
 
 //*********************** CLONE ********************************************************/

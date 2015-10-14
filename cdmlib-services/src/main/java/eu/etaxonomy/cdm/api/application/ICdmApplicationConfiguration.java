@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -267,6 +268,10 @@ public interface ICdmApplicationConfiguration{
 	 */
 	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
 
+	/**
+     * @return
+     */
+	public IProgressMonitorService getProgressMonitorService();
 
 	/**
 	 * @return

@@ -50,6 +50,7 @@
         <prop key="/remoting/polytomouskeynode.service">httpPolytomousKeyNodeService</prop>
         <prop key="/remoting/polytomouskey.service">httpPolytomousKeyService</prop>
         <prop key="/remoting/primer.service">httpPrimerService</prop>
+        <prop key="/remoting/progressmonitor.service">httpProgressMonitorService</prop>
         <prop key="/remoting/reference.service">httpReferenceService</prop>        
         <prop key="/remoting/sequence.service">httpSequenceService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
