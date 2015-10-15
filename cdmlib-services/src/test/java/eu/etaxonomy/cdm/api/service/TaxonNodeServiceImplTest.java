@@ -518,6 +518,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@DataSet
 	public void testMoveTaxonNode(){
+	    classification = classificationService.load(classificationUuid);
+	  //  Set<TaxonNode>  nodes = classification.getAllNodes();
+	    List<TaxonNode>  nodes = classification.getChildNodes();
+	    System.out.println(nodes.size());
+	    classification.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), nodes.size(), null, null);
+	   nodes =  classification.getChildNodes();
+	    System.out.println(nodes.size());
 
 	}
 

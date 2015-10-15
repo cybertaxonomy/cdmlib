@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -516,6 +517,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         config.setDeleteFromDescription(true);
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
+        occurrenceService.delete(derivedUnit, config);
+        specimenDescription =  (SpecimenDescription) descriptionService.find(specimenDescriptionUuid);
+
+        assertNull(specimenDescription);
     }
 
     @Test

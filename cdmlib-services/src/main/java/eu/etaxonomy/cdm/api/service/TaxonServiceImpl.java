@@ -1313,7 +1313,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         if (result.isOk()){
 
-            synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(dao.merge(synonym), Synonym.class);
 
             //remove synonymRelationship
             Set<Taxon> taxonSet = new HashSet<Taxon>();
@@ -3064,34 +3064,34 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (!(ref instanceof TaxonNameBase)){
             	message = null;
                 if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
-                    message = "The Taxon can't be deleted as long as it has synonyms.";
+                    message = "The taxon can't be deleted as long as it has synonyms.";
 
                 }
                 if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
-                    message = "The Taxon can't be deleted as long as it has factual data.";
+                    message = "The taxon can't be deleted as long as it has factual data.";
 
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
-                    message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                    message = "The taxon can't be deleted as long as it belongs to a taxon node.";
 
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
-                        message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
+                        message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
 
                     } else{
-                        message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                        message = "The taxon can't be deleted as long as it belongs to a taxon node.";
 
                     }
                 }
                 if (ref instanceof PolytomousKeyNode){
-                    message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
+                    message = "The taxon can't be deleted as long as it is referenced by a polytomous key node.";
 
                 }
 
                 if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
-                   message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+                   message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this taxon";
 
 
                 }

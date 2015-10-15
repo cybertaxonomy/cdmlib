@@ -1175,6 +1175,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if (specimen.getDescriptions().contains(specimenDescription)) {
                     specimen.removeDescription(specimenDescription);
                 }
+                DeleteResult descriptionDelete = descriptionService.isDeletable(specimenDescription, null);
+                if (descriptionDelete.isOk()){
+                    descriptionService.delete(specimenDescription);
+                }
             }
             // check for amplification
             if (relatedObject.isInstanceOf(AmplificationResult.class)) {
