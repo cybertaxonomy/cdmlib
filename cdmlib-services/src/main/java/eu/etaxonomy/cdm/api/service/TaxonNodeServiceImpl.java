@@ -490,34 +490,30 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid){
-    	UpdateResult result = new UpdateResult();
-
-
-    	   TaxonNode taxonNode = dao.load(taxonNodeUuid);
-    	   TaxonNode targetNode = dao.load(targetNodeUuid);
-    	   Integer sortIndex = targetNode.getSortIndex();
-    	   TaxonNode parent = targetNode.getParent();
-    	   result.addUpdatedObject(parent);
-           result.addUpdatedObject(taxonNode.getParent());
-           result.setCdmEntity(taxonNode);
-    	   parent.addChildNode(taxonNode, sortIndex+1, taxonNode.getReference(),  taxonNode.getMicroReference());
-    	   dao.saveOrUpdate(parent);
-
-        return result;
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean isParent){
+        TaxonNode taxonNode = dao.load(taxonNodeUuid);
+    	TaxonNode targetNode = dao.load(targetNodeUuid);
+    	return moveTaxonNode(taxonNode, targetNode, isParent);
     }
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent){
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean isParent){
         UpdateResult result = new UpdateResult();
-        result.addUpdatedObject(taxonNode.getParent());
+
+        Integer sortIndex;
+        if (isParent){
+
+            sortIndex = newParent.getChildNodes().size();
+        }else{
+            sortIndex = newParent.getSortIndex() +1;
+            newParent = newParent.getParent();
+        }
         result.addUpdatedObject(newParent);
+        result.addUpdatedObject(taxonNode.getParent());
         result.setCdmEntity(taxonNode);
-        Reference<?> reference = taxonNode.getReference();
-        String microReference = taxonNode.getMicroReference();
-        newParent.addChildNode(taxonNode, reference, microReference);
-        dao.saveOrUpdate(taxonNode);
+        newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        dao.saveOrUpdate(newParent);
 
         return result;
     }
@@ -526,12 +522,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid){
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean isParent){
         UpdateResult result = new UpdateResult();
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         for (UUID taxonNodeUuid: taxonNodeUuids){
             TaxonNode taxonNode = dao.load(taxonNodeUuid);
-            result.includeResult(moveTaxonNode(taxonNode,targetNode));
+            result.includeResult(moveTaxonNode(taxonNode,targetNode, isParent));
         }
         return result;
     }

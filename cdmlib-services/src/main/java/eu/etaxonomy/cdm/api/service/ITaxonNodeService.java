@@ -114,21 +114,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 
     /**
-     * @param taxonNode
-     * @param newParentTaxonNode
-     * @return
-     */
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
-
-
-
-
-    /**
      * @param taxonNodeUuid
      * @param newParentTaxonNodeUuid
      * @return
      */
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, boolean parent);
 
 
 
@@ -137,7 +127,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param newParentNodeUuid
      * @return
      */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid);
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean parent);
+
+    /**
+     * @param taxonNode
+     * @param newParent
+     * @param parent
+     * @return
+     */
+    UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean parent);
 
 
 
