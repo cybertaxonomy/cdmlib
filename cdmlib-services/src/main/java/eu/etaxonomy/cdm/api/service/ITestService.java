@@ -9,8 +9,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * Service interface for the testing of client applications using the service
@@ -31,10 +33,25 @@ public interface ITestService {
 
     public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei);
 
+
     /**
      * @param monitor
      * @return
      */
-    public String execLongRunningMethod(IRemotingProgressMonitor monitor);
+    public String longRunningMethod(IProgressMonitor monitor);
+
+    /**
+     * @return
+     */
+    public String longRunningMethod();
+
+    /**
+     * @return
+     */
+    public UUID monitLongRunningMethod();
+
+
+
+
 
 }

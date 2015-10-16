@@ -9,13 +9,18 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -29,6 +34,9 @@ public class TestServiceImpl implements ITestService {
 
     @Autowired
     ITaxonNodeService taxonNodeService;
+
+    @Autowired
+    ProgressMonitorManager<IRemotingProgressMonitor> progressMonitorManager;
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITestService#wait(int)
@@ -68,9 +76,43 @@ public class TestServiceImpl implements ITestService {
         return result;
     }
 
-    @Override
-    public String execLongRunningMethod(IRemotingProgressMonitor monitor) {
 
+    @Override
+    public UUID monitLongRunningMethod() {
+        final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
+        UUID uuid = progressMonitorManager.registerMonitor(monitor);
+        Thread monitThread = new Thread() {
+            @Override
+            public void run() {
+                Object result = longRunningMethod(monitor);
+                monitor.setResult(result);
+            }
+        };
+        monitThread.setPriority(3);
+        monitThread.start();
+        return uuid;
+    }
+
+    @Override
+    public String longRunningMethod(IProgressMonitor monitor) {
+        int noOfSteps = 10;
+        monitor.beginTask("Long Running Task", noOfSteps);
+        for(int i=0; i<noOfSteps; i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            monitor.worked(1);
+        }
+        monitor.done();
+        return "Success";
+    }
+
+    @Override
+    public String longRunningMethod() {
+        return longRunningMethod(new NullProgressMonitor());
     }
 
 }
