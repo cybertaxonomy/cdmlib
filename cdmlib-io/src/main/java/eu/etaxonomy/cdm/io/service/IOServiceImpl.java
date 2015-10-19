@@ -14,12 +14,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.ProgressMonitorManager;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -46,6 +50,9 @@ public class IOServiceImpl implements IIOService {
     @Qualifier("defaultImport")
     CdmApplicationAwareDefaultImport cdmImport;
 
+    @Autowired
+    ProgressMonitorManager<IRemotingProgressMonitor> progressMonitorManager;
+
 
 
     /* (non-Javadoc)
@@ -58,6 +65,22 @@ public class IOServiceImpl implements IIOService {
     }
 
 
+    @Override
+    public UUID monitImportData(final IImportConfigurator configurator, final byte[] importData, final SOURCE_TYPE type) {
+        final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
+        configurator.setProgressMonitor(monitor);
+        UUID uuid = progressMonitorManager.registerMonitor(monitor);
+        Thread monitThread = new Thread() {
+            @Override
+            public void run() {
+                Object result = importData(configurator, importData, type);
+                monitor.setResult(result);
+            }
+        };
+        monitThread.setPriority(3);
+        monitThread.start();
+        return uuid;
+    }
 
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
