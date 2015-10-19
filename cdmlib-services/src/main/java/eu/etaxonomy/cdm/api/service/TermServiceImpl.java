@@ -97,7 +97,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	public Language getLanguageByIso(String iso639) {
-		return dao.getLanguageByIso(iso639);
+	    return dao.getLanguageByIso(iso639);
+	}
+
+	@Override
+	public Language getLanguageByLabel(String label) {
+	    return Language.getLanguageByLabel(label);
 	}
 
 	@Override

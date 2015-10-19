@@ -167,4 +167,10 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return
      */
     public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
+
+    /**
+     * @param label
+     * @return
+     */
+    public Language getLanguageByLabel(String label);
 }
