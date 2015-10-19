@@ -967,6 +967,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new TaxonDeletionConfigurator();
         }
     	Taxon taxon = (Taxon)dao.load(taxonUUID);
+    	taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
         DeleteResult result = isDeletable(taxon, config);
 
@@ -1097,28 +1098,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
                         }
                     } else if (config.isDeleteInAllClassifications()){
-                        Set<ITaxonTreeNode> nodesList = new HashSet<ITaxonTreeNode>();
+                        List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
                         nodesList.addAll(taxon.getTaxonNodes());
 
                             for (ITaxonTreeNode treeNode: nodesList){
                                 TaxonNode taxonNode = (TaxonNode) treeNode;
                                 if(!deleteChildren){
-                                   /* Object[] childNodes = taxonNode.getChildNodes().toArray();
-                                    //nodesList.addAll(taxonNode.getChildNodes());
-                                    for (Object childNode: childNodes){
-                                        TaxonNode childNodeCast = (TaxonNode) childNode;
-                                        deleteTaxon(childNodeCast.getTaxon(), config, classification);
-
-                                    }
-
-                                    /*for (TaxonNode childNode: taxonNode.getChildNodes()){
-                                        deleteTaxon(childNode.getTaxon(), config, classification);
-
-                                    }
-                                   // taxon.removeTaxonNode(taxonNode);
-                                    //nodeService.delete(taxonNode);
-                                } else{
-                                    */
                                     Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     for (Object childNode: childNodes){
                                         TaxonNode childNodeCast = (TaxonNode) childNode;
@@ -1155,8 +1140,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                     TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
                     //check whether taxon will be deleted or not
+
                     if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
-                        taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
+
                         //name.removeTaxonBase(taxon);
                         //nameService.saveOrUpdate(name);
                         taxon.setName(null);

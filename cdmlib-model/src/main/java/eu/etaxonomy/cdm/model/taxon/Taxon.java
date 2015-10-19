@@ -356,13 +356,11 @@ public class Taxon
             taxonNode.delete();
 
         } else if (!taxonNode.isTopmostNode()){
-            List<TaxonNode> children =  taxonNode.getChildNodes();
 
-            for (TaxonNode childNode: children){
-
-                children.remove(childNode);
+            List<TaxonNode> nodes = new ArrayList<TaxonNode> (taxonNode.getChildNodes());
+            for (TaxonNode childNode: nodes){
+                taxonNode.getChildNodes().remove(childNode);
                 parent.addChildNode(childNode, null, null);
-
             }
 
             taxonNode.delete();

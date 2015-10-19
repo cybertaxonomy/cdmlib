@@ -1132,7 +1132,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon child2 =(Taxon) service.find(TaxonGenerator.SPECIES2_UUID);
 
        // try {
-        result = service.deleteTaxon(child2.getUuid(), config, null);
+        result = service.deleteTaxon(child2.getUuid(), config, child2.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
             Assert.fail("Delete should not throw an exception");
         }
@@ -1176,7 +1176,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
        // try {
-        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
+
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1229,7 +1230,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteSynonymsIfPossible(false);
 
 
-       DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
+       DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1266,7 +1267,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(true);
-        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, null);
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
         	Assert.fail();
         }
@@ -1299,7 +1300,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         secondClassification.addChildTaxon(testTaxon, null, null);
         //delete the taxon in all classifications
-        //try {
+        config.setDeleteInAllClassifications(true);
        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
        if (!result.isOk()){
         	Assert.fail();
@@ -1374,7 +1375,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
 
 
-        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, classification.getUuid());
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1413,7 +1414,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
        // try {
-        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, testTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1452,7 +1453,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
-        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
 
         if(!result.isOk()){
          	Assert.fail();
@@ -1489,7 +1490,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(true);
 
-        DeleteResult result  = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        DeleteResult result  = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1518,7 +1519,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(false);
 
-        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
         if(!result.isOk()){
          	Assert.fail();
        	}
@@ -1551,7 +1552,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
        // try {
-            service.deleteTaxon(misappliedNameTaxon.getUuid(), config, null);
+            service.deleteTaxon(misappliedNameTaxon.getUuid(), config,null);
        // } catch (DataChangeNoRollbackException e) {
          //   e.printStackTrace();
 

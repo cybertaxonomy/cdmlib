@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -118,7 +117,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
 
-
+        Classification classification = oldTaxonNode.getClassification();
         Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
         // Move oldTaxon to newTaxon
@@ -240,7 +239,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         conf.setDeleteNameIfPossible(false);
 
         if (result.isOk()){
-        	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, null);
+        	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
         }else{
         	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
@@ -288,7 +287,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) {
+    public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config) {
 
         if (config == null){
         	config = new TaxonDeletionConfigurator();
@@ -296,116 +295,110 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         DeleteResult result = new DeleteResult();
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
         Classification classification = null;
-        for (ITaxonTreeNode treeNode:nodes){
+        List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>(list);
+        for (TaxonNode treeNode:taxonNodes){
         	if (treeNode != null){
-	        	if (treeNode instanceof TaxonNode){
-	        		TaxonNode taxonNode;
-		            taxonNode = HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
-		            TaxonNode parent = taxonNode.getParent();
-		            	//check whether the node has children or the children are already deleted
-		            if(taxonNode.hasChildNodes()) {
-	            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
-	            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
-	        			children.addAll(childNodesList);
-	        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
-	        			boolean childHandling = (compare == 0)? true: false;
-	            		if (childHandling){
-	            			boolean changeDeleteTaxon = false;
-	            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
-	            				config.getTaxonNodeConfig().setDeleteTaxon(true);
-	            				changeDeleteTaxon = true;
-	            			}
-	            			DeleteResult resultNodes = deleteTaxonNodes(children, config);
-	            			if (!resultNodes.isOk()){
-                                result.addExceptions(resultNodes.getExceptions());
-                                result.setStatus(resultNodes.getStatus());
+
+        		TaxonNode taxonNode;
+	            taxonNode = HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
+	            TaxonNode parent = taxonNode.getParent();
+	            	//check whether the node has children or the children are already deleted
+	            if(taxonNode.hasChildNodes()) {
+            		List<TaxonNode> children = new ArrayList<TaxonNode> ();
+            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
+        			children.addAll(childNodesList);
+        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
+        			boolean childHandling = (compare == 0)? true: false;
+            		if (childHandling){
+            			boolean changeDeleteTaxon = false;
+            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
+            				config.getTaxonNodeConfig().setDeleteTaxon(true);
+            				changeDeleteTaxon = true;
+            			}
+            			DeleteResult resultNodes = deleteTaxonNodes(children, config);
+            			if (!resultNodes.isOk()){
+                            result.addExceptions(resultNodes.getExceptions());
+                            result.setStatus(resultNodes.getStatus());
+                        }
+            			if (changeDeleteTaxon){
+            				config.getTaxonNodeConfig().setDeleteTaxon(false);
+            			}
+
+            		} else {
+            			//move the children to the parent
+
+            			for (TaxonNode child: childNodesList){
+            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
+            			}
+
+            		}
+            	}
+
+	            classification = taxonNode.getClassification();
+
+	            if (classification.getRootNode().equals(taxonNode)){
+	            	classification.removeRootNode();
+	            	classification = null;
+	            }else if (classification.getChildNodes().contains(taxonNode)){
+            		Taxon taxon = taxonNode.getTaxon();
+            		classification.deleteChildNode(taxonNode);
+
+	            	//node is rootNode
+	            	if (taxon != null){
+
+	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
+	            		    taxonService.saveOrUpdate(taxon);
+	            		    saveOrUpdate(taxonNode);
+
+			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
+			            	if (!resultTaxon.isOk()){
+                                result.addExceptions(resultTaxon.getExceptions());
+                                result.setStatus(resultTaxon.getStatus());
                             }
-	            			if (changeDeleteTaxon){
-	            				config.getTaxonNodeConfig().setDeleteTaxon(false);
-	            			}
 
-	            		} else {
-	            			//move the children to the parent
+		            	}
+	            	}
+            		classification = null;
 
-	            			for (TaxonNode child: childNodesList){
-	            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
-	            			}
+	            } else {
+	            	classification = null;
+	            	Taxon taxon = taxonNode.getTaxon();
+	            	taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+	            	if (taxon != null){
+	            		taxon.removeTaxonNode(taxonNode);
+	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
+			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+			            	saveOrUpdate(taxonNode);
+			            	taxonService.saveOrUpdate(taxon);
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
 
-	            		}
+                            if (!resultTaxon.isOk()){
+                                result.addExceptions(resultTaxon.getExceptions());
+                                result.setStatus(resultTaxon.getStatus());
+                            }
+		            	}
 	            	}
 
-		            classification = taxonNode.getClassification();
+	            }
 
-		            if (classification.getRootNode().equals(taxonNode)){
-		            	classification.removeRootNode();
-		            	classification = null;
-		            }else if (classification.getChildNodes().contains(taxonNode)){
-	            		Taxon taxon = taxonNode.getTaxon();
-	            		classification.deleteChildNode(taxonNode);
-
-		            	//node is rootNode
-		            	if (taxon != null){
-
-		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-		            		    taxonService.saveOrUpdate(taxon);
-		            		    saveOrUpdate(taxonNode);
-
-				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
-				            	if (!resultTaxon.isOk()){
-	                                result.addExceptions(resultTaxon.getExceptions());
-	                                result.setStatus(resultTaxon.getStatus());
-	                            }
-
-			            	}
-		            	}
-	            		classification = null;
-
-		            } else {
-		            	classification = null;
-		            	Taxon taxon = taxonNode.getTaxon();
-		            	//node is rootNode
-		            	if (taxon != null){
-		            		taxon.removeTaxonNode(taxonNode);
-		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-				            	saveOrUpdate(taxonNode);
-
-				            	taxonService.saveOrUpdate(taxon);
-				            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
-
-                                if (!resultTaxon.isOk()){
-                                    result.addExceptions(resultTaxon.getExceptions());
-                                    result.setStatus(resultTaxon.getStatus());
-                                }
-			            	}
-		            	}
-
-		            }
-
-		            result.addUpdatedObject(parent);
-		            if(result.getCdmEntity() == null){
-		                result.setCdmEntity(taxonNode);
-                    }
-		            UUID uuid = dao.delete(taxonNode);
-		            logger.debug("Deleted node " +uuid.toString());
-	        	}else {
-	        		classification = (Classification) treeNode;
-
-	        	}
-
-	            //deletedUUIDs.add(treeNode.getUuid());
+	            result.addUpdatedObject(parent);
+	            if(result.getCdmEntity() == null){
+	                result.setCdmEntity(taxonNode);
+                }
+	            UUID uuid = dao.delete(taxonNode);
+	            logger.debug("Deleted node " +uuid.toString());
 
 	        }
         }
-        if (classification != null){
+        /*if (classification != null){
             result.addUpdatedObject(classification);
         	DeleteResult resultClassification = classService.delete(classification);
         	 if (!resultClassification.isOk()){
                  result.addExceptions(resultClassification.getExceptions());
                  result.setStatus(resultClassification.getStatus());
              }
-        }
+        }*/
         return result;
 
     }
@@ -414,7 +407,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config) {
-        Set<ITaxonTreeNode> nodes = new HashSet<ITaxonTreeNode>();
+        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
         for(UUID nodeUuid : nodeUuids) {
             nodes.add(dao.load(nodeUuid));
         }
@@ -441,7 +434,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	}
     	DeleteResult result = new DeleteResult();
 
-    	if (config.getTaxonNodeConfig().isDeleteTaxon()){
+    	if (config.getTaxonNodeConfig().getChildHandling().equals(TaxonNodeDeletionConfigurator.ChildHandling.MOVE_TO_PARENT)){
+    	   Object[] children = node.getChildNodes().toArray();
+    	   TaxonNode childNode;
+    	   for (Object child: children){
+    	       childNode = (TaxonNode) child;
+    	       parent.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference());
+    	   }
+    	}else{
+    	    deleteTaxonNodes(node.getChildNodes(), config);
+    	}
+
+    	if (config.getTaxonNodeConfig().isDeleteTaxon() && (config.isDeleteInAllClassifications() || taxon.getTaxonNodes().size() == 1)){
     		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
     		result.addUpdatedObject(parent);
     		if (result.isOk()){
@@ -453,20 +457,28 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     	result.setCdmEntity(node);
     	boolean success = taxon.removeTaxonNode(node);
+    	dao.save(parent);
     	taxonService.saveOrUpdate(taxon);
     	result.addUpdatedObject(parent);
 
     	if (success){
 			result.setStatus(Status.OK);
-    		if (!dao.delete(node).equals(null)){
+			parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
+			int index = parent.getChildNodes().indexOf(node);
+			if (index > -1){
+			    parent.removeChild(index);
+			}
+    		if (!dao.delete(node, config.getTaxonNodeConfig().getChildHandling().equals(TaxonNodeDeletionConfigurator.ChildHandling.DELETE)).equals(null)){
     			return result;
     		} else {
     			result.setError();
     			return result;
     		}
     	}else{
-    		result.setError();
-    		result.addException(new Exception("The node can not be removed from the taxon."));
+    	    if (dao.findByUuid(node.getUuid()) != null){
+        		result.setError();
+        		result.addException(new Exception("The node can not be removed from the taxon."));
+    		}
     		return result;
     	}
 

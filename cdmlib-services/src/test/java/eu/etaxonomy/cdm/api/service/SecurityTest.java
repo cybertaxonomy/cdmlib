@@ -785,7 +785,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
            // try {
-        	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
+        	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, taxon.getTaxonNodes().iterator().next().getClassification().getUuid());
             /*} catch (DataChangeNoRollbackException e) {
                 Assert.fail();
             }*/

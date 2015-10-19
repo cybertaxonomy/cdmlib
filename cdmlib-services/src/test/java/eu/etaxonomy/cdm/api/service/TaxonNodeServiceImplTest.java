@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -40,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -444,7 +442,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
+
     public final void testDeleteNodeWithReusedTaxon(){
         classification = classificationService.load(classificationUuid);
         node1 = taxonNodeService.load(node1Uuid);
@@ -454,11 +452,14 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         Classification classification2 = Classification.NewInstance("Classification2");
         TaxonNode nodeClassification2 =classification2.addChildTaxon(node1.getTaxon(), null, null);
-
+        assertEquals(node1.getTaxon().getUuid(), t1Uuid);
         classificationService.save(classification2);
         List<TaxonNode> nodesOfClassification2 = taxonNodeService.listAllNodesForClassification(classification2, null, null);
         UUID nodeUUID = nodesOfClassification2.get(0).getUuid();
-        TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        assertEquals(nodeUUID, nodeClassification2.getUuid());
+        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()),  null);
+        taxonService.save(newTaxon);
+        TaxonNode newNode = node1.addChildTaxon(newTaxon,null, null);
         UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
         newNode = taxonNodeService.load(uuidNewNode);
         UUID taxUUID = newNode.getTaxon().getUuid();
@@ -468,15 +469,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         if (!result.isOk()){
             Assert.fail();
         }
+        taxonService.getSession().flush();
         newNode = taxonNodeService.load(uuidNewNode);
         node1 = taxonNodeService.load(node1Uuid);
         assertNull(newNode);
         assertNull(node1);
-        taxonNodeService.load(nodeUUID);
+        assertNotNull(taxonNodeService.load(nodeUUID));
 
         t1 = (Taxon) taxonService.load(t1Uuid);
         assertNotNull(t1);
-        Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
+        newTaxon = (Taxon)taxonService.load(taxUUID);
         assertNull(newTaxon);
         BotanicalName name = (BotanicalName)nameService.load(nameUUID);
         assertNull(name);
@@ -496,7 +498,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = (TaxonNode)HibernateProxyHelper.deproxy(node2);
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
-		Set<ITaxonTreeNode> treeNodes = new HashSet<ITaxonTreeNode>();
+		List<TaxonNode> treeNodes = new ArrayList<TaxonNode>();
 		treeNodes.add(node1);
 		treeNodes.add(node2);
 

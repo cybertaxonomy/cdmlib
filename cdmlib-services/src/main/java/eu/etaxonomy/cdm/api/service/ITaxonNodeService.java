@@ -18,7 +18,6 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -60,16 +59,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	        Reference citation,
 	        String citationMicroReference) ;
 
-	/**
-	 * deletes the given taxon nodes
-	 *
-	 * @param nodes
-	 * @param config
-	 * @return
-	 *
-	 */
-	public DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
-			TaxonDeletionConfigurator config) ;
+
     /**
      * @param nodeUuids
      * @param config
@@ -136,6 +126,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
     UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean parent);
+
+    /**
+     * deletes the given taxon nodes
+     *
+     * @param nodes
+     * @param config
+     * @return
+     *
+     */
+    public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config);
 
 
 
