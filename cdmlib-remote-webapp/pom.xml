@@ -195,7 +195,7 @@
         <!-- replace the place holders like ${...} in datasources.xml -->
         <targetPath>${project.build.directory}/test-classes</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}src/test/resources</directory>
+        <directory>${basedir}/src/test/resources</directory>
         <includes>
           <include>datasources.xml</include>
         </includes>
@@ -203,7 +203,7 @@
       <resource>
         <!-- all other test resources without filtering -->
         <targetPath>${project.build.directory}/test-classes</targetPath>
-        <directory>${basedir}src/test/resources</directory>
+        <directory>${basedir}/src/test/resources</directory>
         <excludes>
           <exclude>datasources.xml</exclude>
         </excludes>
@@ -211,7 +211,7 @@
       <resource>
         <!-- all main resources without filtering -->
         <targetPath>${project.build.directory}/classes</targetPath>
-        <directory>${basedir}src/main/resources</directory>
+        <directory>${basedir}/src/main/resources</directory>
       </resource>
     </resources>
     <plugins>
