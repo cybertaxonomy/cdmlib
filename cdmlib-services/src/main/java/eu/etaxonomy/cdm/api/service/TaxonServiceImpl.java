@@ -995,9 +995,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                     // relationship will be deleted by hibernate automatically,
                     // see comment above and http://dev.e-taxonomy.eu/trac/ticket/3797
-                    // else{
-                    //     deleteSynonymRelationships(synonym, taxon);
-                    // }
+
                 }
             }
 
@@ -1006,7 +1004,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 if (taxon.getTaxonRelations().size() > 0){
                     String message = "Taxon can't be deleted as it is related to another taxon. " +
                             "Remove taxon from all relations to other taxa prior to deletion.";
-                   // throw new ReferencedObjectUndeletableException(message);
+
                 }
             } else{
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
@@ -1019,20 +1017,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         }
                     }
                     taxon.removeTaxonRelation(taxRel);
-                    /*if (taxFrom.equals(taxon)){
-                        try{
-                            this.deleteTaxon(taxTo, taxConf, classification);
-                        } catch(DataChangeNoRollbackException e){
-                            logger.debug("A related taxon will not be deleted." + e.getMessage());
-                        }
-                    } else {
-                        try{
-                            this.deleteTaxon(taxFrom, taxConf, classification);
-                        } catch(DataChangeNoRollbackException e){
-                            logger.debug("A related taxon will not be deleted." + e.getMessage());
-                        }
 
-                    }*/
                 }
             }
 
@@ -1046,7 +1031,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (desc.getDescribedSpecimenOrObservation() != null){
                         String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
                                 " which also describes specimens or abservations";
-                        //throw new ReferencedObjectUndeletableException(message);
                     }
                     removeDescriptions.add(desc);
 
@@ -1058,12 +1042,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
             }
 
-
-         /*   //check references with only reverse mapping
-        String message = checkForReferences(taxon);
-        if (message != null){
-            //throw new ReferencedObjectUndeletableException(message.toString());
-        }*/
 
          if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null )){
                 //if (taxon.getTaxonNodes().size() > 0){
@@ -1091,6 +1069,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             node = null;
                         }
                         if (node != null){
+                            HibernateProxyHelper.deproxy(node, TaxonNode.class);
                             success =taxon.removeTaxonNode(node, deleteChildren);
                             nodeService.delete(node);
                         } else {

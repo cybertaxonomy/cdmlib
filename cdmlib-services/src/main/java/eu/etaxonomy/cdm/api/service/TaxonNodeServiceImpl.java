@@ -419,7 +419,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
-    	TaxonNode node = dao.load(nodeUUID);
+    	TaxonNode node = HibernateProxyHelper.deproxy(dao.load(nodeUUID), TaxonNode.class);
     	return deleteTaxonNode(node, config);
     }
 
@@ -428,7 +428,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
 
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
-    	TaxonNode parent = node.getParent();
+    	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
