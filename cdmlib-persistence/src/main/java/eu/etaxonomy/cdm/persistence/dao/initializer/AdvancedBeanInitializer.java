@@ -25,6 +25,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentMap;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.SortedMapProxy;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -198,8 +201,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     }
 
 
-
-    // propPath contains either a single field or a nested path
+   // propPath contains either a single field or a nested path
     // split next path token off and keep the remaining as nestedPath
     private void initializeNodeNoWildcard(BeanInitNode node) {
 
@@ -226,62 +228,68 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             }
             //new
             for (Object parentBean : parentBeans){
-                String propertyName = mapFieldToPropertyName(property, parentBean.getClass().getSimpleName());
-                try{
-                    Object propertyValue = PropertyUtils.getProperty(parentBean, propertyName);
-                    preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
-                } catch (IllegalAccessException e) {
-                    String message = "Illegal access on property " + property;
-                    logger.error(message);
-                    throw new RuntimeException(message, e);
-                } catch (InvocationTargetException e) {
-                    String message = "Cannot invoke property " + property + " not found";
-                    logger.error(message);
-                    throw new RuntimeException(message, e);
-                } catch (NoSuchMethodException e) {
-                    String message = "Property " + propertyName + " not found for class " + parentClazz;
-                    logger.error(message);
-                    throw new RuntimeException(message, e);
-                }
-            }
-
+                preparePropertyForSingleBean(node, property, parentClazz, parentBean);
+            }//end for
             //end new
-
 //			 initializeNodeNoWildcardOld(node, property, index, parentBeans);  //move bulkLoadLazies up again, if uncomment this line
-        }
+        } //end for
         bulkLoadLazies(node);
-
     }
 
     /**
-     * @param node
-     * @param property
-     * @param index
-     * @param parentBeans
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
+     * Prepare a single property of a non-collection bean. Collections are handled elsewhere.
      */
-    private void initializeNodeNoWildcardOld(BeanInitNode node,
-            String property, Integer index, Set<Object> parentBeans)
-            throws IllegalAccessException, InvocationTargetException,
-            NoSuchMethodException {
-        for (Object bean : parentBeans){
-
-            PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
-            if (logger.isTraceEnabled()){logger.trace("   unwrap " + node.toStringNoWildcard() + " ... ");}
-            // [1] initialize the bean named by property
-            Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
-            if (logger.isTraceEnabled()){logger.trace("   unwrap " + node.toStringNoWildcard() + " - DONE ");}
-
-
-            // [2]
-            // handle property
-            if(unwrappedPropertyBean != null ){
-                initializeNodeSinglePropertyOld(node, property, index, bean, unwrappedPropertyBean);
-            }
+    private void preparePropertyForSingleBean(BeanInitNode node, String property, Class<?> parentClazz, Object bean) {
+        String propertyName = mapFieldToPropertyName(property, bean.getClass().getSimpleName());
+        try{
+            Object propertyValue = PropertyUtils.getProperty(bean, propertyName);
+            preparePropertyValueForBulkLoadOrStore(node, bean, property, propertyValue);
+        } catch (IllegalAccessException e) {
+            String message = "Illegal access on property " + property;
+            logger.error(message);
+            throw new RuntimeException(message, e);
+        } catch (InvocationTargetException e) {
+            String message = "Cannot invoke property " + property + " not found";
+            logger.error(message);
+            throw new RuntimeException(message, e);
+        } catch (NoSuchMethodException e) {
+            String message = "Property " + propertyName + " not found for class " + parentClazz;
+            logger.error(message);
+            throw new RuntimeException(message, e);
         }
     }
+
+//    /**
+//     * @param node
+//     * @param property
+//     * @param index
+//     * @param parentBeans
+//     * @throws IllegalAccessException
+//     * @throws InvocationTargetException
+//     * @throws NoSuchMethodException
+//     */
+//    private void initializeNodeNoWildcardOld(BeanInitNode node,
+//                String property,
+//                Integer index,
+//                Set<Object> parentBeans)
+//            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException
+//    {
+//        for (Object bean : parentBeans){
+//
+//            PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
+//            if (logger.isTraceEnabled()){logger.trace("   unwrap " + node.toStringNoWildcard() + " ... ");}
+//            // [1] initialize the bean named by property
+//            Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
+//            if (logger.isTraceEnabled()){logger.trace("   unwrap " + node.toStringNoWildcard() + " - DONE ");}
+//
+//
+//            // [2]
+//            // handle property
+//            if(unwrappedPropertyBean != null ){
+//                initializeNodeSinglePropertyOld(node, property, index, bean, unwrappedPropertyBean);
+//            }
+//        }
+//    }
 
     /**
      * @param node
@@ -289,7 +297,11 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
      * @param parentBean
      * @param param
      */
-    private void preparePropertyValueForBulkLoadOrStore(BeanInitNode node, Object parentBean, String param, Object propertyValue) {
+    private void preparePropertyValueForBulkLoadOrStore(BeanInitNode node,
+            Object parentBean,
+            String param,
+            Object propertyValue)
+    {
         BeanInitNode sibling = node.getSibling(param);
 
         if (propertyValue instanceof AbstractPersistentCollection ){
@@ -307,6 +319,20 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                         node.putLazyCollection(collection);
                     }
                 }
+            }
+        } else if (propertyValue instanceof CollectionProxy
+                || propertyValue instanceof MapProxy<?, ?>
+                || propertyValue instanceof SortedMapProxy<?, ?>){
+            //hibernate envers collections
+            //TODO check if other code works with audited data at all as we use HQL queries
+            if (!node.hasWildcardToManySibling()){  //if wildcard sibling exists the lazies are already prepared there
+                Collection<?> collection = (Collection<?>)propertyValue;
+                //TODO it is difficult to find out if an envers collection is initiallized
+                //but possiblie via reflection. If the "delegate" parameter is null it is not yet initialized.
+                //However, as we do not know if envers initialization works at all together with the AdvancedBeanInitializer
+                //we initialize each collection immediately here by calling size()
+                collection.size();  //initialize
+                storeInitializedEnversCollection(collection, node, param);
             }
         }else{
             //singles
@@ -349,8 +375,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 	private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
 			BeanInitNode node, String param) {
-		Collection<?> collection;
 
+	    Collection<?> collection;
 		if (persistedCollection  instanceof Collection) {
 			collection = (Collection<?>) persistedCollection;
 		}else if (persistedCollection instanceof Map) {
@@ -362,6 +388,30 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			preparePropertyValueForBulkLoadOrStore(node, null, param, value);
 		}
 	}
+
+	/**
+	 * @see #storeInitializedCollection(AbstractPersistentCollection, BeanInitNode, String)alizedCollection
+	 */
+	private void storeInitializedEnversCollection(Collection<?> enversCollection,
+            BeanInitNode node, String param) {
+	    if (enversCollection instanceof CollectionProxy
+                || enversCollection instanceof MapProxy<?, ?>
+                || enversCollection instanceof SortedMapProxy<?, ?>){
+	        Collection<?> collection;
+	        if (enversCollection instanceof MapProxy
+	                || enversCollection instanceof SortedMapProxy<?, ?>) {
+	            collection = ((Map<?,?>)enversCollection).values();
+	        }else if (enversCollection instanceof CollectionProxy) {
+	            collection = enversCollection;
+	        }else{
+	            throw new RuntimeException ("Non MapProxy and non CollectionProxy case not handled in storeInitializedEnversCollection()");
+	        }
+	        for (Object value : collection){
+	            preparePropertyValueForBulkLoadOrStore(node, null, param, value);
+	        }
+	    }
+    }
+
 
 	private void bulkLoadLazies(BeanInitNode node) {
 
