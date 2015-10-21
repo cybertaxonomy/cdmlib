@@ -75,6 +75,7 @@ public class IOServiceImpl implements IIOService {
             public void run() {
                 Object result = importData(configurator, importData, type);
                 monitor.setResult(result);
+                monitor.done();
             }
         };
         monitThread.setPriority(3);
