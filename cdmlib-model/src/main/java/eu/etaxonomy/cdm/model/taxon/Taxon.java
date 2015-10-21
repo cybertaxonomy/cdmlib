@@ -139,12 +139,26 @@ public class Taxon
 
     @XmlAttribute(name= "taxonStatusUnknown")
     private boolean taxonStatusUnknown = false;
+    /**
+     * The status of this taxon is unknown it could also be some kind of synonym.
+     * @return the taxonStatusUnknown
+     */
+    public boolean isTaxonStatusUnknown() {return taxonStatusUnknown;}
+     /** @see #isTaxonStatusUnknown()*/
+    public void setTaxonStatusUnknown(boolean taxonStatusUnknown) {this.taxonStatusUnknown = taxonStatusUnknown;}
+
 
     @XmlAttribute(name= "unplaced")
     private boolean unplaced = false;
+    public boolean isUnplaced() {return unplaced;}
+    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
+
 
     @XmlAttribute(name= "excluded")
     private boolean excluded = false;
+    public boolean isExcluded() {return excluded;}
+    public void setExcluded(boolean excluded) {this.excluded = excluded;}
+
 
     // shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
     @XmlElement(name = "TaxonomicParentCache")
@@ -995,6 +1009,7 @@ public class Taxon
      * @see  #getTaxonomicChildren()
      */
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
+    @Transient
     public boolean hasTaxonomicChildren(){
         return this.taxonomicChildrenCount > 0;
     }
@@ -1072,6 +1087,7 @@ public class Taxon
      * @see  #removeSynonym(Synonym)
      * @see  SynonymRelationship
      */
+    @Transient
     public boolean hasSynonyms(){
         return this.getSynonymRelations().size() > 0;
     }
@@ -1621,30 +1637,6 @@ public class Taxon
         return result;
     }
 
-
-
-    /**
-     * The status of this taxon is unknown it could also be some kind of synonym.
-     * @return the taxonStatusUnknown
-     */
-    public boolean isTaxonStatusUnknown() {
-        return taxonStatusUnknown;
-    }
-
-    /**
-     * @param taxonStatusUnknown the taxonStatusUnknown to set
-     */
-    public void setTaxonStatusUnknown(boolean taxonStatusUnknown) {
-        this.taxonStatusUnknown = taxonStatusUnknown;
-    }
-
-
-
-
-    public boolean isUnplaced() {
-        return unplaced;
-    }
-
     @Override
     @Transient
     public boolean isOrphaned() {
@@ -1655,18 +1647,6 @@ public class Taxon
             }
         }
         return false;
-    }
-
-    public void setUnplaced(boolean unplaced) {
-        this.unplaced = unplaced;
-    }
-
-    public boolean isExcluded() {
-        return excluded;
-    }
-
-    public void setExcluded(boolean excluded) {
-        this.excluded = excluded;
     }
 
     /**
@@ -1748,7 +1728,6 @@ public class Taxon
      * @param title
      * @return
      */
-    @Transient
     public TaxonDescription getOrCreateImageGallery(String title){
         return getOrCreateImageGallery(title, true, false);
     }
@@ -1850,8 +1829,4 @@ public class Taxon
 		this.descriptions = new HashSet<TaxonDescription>();
 	}
 
-    @Override
-    public void setCacheStrategy(ITaxonCacheStrategy<Taxon> cacheStrategy){
-    	this.cacheStrategy = cacheStrategy;
-    }
 }
