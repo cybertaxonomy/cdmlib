@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -165,7 +166,16 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setAnamorphic(false);
 		clone = (BotanicalName)botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
-
 	}
 
+    @Test
+    public void beanTests(){
+//      #5307 Test that BeanUtils does not fail
+        BeanUtils.getPropertyDescriptors(BotanicalName.class);
+        BeanUtils.getPropertyDescriptors(TaxonNameBase.class);
+        BeanUtils.getPropertyDescriptors(NonViralName.class);
+        BeanUtils.getPropertyDescriptors(ZoologicalName.class);
+        BeanUtils.getPropertyDescriptors(ViralName.class);
+        BeanUtils.getPropertyDescriptors(CultivarPlantName.class);
+    }
 }

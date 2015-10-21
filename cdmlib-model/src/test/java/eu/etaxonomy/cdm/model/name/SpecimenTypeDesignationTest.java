@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -46,16 +47,16 @@ public class SpecimenTypeDesignationTest {
 	@Before
 	public void setUp() {
 		term1 = new SpecimenTypeDesignation();
-		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), 
+		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(),
 				SpecimenTypeDesignationStatus.ISOTYPE(), null, null, null, false);
 	}
-	
+
 	@Test
 	public void testSpecimenTypeDesignation() {
 		assertNotNull(term1);
 		assertNotNull(term2);
 	}
-	
+
 	@Test
 	public void testGetTypeStatus() {
 		SpecimenTypeDesignationStatus std = term1.getTypeStatus();
@@ -64,12 +65,12 @@ public class SpecimenTypeDesignationTest {
 		assertEquals(term1.getTypeStatus(), SpecimenTypeDesignationStatus.EPITYPE());
 		assertTrue(term1.getTypeStatus().isInstanceOf(SpecimenTypeDesignationStatus.class));
 	}
-	
+
 	@Test
 	public void testBidirectionalRelationship(){
-		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
+		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), SpecimenTypeDesignationStatus.ISOTYPE(),
 				null, null, null, false);
-		DerivedUnit specimen = (DerivedUnit) term2.getTypeSpecimen();
+		DerivedUnit specimen = term2.getTypeSpecimen();
 		Set<SpecimenTypeDesignation> set = specimen.getSpecimenTypeDesignations();
 		boolean contains = false;
 		for (SpecimenTypeDesignation spec: set){
@@ -80,5 +81,16 @@ public class SpecimenTypeDesignationTest {
 		}
 		assertTrue(contains);
 	}
+
+    @Test
+    public void beanTests(){
+//      #5307 Test that BeanUtils does not fail
+        BeanUtils.getPropertyDescriptors(SpecimenTypeDesignation.class);
+        BeanUtils.getPropertyDescriptors(NameTypeDesignation.class);
+        BeanUtils.getPropertyDescriptors(HomotypicalGroup.class);
+        BeanUtils.getPropertyDescriptors(NomenclaturalStatusType.class);
+        BeanUtils.getPropertyDescriptors(Rank.class);
+    }
+
 
 }

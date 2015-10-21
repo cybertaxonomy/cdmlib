@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -55,7 +57,7 @@ public class SpecimenTest {
 	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
 
 	private DerivedUnit specimen;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -73,7 +75,7 @@ public class SpecimenTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#getPreservation()} and 
+	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#getPreservation()} and
 	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen#setPreservation(eu.etaxonomy.cdm.model.occurrence.PreservationMethod)}.
 	 */
 	@Test
@@ -83,16 +85,16 @@ public class SpecimenTest {
 		assertSame(preservation, specimen.getPreservation());
 		specimen.setPreservation(null);
 	}
-	
+
 	@Test
 	public void testBidirectionalSpecimenDescription(){
 		Assert.assertNotNull("Specimen should exist", specimen);
-		
+
 		SpecimenDescription desc = SpecimenDescription.NewInstance(specimen);
 		Assert.assertNotNull("Description should exist.", desc);
 		Assert.assertSame("Descriptions specimen should be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
 		Assert.assertTrue("Specimen should contain description", specimen.getDescriptions().contains(desc));
-		
+
 		SpecimenDescription desc2 = SpecimenDescription.NewInstance();
 		Assert.assertNotNull("Description should exist.", desc2);
 		specimen.addDescription(desc2);
@@ -100,7 +102,7 @@ public class SpecimenTest {
 		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
 		Assert.assertTrue("Specimen should contain description2", specimen.getDescriptions().contains(desc2));
 		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
-		
+
 		SpecimenDescription desc3 = SpecimenDescription.NewInstance();
 		Assert.assertNotNull("Description should exist.", desc3);
 		desc3.setDescribedSpecimenOrObservation(specimen);
@@ -111,7 +113,7 @@ public class SpecimenTest {
 		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
 		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
 
-		
+
 		//change specimen of a given description
 		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
 		Assert.assertNotNull("Specimen should exist.", specimen2);
@@ -135,7 +137,7 @@ public class SpecimenTest {
 		Assert.assertFalse("Nothing should have changed", specimen.getDescriptions().contains(desc3));
 		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc2));
 		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc));
-		
+
 		//remove description
 		specimen.removeDescription(desc2);
 		Assert.assertNull("Descriptions2 specimen should not exist anymore", desc2.getDescribedSpecimenOrObservation());
@@ -157,52 +159,52 @@ public class SpecimenTest {
 		Assert.assertFalse("Specimen should still no longer contain description2", specimen.getDescriptions().contains(desc2));
 		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
 		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
-		
-		
+
+
 	}
 
-	
+
 	@Test
 	public void testBidirectionalTypeDesignation(){
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
 		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
-		
+
 		specimen.addSpecimenTypeDesignation(desig1);
 		Assert.assertEquals("Specimen1 should be the designations specimen", specimen, desig1.getTypeSpecimen());
 		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
 		Assert.assertEquals("specimen1's designation should be desig1", desig1, specimen.getSpecimenTypeDesignations().iterator().next());
-		
+
 		specimen.addSpecimenTypeDesignation(desig2);
 		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
 		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
-		
+
 		specimen2.addSpecimenTypeDesignation(desig2);
 		Assert.assertEquals("Specimen2 should have replaced specimen1 as desig2's specimen", specimen2, desig2.getTypeSpecimen());
 		Assert.assertEquals("Specimen2 should have exactly 1 designation", 1, specimen2.getSpecimenTypeDesignations().size());
 		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen2.getSpecimenTypeDesignations().iterator().next());
 		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
-		
+
 		specimen2.removeSpecimenTypeDesignation(desig2);
 		Assert.assertEquals("Desig2 should not have a specimen anymore", null, desig2.getTypeSpecimen());
 		Assert.assertEquals("Specimen2 should have no designation", 0, specimen2.getSpecimenTypeDesignations().size());
 		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
-		
+
 		specimen.addSpecimenTypeDesignation(desig2);
 		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
 		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
-		
+
 		desig1.setTypeSpecimen(null);
 		Assert.assertEquals("Desig1 should not have a specimen anymore", null, desig1.getTypeSpecimen());
 		Assert.assertEquals("Specimen1 should have 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
 		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen.getSpecimenTypeDesignations().iterator().next());
-		
+
 		desig1.setTypeSpecimen(specimen);
 		Assert.assertEquals("Desig1 should have specimen1 as specimen again", specimen, desig1.getTypeSpecimen());
 		Assert.assertEquals("Specimen1 should have 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
-		
+
 	}
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#clone()}.
@@ -210,11 +212,11 @@ public class SpecimenTest {
 	@Test
 	public void testClone() {
 		logger.debug("Start testClone");
-		
-		//Null test is not full implemented, but an error is thrown if null throws 
+
+		//Null test is not full implemented, but an error is thrown if null throws
 		//null pointer exception somewhere
 		DerivedUnit specimenNullClone = (DerivedUnit)specimen.clone();
-		
+
 		String accessionNumber = "accNumber";
 		String catalogNumber = "catNumber";
 		Collection collection = Collection.NewInstance();
@@ -242,7 +244,7 @@ public class SpecimenTest {
 		Calendar updated = Calendar.getInstance();
 		Person updatedBy = Person.NewTitledInstance("updatedPerson");
 		UUID uuid = UUID.randomUUID();
-		
+
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		String definition = "definition";
 		//TODO
@@ -255,7 +257,7 @@ public class SpecimenTest {
 		Rights right = Rights.NewInstance("right", Language.DEFAULT());
 		Media media = Media.NewInstance();
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance("12", "idNamespace");
-		
+
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setCollection(collection);
@@ -274,7 +276,7 @@ public class SpecimenTest {
 //		specimen.setUpdated(updated);
 //		specimen.setUpdatedBy(updatedBy);
 		specimen.setUuid(uuid);
-		
+
 		specimen.addAnnotation(annotation);
 		specimen.putDefinition(Language.DEFAULT(), definition);
 		specimen.addDerivationEvent(derivationEvent);
@@ -292,7 +294,7 @@ public class SpecimenTest {
 			//ignore
 		}
 		DerivedUnit specimenClone = (DerivedUnit)specimen.clone();
-		
+
 		assertFalse(id == specimenClone.getId());
 		assertFalse(created.equals(specimenClone.getCreated()));
 		assertFalse(createdBy.equals(specimenClone.getCreatedBy()));
@@ -301,8 +303,8 @@ public class SpecimenTest {
 		assertNull(specimenClone.getUpdatedBy());
 		assertNull(specimenClone.getCreatedBy());
 		assertFalse(uuid.equals(specimenClone.getUuid()));
-		
-		
+
+
 		assertEquals(accessionNumber, specimenClone.getAccessionNumber());
 		assertEquals(catalogNumber, specimenClone.getCatalogNumber());
 		assertEquals(collection, specimenClone.getCollection());
@@ -314,43 +316,54 @@ public class SpecimenTest {
 		assertEquals(storedUnder, specimenClone.getStoredUnder());
 		assertEquals(sex, specimenClone.getSex());
 		assertEquals(titleCache, specimenClone.getTitleCache());
-		
+
 		Annotation clonedAnnotation = specimenClone.getAnnotations().iterator().next();
 		assertFalse(annotation.equals(clonedAnnotation));
 		assertEquals(annotation.getText(), ((LanguageStringBase)specimenClone.getAnnotations().iterator().next()).getText() );
 		assertNotSame(annotation, specimenClone.getAnnotations().iterator().next() );
-		
+
 		assertEquals(definition, specimenClone.getDefinition().get(Language.DEFAULT()).getText());
-//TODO	
+//TODO
 //		assertNotSame(definition, specimenClone.getDefinition().getText(Language.DEFAULT()));
-		
+
 		assertEquals(derivationEvent, specimenClone.getDerivationEvents().iterator().next());
 		assertSame(derivationEvent, specimenClone.getDerivationEvents().iterator().next());
-		
+
 		assertEquals(description, specimenClone.getDescriptions().iterator().next());
 		// TODO ?
 		assertSame(description, specimenClone.getDescriptions().iterator().next());
-		
+
 		assertEquals(determination, specimenClone.getDeterminations().iterator().next());
 		// TODO ?
 		assertSame(determination, specimenClone.getDeterminations().iterator().next());
 
 		assertFalse(extension.equals(specimenClone.getExtensions().iterator().next()));
-		assertEquals(extension.getValue(), ((Extension)specimenClone.getExtensions().iterator().next()).getValue());
+		assertEquals(extension.getValue(), specimenClone.getExtensions().iterator().next().getValue());
 		assertNotSame(extension, specimenClone.getExtensions().iterator().next());
 		assertEquals(1, specimen.getExtensions().size());
-		
+
 		assertFalse(marker.equals(specimenClone.getMarkers().iterator().next()));
-		assertEquals(marker.getFlag(), ((Marker)specimenClone.getMarkers().iterator().next()).getFlag());
+		assertEquals(marker.getFlag(), specimenClone.getMarkers().iterator().next().getFlag());
 		assertNotSame(marker, specimenClone.getMarkers().iterator().next());
 		assertEquals(1, specimenClone.getMarkers().size());
-		
+
 //		assertEquals(media, specimenClone.getMedia().iterator().next());  #3597
 		assertEquals(right, specimenClone.getRights().iterator().next());
-		
+
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
 		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 	}
+
+
+    @Test
+    public void beanTests(){
+//      #5307 Test that BeanUtils does not fail
+        BeanUtils.getPropertyDescriptors(DerivedUnit.class);
+        BeanUtils.getPropertyDescriptors(SpecimenOrObservationBase.class);
+        BeanUtils.getPropertyDescriptors(FieldUnit.class);
+        BeanUtils.getPropertyDescriptors(MediaSpecimen.class);
+        BeanUtils.getPropertyDescriptors(DnaSample.class);
+    }
 }
