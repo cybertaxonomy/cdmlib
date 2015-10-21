@@ -160,13 +160,8 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         assertNotNull(result);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
 
-    }
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
