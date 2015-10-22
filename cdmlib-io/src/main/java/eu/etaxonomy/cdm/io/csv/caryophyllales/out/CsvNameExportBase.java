@@ -46,7 +46,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 @Component
-public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, CsvNameExportState, IExportTransformer> implements ICdmExport<CsvNameExportConfigurator, CsvNameExportState>{
+public class CsvNameExportBase
+        extends CdmExportBase<CsvNameExportConfigurator, CsvNameExportState, IExportTransformer>
+        implements ICdmExport<CsvNameExportConfigurator, CsvNameExportState>{
+
+    private static final long serialVersionUID = -8141111132821035857L;
+
     private static final Logger logger = Logger.getLogger(CsvNameExportBase.class);
 
     final String NOT_DESIGNATED = "not designated";
@@ -140,8 +145,6 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
             child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
             childrenUuids.add(child.getUuid());
         }
-        propertyPaths.add("descriptions");
-        propertyPaths.add("descriptions.elements");
         List<TaxonNode> familyNodes = getTaxonNodeService().find(childrenUuids);
         childrenUuids.clear();
         List<TaxonNode> genusNodes = new ArrayList<TaxonNode>();
@@ -172,7 +175,12 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
             familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
             familyNode.getTaxon().setProtectedTitleCache(true);
             nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
-            taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid(), propertyPaths);
+
+            List<String> propertyPathTaxon = new ArrayList<String>();
+            propertyPathTaxon.add("descriptions");
+            propertyPathTaxon.add("descriptions.elements");
+
+            taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid(), propertyPathTaxon);
             taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
             //if publish flag is set
 
@@ -199,7 +207,7 @@ public class CsvNameExportBase extends CdmExportBase<CsvNameExportConfigurator, 
 
             nameRecord.put("descriptionsFam", descriptionsString.toString());
 
-            taxon = (Taxon) getTaxonService().load(genusNode.getTaxon().getUuid(), propertyPaths);
+            taxon = (Taxon) getTaxonService().load(genusNode.getTaxon().getUuid(), propertyPathTaxon);
             taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
             //	if (taxon.isPublish()){
             nameRecord.put("genusTaxon", taxon.getTitleCache());
