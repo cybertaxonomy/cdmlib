@@ -9,6 +9,10 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * @author cmathew
  * @date 14 Oct 2015
@@ -17,6 +21,8 @@ package eu.etaxonomy.cdm.common.monitor;
 public class RemotingProgressMonitor extends RestServiceProgressMonitor implements IRemotingProgressMonitor {
 
     private Object result;
+    private List<String> reports = new ArrayList<String>();
+
 
     /**
      * @return the result
@@ -33,4 +39,21 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     public void setResult(Object result) {
         this.result = result;
     }
+
+    /**
+     * @return the reports
+     */
+    @Override
+    public List<String> getReports() {
+        return reports;
+    }
+
+    /**
+     * @param report the report to add
+     */
+    @Override
+    public void addReport(String report) {
+        reports.add(report);
+    }
+
 }

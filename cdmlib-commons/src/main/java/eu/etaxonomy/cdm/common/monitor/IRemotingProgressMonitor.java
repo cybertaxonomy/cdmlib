@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import java.util.List;
+
 /**
  * @author cmathew
  * @date 14 Oct 2015
@@ -25,6 +27,16 @@ public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {
      * @param result
      */
     public void setResult(Object result);
+
+    /**
+     * @return
+     */
+    public List<String> getReports();
+
+    /**
+     * @param report
+     */
+    public void addReport(String report);
 
 
 }

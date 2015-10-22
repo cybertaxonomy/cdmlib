@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -80,14 +81,13 @@ public class TestServiceImpl implements ITestService {
     @Override
     public UUID monitLongRunningMethod() {
         final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
-        UUID uuid = progressMonitorManager.registerMonitor(monitor);
-        Thread monitThread = new Thread() {
+        RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
             @Override
-            public void run() {
-                Object result = longRunningMethod(monitor);
-                monitor.setResult(result);
+            public Object doRun(IRemotingProgressMonitor monitor) {
+                return longRunningMethod(monitor);
             }
         };
+        UUID uuid = progressMonitorManager.registerMonitor(monitor);
         monitThread.setPriority(3);
         monitThread.start();
         return uuid;
