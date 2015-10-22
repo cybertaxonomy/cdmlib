@@ -122,15 +122,10 @@ public class UpdateResult implements Serializable{
         return updatedObjects;
     }
     public void addUpdatedObject(CdmBase relatedObject) {
-        if (relatedObject != null){
-            this.updatedObjects.add(relatedObject);
-        }
+        this.updatedObjects.add(relatedObject);
     }
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
-        if (updatedObjects.size() >0){
-            this.updatedObjects.addAll(updatedObjects);
-        }
-
+        this.updatedObjects.addAll(updatedObjects);
     }
 
     //		/**
@@ -187,10 +182,7 @@ public class UpdateResult implements Serializable{
     public void includeResult(UpdateResult includedResult){
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
-
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
-
-
     }
 
     public boolean isOk(){

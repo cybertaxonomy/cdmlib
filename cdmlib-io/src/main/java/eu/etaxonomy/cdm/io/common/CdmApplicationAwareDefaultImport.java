@@ -128,7 +128,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         state.initialize(config);
 
         //do check for each class
-        for (Class<ICdmIO> ioClass: config.getIoClassList()){
+        for (Class<ICdmImport> ioClass: config.getIoClassList()){
             try {
                 String ioBeanName = getComponentBeanName(ioClass);
                 ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
@@ -197,15 +197,15 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         state.setSuccess(true);
         //do invoke for each class
-        for (Class<ICdmIO> ioClass: config.getIoClassList()){
+        for (Class<ICdmImport> ioClass: config.getIoClassList()){
             try {
                 String ioBeanName = getComponentBeanName(ioClass);
-                ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
+                ICdmImport cdmIo = applicationContext.getBean(ioBeanName, ICdmImport.class);
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
                     result &= cdmIo.invoke(state);
-                    //importResult.addReport(cdmIo.getByteArray());
+                    importResult.addReport(cdmIo.getByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
                     logger.error("cdmIO was null");
@@ -250,7 +250,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
      * @return
      * @throws IllegalArgumentException if the class does not have a "Component" annotation
      */
-    public static String getComponentBeanName(Class<ICdmIO> ioClass) throws IllegalArgumentException {
+    public static String getComponentBeanName(Class<ICdmImport> ioClass) throws IllegalArgumentException {
         Component component = ioClass.getAnnotation(Component.class);
         if (component == null){
             throw new IllegalArgumentException("Class " + ioClass.getName() + " is missing a @Component annotation." );

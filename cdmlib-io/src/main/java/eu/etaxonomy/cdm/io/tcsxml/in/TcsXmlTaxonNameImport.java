@@ -36,16 +36,12 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Component("tcsXmlTaxonNameIO")
 public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameImport.class);
 
 	private static int modCount = 5000;
-
-	private static INonViralNameParser parser = new NonViralNameParserImpl();
 
 	public TcsXmlTaxonNameImport(){
 		super();
@@ -299,7 +295,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			obligatory = true;
 			Element elSimple = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
 			String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-			nameBase.setTitleCache(simple, true);
+			nameBase.setTitleCache(simple, false);
 			elementList.add(childName.toString());
 
 			childName = "CanonicalName";
@@ -385,7 +381,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "Authorship";
 				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success, nonViralName, false);
+				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success);
 				nonViralName.setCombinationAuthorship(author);
 				//setCombinationAuthorship(author);
 				testNoMoreElements();
@@ -393,14 +389,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "BasionymAuthorship";
 				obligatory = false;
 				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success, nonViralName, true);
+				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success);
 				nonViralName.setBasionymAuthorship(basionymAuthor);
 				testNoMoreElements();
 
 				childName = "CombinationAuthorship";
 				obligatory = false;
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success, nonViralName, false);
+				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success);
 				if (combinationAuthor != null){
 					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}
@@ -550,22 +546,9 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
 			Class<Reference> clazz = Reference.class;
-
 			Reference<?> ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref instanceof Reference){
-
-			    String titleCache = ref.getTitleCache();
-
-			    ref.setAuthorship(((NonViralName)name).getCombinationAuthorship());
-
-			   ref.setAbbrevTitleCache(titleCache, true);
-			   ref.setAbbrevTitle(titleCache);
-			   ref.setProtectedTitleCache(false);
-
 				name.setNomenclaturalReference(ref);
-				name.setProtectedFullTitleCache(false);
-				name.getFullTitleCache();
-				name.setProtectedFullTitleCache(true);
 			}else if (ref == null){
 				logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
 			}else{

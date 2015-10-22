@@ -516,7 +516,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param year
 	 * @return
 	 */
-	public INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
+	private INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
 		IBook result = null;
 
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);

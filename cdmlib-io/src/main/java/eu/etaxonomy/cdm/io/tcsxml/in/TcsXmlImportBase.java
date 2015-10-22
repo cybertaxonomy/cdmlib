@@ -38,15 +38,11 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -65,8 +61,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 
 	@Autowired
 	IpniService service;
-
-	INonViralNameParser nameParser = new NonViralNameParserImpl();
 
 	@Override
     protected abstract void doInvoke(TcsXmlImportState state);
@@ -315,7 +309,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 
 
 	@SuppressWarnings("unchecked")
-	protected TeamOrPersonBase makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success, NonViralName name,boolean isBasionymAuthor){
+	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
 		TeamOrPersonBase<?> result = null;
 		String childName;
 		boolean obligatory;
@@ -345,18 +339,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				obligatory = true;
 				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				result = Person.NewInstance();
-				try{
-				    nameParser.parseAuthors(name, simple);
-				}catch(StringNotParsableException e){
-				    logger.error(e.getMessage());
-				}
-				if (isBasionymAuthor){
-				    result = name.getBasionymAuthorship();
-				}else{
-				    result= name.getCombinationAuthorship();
-				}
-				//result.setNomenclaturalTitle(simple);
+				result = Team.NewInstance();
+				result.setNomenclaturalTitle(simple);
 			}
 		}
 		return result;
