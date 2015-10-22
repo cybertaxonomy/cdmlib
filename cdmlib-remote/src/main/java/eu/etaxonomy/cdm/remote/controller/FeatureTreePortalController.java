@@ -53,7 +53,7 @@ public class FeatureTreePortalController extends FeatureTreeController {
         setInitializationStrategy(FEATURETREE_INIT_STRATEGY);
 
         featuretreeNodeInitStrategy = new ArrayList<String>(2);
-        featuretreeNodeInitStrategy.add("representations");
+//        featuretreeNodeInitStrategy.add("representations");
         featuretreeNodeInitStrategy.add("feature.representations");
     }
 

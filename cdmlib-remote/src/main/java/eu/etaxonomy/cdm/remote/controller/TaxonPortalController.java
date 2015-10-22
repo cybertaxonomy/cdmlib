@@ -161,7 +161,7 @@ public class TaxonPortalController extends TaxonController
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonymRelations.$",
             "synonymRelations.synonym.$",
-            "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.status.type.representations",
             "synonymRelations.synonym.name.nomenclaturalReference.authorship",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
@@ -776,8 +776,7 @@ public class TaxonPortalController extends TaxonController
         // list the media
         logger.trace("getMediaForTaxon() - list the media");
         List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships,
-                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
 
         // filter by preferred size and type
 
