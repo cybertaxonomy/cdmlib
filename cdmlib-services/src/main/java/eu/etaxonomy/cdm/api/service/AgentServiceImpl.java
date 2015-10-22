@@ -216,7 +216,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
 		strategy.setDefaultMergeMode(MergeMode.SECOND);
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-		strategy.setDeleteSecondObject(false);
+		strategy.setDeleteSecondObject(true);
 
 
 		if (! genericDao.isMergeable(team, person, strategy)){
@@ -224,10 +224,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		try {
 			this.save(team);
-			team.setProtectedNomenclaturalTitleCache(true);
+			team.setProtectedNomenclaturalTitleCache(false);
+			team.setProtectedTitleCache(true);
+			team.setTitleCache(person.getTitleCache(), true);
 			genericDao.merge(team, person, strategy);
-			team.addTeamMember(person);
-			this.save(team);
+			//team.addTeamMember(person);
+
+			//this.save(team);
 //			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);
