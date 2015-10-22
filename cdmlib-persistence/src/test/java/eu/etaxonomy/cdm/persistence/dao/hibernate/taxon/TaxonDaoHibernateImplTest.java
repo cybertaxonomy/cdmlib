@@ -29,6 +29,7 @@ import org.apache.log4j.Level;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -1134,10 +1135,45 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
     }
 
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testPropertyPath.xml")
+    public void testPropertyPath(){
+        //Test that BeanInitializer also works on HiberanteProxys
+        Classification c = classificationDao.load(UUID.fromString("4bceea53-893f-4685-8c63-6dcec6e85ab1"));
+        TaxonNode singleNode = c.getRootNode().getChildNodes().iterator().next();
+        Taxon taxonProxy = singleNode.getTaxon();
+        Assert.assertTrue("Object to test should be a proxy ", taxonProxy instanceof HibernateProxy);
+
+        List<String> propertyPaths = new ArrayList<String>();
+        propertyPaths.add("taxonNodes");
+        Taxon taxon = (Taxon)this.taxonDao.load(
+                UUID.fromString("4a5bc930-844f-45ec-aea8-dd155e1ab25f"),
+                propertyPaths);
+        Assert.assertSame("Returned object should be the same proxy to assure that we ran initialization on this proxy", taxonProxy, taxon);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {}
+//    @Test
+    public void createTestDataSet() throws FileNotFoundException {
+//        Classification classification  = Classification.NewInstance("Test");
+//        BotanicalName taxonNameBase = null;
+//        Reference<?> sec = null;
+//        Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
+//        classification.addChildTaxon(taxon, sec, null);
+//
+//        classificationDao.save(classification);
+//        this.commitAndStartNewTransaction(null);
+//
+//        writeDbUnitDataSetFile(new String[] {
+//                "CLASSIFICATION", "TAXONNAMEBASE",
+//                "REFERENCE","TAXONNODE",
+//                "TAXONBASE","LANGUAGESTRING",
+//                "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+//                },
+//                "testPropertyPath" );
+    }
 
 }

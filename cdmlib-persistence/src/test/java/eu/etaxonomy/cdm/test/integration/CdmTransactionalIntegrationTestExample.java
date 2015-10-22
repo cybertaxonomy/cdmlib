@@ -83,7 +83,6 @@ public class CdmTransactionalIntegrationTestExample extends CdmTransactionalInte
         "HIBERNATE_SEQUENCES" // IMPORTANT!!!
         },
         fileNameAppendix );
-
   }
 
 }
