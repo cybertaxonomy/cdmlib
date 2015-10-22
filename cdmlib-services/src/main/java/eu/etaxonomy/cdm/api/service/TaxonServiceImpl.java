@@ -966,8 +966,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     	if (config == null){
             config = new TaxonDeletionConfigurator();
         }
-    	Taxon taxon = (Taxon)dao.load(taxonUUID);
-    	taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
+    	Taxon taxon =  HibernateProxyHelper.deproxy(dao.load(taxonUUID), Taxon.class);
+
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
         DeleteResult result = isDeletable(taxon, config);
 
@@ -1144,7 +1144,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }else {
                 taxon.setName(null);
             }
-
+            this.saveOrUpdate(taxon);
 
 //        	TaxonDescription
            /* Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -1166,6 +1166,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  ){
             	try{
+            	    //taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
             		UUID uuid = dao.delete(taxon);
 
             	}catch(Exception e){

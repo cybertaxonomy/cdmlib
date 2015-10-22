@@ -972,7 +972,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        getSession().merge(taxonBase);
+        //getSession().merge(taxonBase);
 
         taxonBase.removeSources();
 

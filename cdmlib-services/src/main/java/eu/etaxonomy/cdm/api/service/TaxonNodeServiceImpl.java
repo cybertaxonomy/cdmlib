@@ -117,9 +117,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
 
+
         Classification classification = oldTaxonNode.getClassification();
-        Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
-        Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
+        Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon(), Taxon.class);
+        Taxon newAcceptedTaxon = HibernateProxyHelper.deproxy(this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid()), Taxon.class);
+
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
@@ -235,6 +237,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
+        conf.setDeleteNameIfPossible(false);
         DeleteResult result = taxonService.isDeletable(oldTaxon, conf);
         conf.setDeleteNameIfPossible(false);
 
@@ -248,7 +251,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
         result.addUpdatedObject(newAcceptedTaxon);
-        result.addUpdatedObject(oldTaxon);
+        //result.addUpdatedObject(oldTaxon);
 
         //oldTaxonNode.delete();
         return result;
@@ -456,8 +459,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	}
 
     	result.setCdmEntity(node);
-    	boolean success = taxon.removeTaxonNode(node);
-    	dao.save(parent);
+
+    	boolean success = true;
+    	if(taxon != null){
+    	    success = taxon.removeTaxonNode(node);
+    	}
+
     	taxonService.saveOrUpdate(taxon);
     	result.addUpdatedObject(parent);
 

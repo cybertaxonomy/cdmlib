@@ -76,7 +76,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 
-	protected Class<ICdmImport>[] ioClassList;
+	protected Class<ICdmIO>[] ioClassList;
 
 	protected ICdmIO[] ioList;
 
@@ -148,7 +148,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	}
 
 	@Override
-    public Class<ICdmImport>[] getIoClassList(){
+    public Class<ICdmIO>[] getIoClassList(){
 		if (ioClassList == null){
 			makeIoClassList();
 		}
@@ -158,7 +158,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	/**
 	 * @param ioClassList
 	 */
-	public void setIoClassList(Class<ICdmImport>[] ioClassList){
+	public void setIoClassList(Class<ICdmIO>[] ioClassList){
 		this.ioClassList = ioClassList;
 	}
 

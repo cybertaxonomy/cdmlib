@@ -50,6 +50,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -339,9 +340,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         if (protectedFullTitleCache){
             return this.fullTitleCache;
         }
-        if (fullTitleCache == null ){
+      // if (fullTitleCache == null ){
             this.fullTitleCache = getTruncatedCache(generateFullTitle());
-        }
+      //  }
         return fullTitleCache;
     }
 
@@ -844,7 +845,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
                 throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");
             }
-            this.nomenclaturalReference = (Reference)nomenclaturalReference;
+            this.nomenclaturalReference = HibernateProxyHelper.deproxy(nomenclaturalReference, Reference.class);
         } else {
             this.nomenclaturalReference = null;
         }

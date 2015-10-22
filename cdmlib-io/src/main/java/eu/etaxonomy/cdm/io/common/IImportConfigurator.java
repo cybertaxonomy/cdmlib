@@ -164,7 +164,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
     public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 
-    public Class<ICdmImport>[] getIoClassList();
+    public Class<ICdmIO>[] getIoClassList();
 
 //	public String[] getIoBeans();
 //	public void setIoBeans(String[] ioBeans);

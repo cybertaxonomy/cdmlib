@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -128,6 +129,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 	@Override
 	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference) {
 		if (nomenclaturalReference.isProtectedAbbrevTitleCache()){
+		    nomenclaturalReference = HibernateProxyHelper.deproxy(nomenclaturalReference, Reference.class);
 			String cache = nomenclaturalReference.getAbbrevTitleCache();
 			return handleDetailAndYearForPreliminary(nomenclaturalReference, cache, microReference);
 

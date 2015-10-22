@@ -10,8 +10,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class DeleteNonReferencedReferencesConfigurator extends ImportConfiguratorBase<DefaultImportState<DeleteNonReferencedReferencesConfigurator>, Object> implements IImportConfigurator{
 
 	private boolean doReferences = true;
-	private boolean doAuthors = true;	
-	
+	private boolean doAuthors = true;
+
 	public boolean isDoReferences() {
 		return doReferences;
 	}
@@ -43,7 +43,7 @@ public class DeleteNonReferencedReferencesConfigurator extends ImportConfigurato
 		this.setSource(destination);
 		this.setDestination(destination);
 		this.setDbSchemaValidation(DbSchemaValidation.UPDATE);
-		
+
 	}
 
 	@SuppressWarnings("unused")
@@ -53,9 +53,9 @@ public class DeleteNonReferencedReferencesConfigurator extends ImportConfigurato
 		DeleteNonReferencedReferencesConfigurator result = new DeleteNonReferencedReferencesConfigurator(destination);
 		return result;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public <STATE extends ImportStateBase> STATE getNewState() {
 		return (STATE) new DefaultImportState(this);
@@ -65,7 +65,7 @@ public class DeleteNonReferencedReferencesConfigurator extends ImportConfigurato
 	protected void makeIoClassList() {
 		ioClassList = new Class[]{
 				 DeleteNonReferencedreferencesUpdater.class
-		};	
+		};
 	}
 
 	@Override
