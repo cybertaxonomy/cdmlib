@@ -12,16 +12,15 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
-import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.api.service.util.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -43,6 +42,7 @@ public class TestServiceImpl implements ITestService {
      * @see eu.etaxonomy.cdm.api.service.ITestService#wait(int)
      */
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void waitFor(long timeToWaitInMs) throws InterruptedException {
         Thread.sleep(timeToWaitInMs);
     }
@@ -79,14 +79,17 @@ public class TestServiceImpl implements ITestService {
 
 
     @Override
-    public UUID monitLongRunningMethod() {
-        final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
+    public UUID monitLongRunningMethod(final RuntimeException ex) {
+        RemotingProgressMonitor monitor = new RemotingProgressMonitor();
         RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
             @Override
-            public Object doRun(IRemotingProgressMonitor monitor) {
-                return longRunningMethod(monitor);
+            public Object doRun(IRemotingProgressMonitor monitor)  {
+                Object result = longRunningMethod(monitor, ex);
+                monitor.addReport("Report");
+                return result;
             }
         };
+
         UUID uuid = progressMonitorManager.registerMonitor(monitor);
         monitThread.setPriority(3);
         monitThread.start();
@@ -94,25 +97,23 @@ public class TestServiceImpl implements ITestService {
     }
 
     @Override
-    public String longRunningMethod(IProgressMonitor monitor) {
+    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex) {
         int noOfSteps = 10;
+        int stepToThrowException = noOfSteps / 2;
         monitor.beginTask("Long Running Task", noOfSteps);
         for(int i=0; i<noOfSteps; i++) {
             try {
                 Thread.sleep(1000);
+                if(i == stepToThrowException && ex != null) {
+                    throw ex;
+                }
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw ex;
             }
             monitor.worked(1);
         }
         monitor.done();
         return "Success";
-    }
-
-    @Override
-    public String longRunningMethod() {
-        return longRunningMethod(new NullProgressMonitor());
     }
 
 }

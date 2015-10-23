@@ -38,5 +38,14 @@ public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {
      */
     public void addReport(String report);
 
+    /**
+     * @return
+     */
+    public String getOwner();
+
+    /**
+     * @param owner
+     */
+    public void setOwner(String owner);
 
 }

@@ -7,9 +7,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.common.monitor;
+package eu.etaxonomy.cdm.api.service.util;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * @author cmathew
@@ -23,11 +26,17 @@ public abstract class RemotingProgressMonitorThread extends Thread {
 
     private IRemotingProgressMonitor monitor;
 
+
     public RemotingProgressMonitorThread(IRemotingProgressMonitor monitor) {
         if(monitor == null) {
             throw new IllegalStateException("Monitor is null");
         }
+        User user = User.getCurrentAuthenticatedUser();
+        if(user == null) {
+            throw new IllegalStateException("Current authenticated user is null");
+        }
         this.monitor = monitor;
+        this.monitor.setOwner(user.getUsername());
     }
 
     @Override
@@ -47,6 +56,14 @@ public abstract class RemotingProgressMonitorThread extends Thread {
 
     public static RemotingProgressMonitorThread getMonitorThread(IRemotingProgressMonitor monitor) {
         return monitorsInProgress.get(monitor);
+    }
+
+    @Override
+    public void interrupt() {
+        super.interrupt();
+        monitor.setCanceled(true);
+        monitor.done();
+        monitorsInProgress.remove(monitor);
     }
 
 }

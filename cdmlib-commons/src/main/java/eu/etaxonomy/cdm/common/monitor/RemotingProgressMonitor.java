@@ -22,7 +22,7 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 
     private Object result;
     private List<String> reports = new ArrayList<String>();
-
+    private String owner;
 
     /**
      * @return the result
@@ -54,6 +54,22 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     @Override
     public void addReport(String report) {
         reports.add(report);
+    }
+
+
+    /**
+     * @return the owner
+     */
+    @Override
+    public String getOwner() {
+        return owner;
+    }
+    /**
+     * @param owner the owner to set
+     */
+    @Override
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
 }

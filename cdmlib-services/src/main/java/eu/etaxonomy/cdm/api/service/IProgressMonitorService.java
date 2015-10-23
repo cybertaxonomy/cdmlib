@@ -34,4 +34,15 @@ public interface IProgressMonitorService {
      */
     public IRemotingProgressMonitor getRemotingMonitor(UUID uuid);
 
+    /**
+     * @param uuid
+     */
+    public void interrupt(UUID uuid);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    public boolean isMonitorThreadRunning(UUID uuid);
+
 }
