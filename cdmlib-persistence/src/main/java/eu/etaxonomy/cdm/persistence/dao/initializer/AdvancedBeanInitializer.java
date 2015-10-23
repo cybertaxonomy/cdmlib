@@ -255,7 +255,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         } catch (NoSuchMethodException e) {
             String message = "Property " + propertyName + " not found for class " + parentClazz;
             logger.error(message);
-            throw new RuntimeException(message, e);
+            //don't throw exception as sometimes property paths will include non matching property names due to subclassing
+            //#5077  comment 12
         }
     }
 
