@@ -1,17 +1,18 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 import org.joda.time.DateTime;
 
 /**
@@ -22,7 +23,7 @@ import org.joda.time.DateTime;
 public class DbDateMapper extends DbSingleAttributeExportMapperBase implements IDbExportMapper {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
-	
+
 	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, null);
 	}
@@ -30,15 +31,15 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString, DateTime defaultValue){
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, defaultValue);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
 	private DbDateMapper(String cdmAttributeString, String dbAttributeString, DateTime defaultValue) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
-	}	
-	
+	}
+
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExportMapperBase#doInvoke(eu.etaxonomy.cdm.model.common.CdmBase)
 //	 */
@@ -62,7 +63,7 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 //			throw e;
 //		}
 //	}
-	
+
 //
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
@@ -72,8 +73,8 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 //		boolean obligat = true;
 //		return (DateTime)ImportHelper.getValue(cdmBase, this.getSourceAttribute(), this.getTypeClass(), false, obligat);
 //	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
@@ -91,5 +92,5 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 		return DateTime.class;
 	}
 
-	
+
 }

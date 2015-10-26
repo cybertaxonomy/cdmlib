@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,9 +11,9 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.lang.reflect.Method;
+import java.sql.Types;
 
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -26,11 +26,11 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbLanguageMapper.class);
-	
+
 	private Method method;
 	private boolean isCache;
 	private Class<? extends CdmBase> cdmClass;
-	
+
 	/**
 	 * @param cdmClass The class in which "getLanguage" is implemented
 	 * @param cdmAttribute cdm attribute holding the language information
@@ -44,8 +44,8 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 	}
 
 	/**
-	 * @param clazz 
-	 * @param parameterTypes 
+	 * @param clazz
+	 * @param parameterTypes
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
@@ -72,13 +72,10 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 		method.setAccessible(true);
 		cdmClass =  clazz;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
+
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
-		if (cdmBase.isInstanceOf(cdmClass)){ 
+		if (cdmBase.isInstanceOf(cdmClass)){
 			try {
 				Language language = (Language)method.invoke(cdmBase, null);
 				IExportTransformer transformer = getState().getTransformer();
@@ -91,15 +88,12 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 				logger.error("Exception when invoking method: " + e.getLocalizedMessage());
 				return null;
 			}
-			
+
 		}else{
 			throw new ClassCastException("CdmBase for "+this.getClass().getName() +" must be of type "+cdmClass.getName()+", but was " + cdmBase.getClass());
-		}			
+		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
+
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -109,10 +103,6 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){

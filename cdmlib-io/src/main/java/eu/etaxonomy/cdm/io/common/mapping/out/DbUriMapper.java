@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,9 +11,9 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.net.URI;
+import java.sql.Types;
 
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -27,11 +27,11 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 	private static final Logger logger = Logger.getLogger(DbUriMapper.class);
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
-	
+
 	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbUriMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
-	
+
 	public static DbUriMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbUriMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
@@ -39,7 +39,7 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
 		return new DbUriMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
-	
+
 	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
 		return new DbUriMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
@@ -51,8 +51,8 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 	private DbUriMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -67,8 +67,8 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 		}
 		return result;
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()

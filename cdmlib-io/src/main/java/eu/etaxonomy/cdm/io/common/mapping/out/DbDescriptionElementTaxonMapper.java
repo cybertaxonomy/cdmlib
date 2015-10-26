@@ -1,17 +1,18 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -30,10 +31,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbDescriptionElementTaxonMapper.class);
-	
+
 	private boolean isCache = false;
 	private boolean cacheIsNameTitleCache = false;
-	
+
 	public static DbDescriptionElementTaxonMapper NewInstance(String dbAttributeString){
 		return new DbDescriptionElementTaxonMapper(dbAttributeString, false, false, null);
 	}
@@ -51,14 +52,14 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 		this.isCache = isCache;
 		this.cacheIsNameTitleCache = cacheIsNameTitleCache;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		Object result = null;
-		if (cdmBase.isInstanceOf(DescriptionElementBase.class)){ 
+		if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
 			DescriptionElementBase element = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
 			DescriptionBase<?> inDescription = element.getInDescription();
 			if (inDescription != null ){
@@ -91,9 +92,9 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 			return result;
 		}else{
 			throw new ClassCastException("CdmBase for "+this.getClass().getName() +" must be of type DescriptionElementBase, but was " + cdmBase.getClass());
-		}			
+		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
 	 */
