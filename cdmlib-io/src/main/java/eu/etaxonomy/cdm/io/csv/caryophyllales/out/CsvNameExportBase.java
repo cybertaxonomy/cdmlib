@@ -157,7 +157,7 @@ public class CsvNameExportBase
             genusNodes = getTaxonNodeService().find(childrenUuids);
         }
 
-        List<HashMap<String,String>> nameRecords = new ArrayList();
+        List<HashMap<String,String>> nameRecords = new ArrayList<HashMap<String,String>>();
         HashMap<String,String> nameRecord = new HashMap<String,String>();
         List<String> propertyPathsFamilyNode = new ArrayList<String>();
         propertyPathsFamilyNode.add("taxon");
@@ -189,7 +189,7 @@ public class CsvNameExportBase
             nameRecord.put("familyName", name.getNameCache());
 
             StringBuffer descriptionsString = new StringBuffer();
-            for (DescriptionBase descriptionBase: taxon.getDescriptions()){
+            for (DescriptionBase<?> descriptionBase: taxon.getDescriptions()){
                 Set<DescriptionElementBase> elements = descriptionBase.getElements();
                 for (DescriptionElementBase element: elements){
                     if (element.getFeature().equals(Feature.INTRODUCTION())){
@@ -289,7 +289,7 @@ public class CsvNameExportBase
             for (List<Synonym> list: heterotypicSynonymsList.values()){
                 Collections.sort(list, new TaxonComparator());
                 first = true;
-                for (TaxonBase synonym : list){
+                for (TaxonBase<?> synonym : list){
                     if (first){
                         heterotypicalSynonyms.append(" <heterotypic> ");
                     }else{
@@ -304,7 +304,7 @@ public class CsvNameExportBase
 
             first = true;
             Collections.sort(homotypicSynonymsList, new TaxonComparator());
-            for (TaxonBase synonym : homotypicSynonymsList){
+            for (TaxonBase<?> synonym : homotypicSynonymsList){
                 if (!first){
                     homotypicalSynonyms.append(" <homonym> ");
                 }
@@ -341,7 +341,7 @@ public class CsvNameExportBase
             nameRecord.put("nameRelType", nameRelType);
 
             descriptionsString = new StringBuffer();
-            for (DescriptionBase descriptionBase: genusNode.getTaxon().getDescriptions()){
+            for (DescriptionBase<?> descriptionBase: genusNode.getTaxon().getDescriptions()){
                 Set<DescriptionElementBase> elements = descriptionBase.getElements();
                 for (DescriptionElementBase element: elements){
                     if (element.getFeature().getTitleCache().equals("Notes")) {

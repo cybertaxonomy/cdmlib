@@ -437,7 +437,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 
 	@Override
 	public final ITaxonNodeService getTaxonNodeService(){
-		return configuration.getTaxonNodeService();
+	    return configuration.getTaxonNodeService();
 	}
 
 

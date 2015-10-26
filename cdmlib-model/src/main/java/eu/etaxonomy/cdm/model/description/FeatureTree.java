@@ -87,7 +87,9 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
-    private Set<Representation> getRepresentations() {return representations;}
+    //make them private for now as we may delete representations in future
+	//otherwise if we decide to use representations we can make the getters public
+	private Set<Representation> getRepresentations() {return representations;}
     private void setRepresentations(Set<Representation> representations) {this.representations = representations;}
 
 
