@@ -21,7 +21,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>2.1</version>
+        <version>3.0</version>
         <configuration>
           <components>
             <component>
@@ -38,14 +38,14 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
-            <version>3.4.0-SNAPSHOT</version>
+            <version>3.5.6-FINAL</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -68,16 +68,16 @@
               </hibernatetool>
           </tasks>
         </configuration>
-        <dependencies>
+         <dependencies>
           <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
           </dependency>
           <dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.24</version>
+			<version>${mysql.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -98,12 +98,12 @@
           <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.2</version>
+            <version>${slf4j.version}</version>
           </dependency>
           <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-              <version>1.1.2</version>
+              <version>1.2</version>
           </dependency>
         </dependencies>
       </plugin>
