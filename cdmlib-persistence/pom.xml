@@ -103,7 +103,7 @@
           <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-              <version>1.2</version>
+              <version>${commons-locking.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -304,11 +304,11 @@
       <artifactId>mysql-connector-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>postgresql</groupId>
+      <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
-      <groupId>hsqldb</groupId>
+      <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
     </dependency>
     <!-- SQL Server and Sybase -->

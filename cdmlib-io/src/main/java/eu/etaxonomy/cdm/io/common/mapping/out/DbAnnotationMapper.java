@@ -1,17 +1,18 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -28,10 +29,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbAnnotationMapper.class);
-	
-	private String annotationPrefix;
+
+	private final String annotationPrefix;
 	private String separator = ";";
-	
+
 	public static DbAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString){
 		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null, null);
 	}
@@ -51,11 +52,11 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 			this.separator = separator;
 		}
 	}
-	
+
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = null;
-		if (cdmBase.isInstanceOf(AnnotatableEntity.class)){ 
+		if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Annotation annotation : annotatableEntity.getAnnotations()){
 				String text = annotation.getText();
@@ -75,7 +76,7 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		}
 		return result;
 	}
-	
+
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
