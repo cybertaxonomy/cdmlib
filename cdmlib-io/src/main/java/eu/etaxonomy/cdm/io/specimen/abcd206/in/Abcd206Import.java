@@ -975,10 +975,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (collections.size() > 0 && state.getConfig().isReUseExistingMetadata()) {
             for (Collection coll:collections){
-                if (coll.getInstitute() != null) {
-                    if (coll.getCode().equalsIgnoreCase(collectionCode) && coll.getInstitute().equals(institution)) {
-                        collection=coll;
-                    }
+                if (coll.getCode() != null && coll.getInstitute() != null
+                        && coll.getCode().equalsIgnoreCase(collectionCode) && coll.getInstitute().equals(institution)) {
+                    collection = coll;
+                    break;
                 }
             }
         }
