@@ -1287,61 +1287,60 @@
       <!-- ******* SPRING ******* -->
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.core</artifactId>
+        <artifactId>spring-core</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.context</artifactId>
+        <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.beans</artifactId>
+        <artifactId>spring-beans</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.orm</artifactId>
+        <artifactId>spring-orm</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.jdbc</artifactId>
+        <artifactId>spring-jdbc</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.test</artifactId>
+        <artifactId>spring-test</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
+	    <!-- TODO were is this used? Can't find it on mvnrepo central, AM 2015-03-17  -->
         <groupId>org.springframework</groupId>
         <artifactId>org.springframework.web.servlet</artifactId>
+        <version>3.2.2.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.web</artifactId>
+        <artifactId>spring-aop</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.aop</artifactId>
+        <artifactId>spring-aspects</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.aspects</artifactId>
+        <artifactId>spring-expression</artifactId>
         <version>${spring.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.expression</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <!-- <dependency> <groupId>org.springframework</groupId> <artifactId>org.springframework.context.support</artifactId> 
-        <version>${spring.version}</version> </dependency> -->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context-support</artifactId>
@@ -1349,7 +1348,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.oxm</artifactId>
+        <artifactId>spring-oxm</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
