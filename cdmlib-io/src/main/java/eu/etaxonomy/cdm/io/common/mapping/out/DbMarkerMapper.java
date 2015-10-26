@@ -1,17 +1,18 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -27,9 +28,9 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbMarkerMapper.class);
-	
-	private MarkerType markerType;
-	
+
+	private final MarkerType markerType;
+
 	public static DbMarkerMapper NewInstance(MarkerType markerType, String dbAttributeString){
 		return new DbMarkerMapper(markerType, dbAttributeString, null);
 	}
@@ -37,7 +38,7 @@ public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	public static DbMarkerMapper NewInstance(MarkerType markerType, String dbAttributeString, boolean defaultValue){
 		return new DbMarkerMapper(markerType, dbAttributeString, defaultValue);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
@@ -45,9 +46,9 @@ public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	private DbMarkerMapper(MarkerType markerType, String dbAttributeString, Boolean defaultValue) {
 		super("markers", dbAttributeString, defaultValue);
 		this.markerType  = markerType;
-		
+
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -55,7 +56,7 @@ public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		Boolean result = (Boolean)this.defaultValue;
-		if (cdmBase.isInstanceOf(AnnotatableEntity.class)){ 
+		if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Marker marker : annotatableEntity.getMarkers()){
 				if (this.markerType != null && this.markerType.equals(marker.getMarkerType())){
@@ -67,7 +68,7 @@ public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		}
 		return result;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
 	 */

@@ -1,18 +1,19 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -27,9 +28,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  */
 public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbExtensionMapper.class);
-	
-	private ExtensionType extensionType;
-	
+
+	private final ExtensionType extensionType;
+
 	public static DbExtensionMapper NewInstance(ExtensionType extensionType, String dbAttributeString){
 		return new DbExtensionMapper(extensionType, dbAttributeString);
 	}
@@ -43,14 +44,14 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		super("extensions", dbAttributeString, null);
 		this.extensionType  = extensionType;
 	}
-	
+
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (extensionType == null){
 			return null;
 		}
 		String result = null;
-		if (cdmBase.isInstanceOf(IdentifiableEntity.class)){ 
+		if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
 			IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)cdmBase;
 			for (Object obj : identifiableEntity.getExtensions()){
 				Extension extension = (Extension)obj;
@@ -68,7 +69,7 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		}
 		return result;
 	}
-	
+
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
