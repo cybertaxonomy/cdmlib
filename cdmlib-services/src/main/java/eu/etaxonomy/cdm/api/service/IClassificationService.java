@@ -253,5 +253,12 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
 	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
 
+    /**
+     * @param classificationUuid
+     * @param excludeTaxa
+     * @return
+     */
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
+
 
 }
