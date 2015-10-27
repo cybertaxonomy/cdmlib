@@ -326,8 +326,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new RandomOrder());
         List<TaxonBase> list = cdmEntityDaoBase.list((Class)null, 1000, 0, orderHints, null);
-        assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it",list.size(),2);
+        assertNotNull("list() should not return null", list);
+        assertEquals("list() should return a list with two entities in it", list.size(), 2);
     }
 
     /**

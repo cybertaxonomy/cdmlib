@@ -121,7 +121,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         this.transactionManager = transactionManager;
     }
 
-    protected IDatabaseConnection getConnection() throws SQLException {
+    protected IDatabaseConnection getConnection() {
         IDatabaseConnection connection = null;
         try {
             /// FIXME must use unitils.properties: database.schemaNames
