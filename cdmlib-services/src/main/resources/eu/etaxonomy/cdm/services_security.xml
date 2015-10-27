@@ -26,8 +26,7 @@
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
 
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
-    <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">
-    </bean>
+    <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator"/>
 
     <!--
         ======================================================================
