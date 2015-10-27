@@ -36,17 +36,17 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
 
-    /**
-     *
-     * @deprecated Use constructor which takes voter list
-     * This one is for String internal use only
-     */
-    @Deprecated
-    public UnanimousBasedUnrevokable(){
+//    /**
+//     *
+//     * @deprecated Use constructor which takes voter list
+//     * This one is for String internal use only
+//     */
+//    @Deprecated
+//    public UnanimousBasedUnrevokable(){
+//
+//    }
 
-    }
-
-    public UnanimousBasedUnrevokable(List<AccessDecisionVoter> decisionVoters) {
+    public UnanimousBasedUnrevokable(List<AccessDecisionVoter<? extends Object>> decisionVoters) {
         super(decisionVoters);
     }
 
@@ -65,14 +65,14 @@ public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
         for (ConfigAttribute attribute : attributes) {
             singleAttributeList.set(0, attribute);
 
-            for(AccessDecisionVoter<CdmBase> voter : getDecisionVoters()) {
+            for(AccessDecisionVoter voter : getDecisionVoters()) {
 
                 Integer lastResult = voteMap.get(voter);
                 if(lastResult != null && lastResult == AccessDecisionVoter.ACCESS_GRANTED){
                     continue;
                 }
 
-                int result = voter.vote(authentication, (CdmBase)object, singleAttributeList);
+                int result = voter.vote(authentication, object, singleAttributeList);
 
                 voteMap.put(voter, result);
 

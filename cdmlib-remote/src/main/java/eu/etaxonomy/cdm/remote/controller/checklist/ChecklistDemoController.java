@@ -42,8 +42,6 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
-import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
@@ -316,8 +314,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * in system temp directory.
      *
      * @param downloadTokenValueId
-     * @param conceptExport 
-     * @param demoExport 
+     * @param conceptExport
+     * @param demoExport
      * @param response
      * @param byteArrayOutputStream
      * @param config
@@ -345,8 +343,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @param areas
      * @param byteArrayOutputStream pass-through the stream to write out the data later.
      * @param progressMonitor
-     * @param conceptExport 
-     * @param demoExport 
+     * @param conceptExport
+     * @param demoExport
      * @return the CsvTaxExportConfiguratorRedlist config
      */
     private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor, boolean demoExport, boolean conceptExport) {

@@ -74,11 +74,11 @@
     </bean> -->
 
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-        <property name="providers">
+        <constructor-arg>
             <list>
                 <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
             </list>
-        </property>
+        </constructor-arg>
     </bean>
 
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>

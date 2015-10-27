@@ -158,9 +158,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#changePasswordForUser(java.lang.String, java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -186,9 +183,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.UserDetailsManager#createUser(org.springframework.security.core.userdetails.UserDetails)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -204,11 +198,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         dao.save((User)user);
     }
 
-
-
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.UserDetailsManager#deleteUser(java.lang.String)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
