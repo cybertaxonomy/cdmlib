@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -232,6 +233,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void testMoveDerivateNoParent(){
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         FieldUnit fieldUnit = FieldUnit.NewInstance();

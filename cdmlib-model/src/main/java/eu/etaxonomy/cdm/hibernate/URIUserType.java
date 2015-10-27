@@ -36,11 +36,8 @@ public class URIUserType extends AbstractUserType implements UserType {
      */
     private static final int[] SQL_TYPES = {Types.CLOB};
 
-	/* (non-Javadoc)
-	 * @see org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType#returnedClass()
-	 */
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return URI.class;
 	}
 
@@ -83,6 +80,7 @@ public class URIUserType extends AbstractUserType implements UserType {
      * @param value value being copied
      * @return copied value
      */
+    @Override
     public Object deepCopy(Object value) {
         if (value == null) {
             return null;

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,14 +36,12 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
-	/* (non-Javadoc)
-	 * @see org.hibernate.usertype.UserType#deepCopy(java.lang.Object)
-	 */
+	@Override
 	public Object deepCopy(Object o) throws HibernateException {
 		if (o == null) {
             return null;
         }
-		
+
 		UUID uuid = (UUID) o;
 
         try {
@@ -56,7 +54,8 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#disassemble(java.lang.Object)
 	 */
-	public Serializable disassemble(Object value) throws HibernateException {
+	@Override
+    public Serializable disassemble(Object value) throws HibernateException {
 		if(value == null) {
 			return null;
 		} else {
@@ -66,10 +65,10 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public UUID nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+	public UUID nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
-		
+
 		if(val == null) {
 			return null;
 		} else {
@@ -83,12 +82,12 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
-		if (value == null) { 
+		if (value == null) {
 //            statement.setNull(index, Types.VARCHAR); old version
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
-        } else { 
+        } else {
          	UUID uuid = (UUID)value;
 //            statement.setString(index, uuid.toString()); //old version
             StandardBasicTypes.STRING.nullSafeSet(statement, uuid.toString(), index, session);
@@ -109,7 +108,7 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 		return SQL_TYPES;
 	}
 
-	
+
 
 
 

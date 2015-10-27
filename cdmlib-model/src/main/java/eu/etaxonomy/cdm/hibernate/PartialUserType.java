@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,9 +19,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
-import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -47,17 +45,17 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
 
 	@Override
-	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
-		Partial result = new Partial(); 
+		Partial result = new Partial();
 		if (partial == null || partial.length() != 8) {
 			return null;
 		}
 		Integer year = Integer.valueOf(partial.substring(0,4));
 		Integer month = Integer.valueOf(partial.substring(4,6));
 		Integer day = Integer.valueOf(partial.substring(6,8));
-		
+
 		if (year != 0){
 			result = result.with(DateTimeFieldType.year(), year);
 		}
@@ -87,15 +85,15 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 	 */
 	public static String partialToString(Partial p) {
 		//FIXME reduce code by use org.joda.time.format.ISODateTimeFormat.basicDate() instead ?
-		//      for a date with unknown day this will produce e.g. 195712?? 
-		// 		
+		//      for a date with unknown day this will produce e.g. 195712??
+		//
 		String strYear = getNullFilledString(p, DateTimeFieldType.year(),4);
 		String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(),2);
 		String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(),2);
 		String result = strYear + strMonth + strDay;
 		return result;
 	}
-	
+
 	private static String getNullFilledString(Partial partial, DateTimeFieldType type, int count){
 		String nul = "0000000000";
 		if (! partial.isSupported(type)){
@@ -113,6 +111,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 		}
 	}
 
+    @Override
     public Object deepCopy(Object value) throws HibernateException {
         if (value == null) {
             return null;
@@ -128,10 +127,10 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
 
 }
 
