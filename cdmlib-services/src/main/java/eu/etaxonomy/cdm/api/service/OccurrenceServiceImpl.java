@@ -1234,6 +1234,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //delete from amplification result
         if(singleRead.getAmplificationResult()!=null){
             singleRead.getAmplificationResult().removeSingleRead(singleRead);
+            deleteResult.addUpdatedObject(singleRead.getAmplificationResult());
         }
         //delete from sequence
         sequence.removeSingleRead(singleRead);
