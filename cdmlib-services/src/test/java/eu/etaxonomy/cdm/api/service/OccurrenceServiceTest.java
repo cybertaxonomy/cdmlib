@@ -1105,5 +1105,4 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
             e.printStackTrace();
         }
     }
-
 }

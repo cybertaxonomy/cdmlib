@@ -58,7 +58,7 @@ public class URIUserType extends AbstractUserType implements UserType {
             try {
 			    return new URI(val);
 		    } catch (URISyntaxException e) {
-			    throw new TypeMismatchException(e.getMessage());
+			    throw new TypeMismatchException(e.getMessage(),e);
 		    }
 		}
     }
@@ -88,7 +88,7 @@ public class URIUserType extends AbstractUserType implements UserType {
         try {
             return new URI(((URI) value).toString());
         } catch (URISyntaxException e) {
-            throw new TypeMismatchException(e.getMessage());
+            throw new TypeMismatchException(e.getMessage(),e);
         }
     }
 
