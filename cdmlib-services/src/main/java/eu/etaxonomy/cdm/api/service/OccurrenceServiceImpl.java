@@ -865,18 +865,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     @Transactional(readOnly = false)
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
-        return moveDerivate(from.getUuid(), to.getUuid(), derivate.getUuid()).isOk();
+        return moveDerivate(from!=null?from.getUuid():null, to.getUuid(), derivate.getUuid()).isOk();
     }
 
     @Override
     @Transactional(readOnly = false)
     public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid) {
         // reload specimens to avoid session conflicts
-        SpecimenOrObservationBase<?> from = load(specimenFromUuid);
+        SpecimenOrObservationBase<?> from = null;
+        if(specimenFromUuid!=null){
+            from = load(specimenFromUuid);
+        }
         SpecimenOrObservationBase<?> to = load(specimenToUuid);
         DerivedUnit derivate = (DerivedUnit) load(derivateUuid);
 
-        if (from == null || to == null || derivate == null) {
+        if ((specimenFromUuid!=null && from == null) || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
             		"Operation was move "+derivate+ " from "+from+" to "+to);
         }
@@ -887,23 +890,31 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if(toType==SpecimenOrObservationType.FieldUnit //moving to FieldUnit always works
                 || derivateType==SpecimenOrObservationType.Media //moving media always works
                 || (derivateType.isKindOf(toType) && toType!=derivateType)){ //moving only to parent derivate type
-            // remove derivation event from parent specimen of dragged object
-            DerivationEvent eventToRemove = null;
-            for (DerivationEvent event : from.getDerivationEvents()) {
-                if (event.getDerivatives().contains(derivate)) {
-                    eventToRemove = event;
-                    break;
+            if(from!=null){
+                // remove derivation event from parent specimen of dragged object
+                DerivationEvent eventToRemove = null;
+                for (DerivationEvent event : from.getDerivationEvents()) {
+                    if (event.getDerivatives().contains(derivate)) {
+                        eventToRemove = event;
+                        break;
+                    }
+                }
+                from.removeDerivationEvent(eventToRemove);
+                if(eventToRemove!=null){
+                    // add new derivation event to target and copy the event parameters of the old one
+                    DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, null);
+                    derivedFromNewOriginalEvent.setActor(eventToRemove.getActor());
+                    derivedFromNewOriginalEvent.setDescription(eventToRemove.getDescription());
+                    derivedFromNewOriginalEvent.setInstitution(eventToRemove.getInstitution());
+                    derivedFromNewOriginalEvent.setTimeperiod(eventToRemove.getTimeperiod());
+                    derivedFromNewOriginalEvent.setType(eventToRemove.getType());
+                    to.addDerivationEvent(derivedFromNewOriginalEvent);
+                    derivate.setDerivedFrom(derivedFromNewOriginalEvent);
                 }
             }
-            from.removeDerivationEvent(eventToRemove);
-            if(eventToRemove!=null){
-                // add new derivation event to target and copy the event parameters of the old one
+            else{
+                //derivative had no parent before so we use empty derivation event
                 DerivationEvent derivedFromNewOriginalEvent = DerivationEvent.NewSimpleInstance(to, derivate, null);
-                derivedFromNewOriginalEvent.setActor(eventToRemove.getActor());
-                derivedFromNewOriginalEvent.setDescription(eventToRemove.getDescription());
-                derivedFromNewOriginalEvent.setInstitution(eventToRemove.getInstitution());
-                derivedFromNewOriginalEvent.setTimeperiod(eventToRemove.getTimeperiod());
-                derivedFromNewOriginalEvent.setType(eventToRemove.getType());
                 to.addDerivationEvent(derivedFromNewOriginalEvent);
                 derivate.setDerivedFrom(derivedFromNewOriginalEvent);
             }

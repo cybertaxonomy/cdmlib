@@ -222,13 +222,34 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         assertEquals("Wrong number of derivation originals!", 1, derivationEvent.getOriginals().size());
         SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
-        assertEquals("Origin of moved object not correct", specimenB, newOriginal);
+        assertEquals("Target of moved object not correct", specimenB, newOriginal);
         assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
 
         DerivedUnit movedDerivate = derivationEvent.getDerivatives().iterator().next();
         assertEquals("Moved derivate has wrong type", SpecimenOrObservationType.DnaSample, movedDerivate.getRecordBasis());
         assertNotEquals("DerivationEvent 'derivedFrom' has not been changed after moving", originalDerivedFromEvent, movedDerivate.getDerivedFrom());
 
+    }
+
+    @Test
+    public void testMoveDerivateNoParent(){
+        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
+
+        occurrenceService.saveOrUpdate(fieldUnit);
+        occurrenceService.saveOrUpdate(derivedUnit);
+
+        assertEquals("DerivationEvent not moved to source!", 0, fieldUnit.getDerivationEvents().size());
+        occurrenceService.moveDerivate(null, fieldUnit, derivedUnit);
+        assertEquals("DerivationEvent not moved to source!", 1, fieldUnit.getDerivationEvents().size());
+
+        DerivationEvent derivationEvent = fieldUnit.getDerivationEvents().iterator().next();
+        assertNull(derivationEvent.getType());
+
+        assertEquals("Wrong number of derivation originals!", 1, derivationEvent.getOriginals().size());
+        SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
+        assertEquals("Target of moved object not correct", fieldUnit, newOriginal);
+        assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
     }
 
     @Test
