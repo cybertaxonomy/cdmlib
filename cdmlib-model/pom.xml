@@ -172,6 +172,7 @@
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
     </dependency>
+<!--     hibernate validator -->
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -180,6 +181,20 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
+<!-- these 2 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/-->
+    <dependency>
+       <groupId>javax.el</groupId>
+       <artifactId>javax.el-api</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.glassfish.web</groupId>
+       <artifactId>javax.el</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.hibernate</groupId>
+       <artifactId>hibernate-validator-cdi</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>

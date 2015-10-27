@@ -5,9 +5,9 @@
   xmlns:tx="http://www.springframework.org/schema/tx"
   xmlns:security="http://www.springframework.org/schema/security"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
     http://www.springframework.org/schema/security
     http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
 
@@ -76,12 +76,12 @@
     </bean>
 
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-        <property name="providers">
+        <constructor-arg>
             <list>
                 <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
                 <ref local="daoAuthenticationProvider"/>
             </list>
-        </property>
+        </constructor-arg>
     </bean>
 
     <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">

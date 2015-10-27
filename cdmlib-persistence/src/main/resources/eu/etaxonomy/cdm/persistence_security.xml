@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
     ">
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
@@ -68,7 +68,20 @@
       ============================== SECURITY ==============================
     -->
     <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.hibernate.permission.UnanimousBasedUnrevokable">
-        <property name="decisionVoters">
+        <constructor-arg>
+            <list>
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNameBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.ReferenceVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
+            </list>
+        </constructor-arg>
+        
+<!--         <property name="decisionVoters">
             <list>
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
@@ -80,7 +93,7 @@
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
             </list>
         </property>
-    </bean>
+ -->    </bean>
 
     <!--
         CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
