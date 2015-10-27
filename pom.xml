@@ -232,7 +232,7 @@
     </repository>
     <!-- Neccessary for hibernate-envers -->
     <repository>
-      <releases>
+  <!--    <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
         <checksumPolicy>warn</checksumPolicy>
@@ -241,21 +241,21 @@
         <enabled>false</enabled>
         <updatePolicy>never</updatePolicy>
         <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
+      </snapshots>   -->
       <id>jboss-repository</id>
       <name>JBoss Repository</name>
       <url>http://repository.jboss.com</url>
     </repository>
     <!-- codehaus mule repository needed for yourkit -->
-    <repository>
+ <!--   <repository>
       <id>CodehausMuleRepository</id>
       <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
-    </repository>
+    </repository>    -->
     <!-- current spring source repositories -->
-    <repository>
+ <!--   <repository>
       <id>SpringSource Enterprise Bundle Repository - External Bundle Milestones</id>
       <url>http://repository.springsource.com/maven/bundles/milestone</url>
-    </repository>
+    </repository> 
     <repository>
       <id>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</id>
       <url>http://repository.springsource.com/maven/bundles/release</url>
@@ -263,19 +263,19 @@
     <repository>
       <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
       <url>http://repository.springsource.com/maven/bundles/external</url>
-    </repository>
+    </repository>   -->
     <!-- for ikey-plus -->
-    <repository>
+ <!--   <repository>
       <id>itextpdf.com</id>
       <name>Maven Repository for iText</name>
       <url>http://maven.itextpdf.com/</url>
-    </repository>
+    </repository>  -->
     <!-- for jena snapshot -->
-    <repository>
+ <!--   <repository>
       <id>apache</id>
       <name>Apache Repository for Snapshots</name>
       <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository>
+    </repository> -->
 
 
   </repositories>
@@ -692,7 +692,7 @@
       <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.2.7</version>
+        <version>2.2.12</version>
       </dependency>
       <dependency>
         <groupId>xml-resolver</groupId>
@@ -704,21 +704,36 @@
         <artifactId>activation</artifactId>
         <version>1.1.1</version>
       </dependency>
-      <dependency>
+ 	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>jaxb-runtime</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>jaxb-core</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>jaxb-jxc</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
+ <!--     <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-impl</artifactId>
-        <version>2.2-EA</version>
+        <version>${jaxb.version}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb1-impl</artifactId>
-        <version>2.2-EA</version>
-      </dependency>
+        <version>${jaxb.version}</version>
+      </dependency>  
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-xjc</artifactId>
-        <version>2.2-EA</version>
-      </dependency>
+        <version>${jaxb.version}</version>
+      </dependency>  -->
       <!-- ******* hibernate uses slf4j ******* -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -1220,7 +1235,6 @@
         <artifactId>hibernate-search</artifactId>
         <version>4.2.0.Final</version>
       </dependency>
-
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-engine</artifactId>
@@ -1307,90 +1321,16 @@
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
         <version>${spring-security.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
         <version>${spring-security.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-web</artifactId>
         <version>${spring-security.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <!-- ******* SERVLET/JSP/JSF ******* -->

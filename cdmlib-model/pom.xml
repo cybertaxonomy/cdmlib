@@ -100,6 +100,16 @@
       <artifactId>activation</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-jxc</artifactId>
+        <version>${jaxb.version}</version>
+    </dependency>
+    <!-- com.sun.xml.bind has been replaced by org.glassfish.jaxb implementation
+    <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
     </dependency>
@@ -111,6 +121,7 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
     </dependency>
+     -->
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
