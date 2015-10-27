@@ -115,7 +115,7 @@
     <!-- Profiling -->
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.oxm</artifactId>
+      <artifactId>spring-oxm</artifactId>
       <version>${spring.version}</version>
     </dependency>
 
