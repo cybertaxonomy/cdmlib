@@ -136,5 +136,14 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void waitForFeedback() {
+
+    }
+
+
 
 }

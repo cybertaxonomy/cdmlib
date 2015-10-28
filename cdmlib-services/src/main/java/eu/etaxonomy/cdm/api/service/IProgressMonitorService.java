@@ -39,6 +39,14 @@ public interface IProgressMonitorService {
     public IRemotingProgressMonitor getRemotingMonitor(UUID uuid);
 
     /**
+     * Sets the cancel flag to true for the monitor corresponding to the
+     * given uuid
+     *
+     * @param uuid of remoting monitor
+     */
+    public void cancel(UUID uuid);
+
+    /**
      * Interrupt thread corresponding to remoting monitor with
      * given uuid
      *

@@ -224,7 +224,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (unitsList != null) {
                 String message = "nb units to insert: " + unitsList.getLength();
                 logger.info(message);
-                state.getConfig().getProgressMonitor().beginTask("Importing ABCD file", unitsList.getLength() + 2);
+                state.getConfig().getProgressMonitor().beginTask("Importing ABCD file", unitsList.getLength() + 3);
                 updateProgress(state, message);
 
                 state.setDataHolder(new Abcd206DataHolder());

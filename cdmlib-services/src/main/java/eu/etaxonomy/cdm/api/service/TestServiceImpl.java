@@ -85,7 +85,9 @@ public class TestServiceImpl implements ITestService {
             @Override
             public Object doRun(IRemotingProgressMonitor monitor)  {
                 Object result = longRunningMethod(monitor, ex);
-                monitor.addReport("Report");
+                if(!monitor.isCanceled()) {
+                    monitor.addReport("Report");
+                }
                 return result;
             }
         };
@@ -106,6 +108,9 @@ public class TestServiceImpl implements ITestService {
                 Thread.sleep(1000);
                 if(i == stepToThrowException && ex != null) {
                     throw ex;
+                }
+                if(monitor.isCanceled()) {
+                    return "Cancelled";
                 }
             } catch (InterruptedException e) {
                 throw ex;

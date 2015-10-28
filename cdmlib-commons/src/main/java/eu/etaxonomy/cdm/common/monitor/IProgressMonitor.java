@@ -140,6 +140,13 @@ public interface IProgressMonitor extends Serializable {
 	 */
 	public void warning(String message, Throwable throwable);
 
+
+	/**
+	 * Waits for external feedback during the lifetime of the
+	 * operation
+	 */
+	public void waitForFeedback();
+
 }
 
 
