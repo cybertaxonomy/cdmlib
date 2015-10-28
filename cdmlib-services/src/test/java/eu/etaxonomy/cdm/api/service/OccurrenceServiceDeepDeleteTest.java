@@ -224,7 +224,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals("incorrect number of single reads", 0, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
         assertEquals("incorrect number of single reads", 0, consensusSequence.getSingleReads().size());
 
-        //delete sequence -> should fail
+        //delete sequence
         deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
