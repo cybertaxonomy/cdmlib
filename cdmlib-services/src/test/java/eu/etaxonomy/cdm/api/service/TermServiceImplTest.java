@@ -32,8 +32,10 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -50,6 +52,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @SpringBeanByType
     private IVocabularyService vocabularyService;
+
+    @SpringBeanByType
+    private ITaxonService taxonService;
 
 /* ************************* TESTS *************************************************/
 
@@ -190,6 +195,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
     @Test
+    @Ignore
     public void testDeleteTerms(){
     	final String[] tableNames = new String[]{
                 "DefinedTermBase","Representation"};
@@ -218,6 +224,24 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	termBase =  termService.load(termUUID);
     	assertNull(termBase);
 
+
+    	//TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
+        voc.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+        vocUUID = vocabularyService.save(voc).getUuid();
+
+        voc = vocabularyService.find(vocUUID);
+        terms = voc.getTerms();
+        termBase =terms.iterator().next();
+        termUUID = termBase.getUuid();
+        termBase = termService.load(termUUID);
+        BotanicalName testName = BotanicalName.NewInstance(Rank.SPECIES());
+        Taxon testTaxon = Taxon.NewInstance(testName,null);
+        testTaxon.addIdentifier("Test", (DefinedTerm) termBase);
+        taxonService.save(testTaxon);
+        termService.delete(termBase, null);
+        //commitAndStartNewTransaction(tableNames);
+        termBase =  termService.load(termUUID);
+        assertNotNull(termBase);
     }
 
     /* (non-Javadoc)
