@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -28,8 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -273,10 +276,11 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			config = new TermDeletionConfigurator();
 		}
 //		boolean isInternal = config.isInternal();
-		DeleteResult result = new DeleteResult();
-		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
-		CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 
+		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
+
+		DeleteResult result = isDeletable(term, config);
+		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 		try {
 			//generalization of
 			Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
@@ -412,5 +416,29 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+
+	@Override
+    public DeleteResult isDeletable(DefinedTermBase term, DeleteConfiguratorBase config){
+        DeleteResult result = new DeleteResult();
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
+        if (references != null){
+            result.addRelatedObjects(references);
+            Iterator<CdmBase> iterator = references.iterator();
+            CdmBase ref;
+            while (iterator.hasNext()){
+                ref = iterator.next();
+                if (ref instanceof TermVocabulary){
+                    result.getRelatedObjects().remove(ref);
+                }else{
+
+                    String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.setAbort();
+                }
+
+            }
+        }
+        return result;
+    }
 
 }

@@ -1278,7 +1278,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         if (result.isOk()){
 
-            synonym = HibernateProxyHelper.deproxy(dao.merge(synonym), Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(this.load(synonym.getUuid()), Synonym.class);
 
             //remove synonymRelationship
             Set<Taxon> taxonSet = new HashSet<Taxon>();
