@@ -919,7 +919,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 derivate.setDerivedFrom(derivedFromNewOriginalEvent);
             }
 
-            saveOrUpdate(from);
+            if(from!=null){
+                saveOrUpdate(from);
+            }
             saveOrUpdate(to);
             result.setStatus(Status.OK);
             result.addUpdatedObject(from);
