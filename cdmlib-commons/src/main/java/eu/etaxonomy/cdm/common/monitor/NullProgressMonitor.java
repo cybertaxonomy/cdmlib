@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.common.monitor;
 
 /**
  * Empty default implementation
- * 
+ *
  * @author n.hoffmann
  *
  */
@@ -59,7 +59,15 @@ public class NullProgressMonitor implements IProgressMonitor {
 
 	@Override
 	public void internalWorked(double work) {
-		//  do nothing	
+		//  do nothing
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void waitForFeedback() {
+    //  do nothing
+    }
 
 }

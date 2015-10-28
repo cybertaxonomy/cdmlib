@@ -78,7 +78,6 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         if(monitorThread != null) {
             monitorThread.interrupt();
         }
-
     }
 
     /**
@@ -87,6 +86,18 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
     @Override
     public boolean isMonitorThreadRunning(UUID uuid) {
         return RemotingProgressMonitorThread.getMonitorThread(getRemotingMonitor(uuid)) != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void cancel(UUID uuid) {
+        IRestServiceProgressMonitor monitor = progressMonitorManager.getMonitor(uuid);
+        if(monitor != null) {
+            monitor.setCanceled(true);
+            monitor.done();
+        }
     }
 
 }
