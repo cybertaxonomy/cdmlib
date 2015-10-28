@@ -23,6 +23,8 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     private Object result;
     private List<String> reports = new ArrayList<String>();
     private String owner;
+    private Object feedback;
+    private boolean isWaitingForFeedback = false;
 
 
     /**
@@ -78,5 +80,47 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void waitForFeedback() {
+        synchronized (feedback) {
+            feedback = null;
+            while(feedback == null) {
+                isWaitingForFeedback = true;
+                try {
+                    feedback.wait();
+                } catch (InterruptedException ie) {
+                    throw new IllegalStateException(ie);
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFeedback(Object feedback) {
+        synchronized (feedback) {
+            this.feedback = feedback;
+            this.feedback.notifyAll();
+            isWaitingForFeedback = false;
+          }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isWaitingForFeedback() {
+        return isWaitingForFeedback;
+    }
+
 
 }

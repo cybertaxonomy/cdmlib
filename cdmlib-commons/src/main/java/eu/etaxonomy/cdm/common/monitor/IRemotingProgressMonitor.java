@@ -57,4 +57,8 @@ public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {
      */
     public void setOwner(String owner);
 
+    public void setFeedback(Object feedback);
+
+    public boolean isWaitingForFeedback();
+
 }
