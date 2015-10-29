@@ -21,10 +21,12 @@
     <module>cdmlib-remote-webapp</module>
   </modules>
   <properties>    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.codelevel>1.6</java.codelevel>
     <spring.version>4.2.2.RELEASE</spring.version>
     <spring-security.version>4.0.2.RELEASE</spring-security.version>
-    <hibernate.version>4.1.10.Final</hibernate.version>
+    <hibernate.version>4.3.11.Final</hibernate.version>
+<!--	<hibernate.version>5.0.2.Final</hibernate.version>  -->
 	<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.codelevel>1.6</java.codelevel>
