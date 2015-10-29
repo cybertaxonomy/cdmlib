@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
@@ -62,5 +63,7 @@ public interface IProgressMonitorService {
      * @return true if corresponding thread is in progres, o/w false
      */
     public boolean isMonitorThreadRunning(UUID uuid);
+
+    public void setFeedback(UUID uuid, Serializable feedback);
 
 }

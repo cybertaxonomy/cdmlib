@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +21,11 @@ import java.util.List;
  */
 public class RemotingProgressMonitor extends RestServiceProgressMonitor implements IRemotingProgressMonitor {
 
-    private Object result;
+    private Serializable result;
     private List<String> reports = new ArrayList<String>();
     private String owner;
-    private Object feedback;
+    private Serializable feedback;
+    private transient Object feedbackLock;
     private boolean isWaitingForFeedback = false;
 
 
@@ -40,7 +42,7 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
      * {@inheritDoc}
      */
     @Override
-    public void setResult(Object result) {
+    public void setResult(Serializable result) {
         this.result = result;
     }
 
@@ -61,7 +63,6 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     public void addReport(String report) {
         reports.add(report);
     }
-
 
 
     /**
@@ -86,12 +87,15 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
      */
     @Override
     public void waitForFeedback() {
-        synchronized (feedback) {
+        if(feedbackLock == null) {
+            feedbackLock =  new Object();
+        }
+        synchronized (feedbackLock) {
             feedback = null;
             while(feedback == null) {
                 isWaitingForFeedback = true;
                 try {
-                    feedback.wait();
+                    feedbackLock.wait();
                 } catch (InterruptedException ie) {
                     throw new IllegalStateException(ie);
                 }
@@ -99,19 +103,25 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFeedback(Serializable feedback) {
+        synchronized (feedbackLock) {
+            this.feedback = feedback;
+            this.feedbackLock.notifyAll();
+            isWaitingForFeedback = false;
+        }
+    }
 
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setFeedback(Object feedback) {
-        synchronized (feedback) {
-            this.feedback = feedback;
-            this.feedback.notifyAll();
-            isWaitingForFeedback = false;
-          }
-
+    public Serializable getFeedback() {
+        return feedback;
     }
 
     /**
@@ -121,6 +131,5 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     public boolean isWaitingForFeedback() {
         return isWaitingForFeedback;
     }
-
 
 }
