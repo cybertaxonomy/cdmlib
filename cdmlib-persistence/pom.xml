@@ -124,7 +124,7 @@
   <dependencies>
      <dependency>
 		<groupId>org.hibernate.javax.persistence</groupId>
-    	<artifactId>hibernate-jpa-2.0-api</artifactId>
+    	<artifactId>hibernate-jpa-2.1-api</artifactId>
 	 </dependency>
      <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -181,9 +181,13 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
     </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.apache.lucene</groupId> -->
+<!--       <artifactId>lucene-spellchecker</artifactId> -->
+<!--     </dependency> -->
     <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-spellchecker</artifactId>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
     </dependency>
     <dependency>
         <groupId>commons-beanutils</groupId>

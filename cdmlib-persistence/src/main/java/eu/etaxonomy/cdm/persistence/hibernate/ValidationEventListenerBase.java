@@ -16,6 +16,7 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -33,8 +34,15 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
  *
  */
 @SuppressWarnings("serial")
-public abstract class ValidationEventListenerBase implements PostInsertEventListener, PostUpdateEventListener{
+public abstract class ValidationEventListenerBase
+        implements PostInsertEventListener, PostUpdateEventListener{
     private static final Logger logger = Logger.getLogger(ValidationEventListenerBase.class);
+
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return true;
+    }
 
     private ValidationExecutor validationExecutor;
 

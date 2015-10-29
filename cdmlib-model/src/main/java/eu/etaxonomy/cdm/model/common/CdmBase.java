@@ -48,7 +48,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.search.annotations.TermVector;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -104,7 +103,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
     @FieldBridge(impl=NotNullAwareIdBridge.class)
-    @Field(store=Store.YES, termVector=TermVector.NO)
+//    @Field(store=Store.YES, termVector=TermVector.NO)
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)

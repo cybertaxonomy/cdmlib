@@ -22,6 +22,7 @@ import org.hibernate.event.spi.PostLoadEvent;
 import org.hibernate.event.spi.PostLoadEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -65,6 +66,11 @@ public class CdmPostDataChangeObservableListener implements
 	 * DataChangeEvents get stored in this list for delayed propagation
 	 */
 	private CdmDataChangeMap changeEvents;
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return true;
+    }
 
 	/**
 	 * Observing objects

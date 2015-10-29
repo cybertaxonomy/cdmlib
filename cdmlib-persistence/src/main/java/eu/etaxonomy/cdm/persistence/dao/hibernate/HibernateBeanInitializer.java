@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
@@ -29,9 +29,6 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
-     */
     @Override
     public Object initializeInstance(Object bean) {
         initialize(bean);
@@ -47,12 +44,12 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
         } else if ( proxy instanceof PersistentCollection ) {
             ( ( PersistentCollection ) proxy ).forceInitialization();
         } else if(proxy instanceof CollectionProxy) {
-            ( ( CollectionProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
+            ( ( CollectionProxy<?,?> ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         } else if(proxy instanceof MapProxy) {
-            ( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
+            ( ( MapProxy<?,?> ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         }
     }
-    
-    
+
+
 
 }

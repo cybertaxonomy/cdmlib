@@ -10,7 +10,7 @@
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
-      <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl</property>
+      <property name="hibernate.connection.provider_class">org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl</property>
 	    <!--
           Configuring the C3P0ConnectionProvider
           ========================================
@@ -51,7 +51,7 @@
 			hibernate.c3p0.validate
       -->
       <mapping package="eu.etaxonomy.cdm.model.common"/>
-      <!-- Annotation Package -->
+      <!-- Agent Package -->
       <mapping class="eu.etaxonomy.cdm.model.agent.Address"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.AgentBase"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Contact"/>

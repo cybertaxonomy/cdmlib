@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.test.unitils;
 
@@ -13,29 +13,29 @@ import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.NamingStrategy;
 import org.hibernate.dialect.H2CorrectedDialect;
-import org.hibernate.envers.configuration.AuditConfiguration;
+import org.hibernate.envers.configuration.spi.AuditConfiguration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * 
+ *
  * This class may help to create your DDL file.
  * However, it does not support Auditing table yet as they are (maybe) not supported
- * by Hibernate 4 hbm2dll.  
+ * by Hibernate 4 hbm2dll.
  * It is also unclear if the antrun plugin supports envers in hibernate 4. I wasn't successful with it.
  * http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html#envers-generateschema
- * 
+ *
  * Also the result needs to be changed to uppercase and some _uniquekey statements need to be replaced as they are not
  * unique themselves.
- * 
+ *
  * The result is stored in a file "new-cdm.h2.sql" in the root directory and is written to the console.
- * 
+ *
  * @author a.mueller
  *
  */
 public class DdlCreator {
-	 
-	public static void main(String[] args) { 
+
+	public static void main(String[] args) {
 		try {
 			new DdlCreator().execute(H2CorrectedDialect.class, "h2");
 		} catch (Exception e) {
@@ -43,26 +43,26 @@ public class DdlCreator {
 			e.printStackTrace();
 		}
 	}
-	 
+
 	private void execute(Class<?> dialect, String lowerCaseDialectName, Class<?>... classes) throws IOException, HibernateException, InstantiationException, IllegalAccessException {
 		String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
 		ClassPathResource resource = new ClassPathResource(classPath);
 		File file = resource.getFile();
-		 
+
 //		File file = new File("C:\\Users\\pesiimport\\Documents\\cdm-3.3\\cdmlib-persistence\\src\\main\\resources\\eu\\etaxonomy\\cdm\\hibernate.cfg.xml");
 		System.out.println(file.exists());
-		
+
 		Configuration config = new Configuration().addFile(file);
 		config.setProperty(Environment.DIALECT, dialect.getCanonicalName());
 		NamingStrategy namingStrategy = new DefaultComponentSafeNamingStrategy(); //; = new ImprovedNamingStrategy();
 		config.setNamingStrategy(namingStrategy);
-		
+
 		config.configure(file);
 //		String[] schema = config.generateSchemaCreationScript((Dialect)dialect.newInstance());
 //		for (String s : schema){
 //			System.out.println(s);
 //		}
-		
+
 		AuditConfiguration.getFor(config);
 		SchemaExport schemaExport = new SchemaExport(config);
 		schemaExport.setDelimiter(";");
@@ -71,9 +71,9 @@ public class DdlCreator {
 		boolean consolePrint = true;
 		boolean exportInDatabase = false;
 		schemaExport.create(consolePrint, exportInDatabase);
-	
+
 		schemaExport.execute(consolePrint, exportInDatabase, false, true);
-		
+
 	}
 }
 

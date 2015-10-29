@@ -21,17 +21,19 @@
     <module>cdmlib-remote-webapp</module>
   </modules>
   <properties>    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.codelevel>1.6</java.codelevel>
     <spring.version>4.2.2.RELEASE</spring.version>
     <spring-security.version>4.0.2.RELEASE</spring-security.version>
-    <hibernate.version>4.1.10.Final</hibernate.version>
+    <hibernate.version>4.3.11.Final</hibernate.version>
+<!--	<hibernate.version>5.0.2.Final</hibernate.version>  -->
 	<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <unitils.version>3.4.2</unitils.version>
-    <lucene.version>3.6.2</lucene.version>
+	<!-- 5.5.0 -->
+	<hibernate-search.version>5.2.1.Final</hibernate-search.version>
+    <lucene.version>4.10.4</lucene.version>
+    
+	<unitils.version>3.4.2</unitils.version>
     <hsqldb.version>2.3.3</hsqldb.version>
-	<!-- <hsqldb.version>1.8.0.10</hsqldb.version>  -->
-	<!-- 1.8.0.10, 1.9.0-rc6 (manually build only for debugging) -->
 	<mysql.version>5.1.37</mysql.version>
     <httpcomponents.version>4.5.1</httpcomponents.version>
     <doxia.version>1.6</doxia.version>
@@ -735,6 +737,7 @@
         <version>${jaxb.version}</version>
       </dependency>  -->
       <!-- ******* hibernate uses slf4j ******* -->
+	  <!-- only for version management  -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -1025,6 +1028,11 @@
         <artifactId>lucene-spellchecker</artifactId>
         <version>${lucene.version}</version>
       </dependency>
+	  <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-highlighter</artifactId>
@@ -1187,11 +1195,11 @@
         <version>20090211</version>
       </dependency>
       <!-- ******* HIBERNATE / EJB3 ******* -->
-      <dependency>
-        <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.0-api</artifactId>
-        <version>1.0.1.Final</version>
-      </dependency>
+	  <dependency>
+		<groupId>org.hibernate.javax.persistence</groupId>
+		<artifactId>hibernate-jpa-2.1-api</artifactId>
+		<version>1.0.0.Final</version>
+	  </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
@@ -1238,12 +1246,12 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search</artifactId>
-        <version>4.2.0.Final</version>
+        <version>${hibernate-search.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-engine</artifactId>
-        <version>4.2.0.Final</version>
+        <version>${hibernate-search.version}</version>
       </dependency>
       <dependency>
         <groupId>org.javassist</groupId>

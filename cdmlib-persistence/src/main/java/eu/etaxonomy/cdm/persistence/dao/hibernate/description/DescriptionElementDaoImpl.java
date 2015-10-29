@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+//import org.apache.lucene.queryParser.ParseException;
+//import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.search.FullTextSession;
@@ -28,9 +30,9 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DescriptionElementDaoImpl.class);
 
-    private String defaultField = "multilanguageText.text";
+    private final String defaultField = "multilanguageText.text";
 
-    private Class<? extends DescriptionElementBase> indexedClasses[];
+    private final Class<? extends DescriptionElementBase> indexedClasses[];
 
     public DescriptionElementDaoImpl() {
         super(DescriptionElementBase.class);
@@ -38,6 +40,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         indexedClasses[0] = TextData.class;
     }
 
+    @Override
     public int countMedia(DescriptionElementBase descriptionElement) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -55,9 +58,10 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         }
     }
 
+    @Override
     public int count(Class<? extends DescriptionElementBase> clazz, String queryString) {
         checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
-        QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -76,6 +80,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         }
     }
 
+    @Override
     public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -91,7 +96,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
                 }
             }
 
-            List<Media> results = (List<Media>)query.list();
+            List<Media> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         } else {
@@ -120,9 +125,10 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         }
     }
 
+    @Override
     public List<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
-        QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -153,6 +159,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         }
     }
 
+    @Override
     public void purgeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         for(Class clazz : indexedClasses) {
@@ -161,6 +168,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         fullTextSession.flushToIndexes();
     }
 
+    @Override
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -172,6 +180,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         fullTextSession.flushToIndexes();
     }
 
+    @Override
     public void optimizeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         SearchFactory searchFactory = fullTextSession.getSearchFactory();
@@ -183,7 +192,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
     public int count(String queryString) {
         checkNotInPriorView("DescriptionElementDaoImpl.count(String queryString)");
-        QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -198,6 +207,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         }
     }
 
+    @Override
     public String suggestQuery(String string) {
         throw new UnsupportedOperationException("suggest query is not supported yet");
     }
