@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service.util;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
@@ -68,7 +69,7 @@ public abstract class RemotingProgressMonitorThread extends Thread {
      * @param monitor to be updated by the monitored job
      * @return result object
      */
-    public abstract Object doRun(IRemotingProgressMonitor monitor);
+    public abstract Serializable doRun(IRemotingProgressMonitor monitor);
 
     /**
      * Returns a currently running monitor thread corresponding to the

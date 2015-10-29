@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -38,13 +39,13 @@ public interface ITestService {
      * @param monitor
      * @return
      */
-    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex);
+    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks);
 
 
     /**
      * @return
      */
-    public UUID monitLongRunningMethod(RuntimeException ex);
+    public UUID monitLongRunningMethod(RuntimeException ex, List<String> feedbacks);
 
 
 

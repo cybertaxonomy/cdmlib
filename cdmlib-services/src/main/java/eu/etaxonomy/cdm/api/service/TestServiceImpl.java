@@ -9,8 +9,11 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Service
 public class TestServiceImpl implements ITestService {
+
+    private static final Logger logger = Logger.getLogger(TestServiceImpl.class);
 
     @Autowired
     ITaxonNodeService taxonNodeService;
@@ -79,12 +84,12 @@ public class TestServiceImpl implements ITestService {
 
 
     @Override
-    public UUID monitLongRunningMethod(final RuntimeException ex) {
+    public UUID monitLongRunningMethod(final RuntimeException ex, final List<String> feedbacks) {
         RemotingProgressMonitor monitor = new RemotingProgressMonitor();
         RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
             @Override
-            public Object doRun(IRemotingProgressMonitor monitor)  {
-                Object result = longRunningMethod(monitor, ex);
+            public Serializable doRun(IRemotingProgressMonitor monitor)  {
+                Serializable result = longRunningMethod(monitor, ex, feedbacks);
                 if(!monitor.isCanceled()) {
                     monitor.addReport("Report");
                 }
@@ -99,15 +104,24 @@ public class TestServiceImpl implements ITestService {
     }
 
     @Override
-    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex) {
+    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks) {
         int noOfSteps = 10;
         int stepToThrowException = noOfSteps / 2;
+        int stepToWaitForFeedback = noOfSteps / 2;
         monitor.beginTask("Long Running Task", noOfSteps);
         for(int i=0; i<noOfSteps; i++) {
             try {
                 Thread.sleep(1000);
                 if(i == stepToThrowException && ex != null) {
                     throw ex;
+                }
+                if(feedbacks != null && feedbacks.size() > 0 && i == stepToWaitForFeedback) {
+                    for(String feedback : feedbacks) {
+                        logger.warn("Monitor waiting for feedback");
+                        monitor.waitForFeedback();
+                        logger.warn(" .. feedback received : " + monitor.getFeedback());
+                        monitor.addReport(feedback);
+                    }
                 }
                 if(monitor.isCanceled()) {
                     return "Cancelled";

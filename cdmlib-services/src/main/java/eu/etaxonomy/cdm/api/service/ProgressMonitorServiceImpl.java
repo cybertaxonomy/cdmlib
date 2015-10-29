@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +100,18 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
             monitor.done();
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFeedback(UUID uuid, Serializable feedback) {
+        IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
+        if(remotingMonitor != null) {
+            remotingMonitor.setFeedback(feedback);
+        }
+    }
+
+
 
 }

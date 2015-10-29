@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.service;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class IOServiceImpl implements IIOService {
         final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
         RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
             @Override
-            public Object doRun(IRemotingProgressMonitor monitor) {
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
                 configurator.setProgressMonitor(monitor);
                 ImportResult result = importData(configurator, importData, type);
                 for(byte[] report : result.getReports()) {
