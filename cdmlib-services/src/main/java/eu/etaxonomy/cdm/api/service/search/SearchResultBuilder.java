@@ -25,7 +25,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.grouping.GroupDocs;
-import org.hibernate.search.ProjectionConstants;
+import org.hibernate.search.engine.ProjectionConstants;
 
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -142,11 +142,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
         return searchResults;
     }
-    
+
     /**
      * {@inheritDoc}
      *
      */
+    @Override
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
@@ -169,7 +170,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         	Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
         	searchResult.addDoc(document);
 
-        	if(cdmEntityId == null){                    
+        	if(cdmEntityId == null){
         		cdmEntityId = findId(idFields, document);
         	}
 
@@ -197,11 +198,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         return searchResults;
     }
 
-    
+
     /**
      * {@inheritDoc}
      *
      */
+    @Override
     public  List<DocumentSearchResult> createResultSet(TopDocs topDocs, String[] highlightFields) throws CorruptIndexException, IOException {
 
         List<DocumentSearchResult> searchResults = new ArrayList<DocumentSearchResult>();

@@ -119,6 +119,10 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
+		for (int i= 1; i<10; i++){
+		    addPerson(appCtr);
+		}
+
 //		appCtr.getCommonService().createFullSampleData();
 
 //		ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
@@ -141,6 +145,13 @@ public class Datasource {
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
 		appCtr.close();
 	}
+
+
+    private void addPerson(CdmApplicationController appCtr) {
+        TransactionStatus tx = appCtr.startTransaction();
+		appCtr.getAgentService().save(Person.NewInstance());
+		appCtr.commitTransaction(tx);
+    }
 
 
 	private void deleteHighLevelNode(CdmApplicationController appCtr) {

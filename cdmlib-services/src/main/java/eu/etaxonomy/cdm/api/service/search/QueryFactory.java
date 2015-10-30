@@ -20,7 +20,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -34,10 +34,9 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
-import org.hibernate.search.ProjectionConstants;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
-import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
 
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
@@ -378,7 +377,7 @@ public class QueryFactory {
 
             IndexReader indexReader = toolProvider.getIndexReaderFor(clazz);
             IndexSearcher searcher = new IndexSearcher(indexReader);
-            searcher.setDefaultFieldSortScoring(true, true);
+//            searcher.setDefaultFieldSortScoring(true, true);
             indexSearcherMap.put(clazz, searcher);
         }
         IndexSearcher indexSearcher = indexSearcherMap.get(clazz);
