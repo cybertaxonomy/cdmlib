@@ -7,13 +7,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.util;
+package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
-
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * Thread class to be used to run monitored jobs
@@ -29,22 +26,11 @@ public abstract class RemotingProgressMonitorThread extends Thread {
 
     private IRemotingProgressMonitor monitor;
 
-
-    /**
-     * Allocates a new RemotingProgressMonitorThread object
-     *
-     * @param monitor of job which is to be run in this thread
-     */
-    public RemotingProgressMonitorThread(IRemotingProgressMonitor monitor) {
+    public void setMonitor(IRemotingProgressMonitor monitor) {
         if(monitor == null) {
             throw new IllegalStateException("Monitor is null");
         }
-        User user = User.getCurrentAuthenticatedUser();
-        if(user == null) {
-            throw new IllegalStateException("Current authenticated user is null");
-        }
         this.monitor = monitor;
-        this.monitor.setOwner(user.getUsername());
     }
 
     /**
@@ -78,7 +64,7 @@ public abstract class RemotingProgressMonitorThread extends Thread {
      * @param monitor for which the thread
      * @return
      */
-    public static RemotingProgressMonitorThread getMonitorThread(IRemotingProgressMonitor monitor) {
+    protected static RemotingProgressMonitorThread getMonitorThread(IRemotingProgressMonitor monitor) {
         return monitorsInProgress.get(monitor);
     }
 

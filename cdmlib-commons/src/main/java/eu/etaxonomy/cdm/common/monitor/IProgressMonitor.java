@@ -147,6 +147,56 @@ public interface IProgressMonitor extends Serializable {
 	 */
 	public void waitForFeedback();
 
+	/**
+     * Waits for external feedback during the lifetime of the
+     * operation with given timeout
+     *
+     * @param feedbackWaitTimeout time (in ms to wait for feedback)
+     */
+    public void waitForFeedback(long feedbackWaitTimeout);
+
+
+    public boolean hasFeedbackWaitTimedOut();
+
+    /**
+     * Sets the feedback object the monitor is currently waiting for.
+     *
+     * @param feedback
+     */
+    public void setFeedback(Serializable feedback);
+
+    /**
+     * Returns the most recently set feedback object
+     *
+     * @return most recently set feedback object
+     */
+    public Serializable getFeedback();
+
+
+    /**
+     * Boolean flag to indicate whether the monitor is
+     * waiting for feedback
+     *
+     * @return true if monitor is waiting for feedback, o/w false
+     */
+    public boolean getIsWaitingForFeedback();
+
+
+    /**
+     * Returns the user who started the monitored job
+     * @return the user who started the monitored job
+     */
+    public String getOwner();
+
+    /**
+     * Sets the user who started the monitored job
+     * @param owner the user who started the monitored job
+     */
+    public void setOwner(String owner);
+
+
+    public void interrupt();
+
 }
 
 

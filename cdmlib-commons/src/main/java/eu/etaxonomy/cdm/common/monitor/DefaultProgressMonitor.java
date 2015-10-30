@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -32,6 +34,15 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     protected double workDone = 0;
     protected String subTask = "No subtask name";
 
+
+    private Serializable feedback;
+    private transient Object feedbackLock;
+    private boolean isWaitingForFeedback = false;
+    private long feedbackWaitStartTime;
+    private static final long DEFAULT_FEEDBACK_WAIT_TIMEOUT = 1000 * 60 * 60 * 24; // 24 hours
+    private long feedbackWaitTimeout = DEFAULT_FEEDBACK_WAIT_TIMEOUT;
+
+    private String owner;
 
     protected DefaultProgressMonitor(){
 
@@ -95,14 +106,14 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     @Override
     public void worked(int work) {
         computeWorked(work);
-//		this.workDone = this.workDone +  work;
+//      this.workDone = this.workDone +  work;
     }
 
 
     @Override
     public void internalWorked(double work) {
         computeWorked(work);
-//		this.workDone = this.workDone +  work;
+//      this.workDone = this.workDone +  work;
     }
 
     private void computeWorked(double work){
@@ -141,7 +152,101 @@ public class DefaultProgressMonitor implements IProgressMonitor {
      */
     @Override
     public void waitForFeedback() {
+        if(feedbackLock == null) {
+            feedbackLock =  new Object();
+        }
+        synchronized (feedbackLock) {
+            feedback = null;
+            while(feedback == null) {
+                isWaitingForFeedback = true;
+                try {
+                    feedbackWaitStartTime = System.currentTimeMillis();
+                    feedbackLock.wait();
+                } catch (InterruptedException ie) {
+                    throw new IllegalStateException(ie);
+                }
+            }
+        }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFeedback(Serializable feedback) {
+        synchronized (feedbackLock) {
+            this.feedback = feedback;
+            this.feedbackLock.notifyAll();
+            isWaitingForFeedback = false;
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Serializable getFeedback() {
+        return feedback;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getIsWaitingForFeedback() {
+        return isWaitingForFeedback;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void waitForFeedback(long feedbackWaitTimeout) {
+        if(feedbackWaitTimeout <= 0 ) {
+            throw new IllegalStateException("Feedback wait timeout should be a positive number");
+        }
+        this.feedbackWaitTimeout = feedbackWaitTimeout;
+        waitForFeedback();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasFeedbackWaitTimedOut() {
+       long now = System.currentTimeMillis();
+       return isWaitingForFeedback && (now - feedbackWaitStartTime > feedbackWaitTimeout);
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getOwner() {
+        return owner;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void interrupt() {
+        // do nothing
     }
 
 

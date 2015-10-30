@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 
 /**
  *
@@ -29,7 +30,8 @@ public interface IProgressMonitorService {
      *
      * @return uuid of remoting monitor
      */
-    public UUID registerNewRemotingMonitor();
+    public UUID registerNewRemotingMonitor(RemotingProgressMonitorThread monitorThread);
+
 
     /**
      * Return remoting monitor corresponding to give uuid

@@ -23,11 +23,19 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 
     private Serializable result;
     private List<String> reports = new ArrayList<String>();
-    private String owner;
-    private Serializable feedback;
-    private transient Object feedbackLock;
-    private boolean isWaitingForFeedback = false;
+    private transient RemotingProgressMonitorThread monitorThread;
 
+
+    public RemotingProgressMonitor(RemotingProgressMonitorThread monitorThread) {
+        if(monitorThread == null) {
+            throw new IllegalStateException("Monitor Thread is null");
+        }
+        this.monitorThread = monitorThread;
+    }
+
+    public RemotingProgressMonitor() {
+
+    }
 
     /**
      * {@inheritDoc}
@@ -64,54 +72,13 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
         reports.add(report);
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getOwner() {
-        return owner;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void waitForFeedback() {
-        if(feedbackLock == null) {
-            feedbackLock =  new Object();
-        }
-        synchronized (feedbackLock) {
-            feedback = null;
-            while(feedback == null) {
-                isWaitingForFeedback = true;
-                try {
-                    feedbackLock.wait();
-                } catch (InterruptedException ie) {
-                    throw new IllegalStateException(ie);
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFeedback(Serializable feedback) {
-        synchronized (feedbackLock) {
-            this.feedback = feedback;
-            this.feedbackLock.notifyAll();
-            isWaitingForFeedback = false;
+    public void interrupt() {
+        if(monitorThread.isAlive()) {
+            monitorThread.interrupt();
         }
     }
 
@@ -120,16 +87,16 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
      * {@inheritDoc}
      */
     @Override
-    public Serializable getFeedback() {
-        return feedback;
+    public RemotingProgressMonitorThread getThread() {
+        return monitorThread;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isWaitingForFeedback() {
-        return isWaitingForFeedback;
+    public boolean isMonitorThreadRunning() {
+        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);
+        return monitorThread != null;
     }
-
 }

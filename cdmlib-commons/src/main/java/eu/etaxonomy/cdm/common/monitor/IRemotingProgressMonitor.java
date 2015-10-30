@@ -46,39 +46,9 @@ public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {
      */
     public void addReport(String report);
 
-    /**
-     * Returns the user who started the monitored job
-     * @return the user who started the monitored job
-     */
-    public String getOwner();
 
-    /**
-     * Sets the user who started the monitored job
-     * @param owner the user who started the monitored job
-     */
-    public void setOwner(String owner);
+    public RemotingProgressMonitorThread getThread();
 
-    /**
-     * Sets the feedback object the monitor is currently waiting for.
-     *
-     * @param feedback
-     */
-    public void setFeedback(Serializable feedback);
-
-    /**
-     * Returns the most recently set feedback object
-     *
-     * @return most recently set feedback object
-     */
-    public Serializable getFeedback();
-
-
-    /**
-     * Boolean flag to indicate whether the monitor is
-     * waiting for feedback
-     *
-     * @return true if monitor is waiting for feedback, o/w false
-     */
-    public boolean isWaitingForFeedback();
+    public boolean isMonitorThreadRunning();
 
 }

@@ -21,9 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
-import eu.etaxonomy.cdm.api.service.util.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -41,7 +40,7 @@ public class TestServiceImpl implements ITestService {
     ITaxonNodeService taxonNodeService;
 
     @Autowired
-    ProgressMonitorManager<IRemotingProgressMonitor> progressMonitorManager;
+    IProgressMonitorService progressMonitorService;
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITestService#wait(int)
@@ -84,12 +83,12 @@ public class TestServiceImpl implements ITestService {
 
 
     @Override
-    public UUID monitLongRunningMethod(final RuntimeException ex, final List<String> feedbacks) {
-        RemotingProgressMonitor monitor = new RemotingProgressMonitor();
-        RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
+    public UUID monitLongRunningMethod(final RuntimeException ex, final List<String> feedbacks, final long feedbackWaitTimeout) {
+
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor)  {
-                Serializable result = longRunningMethod(monitor, ex, feedbacks);
+                Serializable result = longRunningMethod(monitor, ex, feedbacks, feedbackWaitTimeout);
                 if(!monitor.isCanceled()) {
                     monitor.addReport("Report");
                 }
@@ -97,14 +96,17 @@ public class TestServiceImpl implements ITestService {
             }
         };
 
-        UUID uuid = progressMonitorManager.registerMonitor(monitor);
-        monitThread.setPriority(3);
-        monitThread.start();
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
         return uuid;
     }
 
     @Override
-    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks) {
+    public String longRunningMethod(IRemotingProgressMonitor monitor,
+            RuntimeException ex,
+            List<String> feedbacks,
+            long feedbackWaitTimeout) {
         int noOfSteps = 10;
         int stepToThrowException = noOfSteps / 2;
         int stepToWaitForFeedback = noOfSteps / 2;
@@ -118,7 +120,11 @@ public class TestServiceImpl implements ITestService {
                 if(feedbacks != null && feedbacks.size() > 0 && i == stepToWaitForFeedback) {
                     for(String feedback : feedbacks) {
                         logger.warn("Monitor waiting for feedback");
-                        monitor.waitForFeedback();
+                        if(feedbackWaitTimeout <= 0) {
+                            monitor.waitForFeedback();
+                        } else {
+                            monitor.waitForFeedback(feedbackWaitTimeout);
+                        }
                         logger.warn(" .. feedback received : " + monitor.getFeedback());
                         monitor.addReport(feedback);
                     }

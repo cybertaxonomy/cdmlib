@@ -22,10 +22,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.ProgressMonitorManager;
-import eu.etaxonomy.cdm.api.service.util.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -53,7 +52,7 @@ public class IOServiceImpl implements IIOService {
     CdmApplicationAwareDefaultImport cdmImport;
 
     @Autowired
-    ProgressMonitorManager<IRemotingProgressMonitor> progressMonitorManager;
+    IProgressMonitorService progressMonitorService;
 
 
 
@@ -69,8 +68,7 @@ public class IOServiceImpl implements IIOService {
 
     @Override
     public UUID monitImportData(final IImportConfigurator configurator, final byte[] importData, final SOURCE_TYPE type) {
-        final IRemotingProgressMonitor monitor = new RemotingProgressMonitor();
-        RemotingProgressMonitorThread monitThread = new RemotingProgressMonitorThread(monitor) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
                 configurator.setProgressMonitor(monitor);
@@ -81,9 +79,9 @@ public class IOServiceImpl implements IIOService {
                 return result;
             }
         };
-        UUID uuid = progressMonitorManager.registerMonitor(monitor);
-        monitThread.setPriority(3);
-        monitThread.start();
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
         return uuid;
     }
 
