@@ -39,13 +39,13 @@ public interface ITestService {
      * @param monitor
      * @return
      */
-    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks);
+    public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks, long feedbackWaitTimeout);
 
 
     /**
      * @return
      */
-    public UUID monitLongRunningMethod(RuntimeException ex, List<String> feedbacks);
+    public UUID monitLongRunningMethod(RuntimeException ex, List<String> feedbacks, long feedbackWaitTimeout);
 
 
 

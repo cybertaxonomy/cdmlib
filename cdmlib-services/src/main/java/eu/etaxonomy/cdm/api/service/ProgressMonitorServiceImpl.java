@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import eu.etaxonomy.cdm.api.service.util.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
@@ -42,11 +42,18 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
      * {@inheritDoc}
      */
     @Override
-    public UUID registerNewRemotingMonitor() {
-        RemotingProgressMonitor monitor = new RemotingProgressMonitor();
+    public UUID registerNewRemotingMonitor(RemotingProgressMonitorThread monitorThread) {
+        RemotingProgressMonitor monitor = new RemotingProgressMonitor(monitorThread);
+        monitorThread.setMonitor(monitor);
         UUID uuid = progressMonitorManager.registerMonitor(monitor);
+        User user = User.getCurrentAuthenticatedUser();
+        if(user == null) {
+            throw new IllegalStateException("Current authenticated user is null");
+        }
+        monitor.setOwner(user.getUsername());
         return uuid;
     }
+
 
     /**
      * {@inheritDoc}
@@ -75,9 +82,9 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
      */
     @Override
     public void interrupt(UUID uuid) {
-        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(getRemotingMonitor(uuid));
-        if(monitorThread != null) {
-            monitorThread.interrupt();
+        IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
+        if(remotingMonitor!= null) {
+            remotingMonitor.interrupt();
         }
     }
 
@@ -86,7 +93,11 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
      */
     @Override
     public boolean isMonitorThreadRunning(UUID uuid) {
-        return RemotingProgressMonitorThread.getMonitorThread(getRemotingMonitor(uuid)) != null;
+        IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
+        if(remotingMonitor != null) {
+            return remotingMonitor.isMonitorThreadRunning();
+        }
+        return false;
     }
 
     /**
@@ -111,6 +122,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
             remotingMonitor.setFeedback(feedback);
         }
     }
+
 
 
 

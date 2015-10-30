@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 @Component
 public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
 
-    private final Map<UUID, T> monitors = new HashMap<UUID, T>();
+    private final Map<UUID, T> monitors = new ConcurrentHashMap<UUID, T>();
 
     private final Map<UUID, Long> timeoutMap = new HashMap<UUID, Long>();
 
@@ -85,6 +86,9 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
                 if(!timeoutMap.containsKey(uuid)){
                     timeoutMap.put(uuid, nextTimeout);
                 }
+            }
+            if(monitor.hasFeedbackWaitTimedOut()) {
+                monitor.interrupt();
             }
         }
 

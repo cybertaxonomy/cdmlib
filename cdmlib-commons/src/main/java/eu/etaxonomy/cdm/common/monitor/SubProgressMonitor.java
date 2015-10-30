@@ -208,11 +208,4 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
 
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void waitForFeedback() {
-
-    }
 }

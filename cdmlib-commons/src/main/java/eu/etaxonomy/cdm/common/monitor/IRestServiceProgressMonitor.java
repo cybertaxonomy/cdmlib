@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.common.monitor;
 
 
+
 public interface IRestServiceProgressMonitor extends IProgressMonitor{
 
     public String getTaskName();
@@ -42,5 +43,6 @@ public interface IRestServiceProgressMonitor extends IProgressMonitor{
     public void setOrigin(String origin);
 
     public String getOrigin();
+
 
 }
