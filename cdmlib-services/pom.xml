@@ -73,6 +73,13 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-join</artifactId>
     </dependency>
+    <!--  OLD concept, not under development anymore,
+     to be removed as soon as CdmMassIndexer is updated -->
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spellchecker</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-dbunit</artifactId>

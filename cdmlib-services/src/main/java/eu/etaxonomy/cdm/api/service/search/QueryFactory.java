@@ -34,6 +34,7 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
+import org.apache.lucene.search.join.ScoreMode;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
@@ -335,7 +336,10 @@ public class QueryFactory {
      */
     public Query newJoinQuery(String fromField, String toField, Query joinFromQuery,
             Class<? extends CdmBase> fromType) throws IOException {
-            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(fromType));
+            boolean multipleValuesPerDocument = true;
+            ScoreMode scoreMode = ScoreMode.Max;
+            return JoinUtil.createJoinQuery(fromField, multipleValuesPerDocument, toField,
+                    joinFromQuery, indexSearcherFor(fromType), scoreMode);
     }
 
     /**

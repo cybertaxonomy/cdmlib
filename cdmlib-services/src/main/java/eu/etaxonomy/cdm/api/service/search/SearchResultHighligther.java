@@ -20,7 +20,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-//import org.apache.lucene.index.DocsAndPositionsEnum;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Fragmenter;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -88,26 +87,26 @@ public class SearchResultHighligther {
     }
 
 
-    /**
-     * Generates contextual fragments.
-     * @param termPosVector - Term Position Vector for fieldName
-     * @param query - query object created from user's input
-     * @param fieldName - name of the field containing the text to be fragmented
-     * @param fieldContents - contents of fieldName
-     * @param fragmentNumber - max number of sentence fragments to return
-     * @param fragmentSize - the max number of characters for each fragment
-     * @return
-     * @return
-     * @throws IOException
-     */
-    public String[] getFragmentsWithHighlightedTerms(TermPositionVector termPosVector, Query query,
-                    String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException  {
-
-            TokenStream stream = TokenSources.getTokenStream(termPosVector);
-            String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
-
-            return fragments;
-    }
+//    /**
+//     * Generates contextual fragments.
+//     * @param termPosVector - Term Position Vector for fieldName
+//     * @param query - query object created from user's input
+//     * @param fieldName - name of the field containing the text to be fragmented
+//     * @param fieldContents - contents of fieldName
+//     * @param fragmentNumber - max number of sentence fragments to return
+//     * @param fragmentSize - the max number of characters for each fragment
+//     * @return
+//     * @return
+//     * @throws IOException
+//     */
+//    public String[] getFragmentsWithHighlightedTerms(TermPositionVector termPosVector, Query query,
+//                    String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException  {
+//
+//            TokenStream stream = TokenSources.getTokenStream(termPosVector);
+//            String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
+//
+//            return fragments;
+//    }
 
     /**
      * @param stream

@@ -32,7 +32,7 @@ public class Configuration {
      *
      */
     @Deprecated // so we now it is not 100% save to use this
-    public static Version luceneVersion = Version.LUCENE_36;
+    public static Version luceneVersion = Version.LUCENE_4_10_4;
 
     /**
      * Login name for the first user 'admin'
