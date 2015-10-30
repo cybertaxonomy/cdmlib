@@ -33,8 +33,8 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.engine.spi.SearchFactoryImplementor;
-import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
+import org.hibernate.search.SearchFactory;
+import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
 import org.hibernate.search.indexes.spi.IndexManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -151,8 +151,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             //TODO:give some indication that this class is infact not indexed
             return;
         }
-        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)Search.getFullTextSession(getSession()).getSearchFactory();
-        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
+        SearchFactory searchFactory = Search.getFullTextSession(getSession()).getSearchFactory();
+        IndexManager indexManager = makeIndexManager(searchFactory, indexName);
+
         IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
         List<String> idFields = getIndexedDeclaredFields(type);
 
@@ -200,6 +201,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.done();
     }
 
+    private IndexManager makeIndexManager(SearchFactory searchFactory, String indexName){
+        //FIXME #4716 SearchFactoryImplementor not available in hibernate-search anymore
+//        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)searchFactory;
+//        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
+//        return indexManager;
+        return null;
+    }
+
     /**
      * @param countResult
      * @return
@@ -232,8 +241,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         boolean doSpellIndex = false;
 
         if(doSpellIndex){
-            SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
-            IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
+            SearchFactory searchFactory = fullTextSession.getSearchFactory();
+            IndexManager indexManager = makeIndexManager(searchFactory, type.getName());
             if(indexManager == null){
                 logger.info("No IndexManager found for " + type.getName() + ", thus nothing to purge");
                 return;
@@ -262,10 +271,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
-     */
     @Override
     public void reindex(Collection<Class<? extends CdmBase>> types, IProgressMonitor monitor){
 

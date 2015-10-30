@@ -29,6 +29,7 @@ import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.grouping.term.TermAllGroupsCollector;
 import org.apache.lucene.search.grouping.term.TermFirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.term.TermSecondPassGroupingCollector;
+import org.apache.lucene.util.BytesRef;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -280,7 +281,7 @@ public class LuceneSearch {
                 groupByField, groupSort, limit);
 
         getSearcher().search(fullQuery, filter , firstPassCollector);
-        Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
+        Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
               return null;
@@ -301,7 +302,7 @@ public class LuceneSearch {
                 );
         getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
-        TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
+        TopGroups<BytesRef> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
         // get max score from very first result
         float maxScore = groupsResult.groups[0].maxScore;
@@ -367,27 +368,28 @@ public class LuceneSearch {
      *
      */
     public class TopGroupsWithMaxScore{
-        public TopGroups<String> topGroups;
+        public TopGroups<BytesRef> topGroups;
         public float maxScore = Float.NaN;
 
-        TopGroupsWithMaxScore(TopGroups<String> topGroups, int offset, int totalGroupCount, float maxScore){
+        TopGroupsWithMaxScore(TopGroups<BytesRef> topGroups, int offset, int totalGroupCount, float maxScore){
             this.maxScore = maxScore;
-            TopGroups<String> newTopGroups;
+            TopGroups<BytesRef> newTopGroups;
             if(offset > 0){
-                GroupDocs<String>[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
+                GroupDocs<BytesRef>[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
                 for(int i = offset; i < topGroups.groups.length; i++){
                     newGroupDocs[i - offset] = topGroups.groups[i];
                 }
-                newTopGroups = new TopGroups<String>(
+                newTopGroups = new TopGroups<BytesRef>(
                             topGroups.groupSort,
                             topGroups.withinGroupSort,
                             topGroups.totalHitCount,
                             topGroups.totalGroupedHitCount,
-                            newGroupDocs);
+                            newGroupDocs,
+                            maxScore);
             } else {
                 newTopGroups = topGroups;
             }
-            this.topGroups = new TopGroups<String>(newTopGroups, totalGroupCount);
+            this.topGroups = new TopGroups<BytesRef>(newTopGroups, totalGroupCount);
         }
 
     }

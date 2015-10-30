@@ -1030,10 +1030,12 @@
         <artifactId>lucene-core</artifactId>
         <version>${lucene.version}</version>
       </dependency>
+	  <!--  OLD concept, not under development anymore,
+     to be removed as soon as CdmMassIndexer is updated -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-spellchecker</artifactId>
-        <version>${lucene.version}</version>
+        <version>3.6.2</version>
       </dependency>
 	  <dependency>
         <groupId>org.apache.lucene</groupId>
