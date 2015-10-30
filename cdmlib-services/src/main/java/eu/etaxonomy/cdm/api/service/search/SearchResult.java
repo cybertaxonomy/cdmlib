@@ -9,13 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.lucene.document.Document;
-import org.hibernate.search.ProjectionConstants;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

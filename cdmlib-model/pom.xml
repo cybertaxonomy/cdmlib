@@ -71,12 +71,12 @@
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.4</version>
           </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.4</version>
           </dependency>
       </dependencies>
       </plugin>
@@ -192,7 +192,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-<!-- these 2 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/-->
+<!-- these 3 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/-->
     <dependency>
        <groupId>javax.el</groupId>
        <artifactId>javax.el-api</artifactId>
@@ -205,7 +205,7 @@
        <groupId>org.hibernate</groupId>
        <artifactId>hibernate-validator-cdi</artifactId>
     </dependency>
-    
+<!-- end validator -->    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -214,5 +214,9 @@
 	  <groupId>net.sf.ehcache</groupId>
 	  <artifactId>ehcache-core</artifactId>	  
 	</dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+  </dependency>
   </dependencies>
 </project>

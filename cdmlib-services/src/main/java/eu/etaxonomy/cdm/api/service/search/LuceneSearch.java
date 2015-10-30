@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
@@ -25,10 +25,10 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
-import org.apache.lucene.search.grouping.TermAllGroupsCollector;
-import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
-import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.search.grouping.term.TermAllGroupsCollector;
+import org.apache.lucene.search.grouping.term.TermFirstPassGroupingCollector;
+import org.apache.lucene.search.grouping.term.TermSecondPassGroupingCollector;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -181,7 +181,7 @@ public class LuceneSearch {
     public IndexSearcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(toolProvider.getIndexReaderFor(directorySelectClass));
-            searcher.setDefaultFieldSortScoring(true, true);
+//            searcher.setDefaultFieldSortScoring(true, true);
         }
         return searcher;
     }

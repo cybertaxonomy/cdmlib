@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-//import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -35,6 +34,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
@@ -67,7 +68,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Type(type="partialUserType")
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = PartialBridge.class)
-//    @JsonIgnore // currently used for swagger model scanner
+    @JsonIgnore // currently used for swagger model scanner
     private Partial start;
 
     @XmlElement(name = "End")
@@ -75,7 +76,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Type(type="partialUserType")
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = PartialBridge.class)
-//    @JsonIgnore // currently used for swagger model scanner
+    @JsonIgnore // currently used for swagger model scanner
     private Partial end;
 
 
@@ -262,7 +263,7 @@ public class TimePeriod implements Cloneable, Serializable {
 //******************* GETTER / SETTER ************************************/
 
 
-//    @JsonIgnore // currently used for swagger model scanner
+    @JsonIgnore // currently used for swagger model scanner
     public Partial getStart() {
         return start;
     }
@@ -272,7 +273,7 @@ public class TimePeriod implements Cloneable, Serializable {
     }
 
 
-//    @JsonIgnore // currently used for swagger model scanner
+    @JsonIgnore // currently used for swagger model scanner
     public Partial getEnd() {
         return end;
     }

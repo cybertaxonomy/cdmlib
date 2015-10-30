@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -22,7 +22,6 @@ import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -96,7 +95,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     public QueryParser getQueryParserFor(Class<? extends CdmBase> clazz) {
         if(!queryParsers.containsKey(clazz)){
             Analyzer analyzer = getAnalyzerFor(clazz);
-            QueryParser parser = new QueryParser(Configuration.luceneVersion, DEFAULT_QURERY_FIELD_NAME, analyzer);
+            QueryParser parser = new QueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
             queryParsers.put(clazz, parser);
         }
         return queryParsers.get(clazz);

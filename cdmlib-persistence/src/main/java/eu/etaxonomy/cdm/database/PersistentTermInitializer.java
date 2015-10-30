@@ -21,7 +21,6 @@ import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -30,7 +29,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
@@ -96,7 +94,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     @Override
     public void doInitialize(){
         logger.info("PersistentTermInitializer initialize start ...");
-        
+
         if (omit){
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
             return;
@@ -105,14 +103,14 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
             DateTime start = new DateTime();
-            
+
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-           
+
             //load uuids from csv files
             logger.info("Start new ... " );
             Map<UUID, Set<UUID>> uuidMap = new HashMap<UUID, Set<UUID>>();
             Map<UUID, VocabularyEnum> vocTypeMap = new HashMap<UUID, VocabularyEnum>();
-            
+
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
                 UUID vocUUID = termLoader.loadUuids(vocabularyType, uuidMap);
                 if (! vocUUID.equals(vocabularyType.getUuid())){
@@ -120,18 +118,18 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
                 }
                 vocTypeMap.put(vocUUID, vocabularyType);
             }
-            
+
             //find and create missing terms and load vocabularies from repository
             logger.info("Create missing terms ... " );
             Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<UUID, TermVocabulary<?>>();
             Map<UUID, Set<UUID>> missingTermUuids = new HashMap<UUID, Set<UUID>>();
-            
+
             vocabularyDao.missingTermUuids(uuidMap, missingTermUuids, vocabularyMap);
-            
-            for( VocabularyEnum vocabularyType : VocabularyEnum.values()) {   //required to keep the order (language must be the first vocabulary to load) 
+
+            for( VocabularyEnum vocabularyType : VocabularyEnum.values()) {   //required to keep the order (language must be the first vocabulary to load)
             	UUID vocUuid = vocabularyType.getUuid();
             	if (missingTermUuids.keySet().contains(vocabularyType.getUuid())  || vocabularyMap.get(vocUuid) == null ){
-	            	
+
             		VocabularyEnum vocType = vocTypeMap.get(vocUuid);  //TODO not really necessary, we could also do VocType.getUuuid();
 	            	TermVocabulary<?> voc = vocabularyMap.get(vocUuid);
 	            	if (voc == null){
@@ -146,15 +144,15 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	                	vocabularyDao.saveOrUpdate(voc);
 	                }
 	            }
-	            initializeAndStore(vocabularyType, terms, vocabularyMap);  //TODO 
+	            initializeAndStore(vocabularyType, terms, vocabularyMap);  //TODO
         	}
-           
+
             transactionManager.commit(txStatus);
-            
+
             DateTime end = new DateTime();
             Period period = new Period(start, end);
             logger.info ("Term loading took " + period.getSeconds() + "." + period.getMillis() + " seconds ");
-            
+
         }
         logger.info("PersistentTermInitializer initialize end ...");
     }
@@ -167,12 +165,12 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
      * @param vocabularyUuid the <code>UUID</code> of the vocabulary
      * @param terms a <code>Map</code> containing all already
      * 						 loaded terms with their <code>UUID</code> as key
-     * @param vocabularyMap 
+     * @param vocabularyMap
      */
     protected void initializeAndStore(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms, Map<UUID, TermVocabulary<?>> vocabularyMap) {
     	Class<? extends DefinedTermBase<?>> clazz = vocType.getClazz();
         UUID vocabularyUuid = vocType.getUuid();
-       
+
         if (logger.isDebugEnabled()){ logger.debug("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
 
         TermVocabulary<? extends DefinedTermBase> persistedVocabulary;
@@ -181,12 +179,12 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         }else{
         	persistedVocabulary = vocabularyMap.get(vocabularyUuid);
         }
-        
+
         if (logger.isDebugEnabled()){ logger.debug("Initializing terms in vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
         //not really needed anymore as we do term initializing from the beginning now
         if (persistedVocabulary != null){
             for(DefinedTermBase<?> definedTermBase : persistedVocabulary.getTerms()) {
-                
+
             	Hibernate.initialize(definedTermBase.getRepresentations());
                 for(Representation r : definedTermBase.getRepresentations()) {
                     Hibernate.initialize(r.getLanguage());
@@ -197,8 +195,8 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.error("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
             throw new IllegalStateException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
         }
-        
-        
+
+
         //fill term store
         if (logger.isDebugEnabled()){ logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");}
         super.setDefinedTerms(clazz, persistedVocabulary);
@@ -225,7 +223,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         }
 
         TermVocabulary<?> loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
-        
+
         UUID vocabularyUuid = loadedVocabulary.getUuid();
 
 
