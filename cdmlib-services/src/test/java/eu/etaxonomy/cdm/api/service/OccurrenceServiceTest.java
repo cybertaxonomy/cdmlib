@@ -834,6 +834,20 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         deleteResult = occurrenceService.isDeletable(fieldUnit, config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
+
+
+
+        //check deletion of Specimen
+        config.setDeleteChildren(true);
+        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
+
+        //check deletion of fieldUnit
+        config.setDeleteFromDescription(true);
+        deleteResult = occurrenceService.isDeletable(fieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+
     }
 
     @Test
