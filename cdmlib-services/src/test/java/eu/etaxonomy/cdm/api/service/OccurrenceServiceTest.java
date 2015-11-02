@@ -759,6 +759,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testIsDeletableWithChildren.xml")
+
     public void testIsDeletableWithChildren(){
         UUID fieldUnitUuid = UUID.fromString("92ada058-4c14-4131-8ecd-b82dc1dd2882");
         UUID derivedUnitUuid = UUID.fromString("896dffdc-6809-4914-8950-5501fee1c0fd");
@@ -834,6 +835,20 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         deleteResult = occurrenceService.isDeletable(fieldUnit, config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
+
+
+
+        //check deletion of Specimen
+        config.setDeleteChildren(true);
+        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
+
+        //check deletion of fieldUnit
+        config.setDeleteFromDescription(true);
+        deleteResult = occurrenceService.isDeletable(fieldUnit, config);
+        assertTrue(deleteResult.toString(), deleteResult.isOk());
+
     }
 
     @Test

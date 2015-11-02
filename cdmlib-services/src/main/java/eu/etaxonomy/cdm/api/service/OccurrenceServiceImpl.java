@@ -1081,13 +1081,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             else if (cdmBase.isInstanceOf(DerivationEvent.class)) {
                 DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(cdmBase, DerivationEvent.class);
                 // check if derivation event is empty
-                if (!derivationEvent.getDerivatives().isEmpty()) {
-                    if (derivationEvent.getDerivatives().size() == 1 && derivationEvent.getDerivatives().contains(specimen)) {
-                        //if it is the parent event with only one derivate then the specimen is still deletable
-                        continue;
-                    }
-                    else if(!specimenDeleteConfigurator.isDeleteChildren()){
-                        //if not and children should not be deleted then it is undeletable
+                if (!derivationEvent.getDerivatives().isEmpty() && derivationEvent.getOriginals().contains(specimen)) {
+                    // if derivationEvent is the childEvent and contains derivations
+//                    if (derivationEvent.getDerivatives().contains(specimen)) {
+//                        //if it is the parent event the specimen is still deletable
+//                        continue;
+//                    }
+                    if(!specimenDeleteConfigurator.isDeleteChildren()){
+                        //if children should not be deleted then it is undeletable
                         deleteResult.setAbort();
                         deleteResult.addException(new ReferencedObjectUndeletableException("Derivative still has child derivatives."));
                         deleteResult.addRelatedObject(cdmBase);
@@ -1161,16 +1162,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (relatedObject.isInstanceOf(SpecimenTypeDesignation.class)) {
                 SpecimenTypeDesignation designation = HibernateProxyHelper.deproxy(relatedObject, SpecimenTypeDesignation.class);
                 designation.setTypeSpecimen(null);
-                Set<TaxonNameBase> typifiedNames = designation.getTypifiedNames();
+                List<TaxonNameBase> typifiedNames = new ArrayList<TaxonNameBase>();
+                typifiedNames.addAll(designation.getTypifiedNames());
                 for (TaxonNameBase taxonNameBase : typifiedNames) {
                     taxonNameBase.removeTypeDesignation(designation);
                 }
             }
             // delete IndividualsAssociation
             if (relatedObject.isInstanceOf(IndividualsAssociation.class)) {
-                IndividualsAssociation assciation = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
-                assciation.setAssociatedSpecimenOrObservation(null);
-                assciation.getInDescription().removeElement(assciation);
+                IndividualsAssociation association = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
+                association.setAssociatedSpecimenOrObservation(null);
+                association.getInDescription().removeElement(association);
             }
             // check for taxon description
             if (relatedObject.isInstanceOf(TaxonDescription.class)) {
