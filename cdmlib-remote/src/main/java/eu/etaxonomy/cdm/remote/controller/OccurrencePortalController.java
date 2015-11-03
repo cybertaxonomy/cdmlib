@@ -116,9 +116,12 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof FieldUnit){
-            final DerivateDTO fieldUnitDTO = service.assembleFieldUnitDTO((FieldUnit)sob, taxonUuid);
-            if(fieldUnitDTO!=null){
-                mv.addObject(fieldUnitDTO);
+            FieldUnit fieldUnit = (FieldUnit)sob;
+            if(fieldUnit.isPublish()){
+                final DerivateDTO fieldUnitDTO = service.assembleFieldUnitDTO(fieldUnit, taxonUuid);
+                if(fieldUnitDTO!=null){
+                    mv.addObject(fieldUnitDTO);
+                }
             }
         }
         return mv;
@@ -136,9 +139,12 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof DerivedUnit){
-            PreservedSpecimenDTO specimenDTO = service.assemblePreservedSpecimenDTO((DerivedUnit) sob);
-            if(specimenDTO!=null){
-                mv.addObject(specimenDTO);
+            DerivedUnit derivedUnit = (DerivedUnit) sob;
+            if(derivedUnit.isPublish()){
+                PreservedSpecimenDTO specimenDTO = service.assemblePreservedSpecimenDTO(derivedUnit);
+                if(specimenDTO!=null){
+                    mv.addObject(specimenDTO);
+                }
             }
         }
         return mv;
