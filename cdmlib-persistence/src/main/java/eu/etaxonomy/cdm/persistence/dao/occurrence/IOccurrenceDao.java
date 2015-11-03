@@ -254,5 +254,5 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param propertyPaths
      * @return collection of specimen with the given type
      */
-    public Collection<SpecimenTypeDesignation> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }
