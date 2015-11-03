@@ -1322,11 +1322,22 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
+        //individuals associations
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
         for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                 associatedTaxa.add(taxonDescription.getTaxon());
+            }
+        }
+        //type designation
+        Collection<SpecimenTypeDesignation> typeDesignations = new HashSet<SpecimenTypeDesignation>();
+        for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
+            if(typeDesignation.getTypeSpecimen().equals(specimen)){
+                Set<TaxonNameBase> typifiedNames = typeDesignation.getTypifiedNames();
+                for (TaxonNameBase taxonNameBase : typifiedNames) {
+                    associatedTaxa.addAll(taxonNameBase.getTaxa());
+                }
             }
         }
         return associatedTaxa;
