@@ -412,6 +412,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
+                if(!derivedUnit.isPublish()){
+                    continue;
+                }
                 // collect accession numbers for citation
                 String mostSignificantIdentifier = getMostSignificantIdentifier(derivedUnit);
                 if (mostSignificantIdentifier != null) {
