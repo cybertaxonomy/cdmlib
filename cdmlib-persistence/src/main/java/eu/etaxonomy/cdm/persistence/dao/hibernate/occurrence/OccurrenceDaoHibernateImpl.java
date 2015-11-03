@@ -524,7 +524,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public Collection<SpecimenTypeDesignation> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         String queryString = "FROM SpecimenOrObservationBase specimens WHERE specimens.recordBasis = :type";
 
         if(orderHints != null && orderHints.size() > 0){
