@@ -1275,7 +1275,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
             DnaSample dnaSample = sequence.getDnaSample();
             dnaSample.removeSequence(sequence);
-            deleteResult = sequenceService.delete(sequence);
+            deleteResult.includeResult(sequenceService.delete(sequence));
             deleteResult.addUpdatedObject(dnaSample);
         }
         else if(from instanceof SingleRead){
@@ -1289,7 +1289,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     + "Single read may still be attached to a consensus sequence."));
         }
         else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
-            deleteResult = delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config);
+            deleteResult.includeResult(delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config));
         }
         return deleteResult;
     }
