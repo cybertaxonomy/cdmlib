@@ -25,9 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -243,7 +243,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
-        	config.setDeleteTaxon(false);
+        	config.setDeleteElement(false);
         	conf.setTaxonNodeConfig(config);
         	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
         }
@@ -434,7 +434,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	}
     	DeleteResult result = new DeleteResult();
 
-    	if (config.getTaxonNodeConfig().getChildHandling().equals(TaxonNodeDeletionConfigurator.ChildHandling.MOVE_TO_PARENT)){
+    	if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.MOVE_TO_PARENT)){
     	   Object[] children = node.getChildNodes().toArray();
     	   TaxonNode childNode;
     	   for (Object child: children){
@@ -468,7 +468,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			if (index > -1){
 			    parent.removeChild(index);
 			}
-    		if (!dao.delete(node, config.getTaxonNodeConfig().getChildHandling().equals(TaxonNodeDeletionConfigurator.ChildHandling.DELETE)).equals(null)){
+    		if (!dao.delete(node, config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)).equals(null)){
     			return result;
     		} else {
     			result.setError();
