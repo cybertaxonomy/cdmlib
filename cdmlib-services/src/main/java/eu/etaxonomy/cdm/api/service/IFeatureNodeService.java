@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
@@ -22,18 +22,19 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
  */
 public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
-    /**
-     * @param node
-     * @param config
-     * @return
-     */
-    DeleteResult deleteFeatureNode(UUID nodeUuid, NodeDeletionConfigurator config);
 
     /**
      * @param node
      * @param config
      * @return
      */
-    DeleteResult isDeletable(FeatureNode node, NodeDeletionConfigurator config);
+    DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config);
+
+    /**
+     * @param nodeUuid
+     * @param config
+     * @return
+     */
+    DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
 }

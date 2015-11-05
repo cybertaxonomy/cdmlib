@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -149,13 +149,13 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         FeatureTree tree = dao.load(featureTreeUuid);
 
         FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot(), FeatureNode.class);
-        NodeDeletionConfigurator config = new NodeDeletionConfigurator();
+        FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
-        dao.delete(tree);
-
-
-
+        tree.setRoot(null);
+        if (result.isOk()){
+          dao.delete(tree);
+        }
         return result;
 
     }
