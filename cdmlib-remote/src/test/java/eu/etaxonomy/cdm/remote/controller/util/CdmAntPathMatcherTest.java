@@ -36,11 +36,9 @@ public class CdmAntPathMatcherTest {
             new String[]{"/hotels","{hotel}","/hotels/{hotel}"},
             new String[]{"/hotels/*","{hotel}","/hotels/{hotel}"},
             new String[]{"/hotels/**","{hotel}","/hotels/**/{hotel}"},
-//            new String[]{"/*.html","hotels.html","hotels.html"},
             new String[]{"/*.html","/hotels.html","/hotels.html"},
             new String[]{"/*.html","/hotels","/hotels.html"},
             new String[]{"/*.html","hotels","hotels.html"},
-//            new String[]{"/*.html","/*.txt","/*.html"},    // the official documentation says IllegalArgumentException but it its /*.html
 
     };
     private final String[][] cdmAntPathMatcherExpectations  = new String[][]{
@@ -55,7 +53,6 @@ public class CdmAntPathMatcherTest {
             new String[]{"/hotels","{hotel}","/hotels/{hotel}"},
             new String[]{"/hotels/*","{hotel}","/hotels/{hotel}"},
             new String[]{"/hotels/**","{hotel}","/hotels/**/{hotel}"},
-            //new String[]{"/*.html","hotels.html","hotels.html"},
             new String[]{"/*.html","/hotels.html","/hotels.html"},
             new String[]{"/*.html","hotels","hotels.html"},
             new String[]{"/*.html","//hotels","/hotels"},                   // special for CdmAntPathMatcher
