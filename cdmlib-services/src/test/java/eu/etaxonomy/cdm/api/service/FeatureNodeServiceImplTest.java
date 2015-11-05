@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -152,7 +153,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	public final void testIndexDeleteNode() {
 		node2 = featureNodeService.load(node2Uuid);
 		FeatureNode root = node2.getParent();
-		NodeDeletionConfigurator config = new NodeDeletionConfigurator();
+		FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
 		config.setDeleteElement(false);
         config.setChildHandling(ChildHandling.MOVE_TO_PARENT);
         DeleteResult result = featureNodeService.deleteFeatureNode(node2Uuid, config);
@@ -170,12 +171,18 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		result = featureNodeService.deleteFeatureNode(node4Uuid, config);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		tree1 = featureTreeService.load(featureTreeUuid);
-		assertNotNull(tree1);
-
 		node4 = featureNodeService.load(node4Uuid);
-		assertNull(node4);
-		FeatureNode node6 = featureNodeService.load(node6Uuid);
-		assertNull(node6);
+        assertNull(node4);
+        FeatureNode node6 = featureNodeService.load(node6Uuid);
+        assertNull(node6);
+
+		HibernateProxyHelper.deproxy(tree1, FeatureTree.class);
+		FeatureNode rootNode = HibernateProxyHelper.deproxy(tree1.getRoot(), FeatureNode.class);
+		assertNotNull(tree1);
+		featureTreeService.delete(tree1.getUuid());
+		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		tree1 = featureTreeService.load(featureTreeUuid);
+		assertNull(tree1);
 
 	}
 

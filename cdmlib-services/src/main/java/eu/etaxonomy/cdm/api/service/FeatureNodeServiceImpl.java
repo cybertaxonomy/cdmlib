@@ -20,13 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 
 /**
@@ -50,23 +51,28 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
 	 @Override
 	 @Transactional(readOnly = false)
-	 public DeleteResult deleteFeatureNode(UUID nodeUuid, NodeDeletionConfigurator config) {
+	 public DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config) {
 	     DeleteResult result = new DeleteResult();
 	     FeatureNode node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), FeatureNode.class);
 	     result = isDeletable(node, config);
 	     Feature feature;
 	     if (result.isOk()){
-
+	         FeatureNode parent = node.getParent();
+             parent = HibernateProxyHelper.deproxy(parent, FeatureNode.class);
 	         List<FeatureNode> children = new ArrayList(node.getChildNodes());
 
 	         if (config.getChildHandling().equals(ChildHandling.DELETE)){
 
 	             for (FeatureNode child: children){
-	                 node.removeChild(child);
 	                 deleteFeatureNode(child.getUuid(), config);
+	                // node.removeChild(child);
 	             }
+	             if (parent != null){
+	                 parent.removeChild(node);
+	             }
+
 	         } else{
-	             FeatureNode parent = node.getParent();
+
 	             if (parent != null){
 	                 parent.removeChild(node);
 	                 for (FeatureNode child: children){
@@ -92,15 +98,21 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 }
 
 	 @Override
-	 public DeleteResult isDeletable(FeatureNode node, NodeDeletionConfigurator config){
+	 public DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config){
 	     DeleteResult result = new DeleteResult();
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
 	     for (CdmBase ref:references){
 	         if (ref instanceof FeatureNode){
 	             break;
 	         }
+	         if (ref instanceof FeatureTree){
+	             FeatureTree refTree = HibernateProxyHelper.deproxy(ref, FeatureTree.class);
+	             if (node.getFeatureTree().equals((refTree))){
+	                 break;
+	             }
+	         }
 	         result.setAbort();
-	         result.addException(new ReferencedObjectUndeletableException("The featureNode is referenced ..."));
+	         result.addException(new ReferencedObjectUndeletableException("The featureNode is referenced by " + ref.getUserFriendlyDescription() +" with id " +ref.getId()));
 
 	     }
 	     return result;
