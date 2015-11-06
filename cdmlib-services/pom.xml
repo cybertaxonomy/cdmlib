@@ -54,13 +54,18 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-persistence</artifactId>
     </dependency>
-    <dependency>
+<!--     <dependency> -->
+<!--       <groupId>eu.etaxonomy</groupId> -->
+<!--       <artifactId>cdmlib-test</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+   <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-persistence</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
       <version>${project.version}</version>
-    </dependency>
+     </dependency>
     <dependency>
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-highlighter</artifactId>
@@ -73,13 +78,10 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-join</artifactId>
     </dependency>
-    <!--  OLD concept, not under development anymore,
-     to be removed as soon as CdmMassIndexer is updated -->
     <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-spellchecker</artifactId>
+       <groupId>org.apache.lucene</groupId>
+       <artifactId>lucene-suggest</artifactId>
     </dependency>
-    
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-dbunit</artifactId>

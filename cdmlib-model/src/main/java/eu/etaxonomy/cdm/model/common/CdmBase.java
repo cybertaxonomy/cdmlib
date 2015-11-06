@@ -98,7 +98,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     //@XmlAttribute(name = "id", required = true)
     @XmlTransient
     @Id
-//	@GeneratedValue(generator = "system-increment")
+//	@GeneratedValue(generator = "system-increment")  //see also AuditEvent.revisionNumber
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId

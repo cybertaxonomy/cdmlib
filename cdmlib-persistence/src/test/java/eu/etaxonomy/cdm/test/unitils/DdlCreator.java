@@ -8,12 +8,13 @@ import java.io.File;
 import java.io.IOException;
 
 import org.hibernate.HibernateException;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
-import org.hibernate.cfg.Environment;
-import org.hibernate.cfg.NamingStrategy;
 import org.hibernate.dialect.H2CorrectedDialect;
-import org.hibernate.envers.configuration.spi.AuditConfiguration;
+import org.hibernate.envers.boot.internal.EnversService;
+import org.hibernate.envers.boot.internal.EnversServiceImpl;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.core.io.ClassPathResource;
 
@@ -53,9 +54,11 @@ public class DdlCreator {
 		System.out.println(file.exists());
 
 		Configuration config = new Configuration().addFile(file);
-		config.setProperty(Environment.DIALECT, dialect.getCanonicalName());
-		NamingStrategy namingStrategy = new DefaultComponentSafeNamingStrategy(); //; = new ImprovedNamingStrategy();
-		config.setNamingStrategy(namingStrategy);
+		config.setProperty(AvailableSettings.DIALECT, dialect.getCanonicalName());
+//		NamingStrategyDelegator;
+		PhysicalNamingStrategy namingStrategy = new PhysicalNamingStrategyStandardImpl();
+//		        new DefaultComponentSafeNamingStrategy(); //; = new ImprovedNamingStrategy();
+		config.setPhysicalNamingStrategy(namingStrategy);
 
 		config.configure(file);
 //		String[] schema = config.generateSchemaCreationScript((Dialect)dialect.newInstance());
@@ -63,7 +66,9 @@ public class DdlCreator {
 //			System.out.println(s);
 //		}
 
-		AuditConfiguration.getFor(config);
+		//FIXME #4716
+		EnversService enversService = new EnversServiceImpl();
+//		. .getFor(config.);
 		SchemaExport schemaExport = new SchemaExport(config);
 		schemaExport.setDelimiter(";");
 		schemaExport.drop(false, false);

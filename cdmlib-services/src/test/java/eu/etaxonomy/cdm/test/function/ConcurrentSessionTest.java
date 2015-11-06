@@ -31,8 +31,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-import org.springframework.orm.hibernate4.HibernateSystemException;
-import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.hibernate5.HibernateSystemException;
+import org.springframework.orm.hibernate5.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -907,7 +907,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 

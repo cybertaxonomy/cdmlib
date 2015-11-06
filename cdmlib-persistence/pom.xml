@@ -26,7 +26,7 @@
           <components>
             <component>
               <name>hbm2ddl</name>
-              <implementation>annotationconfiguration</implementation>
+              <implementation>annotationconfigurationX</implementation>
             </component>
           </components>
           <componentProperties>
@@ -130,10 +130,6 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-model</artifactId>
     </dependency>
-  <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-commons</artifactId>
-    </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
@@ -174,22 +170,17 @@
    	<dependency>
 		<groupId>com.mchange</groupId>
 		<artifactId>c3p0</artifactId>
-		<version>0.9.2</version>
 	</dependency>
     
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.apache.lucene</groupId> -->
-<!--       <artifactId>lucene-spellchecker</artifactId> -->
-<!--     </dependency> -->
     <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-queryparser</artifactId>
     </dependency>
-    <dependency>
+     <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
      </dependency>
@@ -207,6 +198,12 @@
         <artifactId>unitils-core</artifactId>
         <!-- <scope>test</scope> unscoped since we need this dependency at compile time for H2DbSupport.java -->
     </dependency>
+    
+<!--     <dependency> -->
+<!--       <groupId>eu.etaxonomy</groupId> -->
+<!--       <artifactId>cdmlib-test</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-database</artifactId>
@@ -296,11 +293,11 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
     </dependency>
-	  <!-- required by Xerces 2.11.0 -->
-	  <dependency>
-		<groupId>org.apache.xmlgraphics</groupId>
-		<artifactId>batik-ext</artifactId>
-	  </dependency>
+    <!-- required by Xerces 2.11.0 -->
+    <dependency>
+	   <groupId>org.apache.xmlgraphics</groupId>
+	   <artifactId>batik-ext</artifactId>
+    </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
     <dependency>

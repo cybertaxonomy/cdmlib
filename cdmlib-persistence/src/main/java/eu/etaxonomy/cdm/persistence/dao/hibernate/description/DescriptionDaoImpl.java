@@ -146,7 +146,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     }
 
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
-                    query.addProjection(AuditEntity.id().count("id"));
+                    query.addProjection(AuditEntity.id().count());
                     count += ((Long)query.getSingleResult()).intValue();
                 }
 
@@ -166,7 +166,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
                 }
 
-                query.addProjection(AuditEntity.id().count("id"));
+                query.addProjection(AuditEntity.id().count());
                 return ((Long)query.getSingleResult()).intValue();
             }
         }
@@ -249,7 +249,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
                 }
 
-                query.addProjection(AuditEntity.id().count("id"));
+                query.addProjection(AuditEntity.id().count());
 
                 return ((Long)query.getSingleResult()).intValue();
             } else {
@@ -502,7 +502,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 query.add(AuditEntity.relatedId("taxonName").eq(name.getId()));
             }
 
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
             return ((Long)query.getSingleResult()).intValue();
         }
     }

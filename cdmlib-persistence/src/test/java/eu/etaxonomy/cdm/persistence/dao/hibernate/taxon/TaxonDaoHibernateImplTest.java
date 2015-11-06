@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -762,11 +761,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assert taxon == null : "taxon must not exist";
         setComplete();
         endTransaction();
-        try {
-            printDataSet(new FileOutputStream("test.xml"), TABLE_NAMES);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            printDataSet(new FileOutputStream("test.xml"), TABLE_NAMES);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
@@ -784,11 +783,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assert taxon == null : "taxon must not exist";
         setComplete();
         endTransaction();
-        try {
-            printDataSet(new FileOutputStream("test.xml"), TABLE_NAMES);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            printDataSet(new FileOutputStream("test.xml"), TABLE_NAMES);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test

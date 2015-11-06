@@ -249,7 +249,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException {
         Session session = getSession();
         PostMergeEntityListener.addSession(session);
-        MergeResult result = null;
+        MergeResult<T> result = null;
         try {
             @SuppressWarnings("unchecked")
             T persistentObject = (T)session.merge(transientObject);
@@ -358,10 +358,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return persistentObject.getUuid();
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
     public T findById(int id) throws DataAccessException {
-        return (T) getSession().get(type, id);
+        return getSession().get(type, id);
     }
 
 

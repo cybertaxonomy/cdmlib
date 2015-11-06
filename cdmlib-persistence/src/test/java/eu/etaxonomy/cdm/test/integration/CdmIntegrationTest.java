@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.SQLException;
@@ -43,15 +41,14 @@ import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
-import org.dbunit.operation.DatabaseOperation;
 import org.h2.tools.Server;
 import org.junit.Before;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
+import org.unitils.orm.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -72,12 +69,13 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * An internal h2 database application will be started and listens at port 8082.
  * The port to listen on can be specified by passing a second argument, e.g.: <code>-Dh2Server 8083</code>.
  *
- * <h2>Creating create DbUnit dataset files</h2>
+ * <h2>Creating DbUnit dataset files</h2>
  * In order to create DbUnit datasets  for integration tests it is highly recommended method to use the
  * {@link #writeDbUnitDataSetFile(String[])} method.
  *
- * From {@link http://www.unitils.org/tutorial-database.html}, by default every test is executed in a transaction,
- * which is committed at the end of the test. This can be disabled using @Transactional(TransactionMode.DISABLED)
+ * From {@link http://www.unitils.org/tutorial-database.html}, by default every test is executed in a
+ * transaction, which is committed at the end of the test. This can be disabled using
+ * @Transactional(TransactionMode.DISABLED)
  *
  * @see <a href="http://www.unitils.org">unitils home page</a>
  *
@@ -85,6 +83,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * @author a.kohlbecker (2013)
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+@HibernateSessionFactory("/eu/etaxonomy/cdm/hibernate.cfg.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
@@ -202,7 +201,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             logger.error(e);
         } finally {
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -253,8 +254,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param excludeFilter the tables to be <em>excluded</em>
      */
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
-            ITableFilterSimple excludeFilter, String[] includeTableNames) {
+            ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
 
+        ITableFilterSimple excludeFilter = excludeFilterOrig;
         if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
             ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
 
@@ -286,7 +288,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             logger.error("Error on writing dataset:", e);
         } finally {
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -323,7 +327,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
                 logger.error(ioe);
             }
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -371,7 +377,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             logger.error(e);
         } finally {
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -420,7 +428,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             logger.error(e);
         } finally {
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -446,7 +456,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             logger.error(e);
         } finally {
             try {
-                connection.close();
+                if (connection != null){
+                    connection.close();
+                }
             } catch (SQLException sqle) {
                 logger.error(sqle);
             }
@@ -521,7 +533,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @return
      * @throws TransformerException
      */
-    public String transformSourceToString(Source source) throws TransformerException {
+    protected String transformSourceToString(Source source) throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -531,31 +543,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         return new String(outputStream.toByteArray());
     }
 
-    @Deprecated // no longer used and for sure not needed at all
-    protected void loadDataSet(InputStream dataset) {
-        txDefinition.setName("CdmIntergartionTest.loadDataSet");
-        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-        IDatabaseConnection connection = null;
-
-        try {
-            connection = getConnection();
-            IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(dataset));
-
-            DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
-        } catch (Exception e) {
-            logger.error(e);
-            for(StackTraceElement ste : e.getStackTrace()) {
-                logger.error(ste);
-            }
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException sqle) {
-                logger.error(sqle);
-            }
-        }
-        transactionManager.commit(txStatus);
-    }
 
     /**
      * This is the common method to create test data xml files for integration tests.

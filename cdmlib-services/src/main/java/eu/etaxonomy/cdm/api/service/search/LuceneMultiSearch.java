@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -119,7 +120,14 @@ public class LuceneMultiSearch extends LuceneSearch {
                 readers.add(reader);
             }
             if(readers.size() > 1){
-                MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);
+                IndexReader[] readersArray = readers.toArray(new IndexReader[readers.size()]);
+                MultiReader multireader;
+                try {
+                    multireader = new MultiReader(readersArray, true);
+                } catch (IOException e) {
+                    //or do we want to force clients to handle the IOs?
+                    throw new RuntimeException(e);
+                }
                 searcher = new IndexSearcher(multireader);
             } else {
                 searcher = new IndexSearcher(readers.get(0));

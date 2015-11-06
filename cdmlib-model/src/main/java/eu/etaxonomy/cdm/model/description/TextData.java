@@ -15,6 +15,8 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
@@ -60,6 +62,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:59
  */
+@SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextData", propOrder = {
     "multilanguageText",
@@ -78,6 +81,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="multilanguagetext_mapkey_id")
+    //preliminary #5369
+    @JoinTable(joinColumns = @JoinColumn( name="DescriptionElementBase_id"))
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)

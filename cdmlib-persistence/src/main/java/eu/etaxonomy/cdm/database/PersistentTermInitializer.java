@@ -58,10 +58,12 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         txDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     }
 
+    @Override
     public void setOmit(boolean omit) {
         this.omit = omit;
     }
 
+    @Override
     public boolean isOmit() {
         return omit;
     }
@@ -214,7 +216,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
      * 						 loaded terms with their <code>UUID</code> as key
      * @return the <code>UUID</code> of the loaded vocabulary as found in CSV file
      */
-    public UUID firstPass(VocabularyEnum vocabularyType, Map<UUID, DefinedTermBase> persistedTerms) {
+    private UUID firstPass(VocabularyEnum vocabularyType, Map<UUID, DefinedTermBase> persistedTerms) {
         logger.info("Loading terms for '" + vocabularyType.name() + "': " + vocabularyType.getClazz().getName());
         Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 

@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.view;
 
@@ -27,80 +27,87 @@ import org.joda.time.DateTime;
 @Entity
 @RevisionEntity
 public class AuditEvent implements Serializable {
-/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6584537382484488953L;
 
 	public static final AuditEvent CURRENT_VIEW;
-	
+
 	static {
 		CURRENT_VIEW = new AuditEvent();
 		CURRENT_VIEW.setUuid(UUID.fromString("966728f0-ae51-11dd-ad8b-0800200c9a66"));
-	};
-	
+	}
+
 	@Type(type="uuidUserType")
 	private UUID uuid;
-	
+
+    @Id
+    @GeneratedValue(generator = "custom-enhanced-table")  //see also CdmBase.id
+    @RevisionNumber
+    private Integer revisionNumber;
+
+    @Type(type="dateTimeUserType")
+    @Basic(fetch = FetchType.LAZY)
+    private DateTime date;
+
+    @RevisionTimestamp
+    private Long timestamp;
+
+//**************** CONSTRUCTOR ********************************/
+
+    public AuditEvent() {
+        this.uuid = UUID.randomUUID();
+        this.date = new DateTime();
+    }
+
+//***************** GETTER/ SETTER *************************/
+
 	public UUID getUuid() {
 		return uuid;
 	}
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
 	public Long getTimestamp() {
 		return timestamp;
 	}
 
-	public AuditEvent() {
-		this.uuid = UUID.randomUUID();
-		this.date = new DateTime();
-	}
-	
-	@Type(type="dateTimeUserType")
-	@Basic(fetch = FetchType.LAZY)
-	private DateTime date;
-	
+
 	public DateTime getDate() {
 		return date;
 	}
-	
 	public void setDate(DateTime date) {
 		this.date = date;
 	}
 
-	@Id
-	@GeneratedValue
-	@RevisionNumber
-	private Integer revisionNumber;
-	
-	@RevisionTimestamp
-	private Long timestamp;
-
 	public Integer getRevisionNumber() {
 		return revisionNumber;
 	}
-	
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
-	
+    public void setRevisionNumber(Integer revisionNumber) {
+        this.revisionNumber = revisionNumber;
+    }
+
+// ****************** Overrides **************************/
+
+	@Override
 	public boolean equals(Object obj) {
-		if(this == obj)
-		    return true;
-			
-		if((obj == null) || (obj.getClass() != this.getClass()))
-		    return false;
-			
+		if(this == obj) {
+            return true;
+        }
+
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+
 		AuditEvent auditEvent = (AuditEvent) obj;
-		    return uuid == auditEvent.uuid || (uuid != null && uuid.equals(auditEvent.uuid));		
+		    return uuid == auditEvent.uuid || (uuid != null && uuid.equals(auditEvent.uuid));
 	}
-		  	
-	public int hashCode() {
+
+	@Override
+    public int hashCode() {
 		int hash = 7;
 		hash = 31 * hash + (null == uuid ? 0 : uuid.hashCode());
 		return hash;
 	}
 
-	public void setRevisionNumber(Integer revisionNumber) {
-		this.revisionNumber = revisionNumber;
-	}
 }
