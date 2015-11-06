@@ -49,13 +49,7 @@
                 <!-- TODO trying to use a managed session context
                 <prop key="hibernate.current_session_context_class">managed</prop>
                 -->
-<!--                 temp for h4 migration testing -->
-<!--                 <prop key="hibernate.connection.driver_class">org.h2.Driver</prop> -->
-<!--                 <prop key="hibernate.connection.url">jdbc:h2:mem:cdm</prop> -->
-<!--                 <prop key="hibernate.connection.username">sa</prop> -->
-<!--                 <prop key="hibernate.connection.password"></prop> -->
-<!--                 <prop key="hibernate.search.lucene_version">LUCENE_36</prop> -->
-<!--                 end temp for h4 migration testing -->
+
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
                 <!--  hibernate.search.default.exclusive_index_use=false
                       locks must not only be released after application shutdown in test environment -->

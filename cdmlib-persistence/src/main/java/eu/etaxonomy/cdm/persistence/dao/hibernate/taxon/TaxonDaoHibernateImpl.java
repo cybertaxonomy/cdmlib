@@ -230,6 +230,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 
         if (query != null){
+            @SuppressWarnings("unchecked")
             List<TaxonBase> results = query.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1105,7 +1106,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1130,7 +1131,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1156,7 +1157,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1874,7 +1875,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(relatedfrom.toString()).eq(taxonBase.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));

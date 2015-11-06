@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  */
 public class MergeResult<T extends ICdmBase> implements Serializable {
 
+    private static final long serialVersionUID = 4886558003386941487L;
+
     private T mergedEntity;
     private Set<T> newEntities;
 

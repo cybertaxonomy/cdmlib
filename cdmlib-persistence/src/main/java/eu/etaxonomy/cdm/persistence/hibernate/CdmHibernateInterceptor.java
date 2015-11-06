@@ -14,6 +14,7 @@ import java.io.Serializable;
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         private int creates;
         private int loads;
 
+    @Override
     public void onDelete(Object entity,
            Serializable id,
            Object[] state,
@@ -44,13 +46,16 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         // do nothing
     }
 
+    @Override
     public boolean onFlushDirty(Object entity,
             Serializable id,
             Object[] currentState,
             Object[] previousState,
             String[] propertyNames,
             Type[] types) {
-		System.err.println("onFlushDirty...");
+		if (logger.isDebugEnabled()) {
+            logger.debug("onFlushDirty...");
+        }
         boolean result = false;
         if ( entity instanceof CdmBase ) {
                 updates++;
@@ -59,24 +64,30 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         return result;
     }
 
+    @Override
     public boolean onLoad(Object entity,
                     Serializable id,
                     Object[] state,
                     String[] propertyNames,
                     Type[] types) {
         if ( entity instanceof CdmBase ) {
-            logger.warn("id = " +id);
+            if (logger.isDebugEnabled()) {
+                logger.debug("id = " +id);
+            }
             loads++;
         }
         return false;
     }
 
+    @Override
     public boolean onSave(Object entity,
                     Serializable id,
                     Object[] state,
                     String[] propertyNames,
                     Type[] types) {
-        System.err.println("onSave...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSave...");
+        }
         boolean result = false;
         if ( entity instanceof CdmBase ) {
                 creates++;
@@ -120,8 +131,9 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
             return result;
     }
 
+    @Override
     public void afterTransactionCompletion(Transaction tx) {
-            if ( tx.wasCommitted() ) {
+            if ( tx.getStatus() == TransactionStatus.COMMITTED ) {
                     logger.debug("Creations: " + creates + ", Updates: " + updates + ", Loads: " + loads);
             }
             updates=0;

@@ -10,9 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +28,6 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -74,7 +71,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     private ITaxonDao taxonDao;
 
     @Autowired
-   
+
     private IHomotypicalGroupDao homotypicalGroupDao;
 
     public TaxonNameDaoHibernateImpl() {
@@ -104,7 +101,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(HybridRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -217,7 +214,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
                 query.add(AuditEntity.relatedId("rank").eq(rank.getId()));
             }
 
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
             return ((Long)query.getSingleResult()).intValue();
         }
     }
@@ -239,7 +236,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NameRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(direction.toString()).eq(name.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));

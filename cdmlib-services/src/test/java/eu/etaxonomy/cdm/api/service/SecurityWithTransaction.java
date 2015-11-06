@@ -12,27 +12,20 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 
-import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -55,6 +48,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 @DataSet("SecurityTest.xml")
 public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWithSecurity {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SecurityWithTransaction.class);
 
     @SpringBeanByName
@@ -181,7 +175,7 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 

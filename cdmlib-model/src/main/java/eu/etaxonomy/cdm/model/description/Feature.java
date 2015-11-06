@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 
 /**
  * The class for individual properties (also designed as character, type or
@@ -117,22 +119,37 @@ public class Feature extends DefinedTermBase<Feature> {
 
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
+    //join columns preliminary  #5369
+	@JoinTable(
+            name="DefinedTermBase_RecommendedModifierEnumeration",
+            joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
 	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
 
-
 	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_StatisticalMeasure")
+    //join columns preliminary  #5369
+    @JoinTable(
+            name="DefinedTermBase_StatisticalMeasure",
+            joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 
 	/* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
+    //join columns preliminary  #5369
+	@JoinTable(
+            name="DefinedTermBase_SupportedCategoricalEnumeration",
+            joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
 	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 
 
 	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_MeasurementUnit")
+	//join columns preliminary  #5369
+    @JoinTable(
+            name="DefinedTermBase_MeasurementUnit",
+            joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
 	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -185,10 +202,6 @@ public class Feature extends DefinedTermBase<Feature> {
 
 /* *************************************************************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;

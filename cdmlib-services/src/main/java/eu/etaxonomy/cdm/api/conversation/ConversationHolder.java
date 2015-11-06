@@ -20,7 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.ConnectionHolder;
-import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.hibernate5.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * <p>
  * This behaviour essentially revolves around the resources map in the {@link org.springframework.transaction.support.TransactionSynchronizationManager TransactionSynchronizationManager}.
  * This resources map contains two entries of interest,
- *  - (Autowired) {@link org.hibernate.SessionFactory} mapped to the {@link org.springframework.orm.hibernate4.SessionHolder}
+ *  - (Autowired) {@link org.hibernate.SessionFactory} mapped to the {@link org.springframework.orm.hibernate5.SessionHolder}
  *  - (Autowired) {@link javax.sql.DataSource} mapped to the {@link org.springframework.jdbc.datasource.ConnectionHolder}
  *  <p>
  * The SessionHolder object itself contains the {@link org.hibernate.Session Session} as well as the {@link org.hibernate.Transaction object.
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * objects must not be null and the corresponding holders must have their 'synchronizedWithTransaction' flag set to true.
  * <p>
  * The default behaviour of the {@link org.springframework.transaction.PlatformTransactionManager PlatformTransactionManager} which in the CDM case is autowired
- * to {@link org.springframework.orm.hibernate4.HibernateTransactionManager HibernateTransactionManager}, is to check these entries
+ * to {@link org.springframework.orm.hibernate5.HibernateTransactionManager HibernateTransactionManager}, is to check these entries
  * when starting a transaction. If this entries do not exist in the resource map then they are created, implying a new session, which
  * is in fact how hibernate implements the default 'session-per-request' pattern internally.
  * <p>

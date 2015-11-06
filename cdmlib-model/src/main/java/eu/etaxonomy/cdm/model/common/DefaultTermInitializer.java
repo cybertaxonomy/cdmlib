@@ -28,6 +28,8 @@ public class DefaultTermInitializer implements ITermInitializer {
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 
+	private boolean omit = false;
+
 	@Override
     public void initialize() {
 		termLoader.unloadAllTerms();
@@ -62,6 +64,15 @@ public class DefaultTermInitializer implements ITermInitializer {
 			throw new RuntimeException(e);
 		}
 	}
+
+
+    public void setOmit(boolean omit) {
+        this.omit = omit;
+    }
+
+    public boolean isOmit() {
+        return omit;
+    }
 
 
 }

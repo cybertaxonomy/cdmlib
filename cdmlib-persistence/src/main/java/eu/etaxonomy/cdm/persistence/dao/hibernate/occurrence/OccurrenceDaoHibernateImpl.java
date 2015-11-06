@@ -116,7 +116,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             if(taxonBase != null) {
                 query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
             }
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             return ((Long)query.getSingleResult()).intValue();
         }

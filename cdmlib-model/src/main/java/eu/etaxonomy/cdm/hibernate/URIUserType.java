@@ -67,8 +67,6 @@ public class URIUserType extends AbstractUserType implements UserType {
 		}
     }
 
-
-
 	@Override
 	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {

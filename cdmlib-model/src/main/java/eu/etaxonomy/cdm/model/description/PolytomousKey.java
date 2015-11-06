@@ -93,7 +93,10 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "PolytomousKey_Taxon", joinColumns = @JoinColumn(name = "polytomousKey_id"), inverseJoinColumns = @JoinColumn(name = "taxon_id"))
+    @JoinTable(name = "PolytomousKey_Taxon",
+        joinColumns = @JoinColumn(name = "polytomousKey_id"),
+        inverseJoinColumns = @JoinColumn(name = "taxon_id")
+    )
     @NotNull
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private Set<Taxon> taxonomicScope = new HashSet<Taxon>();

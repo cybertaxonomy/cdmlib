@@ -57,7 +57,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		    return ((Long)query.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			query.addProjection(AuditEntity.id().count("id"));
+			query.addProjection(AuditEntity.id().count());
 			query.add(AuditEntity.relatedId("vocabulary").eq(termVocabulary.getId()));
 			return ((Number)query.getSingleResult()).intValue();
 		}

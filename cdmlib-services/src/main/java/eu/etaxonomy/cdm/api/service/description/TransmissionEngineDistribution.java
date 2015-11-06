@@ -26,7 +26,7 @@ import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -663,7 +663,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             logger.trace("Isolation level = " + txDef.getIsolationLevel());
             logger.trace("Timeout = " + txDef.getTimeout());
             logger.trace("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate4.HibernateTransactionManager
+            // org.springframework.orm.hibernate5.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 

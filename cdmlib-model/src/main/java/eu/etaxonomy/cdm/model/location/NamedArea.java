@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -172,7 +173,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private Point pointApproximation;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_Country")
+    //preliminary  #5369
+    @JoinTable(
+         name="DefinedTermBase_Country",
+         joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
     private final Set<Country> countries = new HashSet<Country>();
 
     @ManyToOne(fetch = FetchType.LAZY)

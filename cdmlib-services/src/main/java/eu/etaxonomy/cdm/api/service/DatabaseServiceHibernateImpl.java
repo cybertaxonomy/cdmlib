@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -17,8 +17,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
@@ -26,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
+import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +44,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
 /**
- * Implementation of service which provides functionality to directly access database 
+ * Implementation of service which provides functionality to directly access database
  * related information.
- * 
+ *
  * @author a.mueller
  *
  */
@@ -56,41 +54,44 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 @Transactional(readOnly = true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
-	
-	private static final String TMP_DATASOURCE = "tmp"; 
-	
+
+	private static final String TMP_DATASOURCE = "tmp";
+
 	@Autowired
 	private SessionFactory factory;
-	
+
 	@Autowired
 	protected ApplicationContext appContext;
-	
-	private CdmApplicationController application;
-	
 
-	
-	
+	private CdmApplicationController application;
+
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#setApplicationController(eu.etaxonomy.cdm.api.application.CdmApplicationController)
 	 */
-	public void setApplicationController(CdmApplicationController cdmApplicationController){
+	@Override
+    public void setApplicationController(CdmApplicationController cdmApplicationController){
 		this.application = cdmApplicationController;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatasource(eu.etaxonomy.cdm.database.CdmDataSource)
 	 */
-	public boolean connectToDatasource(CdmPersistentDataSource dataSource) throws TermNotFoundException{
+	@Override
+    public boolean connectToDatasource(CdmPersistentDataSource dataSource) throws TermNotFoundException{
 		this.application.changeDataSource(dataSource);
 		logger.debug("DataSource changed to " + dataSource.getName());
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
-	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
+	@Override
+    public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password, int port, String filePath, H2Mode mode, NomenclaturalCode code) throws TermNotFoundException  {
 		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password, code);
 		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, dataSource);
@@ -103,23 +104,26 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
+	@Override
+    public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password)  throws TermNotFoundException {
 		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort(), null, null, null) ;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource)
 	 */
-	public CdmPersistentDataSource saveDataSource(String strDataSourceName,
+	@Override
+    public CdmPersistentDataSource saveDataSource(String strDataSourceName,
 			ICdmDataSource dataSource) {
 		return CdmPersistentDataSource.save(strDataSourceName, dataSource);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#updateDataSource(java.lang.String, eu.etaxonomy.cdm.database.CdmPersistentDataSource)
 	 */
-	public CdmPersistentDataSource updateDataSource(String strDataSourceName,
+	@Override
+    public CdmPersistentDataSource updateDataSource(String strDataSourceName,
 			CdmPersistentDataSource dataSource) throws DataSourceNotFoundException {
 		return CdmPersistentDataSource.update(strDataSourceName, dataSource);
 	}
@@ -127,22 +131,24 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getUrl()
 	 */
-	public String getUrl() {
+	@Override
+    public String getUrl() {
 		return getDataSource().getUrl();
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getUsername()
 	 */
-	public String getUsername() {
+	@Override
+    public String getUsername() {
 		return getDataSource().getUsername();
 	}
 
 	/**
 	 * Returns the AbstractDriverBasedDataSource from hibernate,
 	 * generalized in order to also allow using SimpleDriverDataSource.
-	 * 
-	 * @return the AbstractDriverBasedDataSource from the hibernate layer 
+	 *
+	 * @return the AbstractDriverBasedDataSource from the hibernate layer
 	 */
 	private AbstractDriverBasedDataSource getDataSource(){
 		AbstractDriverBasedDataSource ds = (AbstractDriverBasedDataSource)SessionFactoryUtils.getDataSource(factory);
@@ -153,39 +159,40 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
 	 */
-	public void setApplicationContext(ApplicationContext applicationContext)
+	@Override
+    public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.appContext = applicationContext;
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDbSchemaVersion()
 	 */
 	@Override
-	public  String getDbSchemaVersion() throws CdmSourceException  {		
+	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
 			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());	
+			throw new CdmSourceException(e.getMessage());
 		}
 	}
-	
-    
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#isDbEmpty()
 	 */
 	@Override
 	public boolean isDbEmpty() throws CdmSourceException {
 		// Any CDM DB should have a schema version
-		String dbSchemaVersion = (String) getDbSchemaVersion();		
+		String dbSchemaVersion = getDbSchemaVersion();
 		return (dbSchemaVersion == null || dbSchemaVersion.equals(""));
 	}
-	
+
     /**
      * Execute a SQL query which returns a single value
-     * 
+     *
      * @param query , which returns a single value
      * @return
      * @throws SQLException
@@ -194,13 +201,13 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
         String queryString = query == null? "(null)": query;
         //ResultSet resultSet = executeQuery(query);
         ResultSet resultSet = null;
-        
+
         Connection connection = SessionFactoryUtils.getDataSource(factory).getConnection();
         if (connection != null){
-        	             	
+
             Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);         
-            
+            resultSet = statement.executeQuery(query);
+
             if (resultSet == null || resultSet.next() == false){
                 logger.info("No record returned for query " +  queryString);
                 return null;
@@ -219,7 +226,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
             resultSet.close();
             statement.close();
             connection.close();
-            
+
             return object;
         }else{
             throw new RuntimeException("Could not establish connection to database");
@@ -231,14 +238,14 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	@Override
 	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
 		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
-		
+
 		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()){
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());
 			} catch (SQLException e) {
 				throw new CdmSourceException(e.getMessage());
-			}			
+			}
 			if(value != null) {
 				cdmMetaDataMap.put(mdpn, value);
 			}
