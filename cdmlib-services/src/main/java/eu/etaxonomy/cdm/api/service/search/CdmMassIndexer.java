@@ -37,7 +37,7 @@ import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
 import org.hibernate.search.indexes.spi.IndexManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -171,7 +170,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 String indexedField = itr.next();
                 logger.info("creating dictionary for field " + indexedField);
                 Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-                IndexWriterConfig iwc = new IndexWriterConfig(Configuration.luceneVersion, searchFactory.getAnalyzer(type));
+                IndexWriterConfig iwc = new IndexWriterConfig(searchFactory.getAnalyzer(type));
                 spellChecker.indexDictionary(dictionary, iwc, true);
             }
             subMonitor.internalWorked(1);

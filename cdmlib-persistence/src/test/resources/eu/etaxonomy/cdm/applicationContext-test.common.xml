@@ -53,15 +53,9 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
-
- <!--                temp for h4 migration testing
-                <prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
-                <prop key="hibernate.connection.url">jdbc:h2:mem:cdm</prop>
-                <prop key="hibernate.connection.username">sa</prop>
-                <prop key="hibernate.connection.password"></prop>
-                <prop key="hibernate.search.lucene_version">LUCENE_36</prop>
-                end temp for h4 migration testing
- -->
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialect</prop>
+                <prop key="implicitNamingStrategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"</prop>
+               
             </props>
         </property>
     </bean>

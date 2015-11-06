@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.dialect.Dialect;
+import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
 /**
@@ -38,10 +38,10 @@ import org.hibernate.type.Type;
  *</pre>
  *
  * If you set the optimizer to "none", hibernate will always query the database for each new id.
- * You must tell spring to intantiate the ... before the session factory:
+ * You must tell spring to instantiate the ... before the session factory:
  *
  * <pre>
- * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate4.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
+ * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate5.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
  * ...
  * </pre>
  *
@@ -58,14 +58,15 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void configure(Type type, Properties params, Dialect dialect) throws MappingException {
+	@Override
+    public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
 
 		Properties overrideProperies = TableGeneratorGlobalOverride.getProperties();
 		if(overrideProperies != null) {
 			params.putAll(overrideProperies);
 		}
 		logger.debug("overrideProperies:" + (overrideProperies != null ? overrideProperies :"NULL"));
-		super.configure(type, params, dialect);
+		super.configure(type, params, serviceRegistry);
 	}
 
 //	/**

@@ -151,7 +151,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate4.HibernateTransactionManager
+            // org.springframework.orm.hibernate5.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 
@@ -168,7 +168,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     }
 
     //TODO move into super class CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
-    //==> no 
+    //==> no
     public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.rollback(txStatus);
@@ -284,7 +284,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		} catch (ClassNotFoundException e) {
 			declaringClass = this.getClass();
 		}
-		
+
         IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation,
                 lineNumber, severity, methodName);
 

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -107,13 +106,14 @@ public class TestingTermInitializer extends PersistentTermInitializer {
                     logger.error(ste);
                 }
             } finally {
-                try {
-                    if (connection != null){
-                        connection.close();
-                    }
-                } catch (SQLException sqle) {
-                    logger.error(sqle);
-                }
+//                try {
+//                    this.transactionManager.commit(txStatus);
+//                    if (connection != null){
+//                        connection.close();
+//                    }
+//                } catch (SQLException sqle) {
+//                    logger.error(sqle);
+//                }
             }
 
             transactionManager.commit(txStatus);
@@ -129,14 +129,14 @@ public class TestingTermInitializer extends PersistentTermInitializer {
         logger.info("TestingTermInitializer initialize end ...");
     }
 
-    protected IDatabaseConnection getConnection() throws SQLException {
+    protected IDatabaseConnection getConnection() {
         IDatabaseConnection connection = null;
         try {
             connection = new DatabaseConnection(dataSource.getConnection());
 
             DatabaseConfig config = connection.getConfig();
             //FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
-            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,new H2DataTypeFactory());
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
         } catch (Exception e) {
             logger.error(e);
         }

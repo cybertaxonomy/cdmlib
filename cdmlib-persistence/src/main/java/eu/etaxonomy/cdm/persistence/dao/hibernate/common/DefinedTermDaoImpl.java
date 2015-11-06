@@ -366,7 +366,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    if(type != null) {
 		    	query.add(AuditEntity.relatedId("type").eq(type.getId()));
 		    }
-		    query.addProjection(AuditEntity.id().count("id"));
+		    query.addProjection(AuditEntity.id().count());
 		    return ((Long)query.getSingleResult()).intValue();
 		}
 	}
@@ -494,7 +494,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		} else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
-		    query.addProjection(AuditEntity.id().count("id"));
+		    query.addProjection(AuditEntity.id().count());
 		    return ((Long)query.getSingleResult()).intValue();
 		}
 	}
@@ -514,7 +514,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			for(T t : partOf) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
-			    query.addProjection(AuditEntity.id().count("id"));
+			    query.addProjection(AuditEntity.id().count());
 			    count += ((Long)query.getSingleResult()).intValue();
 			}
 			return count;

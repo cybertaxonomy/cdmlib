@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -70,7 +69,7 @@ public class Datasource {
 
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
-		database = "testCategoricalData";
+		database = "test";
 //		database = "350_editor_test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
@@ -100,10 +99,11 @@ public class Datasource {
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 		//H2
-		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-//    	String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
-		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+//      String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
+//		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+//		username = "sa";
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
 // 		try {
@@ -117,11 +117,15 @@ public class Datasource {
 
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-		for (int i= 1; i<10; i++){
+		logger.warn("Start adding persons");
+		for (int i= 1; i<100; i++){
 		    addPerson(appCtr);
+		    logger.warn("Added "+ i);
 		}
+		int n = appCtr.getAgentService().count(null);
+		logger.warn("End adding " + n + " persons");
 
 //		appCtr.getCommonService().createFullSampleData();
 
@@ -144,6 +148,7 @@ public class Datasource {
 		//		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
 		appCtr.close();
+		System.exit(0);
 	}
 
 

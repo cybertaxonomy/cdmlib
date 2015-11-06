@@ -15,20 +15,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -44,13 +38,13 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertNotNull("TermInitializer should exist",persistentTermInitializer);
 	}
 
-
-	@Test
-	@DataSet("TermsDataSet.xml")
-	public void testFirstPass() {
-		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<UUID, DefinedTermBase>();
-		persistentTermInitializer.firstPass(VocabularyEnum.Rank, persistedTerms);
-	}
+//  As firstPass is not used anymore we also do not need this test
+//	@Test
+//	@DataSet("TermsDataSet.xml")
+//	public void testFirstPass() {
+//		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<UUID, DefinedTermBase>();
+//		persistentTermInitializer.firstPass(VocabularyEnum.Rank, persistedTerms);
+//	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.DefaultTermInitializer#initialize()}.
@@ -81,16 +75,6 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 
 	}
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

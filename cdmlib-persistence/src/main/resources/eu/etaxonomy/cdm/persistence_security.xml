@@ -9,21 +9,18 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
     ">
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
       <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
-        <property name="namingStrategy">
-          <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
+        <property name="implicitNamingStrategy">
+          <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
         </property>
 
         <property name="entityInterceptor" ref="securityHibernateInterceptor" />
 
         <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-
-       <!-- Looks like this is not needed anymore for hibernate 4 -->
-<!--         <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/> -->
 
         <!--
               If dataSource is set, this will override corresponding settings in Hibernate properties.

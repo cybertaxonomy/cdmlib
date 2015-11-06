@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -77,7 +78,11 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DescriptionBase_Scope")
+    //preliminary  #5369
+    @JoinTable(
+            name="DescriptionBase_Scope",
+            joinColumns = @JoinColumn( name="DescriptionBase_id")
+    )
     private Set<DefinedTerm> scopes = new HashSet<DefinedTerm>();
 
     @XmlElementWrapper( name = "GeoScopes")
@@ -85,7 +90,11 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DescriptionBase_GeoScope")
+    //preliminary  #5369
+    @JoinTable(
+            name="DescriptionBase_GeoScope",
+            joinColumns = @JoinColumn( name="DescriptionBase_id")
+    )
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 
