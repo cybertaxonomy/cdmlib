@@ -722,21 +722,6 @@
 		<artifactId>jaxb-jxc</artifactId>
 		<version>${jaxb.version}</version>
 	  </dependency>
- <!--     <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
-        <version>${jaxb.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb1-impl</artifactId>
-        <version>${jaxb.version}</version>
-      </dependency>  
-      <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-xjc</artifactId>
-        <version>${jaxb.version}</version>
-      </dependency>  -->
       <!-- ******* hibernate uses slf4j ******* -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -837,7 +822,7 @@
         <groupId>org.unitils</groupId>
         <artifactId>unitils-spring</artifactId>
         <version>${unitils.version}</version>
-        <scope>test</scope>
+     <!--    <scope>test</scope>  -->
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
@@ -863,7 +848,7 @@
 	  <dependency>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-test</artifactId>
-		<scope>test</scope>
+     <!--    <scope>test</scope>  -->
 		<version>${project.version}</version>
 	  </dependency>
 

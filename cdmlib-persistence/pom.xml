@@ -122,7 +122,7 @@
     </plugins>
   </build>
   <dependencies>
-     <dependency>
+    <dependency>
 		<groupId>org.hibernate.javax.persistence</groupId>
     	<artifactId>hibernate-jpa-2.0-api</artifactId>
 	 </dependency>
@@ -199,72 +199,72 @@
         <!-- <scope>test</scope> unscoped since we need this dependency at compile time for H2DbSupport.java -->
     </dependency>
     
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
+    </dependency>
 <!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-test</artifactId> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-database</artifactId> -->
 <!--       <scope>test</scope> -->
 <!--     </dependency> -->
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <scope>test</scope>
-      <exclusions>
-      	<exclusion>
-      		<groupId>javax.persistence</groupId>
-	      	<artifactId>persistence-api</artifactId>
-      	</exclusion>
-      </exclusions>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-    <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.carrotsearch</groupId>
-      <artifactId>junit-benchmarks</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-easymock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-mock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-inject</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-orm</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--       <exclusions> -->
+<!--       	<exclusion> -->
+<!--       		<groupId>javax.persistence</groupId> -->
+<!-- 	      	<artifactId>persistence-api</artifactId> -->
+<!--       	</exclusion> -->
+<!--       </exclusions> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>xmlunit</groupId> -->
+<!--       <artifactId>xmlunit</artifactId> -->
+<!--     <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>com.carrotsearch</groupId> -->
+<!--       <artifactId>junit-benchmarks</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
@@ -323,8 +323,8 @@
     </dependency>
 
     <dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
     </dependency>
 
     <!--  SQL Debugging  -->
@@ -334,11 +334,11 @@
     </dependency>
   
 	<!-- Profiling -->
-	<dependency>
-		<groupId>com.yourkit</groupId>
-		<artifactId>yjp-controller-api-redist</artifactId>
-		<scope>test</scope>
-	</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>com.yourkit</groupId> -->
+<!-- 		<artifactId>yjp-controller-api-redist</artifactId> -->
+<!-- 		<scope>test</scope> -->
+<!-- 	</dependency> -->
   </dependencies>
   
 </project>

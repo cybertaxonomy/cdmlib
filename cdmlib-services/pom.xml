@@ -54,18 +54,18 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-persistence</artifactId>
     </dependency>
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
+    </dependency>
 <!--     <dependency> -->
 <!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-test</artifactId> -->
+<!--       <artifactId>cdmlib-persistence</artifactId> -->
+<!--       <type>test-jar</type> -->
 <!--       <scope>test</scope> -->
-<!--     </dependency> -->
-   <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-persistence</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-      <version>${project.version}</version>
-     </dependency>
+<!--       <version>${project.version}</version> -->
+<!--      </dependency> -->
     <dependency>
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-highlighter</artifactId>
@@ -82,26 +82,26 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-suggest</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>p6spy</groupId>
-        <artifactId>p6spy</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-       <scope>test</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--         <groupId>p6spy</groupId> -->
+<!--         <artifactId>p6spy</artifactId> -->
+<!--         <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>xmlunit</groupId> -->
+<!--       <artifactId>xmlunit</artifactId> -->
+<!--        <scope>test</scope> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
