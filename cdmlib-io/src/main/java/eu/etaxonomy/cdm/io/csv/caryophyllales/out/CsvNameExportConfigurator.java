@@ -10,35 +10,35 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
-	
+
 	private ByteArrayOutputStream byteOutputStream;
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
 	private String fieldsEnclosedBy = "\"";
 	private boolean hasHeaderLines = true;
 	private String fieldsTerminatedBy=";";
-	private boolean namesOnly = true;
+	private boolean namesOnly = false;
 	private UUID classificationUUID;
-	
+
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
 		super(destination, cdmSource, transformer);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public static CsvNameExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder){
-		
+
 		return new CsvNameExportConfigurator(destinationFolder,source, null);
-		
+
 	}
-	
-	
-	
+
+
+
 	public ByteArrayOutputStream getByteOutputStream() {
 		if (byteOutputStream == null){
 			byteOutputStream = new ByteArrayOutputStream();
 		}
-			
+
 		return byteOutputStream;
 	}
 
@@ -46,7 +46,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 		this.byteOutputStream = byteOutputStream;
 	}
 
-	
+
 	public String getEncoding() {
 		return encoding;
 	}
@@ -77,7 +77,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
 		this.fieldsTerminatedBy = fieldsTerminatedBy;
 	}
-	
+
 	@Override
 	public CsvNameExportState getNewState() {
 		return new CsvNameExportState(this);
@@ -86,7 +86,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				CsvNameExportBase.class
+				CsvNameExport.class
 		};
 	}
 
