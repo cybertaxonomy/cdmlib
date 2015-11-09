@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -404,7 +405,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
-    public void testListAssociatedAndTypedTaxa() {
+    public void testListIndividualsAssociatensAndSpecimenTypeDesignations(){
         UUID fieldUnitUuid = UUID.fromString("b359ff20-98de-46bf-aa43-3e10bb072cd4");
         UUID typeSpecimenUuid = UUID.fromString("0f8608c7-ffe7-40e6-828c-cb3382580878");
         UUID taxonDescriptionUuid = UUID.fromString("d77db2d4-45a1-4aa1-ab34-f33395f54965");
@@ -892,6 +893,106 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testListAssociatedTaxaAndListByAssociatedTaxon.xml")
+    public void testListAssociatedTaxaAndListByAssociatedTaxon(){
+        UUID associatedSpecimenUuid = UUID.fromString("6478a387-bc77-4f1b-bfab-671ad786a27e");
+        UUID unassociatedSpecimenUuid = UUID.fromString("820e1af6-9bff-4244-97d3-81fd9a49c91c");
+        UUID typeSpecimenUuid = UUID.fromString("b6f31b9f-f9e2-4bc7-883e-35bd6a9978b4");
+        UUID taxonUuid = UUID.fromString("5613698d-840b-4034-b9b1-1302938e183b");
+//      DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+//      DerivedUnit associatedSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+//      DerivedUnit unassociatedSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+//      typeSpecimen.setUuid(typeSpecimenUuid);
+//      associatedSpecimen.setUuid(associatedSpecimenUuid);
+//      unassociatedSpecimen.setUuid(unassociatedSpecimenUuid);
+//
+//      occurrenceService.save(typeSpecimen);
+//      occurrenceService.save(associatedSpecimen);
+//      occurrenceService.save(unassociatedSpecimen);
+//
+//      BotanicalName name = BotanicalName.PARSED_NAME("Campanula patula");
+//      SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+//      typeDesignation.setTypeSpecimen(typeSpecimen);
+//      name.addTypeDesignation(typeDesignation, false);
+//
+//      Taxon taxon = Taxon.NewInstance(name, null);
+//      taxon.setUuid(taxonUuid);
+//      TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+////      taxonDescription.setUuid(taxonDescriptionUuid);
+//
+//      taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedSpecimen));
+//      taxon.addDescription(taxonDescription);
+//
+//      taxonService.saveOrUpdate(taxon);
+//
+//      commitAndStartNewTransaction(null);
+//
+//      setComplete();
+//      endTransaction();
+//
+//      try {
+//          writeDbUnitDataSetFile(new String[]{
+//                                 "SpecimenOrObservationBase",
+//                  "SpecimenOrObservationBase_DerivationEvent",
+//                  "DerivationEvent",
+//                  "Sequence",
+//                  "Sequence_SingleRead",
+//                  "SingleRead",
+//                  "AmplificationResult",
+//                  "DescriptionElementBase",
+//                  "DescriptionBase",
+//                  "TaxonBase",
+//                  "TypeDesignationBase",
+//                  "TaxonNameBase",
+//                  "TaxonNameBase_TypeDesignationBase",
+//                  "TeamOrPersonBase",
+//                  "HomotypicalGroup"}, "testListAssociatedTaxaAndListByAssociatedTaxon");
+//      } catch (FileNotFoundException e) {
+//          // TODO Auto-generated catch block
+//          e.printStackTrace();
+//      }
+        //check initial state
+        SpecimenOrObservationBase typeSpecimen = occurrenceService.load(typeSpecimenUuid);
+        SpecimenOrObservationBase associatedSpecimen = occurrenceService.load(associatedSpecimenUuid);
+        SpecimenOrObservationBase unassociatedSpecimen = occurrenceService.load(unassociatedSpecimenUuid);
+        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+
+        assertNotNull(typeSpecimen);
+        assertNotNull(associatedSpecimen);
+        assertNotNull(unassociatedSpecimen);
+        assertNotNull(taxon);
+
+        //check association (IndividualsAssociations + TypeDesignations) specimen -> taxon (name)
+
+        //unassociated specimen
+        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(unassociatedSpecimen, null, null, null, null);
+        assertNotNull(associatedTaxa);
+        assertTrue(associatedTaxa.isEmpty());
+
+        //type specimen
+        associatedTaxa = occurrenceService.listAssociatedTaxa(typeSpecimen, null, null, null, null);
+        assertNotNull(associatedTaxa);
+        assertEquals(1, associatedTaxa.size());
+        assertEquals(taxon, associatedTaxa.iterator().next());
+
+        //associated specimen
+        associatedTaxa = occurrenceService.listAssociatedTaxa(associatedSpecimen, null, null, null, null);
+        assertNotNull(associatedTaxa);
+        assertEquals(1, associatedTaxa.size());
+        assertEquals(taxon, associatedTaxa.iterator().next());
+
+
+        //check association (IndividualsAssociations + TypeDesignations) taxon (name) -> specimen
+        List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(DerivedUnit.class, null, taxon, null, null, null, null, null);
+        assertNotNull(byAssociatedTaxon);
+        assertEquals(2, byAssociatedTaxon.size());
+        assertTrue(byAssociatedTaxon.contains(associatedSpecimen));
+        assertTrue(byAssociatedTaxon.contains(typeSpecimen));
+        assertTrue(!byAssociatedTaxon.contains(unassociatedSpecimen));
+
+    }
+
+    @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testFindOcurrences.xml")
     public void testFindOccurrences() {
         UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
@@ -1084,69 +1185,70 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    // @Test
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
-        UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
-        UUID derivedUnit2Uuid = UUID.fromString("40cd9cb1-7c74-4e7d-a1f8-8a1e0314e940");
-        UUID dnaSampleUuid = UUID.fromString("364969a6-2457-4e2e-ae1e-29a6fcaa741a");
-        UUID tissueUuid = UUID.fromString("b608613c-1b5a-4882-8b14-d643b6fc5998");
+        UUID associatedSpecimenUuid = UUID.fromString("6478a387-bc77-4f1b-bfab-671ad786a27e");
+        UUID unassociatedSpecimenUuid = UUID.fromString("820e1af6-9bff-4244-97d3-81fd9a49c91c");
+        UUID typeSpecimenUuid = UUID.fromString("b6f31b9f-f9e2-4bc7-883e-35bd6a9978b4");
+        UUID taxonUuid = UUID.fromString("5613698d-840b-4034-b9b1-1302938e183b");
+      DerivedUnit typeSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+      DerivedUnit associatedSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+      DerivedUnit unassociatedSpecimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+      typeSpecimen.setUuid(typeSpecimenUuid);
+      associatedSpecimen.setUuid(associatedSpecimenUuid);
+      unassociatedSpecimen.setUuid(unassociatedSpecimenUuid);
 
-        UUID taxonUuid = UUID.fromString("dfca7629-8a60-4d51-998d-371897f725e9");
+      occurrenceService.save(typeSpecimen);
+      occurrenceService.save(associatedSpecimen);
+      occurrenceService.save(unassociatedSpecimen);
 
-        DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-        derivedUnit.setAccessionNumber("ACC1");
-        derivedUnit.setTitleCache("testUnit1", true);
-        DerivedUnit derivedUnit2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-        derivedUnit2.setBarcode("ACC2");
-        derivedUnit2.setTitleCache("testUnit2", true);
-        DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
-        dnaSample.setTitleCache("dna", true);
-        dnaSample.setCatalogNumber("ACC1");
-        DerivedUnit tissue = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
-        tissue.setTitleCache("tissue", true);
+      BotanicalName name = BotanicalName.PARSED_NAME("Campanula patula");
+      SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+      typeDesignation.setTypeSpecimen(typeSpecimen);
+      name.addTypeDesignation(typeDesignation, false);
 
-        DerivationEvent.NewSimpleInstance(derivedUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
+      Taxon taxon = Taxon.NewInstance(name, null);
+      taxon.setUuid(taxonUuid);
+      TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+//      taxonDescription.setUuid(taxonDescriptionUuid);
 
-        derivedUnit.setUuid(derivedUnit1Uuid);
-        derivedUnit2.setUuid(derivedUnit2Uuid);
-        dnaSample.setUuid(dnaSampleUuid);
-        tissue.setUuid(tissueUuid);
+      taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedSpecimen));
+      taxon.addDescription(taxonDescription);
 
-        occurrenceService.save(derivedUnit);
-        occurrenceService.save(derivedUnit2);
-        occurrenceService.save(dnaSample);
-        occurrenceService.save(tissue);
+      taxonService.saveOrUpdate(taxon);
 
-        Taxon taxon = Taxon.NewInstance(BotanicalName.PARSED_NAME("Campanula patual"), null);
-        taxon.setUuid(taxonUuid);
-        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-        taxonDescription.setUuid(UUID.fromString("272d4d28-662c-468e-94d8-16993fab91ba"));
-        // add voucher
-        taxonDescription.addElement(IndividualsAssociation.NewInstance(derivedUnit));
-        taxonDescription.addElement(IndividualsAssociation.NewInstance(tissue));
-        taxon.addDescription(taxonDescription);
-        taxonService.saveOrUpdate(taxon);
+      commitAndStartNewTransaction(null);
 
-        commitAndStartNewTransaction(null);
+      setComplete();
+      endTransaction();
 
-        setComplete();
-        endTransaction();
+      try {
+          writeDbUnitDataSetFile(new String[]{
+                                 "SpecimenOrObservationBase",
+                  "SpecimenOrObservationBase_DerivationEvent",
+                  "DerivationEvent",
+                  "Sequence",
+                  "Sequence_SingleRead",
+                  "SingleRead",
+                  "AmplificationResult",
+                  "DescriptionElementBase",
+                  "DescriptionBase",
+                  "TaxonBase",
+                  "TypeDesignationBase",
+                  "TaxonNameBase",
+                  "TaxonNameBase_TypeDesignationBase",
+                  "TeamOrPersonBase",
+                  "HomotypicalGroup"}, "testListAssociatedTaxaAndListByAssociatedTaxon");
+      } catch (FileNotFoundException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      }
 
-        try {
-            writeDbUnitDataSetFile(new String[] { "SpecimenOrObservationBase",
-                    "SpecimenOrObservationBase_DerivationEvent", "DerivationEvent", "DescriptionElementBase",
-                    "DescriptionBase", "TaxonBase", "TypeDesignationBase", "TaxonNameBase",
-                    "TaxonNameBase_TypeDesignationBase", "HomotypicalGroup", "TeamOrPersonBase" }, "testFindOcurrences");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+      System.out.println("associatedFieldUnit.getUuid() " + associatedSpecimen.getUuid());
+      System.out.println("unassociatedFieldUnit.getUuid() " + unassociatedSpecimen.getUuid());
+      System.out.println("typeSpecimen.getUuid() "+typeSpecimen.getUuid());
+      System.out.println("taxon.getUuid() "+taxon.getUuid());
     }
 
 }
