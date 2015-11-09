@@ -427,6 +427,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		this.singleReadAlignments.remove(singleReadAlignment);
 		if (this.equals(singleReadAlignment.getConsensusSequence())){
 			singleReadAlignment.setConsensusAlignment(null);
+			singleReadAlignment.setSingleRead(null);
 		}
 	}
 //	/**
