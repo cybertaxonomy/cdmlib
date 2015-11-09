@@ -1580,5 +1580,4 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         }
 
     }
-
 }
