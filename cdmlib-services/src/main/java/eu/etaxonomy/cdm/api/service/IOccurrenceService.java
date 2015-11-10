@@ -388,6 +388,20 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config);
 
     /**
+     * Deletes the specified specimen belonging to the given {@link UUID}
+     * according to the setting in the {@link SpecimenDeleteConfigurator}.
+     *
+     * @param specimen
+     *            the specimen which shoul be deleted
+     * @param config
+     *            specifies options if and how the specimen should be deleted
+     *            like e.g. including all of its children
+     * @return the {@link DeleteResult} which holds information about the
+     *         outcome of this operation
+     */
+    public DeleteResult delete(UUID specimenUuid, SpecimenDeleteConfigurator config);
+
+    /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
      * @param specimen the specimen for which the associations are retrieved
      * @param limit
