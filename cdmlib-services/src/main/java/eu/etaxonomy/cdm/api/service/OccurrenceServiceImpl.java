@@ -106,6 +106,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -132,6 +133,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ISequenceService sequenceService;
+
+    @Autowired
+    private ISingleReadDao singleReadDao;
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
@@ -1244,6 +1248,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //delete from sequence
         sequence.removeSingleRead(singleRead);
         deleteResult.addUpdatedObject(sequence);
+
+        //check if used in other sequences
+        List<SingleRead> toDelete = new ArrayList<SingleRead>();
+        Map<SingleRead, Collection<Sequence>> singleReadSequencesMap = sequenceService.getSingleReadSequencesMap();
+        if(singleReadSequencesMap.containsKey(singleRead)){
+            for (Entry<SingleRead, Collection<Sequence>> entry : singleReadSequencesMap.entrySet()) {
+                if(entry.getValue().isEmpty()){
+                    toDelete.add(singleRead);
+                }
+            }
+            for (SingleRead singleReadToDelete : toDelete) {
+                singleReadDao.delete(singleReadToDelete);
+            }
+        }
+        else{
+            singleReadDao.delete(singleRead);
+        }
         deleteResult.setStatus(Status.OK);
         return deleteResult;
     }
