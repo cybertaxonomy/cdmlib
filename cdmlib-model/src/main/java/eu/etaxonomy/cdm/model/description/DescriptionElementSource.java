@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -42,9 +42,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * The use of "originalNameString" within a DescriptionElementSource has to be discussed.
  * In general this string is to be used for different representations of the sourced object. In this classes
  * context it could also stand for the string representation of the taxon name used in the source. This
- * may make sense if the taxon name is not available in the CDM and the user for some reason does not want 
+ * may make sense if the taxon name is not available in the CDM and the user for some reason does not want
  * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}.
- *  
+ *
  * @author a.mueller
  * @created 18.09.2009
  */
@@ -58,7 +58,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -66,7 +66,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	public static DescriptionElementSource NewInstance(OriginalSourceType type){
 		return new DescriptionElementSource(type);
 	}
-	
+
 	public static DescriptionElementSource NewDataImportInstance(String id){
 		DescriptionElementSource result = new DescriptionElementSource(OriginalSourceType.Import);
 		result.setIdInSource(id);
@@ -78,18 +78,18 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setIdNamespace(idNamespace);
 		return result;
 	}
-	
+
 	public static DescriptionElementSource NewDataImportInstance(String id, String idNamespace, Reference ref){
 		DescriptionElementSource result = NewDataImportInstance(id, idNamespace);
 		result.setCitation(ref);
 		return result;
 	}
-	
+
 	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation){
 		DescriptionElementSource result = NewInstance(type);
 		result.setIdInSource(id);
 		result.setIdNamespace(idNamespace);
-		result.setCitation(citation);		
+		result.setCitation(citation);
 		return result;
 	}
 
@@ -98,14 +98,14 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
-	
+
 	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
 		DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
 		return result;
 	}
-	
+
 	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		result.setCitation(citation);
@@ -120,8 +120,8 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
-	
-	
+
+
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -130,46 +130,50 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	    	 fetch = FetchType.LAZY,
 	    	 optional = false)
 	@JoinColumn(name = "sourcedObj_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotAudited
 	private DescriptionElementBase sourcedObj;
-	
+
 	@XmlElement(name = "nameUsedInSource")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonNameBase<?,?> nameUsedInSource;
-	
-//*********************** CONSTRUCTOR ******************************/	
-	
+
+//*********************** CONSTRUCTOR ******************************/
+
 	//for hibernate use only
 	private DescriptionElementSource(){
 		super();
 	}
-	
+
 	private DescriptionElementSource(OriginalSourceType type){
 		super(type);
 	}
-	
-	
+
+
 // **************************  GETTER / SETTER ***************************/
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
 	 */
-	public DescriptionElementBase getSourcedObj() {
+	@Override
+    public DescriptionElementBase getSourcedObj() {
 		return sourcedObj;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setSourcedObj(eu.etaxonomy.cdm.model.common.ISourceable)
 	 */
-	public void setSourcedObj(DescriptionElementBase sourcedObj) {
+	@Override
+    public void setSourcedObj(DescriptionElementBase sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
-	
-	
+
+
 	/**
 	 * @return the taxonNameUsedInSource
 	 */
@@ -186,8 +190,8 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 
 //*********************************** CLONE *********************************************************/
-	
-	
+
+
 	/**
 	 * Clones this original source and sets the clones sourced object to 'sourceObj'
 	 * @see java.lang.Object#clone()
@@ -197,8 +201,8 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setSourcedObj(sourcedObj);
 		return result;
 	}
-	
-		 
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
 	 * @see java.lang.Object#clone()
@@ -206,11 +210,11 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		DescriptionElementSource result = (DescriptionElementSource)super.clone();
-		
+
 		//no changes to: sourcedObj
 		return result;
 	}
 
-	
-	
+
+
 }

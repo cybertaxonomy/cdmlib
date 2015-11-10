@@ -370,7 +370,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         DescriptionElementSource descriptionElementSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         // Un-commenting the following line will reproduce the exception seen in #5256
-        //textData.addSource(descriptionElementSource);
+        textData.addSource(descriptionElementSource);
 
 
         taxonService.merge(taxon);
