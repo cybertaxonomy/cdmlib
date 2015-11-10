@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -38,10 +37,8 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -391,24 +388,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config);
 
     /**
-     * Deletes the specified specimen and all sub derivates.<br>
-     * <b>Note:</b> Be sure to allow child deletion in the config.
-     * @param from the specimen which should be deleted with all its sub derivates
-     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config);
-
-    /**
-     * Deletes the specified specimen and all sub derivates by first loading the corresponding uuids
-     * and then calling {@link #deleteDerivateHierarchy(CdmBase, SpecimenDeleteConfigurator) deleteDerivateHierarchy}
-     * @param fromUuid uuid of the specimen which should be deleted with all its sub derivates
-     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
-     * @return {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config);
-
-    /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
      * @param specimen the specimen for which the associations are retrieved
      * @param limit
@@ -520,22 +499,5 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return an unordered list of all child derivatives
      */
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
-
-    /**
-     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult}.
-     * @param singleRead the single read to delete
-     * @param sequence the sequence to which the single read belongs
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
-
-    /**
-     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult},
-     * by first loading the corresponding uuids and then calling {@link #deleteSingleRead(SingleRead, Sequence) deleteSingleRead}
-     * @param singleReadUuid uuid of the single read to delete
-     * @param sequenceUuid uuid of the sequence to which the single read belongs
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
 
 }

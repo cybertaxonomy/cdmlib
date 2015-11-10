@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -83,7 +82,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
 
         //delete field unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+        deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
@@ -113,7 +112,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
 
         //delete derived unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
+        deleteResult = occurrenceService.delete(derivedUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -142,7 +141,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
 
         //delete dna sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
+        deleteResult = occurrenceService.delete(dnaSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -237,14 +236,14 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //A: delete singleRead
         //delete singleReadA from sequenceA1 (singleReadA should NOT be deleted)
-        deleteResult = occurrenceService.deleteSingleRead(singleReadA, sequenceA1);
+        deleteResult = sequenceService.deleteSingleRead(singleReadA, sequenceA1);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("incorrect number of single reads", 2, singleReadDao.count());
         assertEquals(0, sequenceA1.getSingleReadAlignments().size());
         assertNotNull(singleReadDao.load(singleReadAUuid));
 
         //delete singleReadA from sequenceA2 (singleReadA should be deleted)
-        deleteResult = occurrenceService.deleteSingleRead(singleReadA, sequenceA2);
+        deleteResult = sequenceService.deleteSingleRead(singleReadA, sequenceA2);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("incorrect number of single reads", 1, singleReadDao.count());
         assertEquals(0, sequenceA2.getSingleReadAlignments().size());
@@ -252,13 +251,13 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //B: delete sequence
         //delete sequenceB1 (singleReadB should NOT be deleted)
-        deleteResult = occurrenceService.delete(sequenceB1Uuid);
+        deleteResult = sequenceService.delete(sequenceB1Uuid);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("incorrect number of single reads", 1, singleReadDao.count());
         assertNotNull(singleReadDao.load(singleReadBUuid));
 
         //delete sequenceB1 (singleReadB should be deleted)
-        deleteResult = occurrenceService.delete(sequenceB2Uuid);
+        deleteResult = sequenceService.delete(sequenceB2Uuid);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("incorrect number of single reads", 0, singleReadDao.count());
         assertTrue(singleReadDao.load(singleReadBUuid)==null);
@@ -281,7 +280,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
 
         //delete field unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+        deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
@@ -326,28 +325,24 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals("incorrect number of single reads", 1, consensusSequence.getSingleReads().size());
         assertEquals(consensusSequence.getSingleReads().iterator().next(), dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next());
 
-        //delete sequence -> should fail
-        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-
         //allow deletion of molecular data
         config.setDeleteMolecularData(true);
 
         SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
-        deleteResult = occurrenceService.deleteSingleRead(singleRead, consensusSequence);
+        deleteResult = sequenceService.deleteSingleRead(singleRead, consensusSequence);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("incorrect number of single reads", 0, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
         assertEquals("incorrect number of single reads", 0, consensusSequence.getSingleReads().size());
         assertEquals("incorrect number of single reads", 0, singleReadDao.count());
 
         //delete sequence
-        deleteResult = occurrenceService.deleteDerivateHierarchy(consensusSequence, config);
+        deleteResult = sequenceService.delete(consensusSequence);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
 
 
         //delete dna sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(dnaSample, config);
+        deleteResult = occurrenceService.delete(dnaSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -355,7 +350,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete tissue sample
-        deleteResult = occurrenceService.deleteDerivateHierarchy(tissueSample, config);
+        deleteResult = occurrenceService.delete(tissueSample, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -363,7 +358,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete derived unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(derivedUnit, config);
+        deleteResult = occurrenceService.delete(derivedUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
@@ -371,7 +366,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
 
         //delete field unit
-        deleteResult = occurrenceService.deleteDerivateHierarchy(fieldUnit, config);
+        deleteResult = occurrenceService.delete(fieldUnit, config);
 
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
