@@ -16,7 +16,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
-import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 
@@ -54,11 +54,20 @@ public interface ISequenceService extends IAnnotatableService<Sequence>{
     public Map<SingleRead, Collection<Sequence>> getSingleReadSequencesMap();
 
     /**
-     * @param fromUuid
-     * @param config
-     * @return
+     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult}.
+     * @param singleRead the single read to delete
+     * @param sequence the sequence to which the single read belongs
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
      */
-    public DeleteResult delete(UUID fromUuid, SpecimenDeleteConfigurator config);
+    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
 
+    /**
+     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult},
+     * by first loading the corresponding uuids and then calling {@link #deleteSingleRead(SingleRead, Sequence) deleteSingleRead}
+     * @param singleReadUuid uuid of the single read to delete
+     * @param sequenceUuid uuid of the sequence to which the single read belongs
+     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     */
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
 
 }

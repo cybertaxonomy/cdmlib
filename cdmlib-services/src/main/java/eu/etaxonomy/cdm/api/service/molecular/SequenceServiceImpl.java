@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -26,11 +28,14 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
-import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
+import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 
 /**
  * @author pplitzner
@@ -45,6 +50,9 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
 
     @Autowired
     IOccurrenceService occurrenceService;
+
+    @Autowired
+    ISingleReadDao singleReadDao;
 
     @Override
     @Autowired
@@ -97,8 +105,67 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public DeleteResult delete(UUID fromUuid, SpecimenDeleteConfigurator config) {
-        return occurrenceService.deleteDerivateHierarchy(dao.load(fromUuid),config);
+    public DeleteResult delete(Sequence sequence) {
+        DeleteResult deleteResult = new DeleteResult();
+        //remove from dnaSample
+        DnaSample dnaSample = sequence.getDnaSample();
+        if(dnaSample!=null){
+            dnaSample.removeSequence(sequence);
+            deleteResult.addUpdatedObject(dnaSample);
+        }
+        //remove singleReads
+        for (SingleReadAlignment singleReadAlignment : sequence.getSingleReadAlignments()) {
+            deleteSingleRead(singleReadAlignment.getSingleRead(), sequence);
+        }
+        dao.delete(sequence);
+        return deleteResult;
     }
+
+    @Override
+    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence){
+        DeleteResult deleteResult = new DeleteResult();
+        singleRead = HibernateProxyHelper.deproxy(singleRead, SingleRead.class);
+        //delete from amplification result
+        if(singleRead.getAmplificationResult()!=null){
+            deleteResult.addUpdatedObject(singleRead.getAmplificationResult());
+            singleRead.getAmplificationResult().removeSingleRead(singleRead);
+        }
+        //delete from sequence
+        sequence.removeSingleRead(singleRead);
+        deleteResult.addUpdatedObject(sequence);
+
+        //check if used in other sequences
+        List<SingleRead> toDelete = new ArrayList<SingleRead>();
+        Map<SingleRead, Collection<Sequence>> singleReadSequencesMap = getSingleReadSequencesMap();
+        if(singleReadSequencesMap.containsKey(singleRead)){
+            for (Entry<SingleRead, Collection<Sequence>> entry : singleReadSequencesMap.entrySet()) {
+                if(entry.getValue().isEmpty()){
+                    toDelete.add(singleRead);
+                }
+            }
+            for (SingleRead singleReadToDelete : toDelete) {
+                singleReadDao.delete(singleReadToDelete);
+            }
+        }
+        else{
+            singleReadDao.delete(singleRead);
+        }
+        deleteResult.setStatus(Status.OK);
+        return deleteResult;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid){
+        SingleRead singleRead = null;
+        Sequence sequence = CdmBase.deproxy(load(sequenceUuid), Sequence.class);
+        for(SingleRead sr : sequence.getSingleReads()) {
+            if(sr.getUuid().equals(singleReadUuid)) {
+                singleRead = sr;
+                break;
+            }
+        }
+        return deleteSingleRead(singleRead, sequence);
+    }
+
 }
