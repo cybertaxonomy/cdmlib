@@ -105,7 +105,7 @@ public class ExcelSpecimenImportExampleTest extends
 	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
 	 })
 	 public void testDoInvoke() {
-		 boolean result = defaultImport.invoke(configurator);
+		 boolean result = defaultImport.invoke(configurator).isSuccess();
 		 assertTrue("Return value for import.invoke should be true", result);
 		 assertEquals("Number of specimen should be 3", 3,
 		 occurrenceService.count(DerivedUnit.class));
@@ -122,7 +122,7 @@ public class ExcelSpecimenImportExampleTest extends
 	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
 	 })
 	 public void testDoInvokeXslx() {
-		 boolean result = defaultImport.invoke(configurator);
+		 boolean result = defaultImport.invoke(configurator).isSuccess();
 		 assertTrue("Return value for import.invoke should be true", result);
 		 assertEquals("Number of specimen should be 3", 3,
 		 occurrenceService.count(DerivedUnit.class));
@@ -138,7 +138,7 @@ public class ExcelSpecimenImportExampleTest extends
 	@ExpectedDataSet
 	@Ignore
 	public void testResultSet() {
-		boolean result = defaultImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field units should be 3", 3, occurrenceService.count(FieldUnit.class));

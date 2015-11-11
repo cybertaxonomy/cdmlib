@@ -23,16 +23,18 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 	private static final Logger logger = Logger.getLogger(CdmDefaultImport.class);
 
 	@Override
-    public boolean invoke(T config){
+    public ImportResult invoke(T config){
 		ICdmDataSource destination = config.getDestination();
 		boolean omitTermLoading = config.isOmitTermLoading();
 		return invoke(config, destination, omitTermLoading);
 	}
 
-	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
+	public ImportResult invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
 		boolean createNew = config.isCreateNew();
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
-			return false;
+		    ImportResult result = new ImportResult();
+		    result.setSuccess(false);
+			return result;
 		}else{
 			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)getCdmAppController().getBean("defaultImport");
 			defaultImport.authenticate(config);

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,12 +21,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import org.unitils.database.util.TransactionMode;
 
 /**
  * @author a.mueller
@@ -36,7 +36,7 @@ import org.unitils.database.util.TransactionMode;
 public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
-	
+
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
 
@@ -60,17 +60,17 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("configurator instance should not be null", configurator);
 	}
-	
+
 	@Test
 	public void testInvoke() {
 		configurator.setDefaultPartitionSize(3);
-		boolean result = defaultImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator).isSuccess();
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued
 //		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
@@ -85,7 +85,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

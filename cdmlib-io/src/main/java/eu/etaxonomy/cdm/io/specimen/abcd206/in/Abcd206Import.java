@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * @author p.kelbert
- * @author pplitzner
+ * @author p.plitzner
  * @created 20.10.2008
  */
 @Component
@@ -196,8 +196,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (state.getClassification() == null) {
                     String name = NB(state.getConfig().getClassificationName());
                     for (Classification classif : classificationList){
-                        if (classif.getTitleCache() != null && classif.getCitation() != null
-                                && classif.getTitleCache().equalsIgnoreCase(name) && classif.getCitation().equals(state.getRef())) {
+                        if (classif.getTitleCache() != null && classif.getTitleCache().equalsIgnoreCase(name)) {
                             state.setClassification(classif);
                         }
                     }
