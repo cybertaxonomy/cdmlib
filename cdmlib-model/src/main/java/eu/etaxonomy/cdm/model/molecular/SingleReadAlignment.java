@@ -8,7 +8,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -48,7 +48,7 @@ public class SingleReadAlignment extends VersionableEntity implements Serializab
 	@XmlElement(name = "ConsensusAlignment")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
 	//for now we do not cascade but expect the user to save the sequence manually
 	private Sequence consensusAlignment;
 
@@ -56,7 +56,7 @@ public class SingleReadAlignment extends VersionableEntity implements Serializab
 	@XmlElement(name = "SingleRead")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private SingleRead singleRead;
 
