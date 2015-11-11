@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private String prefix;
 
+    private Abcd206ImportReport report;
+
 	private Classification classification = null;
 	private Classification defaultClassification = null;
 	private Reference<?> ref = null;
@@ -60,6 +64,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);
+        report = new Abcd206ImportReport();
 	}
 
 //************************ GETTER / SETTER *****************************************/
@@ -204,6 +209,17 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public Abcd206ImportReport getReport(){
+        return report;
+    }
+
+    @Override
+    public byte[] getReportAsByteArray() {
+        ByteArrayOutputStream importStream = new ByteArrayOutputStream();
+        report.printReport(new PrintStream(importStream));
+        return importStream.toByteArray();
     }
 
     public void reset() {
