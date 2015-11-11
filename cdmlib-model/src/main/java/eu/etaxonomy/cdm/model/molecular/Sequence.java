@@ -137,7 +137,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlElement(name = "SingleReadAlignment")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
 
