@@ -90,7 +90,7 @@ public class AbcdImportNonEmptyDbTest extends CdmTransactionalIntegrationTest {
 	@Test
     @DataSet( value="AbcdImportNonEmptyDbTest.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
 	public void testDoInvoke() {
-        boolean result = defaultImport.invoke(configurator);
+        boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 13, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));

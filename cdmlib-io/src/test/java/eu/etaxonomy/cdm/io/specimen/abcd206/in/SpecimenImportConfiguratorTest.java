@@ -142,7 +142,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	@Test
     @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke() {
-        boolean result = defaultImport.invoke(configurator);
+        boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
         /*
@@ -162,7 +162,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	@Test
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke2() {
-		boolean result = defaultImport.invoke(configurator2);
+		boolean result = defaultImport.invoke(configurator2).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonNameBase.class));
 		/*
@@ -200,7 +200,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonNameBase.class));
         /*
@@ -228,7 +228,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 
 	    /*
@@ -265,7 +265,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 
 	    String nonPreferredNameCache = "Campanula flagellaris";
@@ -308,7 +308,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
     }
 
@@ -329,7 +329,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
 	    importConfigurator.setMapUnitIdToBarcode(true);
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
@@ -354,7 +354,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
 	    importConfigurator.setMapUnitIdToAccessionNumber(true);
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
@@ -379,7 +379,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
 	    importConfigurator.setMapUnitIdToCatalogNumber(true);
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
@@ -428,7 +428,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
@@ -479,7 +479,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    importConfigurator.setClassificationUuid(classificationUUID);
 //	    importConfigurator.setIgnoreAuthorship(true);
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 
 	    //re-load classification to avoid session conflicts
@@ -589,7 +589,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    importConfigurator.setIgnoreAuthorship(true);
 	    importConfigurator.setClassificationUuid(classificationUUID);
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 
 	    assertEquals(1, classificationService.count(Classification.class));
@@ -635,7 +635,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         importConfigurator.setIgnoreAuthorship(true);
         importConfigurator.setClassificationUuid(classificationUUID);
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
 
         assertEquals(0, classification.getAllNodes().size());
@@ -675,7 +675,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
