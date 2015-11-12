@@ -7,6 +7,10 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <!-- This application can definetly still be adapted to the new structure.
+    However currently it is only used the EditGeoServiceTest and works, so for now
+    we don't touch it -->
+    
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
 
 	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>

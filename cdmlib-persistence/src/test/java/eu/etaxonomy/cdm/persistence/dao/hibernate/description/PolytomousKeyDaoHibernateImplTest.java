@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrationTest{
+public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	PolytomousKeyDaoImpl polytomousKeyDao;

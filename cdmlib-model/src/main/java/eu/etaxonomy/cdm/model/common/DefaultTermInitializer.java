@@ -32,8 +32,10 @@ public class DefaultTermInitializer implements ITermInitializer {
 
 	@Override
     public void initialize() {
-		termLoader.unloadAllTerms();
-		doInitialize();
+		if (!omit){
+		    termLoader.unloadAllTerms();
+		    doInitialize();
+		}
 	}
 
 	protected void doInitialize(){

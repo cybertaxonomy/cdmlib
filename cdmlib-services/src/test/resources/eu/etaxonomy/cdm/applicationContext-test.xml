@@ -9,58 +9,22 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
     ">
 
-    <context:property-override location="classpath:override.properties"/>
+   <context:property-override location="classpath:override.properties"/>
 
-   <context:component-scan base-package="eu/etaxonomy/cdm/api/service">
-    </context:component-scan>
+   <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
+   
  <!--    <context:component-scan base-package="eu/etaxonomy/cdm/api/validation">
     </context:component-scan>
     --> 
 
-
-    <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
-
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
-    <!-- enable the configuration of transactional behavior based on annotations -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
-    <!--
-        use TestingTermInitializer
-     -->
-    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-        <property name="omit" value="false"/>
-    </bean>
-    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-        <property name="omit" value="true"/>
-    </bean>
-
-    <bean id="hibernateProperties"
-        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-            <props>
-                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-                <!-- TODO trying to use a managed session context
-                <prop key="hibernate.current_session_context_class">managed</prop>
-                -->
-
-                <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                <!--  hibernate.search.default.exclusive_index_use=false
-                      locks must not only be released after application shutdown in test environment -->
-                <prop key="hibernate.search.default.exclusive_index_use">false</prop>
-                <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
-                    due to which it is not possible to use batch updates, so we need to disable
-                    hibernate batching when using hsqldb in the app context: -->
-                <prop key="hibernate.jdbc.batch_size">0</prop>
-            </props>
-        </property>
-    </bean>
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
 
     <bean id="tableGeneratorGlobalOverride"
         class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
@@ -76,15 +40,6 @@
     </bean>
 
 
-<!--
-   We do not use spelling suggestions anymore. This one relates to spring modules which is
-    somewhat out-dated. Once we work again with spelling suggestions we better use a modern
-    approach, e.g. annotation based.
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="true"/>
-    </bean> -->
-
     <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="mappingLocations">
             <set>
@@ -93,9 +48,6 @@
         </property>
     </bean>
 
-
-    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
-    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
 
     <!-- security  -->
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
