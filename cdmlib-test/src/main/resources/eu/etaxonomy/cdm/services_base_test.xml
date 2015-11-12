@@ -28,4 +28,28 @@
 
     <!-- equips a new and empty database with the initial set of meta data and admin user   -->
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
+    
+        <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
+
+    <bean id="tableGeneratorGlobalOverride"
+        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
+        <property name="properties">
+            <props>
+                <!--
+                    globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
+                 -->
+                <prop key="optimizer">none</prop>
+                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
+            </props>
+        </property>
+    </bean>
+
+
+    <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="mappingLocations">
+            <set>
+                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
+            </set>
+        </property>
+    </bean>
 </beans>

@@ -553,8 +553,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
      * Should just check that no NPEs occur when some fields are missing.
      */
     @Test
+//    @DataSets({
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+//    })
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/io/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/io/TermsDataSet-with_auditing_info.xml"),
     })
     public void testImportGgbnSparseData(){
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sparse_data.xml";
