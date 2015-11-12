@@ -28,64 +28,6 @@
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
     <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator"/>
 
-    <!--
-        ======================================================================
-          security specific configuration
-        ======================================================================
-     -->
-    <security:global-method-security pre-post-annotations="enabled" run-as-manager-ref="runAsManager" >
-        <security:expression-handler ref="expressionHandler" />
-    </security:global-method-security>
-
-    <!--
-        To use "hasPermission()" in the Spring EL method annotations like @PreAuthorize we explicitly configure the permissionEvaluator
-        the cdmPermissionEvaluator is already defined in the persistence security context
-    -->
-    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
-    </bean>
-
-
-    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-        <property name="userDetailsService" ref="userService"/>
-        <property name="saltSource" ref="saltSource"/>
-        <property name="passwordEncoder" ref="passwordEncoder"/>
-    </bean>
-
-    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
-
-    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
-        <property name="userPropertyToUse" value="getUsername"/>
-    </bean>
+    <import resource="classpath:/eu/etaxonomy/cdm/services_security_base.xml"/>
     
-    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-        <constructor-arg>
-            <list>
-                <ref local="daoAuthenticationProvider"/>
-            </list>
-        </constructor-arg>
-    </bean>
-
-
-    <!--
-        Run-As Authentication Replacement for system operations
-        as e.g. performed by the eu.etaxonomy.cdm.api.application.FirstDataInserter
-
-        the key must match FirstDataInserter.RUN_AS_KEY
-     -->
-    <bean id="runAsManager"
-        class="org.springframework.security.access.intercept.RunAsManagerImpl">
-      <property name="key" value="TtlCx3pgKC4l"/>
-    </bean>
-
-    <bean id="runAsAuthenticationProvider"
-        class="org.springframework.security.access.intercept.RunAsImplAuthenticationProvider">
-      <property name="key" value="TtlCx3pgKC4l"/>
-    </bean>
-
-    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
-    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
-        <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
-    </bean>
-
 </beans>

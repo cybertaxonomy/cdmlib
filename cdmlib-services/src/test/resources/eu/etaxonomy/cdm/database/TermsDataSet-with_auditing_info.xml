@@ -1,4 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!-- this is a copy of the same file in cdmlib-test which is needed as there is a 'bug' in
+DbUnitModul.handleDataSetResource() which does not allow to load a file from an external 
+jar with in a different package. Otherwise it automatically adds the tests package to 
+the resource path  -->
 <dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../persistence/dao/hibernate/dataset.xsd">
   <AUDITEVENT REVISIONNUMBER="1000" TIMESTAMP="1233162423845" UUID="1101799e-0842-410f-bb16-f0d59875fda7"/>
   <AUDITEVENT REVISIONNUMBER="1001" TIMESTAMP="1233162424204" UUID="6456c23d-6424-42dc-a240-36d34e77b249"/>

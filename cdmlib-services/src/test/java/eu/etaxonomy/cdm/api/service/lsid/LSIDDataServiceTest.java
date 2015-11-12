@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.api.service.lsid;
 
@@ -23,21 +23,20 @@ import com.ibm.lsid.server.LSIDServerException;
 
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
 public class LSIDDataServiceTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private LSIDDataService lsidDataService;
-	
+
 	@SpringBeanByType
 	private LSIDRegistry lsidRegistry;
-	
+
 	private LSID knownLsid;
 	private LSID unknownLsid;
-	
-	@Before	
+
+	@Before
 	public void setUp() throws Exception {
 		unknownLsid = new LSID("fred.org", "dagg", "1", null);
 		knownLsid = new LSID("example.org", "taxonconcepts", "1", null);
@@ -45,20 +44,20 @@ public class LSIDDataServiceTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testInit()	{		
+	public void testInit()	{
 		assertNotNull("lsidDataService should exist",lsidDataService);
-	} 
-	
+	}
+
 	@Test
 	public void testGetDataWithKnownLSID() throws Exception {
 		commitAndStartNewTransaction(null);
 		Object object = lsidDataService.getData(knownLsid);
 		assertNull("getData should return a null response",object);
 	}
-	
+
 	@Test(expected = LSIDServerException.class)
 	public void testGetDataUnknownLSID() throws Exception {
-		lsidDataService.getData(unknownLsid);	
+		lsidDataService.getData(unknownLsid);
 	}
 
     /* (non-Javadoc)
@@ -67,6 +66,6 @@ public class LSIDDataServiceTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

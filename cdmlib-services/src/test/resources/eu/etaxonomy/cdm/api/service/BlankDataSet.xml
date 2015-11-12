@@ -7,5 +7,7 @@
 <TAXONNODE/>
 <USERACCOUNT/>
 <USERACCOUNT_GRANTEDAUTHORITYIMPL/>
+<!-- This is a quick workaround for some problems in TaxonServiceImplTest -->
+<REPRESENTATION_AUD/>
 </dataset>
 

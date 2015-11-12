@@ -25,68 +25,74 @@
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
   	</dependency>
-  	<dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-persistence</artifactId>
-  		<type>test-jar</type>
-  		<scope>test</scope>
-  		<version>${project.version}</version>
-    </dependency>
     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-core</artifactId>
-      <scope>test</scope>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-test</artifactId>
+        <scope>test</scope>
+        <version>${project.version}</version>
     </dependency>
-<!--     probably most unitis dependencies can be deleted from here -->
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <exclusions>
-      	<exclusion>
-      		<groupId>commons-dbcp</groupId>
-      		<artifactId>commons-dbcp</artifactId>
-      	</exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-    </dependency> 
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
-  	</dependency>
+<!--   	<dependency> -->
+<!--   		<groupId>eu.etaxonomy</groupId> -->
+<!--   		<artifactId>cdmlib-persistence</artifactId> -->
+<!--   		<type>test-jar</type> -->
+<!--   		<scope>test</scope> -->
+<!--   		<version>${project.version}</version> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-core</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     probably most unitils dependencies can be deleted from here -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-database</artifactId> -->
+<!--       <exclusions> -->
+<!--       	<exclusion> -->
+<!--       		<groupId>commons-dbcp</groupId> -->
+<!--       		<artifactId>commons-dbcp</artifactId> -->
+<!--       	</exclusion> -->
+<!--       </exclusions> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-easymock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-mock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-inject</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--     </dependency>  -->
+<!--     <dependency> -->
+<!--       <groupId>xmlunit</groupId> -->
+<!--       <artifactId>xmlunit</artifactId> -->
+<!--   	</dependency> -->
 
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
@@ -94,8 +100,8 @@
 	</dependency>
 	<dependency>
         <groupId>net.sf.json-lib</groupId>
-                <artifactId>json-lib</artifactId>
-				<classifier>jdk15</classifier>
+        <artifactId>json-lib</artifactId>
+		<classifier>jdk15</classifier>
     </dependency>
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>

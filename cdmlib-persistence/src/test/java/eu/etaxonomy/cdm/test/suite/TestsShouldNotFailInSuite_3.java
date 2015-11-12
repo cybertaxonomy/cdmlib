@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

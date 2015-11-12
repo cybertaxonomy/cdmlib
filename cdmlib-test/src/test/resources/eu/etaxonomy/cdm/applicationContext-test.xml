@@ -10,6 +10,10 @@
     http://www.springframework.org/schema/tx
     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+    <!--  CURRENTLY we do not have tests testing cdmlib-test functionality
+    but only offer functionality for testing other packages.
+    Therefore this configuration is NOT IN USE.  -->
+
     <!-- requires at least spring 2.5.4 
     <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties"/>
     -->

@@ -172,7 +172,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @created 27.07.2009
  */
-public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
+public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
