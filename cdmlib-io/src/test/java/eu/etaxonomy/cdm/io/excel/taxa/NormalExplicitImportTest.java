@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -56,11 +57,11 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
  * @created 26.08.2009
- * @version 1.0
  */
 public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")
@@ -229,8 +230,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
-	public void testUUID() throws URISyntaxException{
+//	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/io/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/io/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="NormalExplicitImportTest.testUuid.xml"),
+    })
+	public void testUUID(){
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
 

@@ -7,84 +7,36 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="classpath:/eu/etaxonomy/cdm/defaultIoApplicationContext.xml"/>
+<!--     <context:property-override location="classpath:override.properties"/> -->
 
-   <!--
-        use TestingTermInitializer
-     -->
-    <!-- exclude persistent term initializer as we want to use the TestingTermInitializer instead -->
-    <context:component-scan base-package="eu/etaxonomy/cdm">
-      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
-    </context:component-scan>
-    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-        <property name="omit" value="false"/>
-    </bean>
-<!-- TODO remove    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-        <property name="omit" value="true"/>
-    </bean> -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/io"/>
 
-
-    <!--
-        NOTE:
-        the database connection is configured in /cdmlib-persistence/src/test/resources/unitils.properties
-    -->
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
-    <bean id="hibernateProperties"
-        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-            <props>
-                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-                <!--  hibernate.search.default.exclusive_index_use=false
-                          locks must not only be released after application shutdown in test environment -->
-                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
-                <prop key="hibernate.search.default.indexBase">./target/index</prop>
-            </props>
-        </property>
+    <!-- security  -->
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="getUsername"/>
     </bean>
-
-    <bean id="tableGeneratorGlobalOverride"
-        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
-        <property name="properties">
-            <props>
-                <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
-                <prop key="optimizer">none</prop>
-                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
-            </props>
-        </property>
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userService"/>
+        <property name="saltSource" ref="saltSource"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
     </bean>
-
-
-<!--     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="true"/>
-    </bean>
-
-    <bean id="taxonSpellingIndex" class="org.springmodules.lucene.index.support.SimpleIndexFactoryBean">
-      <property name="directory" ref="taxonSpellingDirectory"/>
-      <property name="create" value="true"/>
-      <property name="analyzer">
-        <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
-      </property>
-    </bean> -->
-
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <constructor-arg>
             <list>
                 <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
+                <ref local="daoAuthenticationProvider"/>
             </list>
         </constructor-arg>
-    </bean>
-
-    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
-
-    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
-        <property name="userPropertyToUse" value="getUsername"/>
     </bean>
 
 </beans>

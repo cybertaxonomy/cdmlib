@@ -24,30 +24,6 @@
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
     <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
-    <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
-
-    <bean id="tableGeneratorGlobalOverride"
-        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
-        <property name="properties">
-            <props>
-                <!--
-                    globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
-                 -->
-                <prop key="optimizer">none</prop>
-                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
-            </props>
-        </property>
-    </bean>
-
-
-    <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="mappingLocations">
-            <set>
-                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
-            </set>
-        </property>
-    </bean>
-
 
     <!-- security  -->
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
