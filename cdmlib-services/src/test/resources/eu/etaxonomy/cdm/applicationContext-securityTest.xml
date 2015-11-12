@@ -12,11 +12,16 @@
      ">
 
     <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/security_base.xml"/>
+    
+    
+<!--     <import resource="classpath:/eu/etaxonomy/cdm/services_security.xml"/> -->
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/services_security_base.xml"/>
 
-    <import resource="classpath:/eu/etaxonomy/cdm/services_security.xml"/>
+<!--  These are loaded via component scan in applicationContext-test.xml anyway  -->
+<!--     <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService"/> -->
 
-    <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService"/>
-
-    <bean id="groupServiceImpl" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl"/>
+<!--     <bean id="groupServiceImpl" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl"/> -->
 
 </beans>

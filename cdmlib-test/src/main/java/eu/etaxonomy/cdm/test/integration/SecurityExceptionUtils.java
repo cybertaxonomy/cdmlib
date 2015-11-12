@@ -12,11 +12,18 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class SecurityExceptionUtils {
 
+   //this is to decouple SecurityExceptionUtils from persistence and spring-security
     public static Class<?> permissionDeniedExceptionClass;
+    public static Class<?> accessDeniedException;
 
     static {
         try {
             permissionDeniedExceptionClass = Class.forName("eu.etaxonomy.cdm.database.PermissionDeniedException");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException ("PermissionDeniedException class could not be found. Propably it moved to another folder", e);
+        }
+        try {
+            accessDeniedException = Class.forName("org.springframework.security.access.AccessDeniedException");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException ("PermissionDeniedException class could not be found. Propably it moved to another folder", e);
         }
@@ -29,7 +36,7 @@ public class SecurityExceptionUtils {
      * @return
      */
     public static RuntimeException findSecurityRuntimeException(Throwable exception) {
-        if( permissionDeniedExceptionClass.isInstance(exception) || AccessDeniedException.class.isInstance(exception) ){
+        if( permissionDeniedExceptionClass.isInstance(exception) || accessDeniedException.isInstance(exception) ){
             return (RuntimeException) exception;
         } else if(exception != null ){
             return findSecurityRuntimeException(exception.getCause());
@@ -40,7 +47,7 @@ public class SecurityExceptionUtils {
 
 
     /**
-     * find in the nested <code>exception</code> the exception of type <code>clazz</code>
+     * Find in the nested <code>exception</code> the exception of type <code>clazz</code>
      * or returns <code>null</code> if no such exception is found.
      *
      * @param clazz

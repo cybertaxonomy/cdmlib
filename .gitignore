@@ -95,6 +95,11 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd
 cdmlib-services/target
 cdmlib-services/testTaxonNodeByNameComparator-dump.xml
+cdmlib-test/.classpath
+cdmlib-test/.project
+cdmlib-test/.settings
+cdmlib-test/bin
+cdmlib-test/target
 /latestChanges.patch
 /target
 /testANTLR
