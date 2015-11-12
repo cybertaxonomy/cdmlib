@@ -109,58 +109,6 @@ public class EditGeoServiceUtilities {
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
-
-            /*
-             * and now something very hacky ...
-             * ONLY-A-TEST is set by the Test class EditGeoServiceTest
-             *
-             * FIXME remove according line from
-             * EditGeoServiceTest.setUp() since the hardcoded colors for flora of
-             * cyprus should no longer be needed : #4268 (allow defining custom presence and absence term colors for EditGeoServiceUtilities)
-             */
-            String onlyTest = System.getProperty("ONLY-A-TEST"); //
-            if(onlyTest != null && onlyTest.equals("TRUE")){
-                return defaultPresenceAbsenceTermBaseColors;
-            }
-            //special colors for flora of cyprus !!! see HACK above !!!
-            UUID indigenousUuid = UUID.fromString("b325859b-504b-45e0-9ef0-d5c1602fcc0f");
-            UUID indigenousQUuid = UUID.fromString("17bc601f-53eb-4997-a4bc-c03ce5bfd1d3");
-
-            UUID cultivatedQUuid = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
-
-            UUID casualUuid = UUID.fromString("5e81353c-38a3-4ca6-b979-0d9abc93b877");
-            UUID casualQUuid = UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
-
-            UUID naturalizedNonInvasiveUuid = UUID.fromString("1b025e8b-901a-42e8-9739-119b410c6f03");
-            UUID naturalizedNonInvasiveQUuid = UUID.fromString("11f56e2f-c16c-4b3d-a870-bb5d3b20e624");
-
-            UUID naturalizedInvasiveUuid = UUID.fromString("faf2d271-868a-4bf7-b0b8-a1c5ab309de2");
-            UUID naturalizedInvasiveQUuid = UUID.fromString("ac429d5f-e8ad-49ae-a41c-e4779b58b96a");
-
-            UUID questionablelUuid = UUID.fromString("4b48f675-a6cf-49f3-a5ba-77e2c2979eb3");
-            UUID questionableQUuid = UUID.fromString("914e7393-1314-4632-bc45-5eff3dc1e424");
-
-            UUID reportedInErrorUuid = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(indigenousUuid), Color.decode("0x339966"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(indigenousQUuid), Color.decode("0x339966"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(cultivatedQUuid), Color.decode("0xbdb76b"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(casualUuid), Color.decode("0xffff00"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(casualQUuid), Color.decode("0xffff00"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedNonInvasiveUuid), Color.decode("0xff9900"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedNonInvasiveQUuid), Color.decode("0xff9900"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedInvasiveUuid), Color.decode("0xff0000"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(naturalizedInvasiveQUuid), Color.decode("0xff0000"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(questionablelUuid), Color.decode("0x00ccff"));
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(questionableQUuid), Color.decode("0x00ccff"));
-
-            defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTerm) termDao.load(reportedInErrorUuid), Color.decode("0xcccccc"));
-
         }
         return defaultPresenceAbsenceTermBaseColors;
     }
