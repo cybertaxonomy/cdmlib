@@ -22,8 +22,8 @@ cdmlib-io/.umlproject
 cdmlib-io/bin
 cdmlib-io/cdmlib-io.uml
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/database/schema/PUBLIC.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/database/schema/dataset.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
