@@ -172,11 +172,11 @@
       <artifactId>unitils-spring</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-      <scope>compile</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--       <scope>compile</scope> -->
+<!--     </dependency> -->
     <dependency>
 		<groupId>xmlunit</groupId>
 		<artifactId>xmlunit</artifactId>
