@@ -83,7 +83,7 @@ public interface Pager<T> {
      * If count > {@link #getPageSize()} then {@link #getPagesAvailable()} > 1
      * @return the total number of objects available.
      */
-    public Integer getCount();
+    public Long getCount();
 
     /**
      * Returns the index of the first record in this result set
