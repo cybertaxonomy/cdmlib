@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -112,7 +114,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
     	if (recursive == true){
-    		Criteria crit = getSession().createCriteria(TaxonNode.class); 
+    		Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
     		if(pageSize != null) {
                 crit.setMaxResults(pageSize);
@@ -122,22 +124,22 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     crit.setFirstResult(0);
                 }
             }
-    		List<TaxonNode> results = (List<TaxonNode>) crit.list();
+    		List<TaxonNode> results = crit.list();
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
     	}else{
     		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), pageSize, pageIndex, propertyPaths);
     	}
-    	
+
     }
-    
+
     @Override
 	public Long countChildrenOf(TaxonNode node, Classification classification,
 			boolean recursive) {
-		
+
 		if (recursive == true){
-			Criteria crit = getSession().createCriteria(TaxonNode.class); 
+			Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
     		crit.setProjection(Projections.rowCount());
     		return ((Integer)crit.uniqueResult().hashCode()).longValue();
@@ -145,6 +147,57 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			return classificationDao.countChildrenOf(node.getTaxon(), classification);
 		}
 	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            Integer start, Integer limit, List<String> propertyPaths) {
 
+        String hql = "select tnar from TaxonNodeAgentRelation as tnar "
+                + "join tnar.taxonNode as tn "
+                + "join tn.taxon as t "
+                + "join tn.classification as c "
+                + "join fetch tnar.agent as a "
+                + "where t.uuid = :taxonUuid and c.uuid = :classificationUuid "
+                + "order by a.titleCache";
+        Query query =  getSession().createQuery(hql);
+
+        if(limit != null) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        query.setParameter("taxonUuid", taxonUuid);
+        query.setParameter("classificationUuid", classificationUuid);
+
+        List<TaxonNodeAgentRelation> records = query.list();
+
+        if(propertyPaths != null) {
+            defaultBeanInitializer.initializeAll(records, propertyPaths);
+        }
+        return records;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid) {
+        String hql = "select count(tnar) from TaxonNodeAgentRelation as tnar "
+                + "join tnar.taxonNode as tn "
+                + "join tn.taxon as t "
+                + "join tn.classification as c "
+                + "where t.uuid = :taxonUuid and c.uuid = :classificationUuid";
+        Query query =  getSession().createQuery(hql);
+
+        query.setParameter("taxonUuid", taxonUuid);
+        query.setParameter("classificationUuid", classificationUuid);
+
+        Long count = Long.parseLong(query.uniqueResult().toString());
+
+        return count;
+    }
 
 }

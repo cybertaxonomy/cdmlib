@@ -16,10 +16,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 
 
 /**
@@ -137,7 +139,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config);
 
-
+    /**
+     * Returns the of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the
+     * given TaxonUuid in the specified Classification.
+     *
+     * @param taxonUuid
+     * @param classification
+     * @return
+     */
+    public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
 
 }
