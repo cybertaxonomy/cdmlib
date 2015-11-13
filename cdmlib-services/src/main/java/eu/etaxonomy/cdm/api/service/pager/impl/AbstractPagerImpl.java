@@ -33,7 +33,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	protected Map<Integer,String> pageNumbers;
 	protected Integer firstRecord;
 	protected Integer lastRecord;
-	protected Integer count;
+	protected Long count;
 	protected List<T> records;
 	protected String suggestion;
 	protected ArrayList<Integer> indices;
@@ -47,11 +47,47 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	 * @param pageSize The size of pages (can be null if all results should be returned if available)
 	 * @param records A list of objects in this page (can be empty if there were no results)
 	 * @param suggestion a suggested query that would improve the search (only applicable for free-text / lucene queries)
+	 *
+	 * @deprecated This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
+	 * use {@link AbstractPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records, String suggestion)}
+	 * instead
 	 */
-	public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records, String suggestion) {
-		this(currentIndex,count,pageSize,records);
+	@Deprecated
+    public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records, String suggestion) {
+		this(currentIndex,count.longValue(), pageSize,records);
 		this.suggestion = suggestion;
 	}
+
+	   /**
+     * Constructor
+     *
+     * @param currentIndex the page of this result set (0-based), can be null
+     * @param count the total number of results available for this query
+     * @param pageSize The size of pages (can be null if all results should be returned if available)
+     * @param records A list of objects in this page (can be empty if there were no results)
+     * @param suggestion a suggested query that would improve the search (only applicable for free-text / lucene queries)
+     */
+    public AbstractPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records, String suggestion) {
+        this(currentIndex,count,pageSize,records);
+        this.suggestion = suggestion;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param currentIndex the page of this result set (0-based), can be null
+     * @param count the total number of results available for this query
+     * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
+     * @param records A list of objects in this page (can be empty if there were no results)
+     *
+     * @deprecated This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
+     * use {@link AbstractPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records, String suggestion)}
+     * instead
+     */
+    @Deprecated
+    public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records) {
+        this(currentIndex, count.longValue(), pageSize, records);
+    }
 
 	/**
 	 * Constructor
@@ -61,7 +97,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	 * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
 	 * @param records A list of objects in this page (can be empty if there were no results)
 	 */
-	public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records) {
+	public AbstractPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records) {
         if(currentIndex != null) {
 		    this.currentIndex = currentIndex;
         } else {
@@ -75,7 +111,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 			pagesAvailable = 1;
 		} else if(pageSize != null && pageSize != 0) {
 			 if( 0 == count % pageSize) {
-				pagesAvailable = count / pageSize;
+				pagesAvailable = (int)( count / pageSize );
 
                 Integer labelsStart = 0;
                 if(this.currentIndex > DefaultPagerImpl.MAX_PAGE_LABELS) {
@@ -94,7 +130,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 					pageNumbers.put(index,createLabel(startLabel,endLabel));
 				}
 			} else {
-				pagesAvailable = (count / pageSize) + 1; //12
+				pagesAvailable = (int)(count / pageSize) + 1; //12
 
 				Integer labelsStart = 0;
                 if(this.currentIndex > DefaultPagerImpl.MAX_PAGE_LABELS) {
@@ -193,7 +229,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	}
 
 	@Override
-	public Integer getCount() {
+	public Long getCount() {
 		return count;
 	}
 
@@ -222,10 +258,10 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 		return pageSize;
 	}
 
-	public static boolean hasResultsInRange(Long numberOfResults, Integer pageNumber, Integer pageSize) {
+	public static boolean hasResultsInRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
 		return numberOfResults > 0 // no results at all
 				&& (pageSize == null // page size may be null : return all in this case
-				|| pageNumber != null && numberOfResults > (pageNumber * pageSize));
+				|| pageIndex != null && numberOfResults > (pageIndex * pageSize));
 	}
 
 }
