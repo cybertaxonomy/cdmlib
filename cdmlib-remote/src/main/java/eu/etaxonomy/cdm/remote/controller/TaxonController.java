@@ -34,6 +34,7 @@ import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -65,6 +67,8 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     private IOccurrenceService occurrenceService;
     @Autowired
     private INameService nameService;
+    @Autowired
+    private ITaxonNodeService nodeService;
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes"
@@ -175,6 +179,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
         TaxonBase<?> tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
         if(tb instanceof Taxon){
             return ((Taxon)tb).getTaxonNodes();
@@ -182,6 +187,25 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
         }
+    }
+
+    @RequestMapping(value = "taxonNodeAgentRelations/{classification_uuid}", method = RequestMethod.GET)
+    public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
+            @PathVariable("uuid") UUID uuid,
+            @PathVariable("classification_uuid") UUID classificationUuid,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(uuid, classificationUuid,
+                pagerParams.getPageSize(), pagerParams.getPageIndex(), null);
+        return pager;
+
+
     }
 
 

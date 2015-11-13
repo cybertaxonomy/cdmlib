@@ -2245,4 +2245,5 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,null);
     }
+
 }

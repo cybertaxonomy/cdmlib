@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
@@ -39,4 +40,30 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 
     public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive);
+
+    /**
+     * Returns the of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the
+     * given TaxonUuid in the specified Classification.
+     *
+     * @param taxonUuid
+     * @param limit
+     * @param start
+     * @param classification
+     * @param propertyPaths
+     * @return
+     */
+    public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            Integer start, Integer limit, List<String> propertyPaths);
+
+    /**
+     * Returns the number of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the
+     * given TaxonUuid in the specified Classification.
+     *
+     * @param taxonUuid
+     * @param classification
+     * @return
+     */
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid);
+
+
 }

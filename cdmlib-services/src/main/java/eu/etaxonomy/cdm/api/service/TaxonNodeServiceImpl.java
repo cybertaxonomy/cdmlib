@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -41,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -542,6 +546,23 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.includeResult(moveTaxonNode(taxonNode,targetNode, isParent));
         }
         return result;
+    }
+
+    @Override
+    public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+
+        List<TaxonNodeAgentRelation> records = null;
+
+        long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid);
+        if(PagerUtils.hasResultsInRange(count, pageIndex, pageSize)) {
+            records = dao.listTaxonNodeAgentRelations(taxonUuid, classificationUuid,
+                    PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
+
+        }
+
+        Pager<TaxonNodeAgentRelation> pager = new DefaultPagerImpl<TaxonNodeAgentRelation>(pageIndex, count, pageSize, records);
+        return pager;
     }
 
 }
