@@ -14,6 +14,8 @@ cdmlib-ext/bin
 cdmlib-ext/hibernate.log
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/database/schema/PUBLIC.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/database/schema/dataset.xsd
 cdmlib-ext/target
 cdmlib-io/.classpath
 cdmlib-io/.project
