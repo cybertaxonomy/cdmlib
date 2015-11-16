@@ -28,7 +28,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,7 +86,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
  */
-@Ignore
+@Ignore  //FIXED Temporarily set to ignore during upgrade to hibernate 5, needs to be fixed before release
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
