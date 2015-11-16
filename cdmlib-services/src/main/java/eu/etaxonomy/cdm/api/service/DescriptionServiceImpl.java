@@ -690,13 +690,27 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
             if (! isCopy){
                 description.removeElement(element);
-                dao.saveOrUpdate(description);
+                if (description.getElements().isEmpty()){
+                   if (description instanceof TaxonDescription){
+                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+                       if (taxDescription.getTaxon() != null){
+                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
+                       }
+                   }
+                    dao.delete(description);
+                }else{
+                    dao.saveOrUpdate(description);
+                    result.addUpdatedObject(description);
+                }
             }
-            result.addUpdatedObject(description);
+
 
         }
         dao.saveOrUpdate(targetDescription);
         result.addUpdatedObject(targetDescription);
+        if (targetDescription instanceof TaxonDescription){
+            result.addUpdatedObject(((TaxonDescription)targetDescription).getTaxon());
+        }
         return result;
     }
 

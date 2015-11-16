@@ -158,6 +158,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
 
+
         Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
         sourceCollection.addAll(sourceDescription.getElements());
         sourceCollection.remove(element3Data);  //should work as it works on equal
