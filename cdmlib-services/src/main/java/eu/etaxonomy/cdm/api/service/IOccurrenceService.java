@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -68,7 +69,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     /**
      * Returns a paged list of occurrences that have been determined to belong
      * to the taxon concept determinedAs, optionally restricted to objects
-     * belonging to a class that that extends SpecimenOrObservationBase.
+     * belonging to a class that that extends SpecimenOrObservationBase. This
+     * will also consider specimens that are determined as a taxon concept
+     * belonging to the synonymy of the given taxon concept.
      * <p>
      * In contrast to {@link #listByAnyAssociation(Class, Taxon, List)} this
      * method only takes SpecimenOrObservationBase instances into account which
@@ -97,6 +100,39 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Returns a paged list of occurrences that have been determined to belong
+     * to the taxon name determinedAs, optionally restricted to objects
+     * belonging to a class that that extends SpecimenOrObservationBase.
+     * <p>
+     * In contrast to {@link #listByAnyAssociation(Class, Taxon, List)} this
+     * method only takes SpecimenOrObservationBase instances into account which
+     * are actually determined as the taxon specified by
+     * <code>determinedAs</code>.
+     *
+     * @param type
+     *            The type of entities to return (can be null to count all
+     *            entities of type <T>)
+     * @param determinedAs
+     *            the taxon name that the occurrences have been determined to
+     *            belong to
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            matching objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based, can be null, equivalent of starting at the
+     *            beginning of the recordset)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     *            properties to be initialized
+     * @return
+     */
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a List of Media that are associated with a given occurence

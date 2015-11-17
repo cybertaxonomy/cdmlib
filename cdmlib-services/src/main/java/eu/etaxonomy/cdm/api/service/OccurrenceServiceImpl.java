@@ -129,6 +129,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private IDescriptionService descriptionService;
 
     @Autowired
+    private INameService nameService;
+
+    @Autowired
     private ITaxonService taxonService;
 
     @Autowired
@@ -264,6 +267,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
         return new DefaultPagerImpl<Media>(pageNumber, media.size(), pageSize, media);
+    }
+
+    @Override
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(type, determinedAs);
+        List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+        pageNumber = pageNumber == null ? 0 : pageNumber;
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            Integer start = pageSize == null ? 0 : pageSize * pageNumber;
+            results = dao.list(type, determinedAs, pageSize, start, orderHints, propertyPaths);
+        }
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -1324,9 +1339,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
+            TaxonNameBase taxonName = null;
+            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
+                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonUuid());
+            }
             occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
             // indirectly associated specimens
             List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
@@ -1389,12 +1408,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
+            TaxonNameBase taxonName = null;
+            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
+            }
             // indirectly associated specimens
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
                 return findByTitle(config).getRecords().size();
             }
             return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(),
-                    occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon,
+                    occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon, taxonName,
                     occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(),
                     occurrenceConfig.getPropertyPaths());
         }

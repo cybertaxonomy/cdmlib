@@ -23,6 +23,7 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
 
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;
+    private UUID associatedTaxonNameUuid;
     private boolean isDetermined;
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
@@ -32,39 +33,27 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     public void setSignificantIdentifier(String significantIdentifier) {
         this.significantIdentifier = significantIdentifier;
     }
-    /**
-     * @return the specimenType
-     */
     public synchronized SpecimenOrObservationType getSpecimenType() {
         return specimenType;
     }
-    /**
-     * @param specimenType the specimenType to set
-     */
     public synchronized void setSpecimenType(SpecimenOrObservationType specimenType) {
         this.specimenType = specimenType;
     }
-    /**
-     * @return the associatedTaxon
-     */
     public synchronized UUID getAssociatedTaxonUuid() {
         return associatedTaxonUuid;
     }
-    /**
-     * @param associatedTaxonUuid the associatedTaxon to set
-     */
     public synchronized void setAssociatedTaxonUuid(UUID associatedTaxonUuid) {
         this.associatedTaxonUuid = associatedTaxonUuid;
     }
-    /**
-     * @return the isDetermined
-     */
+    public UUID getAssociatedTaxonNameUuid() {
+        return associatedTaxonNameUuid;
+    }
+    public void setAssociatedTaxonNameUuid(UUID associatedTaxonNameUuid) {
+        this.associatedTaxonNameUuid = associatedTaxonNameUuid;
+    }
     public synchronized boolean isDetermined() {
         return isDetermined;
     }
-    /**
-     * @param isDetermined the isDetermined to set
-     */
     public synchronized void setDetermined(boolean isDetermined) {
         this.isDetermined = isDetermined;
     }
