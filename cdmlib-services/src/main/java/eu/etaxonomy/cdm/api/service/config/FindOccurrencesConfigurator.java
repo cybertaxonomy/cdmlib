@@ -68,9 +68,24 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     public synchronized void setDetermined(boolean isDetermined) {
         this.isDetermined = isDetermined;
     }
+
+    /**
+     * if set to <code>true</code> the complete derivative hierarchy including
+     * all parent and child derivatives is returned of the associated specimen
+     * is retrieved
+     *
+     * @return the value of this flag
+     */
     public boolean isRetrieveIndirectlyAssociatedSpecimens() {
         return retrieveIndirectlyAssociatedSpecimens;
     }
+    /**
+     * if set to <code>true</code> the complete derivative hierarchy including
+     * all parent and child derivatives is returned of the associated specimen
+     * is retrieved
+     *
+     * @param retrieveIndirectlyAssociatedSpecimens the value of this flag
+     */
     public void setRetrieveIndirectlyAssociatedSpecimens(boolean retrieveIndirectlyAssociatedSpecimens) {
         this.retrieveIndirectlyAssociatedSpecimens = retrieveIndirectlyAssociatedSpecimens;
     }
