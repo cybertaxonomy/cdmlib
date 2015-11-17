@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 
@@ -173,43 +171,17 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	public void putLazyCollection(AbstractPersistentCollection collection) {
 		String role = collection.getRole();
 		String parameter = role.substring(role.lastIndexOf(".") + 1);
+		//for embeddable classes we need also the parent parameter
+		//TODO also allow recursive embedding
 		String parentRole = role.substring(0, role.lastIndexOf("."));
 		String parentParameter = parentRole.substring(parentRole.lastIndexOf(".") + 1);
 		Class<?> ownerClass = collection.getOwner().getClass();
 		if (Character.isLowerCase(parentParameter.charAt(0))){
-//		    ownerClass = ownerClassForEmbeddable(role, parentRole, parameter, parentParameter, collection, ownerClass);
 		    parameter = parentParameter + "." + parameter;
 		}
 		putLazyCollection(ownerClass, parameter, collection.getKey());
 		this.uninitializedCollections.add(collection);
 	}
-
-
-	/**
-     * @param role
-     * @param parentRole
-     * @param parameter
-     * @param parentParameter
-     * @param collection
-	 * @param ownerClass
-     * @return
-     */
-    private Class<?> ownerClassForEmbeddable(String role,
-            String parentRole,
-            String parameter,
-            String parentParameter,
-            AbstractPersistentCollection collection,
-            Class<?> ownerClass) {
-
-        PropertyDescriptor[] propDescs = PropertyUtils.getPropertyDescriptors(ownerClass);
-        for (PropertyDescriptor propDesc : propDescs){
-            if (propDesc.getName().equals(parentParameter)){
-                return propDesc.getPropertyType();
-            }
-        }
-
-        return ownerClass;  //or should we throw an exception here, for now we change as little as possible
-    }
 
     private void putLazyCollection(Class<?> ownerClazz, String parameter, Serializable id) {
 		if (ownerClazz != null && parameter != null && id != null){
