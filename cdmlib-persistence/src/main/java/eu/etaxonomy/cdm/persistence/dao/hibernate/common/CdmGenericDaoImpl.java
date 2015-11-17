@@ -388,7 +388,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public List<CdmBase> getHqlResult(String hqlQuery){
 		Query query = getSession().createQuery(hqlQuery);
-		List<CdmBase> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<CdmBase> result = query.list();
 		return result;
 	}
 

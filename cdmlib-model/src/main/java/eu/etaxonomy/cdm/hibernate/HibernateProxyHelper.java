@@ -56,7 +56,7 @@ public class HibernateProxyHelper {
 	     }
 		 if (object instanceof HibernateProxy) {
 	    	 Object impl =  ((HibernateProxy) object).getHibernateLazyInitializer().getImplementation();
-	         Class implClass = impl.getClass();
+	         Class<?> implClass = impl.getClass();
 	         return clazz.isAssignableFrom(implClass);
 	     } else {
 	         return clazz.isAssignableFrom(object.getClass());

@@ -29,9 +29,6 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
-     */
     @Override
     public Object initializeInstance(Object bean) {
         initialize(bean);
@@ -52,7 +49,7 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
             ( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         }
     }
-    
-    
+
+
 
 }
