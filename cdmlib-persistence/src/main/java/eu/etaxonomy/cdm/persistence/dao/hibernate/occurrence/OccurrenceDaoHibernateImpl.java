@@ -413,38 +413,31 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         }
         criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
 
+        Set<UUID> associatedTaxonUuids = new HashSet<UUID>();
         //taxon associations
         if(associatedTaxon!=null){
-            List<UUID> associatedTaxonUuids = new ArrayList<UUID>();
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
                     associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
                 }
             }
-            if(!associatedTaxonUuids.isEmpty()){
-                criteria.add(Restrictions.in("uuid", associatedTaxonUuids));
-            }
-            else{
-                return null;
-            }
         }
 
         //taxon name associations
-        if(associatedTaxon!=null){
-            List<UUID> associatedTaxonUuids = new ArrayList<UUID>();
+        if(associatedTaxonName!=null){
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
                     associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
                 }
             }
-            if(!associatedTaxonUuids.isEmpty()){
-                criteria.add(Restrictions.in("uuid", associatedTaxonUuids));
-            }
-            else{
-                return null;
-            }
+        }
+        if(!associatedTaxonUuids.isEmpty()){
+            criteria.add(Restrictions.in("uuid", associatedTaxonUuids));
+        }
+        else{
+            return null;
         }
 
         return criteria;

@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -1190,10 +1189,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     /**
      * This will test the retrieval of specimens that are in any way associated
      * with a taxon resp. taxon name via type designation, determination event
-     * or individual associations
+     * or individuals associations
      */
     @Test
-    @Ignore
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testAllKindsOfSpecimenAssociations.xml")
     public void testAllKindsOfSpecimenAssociations() {
         UUID derivedUnitDeterminationTaxonUuid = UUID.fromString("941b8b22-1925-4b91-8ff8-97114499bb22");
@@ -1203,6 +1201,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID fossilTypeDesignationUuid = UUID.fromString("42ec8dcf-a923-4256-bbd5-b0d10f4de5e2");
 
         UUID taxonUuid = UUID.fromString("07cc47a5-1a63-46a1-8366-0d59d2b90d5b");
+        UUID taxonNameUuid = UUID.fromString("fa35d78b-bb72-4ce3-a2db-5d538498d3b8");
 
         DerivedUnit derivedUnitDeterminationTaxon = (DerivedUnit) occurrenceService.load(derivedUnitDeterminationTaxonUuid);
         DerivedUnit derivedUnitDeterminationName = (DerivedUnit) occurrenceService.load(derivedUnitDeterminationNameUuid);
@@ -1210,6 +1209,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DnaSample dnaSampleUuidIndividualsAssociation = (DnaSample) occurrenceService.load(dnaSampleUuidIndividualsAssociationUuid);
         DerivedUnit fossilTypeDesignation = (DerivedUnit) occurrenceService.load(fossilTypeDesignationUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        TaxonNameBase name = nameService.load(taxonNameUuid);
 
         //check initial state
         assertNotNull(derivedUnitDeterminationTaxon);
@@ -1218,16 +1218,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertNotNull(dnaSampleUuidIndividualsAssociation);
         assertNotNull(fossilTypeDesignation);
         assertNotNull(taxon);
+        assertNotNull(name);
 
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonUuid(taxonUuid);
-        List<SpecimenOrObservationBase> specimen = occurrenceService.findByTitle(config).getRecords();
-        assertTrue(specimen.contains(derivedUnitDeterminationName));//TODO is it allowed to have a determination based on a taxon name??
-        assertTrue(specimen.contains(derivedUnitDeterminationTaxon));
-        assertTrue(specimen.contains(dnaSampleUuidIndividualsAssociation));
-        assertTrue(specimen.contains(fossilTypeDesignation));
-        assertTrue(!specimen.contains(tissueUuidNoAssociation));
-        assertEquals("Wrong number of associated specimens", 4, specimen.size());
+        config.setAssociatedTaxonNameUuid(taxonNameUuid);
+        List<SpecimenOrObservationBase> specimens = occurrenceService.findByTitle(config).getRecords();
+        assertTrue(specimens.contains(derivedUnitDeterminationName));
+        assertTrue(specimens.contains(derivedUnitDeterminationTaxon));
+        assertTrue(specimens.contains(dnaSampleUuidIndividualsAssociation));
+        assertTrue(specimens.contains(fossilTypeDesignation));
+        assertTrue(!specimens.contains(tissueUuidNoAssociation));
+        assertEquals("Wrong number of associated specimens", 4, specimens.size());
 
 
 //        DerivedUnit derivedUnitDeterminationTaxon = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
