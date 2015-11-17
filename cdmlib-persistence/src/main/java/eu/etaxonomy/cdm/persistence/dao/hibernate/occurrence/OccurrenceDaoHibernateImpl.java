@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -413,31 +414,32 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         }
         criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
 
-        Set<UUID> associatedTaxonUuids = new HashSet<UUID>();
+        Set<UUID> associationUuids = new HashSet<UUID>();
         //taxon associations
         if(associatedTaxon!=null){
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
-                    associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
+                    associationUuids.add(specimenOrObservationBase.getUuid());
                 }
             }
         }
-
         //taxon name associations
-        if(associatedTaxonName!=null){
+        else if(associatedTaxonName!=null){
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
-                    associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
+                    associationUuids.add(specimenOrObservationBase.getUuid());
                 }
             }
         }
-        if(!associatedTaxonUuids.isEmpty()){
-            criteria.add(Restrictions.in("uuid", associatedTaxonUuids));
-        }
-        else{
-            return null;
+        if(associatedTaxon!=null || associatedTaxonName!=null){
+            if(!associationUuids.isEmpty()){
+                criteria.add(Restrictions.in("uuid", associationUuids));
+            }
+            else{
+                return null;
+            }
         }
 
         return criteria;
@@ -548,6 +550,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
+
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -557,6 +560,16 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         // A Taxon may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
         List<SpecimenOrObservationBase> byDetermination = list(type, associatedTaxon, null, 0, null, null);
         setOfAll.addAll(byDetermination);
+        //check also for synonyms
+        for (Synonym synonym : associatedTaxon.getSynonyms()) {
+            setOfAll.addAll(list(type, synonym, null, 0, null, null));
+        }
+        //check also for name determinations
+        setOfAll.addAll(list(type, associatedTaxon.getName(), null, 0, null, null));
+        for (TaxonNameBase synonymName : associatedTaxon.getSynonymNames()) {
+            setOfAll.addAll(list(type, synonymName, null, 0, null, null));
+        }
+
 
         // The IndividualsAssociation elements in a TaxonDescription contain DerivedUnits
         List<IndividualsAssociation> byIndividualsAssociation = descriptionDao.getDescriptionElementForTaxon(
