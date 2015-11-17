@@ -31,6 +31,7 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedM
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
@@ -201,8 +202,14 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     }
 
 
-   // propPath contains either a single field or a nested path
-    // split next path token off and keep the remaining as nestedPath
+    /**
+     * Initializes all objects matching the given node, where the
+     * node does not represent a wildcard but a single field or
+     * a nested path. Splits the next path token off and keeps
+     * the remaining as nestedPath
+     *
+     * @param node
+     */
     private void initializeNodeNoWildcard(BeanInitNode node) {
 
         String property = node.getPath();
@@ -414,40 +421,62 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
     }
 
 
+	/**
+	 * Load all beans which are added to the node
+	 * and which are not yet initialized in bulk.
+	 * @param node
+	 */
 	private void bulkLoadLazies(BeanInitNode node) {
-
 		if (logger.isTraceEnabled()){logger.trace("bulk load " +  node);}
-
 		//beans
-		for (Class<?> clazz : node.getLazyBeans().keySet()){
-			Set<Serializable> idSet = node.getLazyBeans().get(clazz);
-			if (idSet != null && ! idSet.isEmpty()){
-
-				if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
-				//TODO use entity name
-				String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
-				AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
-                hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
-				if (logger.isTraceEnabled()){logger.trace(hql);}
-				Query query = genericDao.getHqlQuery(hql);
-				query.setParameterList("idSet", idSet);
-				List<Object> list = query.list();
-
-				if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
-				for (Object object : list){
-					if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
-						object = initializeInstance(object);
-					}
-					autoinitializeBean((CdmBase)object, autoInit);
-					node.addBean(object);
-				}
-				if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
-			}
-		}
-		node.resetLazyBeans();
-
+		bulkLoadLazyBeans(node);
 		//collections
-		for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
+		bulkLoadLazyCollections(node);
+		if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
+	}
+
+
+    /**
+     * Loads all lazy beans added to the node and empty the lazy bean collection of the node.
+     * Lazy collections are initialized elsewhere: {@link #bulkLoadLazyCollections(BeanInitNode)}
+     * @param node the {@link BeanInitNode} to load the lazy beans for
+     */
+    private void bulkLoadLazyBeans(BeanInitNode node) {
+        for (Class<?> clazz : node.getLazyBeans().keySet()){
+            Set<Serializable> idSet = node.getLazyBeans().get(clazz);
+            if (idSet != null && ! idSet.isEmpty()){
+
+                if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
+                //TODO use entity name
+                String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
+                AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
+                hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
+                if (logger.isTraceEnabled()){logger.trace(hql);}
+                Query query = genericDao.getHqlQuery(hql);
+                query.setParameterList("idSet", idSet);
+                List<Object> list = query.list();
+
+                if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
+                for (Object object : list){
+                    if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
+                        object = initializeInstance(object);
+                    }
+                    autoinitializeBean((CdmBase)object, autoInit);
+                    node.addBean(object);
+                }
+                if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
+            }
+        }
+        node.resetLazyBeans();
+    }
+
+    /**
+     * Loads all lazy collections added to the node and empty the lazy collections collection of the node.
+     * Lazy beans are initialized elsewhere: {@link #bulkLoadLazyBeans(BeanInitNode)}
+     * @param node the {@link BeanInitNode} to load the lazy beans for
+     */
+    private void bulkLoadLazyCollections(BeanInitNode node) {
+        for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
 			Map<String, Set<Serializable>> lazyParams = node.getLazyCollections().get(ownerClazz);
 			for (String param : lazyParams.keySet()){
 				Set<Serializable> idSet = lazyParams.get(param);
@@ -517,8 +546,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 							            newBean = initializeInstance(newBean);
 							        }
 
-							        autoinitializeBean((CdmBase)newBean, autoInit);
-
+							        if (HibernateProxyHelper.isInstanceOf(newBean, CdmBase.class)){
+							            autoinitializeBean((CdmBase)newBean, autoInit);
+							        }
 							        node.addBean(newBean);
 							    }
 							}
@@ -541,11 +571,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		}
 
 		node.resetLazyCollections();
-
-		if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
-
-	}
-
+    }
 
     private AutoInit addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
 
