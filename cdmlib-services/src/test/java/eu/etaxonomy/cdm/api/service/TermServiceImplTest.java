@@ -200,7 +200,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	final String[] tableNames = new String[]{
                 "DefinedTermBase","Representation"};
 
-    	//commitAndStartNewTransaction(tableNames);
+    	commitAndStartNewTransaction(tableNames);
     	/*TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
     	vocs.addTerm(DefinedTerm.NewInstance(TermType.State, "green", "green", "gn"));
     	UUID vocUUIDs = vocabularyService.save(vocs);*/

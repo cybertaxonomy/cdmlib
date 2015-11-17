@@ -49,7 +49,7 @@ public enum MatchMode {
             return "";
         }
         queryString = queryString.replace(STAR_WILDCARD, SQL_WILDCARD);
-        switch(this){
+       /* switch(this){
             case BEGINNING:
                 queryString = appendWildcard(queryString);
                 break;
@@ -64,7 +64,7 @@ public enum MatchMode {
             	break;  //Nothing to do
             default:
             	throw new RuntimeException ("Unsupported Matchmode: " + this.toString());
-        }
+        }*/
         return queryString;
     }
 

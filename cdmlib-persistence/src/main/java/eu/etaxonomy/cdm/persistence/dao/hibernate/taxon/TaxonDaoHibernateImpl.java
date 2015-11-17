@@ -835,7 +835,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         Query query = getSession().createQuery(hql);
 
-        query.setParameter("queryString", queryString);
+        query.setParameter("queryString", matchMode.queryStringFrom(queryString));
 
         if(pageSize != null &&  !doCount) {
             query.setMaxResults(pageSize);
