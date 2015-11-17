@@ -95,8 +95,12 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 */
 	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	    /**
-     * Queries the database for specimens which match the given criteria
+	/**
+     * Queries the database for specimens which match the given criteria<br>
+     * <b>Note:</b> Specifying a taxon will already check the name of this
+     * taxon, its synonymy and the synonym names for determinations of the
+     * specimen. So specifying a taxon name is only necessary if it does not
+     * belong to the before-mentioned group of names.
      *
      * @param clazz
      *            the class to match
@@ -128,8 +132,12 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
             TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
-	    /**
+    /**
      * Returns the number of specimens that match the given parameters
+     * <b>Note:</b> Specifying a taxon will already check the name of this
+     * taxon, its synonymy and the synonym names for determinations of the
+     * specimen. So specifying a taxon name is only necessary if it does not
+     * belong to the before-mentioned group of names.
      *
      * @param clazz
      *            the class to match
