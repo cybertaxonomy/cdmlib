@@ -288,6 +288,27 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
 	public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+	/**
+	 * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
+	 * @param specimen the type specimen
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return collection of all designations with the given type specimen
+	 */
+
+	/**
+     * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
+	 * @param specimen
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return collection of all determinations with the given specimen
+	 */
+    public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
      * @param specimen the type specimen

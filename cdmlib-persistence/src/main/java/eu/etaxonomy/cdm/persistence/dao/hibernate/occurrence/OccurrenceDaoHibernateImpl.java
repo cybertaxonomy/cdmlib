@@ -675,6 +675,39 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
+    public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        String queryString = "FROM DeterminationEvent determination WHERE determination.identifiedUnit = :specimen";
+
+        if(orderHints != null && orderHints.size() > 0){
+            queryString += " order by ";
+            String orderStr = "";
+            for(OrderHint orderHint : orderHints){
+                if(orderStr.length() > 0){
+                    orderStr += ", ";
+                }
+                queryString += "determination." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+            }
+            queryString += orderStr;
+        }
+
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("specimen", specimen);
+
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+
+        List results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    @Override
     public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         String queryString = "FROM SpecimenTypeDesignation designations WHERE designations.typeSpecimen = :specimen";
 

@@ -1270,12 +1270,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        //individuals associations
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+
+        //individuals associations
         for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
-                associatedTaxa.add(taxonDescription.getTaxon());
+                if(taxonDescription.getTaxon()!=null){
+                    associatedTaxa.add(taxonDescription.getTaxon());
+                }
             }
         }
         //type designation
@@ -1288,7 +1291,26 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
+        //determinations
+        Collection<DeterminationEvent> determinationEvents = new HashSet<DeterminationEvent>();
+        for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
+            if(determinationEvent.getIdentifiedUnit().equals(specimen)){
+                if(determinationEvent.getTaxon()!=null){
+                    associatedTaxa.add(determinationEvent.getTaxon());
+                }
+                if(determinationEvent.getTaxonName()!=null){
+                    associatedTaxa.addAll(determinationEvent.getTaxonName().getTaxonBases());
+                }
+            }
+        }
+
         return associatedTaxa;
+    }
+
+    @Override
+    public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return dao.listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths);
     }
 
     @Override
