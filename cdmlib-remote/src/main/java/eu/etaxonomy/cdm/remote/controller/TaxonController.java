@@ -189,6 +189,20 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         }
     }
 
+    /**
+    *
+    * See also {@link AgentController#doGetTaxonNodeAgentRelations(UUID, UUID, Integer, Integer, HttpServletRequest, HttpServletResponse)}
+    *
+    * @param uuid
+    * @param classificationUuid
+    * @param pageNumber
+    * @param pageSize
+    * @param request
+    * @param response
+    * @return
+    * @throws IOException
+    *
+    */
     @RequestMapping(value = "taxonNodeAgentRelations/{classification_uuid}", method = RequestMethod.GET)
     public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
             @PathVariable("uuid") UUID uuid,
@@ -202,10 +216,8 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         pagerParams.normalizeAndValidate(response);
 
         Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(uuid, classificationUuid,
-                pagerParams.getPageSize(), pagerParams.getPageIndex(), null);
+                null, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null);
         return pager;
-
-
     }
 
 

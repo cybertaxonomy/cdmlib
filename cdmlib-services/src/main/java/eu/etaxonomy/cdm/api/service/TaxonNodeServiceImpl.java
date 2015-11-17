@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
@@ -72,7 +73,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Autowired
     private IClassificationService classService;
 
-
+    @Autowired
+    private IDefinedTermDao termDao;
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -550,15 +552,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+            UUID agentUuid, UUID rankUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+
 
         List<TaxonNodeAgentRelation> records = null;
 
-        long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid);
+        long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid);
         if(PagerUtils.hasResultsInRange(count, pageIndex, pageSize)) {
             records = dao.listTaxonNodeAgentRelations(taxonUuid, classificationUuid,
-                    PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
-
+                    agentUuid, rankUuid, PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
         }
 
         Pager<TaxonNodeAgentRelation> pager = new DefaultPagerImpl<TaxonNodeAgentRelation>(pageIndex, count, pageSize, records);
