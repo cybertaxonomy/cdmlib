@@ -28,8 +28,8 @@ import com.wordnik.swagger.annotations.Api;
 public class AgentPortalController extends AgentController {
 
     private static final List<String> TEAM_OR_PERSON_BASE_INIT_STRATEGY = Arrays.asList(new String[]{
-            // NOTE: impossible to use the wildcard contact.* here since contact uses bag types
-            "contact.urls",
+            // AgentBase
+//            "contact.urls",
 //            "contact#phoneNumbers",
 //            "contact#addresses",
 //            "contact#faxNumbers",

@@ -152,16 +152,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     @Override
     public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            Integer start, Integer limit, List<String> propertyPaths) {
+            UUID agentUuid, UUID rankUuid, Integer start, Integer limit, List<String> propertyPaths) {
 
-        String hql = "select tnar from TaxonNodeAgentRelation as tnar "
-                + "join tnar.taxonNode as tn "
-                + "join tn.taxon as t "
-                + "join tn.classification as c "
-                + "join fetch tnar.agent as a "
-                + "where t.uuid = :taxonUuid and c.uuid = :classificationUuid "
-                + "order by a.titleCache";
-        Query query =  getSession().createQuery(hql);
+
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, false);
+
+        Query query =  getSession().createQuery(hql.toString());
 
         if(limit != null) {
             query.setMaxResults(limit);
@@ -170,8 +166,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             }
         }
 
-        query.setParameter("taxonUuid", taxonUuid);
-        query.setParameter("classificationUuid", classificationUuid);
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, query);
 
         List<TaxonNodeAgentRelation> records = query.list();
 
@@ -184,20 +179,98 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * {@inheritDoc}
      */
     @Override
-    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid) {
-        String hql = "select count(tnar) from TaxonNodeAgentRelation as tnar "
-                + "join tnar.taxonNode as tn "
-                + "join tn.taxon as t "
-                + "join tn.classification as c "
-                + "where t.uuid = :taxonUuid and c.uuid = :classificationUuid";
-        Query query =  getSession().createQuery(hql);
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid) {
 
-        query.setParameter("taxonUuid", taxonUuid);
-        query.setParameter("classificationUuid", classificationUuid);
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, true);
+        Query query =  getSession().createQuery(hql.toString());
+
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, query);
 
         Long count = Long.parseLong(query.uniqueResult().toString());
 
         return count;
+    }
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param agentUuid
+     * @param rankId
+     *     limit to taxa having this rank, only applies if <code>taxonUuid = null</code>
+     * @param doCount TODO
+     * @return
+     */
+    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, boolean doCount) {
+
+        StringBuilder hql = new StringBuilder();
+
+        String join_fetch_mode = doCount ? "join" : "join fetch";
+
+        if(doCount) {
+            hql.append("select count(tnar)");
+        } else {
+            hql.append("select tnar");
+        }
+
+        hql.append(" from TaxonNodeAgentRelation as tnar ");
+        if(taxonUuid != null) {
+            // taxonUuid is search filter, do not fetch it
+            hql.append(" join tnar.taxonNode as tn join tn.taxon as t ");
+        } else {
+            hql.append(join_fetch_mode).append(" tnar.taxonNode as tn ").append(join_fetch_mode).append(" tn.taxon as t ");
+            if(rankUuid != null) {
+                hql.append(" join t.name as n ");
+            }
+        }
+        hql.append(" join tn.classification as c ");
+        if(agentUuid != null) {
+            // agentUuid is search filter, do not fetch it
+            hql.append(" join tnar.agent as a ");
+        } else {
+            hql.append(join_fetch_mode).append(" tnar.agent as a ");
+        }
+
+        hql.append(" where 1 = 1 ");
+
+        if(taxonUuid != null) {
+            hql.append(" and t.uuid = :taxonUuid ");
+        } else {
+            if(rankUuid != null) {
+                hql.append(" and n.rank.uuid = :rankUuid ");
+            }
+        }
+        if(classificationUuid != null) {
+            hql.append(" and c.uuid = :classificationUuid ");
+        }
+        if(agentUuid != null) {
+            hql.append(" and a.uuid = :agentUuid ");
+        }
+
+        hql.append(" order by a.titleCache");
+        return hql;
+    }
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param agentUuid
+     * @param rankId TODO
+     * @param query
+     */
+    private void setParamsForListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid,
+            UUID rankUuid, Query query) {
+
+        if(taxonUuid != null) {
+            query.setParameter("taxonUuid", taxonUuid);
+        } else {
+            if(rankUuid != null) {
+                query.setParameter("rankUuid", rankUuid);
+            }
+        }
+        if(classificationUuid != null) {
+            query.setParameter("classificationUuid", classificationUuid);
+        }
+        if(agentUuid != null) {
+            query.setParameter("agentUuid", agentUuid);
+        }
     }
 
 }
