@@ -368,16 +368,24 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         }
 
         //recordBasis/SpecimenOrObservationType
-        if(recordBasis!=null){
-            Set<SpecimenOrObservationType> typeAndSubtypes = recordBasis.getGeneralizationOf(true);
-            typeAndSubtypes.add(recordBasis);
-            criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
+        Set<SpecimenOrObservationType> typeAndSubtypes = new HashSet<SpecimenOrObservationType>();
+        if(recordBasis==null){
+            //add all types
+            SpecimenOrObservationType[] values = SpecimenOrObservationType.values();
+            for (SpecimenOrObservationType specimenOrObservationType : values) {
+                typeAndSubtypes.add(specimenOrObservationType);
+            }
         }
+        else{
+            typeAndSubtypes = recordBasis.getGeneralizationOf(true);
+            typeAndSubtypes.add(recordBasis);
+        }
+        criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
 
         //taxon associations
         if(associatedTaxon!=null){
             List<UUID> associatedTaxonUuids = new ArrayList<UUID>();
-            List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxon(clazz!=null?clazz:type, associatedTaxon, limit, start, orderHints, propertyPaths);
+            List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
                     associatedTaxonUuids.add(specimenOrObservationBase.getUuid());
