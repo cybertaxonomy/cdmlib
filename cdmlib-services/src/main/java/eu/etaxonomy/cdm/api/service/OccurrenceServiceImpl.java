@@ -1341,7 +1341,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             TaxonNameBase taxonName = null;
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
-                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
             occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
@@ -1409,7 +1409,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             TaxonNameBase taxonName = null;
-            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
             // indirectly associated specimens
