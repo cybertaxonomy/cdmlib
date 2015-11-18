@@ -1210,6 +1210,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
          *
          * Orphan Name (not associated with any taxon) ----Determination ---> PreservedSpecimenD
          */
+
         //UUIDS
         UUID derivedUnitDeterminationTaxonUuid = UUID.fromString("941b8b22-1925-4b91-8ff8-97114499bb22");
         UUID derivedUnitDeterminationNameUuid = UUID.fromString("0cdc7a57-6f55-45c8-b3e5-523748c381e7");
@@ -1272,7 +1273,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
          */
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonUuid(taxonUuid);
-        config.setAssociatedTaxonNameUuid(taxonNameUuid);
         List<SpecimenOrObservationBase> specimens = occurrenceService.findByTitle(config).getRecords();
         assertTrue(specimens.contains(derivedUnitDeterminationName));
         assertTrue(specimens.contains(derivedUnitDeterminationTaxon));
@@ -1291,7 +1291,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
          */
         config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonNameUuid(taxonNameUuid);
-        config.setAssociatedTaxonNameUuid(taxonNameUuid);
         specimens = occurrenceService.findByTitle(config).getRecords();
         assertTrue(specimens.contains(derivedUnitDeterminationName));
         assertTrue(specimens.contains(derivedUnitDeterminationTaxon));
@@ -1302,105 +1301,149 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
         assertEquals("Wrong number of associated specimens", 2, specimens.size());
 
+        /*
+         * search for synonym name
+         * should retrieve all specimens associated via
+         *  - determinations on
+         *   - synonym names (specimenC)
+         */
+        config = new FindOccurrencesConfigurator();
+        config.setAssociatedTaxonNameUuid(synonymNameUuid);
+        specimens = occurrenceService.findByTitle(config).getRecords();
+        assertTrue(!specimens.contains(derivedUnitDeterminationName));
+        assertTrue(!specimens.contains(derivedUnitDeterminationTaxon));
+        assertTrue(specimens.contains(derivedUnitDeterminationSynonymName));
+        assertTrue(!specimens.contains(dnaSampleUuidIndividualsAssociation));
+        assertTrue(!specimens.contains(fossilTypeDesignation));
+        assertTrue(!specimens.contains(tissueUuidNoAssociation));
+        assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
+        assertEquals("Wrong number of associated specimens", 1, specimens.size());
 
-//        //DERIVATIVES
-//        //determination: taxon
-//        DerivedUnit derivedUnitDeterminationTaxon = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-//        derivedUnitDeterminationTaxon.setTitleCache("Derived Unit determined as taxon");
-//        //determination: taxon name
-//        DerivedUnit derivedUnitDeterminationName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-//        derivedUnitDeterminationName.setTitleCache("Derived Unit determined as name");
-//        //determination: synonym
-//        DerivedUnit derivedUnitDeterminationSynonym = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-//        derivedUnitDeterminationName.setTitleCache("Derived Unit determined as synonym");
-//        //determination: synonym name
-//        DerivedUnit derivedUnitDeterminationSynonymName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-//        derivedUnitDeterminationName.setTitleCache("Derived Unit determined as synonym name");
-//        //no association
-//        DerivedUnit tissueUuidNoAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
-//        tissueUuidNoAssociation.setTitleCache("tissue sample no association");
-//        //individuals association with taxon
-//        DerivedUnit dnaSampleUuidIndividualsAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
-//        dnaSampleUuidIndividualsAssociation.setTitleCache("dna associated via IndividualsAssociation");
-//        //type specimen of taxon
-//        DerivedUnit fossilTypeDesignation = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-//        fossilTypeDesignation.setTitleCache("Fossil with type designation");
-//
-//        derivedUnitDeterminationTaxon.setUuid(derivedUnitDeterminationTaxonUuid);
-//        derivedUnitDeterminationName.setUuid(derivedUnitDeterminationNameUuid);
-//        derivedUnitDeterminationSynonym.setUuid(derivedUnitDeterminationSynonymUuid);
-//        derivedUnitDeterminationSynonymName.setUuid(derivedUnitDeterminationSynonymNameUuid);
-//        tissueUuidNoAssociation.setUuid(tissueUuidNoAssociationUuid);
-//        dnaSampleUuidIndividualsAssociation.setUuid(dnaSampleUuidIndividualsAssociationUuid);
-//        fossilTypeDesignation.setUuid(fossilTypeDesignationUuid);
-//
-//        occurrenceService.save(derivedUnitDeterminationTaxon);
-//        occurrenceService.save(derivedUnitDeterminationName);
-//        occurrenceService.save(tissueUuidNoAssociation);
-//        occurrenceService.save(dnaSampleUuidIndividualsAssociation);
-//        occurrenceService.save(fossilTypeDesignation);
-//
-//        //NAMES
-//        BotanicalName taxonName = BotanicalName.PARSED_NAME("Campanula patual");
-//        BotanicalName synonymName = BotanicalName.PARSED_NAME("Syno nyma");
-//        BotanicalName orphanName = BotanicalName.PARSED_NAME("Orphanus lonelia");
-//        taxonName.setUuid(taxonNameUuid);
-//        synonymName.setUuid(synonymNameUuid);
-//        orphanName.setUuid(orphanNameUuid);
-//
-//        //TAXON
-//        Taxon taxon = Taxon.NewInstance(taxonName, null);
-//        taxon.setUuid(taxonUuid);
-//
-//        //SYNONYM
-//        Synonym synonym = Synonym.NewInstance(synonymName, null);
-//        synonym.setUuid(synoymUuid);
-//        taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-//
-//        //IndividualsAssociation
-//        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-//        IndividualsAssociation association = IndividualsAssociation.NewInstance(dnaSampleUuidIndividualsAssociation);
-//        association.setFeature(Feature.SPECIMEN());
-//        taxonDescription.addElement(association);
-//        taxon.addDescription(taxonDescription);
-//
-//        //name determination
-//        DeterminationEvent.NewInstance(taxonName, derivedUnitDeterminationName);
-//        //taxon determination
-//        DeterminationEvent.NewInstance(taxon, derivedUnitDeterminationTaxon);
-//
-//        //type designation
-//        SpecimenTypeDesignation specimenTypeDesignation = SpecimenTypeDesignation.NewInstance();
-//        specimenTypeDesignation.setTypeSpecimen(fossilTypeDesignation);
-//        taxonName.addTypeDesignation(specimenTypeDesignation, false);
-//
-//        taxonService.saveOrUpdate(taxon);
-//
-//        commitAndStartNewTransaction(null);
-//
-//        setComplete();
-//        endTransaction();
-//
-//
-//        try {
-//            writeDbUnitDataSetFile(new String[] {
-//                    "SpecimenOrObservationBase",
-//                    "SpecimenOrObservationBase_DerivationEvent",
-//                    "DerivationEvent",
-//                    "DescriptionElementBase",
-//                    "DescriptionBase",
-//                    "TaxonBase",
-//                    "TypeDesignationBase",
-//                    "TaxonNameBase",
-//                    "TaxonNameBase_TypeDesignationBase",
-//                    "HomotypicalGroup",
-//                    "TeamOrPersonBase",
-//                    "SynonymRelationship",
-//                    "DeterminationEvent"
-//            }, "testAllKindsOfSpecimenAssociations");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        /*
+         * search for orphan name
+         * should retrieve all specimens associated via
+         *  - determinations on
+         *   - taxon name (specimenD)
+         */
+        config = new FindOccurrencesConfigurator();
+        config.setAssociatedTaxonNameUuid(orphanNameUuid);
+        specimens = occurrenceService.findByTitle(config).getRecords();
+        assertTrue(!specimens.contains(derivedUnitDeterminationName));
+        assertTrue(!specimens.contains(derivedUnitDeterminationTaxon));
+        assertTrue(!specimens.contains(derivedUnitDeterminationSynonymName));
+        assertTrue(!specimens.contains(dnaSampleUuidIndividualsAssociation));
+        assertTrue(!specimens.contains(fossilTypeDesignation));
+        assertTrue(!specimens.contains(tissueUuidNoAssociation));
+        assertTrue(specimens.contains(derivedUnitDeterminationOrphanName));
+        assertEquals("Wrong number of associated specimens", 1, specimens.size());
+
+        //        //DERIVATIVES
+        //        //determination: taxon
+        //        DerivedUnit derivedUnitDeterminationTaxon = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        //        derivedUnitDeterminationTaxon.setTitleCache("Derived Unit determined as taxon");
+        //        //determination: taxon name
+        //        DerivedUnit derivedUnitDeterminationName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        //        derivedUnitDeterminationName.setTitleCache("Derived Unit determined as name");
+        //        //determination: synonym
+        //        DerivedUnit derivedUnitDeterminationSynonym = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        //        derivedUnitDeterminationSynonym.setTitleCache("Derived Unit determined as synonym");
+        //        //determination: synonym name
+        //        DerivedUnit derivedUnitDeterminationSynonymName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        //        derivedUnitDeterminationSynonymName.setTitleCache("Derived Unit determined as synonym name");
+        //        //determination: orphan name
+        //        DerivedUnit derivedUnitDeterminationOrphanName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        //        derivedUnitDeterminationOrphanName.setTitleCache("Derived Unit determined as orphan name");
+        //        //no association
+        //        DerivedUnit tissueUuidNoAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
+        //        tissueUuidNoAssociation.setTitleCache("tissue sample no association");
+        //        //individuals association with taxon
+        //        DerivedUnit dnaSampleUuidIndividualsAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
+        //        dnaSampleUuidIndividualsAssociation.setTitleCache("dna associated via IndividualsAssociation");
+        //        //type specimen of taxon
+        //        DerivedUnit fossilTypeDesignation = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
+        //        fossilTypeDesignation.setTitleCache("Fossil with type designation");
+        //
+        //        derivedUnitDeterminationTaxon.setUuid(derivedUnitDeterminationTaxonUuid);
+        //        derivedUnitDeterminationName.setUuid(derivedUnitDeterminationNameUuid);
+        //        derivedUnitDeterminationSynonym.setUuid(derivedUnitDeterminationSynonymUuid);
+        //        derivedUnitDeterminationSynonymName.setUuid(derivedUnitDeterminationSynonymNameUuid);
+        //        derivedUnitDeterminationOrphanName.setUuid(derivedUnitDeterminationOrphanNameUuid);
+        //        tissueUuidNoAssociation.setUuid(tissueUuidNoAssociationUuid);
+        //        dnaSampleUuidIndividualsAssociation.setUuid(dnaSampleUuidIndividualsAssociationUuid);
+        //        fossilTypeDesignation.setUuid(fossilTypeDesignationUuid);
+        //
+        //        occurrenceService.save(derivedUnitDeterminationTaxon);
+        //        occurrenceService.save(derivedUnitDeterminationName);
+        //        occurrenceService.save(derivedUnitDeterminationSynonym);
+        //        occurrenceService.save(derivedUnitDeterminationSynonymName);
+        //        occurrenceService.save(derivedUnitDeterminationOrphanName);
+        //        occurrenceService.save(tissueUuidNoAssociation);
+        //        occurrenceService.save(dnaSampleUuidIndividualsAssociation);
+        //        occurrenceService.save(fossilTypeDesignation);
+        //
+        //        //NAMES
+        //        BotanicalName taxonName = BotanicalName.PARSED_NAME("Campanula patual");
+        //        BotanicalName synonymName = BotanicalName.PARSED_NAME("Syno nyma");
+        //        BotanicalName orphanName = BotanicalName.PARSED_NAME("Orphanus lonelia");
+        //        taxonName.setUuid(taxonNameUuid);
+        //        synonymName.setUuid(synonymNameUuid);
+        //        orphanName.setUuid(orphanNameUuid);
+        //
+        //        //TAXON
+        //        Taxon taxon = Taxon.NewInstance(taxonName, null);
+        //        taxon.setUuid(taxonUuid);
+        //
+        //        //SYNONYM
+        //        Synonym synonym = Synonym.NewInstance(synonymName, null);
+        //        synonym.setUuid(synoymUuid);
+        //        taxon.addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        //
+        //        //IndividualsAssociation
+        //        TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+        //        IndividualsAssociation association = IndividualsAssociation.NewInstance(dnaSampleUuidIndividualsAssociation);
+        //        association.setFeature(Feature.SPECIMEN());
+        //        taxonDescription.addElement(association);
+        //        taxon.addDescription(taxonDescription);
+        //
+        //        //DETERMINATION EVENTS
+        //        DeterminationEvent.NewInstance(taxon, derivedUnitDeterminationTaxon);
+        //        DeterminationEvent.NewInstance(taxonName, derivedUnitDeterminationName);
+        ////        DeterminationEvent.NewInstance(synonym, derivedUnitDeterminationSynonym);//TODO determinationa on synonym not possible?
+        //        DeterminationEvent.NewInstance(synonymName, derivedUnitDeterminationSynonymName);
+        //        DeterminationEvent.NewInstance(orphanName, derivedUnitDeterminationOrphanName);
+        //
+        //        //type designation
+        //        SpecimenTypeDesignation specimenTypeDesignation = SpecimenTypeDesignation.NewInstance();
+        //        specimenTypeDesignation.setTypeSpecimen(fossilTypeDesignation);
+        //        taxonName.addTypeDesignation(specimenTypeDesignation, false);
+        //
+        //        taxonService.saveOrUpdate(taxon);
+        //
+        //        commitAndStartNewTransaction(null);
+        //
+        //        setComplete();
+        //        endTransaction();
+        //
+        //
+        //        try {
+        //            writeDbUnitDataSetFile(new String[] {
+        //                    "SpecimenOrObservationBase",
+        //                    "SpecimenOrObservationBase_DerivationEvent",
+        //                    "DerivationEvent",
+        //                    "DescriptionElementBase",
+        //                    "DescriptionBase",
+        //                    "TaxonBase",
+        //                    "TypeDesignationBase",
+        //                    "TaxonNameBase",
+        //                    "TaxonNameBase_TypeDesignationBase",
+        //                    "HomotypicalGroup",
+        //                    "TeamOrPersonBase",
+        //                    "SynonymRelationship",
+        //                    "DeterminationEvent"
+        //            }, "testAllKindsOfSpecimenAssociations");
+        //        } catch (FileNotFoundException e) {
+        //            e.printStackTrace();
+        //        }
 
 
     }
