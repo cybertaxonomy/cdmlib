@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 public class LocalH2 extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalH2.class);
-	
+
 	private String sep = System.getProperty("file.separator");
-	
+
 	/** url without database name */
 	protected String pureUrl = "jdbc:h2:";
 	/** database name */
@@ -57,10 +57,10 @@ public class LocalH2 extends BasicDataSource {
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.h2.Driver";
 	String mode = H2Mode.EMBEDDED.toString();
 
-	private NomenclaturalCode nomenclaturalCode; 
-	
+	private NomenclaturalCode nomenclaturalCode;
+
 	/**
-	 * 
+	 *
 	 */
 	public LocalH2() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
@@ -79,7 +79,7 @@ public class LocalH2 extends BasicDataSource {
 
 	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
 	 * Remove this when dbcp connection pool gets configured correctly
-	 * 
+	 *
 	 * (non-Javadoc)
 	 * @see org.apache.commons.dbcp.BasicDataSource#createDataSource()
 	 */
@@ -89,7 +89,7 @@ public class LocalH2 extends BasicDataSource {
 		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
 		return dataSource;
 	}
-	
+
 	/**
 	 * @param url
 	 * @param username
@@ -117,7 +117,7 @@ public class LocalH2 extends BasicDataSource {
 	}
 
 //** ********************************************************************************/
-	
+
 	public void init(){
 		logger.info("LocalH2init");
 		if (true){   //starting sever is not necessary for H2
@@ -127,11 +127,11 @@ public class LocalH2 extends BasicDataSource {
 			this.startH2Server();
 		}
 	}
-	
+
 	public void destroy(){
 		this.stopH2Server();
 	}
-	
+
 
 	//checks if h2-server is started, if not it will be started	(taken over from hsqldb, maybe not necessary for H2
 	private void startH2Server(){
@@ -147,8 +147,8 @@ public class LocalH2 extends BasicDataSource {
 			}
 		} catch (SQLException e) {
 			try {
-				//server is probably not runing on the url (or login is wrong !!)
-				logger.info("Start H2Server"); 
+				//server is probably not running on the url (or login is wrong !!)
+				logger.info("Start H2Server");
 				String[] args = new String[] { "-trace" };
 				h2Server = Server.createTcpServer(args).start();
 //				h2Server.setDatabaseName(0, getDbName());
@@ -161,8 +161,8 @@ public class LocalH2 extends BasicDataSource {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * stops the Hsqldb Server
 	 */
@@ -172,7 +172,7 @@ public class LocalH2 extends BasicDataSource {
 			h2Server.stop();
 		}
 	}
-	
+
 	private static final String getDefaultPath(){
 		File path;
 		try {
@@ -181,7 +181,7 @@ public class LocalH2 extends BasicDataSource {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
-		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
+		String subPath = File.separator + "h2" + File.separator + "LocalH2";
 		return  path + subPath;
 	}
 
@@ -215,25 +215,25 @@ public class LocalH2 extends BasicDataSource {
 	public void setStartServer(boolean isStartServer) {
 		this.isStartServer = isStartServer;
 	}
-	
+
 	public void setLocalUrl(){
 		String dbName = "cdmLocal";
 		String localUrlString = pureUrl + "file:" + getDefaultPath() + "/" + dbName;
 		logger.info("setLocalUrl: " + localUrlString);
 		setUrl(localUrlString);
 	}
-	
+
 	public void setMode(String mode){
 		this.mode = mode;
 	}
-	
+
 	public String getMode(){
 		return mode;
 	}
-	
+
 	public void setNomenclaturalCode(NomenclaturalCode code){
 		this.nomenclaturalCode = code;
 	}
-	
+
 
 }
