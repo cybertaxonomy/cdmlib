@@ -28,17 +28,34 @@ import com.wordnik.swagger.annotations.Api;
 public class AgentPortalController extends AgentController {
 
     private static final List<String> TEAM_OR_PERSON_BASE_INIT_STRATEGY = Arrays.asList(new String[]{
+            // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
+            // which is using join fetches
             // AgentBase
-//            "contact.urls",
-//            "contact#phoneNumbers",
-//            "contact#addresses",
-//            "contact#faxNumbers",
-//            "contact#emailAddresses",
+            "contact.*",
             // Person
             "institutionalMemberships.$",
+            "institutionalMemberships.institute.contact.*",
             // Team
             "teamMembers.$"
     });
+
+    private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
+            // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
+            // which is using join fetches
+            "taxonNode.taxon.name.nomenclaturalReference",
+            // AgentBase
+            "agent.contact.*",
+            // Person
+            "agent.institutionalMemberships.$",
+            "agent.institutionalMemberships.institute.contact.*",
+            // Team
+            "agent.teamMembers.$"
+            });
+
+    @Override
+    public List<String> getTaxonNodeAgentRelationsInitStrategy() {
+        return TAXONNODEAGENTRELATIONS_INIT_STRATEGY;
+    }
 
     /**
     *

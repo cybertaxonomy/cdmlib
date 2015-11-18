@@ -207,6 +207,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classification_uuid") UUID classificationUuid,
+            @RequestParam(value = "relType_uuid" , required = false) UUID relTypeUuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
@@ -216,7 +217,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         pagerParams.normalizeAndValidate(response);
 
         Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(uuid, classificationUuid,
-                null, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null);
+                null, null, relTypeUuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null);
         return pager;
     }
 

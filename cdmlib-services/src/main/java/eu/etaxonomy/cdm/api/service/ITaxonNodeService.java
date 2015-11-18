@@ -146,11 +146,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param taxonUuid
      * @param agentUuid TODO
      * @param rankUuid TODO
+     * @param relTypeUuid TODO
      * @param classification
      * @return
      */
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            UUID agentUuid, UUID rankUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
 
 }

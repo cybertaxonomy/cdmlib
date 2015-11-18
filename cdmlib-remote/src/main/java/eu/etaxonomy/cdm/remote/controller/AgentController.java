@@ -79,8 +79,12 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
             // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
             // which is using join fetches
-            "taxonNode.taxon.name.nomenclaturalReference"
+            "taxonNode.taxon.name.nomenclaturalReference",
             });
+
+    public List<String> getTaxonNodeAgentRelationsInitStrategy() {
+        return TAXONNODEAGENTRELATIONS_INIT_STRATEGY;
+    }
 
     @Autowired
     private ITaxonNodeService nodeService;
@@ -144,6 +148,8 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
     public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "classification_uuid" , required = false) UUID classificationUuid,
+            @RequestParam(value = "taxon_uuid" , required = false) UUID taxonUuid,
+            @RequestParam(value = "relType_uuid" , required = false) UUID relTypeUuid,
             @RequestParam(value = "rank" , required = false) Rank rank,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -157,8 +163,8 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
         if(rank != null) {
             rankUuid = rank.getUuid();
         }
-        Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(null, classificationUuid, uuid,
-                rankUuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), TAXONNODEAGENTRELATIONS_INIT_STRATEGY);
+        Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(taxonUuid, classificationUuid, uuid,
+                rankUuid, relTypeUuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), getTaxonNodeAgentRelationsInitStrategy());
         return pager;
     }
 

@@ -552,15 +552,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            UUID agentUuid, UUID rankUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
 
 
         List<TaxonNodeAgentRelation> records = null;
 
-        long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid);
+        long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid);
         if(PagerUtils.hasResultsInRange(count, pageIndex, pageSize)) {
             records = dao.listTaxonNodeAgentRelations(taxonUuid, classificationUuid,
-                    agentUuid, rankUuid, PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
+                    agentUuid, rankUuid, relTypeUuid, PagerUtils.startFor(pageSize, pageIndex), PagerUtils.limitFor(pageSize), propertyPaths);
         }
 
         Pager<TaxonNodeAgentRelation> pager = new DefaultPagerImpl<TaxonNodeAgentRelation>(pageIndex, count, pageSize, records);

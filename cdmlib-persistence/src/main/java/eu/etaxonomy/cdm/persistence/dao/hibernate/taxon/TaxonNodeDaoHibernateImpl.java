@@ -152,10 +152,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     @Override
     public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            UUID agentUuid, UUID rankUuid, Integer start, Integer limit, List<String> propertyPaths) {
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths) {
 
 
-        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, false);
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, false);
 
         Query query =  getSession().createQuery(hql.toString());
 
@@ -166,7 +166,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             }
         }
 
-        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, query);
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
 
         List<TaxonNodeAgentRelation> records = query.list();
 
@@ -179,12 +179,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * {@inheritDoc}
      */
     @Override
-    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid) {
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid) {
 
-        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, true);
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, true);
         Query query =  getSession().createQuery(hql.toString());
 
-        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, query);
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
 
         Long count = Long.parseLong(query.uniqueResult().toString());
 
@@ -194,12 +194,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param taxonUuid
      * @param classificationUuid
      * @param agentUuid
+     * @param relTypeUuid TODO
+     * @param doCount TODO
      * @param rankId
      *     limit to taxa having this rank, only applies if <code>taxonUuid = null</code>
-     * @param doCount TODO
      * @return
      */
-    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, boolean doCount) {
+    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid, boolean doCount) {
 
         StringBuilder hql = new StringBuilder();
 
@@ -224,12 +225,17 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         hql.append(" join tn.classification as c ");
         if(agentUuid != null) {
             // agentUuid is search filter, do not fetch it
-            hql.append(" join tnar.agent as a ");
+//            hql.append(" join tnar.agent as a ");
+            hql.append(join_fetch_mode).append(" tnar.agent as a ");
         } else {
             hql.append(join_fetch_mode).append(" tnar.agent as a ");
         }
 
         hql.append(" where 1 = 1 ");
+
+        if(relTypeUuid != null) {
+            hql.append(" and tnar.type.uuid = :relTypeUuid ");
+        }
 
         if(taxonUuid != null) {
             hql.append(" and t.uuid = :taxonUuid ");
@@ -252,11 +258,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param taxonUuid
      * @param classificationUuid
      * @param agentUuid
-     * @param rankId TODO
+     * @param relTypeUuid TODO
      * @param query
+     * @param rankId TODO
      */
     private void setParamsForListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid,
-            UUID rankUuid, Query query) {
+            UUID rankUuid, UUID relTypeUuid, Query query) {
 
         if(taxonUuid != null) {
             query.setParameter("taxonUuid", taxonUuid);
@@ -270,6 +277,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         if(agentUuid != null) {
             query.setParameter("agentUuid", agentUuid);
+        }
+        if(relTypeUuid != null) {
+            query.setParameter("relTypeUuid", relTypeUuid);
         }
     }
 

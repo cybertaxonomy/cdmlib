@@ -47,15 +47,16 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      *
      * @param taxonUuid
      * @param agentUuid TODO
-     * @param rankId TODO
+     * @param relTypeUuid TODO
      * @param start
      * @param limit
      * @param propertyPaths
+     * @param rankId TODO
      * @param classification
      * @return
      */
     public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            UUID agentUuid, UUID rankUuid, Integer start, Integer limit, List<String> propertyPaths);
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths);
 
     /**
      * Returns the number of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the
@@ -63,11 +64,12 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      *
      * @param taxonUuid
      * @param agentUuid TODO
+     * @param relTypeUuid TODO
      * @param rankId TODO
      * @param classification
      * @return
      */
-    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid);
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
 
 
 }
