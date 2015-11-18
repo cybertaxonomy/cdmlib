@@ -21,10 +21,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public class FindOccurrencesConfigurator extends IdentifiableServiceConfiguratorImpl<SpecimenOrObservationBase>{
 
+    private static final long serialVersionUID = 1L;
+
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;
     private UUID associatedTaxonNameUuid;
-    private boolean isDetermined;
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
     public String getSignificantIdentifier() {
@@ -33,16 +34,16 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     public void setSignificantIdentifier(String significantIdentifier) {
         this.significantIdentifier = significantIdentifier;
     }
-    public synchronized SpecimenOrObservationType getSpecimenType() {
+    public SpecimenOrObservationType getSpecimenType() {
         return specimenType;
     }
-    public synchronized void setSpecimenType(SpecimenOrObservationType specimenType) {
+    public void setSpecimenType(SpecimenOrObservationType specimenType) {
         this.specimenType = specimenType;
     }
-    public synchronized UUID getAssociatedTaxonUuid() {
+    public UUID getAssociatedTaxonUuid() {
         return associatedTaxonUuid;
     }
-    public synchronized void setAssociatedTaxonUuid(UUID associatedTaxonUuid) {
+    public void setAssociatedTaxonUuid(UUID associatedTaxonUuid) {
         this.associatedTaxonUuid = associatedTaxonUuid;
     }
     public UUID getAssociatedTaxonNameUuid() {
@@ -50,12 +51,6 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     }
     public void setAssociatedTaxonNameUuid(UUID associatedTaxonNameUuid) {
         this.associatedTaxonNameUuid = associatedTaxonNameUuid;
-    }
-    public synchronized boolean isDetermined() {
-        return isDetermined;
-    }
-    public synchronized void setDetermined(boolean isDetermined) {
-        this.isDetermined = isDetermined;
     }
 
     /**
