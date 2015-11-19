@@ -58,11 +58,7 @@ public class URIUserType extends AbstractUserType implements UserType {
             try {
 			    return new URI(val);
 		    } catch (URISyntaxException e) {
-<<<<<<< HEAD
-			    throw new TypeMismatchException(e);
-=======
-			    throw new TypeMismatchException(e.getMessage(),e);
->>>>>>> Some cleanups in hibernate user types
+			    throw new TypeMismatchException(e.getMessage());
 		    }
 		}
     }
@@ -82,10 +78,6 @@ public class URIUserType extends AbstractUserType implements UserType {
      * @param value value being copied
      * @return copied value
      */
-<<<<<<< HEAD
-=======
-    @Override
->>>>>>> Some cleanups in hibernate user types
     @Override
     public Object deepCopy(Object value) {
         if (value == null) {
@@ -94,11 +86,7 @@ public class URIUserType extends AbstractUserType implements UserType {
         try {
             return new URI(((URI) value).toString());
         } catch (URISyntaxException e) {
-<<<<<<< HEAD
-            throw new TypeMismatchException(e);
-=======
-            throw new TypeMismatchException(e.getMessage(),e);
->>>>>>> Some cleanups in hibernate user types
+            throw new TypeMismatchException(e.getMessage());
         }
     }
 
