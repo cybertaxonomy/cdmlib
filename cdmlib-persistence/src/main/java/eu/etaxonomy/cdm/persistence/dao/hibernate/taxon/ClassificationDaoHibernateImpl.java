@@ -68,12 +68,12 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 q.setFirstResult(start);
             }
         }
-        long start_t = System.currentTimeMillis();
+//        long start_t = System.currentTimeMillis();
         results = q.list();
-        System.err.println("dao.listRankSpecificRootNodes() - query[" + queryIndex + "].list() " + (System.currentTimeMillis() - start_t));
-        start_t = System.currentTimeMillis();
+//        System.err.println("dao.listRankSpecificRootNodes() - query[" + queryIndex + "].list() " + (System.currentTimeMillis() - start_t));
+//        start_t = System.currentTimeMillis();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-        System.err.println("dao.listRankSpecificRootNodes() - defaultBeanInitializer.initializeAll() " + (System.currentTimeMillis() - start_t));
+//        System.err.println("dao.listRankSpecificRootNodes() - defaultBeanInitializer.initializeAll() " + (System.currentTimeMillis() - start_t));
 
         return results;
 

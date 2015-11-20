@@ -116,9 +116,9 @@ public class ClassificationController extends BaseController<Classification,ICla
         }
         rank = findRank(rankUuid);
 
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, DEFAULT_INIT_STRATEGY);
-        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
+//        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return rootNodes;
     }

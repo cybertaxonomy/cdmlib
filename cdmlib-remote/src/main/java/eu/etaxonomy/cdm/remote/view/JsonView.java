@@ -118,7 +118,7 @@ public class JsonView extends BaseView implements View{
 
         // create JSON Object
 
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         boolean isCollectionType = false;
         JSON jsonObj;
         if (entity == null){
@@ -135,7 +135,7 @@ public class JsonView extends BaseView implements View{
         } else {
             jsonObj = JSONObject.fromObject(entity, jsonConfig);
         }
-        System.err.println("create JSON Object " + (System.currentTimeMillis() - start));
+//        System.err.println("create JSON Object " + (System.currentTimeMillis() - start));
 
         if(type.equals(Type.XML)){
             XMLSerializer xmlSerializer = new XMLSerializer();
