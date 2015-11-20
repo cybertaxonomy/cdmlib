@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
@@ -122,6 +123,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("mediaService")
 	private IMediaService mediaService;
+    @Autowired
+    //@Qualifier("mediaService")
+    private IMetadataService metadataService;
 	@Autowired
 	//@Qualifier("commonService")
 	private ICommonService commonService;
@@ -274,6 +278,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	public IMediaService getMediaService(){
 		return this.mediaService;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMetadataService getMetadataService() {
+        return this.metadataService;
+    }
 
 	@Override
 	public ITermService getTermService(){
@@ -443,6 +455,4 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 	}
-
-
 }

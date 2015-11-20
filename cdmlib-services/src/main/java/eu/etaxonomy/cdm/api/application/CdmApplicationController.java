@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
@@ -499,6 +500,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	public final IMediaService getMediaService(){
 		return configuration.getMediaService();
 	}
+
+
+    @Override
+    public final IMetadataService getMetadataService(){
+        return configuration.getMetadataService();
+    }
 
 
 	@Override

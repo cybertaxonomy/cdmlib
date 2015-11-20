@@ -59,6 +59,7 @@
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
         <prop key="/remoting-public/user.service">httpUserService</prop>
+        <prop key="/remoting-public/metadata.service">httpMetadataService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
         <prop key="/remoting/io.service">httpIOService</prop>
