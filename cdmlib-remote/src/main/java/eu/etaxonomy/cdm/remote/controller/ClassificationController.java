@@ -105,7 +105,7 @@ public class ClassificationController extends BaseController<Classification,ICla
         logger.info("getChildNodesAtRank()");
         Classification tree = null;
         Rank rank = null;
-        if(classificationUuid != null){
+        if(classificationUuid != null){ // FIXME this never should happen!!!!
             // get view and rank
             tree = service.find(classificationUuid);
 
@@ -116,7 +116,11 @@ public class ClassificationController extends BaseController<Classification,ICla
         }
         rank = findRank(rankUuid);
 
-        return service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
+        long start = System.currentTimeMillis();
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, DEFAULT_INIT_STRATEGY);
+        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
+
+        return rootNodes;
     }
 
     private Rank findRank(UUID rankUuid) {
