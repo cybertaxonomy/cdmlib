@@ -22,6 +22,7 @@ import org.hibernate.event.spi.PostLoadEvent;
 import org.hibernate.event.spi.PostLoadEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -249,5 +250,10 @@ public class CdmPostDataChangeObservableListener implements
 	public void setPropagateDeletes(boolean propagateDeletes) {
 		this.propagateDeletes = propagateDeletes;
 	}
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
+    }
 
 }

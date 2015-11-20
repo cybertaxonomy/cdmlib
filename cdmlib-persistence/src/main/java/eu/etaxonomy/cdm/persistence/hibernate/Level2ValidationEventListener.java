@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.log4j.Logger;
+import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -35,6 +36,11 @@ public class Level2ValidationEventListener extends ValidationEventListenerBase {
     @Override
     protected final String levelString() {
         return "Level-2";
+    }
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
     }
 
 }

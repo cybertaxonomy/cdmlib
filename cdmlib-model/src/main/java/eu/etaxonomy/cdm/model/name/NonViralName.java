@@ -130,7 +130,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         @Field(name = "nameCache_tokenized"),
         @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
     })
-    @Analyzer (impl = org.apache.lucene.analysis.KeywordAnalyzer.class)
+    @Analyzer(impl = org.apache.lucene.analysis.core.KeywordAnalyzer.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
     @NotEmpty(groups = Level2.class) // implicitly NotNull

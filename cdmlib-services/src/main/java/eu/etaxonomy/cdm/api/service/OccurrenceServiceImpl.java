@@ -270,7 +270,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
@@ -282,7 +282,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
@@ -903,7 +903,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         if ((specimenFromUuid!=null && from == null) || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
-            		"Operation was move "+derivate+ " from "+from+" to "+to);
+                    "Operation was move "+derivate+ " from "+from+" to "+to);
         }
         UpdateResult result = new UpdateResult();
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();
@@ -1260,91 +1260,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-<<<<<<< HEAD
-=======
-    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence){
-        DeleteResult deleteResult = new DeleteResult();
-        singleRead = HibernateProxyHelper.deproxy(singleRead, SingleRead.class);
-        //delete from amplification result
-        if(singleRead.getAmplificationResult()!=null){
-            deleteResult.addUpdatedObject(singleRead.getAmplificationResult());
-            singleRead.getAmplificationResult().removeSingleRead(singleRead);
-        }
-        //delete from sequence
-        sequence.removeSingleRead(singleRead);
-        deleteResult.addUpdatedObject(sequence);
-        deleteResult.setStatus(Status.OK);
-        return deleteResult;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid){
-        SingleRead singleRead = null;
-        Sequence sequence = CdmBase.deproxy(sequenceService.load(sequenceUuid), Sequence.class);
-        for(SingleRead sr : sequence.getSingleReads()) {
-            if(sr.getUuid().equals(singleReadUuid)) {
-                singleRead = sr;
-                break;
-            }
-        }
-        return deleteSingleRead(singleRead, sequence);
-    }
-
-    @Override
-    public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config) {
-        DeleteResult deleteResult = new DeleteResult();
-        String deleteMolecularNotAllowed = "Deleting molecular data is not allowed in config";
-        if (from.isInstanceOf(Sequence.class)) {
-            if (!config.isDeleteMolecularData()) {
-                deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException(deleteMolecularNotAllowed));
-                return deleteResult;
-            }
-            Sequence sequence = HibernateProxyHelper.deproxy(from, Sequence.class);
-            DnaSample dnaSample = sequence.getDnaSample();
-            dnaSample.removeSequence(sequence);
-            deleteResult.includeResult(sequenceService.delete(sequence));
-            deleteResult.addUpdatedObject(dnaSample);
-        }
-        else if(from instanceof SingleRead){
-            SingleRead singleRead = (SingleRead)from;
-            //delete from amplification result
-            if(singleRead.getAmplificationResult()!=null){
-                singleRead.getAmplificationResult().removeSingleRead(singleRead);
-            }
-            deleteResult.setAbort();
-            deleteResult.addException(new ReferencedObjectUndeletableException("Deleted ONLY from amplification. "
-                    + "Single read may still be attached to a consensus sequence."));
-        }
-        else if(from.isInstanceOf(SpecimenOrObservationBase.class))  {
-            deleteResult.includeResult(delete(HibernateProxyHelper.deproxy(from, SpecimenOrObservationBase.class), config));
-        }
-        return deleteResult;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config) {
-        return deleteDerivateHierarchy(dao.load(fromUuid),config);
-    }
-
-//    private DeleteResult deepDelete(SpecimenOrObservationBase<?> entity, SpecimenDeleteConfigurator config){
-    // Set<DerivationEvent> derivationEvents = entity.getDerivationEvents();
-    // for (DerivationEvent derivationEvent : derivationEvents) {
-    // Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-    // for (DerivedUnit derivedUnit : derivatives) {
-    // DeleteResult deleteResult = deepDelete(derivedUnit, config);
-    // if(!deleteResult.isOk()){
-    // return deleteResult;
-    // }
-    // }
-    // }
-    // return delete(entity, config);
-    // }
-
-    @Override
->>>>>>> fix #5341 and fixing deletion of specimen
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listIndividualsAssociations(specimen, null, null, null, null);
     }
