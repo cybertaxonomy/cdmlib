@@ -26,7 +26,7 @@
     <java.codelevel>1.6</java.codelevel>
     <spring.version>4.2.3.RELEASE</spring.version>
     <spring-security.version>4.0.3.RELEASE</spring-security.version>
-	<hibernate.version>5.0.4.Final</hibernate.version>
+	<hibernate.version>5.0.3.Final</hibernate.version>
 	<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
     <hibernate-search.version>5.5.0.Final</hibernate-search.version>
     <lucene.version>5.3.1</lucene.version>
@@ -1199,8 +1199,8 @@
       <!-- ******* HIBERNATE / EJB3 ******* -->
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.0-api</artifactId>
-        <version>1.0.1.Final</version>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>1.0.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>

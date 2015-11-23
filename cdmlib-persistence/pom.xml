@@ -122,10 +122,10 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-		<groupId>org.hibernate.javax.persistence</groupId>
-    	<artifactId>hibernate-jpa-2.0-api</artifactId>
-	 </dependency>
+     <dependency>
+       <groupId>org.hibernate.javax.persistence</groupId>
+       <artifactId>hibernate-jpa-2.1-api</artifactId>
+     </dependency>
      <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-model</artifactId>
