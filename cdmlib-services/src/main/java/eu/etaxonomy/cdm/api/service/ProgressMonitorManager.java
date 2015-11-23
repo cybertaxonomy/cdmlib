@@ -114,6 +114,9 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
     }
 
     public IRestServiceProgressMonitor getMonitor(UUID uuid) {
+        if(uuid == null) {
+            return null;
+        }
         return monitors.get(uuid);
     }
 
