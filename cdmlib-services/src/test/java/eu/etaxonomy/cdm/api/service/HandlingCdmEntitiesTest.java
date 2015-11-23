@@ -369,7 +369,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         description.addElement(textData);
 
         DescriptionElementSource descriptionElementSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
-        // Un-commenting the following line will reproduce the exception seen in #5256
+
         textData.addSource(descriptionElementSource);
 
 
