@@ -171,7 +171,11 @@
 		<groupId>com.mchange</groupId>
 		<artifactId>c3p0</artifactId>
 	</dependency>
-    
+    <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+    </dependency>  
     <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>

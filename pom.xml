@@ -946,6 +946,13 @@
       <!-- TODO com.springsource.org.aopalliance and com.springsource.org.apache.commons.logging 
         seem to be duplicates of e.g. apache commons-logging. Needs to be further 
         checked. -->
+	  <!-- since hibernate 5.0.4 Dialect throws exception if jta is missing  -->
+	  <dependency>
+        <groupId>javax.transaction</groupId>
+        <artifactId>jta</artifactId>
+        <version>1.1</version>
+      </dependency>  
+		
       <!-- TODO xerces xmlParserAPIs duplicates many classes from jre and 
         xml-apis. It is a dependency that comes with xom:xom -->
       <dependency>
