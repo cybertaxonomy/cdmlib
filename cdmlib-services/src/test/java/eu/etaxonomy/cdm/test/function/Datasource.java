@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -59,7 +61,7 @@ public class Datasource {
 
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
@@ -69,7 +71,7 @@ public class Datasource {
 
 		String server = "localhost";
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
-		database = "test";
+		database = "cdm36";
 //		database = "350_editor_test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
@@ -99,10 +101,11 @@ public class Datasource {
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 		//H2
-//      String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2_test34";
-//		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
-//		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path,   NomenclaturalCode.ICNAFP);
+        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
+//		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
+//      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+		username = "sa";
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("upgradetest", username, "", path,   NomenclaturalCode.ICNAFP);
 
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
@@ -118,14 +121,18 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
+		List<String> propPath = Arrays.asList(new String[]{"name"});
+		Classification classification = appCtr.getClassificationService().list(null, null, null, null, propPath).get(0);
+		logger.warn(classification.getMicroReference());
+        logger.warn(classification.getName());
 
-		logger.warn("Start adding persons");
-		for (int i= 1; i<100; i++){
-		    addPerson(appCtr);
-		    logger.warn("Added "+ i);
-		}
-		int n = appCtr.getAgentService().count(null);
-		logger.warn("End adding " + n + " persons");
+//		logger.warn("Start adding persons");
+//		for (int i= 1; i<100; i++){
+//		    addPerson(appCtr);
+//		    logger.warn("Added "+ i);
+//		}
+//		int n = appCtr.getAgentService().count(null);
+//		logger.warn("End adding " + n + " persons");
 
 //		appCtr.getCommonService().createFullSampleData();
 
