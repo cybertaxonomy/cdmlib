@@ -207,7 +207,7 @@ public class UnitsGatheringEvent {
             }
             if(elevationMax!=null){
                 Integer max = Integer.parseInt(elevationMax.replaceAll(pattern, ""));
-                this.gatheringEvent.setAbsoluteElevation(max);
+                this.gatheringEvent.setAbsoluteElevationMax(max);
             }
             if(elevationUnit!=null){
                 if(!elevationUnit.equals("m")){
