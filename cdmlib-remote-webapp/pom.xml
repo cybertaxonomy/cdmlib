@@ -88,6 +88,10 @@
       </exclusions>
     </dependency>
     <dependency>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-test</artifactId>      
+    </dependency>
+    <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed?
         What does provided mean? -->
       <groupId>javax.servlet</groupId>
@@ -232,7 +236,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.1.3.v20140225</version>
+        <version>9.3.6.v20151106</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
