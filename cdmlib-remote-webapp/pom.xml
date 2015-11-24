@@ -116,7 +116,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
-      <version>${spring.version}</version>
     </dependency>
 
     <!-- XmlView -->
@@ -165,7 +164,7 @@
     </dependency>
     <!-- END of dependencies for swagger-springmvc, added explicitely -->
     <!-- testing -->
-  <dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
