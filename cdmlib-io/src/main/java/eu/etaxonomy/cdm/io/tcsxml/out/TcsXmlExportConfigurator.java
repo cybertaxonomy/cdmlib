@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,7 +14,6 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
@@ -23,36 +22,39 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 20.03.2008
  * @version 1.0
  */
-public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
-	@SuppressWarnings("unused")
+public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlExportState> {
+    private static final long serialVersionUID = 2943494702785912481L;
+
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TcsXmlExportConfigurator.class);
 
 
 	private TcsXmlExportState<TcsXmlExportConfigurator> state;
 
-	
+
 	private boolean doAuthors;
 	private boolean doTaxonNames;
-	
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
 
-	
+
 	public static TcsXmlExportConfigurator NewInstance(File destination, ICdmDataSource source){
 			return new TcsXmlExportConfigurator(destination, source);
 	}
-	
-	protected void makeIoClassList(){
+
+	@Override
+    protected void makeIoClassList(){
 		ioClassList = new Class[]{
 //				BerlinModelAuthorExport.class
 //				, BerlinModelAuthorTeamExport.class
 //				, BerlinModelReferenceExport.class
 //				, BerlinModelTaxonNameExport.class
 		};
-		
+
 	}
-	
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -62,7 +64,7 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
 	   super(destination, cdmSource, defaultTransformer);
 	}
 
-	
+
 	public boolean isDoAuthors(){
 		return doAuthors;
 	}
@@ -99,14 +101,12 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
 		this.state = state;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
-	public ExportStateBase getNewState() {
+	@Override
+    public TcsXmlExportState getNewState() {
 		return new TcsXmlExportState(this);
 	}
-	
-	
 
-	
+
+
+
 }
