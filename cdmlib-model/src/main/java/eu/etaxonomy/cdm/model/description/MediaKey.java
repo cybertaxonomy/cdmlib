@@ -124,6 +124,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+	@JoinTable(joinColumns = @JoinColumn(name="Media_id"))
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<Representation>();

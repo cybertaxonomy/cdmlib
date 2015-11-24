@@ -11,8 +11,12 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -55,6 +59,10 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @Entity
 @Audited
 @Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
+@AssociationOverrides({
+    @AssociationOverride(name="annotations",joinTable=@JoinTable(joinColumns = @JoinColumn(name="RightsInfo_id"))),
+    @AssociationOverride(name="markers",joinTable=@JoinTable(joinColumns = @JoinColumn(name="RightsInfo_id")))
+ })
 public class Rights extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
@@ -82,6 +90,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private AgentBase<?> agent;
 
+// ******************** FACTORY ***********************/
 
 	/**
 	 * Factory method
@@ -100,6 +109,8 @@ public class Rights extends LanguageStringBase implements Cloneable{
 		return new Rights(text, language);
 	}
 
+//*********************** CONSTRUCTOR *************************/
+
 	/**
 	 * Default Constructor
 	 */
@@ -113,6 +124,8 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	protected Rights(String text, Language language) {
 		super(text, language);
 	}
+
+//*********************** GETTER /SETTER *****************************/
 
 	public RightsType getType(){
 		return this.type;
@@ -148,10 +161,6 @@ public class Rights extends LanguageStringBase implements Cloneable{
 
 //************************* CLONE **************************/
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Rights result = (Rights)super.clone();
