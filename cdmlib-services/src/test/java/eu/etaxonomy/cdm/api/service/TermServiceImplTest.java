@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -195,15 +198,18 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
     @Test
-    @Ignore
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="TermsDataSet-with_auditing_info.xml")
+    })
     public void testDeleteTerms(){
     	final String[] tableNames = new String[]{
                 "DefinedTermBase","Representation"};
 
     	commitAndStartNewTransaction(tableNames);
-    	/*TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
+    	TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
     	vocs.addTerm(DefinedTerm.NewInstance(TermType.State, "green", "green", "gn"));
-    	UUID vocUUIDs = vocabularyService.save(vocs);*/
+    	vocs= vocabularyService.save(vocs);
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
     	if (term.getCount() != 0){
 
