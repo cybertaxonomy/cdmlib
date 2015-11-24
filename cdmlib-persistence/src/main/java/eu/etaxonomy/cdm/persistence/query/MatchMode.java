@@ -23,6 +23,10 @@ public enum MatchMode {
      */
     EXACT("="),
     /**
+     * translates into <code>field = term</code>
+     */
+    LIKE("LIKE"),
+    /**
      * translates into <code>field LIKE term%</code>
      */
     BEGINNING("LIKE"),
@@ -62,6 +66,8 @@ public enum MatchMode {
                 break;
             case EXACT:
             	break;  //Nothing to do
+            case LIKE:
+                break;  //Nothing to do
             default:
             	throw new RuntimeException ("Unsupported Matchmode: " + this.toString());
         }
