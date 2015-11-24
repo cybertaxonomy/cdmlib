@@ -55,10 +55,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {
-    "emailAddresses",
+    "emailaddresses",
     "urls",
-    "phoneNumbers",
-    "faxNumbers",
+    "phonenumbers",
+    "faxnumbers",
     "addresses"
 })
 @XmlRootElement(name = "Contact")
@@ -73,7 +73,7 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "EmailAddress")
 	@ElementCollection(fetch = FetchType.LAZY)
 	@Column(name = "contact_emailaddresses_element")
-	private List<String> emailAddresses;
+	private List<String> emailaddresses; // TODO #5369 revert to emailAddresses
 
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
@@ -87,20 +87,19 @@ public class Contact implements Serializable, Cloneable {
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	private List<String> phoneNumbers;
+	private List<String> phonenumbers; // TODO #5369 revert to phoneNumbers
 
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_faxnumbers_element")
-	private List<String> faxNumbers;
+	private List<String> faxnumbers; // TODO #5369 revert to faxNumbers
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<Address> addresses = new HashSet<Address>();
-
 
 	public static Contact NewInstance() {
 		return new Contact();
@@ -153,13 +152,13 @@ public class Contact implements Serializable, Cloneable {
 			result.addresses = addresses;
 		}
 		if (emailAddresses != null){
-			result.emailAddresses = emailAddresses;
+			result.emailaddresses = emailAddresses;
 		}
 		if (faxNumbers != null){
-			result.faxNumbers = faxNumbers;
+			result.faxnumbers = faxNumbers;
 		}
 		if (phoneNumbers != null){
-			result.phoneNumbers = phoneNumbers;
+			result.phonenumbers = phoneNumbers;
 		}
 		if (urls != null){
 			for (URI uri : urls){
@@ -253,10 +252,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getEmailAddresses(){
-		if(this.emailAddresses == null) {
-			this.emailAddresses = new ArrayList<String>();
+		if(this.emailaddresses == null) {
+			this.emailaddresses = new ArrayList<String>();
 		}
-		return this.emailAddresses;
+		return this.emailaddresses;
 	}
 
 	/**
@@ -322,10 +321,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getPhoneNumbers(){
-		if(this.phoneNumbers == null) {
-			this.phoneNumbers = new ArrayList<String>();
+		if(this.phonenumbers == null) {
+			this.phonenumbers = new ArrayList<String>();
 		}
-		return this.phoneNumbers;
+		return this.phonenumbers;
 	}
 
 	/**
@@ -350,10 +349,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getFaxNumbers(){
-		if(this.faxNumbers == null) {
-			this.faxNumbers = new ArrayList<String>();
+		if(this.faxnumbers == null) {
+			this.faxnumbers = new ArrayList<String>();
 		}
-		return this.faxNumbers;
+		return this.faxnumbers;
 	}
 
 	/**
@@ -390,7 +389,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address adr : this.addresses){
 				result.addAddress((Address)adr.clone());
 			}
-			//no changes to emailAdresses, faxNumbers, phoneNumbers, urls
+			//no changes to emailAdresses, faxnumbers, phonenumbers, urls
 			return result;
 		}catch (CloneNotSupportedException e){
 			logger.warn("Object does not implement cloneable");
