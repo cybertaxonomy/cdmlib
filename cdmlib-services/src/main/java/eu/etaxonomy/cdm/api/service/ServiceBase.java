@@ -175,6 +175,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<T> load(List<UUID> uuids, List<String> propertyPaths){
+        if(uuids == null) {
+            return null;
+        }
+
+        List<T> entities = new ArrayList<T>();
+        for(UUID uuid : uuids) {
+            entities.add(uuid == null ? null : dao.load(uuid, propertyPaths));
+        }
+        return entities;
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public T merge(T newInstance) {
         return dao.merge(newInstance);

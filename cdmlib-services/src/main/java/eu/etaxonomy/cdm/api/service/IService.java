@@ -223,6 +223,21 @@ public interface IService<T extends ICdmBase>{
      */
     public T load(UUID uuid, List<String> propertyPaths);
 
+
+    /**
+     * Finds the cdm entities specified by the <code>uuids</code>,
+     * recursively initializes all bean properties given in the
+     * <code>propertyPaths</code> parameter and returns the initialised
+     * entity list;
+     * <p>
+     * For detailed description and examples <b>please refer to:</b>
+     * {@link IBeanInitializer#initialize(Object, List)}
+     * @param uuids
+     * @param propertyPaths
+     * @return
+     */
+    public List<T> load(List<UUID> uuids, List<String> propertyPaths);
+
     /**
      * Copy the state of the given object onto the persistent object with the same identifier.
      *
