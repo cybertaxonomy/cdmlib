@@ -448,8 +448,21 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+
     /**
-     * Retrieves all associated taxa for the given specimen
+     * Retrieves all taxa linked via {@link IndividualsAssociation} with the given specimen.<br>
+     * @param specimen the specimen which is linked to the taxa
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a collection of associated taxa
+     */
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
      * @param specimen
      * @param limit
      * @param start
@@ -460,15 +473,40 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
-     * @param specimen the type specimen
+     * Retrieves all taxa that the given specimen is determined as
+     * @param specimen
      * @param limit
      * @param start
      * @param orderHints
      * @param propertyPaths
-     * @return collection of all designations with the given type specimen
+     * @return collection of all taxa the given specimen is determined as
+     */
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return collection of all determination events with the given specimen
      */
     public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all taxa with a {@link SpecimenTypeDesignation} with the given specimen as a type specimen.
+     * @param specimen the type specimen
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a collection of all taxa where the given specimen is the type specimen
+     */
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.

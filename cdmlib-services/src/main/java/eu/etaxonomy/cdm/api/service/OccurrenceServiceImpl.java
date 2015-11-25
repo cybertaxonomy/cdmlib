@@ -1264,35 +1264,26 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.listIndividualsAssociations(specimen, null, null, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
 
         //individuals associations
-        for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
-            if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
-                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
-                if(taxonDescription.getTaxon()!=null){
-                    associatedTaxa.add(taxonDescription.getTaxon());
-                }
-            }
-        }
+        associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, limit, start, orderHints, propertyPaths));
         //type designation
-        Collection<SpecimenTypeDesignation> typeDesignations = new HashSet<SpecimenTypeDesignation>();
-        for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
-            if(typeDesignation.getTypeSpecimen().equals(specimen)){
-                Set<TaxonNameBase> typifiedNames = typeDesignation.getTypifiedNames();
-                for (TaxonNameBase taxonNameBase : typifiedNames) {
-                    associatedTaxa.addAll(taxonNameBase.getTaxa());
-                }
-            }
-        }
+        associatedTaxa.addAll(listTypeDesignationTaxa(specimen, limit, start, orderHints, propertyPaths));
         //determinations
-        Collection<DeterminationEvent> determinationEvents = new HashSet<DeterminationEvent>();
+        associatedTaxa.addAll(listDeterminedTaxa(specimen, limit, start, orderHints, propertyPaths));
+
+        return associatedTaxa;
+    }
+
+
+    @Override
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
                 if(determinationEvent.getTaxon()!=null){
@@ -1303,7 +1294,36 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
+        return associatedTaxa;
+    }
 
+    @Override
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
+            if(typeDesignation.getTypeSpecimen().equals(specimen)){
+                Set<TaxonNameBase> typifiedNames = typeDesignation.getTypifiedNames();
+                for (TaxonNameBase taxonNameBase : typifiedNames) {
+                    associatedTaxa.addAll(taxonNameBase.getTaxa());
+                }
+            }
+        }
+        return associatedTaxa;
+    }
+
+    @Override
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
+        for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths)) {
+            if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
+                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                if(taxonDescription.getTaxon()!=null){
+                    associatedTaxa.add(taxonDescription.getTaxon());
+                }
+            }
+        }
         return associatedTaxa;
     }
 
