@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -328,10 +329,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              */
             // gathering event
             UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(),
-                    state.getDataHolder().locality, state.getDataHolder().languageIso, state.getDataHolder().longitude, state.getDataHolder().latitude,
-                    state.getDataHolder().gatheringElevationText, state.getDataHolder().gatheringElevationMin,
-                    state.getDataHolder().gatheringElevationMax, state.getDataHolder().gatheringElevationUnit, state.getDataHolder().gatheringDateText,
-                    state.getDataHolder().gatheringAgentList, state.getDataHolder().gatheringTeamList, state.getConfig());
+                    state.getDataHolder().locality, state.getDataHolder().languageIso, state.getDataHolder().longitude,
+                    state.getDataHolder().latitude, state.getDataHolder().gatheringElevationText,
+                    state.getDataHolder().gatheringElevationMin, state.getDataHolder().gatheringElevationMax,
+                    state.getDataHolder().gatheringElevationUnit, state.getDataHolder().gatheringDateText,
+                    state.getDataHolder().gatheringNotes, state.getDataHolder().gatheringAgentList,
+                    state.getDataHolder().gatheringTeamList, state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
@@ -368,6 +371,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // add fieldNumber
             derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().fieldNumber));
+
+            // add unitNotes
+            derivedUnitFacade.addAnnotation(Annotation.NewDefaultLanguageInstance(NB(state.getDataHolder().unitNotes)));
 
             // //add Multimedia URLs
             if (state.getDataHolder().multimediaObjects.size() != -1) {
@@ -904,7 +910,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             abcdFieldGetter.getGatheringPeople(root);
             abcdFieldGetter.getGatheringDate(root);
             abcdFieldGetter.getGatheringElevation(root);
+            abcdFieldGetter.getGatheringNotes(root);
             abcdFieldGetter.getAssociatedUnitIds(root);
+            abcdFieldGetter.getUnitNotes(root);
             boolean referencefound = abcdFieldGetter.getReferences(root);
             if (!referencefound) {
                 String[]a = {state.getRef().getTitleCache(),"",""};

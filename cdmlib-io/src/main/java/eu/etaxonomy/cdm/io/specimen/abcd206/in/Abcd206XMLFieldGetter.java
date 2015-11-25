@@ -662,6 +662,22 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getUnitNotes(Element root) {
+        NodeList notes;
+        try {
+            notes = root.getElementsByTagName(prefix + "Notes");
+            for (int i = 0; i < notes.getLength(); i++) {
+                dataHolder.unitNotes = notes.item(i).getTextContent();
+                path = notes.item(i).getNodeName();
+                getHierarchie(notes.item(i));
+                dataHolder.knownABCDelements.add(path);
+                path = "";
+            }
+        } catch (NullPointerException e) {
+            logger.info(e);
+        }
+    }
+
     protected void getGatheringElevation(Element root) {
         try {
             //check for freetext elevation
@@ -733,6 +749,29 @@ public class Abcd206XMLFieldGetter {
         } catch (NullPointerException e) {
             dataHolder.gatheringElevationText = null;
         }
+    }
+
+    protected void getGatheringNotes(Element root) {
+        try {
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Notes")) {
+                        path = children.item(j).getNodeName();
+                        getHierarchie(children.item(j));
+                        dataHolder.knownABCDelements.add(path);
+                        path = "";
+                        dataHolder.gatheringNotes = children.item(j).getTextContent();
+                    }
+                }
+            }
+
+
+        } catch (NullPointerException e) {
+            dataHolder.gatheringElevationText = null;
+        }
+
     }
 
     protected void getGatheringDate(Element root) {
