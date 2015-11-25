@@ -93,6 +93,9 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
  */
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
+
+    private static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
+
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
     private final boolean DEBUG = true;
@@ -377,7 +380,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             //add media also as specimen scan
                             MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
                             mediaSpecimen.setMediaSpecimen(media);
-                            DefinedTermBase specimenScanTerm = getTermService().load(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"));
+                            DefinedTermBase specimenScanTerm = getTermService().load(SPECIMEN_SCAN_TERM);
                             if(specimenScanTerm instanceof DefinedTerm){
                                 mediaSpecimen.setKindOfUnit((DefinedTerm) specimenScanTerm);
                             }

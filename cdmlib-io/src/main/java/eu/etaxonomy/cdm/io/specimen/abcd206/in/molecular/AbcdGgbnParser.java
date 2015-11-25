@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
@@ -35,7 +37,6 @@ import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -44,6 +45,14 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  *
  */
 public class AbcdGgbnParser {
+
+    //DNA Quality term
+    private static final String HIGH = "high";
+    private static final String MEDIUM = "medium";
+    private static final String LOW = "low";
+    private static final UUID HIGH_QUALITY_TERM = UUID.fromString("ec443c76-5987-4ec5-a66b-da207f70b47f");
+    private static final UUID MEDIUM_QUALITY_TERM = UUID.fromString("2a174892-1246-4807-9022-71ce8639346b");
+    private static final UUID LOW_QUALITY_TERM = UUID.fromString("a3bf12ff-b041-425f-bdaa-aa51da65eebc");
 
     private static final String FORWARD = "forward";
 
@@ -92,8 +101,8 @@ public class AbcdGgbnParser {
         DnaQuality dnaQuality = DnaQuality.NewInstance();
 
         NodeList purificationMethodList = element.getElementsByTagName(prefix+"purificationMethod");
-        //TODO
-//        dnaQuality.setPurificationMethod(purificationMethod)
+        String purificationMethod = AbcdParseUtility.parseFirstTextContent(purificationMethodList);
+        dnaQuality.setPurificationMethod(purificationMethod);
 
         NodeList concentrationList = element.getElementsByTagName(prefix+"concentration");
         if(concentrationList.getLength()==1){
@@ -118,10 +127,19 @@ public class AbcdGgbnParser {
         }
 
         NodeList qualityList = element.getElementsByTagName(prefix+"quality");
+        String quality = AbcdParseUtility.parseFirstTextContent(qualityList);
+        if(LOW.equals(quality)){
+            dnaQuality.setQualityTerm((OrderedTerm) state.getCdmRepository().getTermService().load(LOW_QUALITY_TERM));
+        }
+        else if(MEDIUM.equals(quality)){
+            dnaQuality.setQualityTerm((OrderedTerm) state.getCdmRepository().getTermService().load(MEDIUM_QUALITY_TERM));
+        }
+        else if(HIGH.equals(quality)){
+            dnaQuality.setQualityTerm((OrderedTerm) state.getCdmRepository().getTermService().load(HIGH_QUALITY_TERM));
+        }
+
         NodeList qualityRemarksList = element.getElementsByTagName(prefix+"qualityRemarks");
 
-        //TODO
-//        dnaQuality.setQualityTerm(qualityTerm)
 
         return dnaQuality;
     }
@@ -187,7 +205,7 @@ public class AbcdGgbnParser {
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
-            //check if amplification already exists
+            //check if amplification already exists (can only be checked after all fields are initialized because comparison is done on the label cache))
             List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService().findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(matchingAmplifications.size()==1){
                 amplification = matchingAmplifications.iterator().next();
@@ -253,21 +271,10 @@ public class AbcdGgbnParser {
             if(referenceList.item(i) instanceof Element){
                 Element element = (Element)referenceList.item(i);
                 NodeList referenceCitationList = element.getElementsByTagName(prefix+"ReferenceCitation");
-                String referenceCitation = AbcdParseUtility.parseFirstTextContent(referenceCitationList);
-                List<Reference> matchedReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, referenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
-                Reference<?> reference;
-                if(matchedReferences.size()==1){
-                    reference = matchedReferences.iterator().next();
-                }
-                else{
-                    reference = ReferenceFactory.newGeneric();
-                    reference.setTitle(referenceCitation);
-                    cdmAppController.getReferenceService().saveOrUpdate(reference);
-                }
+                Reference reference = AbcdParseUtility.parseFirstReference(referenceCitationList, cdmAppController);
                 sequence.addCitation(reference);
             }
         }
-
     }
 
     private void parseSingleSequencings(NodeList singleSequencingsList, Amplification amplification, AmplificationResult amplificationResult, Sequence sequence) {
@@ -337,17 +344,8 @@ public class AbcdGgbnParser {
                     //reference citation
                     NodeList primerReferenceCitationList = sequencingPrimer.getElementsByTagName(prefix+"primerReferenceCitation");
                     String primerReferenceCitation = AbcdParseUtility.parseFirstTextContent(primerReferenceCitationList);
-                    List<Reference> matchingReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, primerReferenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
-                    Reference<?> primerReference;
-                    if(matchingReferences.size()==1){
-                        primerReference = matchingReferences.iterator().next();
-                    }
-                    else{
-                        primerReference = ReferenceFactory.newGeneric();
-                        primerReference.setTitle(primerReferenceCitation);
-                        cdmAppController.getReferenceService().saveOrUpdate(primerReference);
-                    }
-                    primer.setPublishedIn(primerReference);
+                    Reference reference = AbcdParseUtility.parseFirstReference(primerReferenceCitationList, cdmAppController);
+                    primer.setPublishedIn(reference);
 
                     cdmAppController.getPrimerService().save(primer);
                 }
