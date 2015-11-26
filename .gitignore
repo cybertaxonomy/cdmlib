@@ -67,7 +67,6 @@ cdmlib-print/test
 cdmlib-remote-webapp/.classpath
 cdmlib-remote-webapp/.project
 cdmlib-remote-webapp/.settings
-cdmlib-remote-webapp/src/main/java/eu
 cdmlib-remote-webapp/target
 cdmlib-remote/.classpath
 cdmlib-remote/.project

@@ -14,9 +14,11 @@
      <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/>
  -->
 
-    <!-- Overwrites the component-scan in services.xml -->
-    <context:component-scan base-package="eu/etaxonomy/cdm">
+    <!-- Overwrites two component-scans in services.xml -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/service">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
+    </context:component-scan>
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
 

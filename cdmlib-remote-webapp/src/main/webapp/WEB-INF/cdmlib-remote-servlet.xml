@@ -8,8 +8,10 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
-  <!-- This will cause SpringMVCConfig to be found. All further component 
-    scans are defined in this mvc configuration class -->
+  <!-- 
+    Initialize SpringMVCConfig and its dependency SpringSwaggerConfig.
+    All further component scans are defined in this mvc configuration class 
+  -->
   <context:component-scan base-package="eu/etaxonomy/cdm/remote/config" />
 
   <!-- FIXME:Remoting Expose remoting services currently only for testing -->

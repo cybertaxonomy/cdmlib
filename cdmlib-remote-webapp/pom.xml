@@ -88,6 +88,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>      
     </dependency>
@@ -103,26 +107,16 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
     <!-- JsonView -->
-    <dependency>
-      <!-- TODO can this be removed, it already exists in cdmlib-remote -->
-      <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
-      <classifier>jdk15</classifier>
-    </dependency>
-
-    <!-- Profiling -->
+    <!-- 
+     -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
-    <!-- XmlView -->
+    <!-- XmlView 
+    -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -150,10 +144,14 @@
     </dependency>
     <!-- swagger -->
     <dependency>
+      <!-- 
+        project has been renamed to  http://springfox.github.io/springfox  
+        https://github.com/springfox/springfox/blob/master/docs/transitioning-to-v2.md
+      -->
       <groupId>com.mangofactory</groupId>
       <artifactId>swagger-springmvc</artifactId>
     </dependency>
-    <!-- dependencies for swagger-springmvc, added explicitely -->
+    <!-- dependencies for swagger-springmvc, added explicitly -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -167,17 +165,14 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <!-- END of dependencies for swagger-springmvc, added explicitely -->
+    
     <!-- testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.yourkit</groupId>
-      <artifactId>yjp-controller-api-redist</artifactId>
-      <scope>test</scope>
-    </dependency>
+
     <!-- Connection Pooling and jdbc -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -187,6 +182,12 @@
     <dependency>
         <artifactId>c3p0</artifactId>
         <groupId>com.mchange</groupId>
+    </dependency>
+      <!-- Profiling -->
+      <dependency>
+      <groupId>com.yourkit</groupId>
+      <artifactId>yjp-controller-api-redist</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
