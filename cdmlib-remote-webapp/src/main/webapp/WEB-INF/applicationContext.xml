@@ -6,6 +6,13 @@
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
+    
+  <!-- 
+    NOTE: 
+    For a detailed overview on the spring MVC and application context configuration and 
+    bootstrapping of this web application see: 
+    http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+  -->
 
   <!-- include default application context and customization -->
   <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml" />

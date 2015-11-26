@@ -3,6 +3,14 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0"> 
+      
+    <!-- 
+      NOTE: 
+      For a detailed overview on the spring MVC and application context configuration and 
+      bootstrapping of this web application see: 
+      http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+    -->
+    
     <description>cdmlib-remote web-application instance</description>
     <display-name>cdmlib-remote-webapp</display-name>
 

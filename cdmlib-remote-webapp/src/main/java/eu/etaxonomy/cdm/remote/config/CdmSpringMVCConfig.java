@@ -44,8 +44,12 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 /**
  * This is the main configuration for spring MVC application context.
  *
- * For detailed explanation of the configuration and bootstrapping of the
- * mvc application context see http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+ *
+ * <h3>NOTE:</h3>
+ *  For a detailed overview on the spring MVC and application context configuration and
+ *  bootstrapping of this web application see:
+ *  {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
+ *
  *
  * @author a.kohlbecker
  * @date Jul 1, 2014
