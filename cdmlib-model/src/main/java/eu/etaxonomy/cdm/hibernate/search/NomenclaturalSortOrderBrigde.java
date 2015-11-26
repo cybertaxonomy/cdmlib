@@ -11,11 +11,14 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -105,12 +108,11 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             txt.append(StringUtils.rightPad(rankStr, 2, PAD_CHAR));
         }
 
-        Field nameSortField = new Field(NAME_SORT_FIELD_NAME,
-                txt.toString(),
-                sortFieldOptions.getStore(),
-                sortFieldOptions.getIndex(),
-                sortFieldOptions.getTermVector()
-                );
+        System.err.println(((CdmBase)value).toString() + " " + document.toString());
+        Field nameSortField = new BinaryDocValuesField(NAME_SORT_FIELD_NAME, new BytesRef(txt.toString()));
+        if(document.get(NAME_SORT_FIELD_NAME)  != null) {
+            System.err.println("DUPLICATE!");
+        }
         document.add(nameSortField);
 
     }

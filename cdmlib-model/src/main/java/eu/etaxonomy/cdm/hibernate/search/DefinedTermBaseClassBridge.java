@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.ParameterizedBridge;
 
@@ -47,18 +49,14 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
 
         idFieldBridge.set(name + "id", term.getId(), document, idFieldOptions);
 
-        Field uuidField = new Field(name + "uuid",
+        Field uuidField = new StringField(name + "uuid",
                 term.getUuid().toString(),
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         document.add(uuidField);
 
-        Field langLabelField = new Field(name + "label",
+        Field langLabelField = new StringField(name + "label",
                 term.getLabel(),
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         langLabelField.setBoost(luceneOptions.getBoost());
         document.add(langLabelField);
 
@@ -72,11 +70,9 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
 
             DefinedTermBase parentTerm = term.getPartOf();
             while(parentTerm != null){
-                Field setOfParentsField = new Field(name + "setOfParents",
+                Field setOfParentsField = new StringField(name + "setOfParents",
                         parentTerm.getUuid().toString(),
-                        luceneOptions.getStore(),
-                        luceneOptions.getIndex(),
-                        luceneOptions.getTermVector());
+                        luceneOptions.getStore());
                 document.add(setOfParentsField);
                 parentTerm = parentTerm.getPartOf();
             }
@@ -95,19 +91,15 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         if(text == null){
             return;
         }
-        Field allField = new Field(name + "representation." + representationField + ".ALL",
+        Field allField = new TextField(name + "representation." + representationField + ".ALL",
                 text,
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         allField.setBoost(luceneOptions.getBoost());
         document.add(allField);
 
-        Field langField = new Field(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
+        Field langField = new TextField(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
                 text,
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         allField.setBoost(luceneOptions.getBoost());
         document.add(langField);
     }

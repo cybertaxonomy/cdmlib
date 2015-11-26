@@ -43,6 +43,8 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -112,8 +114,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Size(max = 800)  //see #1592
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
+        //  If the field is only needed for sorting and nothing else, you may configure it as
+        //  un-indexed and un-stored, thus avoid unnecessary index growth.
+        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.NO, index = Index.NO)
     })
+    @SortableField(forField = "titleCache__sort")
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
 
