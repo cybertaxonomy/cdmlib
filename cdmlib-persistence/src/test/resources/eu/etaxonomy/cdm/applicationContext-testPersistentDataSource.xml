@@ -13,7 +13,9 @@
     <!-- requires at least spring 2.5.4 -->
     <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource"/>
     
-    <context:component-scan base-package="eu/etaxonomy/cdm"/>
+   <!-- IS THIS REALY NEEDED? a.kohlbecker 25.11.2015
+    <context:component-scan base-package="eu/etaxonomy/cdm"/> 
+   -->
     
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
      
