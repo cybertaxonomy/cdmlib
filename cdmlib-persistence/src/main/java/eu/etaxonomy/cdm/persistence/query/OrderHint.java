@@ -59,7 +59,7 @@ public class OrderHint {
 
     public final String LUCENE_SCORE = "LUCENE_SCORE";
 
-    public static final List<OrderHint> ORDER_BY_ID = Arrays.asList(new OrderHint[]{new OrderHint("id", SortOrder.ASCENDING)});
+    public static final List<OrderHint> ORDER_BY_ID = Arrays.asList(new OrderHint[]{new OrderHint("id__sort", SortOrder.ASCENDING)});
 
     public static final List<OrderHint> ORDER_BY_TITLE_CACHE = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
 

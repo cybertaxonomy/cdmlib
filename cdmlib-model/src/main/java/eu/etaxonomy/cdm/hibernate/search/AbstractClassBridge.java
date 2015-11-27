@@ -36,4 +36,5 @@ public abstract class AbstractClassBridge implements FieldBridge {
     @Override
     abstract public void set(String name, Object value, Document document, LuceneOptions luceneOptions);
 
+
 }

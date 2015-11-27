@@ -338,7 +338,12 @@ public class QueryFactory {
             Class<? extends CdmBase> fromType) throws IOException {
             boolean multipleValuesPerDocument = true;
             ScoreMode scoreMode = ScoreMode.Max;
-            return JoinUtil.createJoinQuery(fromField, multipleValuesPerDocument, toField,
+            return JoinUtil.createJoinQuery(
+                    // need to use the sort field of the id field since
+                    // ScoreMode.Max forces the fromField to be a docValue
+                    // field of type [SORTED, SORTED_SET]
+                    fromField + "__sort",
+                    multipleValuesPerDocument, toField,
                     joinFromQuery, indexSearcherFor(fromType), scoreMode);
     }
 

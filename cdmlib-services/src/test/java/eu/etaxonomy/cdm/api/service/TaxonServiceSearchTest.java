@@ -639,6 +639,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //
         // modify the DescriptionElement
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
+        Assert.assertTrue("Search did not return any results", pager.getRecords().size() > 0);
         Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
         Document indexDocument = pager.getRecords().get(0).getDocs().iterator().next();
         String[] descriptionElementUuidStr = indexDocument.getValues("uuid");

@@ -9,13 +9,11 @@
  */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -64,11 +62,14 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
                     Field titleCachefield = new TextField(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES);
                     document.add(titleCachefield);
 
-                    Field titleCacheSortfield = new BinaryDocValuesField(
+                    // this should not be necessary since the IdentifiableEntity.titleCache already has the according annotation
+                    /*
+                    Field titleCacheSortfield = new SortedDocValuesField(
                             name + "taxon.titleCache__sort",
                             new BytesRef(taxon.getTitleCache())
                             );
-                    document.add(titleCacheSortfield);
+                    LuceneDocumentUtility.setOrReplaceDocValueField(titleCacheSortfield, document);
+                    */
 
                     Field uuidfield = new StringField(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES);
                     document.add(uuidfield);
