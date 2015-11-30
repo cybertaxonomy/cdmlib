@@ -121,17 +121,18 @@ public class Abcd206ImportReport {
         out.println("++++++++Import Report+++++++++");
       //all specimens
         Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
-        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
         for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
             UnitIdSpecimen parentSpecimen = entry.getKey();
-            incrementSpecimenTypeCount(specimenTypeToCount, parentSpecimen);
             allSpecimens.add(parentSpecimen);
             for (UnitIdSpecimen childSpecimen : entry.getValue()) {
-                incrementSpecimenTypeCount(specimenTypeToCount, childSpecimen);
                 allSpecimens.add(childSpecimen);
             }
         }
         out.println("Specimens created: "+allSpecimens.size());
+        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
+        for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
+            incrementSpecimenTypeCount(specimenTypeToCount, unitIdSpecimen);
+        }
         for(Entry<SpecimenOrObservationType, Integer> entry:specimenTypeToCount.entrySet()){
             SpecimenOrObservationType type = entry.getKey();
             out.println(type+": "+entry.getValue());
