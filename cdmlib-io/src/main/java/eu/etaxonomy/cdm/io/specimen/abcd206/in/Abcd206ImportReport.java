@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +94,9 @@ public class Abcd206ImportReport {
     }
 
     public void addException(String message, Exception e) {
-        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.toString()+"\n"+e.getStackTrace());
+        StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        infoMessages.add(message+"\n"+e.getMessage()+"\n"+errors.toString());
     }
 
     public void addInfoMessage(String message) {
