@@ -663,18 +663,28 @@ public class Abcd206XMLFieldGetter {
     }
 
     protected void getUnitNotes(Element root) {
-        NodeList notes;
-        try {
-            notes = root.getElementsByTagName(prefix + "Notes");
-            for (int i = 0; i < notes.getLength(); i++) {
-                dataHolder.unitNotes = notes.item(i).getTextContent();
-                path = notes.item(i).getNodeName();
-                getHierarchie(notes.item(i));
+        NodeList childNodes = root.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if(childNodes.item(i).getNodeName().equals(prefix + "Notes")){
+                dataHolder.unitNotes = childNodes.item(i).getTextContent();
+                path = childNodes.item(i).getNodeName();
+                getHierarchie(childNodes.item(i));
                 dataHolder.knownABCDelements.add(path);
                 path = "";
             }
-        } catch (NullPointerException e) {
-            logger.info(e);
+        }
+    }
+
+    //Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/SpatialDatum ../CoordinateErrorMethod
+    protected void getGatheringSpatialDatum(Element root) {
+        NodeList group = root.getElementsByTagName(prefix + "Gathering");
+        for (int i = 0; i < group.getLength(); i++) {
+            NodeList spatialDatum = ((Element) group.item(i)).getElementsByTagName(prefix + "SpatialDatum");
+            dataHolder.gatheringSpatialDatum = AbcdParseUtility.parseFirstTextContent(spatialDatum);
+        }
+        for (int i = 0; i < group.getLength(); i++) {
+            NodeList coordinateMethod = ((Element) group.item(i)).getElementsByTagName(prefix + "CoordinateErrorMethod");
+            dataHolder.gatheringCoordinateErrorMethod = AbcdParseUtility.parseFirstTextContent(coordinateMethod);
         }
     }
 

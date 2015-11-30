@@ -94,9 +94,10 @@ public class UnitsGatheringEvent {
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
             Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
-            String date, String gatheringNotes, List<String> collectorName, List<String> team, Abcd206ImportConfigurator config){
+            String date, String gatheringNotes, ReferenceSystem referenceSystem, List<String> collectorName,
+            List<String> team, Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
-        this.setCoordinates(longitude, latitude);
+        this.setCoordinates(longitude, latitude, referenceSystem);
         this.setDate(date);
         this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
@@ -170,6 +171,10 @@ public class UnitsGatheringEvent {
      * @param: latitude
      */
     public void setCoordinates(Double longitude, Double latitude){
+        setCoordinates(longitude, latitude, null);
+    }
+
+    public void setCoordinates(Double longitude, Double latitude, ReferenceSystem referenceSystem){
         //create coordinates point
         if((longitude == null) || (latitude == null)){
             return;
@@ -182,8 +187,7 @@ public class UnitsGatheringEvent {
         if (latitude != 0.0) {
             coordinates.setLatitude(latitude);
         }
-        //for proiBiosphere Quentin's data
-        coordinates.setReferenceSystem(ReferenceSystem.WGS84());
+        coordinates.setReferenceSystem(referenceSystem);
         this.gatheringEvent.setExactLocation(coordinates);
 
     }

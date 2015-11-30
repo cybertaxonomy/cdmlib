@@ -333,7 +333,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.getDataHolder().latitude, state.getDataHolder().gatheringElevationText,
                     state.getDataHolder().gatheringElevationMin, state.getDataHolder().gatheringElevationMax,
                     state.getDataHolder().gatheringElevationUnit, state.getDataHolder().gatheringDateText,
-                    state.getDataHolder().gatheringNotes, state.getDataHolder().gatheringAgentList,
+                    state.getDataHolder().gatheringNotes, state.getTransformer().getReferenceSystemByKey(
+                            state.getDataHolder().gatheringSpatialDatum), state.getDataHolder().gatheringAgentList,
                     state.getDataHolder().gatheringTeamList, state.getConfig());
 
             // country

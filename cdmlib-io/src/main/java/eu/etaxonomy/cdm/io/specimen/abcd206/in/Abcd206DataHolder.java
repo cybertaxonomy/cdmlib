@@ -67,6 +67,9 @@ public class Abcd206DataHolder {
     protected String gatheringElevationMax;
     protected String gatheringElevationMin;
     protected String gatheringElevationUnit;
+    protected String gatheringSpatialDatum;
+    protected String gatheringCoordinateErrorMethod;
+
 
 
     public void reset() {
@@ -96,6 +99,8 @@ public class Abcd206DataHolder {
         gatheringElevationMax = null;
         gatheringElevationMin = null;
         gatheringElevationUnit = null;
+        gatheringSpatialDatum = null;
+        gatheringCoordinateErrorMethod = null;
 
         identificationList = new ArrayList<Identification>();
         atomisedIdentificationList = new ArrayList<HashMap<String, String>>();

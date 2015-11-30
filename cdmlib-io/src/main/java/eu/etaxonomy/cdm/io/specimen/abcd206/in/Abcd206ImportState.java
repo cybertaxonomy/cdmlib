@@ -65,6 +65,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 	public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);
         report = new Abcd206ImportReport();
+        setTransformer(new AbcdTransformer());
 	}
 
 //************************ GETTER / SETTER *****************************************/
