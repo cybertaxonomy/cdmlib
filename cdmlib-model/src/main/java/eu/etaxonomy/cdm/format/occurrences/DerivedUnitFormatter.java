@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * @date Nov 30, 2015
  *
  */
-public class DerivedUnitFormatter extends AbstractCdmFormatter{
+public class DerivedUnitFormatter extends SpecimenOrObservationBaseFormatter{
 
     public DerivedUnitFormatter(Object object, FormatKey[] formatKeys) {
         super(object, formatKeys);
@@ -31,6 +31,25 @@ public class DerivedUnitFormatter extends AbstractCdmFormatter{
             switch (formatKey) {
             case ACCESSION_NUMBER:
                 formatKeyMap.put(FormatKey.ACCESSION_NUMBER, derivedUnit.getAccessionNumber());
+                break;
+            case BARCODE:
+                formatKeyMap.put(FormatKey.BARCODE, derivedUnit.getBarcode());
+                break;
+            case CATALOG_NUMBER:
+                formatKeyMap.put(FormatKey.CATALOG_NUMBER, derivedUnit.getCatalogNumber());
+                break;
+            case MOST_SIGNIFICANT_IDENTIFIER:
+                formatKeyMap.put(FormatKey.MOST_SIGNIFICANT_IDENTIFIER, derivedUnit.getMostSignificantIdentifier());
+                break;
+            case COLLECTION_CODE:
+                if(derivedUnit.getCollection()!=null){
+                    formatKeyMap.put(FormatKey.COLLECTION_CODE, derivedUnit.getCollection().getCode());
+                }
+                break;
+            case COLLECTION_NAME:
+                if(derivedUnit.getCollection()!=null){
+                    formatKeyMap.put(FormatKey.COLLECTION_NAME, derivedUnit.getCollection().getName());
+                }
                 break;
 
             default:
