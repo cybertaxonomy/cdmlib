@@ -36,7 +36,7 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
                 builder.append(string);
             }
         }
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     protected void initFormatKeys(Object object, FormatKey... formatKeys){

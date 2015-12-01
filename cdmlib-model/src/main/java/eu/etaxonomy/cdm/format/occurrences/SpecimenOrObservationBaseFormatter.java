@@ -26,8 +26,12 @@ public class SpecimenOrObservationBaseFormatter extends IdentifiableEntityFormat
     protected void initFormatKeys(Object object, FormatKey... formatKeys) {
         super.initFormatKeys(object);
         SpecimenOrObservationBase specimenOrObservationBase = (SpecimenOrObservationBase)object;
-        formatKeyMap.put(FormatKey.RECORD_BASIS, specimenOrObservationBase.getRecordBasis().toString());
-        formatKeyMap.put(FormatKey.KIND_OF_UNIT, specimenOrObservationBase.getKindOfUnit().toString());
+        if(specimenOrObservationBase.getRecordBasis()!=null){
+            formatKeyMap.put(FormatKey.RECORD_BASIS, specimenOrObservationBase.getRecordBasis().toString());
+        }
+        if(specimenOrObservationBase.getKindOfUnit()!=null){
+            formatKeyMap.put(FormatKey.KIND_OF_UNIT, specimenOrObservationBase.getKindOfUnit().toString());
+        }
     }
 
 }
