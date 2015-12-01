@@ -24,9 +24,33 @@ public interface ICdmFormatter {
         OPEN_BRACKET,
         CLOSE_BRACKET,
         SPACE,
-        /*occurrences*/
-        LOCALITY_TEXT,
-        ACCESSION_NUMBER
+        /*identifiable entity*/
+        SAMPLE_DESIGNATION,
+        /*specimenOrObservationBase*/
+        RECORD_BASIS,
+        KIND_OF_UNIT,
+        /*field unit*/
+        FIELD_NUMBER,
+        /*gathering event*/
+        GATHERING_COUNTRY,
+        GATHERING_LOCALITY_TEXT,
+        GATHERING_DATE,
+        GATHERING_COLLECTOR,
+        /*derived unit*/
+        COLLECTION_CODE,
+        COLLECTION_NAME,
+        MOST_SIGNIFICANT_IDENTIFIER,
+        ACCESSION_NUMBER,
+        BARCODE,
+        CATALOG_NUMBER,
+        /*media specimen*/
+        MEDIA_TITLE,
+        MEDIA_ARTIST,
+        /*sequence*/
+        SEQUENCE_DNA_MARKER,
+        /*single read*/
+        SINGLE_READ_PRIMER,
+        AMPLIFICATION_LABEL,
     }
 
     public String format(Object object, FormatKey... formatKeys);
