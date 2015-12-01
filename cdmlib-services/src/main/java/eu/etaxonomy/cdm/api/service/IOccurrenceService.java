@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -505,8 +506,19 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimens as a type specimen.
+     * @param specimens the type specimens
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return map of all designations with the given type specimens
+     */
+    public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(Collection<DerivedUnit> specimens, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
@@ -517,7 +529,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return collection of all designations with the given type specimen
      */
-    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(DerivedUnit specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link DescriptionBase}s that have the given specimen set as described specimen.

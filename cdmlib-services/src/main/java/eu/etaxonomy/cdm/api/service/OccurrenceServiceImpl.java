@@ -1272,7 +1272,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //individuals associations
         associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, limit, start, orderHints, propertyPaths));
         //type designation
-        associatedTaxa.addAll(listTypeDesignationTaxa(specimen, limit, start, orderHints, propertyPaths));
+        if(specimen.isInstanceOf(DerivedUnit.class)){
+            associatedTaxa.addAll(listTypeDesignationTaxa(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class), limit, start, orderHints, propertyPaths));
+        }
         //determinations
         associatedTaxa.addAll(listDeterminedTaxa(specimen, limit, start, orderHints, propertyPaths));
 
@@ -1298,7 +1300,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<TaxonBase<?>>();
         for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
@@ -1334,7 +1336,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen,
+    public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(
+            Collection<DerivedUnit> specimens, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Map<DerivedUnit, Collection<SpecimenTypeDesignation>> typeDesignationMap = new HashMap<DerivedUnit, Collection<SpecimenTypeDesignation>>();
+        for (DerivedUnit specimen : specimens) {
+            Collection<SpecimenTypeDesignation> typeDesignations = listTypeDesignations(specimen, limit, start, orderHints, propertyPaths);
+            typeDesignationMap.put(specimen, typeDesignations);
+        }
+        return typeDesignationMap;
+    }
+
+    @Override
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(DerivedUnit specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.listTypeDesignations(specimen, limit, start, orderHints, propertyPaths);
     }
