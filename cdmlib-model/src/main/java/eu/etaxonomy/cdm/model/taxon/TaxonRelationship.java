@@ -183,7 +183,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @Override
     protected void setRelatedFrom(Taxon relatedFrom) {
         if (relatedFrom == null){
-            this.deletedObjects.add(this.relatedFrom);
+         //   this.deletedObjects.add(this.relatedFrom);
         }
         this.relatedFrom = relatedFrom;
     }
@@ -191,7 +191,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @Override
     protected void setRelatedTo(Taxon relatedTo) {
         if (relatedTo == null){
-            this.deletedObjects.add(this.relatedTo);
+          //  this.deletedObjects.add(this.relatedTo);
         }
         this.relatedTo = relatedTo;
     }

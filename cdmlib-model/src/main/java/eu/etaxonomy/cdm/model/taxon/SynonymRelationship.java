@@ -252,7 +252,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @Override
     protected void setRelatedFrom(Synonym relatedFrom) {
         if (relatedFrom == null){
-            this.deletedObjects.add(this.relatedFrom);
+         //   this.deletedObjects.add(this.relatedFrom);
         }
         this.relatedFrom = relatedFrom;
     }
@@ -260,7 +260,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @Override
     protected void setRelatedTo(Taxon relatedTo) {
         if (relatedTo == null){
-            this.deletedObjects.add(this.relatedTo);
+          //  this.deletedObjects.add(this.relatedTo);
         }
         this.relatedTo = relatedTo;
     }

@@ -1205,6 +1205,68 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(value="BlankDataSet.xml")
+    public final void testDeleteTaxonUsedInTaxonRelation(){
+
+        //create a small classification
+        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+
+        UUID uuid = service.save(testTaxon).getUuid();
+
+        Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        Taxon speciesTaxon2 = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
+        speciesTaxon.addTaxonRelation(speciesTaxon2, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
+
+        BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+        assertNotNull(taxonName);
+
+        TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+        config.setDeleteNameIfPossible(false);
+        config.setDeleteTaxonRelationships(false);
+
+
+       // try {
+
+        DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
+        if (result.isOk()){
+            Assert.fail();
+        }
+        commitAndStartNewTransaction(null);
+
+        taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+        Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+
+
+        assertNotNull(taxonName);
+        assertNotNull(taxon);
+
+
+        config.setDeleteNameIfPossible(false);
+        config.setDeleteTaxonRelationships(true);
+
+
+       // try {
+
+       result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
+        if (!result.isOk()){
+            Assert.fail();
+        }
+        commitAndStartNewTransaction(null);
+
+
+        config.setDeleteNameIfPossible(true);
+        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        service.save(newTaxon);
+        result = service.deleteTaxon(newTaxon.getUuid()
+                , config, null);
+        if (!result.isOk()){
+            Assert.fail();
+        }
+
+
+    }
+
+    @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
 
