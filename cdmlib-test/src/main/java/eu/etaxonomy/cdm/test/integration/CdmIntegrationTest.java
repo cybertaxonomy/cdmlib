@@ -81,7 +81,10 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * @author a.kohlbecker (2013)
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-@HibernateSessionFactory("/eu/etaxonomy/cdm/hibernate.cfg.xml")
+// @HibernateSessionFactory is only needed for test phases like afterTestTearDown
+// which are configured to run without a spring application context.
+// for further details, see /cdmlib-test/src/main/resources/eu/etaxonomy/cdm/hibernate-test.cfg.xml
+@HibernateSessionFactory({"/eu/etaxonomy/cdm/hibernate.cfg.xml", "/eu/etaxonomy/cdm/hibernate-test.cfg.xml"})
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
