@@ -114,7 +114,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
     private Classification classification;
 
     @XmlElementWrapper(name = "childNodes")

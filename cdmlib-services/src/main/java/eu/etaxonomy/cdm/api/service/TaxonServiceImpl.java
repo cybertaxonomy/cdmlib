@@ -1768,7 +1768,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         // set sort order and thus override any sort orders which may have been
-        // defindes by prepare*Search methods
+        // defined by prepare*Search methods
         if(orderHints == null){
             orderHints = OrderHint.NOMENCLATURAL_SORT_ORDER;
         }

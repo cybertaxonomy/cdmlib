@@ -119,7 +119,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     private TaxonNameBase<?,?> name;

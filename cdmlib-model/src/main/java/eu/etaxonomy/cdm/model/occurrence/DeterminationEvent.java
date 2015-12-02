@@ -78,7 +78,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonBase<?> taxon;
 	
@@ -87,7 +87,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonNameBase<?,?> taxonName;
 

@@ -82,7 +82,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="institution_id")
 	private Institution institution;
-	
+
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -195,7 +195,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		}
 		derivatives.remove(derivative);
 	}
-	
+
     /**
      * #4498
      * @return

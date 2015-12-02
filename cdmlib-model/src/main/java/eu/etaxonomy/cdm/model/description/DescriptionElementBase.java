@@ -143,7 +143,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
     private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")

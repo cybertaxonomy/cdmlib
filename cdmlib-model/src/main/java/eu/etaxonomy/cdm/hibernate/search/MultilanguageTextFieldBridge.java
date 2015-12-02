@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
@@ -54,7 +53,7 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
             allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
-            Field langField = new StringField(name + "." + languageString.getLanguage().getUuid(),
+            Field langField = new TextField(name + "." + languageString.getLanguage().getUuid(),
                     languageString.getText(),
                     luceneOptions.getStore()
                     );

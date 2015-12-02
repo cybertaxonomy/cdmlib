@@ -34,6 +34,7 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
     private static final String INCLUDE_PARENT_TERMS_KEY = "includeParentTerms";
     private boolean includeParentTerms = false;
 
+
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
      */
@@ -54,9 +55,9 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
                 luceneOptions.getStore());
         document.add(uuidField);
 
-        Field langLabelField = new StringField(name + "label",
-                term.getLabel(),
-                luceneOptions.getStore());
+        Field langLabelField = new TextField(name + "label",
+              term.getLabel(),
+              luceneOptions.getStore());
         langLabelField.setBoost(luceneOptions.getBoost());
         document.add(langLabelField);
 

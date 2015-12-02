@@ -91,7 +91,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlSchemaType(name="IDREF")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @JoinColumn(name="specimen_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
     //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
     private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
     
