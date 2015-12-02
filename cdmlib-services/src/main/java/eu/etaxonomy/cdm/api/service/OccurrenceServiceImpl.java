@@ -1440,6 +1440,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid){
+        return getAllChildDerivatives(load(specimenUuid));
+    }
+
+    @Override
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen){
         List<DerivedUnit> childDerivate = new ArrayList<DerivedUnit>();
         Set<DerivationEvent> derivationEvents = specimen.getDerivationEvents();
@@ -1447,7 +1452,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
             for (DerivedUnit derivedUnit : derivatives) {
                 childDerivate.add(derivedUnit);
-                childDerivate.addAll(getAllChildDerivatives(derivedUnit));
+                childDerivate.addAll(getAllChildDerivatives(derivedUnit.getUuid()));
             }
         }
         return childDerivate;

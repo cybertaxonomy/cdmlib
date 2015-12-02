@@ -611,4 +611,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
 
+    /**
+     * Returns all child derivatives of the given specimen.
+     * @param specimen the UUID of a specimen or observation
+     * @return an unordered list of all child derivatives
+     */
+    public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid);
+
 }
