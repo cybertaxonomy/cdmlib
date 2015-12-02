@@ -24,6 +24,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -152,21 +153,21 @@ public class QueryFactory {
      */
     public Query newDefinedTermQuery(String name, String queryString, List<Language> languages) {
 
-        BooleanQuery localizedTermQuery = new BooleanQuery();
-        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
+        Builder localizedTermQueryBuilder = new Builder();
+        localizedTermQueryBuilder.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
         if(languages == null || languages.size() == 0){
-            localizedTermQuery.add(newTermQuery(name + ".representation.text.ALL", queryString), Occur.SHOULD);
-            localizedTermQuery.add(newTermQuery(name + ".representation.label.ALL", queryString), Occur.SHOULD);
-            localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.text.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.label.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.abbreviatedLabel.ALL", queryString), Occur.SHOULD);
 
         } else {
             for(Language lang : languages){
-                localizedTermQuery.add(newTermQuery(name + ".representation.text." + lang.getUuid().toString(), queryString), Occur.SHOULD);
-                localizedTermQuery.add(newTermQuery(name + ".representation.label." + lang.getUuid().toString(), queryString), Occur.SHOULD);
-                localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.text." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.label." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.abbreviatedLabel." + lang.getUuid().toString(), queryString), Occur.SHOULD);
             }
         }
-        return localizedTermQuery;
+        return localizedTermQueryBuilder.build();
     }
 
     /**
@@ -187,16 +188,16 @@ public class QueryFactory {
      */
     public Query newMultilanguageTextQuery(String name, String queryString, List<Language> languages) {
 
-        BooleanQuery localizedTermQuery = new BooleanQuery();
-        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
+        Builder localizedTermQueryBuilder = new Builder();
+        localizedTermQueryBuilder.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
         if(languages == null || languages.size() == 0){
-            localizedTermQuery.add(newTermQuery(name + ".ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".ALL", queryString), Occur.SHOULD);
         } else {
             for(Language lang : languages){
-                localizedTermQuery.add(newTermQuery(name + "." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + "." + lang.getUuid().toString(), queryString), Occur.SHOULD);
             }
         }
-        return localizedTermQuery;
+        return localizedTermQueryBuilder.build();
     }
 
     /**
@@ -214,13 +215,13 @@ public class QueryFactory {
      * @return
      */
     public Query newEntityIdsQuery(String idFieldName, List<? extends CdmBase> entities){
-        BooleanQuery idInQuery = new BooleanQuery();
+        Builder idInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
             for(CdmBase entity : entities){
-                idInQuery.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
+                idInQueryBuilder.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
             }
         }
-        return idInQuery;
+        return idInQueryBuilder.build();
     }
 
     /**
@@ -249,13 +250,13 @@ public class QueryFactory {
      */
     public Query newEntityUuidsQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
 
-        BooleanQuery uuidInQuery = new BooleanQuery();
+        Builder uuidInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
             for(IdentifiableEntity entity : entities){
-                uuidInQuery.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
+                uuidInQueryBuilder.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
             }
         }
-        return uuidInQuery;
+        return uuidInQueryBuilder.build();
     }
 
 
@@ -269,13 +270,13 @@ public class QueryFactory {
      */
     public Query newUuidQuery(String uuidFieldName, List<UUID> uuids){
 
-        BooleanQuery uuidInQuery = new BooleanQuery();
+        Builder uuidInQueryBuilder = new Builder();
         if(uuids != null && uuids.size() > 0 ){
             for(UUID uuid : uuids){
-                uuidInQuery.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
+                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
             }
         }
-        return uuidInQuery;
+        return uuidInQueryBuilder.build();
     }
 
 
@@ -302,26 +303,25 @@ public class QueryFactory {
                 boundingBox.getUpperRight().getLatitude(), true, true
         );
 
-        Query longQuery= null;
+        Builder longQueryBuilder = new Builder();
         if ( boundingBox.getLowerLeft().getLongitude() <= boundingBox.getUpperRight().getLongitude() ) {
-            longQuery = NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-                    boundingBox.getUpperRight().getLongitude(), true, true );
+            longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+                    boundingBox.getUpperRight().getLongitude(), true, true ), Occur.MUST);
         }
         else {
-            longQuery= new BooleanQuery();
-            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
                     180.0, true, true ), BooleanClause.Occur.SHOULD );
-            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
+            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
                     boundingBox.getUpperRight().getLongitude(), true, true ), BooleanClause.Occur.SHOULD );
         }
 
-        BooleanQuery boxQuery = new BooleanQuery();
-        boxQuery.add( latQuery, BooleanClause.Occur.MUST );
-        boxQuery.add( longQuery, BooleanClause.Occur.MUST );
+        Builder boxQueryBuilder = new Builder();
+        boxQueryBuilder.add( latQuery, BooleanClause.Occur.MUST );
+        boxQueryBuilder.add( longQueryBuilder.build(), BooleanClause.Occur.MUST );
 
         return new FilteredQuery(
                 new MatchAllDocsQuery(),
-                new QueryWrapperFilter( boxQuery )
+                new QueryWrapperFilter( boxQueryBuilder.build() )
         );
     }
 
@@ -358,22 +358,23 @@ public class QueryFactory {
      * @param query
      * @return
      */
-    public static Query addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
+    public static BooleanQuery addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
 
-        Query fullQuery;
-        BooleanQuery filteredQuery = new BooleanQuery();
-        BooleanQuery classFilter = new BooleanQuery();
+        BooleanQuery fullQuery;
+        Builder filteredQueryBuilder = new Builder();
+        Builder classFilterBuilder = new Builder();
 
         Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
         TermQuery termQuery = new TermQuery(t);
 
+        classFilterBuilder.add(termQuery, BooleanClause.Occur.SHOULD);
+        BooleanQuery classFilter = classFilterBuilder.build();
         classFilter.setBoost(0);
-        classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
 
-        filteredQuery.add(query, BooleanClause.Occur.MUST);
-        filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+        filteredQueryBuilder.add(query, BooleanClause.Occur.MUST);
+        filteredQueryBuilder.add(classFilter, BooleanClause.Occur.MUST);
 
-        fullQuery = filteredQuery;
+        fullQuery = filteredQueryBuilder.build();
         return fullQuery;
     }
 

@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.SortField;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
@@ -789,8 +789,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
             List<Language> languages, boolean highlightFragments) {
 
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
+        Builder finalQueryBuilder = new Builder();
+        Builder textQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, FieldUnit.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(FieldUnit.class);
@@ -798,16 +798,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         // --- criteria
         luceneSearch.setCdmTypRestriction(clazz);
         if (queryString != null) {
-            textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-            finalQuery.add(textQuery, Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            finalQueryBuilder.add(textQueryBuilder.build(), Occur.MUST);
         }
 
         // --- spacial query
         if (bbox != null) {
-            finalQuery.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
+            finalQueryBuilder.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
         }
 
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(finalQueryBuilder.build());
 
         // --- sorting
         SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };

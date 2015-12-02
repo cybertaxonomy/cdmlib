@@ -30,6 +30,7 @@ import org.apache.lucene.queries.BooleanFilter;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
@@ -1630,8 +1631,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Language> languages,
             boolean highlightFragments, SortField[] sortFields) {
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
+        Builder finalQueryBuilder = new Builder();
+        Builder textQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
@@ -1645,19 +1646,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneSearch.setCdmTypRestriction(clazz);
 
         if(!queryString.isEmpty() && !queryString.equals("*") && !queryString.equals("?") ) {
-            textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-            textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+            textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            textQueryBuilder.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
         }
 
-        if(textQuery.getClauses().length > 0) {
-            finalQuery.add(textQuery, Occur.MUST);
+        BooleanQuery textQuery = textQueryBuilder.build();
+        if(textQuery.clauses().size() > 0) {
+            finalQueryBuilder.add(textQuery, Occur.MUST);
         }
 
 
         if(classification != null){
-            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(finalQueryBuilder.build());
 
         if(highlightFragments){
             luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
@@ -1705,27 +1707,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             throw new RuntimeException("Invalid direction: " + edge.getDirections());
         }
 
-        BooleanQuery finalQuery = new BooleanQuery();
+        Builder finalQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
-        BooleanQuery joinFromQuery = new BooleanQuery();
-        joinFromQuery.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
-        joinFromQuery.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
-        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
+        Builder joinFromQueryBuilder = new Builder();
+        joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
+        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQueryBuilder.build(), TaxonRelationship.class);
 
         if(sortFields == null){
             sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING,  false)};
         }
         luceneSearch.setSortFields(sortFields);
 
-        finalQuery.add(joinQuery, Occur.MUST);
+        finalQueryBuilder.add(joinQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(finalQueryBuilder.build());
 
         if(highlightFragments){
             luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
@@ -1828,7 +1830,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         QueryFactory distributionFilterQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
 
         BooleanFilter multiIndexByAreaFilter = new BooleanFilter();
-
 
         // search for taxa or synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
@@ -2030,15 +2031,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     private BooleanQuery createByDistributionQuery(List<NamedArea> namedAreaList,
             List<PresenceAbsenceTerm> distributionStatusList, QueryFactory queryFactory) {
-        BooleanQuery areaQuery = new BooleanQuery();
+        Builder areaQueryBuilder = new Builder();
         // area field from Distribution
-        areaQuery.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
+        areaQueryBuilder.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
 
         // status field from Distribution
         if(distributionStatusList != null && distributionStatusList.size() > 0){
-            areaQuery.add(queryFactory.newEntityIdsQuery("status.id", distributionStatusList), Occur.MUST);
+            areaQueryBuilder.add(queryFactory.newEntityIdsQuery("status.id", distributionStatusList), Occur.MUST);
         }
 
+        BooleanQuery areaQuery = areaQueryBuilder.build();
         logger.debug("createByDistributionQuery() query: " + areaQuery.toString());
         return areaQuery;
     }
@@ -2058,7 +2060,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             List<NamedArea> namedAreaList, List<PresenceAbsenceTerm> distributionStatusList,
             Classification classification) throws IOException {
 
-        BooleanQuery finalQuery = new BooleanQuery();
+        Builder finalQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
 
@@ -2071,12 +2073,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, taxonQueryFactory);
 
-        finalQuery.add(byAreaQuery, Occur.MUST);
+        finalQueryBuilder.add(byAreaQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(taxonQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
-
+        BooleanQuery finalQuery = finalQueryBuilder.build();
         logger.info("prepareByAreaSearch() query: " + finalQuery.toString());
         luceneSearch.setQuery(finalQuery);
 
@@ -2181,57 +2183,57 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     private BooleanQuery createByDescriptionElementFullTextQuery(String queryString, Classification classification,
             List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
-        textQuery.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        Builder finalQueryBuilder = new Builder();
+        Builder textQueryBuilder = new Builder();
+        textQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name
-        Query nameQuery;
+        Builder nameQueryBuilder = new Builder();
         if(languages == null || languages.size() == 0){
-            nameQuery = descriptionElementQueryFactory.newTermQuery("name", queryString);
+            nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
         } else {
-            nameQuery = new BooleanQuery();
-            BooleanQuery languageSubQuery = new BooleanQuery();
+            Builder languageSubQueryBuilder = new Builder();
             for(Language lang : languages){
-                languageSubQuery.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
+                languageSubQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
             }
-            ((BooleanQuery) nameQuery).add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
-            ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
+            nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
+            nameQueryBuilder.add(languageSubQueryBuilder.build(), Occur.MUST);
         }
-        textQuery.add(nameQuery, Occur.SHOULD);
+        textQueryBuilder.add(nameQueryBuilder.build(), Occur.SHOULD);
 
 
         // text field from TextData
-        textQuery.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
+        textQueryBuilder.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
+        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
+        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
 
         // area field from Distribution
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
+        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
 
         // status field from Distribution
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
+        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
 
-        finalQuery.add(textQuery, Occur.MUST);
+        finalQueryBuilder.add(textQueryBuilder.build(), Occur.MUST);
         // --- classification ----
 
         if(classification != null){
-            finalQuery.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid
         if(features != null && features.size() > 0 ){
-            finalQuery.add(descriptionElementQueryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
+            finalQueryBuilder.add(descriptionElementQueryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
         }
 
         // the description must be associated with a taxon
-        finalQuery.add(descriptionElementQueryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
+        finalQueryBuilder.add(descriptionElementQueryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
+        BooleanQuery finalQuery = finalQueryBuilder.build();
         logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
         return finalQuery;
     }

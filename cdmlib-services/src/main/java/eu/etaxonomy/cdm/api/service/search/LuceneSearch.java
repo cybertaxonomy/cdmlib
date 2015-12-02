@@ -16,6 +16,9 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
@@ -117,7 +120,7 @@ public class LuceneSearch {
      */
     public final int MAX_HITS_ALLOWED = 10000;
 
-    protected Query query;
+    protected BooleanQuery query;
 
     protected String[] highlightFields = new String[0];
 
@@ -210,8 +213,7 @@ public class LuceneSearch {
     public TopGroupsWithMaxScore executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
-        this.query = luceneQuery;
-
+        setQuery(luceneQuery);
         return executeSearch(pageSize, pageNumber);
     }
 
@@ -322,7 +324,7 @@ public class LuceneSearch {
      * <code>cdmTypeRestriction</code> is not <code>NULL</code>
      */
     protected Query expandQuery() {
-        Query fullQuery;
+        BooleanQuery fullQuery;
         if(cdmTypeRestriction != null){
             fullQuery = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
         } else {
@@ -332,10 +334,15 @@ public class LuceneSearch {
     }
 
     public void setQuery(Query query) {
-        this.query = query;
+        if( query instanceof BooleanQuery) {
+            this.query = (BooleanQuery)query;
+        } else {
+            Builder builder = new Builder();
+            this.query = builder.add(query, Occur.MUST).build();
+        }
     }
 
-    public Query getQuery() {
+    public BooleanQuery getQuery() {
         return query;
     }
 
