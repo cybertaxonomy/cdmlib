@@ -26,7 +26,6 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queries.BooleanFilter;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -1829,7 +1828,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
          */
         QueryFactory distributionFilterQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
 
-        BooleanFilter multiIndexByAreaFilter = new BooleanFilter();
+        Builder multiIndexByAreaFilterBuilder = new Builder();
 
         // search for taxa or synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
@@ -1862,7 +1861,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
 
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
-                multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+                multiIndexByAreaFilterBuilder.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
 
             }
         }
@@ -1877,7 +1876,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     QueryFactory.addTypeRestriction(
                                 createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
                                 , CommonTaxonName.class
-                                ),
+                                ).build(),
                     CommonTaxonName.class);
             logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
@@ -1958,7 +1957,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
 //                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
 
-                multiIndexByAreaFilter.add(filter, Occur.SHOULD);
+                multiIndexByAreaFilterBuilder.add(filter, Occur.SHOULD);
             }
         }
 
@@ -1979,11 +1978,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     distributionStatusList,
                     distributionFilterQueryFactory
                     );
-            multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+            multiIndexByAreaFilterBuilder.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
         }
 
         if (addDistributionFilter){
-            multiSearch.setFilter(multiIndexByAreaFilter);
+            multiSearch.setFilter(multiIndexByAreaFilterBuilder.build());
         }
 
 

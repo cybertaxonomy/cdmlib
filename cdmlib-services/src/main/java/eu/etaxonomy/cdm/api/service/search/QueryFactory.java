@@ -358,7 +358,7 @@ public class QueryFactory {
      * @param query
      * @return
      */
-    public static BooleanQuery addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
+    public static BooleanQuery.Builder addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
 
         BooleanQuery fullQuery;
         Builder filteredQueryBuilder = new Builder();
@@ -374,8 +374,7 @@ public class QueryFactory {
         filteredQueryBuilder.add(query, BooleanClause.Occur.MUST);
         filteredQueryBuilder.add(classFilter, BooleanClause.Occur.MUST);
 
-        fullQuery = filteredQueryBuilder.build();
-        return fullQuery;
+        return filteredQueryBuilder;
     }
 
     /**

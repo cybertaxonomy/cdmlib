@@ -19,7 +19,6 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
@@ -64,7 +63,7 @@ public class LuceneSearch {
 
     private Class<? extends CdmBase> directorySelectClass;
 
-    private Filter filter = null;
+    private BooleanQuery filter = null;
 
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
@@ -83,14 +82,14 @@ public class LuceneSearch {
     /**
      * @return the filter
      */
-    public Filter getFilter() {
+    public BooleanQuery getFilter() {
         return filter;
     }
 
     /**
      * @param filter the filter to set
      */
-    public void setFilter(Filter filter) {
+    public void setFilter(BooleanQuery filter) {
         this.filter = filter;
     }
 
@@ -234,9 +233,9 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
-        Query fullQuery = expandQuery();
+        BooleanQuery fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, filter, maxNoOfHits);
+        return getSearcher().search(fullQuery, maxNoOfHits);
 
     }
     /**
@@ -257,7 +256,7 @@ public class LuceneSearch {
             logger.info("limiting pageSize to MAX_HITS_ALLOWED = " + MAX_HITS_ALLOWED + " items");
         }
 
-        Query fullQuery = expandQuery();
+        BooleanQuery fullQuery = expandQuery();
         logger.info("final query: " + fullQuery.toString());
 
         int offset = pageNumber * pageSize;
@@ -282,7 +281,7 @@ public class LuceneSearch {
         TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(
                 groupByField, groupSort, limit);
 
-        getSearcher().search(fullQuery, filter , firstPassCollector);
+        getSearcher().search(fullQuery, firstPassCollector);
         Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
@@ -302,7 +301,7 @@ public class LuceneSearch {
                 groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores,
                 getMaxScores, fillFields
                 );
-        getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
+        getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<BytesRef> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
@@ -322,14 +321,31 @@ public class LuceneSearch {
     /**
      * expands the query by adding a type restriction if the
      * <code>cdmTypeRestriction</code> is not <code>NULL</code>
+     * and adds the <code>filter</code> as Boolean query
+     * clause with {@link Occur#FILTER}
      */
-    protected Query expandQuery() {
-        BooleanQuery fullQuery;
+    protected BooleanQuery expandQuery() {
+        BooleanQuery fullQuery = null;
+        Builder fullQueryBuilder = null;
+
         if(cdmTypeRestriction != null){
-            fullQuery = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
+            fullQueryBuilder = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
+        }
+
+        if(filter != null) {
+            if(fullQueryBuilder == null) {
+                fullQueryBuilder = new Builder();
+                fullQueryBuilder.add(this.query, Occur.MUST);
+            }
+            fullQueryBuilder.add(filter, Occur.FILTER);
+        }
+
+        if(fullQueryBuilder != null) {
+            fullQuery = fullQueryBuilder.build();
         } else {
             fullQuery = this.query;
         }
+
         return fullQuery;
     }
 
@@ -346,7 +362,7 @@ public class LuceneSearch {
         return query;
     }
 
-    public Query getExpandedQuery() {
+    public BooleanQuery getExpandedQuery() {
         expandQuery();
         return query;
     }
