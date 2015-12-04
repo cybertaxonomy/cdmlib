@@ -335,13 +335,13 @@ public class QueryFactory {
      * @param toField
      * @param toType
      *      Optional parameter. Only used for debugging only, can be left null otherwise.
+     * @param scoreMode TODO
      * @return
      * @throws IOException
      */
     public Query newJoinQuery(Class<? extends CdmBase> fromType, String fromField, boolean fromFieldIsMultivalued,
-            Query fromQuery, String toField, Class<? extends CdmBase> toType) throws IOException {
+            Query fromQuery, String toField, Class<? extends CdmBase> toType, ScoreMode scoreMode) throws IOException {
             boolean multipleValuesPerDocument = false;
-            ScoreMode scoreMode = ScoreMode.Max;
             Query joinQuery = JoinUtil.createJoinQuery(
                     // need to use the sort field of the id field since
                     // ScoreMode.Max forces the fromField to be a docValue
