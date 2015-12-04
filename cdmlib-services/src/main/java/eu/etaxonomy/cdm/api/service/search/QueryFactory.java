@@ -25,14 +25,15 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
 import org.apache.lucene.search.join.ScoreMode;
@@ -326,33 +327,48 @@ public class QueryFactory {
     }
 
     /**
-     *
-     * @param fromField
-     * @param toField
-     * @param joinFromQuery
+     * Warning! JoinQuery do currently not work with numeric fields, see https://issues.apache.org/jira/browse/LUCENE-4824
      * @param fromType
+     * @param fromField
+     * @param fromFieldIsMultivalued TODO
+     * @param fromQuery
+     * @param toField
+     * @param toType
+     *      Optional parameter. Only used for debugging only, can be left null otherwise.
      * @return
      * @throws IOException
      */
-    public Query newJoinQuery(String fromField, String toField, Query joinFromQuery,
-            Class<? extends CdmBase> fromType) throws IOException {
-            boolean multipleValuesPerDocument = true;
+    public Query newJoinQuery(Class<? extends CdmBase> fromType, String fromField, boolean fromFieldIsMultivalued,
+            Query fromQuery, String toField, Class<? extends CdmBase> toType) throws IOException {
+            boolean multipleValuesPerDocument = false;
             ScoreMode scoreMode = ScoreMode.Max;
-            return JoinUtil.createJoinQuery(
+            Query joinQuery = JoinUtil.createJoinQuery(
                     // need to use the sort field of the id field since
                     // ScoreMode.Max forces the fromField to be a docValue
                     // field of type [SORTED, SORTED_SET]
                     fromField + "__sort",
                     multipleValuesPerDocument, toField,
-                    joinFromQuery, indexSearcherFor(fromType), scoreMode);
+                    fromQuery, indexSearcherFor(fromType), scoreMode);
+            if(logger.isDebugEnabled()) {
+                logger.debug("joinQuery: " + joinQuery);
+                if(toType != null) {
+                    TopDocs result = indexSearcherFor(toType).search(joinQuery, 10);
+                    ScoreDoc[] docs = result.scoreDocs;
+                    logger.debug("joinQuery '" + fromType.getSimpleName() + ". " + fromField + "=" + toField + " where " + fromType.getSimpleName() + " matches "+ fromQuery + "' has " + result.totalHits + " results:");
+                    for(ScoreDoc doc : docs) {
+                        logger.debug("    toType doc: " + doc);
+                            IndexReader indexReader = toolProvider.getIndexReaderFor(toType);
+                            logger.debug("              : " + indexReader.document(doc.doc));
+                        }
+                    }
+            }
+            return joinQuery;
     }
 
     /**
      * Creates a class restriction query and wraps the class restriction
      * query and the given <code>query</code> into a BooleanQuery where both must match.
      * <p>
-     * TODO instead of using a BooleanQuery for the class restriction it would be much more
-     *  performant to use a {@link Filter} instead.
      *
      * @param cdmTypeRestriction
      * @param query
@@ -367,12 +383,12 @@ public class QueryFactory {
         Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
         TermQuery termQuery = new TermQuery(t);
 
-        classFilterBuilder.add(termQuery, BooleanClause.Occur.SHOULD);
+        classFilterBuilder.add(termQuery, Occur.SHOULD);
         BooleanQuery classFilter = classFilterBuilder.build();
         classFilter.setBoost(0);
 
-        filteredQueryBuilder.add(query, BooleanClause.Occur.MUST);
-        filteredQueryBuilder.add(classFilter, BooleanClause.Occur.MUST);
+        filteredQueryBuilder.add(query, Occur.MUST);
+        filteredQueryBuilder.add(classFilter, Occur.MUST); // TODO using Occur.FILTER might be improve performance but causes wrong results
 
         return filteredQueryBuilder;
     }

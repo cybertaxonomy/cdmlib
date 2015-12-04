@@ -346,6 +346,7 @@ public class LuceneSearch {
             fullQuery = this.query;
         }
 
+        logger.debug("expandedQuery: " + fullQuery.toString());
         return fullQuery;
     }
 

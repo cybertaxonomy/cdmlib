@@ -69,8 +69,8 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
                 sb.append(ACCEPTED_TAXON_UUID_LIST_SEP);
 
                 // adding the accTaxon id as multivalue field:
-                Field canonicalNameIdField = new IntField(name + DOC_KEY_ID_SUFFIX,
-                        accTaxon.getId(),
+                Field canonicalNameIdField = new StringField(name + DOC_KEY_ID_SUFFIX,
+                        Integer.toString(accTaxon.getId()),
                         luceneOptions.getStore()
                         );
                 document.add(canonicalNameIdField);
