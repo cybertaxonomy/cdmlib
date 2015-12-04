@@ -32,7 +32,9 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.util.BytesRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +58,6 @@ import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
-import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
@@ -1581,7 +1582,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments, null);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
@@ -1591,7 +1592,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1604,7 +1605,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
@@ -1614,7 +1615,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1988,7 +1989,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
@@ -1997,7 +1998,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -2100,7 +2101,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, features, languages, highlightFragments);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
@@ -2111,7 +2112,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }
@@ -2128,7 +2129,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
@@ -2140,7 +2141,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }
