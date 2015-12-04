@@ -398,11 +398,10 @@ public class QueryFactory {
      * @return
      */
     private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
-        if(indexSearcherMap.get(clazz) == null){
 
+        if(indexSearcherMap.get(clazz) == null){
             IndexReader indexReader = toolProvider.getIndexReaderFor(clazz);
             IndexSearcher searcher = new IndexSearcher(indexReader);
-//            searcher.setDefaultFieldSortScoring(true, true);
             indexSearcherMap.put(clazz, searcher);
         }
         IndexSearcher indexSearcher = indexSearcherMap.get(clazz);

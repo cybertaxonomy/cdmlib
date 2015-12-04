@@ -235,7 +235,7 @@ public class LuceneSearch {
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
         BooleanQuery fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, maxNoOfHits);
+        return getSearcher().search(fullQuery, maxNoOfHits, Sort.RELEVANCE, true, true);
 
     }
     /**
@@ -278,8 +278,7 @@ public class LuceneSearch {
                     ", groupSort=" + groupSort + ", withinGroupSort=" + withinGroupSort + ", limit=" + limit + ", maxDocsPerGroup="+ maxDocsPerGroup);
         }
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(
-                groupByField, groupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, groupSort, limit);
 
         getSearcher().search(fullQuery, firstPassCollector);
         Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
