@@ -36,6 +36,7 @@ import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
 import org.hibernate.search.indexes.spi.IndexManager;
+import org.hibernate.search.spi.SearchIntegrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
@@ -87,6 +88,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     protected <T extends CdmBase>void reindex(Class<T> type, IProgressMonitor monitor) {
+
+        //TODO set the application in maintenance mode: making
+        // queries to the index is not recommended when a MassIndexer is busy.
+        // fullTextSession.createIndexer().startAndWait();
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -151,7 +156,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             return;
         }
         SearchFactory searchFactory = Search.getFullTextSession(getSession()).getSearchFactory();
-        IndexManager indexManager = makeIndexManager(searchFactory, indexName);
+        IndexManager indexManager = obtainIndexManager(searchFactory, indexName);
 
         IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
         List<String> idFields = getIndexedDeclaredFields(type);
@@ -200,12 +205,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.done();
     }
 
-    private IndexManager makeIndexManager(SearchFactory searchFactory, String indexName){
-        //FIXME #4716 SearchFactoryImplementor not available in hibernate-search anymore
-//        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)searchFactory;
-//        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
-//        return indexManager;
-        return null;
+    private IndexManager obtainIndexManager(SearchFactory searchFactory, String indexName){
+        SearchIntegrator searchIntegrator = searchFactory.unwrap(SearchIntegrator.class );
+        IndexManager indexManager = searchIntegrator.getIndexManager(indexName);
+        return indexManager;
     }
 
     /**
@@ -241,7 +244,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         if(doSpellIndex){
             SearchFactory searchFactory = fullTextSession.getSearchFactory();
-            IndexManager indexManager = makeIndexManager(searchFactory, type.getName());
+            IndexManager indexManager = obtainIndexManager(searchFactory, type.getName());
             if(indexManager == null){
                 logger.info("No IndexManager found for " + type.getName() + ", thus nothing to purge");
                 return;
