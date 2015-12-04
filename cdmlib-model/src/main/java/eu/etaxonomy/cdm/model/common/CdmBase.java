@@ -103,8 +103,6 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
     @FieldBridge(impl=NotNullAwareIdBridge.class)
-    //commented since Hibernate Search 5.5.x since HSEARCH000247 is thrown otherwise
-//    @Field(store=Store.YES, termVector=TermVector.NO)
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)
