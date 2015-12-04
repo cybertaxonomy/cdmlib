@@ -247,13 +247,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testPurgeIndex() throws CorruptIndexException, IOException, ParseException {
+    public final void testPurgeAndReindex() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
         indexer.purge(null);
@@ -261,7 +261,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
+
+        indexer.reindex(indexer.indexedClasses(), null);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 8
+        Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
     }
+
 
     @SuppressWarnings("rawtypes")
     @Test
