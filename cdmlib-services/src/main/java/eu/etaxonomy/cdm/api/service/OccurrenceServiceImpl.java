@@ -31,6 +31,8 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.joda.time.Partial;
@@ -60,7 +62,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
-import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
@@ -768,7 +769,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         LuceneSearch luceneSearch = prepareByFullTextSearch(clazz, queryString, boundingBox, languages, highlightFragments);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");
@@ -779,7 +780,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         List<SearchResult<SpecimenOrObservationBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
 
         return new DefaultPagerImpl<SearchResult<SpecimenOrObservationBase>>(pageNumber, totalHits, pageSize,
                 searchResults);

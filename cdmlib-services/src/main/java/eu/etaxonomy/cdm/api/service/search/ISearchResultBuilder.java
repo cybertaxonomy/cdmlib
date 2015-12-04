@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.util.BytesRef;
 
-import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -37,9 +37,9 @@ public interface ISearchResultBuilder {
      * @throws CorruptIndexException
      * @throws IOException
      */
-    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
+    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups<BytesRef> topGroupsResultSet,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
-    
+
     /**
      * Creates a <code>List</code> of <code>SearchResult</code> entities from the supplied <code>TopDocs</code>.
      * The first Cdm enitity id found in the specified <code>idFields</code> of the Lucene documents will be used to load
@@ -56,7 +56,7 @@ public interface ISearchResultBuilder {
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
-    
+
     /**
      * Creates a <code>List</code> of <code>DocumentSearchResult</code> entities from the supplied <code>TopDocs</code>.
      * This method can be used for building index-only results.

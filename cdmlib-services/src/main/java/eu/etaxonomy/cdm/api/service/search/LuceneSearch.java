@@ -209,7 +209,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroupsWithMaxScore executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups<BytesRef> executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
         setQuery(luceneQuery);
@@ -245,7 +245,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroupsWithMaxScore executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups<BytesRef> executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
 
         if(pageNumber == null || pageNumber < 0){
@@ -305,15 +305,35 @@ public class LuceneSearch {
 
         TopGroups<BytesRef> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
+        // --- set the max score for the group results
+
         // get max score from very first result
         float maxScore = groupsResult.groups[0].maxScore;
+
         if(logger.isDebugEnabled()){
             logger.debug("TopGroups: maxScore=" + maxScore + ", offset=" + offset +
                     ", totalGroupCount=" + allGroupsCollector.getGroupCount() +
                     ", totalGroupedHitCount=" + groupsResult.totalGroupedHitCount);
         }
-        TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult,
-                offset, allGroupsCollector.getGroupCount(), maxScore);
+
+        TopGroups<BytesRef> newTopGroups;
+        if(offset > 0){
+            GroupDocs<BytesRef>[] newGroupDocs = new GroupDocs[groupsResult.groups.length - offset];
+            for(int i = offset; i < groupsResult.groups.length; i++){
+                newGroupDocs[i - offset] = groupsResult.groups[i];
+            }
+            newTopGroups = new TopGroups<BytesRef>(
+                    groupsResult.groupSort,
+                    groupsResult.withinGroupSort,
+                    groupsResult.totalHitCount,
+                    groupsResult.totalGroupedHitCount,
+                        newGroupDocs,
+                        maxScore);
+        } else {
+            newTopGroups = groupsResult;
+        }
+        TopGroups<BytesRef> topGroupsWithMaxScore = new TopGroups<BytesRef>(newTopGroups, allGroupsCollector.getGroupCount());
+        // --- done with max score for the group results
 
         return topGroupsWithMaxScore;
     }
@@ -382,40 +402,6 @@ public class LuceneSearch {
 
     public String[] getHighlightFields() {
         return this.highlightFields;
-    }
-
-    /**
-     * may become obsolete with lucene 4.x when the TopGroups has a field for maxScore.
-     *
-     * @author a.kohlbecker
-     * @date Oct 4, 2012
-     *
-     */
-    public class TopGroupsWithMaxScore{
-        public TopGroups<BytesRef> topGroups;
-        public float maxScore = Float.NaN;
-
-        TopGroupsWithMaxScore(TopGroups<BytesRef> topGroups, int offset, int totalGroupCount, float maxScore){
-            this.maxScore = maxScore;
-            TopGroups<BytesRef> newTopGroups;
-            if(offset > 0){
-                GroupDocs<BytesRef>[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
-                for(int i = offset; i < topGroups.groups.length; i++){
-                    newGroupDocs[i - offset] = topGroups.groups[i];
-                }
-                newTopGroups = new TopGroups<BytesRef>(
-                            topGroups.groupSort,
-                            topGroups.withinGroupSort,
-                            topGroups.totalHitCount,
-                            topGroups.totalGroupedHitCount,
-                            newGroupDocs,
-                            maxScore);
-            } else {
-                newTopGroups = topGroups;
-            }
-            this.topGroups = new TopGroups<BytesRef>(newTopGroups, totalGroupCount);
-        }
-
     }
 
 }
