@@ -1057,13 +1057,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<PresenceAbsenceTerm> absent = new HashSet<PresenceAbsenceTerm>();
         absent.add(PresenceAbsenceTerm.ABSENT());
 
-        /* disabled for debugging ##############################################
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
         logSearchResults(pager, Level.DEBUG, null);
-        Assert.assertEquals("taxa with matching area filter", 2, pager.getCount().intValue());
- ############################################## */
+
         // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),

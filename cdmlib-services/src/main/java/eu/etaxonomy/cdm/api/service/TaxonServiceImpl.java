@@ -31,7 +31,6 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1714,7 +1713,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Builder joinFromQueryBuilder = new Builder();
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
-        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQueryBuilder.build(), TaxonRelationship.class);
+        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(TaxonRelationship.class, fromField, false, joinFromQueryBuilder.build(), toField, null);
 
         if(sortFields == null){
             sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING,  false)};
@@ -1856,12 +1855,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if(addDistributionFilter && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
                 // add additional area filter for synonyms
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
-                String toField = "accTaxon.id"; // id in TaxonBase index
+                String toField = "accTaxon.id"; // id in TaxonBase index (is multivalued)
 
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
 
-                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
-                multiIndexByAreaFilterBuilder.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class, fromField, true, byDistributionQuery, toField, Taxon.class);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
 
             }
         }
@@ -1871,13 +1870,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             // B)
             QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
             Query byCommonNameJoinQuery = descriptionElementQueryFactory.newJoinQuery(
+                    CommonTaxonName.class,
                     "inDescription.taxon.id",
-                    "id",
+                    true,
                     QueryFactory.addTypeRestriction(
                                 createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
                                 , CommonTaxonName.class
-                                ).build(),
-                    CommonTaxonName.class);
+                                ).build(), "id", null);
             logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
@@ -1949,15 +1948,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
 
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
-                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
-                QueryWrapperFilter filter = new QueryWrapperFilter(taxonAreaJoinQuery);
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class, fromField, true, byDistributionQuery, toField, null);
 
 //                debug code for bug described above
                 //does not compile anymore since changing from lucene 3.6.2 to lucene 4.10+
 //                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
 //                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
 
-                multiIndexByAreaFilterBuilder.add(filter, Occur.SHOULD);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
             }
         }
 
@@ -1976,9 +1974,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Query taxonAreaJoinQuery = createByDistributionJoinQuery(
                     namedAreaList,
                     distributionStatusList,
-                    distributionFilterQueryFactory
+                    distributionFilterQueryFactory,
+                    null
                     );
-            multiIndexByAreaFilterBuilder.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+            multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
         }
 
         if (addDistributionFilter){
@@ -2003,21 +2002,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     /**
      * @param namedAreaList at least one area must be in the list
      * @param distributionStatusList optional
+     * @param toType toType
+     *      Optional parameter. Only used for debugging to print the toType documents
      * @return
      * @throws IOException
      */
     protected Query createByDistributionJoinQuery(
             List<NamedArea> namedAreaList,
             List<PresenceAbsenceTerm> distributionStatusList,
-            QueryFactory queryFactory
+            QueryFactory queryFactory, Class<? extends CdmBase> toType
             ) throws IOException {
 
         String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
-        String toField = "id"; // id in TaxonBase index
+        String toField = "id"; // id in toType usually this is the TaxonBase index
 
         BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, queryFactory);
 
-        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(Distribution.class, fromField, false, byDistributionQuery, toField, toType);
 
         return taxonAreaJoinQuery;
     }
@@ -2070,7 +2071,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneSearch.setSortFields(sortFields);
 
 
-        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, taxonQueryFactory);
+        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, taxonQueryFactory, null);
 
         finalQueryBuilder.add(byAreaQuery, Occur.MUST);
 
