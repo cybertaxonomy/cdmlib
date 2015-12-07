@@ -34,6 +34,7 @@ import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
+import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
 import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
 import org.hibernate.search.indexes.spi.IndexManager;
 import org.hibernate.search.spi.SearchIntegrator;
@@ -87,7 +88,13 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return session;
     }
 
-    protected <T extends CdmBase>void reindex(Class<T> type, IProgressMonitor monitor) {
+    /**
+     * reindex method based on hibernate search  3.1
+     *
+     * @param type
+     * @param monitor
+     */
+    protected <T extends CdmBase>void reindex_31(Class<T> type, IProgressMonitor monitor) {
 
         //TODO set the application in maintenance mode: making
         // queries to the index is not recommended when a MassIndexer is busy.
@@ -287,20 +294,74 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int steps = types.size() + 1; // +1 for optimize
         monitor.beginTask("Reindexing " + types.size() + " classes", steps);
 
+        boolean optimize = true;
+
+        long start = System.currentTimeMillis();
         for(Class<? extends CdmBase> type : types){
-            reindex(type, monitor);
+            long perTypeStart = System.currentTimeMillis();
+
+            reindex_55(type, monitor);
+            optimize = false; // TODO remove this flag and the optimization code once the old reindex method is vanished
+
+//            reindex(type, monitor);
+
+            logger.info("Indexing of " + type.getSimpleName() + " in " + ((System.currentTimeMillis() - perTypeStart) / 1000) + "s");
         }
 
         monitor.subTask("Optimizing Index");
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-        subMonitor.beginTask("Optimizing Index",1);
-        optimize();
-        subMonitor.worked(1);
-        logger.info("end index optimization");
-        subMonitor.done();
+        if(optimize) {
+            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+            subMonitor.beginTask("Optimizing Index",1);
+            optimize();
+            logger.info("end index optimization");
+            subMonitor.worked(1);
+            subMonitor.done();
+        }
+        logger.info("reindexing completed in " + ((System.currentTimeMillis() - start) / 1000) + "s");
 
         //monitor.worked(1);
         monitor.done();
+
+    }
+
+    /**
+     * new reindex method which benefits from
+     * the mass indexer available in hibernate search 5.5
+     *
+     * @param type
+     * @param monitor
+     * @throws InterruptedException
+     */
+    protected void reindex_55(Class<? extends CdmBase> type, IProgressMonitor monitor) {
+
+        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+
+
+        logger.info("start indexing " + type.getName());
+        monitor.subTask("indexing " + type.getSimpleName());
+
+        Long countResult = countEntities(type);
+        int numOfBatches = calculateNumOfBatches(countResult);
+
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
+
+
+        MassIndexerProgressMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor);
+
+        try {
+            fullTextSession
+            .createIndexer(type)
+            .batchSizeToLoadObjects(BATCH_SIZE)
+            .cacheMode(CacheMode.IGNORE)
+            .threadsToLoadObjects(5) // optimize
+            .idFetchSize(150) //TODO optimize
+            .progressMonitor(indexerMonitorWrapper)
+            .startAndWait();
+        } catch (InterruptedException ie) {
+            logger.info("Mass indexer has been interrupted");
+            subMonitor.isCanceled();
+        }
     }
 
     @Override
