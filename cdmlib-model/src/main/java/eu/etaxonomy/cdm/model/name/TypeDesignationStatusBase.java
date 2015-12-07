@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -52,20 +51,17 @@ import eu.etaxonomy.cdm.model.common.TermType;
 })
 @Entity
 @Audited
-// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
-// this is needed, otherwise the fields of the also abstract super class are missed during indexing
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = -7204587330204725285L;
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
 
-//********************************** Constructor *********************************/	
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
   	protected TypeDesignationStatusBase(){super(TermType.Unknown);};
-	
+
 	/**
 	 * Class constructor: creates a new empty type designation status instance.
 	 *
