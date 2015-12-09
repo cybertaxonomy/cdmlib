@@ -42,7 +42,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
@@ -80,7 +79,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @XmlRootElement(name = "Media")
 @Entity
-@Indexed
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements Cloneable, IMultiLanguageTextHolder {

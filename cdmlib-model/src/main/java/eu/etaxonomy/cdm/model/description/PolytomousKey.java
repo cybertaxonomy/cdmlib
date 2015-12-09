@@ -35,7 +35,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -73,7 +72,8 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
         "startNumber"})
 @XmlRootElement(name = "PolytomousKey")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.PolytomousKey")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.PolytomousKey")
 @Audited
 public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheStrategy> implements IIdentificationKey {
     private static final long serialVersionUID = -3368243754557343942L;

@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -53,7 +52,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceAbsenceTerm")
 @XmlRootElement(name = "PresenceAbsenceTerm")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final long serialVersionUID = 1036807546935584396L;

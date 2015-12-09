@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 
@@ -60,7 +59,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 })
 @XmlRootElement(name = "DeterminationEvent")
 @Entity
-@Indexed
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed
 @Audited
 public class DeterminationEvent extends EventBase {
 	private static final long serialVersionUID = 5065341354427569773L;
@@ -81,7 +81,7 @@ public class DeterminationEvent extends EventBase {
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonBase<?> taxon;
-	
+
 //	#4518
 	@XmlElement(name = "TaxonName")
 	@XmlIDREF
@@ -129,7 +129,7 @@ public class DeterminationEvent extends EventBase {
 		identifiedUnit.addDetermination(result);
 		return result;
 	}
-	
+
 	public static DeterminationEvent NewInstance(TaxonNameBase name, SpecimenOrObservationBase identifiedUnit ){
 		DeterminationEvent result = new DeterminationEvent();
 		result.setTaxonName(name);
@@ -161,7 +161,7 @@ public class DeterminationEvent extends EventBase {
 	public void setTaxonName(TaxonNameBase taxonName){
 		this.taxonName = taxonName;
 	}
-	
+
 	public TaxonNameBase getTaxonName(){
 		return this.taxonName;
 	}

@@ -39,7 +39,6 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -76,7 +75,8 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
 @Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)

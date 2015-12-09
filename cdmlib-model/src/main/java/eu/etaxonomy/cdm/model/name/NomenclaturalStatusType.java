@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -61,7 +60,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatusType")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 

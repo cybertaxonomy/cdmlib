@@ -21,8 +21,10 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  */
 public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMonitor {
 
-    MassIndexerProgressMonitor massIndexerMonitor = new SimpleIndexingProgressMonitor();
+    MassIndexerProgressMonitor massIndexerMonitor ;
     private final IProgressMonitor monitor;
+    private final int batchSize;
+    private long tickCount = 0;
 
     public IProgressMonitor monitor() {
         return monitor;
@@ -30,8 +32,10 @@ public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMon
     /**
      * @param monitor
      */
-    public MassIndexerProgressMonitorWrapper(IProgressMonitor monitor) {
+    public MassIndexerProgressMonitorWrapper(IProgressMonitor monitor, int batchSize) {
         this.monitor = monitor;
+        this.batchSize = batchSize;
+        this.massIndexerMonitor = new SimpleIndexingProgressMonitor(batchSize);
     }
 
     /**
@@ -41,8 +45,19 @@ public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMon
     public void documentsAdded(long increment) {
         // all current implementations always pass 1l as parameter
         massIndexerMonitor.documentsAdded(increment);
-        monitor.worked((int)increment);
+        updatePerBatchMonitor((int)increment);
 
+    }
+    /**
+     * @param increment
+     *
+     */
+    private void updatePerBatchMonitor(int increment) {
+        tickCount += increment;
+        if(tickCount % (batchSize * 2) == 0) {
+            // one batch worked
+            monitor.worked(1);
+        }
     }
 
     /**
@@ -52,7 +67,7 @@ public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMon
     public void documentsBuilt(int number) {
         // unused as of implementing this
         massIndexerMonitor.documentsBuilt(number);
-
+        updatePerBatchMonitor(number);
     }
 
     /**

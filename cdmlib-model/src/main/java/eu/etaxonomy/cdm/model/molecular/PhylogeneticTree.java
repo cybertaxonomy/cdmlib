@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.media.Media;
 
@@ -51,7 +50,8 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class PhylogeneticTree extends Media implements Cloneable{
 	private static final long serialVersionUID = -7020182117362324067L;

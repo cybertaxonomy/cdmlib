@@ -35,7 +35,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -65,7 +64,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 @XmlRootElement(name = "Institution")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+// @Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {

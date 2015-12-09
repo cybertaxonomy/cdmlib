@@ -24,9 +24,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -46,7 +47,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 })
 @XmlRootElement(name = "TaxonNameDescription")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
 public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> implements Cloneable{
@@ -59,6 +61,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     @XmlSchemaType(name="IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @FieldBridge(impl=NotNullAwareIdBridge.class)
     private TaxonNameBase<?,?> taxonName;
 
 //******************* FACTORY ********************************************/
@@ -69,8 +72,8 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     public static TaxonNameDescription NewInstance(){
         return new TaxonNameDescription();
     }
-    
-    
+
+
     /**
      * Creates a new taxon name description instance for the given {@link TaxonNameBase name}.
      * The new taxon name description will be also added to the {@link TaxonNameBase#getDescriptions() set of descriptions}
@@ -85,7 +88,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     }
 
 // ********************** CONSTRUCTOR ***************************************/
-    
+
     /**
      * Class constructor: creates a new empty taxon name description instance.
      */

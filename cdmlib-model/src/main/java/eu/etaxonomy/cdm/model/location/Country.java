@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -59,7 +58,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 })
 @XmlRootElement(name = "Country")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Country extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;

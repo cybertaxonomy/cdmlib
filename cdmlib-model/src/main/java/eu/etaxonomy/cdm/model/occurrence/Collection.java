@@ -30,7 +30,6 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -60,7 +59,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 })
 @XmlRootElement(name = "Collection")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
 @Table(appliesTo="Collection", indexes = { @org.hibernate.annotations.Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })

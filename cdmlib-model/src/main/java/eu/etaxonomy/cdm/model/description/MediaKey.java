@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -63,7 +62,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "MediaKey")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class MediaKey extends Media implements IIdentificationKey{
 	private static final long serialVersionUID = -29095811051894471L;

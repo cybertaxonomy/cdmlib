@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -51,7 +50,8 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
-@Indexed
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed
 @Audited
 public class DerivationEvent extends EventBase implements Cloneable{
 	private static final long serialVersionUID = 3661673673962819395L;

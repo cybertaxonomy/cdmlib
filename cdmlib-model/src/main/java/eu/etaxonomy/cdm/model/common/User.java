@@ -40,7 +40,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,7 +63,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 })
 @XmlRootElement(name = "User")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {

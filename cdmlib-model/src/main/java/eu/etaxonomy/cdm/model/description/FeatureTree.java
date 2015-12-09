@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -64,7 +63,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
 @Audited
 public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements Cloneable{
 	private static final long serialVersionUID = -6713834139003172735L;

@@ -41,7 +41,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -60,7 +59,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
