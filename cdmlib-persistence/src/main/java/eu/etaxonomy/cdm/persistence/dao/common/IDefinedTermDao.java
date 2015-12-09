@@ -173,7 +173,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param propertyPaths
 	 * @return a list containing the terms
 	 */
-	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
