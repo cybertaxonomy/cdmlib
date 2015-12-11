@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
 /**
  * This class represents the result of a delete action.

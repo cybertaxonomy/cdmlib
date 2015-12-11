@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-
 /**
  * This class is used to configure taxonbase deletion.
  * 

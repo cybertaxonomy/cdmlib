@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 

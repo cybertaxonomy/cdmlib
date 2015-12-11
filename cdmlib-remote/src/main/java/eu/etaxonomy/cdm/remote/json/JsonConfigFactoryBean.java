@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
@@ -27,7 +26,6 @@ import net.sf.json.util.PropertyFilter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 
 /**
