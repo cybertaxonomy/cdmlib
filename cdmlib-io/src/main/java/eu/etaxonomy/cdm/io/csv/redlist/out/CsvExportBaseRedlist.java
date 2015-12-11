@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.swing.border.EmptyBorder;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;

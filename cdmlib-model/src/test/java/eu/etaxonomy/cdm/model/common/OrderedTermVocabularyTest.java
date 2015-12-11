@@ -18,7 +18,6 @@ import java.net.URI;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

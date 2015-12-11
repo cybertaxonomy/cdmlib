@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -19,10 +17,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller

@@ -1,10 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao.statistics;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Classification;

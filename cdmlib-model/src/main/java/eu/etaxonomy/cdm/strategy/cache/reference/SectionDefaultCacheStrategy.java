@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	private static final long serialVersionUID = -4534389083526558368L;

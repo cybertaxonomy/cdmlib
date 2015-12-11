@@ -14,7 +14,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
-import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;

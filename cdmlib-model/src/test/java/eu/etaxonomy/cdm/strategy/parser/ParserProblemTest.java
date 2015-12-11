@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.parser;
 
 import static org.junit.Assert.*;
 
-import java.util.BitSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;

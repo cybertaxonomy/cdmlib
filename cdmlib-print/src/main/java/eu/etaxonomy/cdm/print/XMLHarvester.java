@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.print;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,8 +20,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Parent;
-import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;

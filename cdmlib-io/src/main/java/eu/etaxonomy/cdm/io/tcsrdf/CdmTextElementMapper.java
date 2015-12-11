@@ -10,10 +10,6 @@
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.log4j.Logger;
-import org.jdom.Content;
-import org.jdom.Element;
-import org.jdom.Namespace;
-
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 

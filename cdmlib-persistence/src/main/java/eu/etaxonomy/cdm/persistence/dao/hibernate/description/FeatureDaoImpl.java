@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Repository

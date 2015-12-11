@@ -11,8 +11,6 @@
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.SQLException;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 
 import com.ibm.lsid.MalformedLSIDException;
