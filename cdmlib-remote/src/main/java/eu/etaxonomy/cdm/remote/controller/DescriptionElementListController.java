@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  * @date 24.03.2009
  */
 @Controller
-@Api("description")
+@Api("descriptionElement")
 @RequestMapping(value = {"/descriptionElement"})
 public class DescriptionElementListController {
 

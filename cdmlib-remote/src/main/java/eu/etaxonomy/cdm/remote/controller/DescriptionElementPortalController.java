@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Api("portal_descriptionElement")
 @Transactional(readOnly=true)
 @RequestMapping(value = {
-            "/portal/description/{uuid}",
-            "/portal/description/{uuid_list}",
-            "/portal/descriptionElement/{descriptionelement_uuid}"})
+            "/portal/descriptionElement/{uuid}",
+            "/portal/descriptionElement/{uuid_list}"
+            })
 public class DescriptionElementPortalController extends DescriptionElementController
 {
 

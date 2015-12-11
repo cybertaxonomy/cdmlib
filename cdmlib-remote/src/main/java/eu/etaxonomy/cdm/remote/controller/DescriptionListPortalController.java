@@ -19,13 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * IMPORTANT:
- *
- * This controller is mostly a 1:1 copy of the DescriptionListController
- * and this provides identical end points which only differ in the depth of the
- * object graphs returned.
- * An exception is the doAccumulateDistributions() method, which is not repeated
- * here
  *
  * @author a.kohlbecker
  * @date Jun 25, 2013

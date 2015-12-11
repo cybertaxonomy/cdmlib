@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
@@ -63,23 +65,17 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
- * IMPORTANT:
- *
- * This controller is mostly a 1:1 copy of the DescriptionController
- * and this provides identical end points which only differ in the depth of the
- * object graphs returned.
  *
  * @author a.kohlbecker
  * @date Jun 25, 2013
  *
  */
 @Controller
-@io.swagger.annotations.Api("portal_description")
+@Api("portal_description")
 @Transactional(readOnly=true)
 @RequestMapping(value = {
             "/portal/description/{uuid}",
-            "/portal/description/{uuid_list}",
-            "/portal/descriptionElement/{descriptionelement_uuid}"})
+            "/portal/description/{uuid_list}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
 

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-@Api("portal_description")
+@Api("portal_descriptionElement")
 @RequestMapping(value = {"/portal/descriptionElement"})
 public class DescriptionElementListPortalController extends DescriptionElementListController {
 
