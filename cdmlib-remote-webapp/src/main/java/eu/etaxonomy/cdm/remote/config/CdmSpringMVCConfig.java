@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.util.PathMatcher;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.servlet.ViewResolver;
@@ -31,14 +31,10 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-
 import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor;
-import eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher;
 import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 
 /**
@@ -55,18 +51,19 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  * @date Jul 1, 2014
  *
  */
-//@EnableWebMvc do not add this since we are overriding WebMvcConfigurationSupport directly, see requestMappingHandlerMapping()
-//@EnableSwagger //Disabled due to due to https://github.com/springfox/springfox/issues/1055
+// @EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
 @Configuration
-@Import(value={PreloadedBeans.class})
+@Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
+//@DependsOn("objectMapperConfigurer")
 @ComponentScan(basePackages = {
+        "springfox.documentation.spring.web", // --> CdmSwaggerConfig
         "eu.etaxonomy.cdm.remote.l10n",
         "eu.etaxonomy.cdm.remote.controller",
         "eu.etaxonomy.cdm.remote.service",
         "eu.etaxonomy.cdm.remote.config"
         }
 )
-public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
+public class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     /**
      * turn caching off FOR DEBUGING ONLY !!!!
@@ -81,9 +78,6 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
     @Autowired // is initialized in PreloadedBeans.class
     private LocaleContextHandlerInterceptor localeContextHandlerInterceptor;
-
-
-    private SpringSwaggerConfig springSwaggerConfig;
 
     Collection<Class<? extends Object>> allCdmTypes = null;
 
@@ -119,31 +113,7 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public PathMatcher pathMatcher(){
-        return new CdmAntPathMatcher();
-    }
-
-    @Override
-    @Bean
-//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
-//    @DependsOn({"swaggerPluginDefault"})
-    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-        /* NOTE: this override is the only reason why this class
-         * needs to extends WebMvcConfigurationSupport. We may be able to
-         * remove this method once we no longer need
-         * CdmAntPathMatcher. this is only needed  since the contollers need
-         * absolute method level RequestMapping values in some few cases.
-         */
-        RequestMappingHandlerMapping handlerMapping = super.requestMappingHandlerMapping();
-        handlerMapping.setPathMatcher(pathMatcher());
-
-        logger.debug("requestMappingHandlerMapping");
-        return handlerMapping;
-    }
-
-    @Bean
-//    @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
-//    @DependsOn({"swaggerPluginDefault"})
+    @DependsOn({"requestMappingHandlerAdapter"})
     public XmlViewResolver getOaiXmlViewResolver() {
         XmlViewResolver resolver = new XmlViewResolver();
       resolver.setOrder(1);
@@ -163,7 +133,6 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
         logger.debug("addInterceptors");
     }
 
-
     @Override
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
       // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
@@ -172,6 +141,7 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
       configurer.enable();
       logger.debug("configureDefaultServletHandling");
     }
+
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -193,8 +163,6 @@ public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
      * the ContentNegotiationManager created by the configurer (see previous method).
      */
    @Bean
-//   @DependsOn({"swaggerPluginGenericAPI", "swaggerPluginNameCatalogue", "swaggerPluginPortal", "swaggerPluginOAIPMH", "swaggerPluginLSID"})
-//   @DependsOn({"swaggerPluginDefault"})
    public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
 
        List<ViewResolver> resolvers = new ArrayList<ViewResolver>();

@@ -202,8 +202,8 @@
 
     <!-- swagger -->
     <dependency>
-        <groupId>com.wordnik</groupId>
-        <artifactId>swagger-annotations</artifactId>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
     </dependency>
 
     <!-- Connection Pooling -->

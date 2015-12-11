@@ -9,17 +9,15 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.wordnik.swagger.annotations.Api;
-
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.kohlbecker

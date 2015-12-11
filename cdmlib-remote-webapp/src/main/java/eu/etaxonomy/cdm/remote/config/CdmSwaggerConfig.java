@@ -10,32 +10,35 @@
 package eu.etaxonomy.cdm.remote.config;
 
 
+import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.PathSelectors.regex;
+
 import java.util.Collection;
 
 import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.wordnik.swagger.model.ApiInfo;
-
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
 import eu.etaxonomy.cdm.model.CdmTypeScanner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * <h3>NOTE:</h3> 
- *  For a detailed overview on the spring MVC and application context configuration and 
- *  bootstrapping of this web application see: 
+ * <h3>NOTE:</h3>
+ *  For a detailed overview on the spring MVC and application context configuration and
+ *  bootstrapping of this web application see:
  *  {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
  *
  */
+@EnableSwagger2
 @Configuration
 public class CdmSwaggerConfig {
 
@@ -51,8 +54,6 @@ public class CdmSwaggerConfig {
 
     public static final Logger logger = Logger.getLogger(CdmSwaggerConfig.class);
 
-    private SpringSwaggerConfig springSwaggerConfig;
-
     Collection<Class<? extends Object>> allCdmTypes = null;
 
     public CdmSwaggerConfig() {
@@ -62,24 +63,22 @@ public class CdmSwaggerConfig {
     }
 
    /**
-    * Required to autowire SpringSwaggerConfig
-    */
-   @Autowired
-   public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-      this.springSwaggerConfig = springSwaggerConfig;
-      logger.debug("setSpringSwaggerConfig");
-   }
-
-   /**
     * Every SwaggerSpringMvcPlugin bean is picked up by the swagger-mvc framework - allowing for multiple
     * swagger groups i.e. same code base multiple swagger resource listings.
     */
 //   @Bean(name="swaggerPluginDefault")
    @Bean(name="swaggerPluginGenericAPI")
-   public SwaggerSpringMvcPlugin swaggerPluginGenericAPI(){
+   public Docket swaggerPluginGenericAPI(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName(GENERIC_REST_API)
+               .select()
+               // below regex excludes the paths of all other groups,
+               // !!! also hide the manage and progress controller
+               // FIXME use or() below
+               .paths(regex("/(?!portal/)(?!taxon/oai)(?!reference/oai)(?!name_catalogue/)(?!authority/)(?!csv/)(?!checklist)(?!manage/)(?!progress/).*"))
+               .build()
           .apiInfo(apiInfo(GENERIC_REST_API, ""
                   + "<p>The CDM REST API is a RESTful interface to resources stored in the CDM."
                   + " The RESTful architecture allows accessing the various resources like Taxa, "
@@ -93,34 +92,36 @@ public class CdmSwaggerConfig {
                   + "</p>"
                   + "<p>For more information like usage of this service please refer to "
                   + "<a href=\"http://cybertaxonomy.eu/cdmlib/rest-api.html\">http://cybertaxonomy.eu/cdmlib/rest-api.html</a>"))
-          // below regex excludes the paths of all other groups,
-          // !!! also hide the manage and progress controller
-          .includePatterns("/(?!portal/)(?!taxon/oai)(?!reference/oai)(?!name_catalogue/)(?!authority/)(?!csv/)(?!checklist)(?!manage/)(?!progress/).*")
           .ignoredParameterTypes(allCdmTpyes())
-          .swaggerGroup(GENERIC_REST_API)
 //          .excludeAnnotations(Deprecated.class) // TODO
           ;
    }
 
    @Bean(name="swaggerPluginPortal")
-   public SwaggerSpringMvcPlugin swaggerPluginPortal(){
+   public Docket swaggerPluginPortal(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName(WEB_PORTAL_SERVICES)
+               .select()
+               .paths(regex("/portal/.*"))
+               .build()
           .apiInfo(apiInfo(WEB_PORTAL_SERVICES, "<p>The Portal Service is a specialization to the "
                   + "<a href=\"?group=Generic+REST+API\">Generic  REST API</a> as needed by CDM Dataportal "
                   + " that adds some fields like localized representations to the pure CDM entities. Another important difference "
                   + " is the initialization depth of the CDM entities. The Portal Service enpoints provide far bigger parts of the "
                   + " object graph.</p>"))
-          .includePatterns("/portal/.*")
-          .ignoredParameterTypes(allCdmTpyes())
-          .swaggerGroup(WEB_PORTAL_SERVICES);
+          .ignoredParameterTypes(allCdmTpyes());
    }
 
    @Bean(name="swaggerPluginNameCatalogue")
-   public SwaggerSpringMvcPlugin swaggerPluginNameCatalogue(){
+   public Docket swaggerPluginNameCatalogue(){
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName(CATALOGUE_SERVICES)
+               .select()
+               .paths(or(regex("/name_catalogue.*"),regex("/occurrence_catalogue.*")))
+               .build()
            .apiInfo(apiInfo(
                    CATALOGUE_SERVICES,
                    "<p>These web services are optimized for using names taxonomic information and occurence data in workflow environments "
@@ -131,16 +132,18 @@ public class CdmSwaggerConfig {
                    + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-occurrence-catalogue.html\">Occurrence Catalogue REST API</a>"
                    + "</ul>"
                    ))
-           .includePatterns("/name_catalogue.*", "/occurrence_catalogue.*")
-           .ignoredParameterTypes(allCdmTpyes())
-           .swaggerGroup(CATALOGUE_SERVICES);
+           .ignoredParameterTypes(allCdmTpyes());
    }
 
    @Bean(name="swaggerPluginOAIPMH")
-   public SwaggerSpringMvcPlugin swaggerPluginOAIPMH(){
+   public Docket swaggerPluginOAIPMH(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName("OAI-PMH")
+               .select()
+               .paths(or(regex("/reference/oai.*"), regex("/taxon/oai.*")))
+               .build()
           .apiInfo(apiInfo(
                   "OAI-PMH",
                   "<p>This is an automatcially created documentation on the OAI-PMH service which is atually dedicated to REST services."
@@ -152,36 +155,41 @@ public class CdmSwaggerConfig {
                   + "<li><a href=\"../reference/oai?verb=Identify\">OAI-PMH for References</a></li>"
                   + "<li><a href=\"../taxon/oai?verb=Identify\">OAI-PMH for Taxa</a></li>"
                   + "</ul>"))
-          .includePatterns("/reference/oai.*", "/taxon/oai.*")
-          .ignoredParameterTypes(allCdmTpyes())
-          .swaggerGroup("OAI-PMH");
+          .ignoredParameterTypes(allCdmTpyes());
    }
 
    @Bean(name="swaggerPluginLSID")
-   public SwaggerSpringMvcPlugin swaggerPluginLSID(){
+   public Docket swaggerPluginLSID(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName(LSID_AUTHORITY_SERVICES)
+               .select()
+               .paths(regex("/authority/.*"))
+               .build()
           .apiInfo(apiInfo(LSID_AUTHORITY_SERVICES, ""))
-          .includePatterns("/authority/.*")
-          .ignoredParameterTypes(allCdmTpyes())
-          .swaggerGroup(LSID_AUTHORITY_SERVICES);
+          .ignoredParameterTypes(allCdmTpyes());
    }
 
    @Bean(name="swaggerPluginDataExport")
-   public SwaggerSpringMvcPlugin swaggerPluginDataExport(){
+   public Docket swaggerPluginDataExport(){
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
-       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+       return new Docket(DocumentationType.SWAGGER_2)
+           .groupName(DATA_EXPORT)
+               .select()
+               .paths(or(regex("/csv/.*"), regex("/checklist.*")))
+               .build()
           .apiInfo(apiInfo(DATA_EXPORT, ""))
-          .includePatterns("/csv/.*", "/checklist.*")
-          .ignoredParameterTypes(allCdmTpyes())
-          .swaggerGroup(DATA_EXPORT);
+          .ignoredParameterTypes(allCdmTpyes());
    }
 
 
    /**
-     *
+    * FIXME remove or implement?
+     * Disabled during the trassition to springfox,
+     * the old code could not be compiled but seems
+     * no longer to be nessescary
      */
     private void configureModelConverters() {
         // fully skip the creation of cdm model documentation
@@ -191,7 +199,7 @@ public class CdmSwaggerConfig {
 //       String emptyJSON = "{}";
 //       OverrideConverter sessionConverter = new OverrideConverter();
 //       sessionConverter.add(Session.class.getName(), emptyJSON);
-//       ModelConverters.addConverter(sessionConverter, true);
+//       ModelContext.addConverter(sessionConverter, true);
     }
 
 
@@ -230,12 +238,13 @@ private Collection<Class<? extends Object>> allCdmTypes() {
 
    private ApiInfo apiInfo(String title, String description) {
        ApiInfo apiInfo = new ApiInfo(
-               title,
-               description,
-               null, // terms of service
-               "EditSupport@bgbm.org",
-               "Mozilla Public License 2.0",
-               "http://www.mozilla.org/MPL/2.0/"
+               title, // title
+               description, //description
+               null, //version
+               null, // terms of service URL
+               "EditSupport@bgbm.org", // contact
+               "Mozilla Public License 2.0", // license
+               "http://www.mozilla.org/MPL/2.0/" // licenseUrl
          );
        return apiInfo;
      }

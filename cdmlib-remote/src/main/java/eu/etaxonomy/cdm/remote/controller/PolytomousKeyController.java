@@ -9,12 +9,12 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 public class PolytomousKeyController extends BaseController<PolytomousKey, IPolytomousKeyService> {
     public static final Logger logger = Logger.getLogger(PolytomousKeyController.class);
 
+    @Override
     @Autowired
     public void setService(IPolytomousKeyService service) {
         this.service = service;

@@ -144,12 +144,8 @@
     </dependency>
     <!-- swagger -->
     <dependency>
-      <!-- 
-        project has been renamed to  http://springfox.github.io/springfox  
-        https://github.com/springfox/springfox/blob/master/docs/transitioning-to-v2.md
-      -->
-      <groupId>com.mangofactory</groupId>
-      <artifactId>swagger-springmvc</artifactId>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
     </dependency>
     <!-- dependencies for swagger-springmvc, added explicitly -->
     <dependency>

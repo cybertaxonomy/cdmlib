@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +33,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
