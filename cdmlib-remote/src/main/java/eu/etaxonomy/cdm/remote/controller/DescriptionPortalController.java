@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -37,7 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -76,7 +74,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  *
  */
 @Controller
-@Api("portal_description")
+@io.swagger.annotations.Api("portal_description")
 @Transactional(readOnly=true)
 @RequestMapping(value = {
             "/portal/description/{uuid}",
