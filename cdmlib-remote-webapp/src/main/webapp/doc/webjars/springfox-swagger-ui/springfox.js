@@ -1,7 +1,7 @@
 $(function() {
   var springfox = {
     "baseUrl": function() {
-      var urlMatches = /(.*)\/swagger-ui.html.*/.exec(window.location.href);
+      var urlMatches = /(.*)\/doc\/index.html.*/.exec(window.location.href);
       return urlMatches[1];
     },
     "securityConfig": function(cb) {
@@ -19,7 +19,7 @@ $(function() {
   window.oAuthRedirectUrl = springfox.baseUrl() + '/webjars/springfox-swagger-ui/o2c.html'
 
   $('#select_baseUrl').change(function() {
-    window.swaggerUi.headerView.trigger('update-swagger-ui', {
+    window.swaggerUi.headerView.trigger('update-swagger-ui', {swagger-ui
       url: $('#select_baseUrl').val()
     });
   });
@@ -27,7 +27,7 @@ $(function() {
   function maybePrefix(location, withRelativePath) {
     var pat = /^https?:\/\//i;
     if (pat.test(location)) {
-      return location;
+      return location;swagger-ui
     }
     return withRelativePath + location;
   }
@@ -39,15 +39,18 @@ $(function() {
 
     $.getJSON(relativeLocation + "/swagger-resources", function(data) {
 
-      var $urlDropdown = $('#select_baseUrl');
-      $urlDropdown.empty();
+      var $menulist = $('#menu ul');
+      $menulist.empty();
       $.each(data, function(i, resource) {
-        var option = $('<option></option>')
-            .attr("value", maybePrefix(resource.location, relativeLocation))
-            .text(resource.name + " (" + resource.location + ")");
-        $urlDropdown.append(option);
+          //  <li id="menu_Generic_REST_API"><a href="?group=Generic+REST+API">Generic REST API</a></li>
+        var id = 'menu_' + resource.name; // TODO replace whitespace by  _
+        var link = $('<a></a>')
+                .attr("href", maybePrefix(resource.location, relativeLocation))
+                .text(resource.name);
+        var option = $('<li></li>').attr("id", id).append(link);
+        $menulist.append(option);
       });
-      $urlDropdown.change();
+      $menulist.change();
     });
 
   });
