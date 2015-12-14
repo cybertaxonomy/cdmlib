@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.config;
 
 
+import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -74,10 +75,21 @@ public class CdmSwaggerConfig {
        return new Docket(DocumentationType.SWAGGER_2)
            .groupName(GENERIC_REST_API)
                .select()
-               // below regex excludes the paths of all other groups,
-               // !!! also hide the manage and progress controller
-               // FIXME use or() below
-               .paths(regex("/(?!portal/)(?!taxon/oai)(?!reference/oai)(?!name_catalogue/)(?!authority/)(?!csv/)(?!checklist)(?!manage/)(?!progress/).*"))
+               .paths(not(
+                        or(
+                            regex("/portal/.*"),
+                            regex("/taxon/oai.*"),
+                            regex("/reference/oai.*"),
+                            regex("/name_catalogue.*"),
+                            regex("/occurrence_catalogue.*"),
+                            regex("/authority.*"),
+                            regex("/csv/.*"),
+                            regex("/checklist/.*"),
+                            regex("/manage/.*"),
+                            regex("/progress/.*")
+                         )
+                       )
+                )
                .build()
           .apiInfo(apiInfo(GENERIC_REST_API, ""
                   + "<p>The CDM REST API is a RESTful interface to resources stored in the CDM."
