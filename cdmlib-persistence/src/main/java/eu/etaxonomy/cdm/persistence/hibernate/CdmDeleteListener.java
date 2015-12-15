@@ -49,7 +49,7 @@ public class CdmDeleteListener implements DeleteEventListener {
      * @param event
      * @param entity
      */
-    private void deleteRelationship(DeleteEvent event, Object entity) {
+     private void deleteRelationship(DeleteEvent event, Object entity) {
         RelationshipBase relationshipEntity = (RelationshipBase)entity;
       /*  if (relationshipEntity.isRemoved()){
             Set<IRelated> deletedObjects = relationshipEntity.getDeletedObjects();
