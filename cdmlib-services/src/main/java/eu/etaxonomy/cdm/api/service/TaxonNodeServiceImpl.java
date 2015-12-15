@@ -425,6 +425,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
+
     	TaxonNode node = HibernateProxyHelper.deproxy(dao.load(nodeUUID), TaxonNode.class);
     	return deleteTaxonNode(node, config);
     }
@@ -432,13 +433,26 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
+        DeleteResult result = new DeleteResult();
+        if (node == null){
+            result.setAbort();
+            result.addException(new Exception("The TaxonNode is already deleted."));
+            return result;
+        }
+        Taxon taxon = null;
+        try{
+            taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+        }catch(NullPointerException e){
+            result.setAbort();
+            result.addException(new Exception("The Taxon is already deleted."));
 
-    	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+        }
     	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
-    	DeleteResult result = new DeleteResult();
+
+
 
     	if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.MOVE_TO_PARENT)){
     	   Object[] children = node.getChildNodes().toArray();
@@ -451,16 +465,17 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	    deleteTaxonNodes(node.getChildNodes(), config);
     	}
 
-    	if (config.getTaxonNodeConfig().isDeleteTaxon() && (config.isDeleteInAllClassifications() || taxon.getTaxonNodes().size() == 1)){
-    		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
-    		result.addUpdatedObject(parent);
-    		if (result.isOk()){
-    			return result;
-    		}
-    	} else {
-    	    result.addUpdatedObject(taxon);
+    	if (taxon != null){
+        	if (config.getTaxonNodeConfig().isDeleteTaxon() && (config.isDeleteInAllClassifications() || taxon.getTaxonNodes().size() == 1)){
+        		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
+        		result.addUpdatedObject(parent);
+        		if (result.isOk()){
+        			return result;
+        		}
+        	} else {
+        	    result.addUpdatedObject(taxon);
+        	}
     	}
-
     	result.setCdmEntity(node);
     	boolean success = taxon.removeTaxonNode(node);
     	dao.save(parent);

@@ -186,6 +186,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 	@Override
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
+	    if (referencedCdmBase == null){
+	        return null;
+	    }
 		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
 		Set<ReferenceHolder> holderSet = referenceMap.get(IdentifiableEntity.class);
 		try {

@@ -967,9 +967,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new TaxonDeletionConfigurator();
         }
     	Taxon taxon = (Taxon)dao.load(taxonUUID);
+    	DeleteResult result = new DeleteResult();
+    	if (taxon == null){
+    	    result.setAbort();
+    	    result.addException(new Exception ("The taxon was already deleted."));
+    	    return result;
+    	}
     	taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
-        DeleteResult result = isDeletable(taxon, config);
+        result = isDeletable(taxon, config);
 
         if (result.isOk()){
             // --- DeleteSynonymRelations
@@ -1242,12 +1248,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         DeleteResult result = new DeleteResult();
     	if (synonym == null){
     		result.setAbort();
+    		result.addException(new Exception("The synonym was already deleted."));
     		return result;
         }
 
         if (config == null){
             config = new SynonymDeletionConfigurator();
         }
+
         result = isDeletable(synonym, config);
 
 
