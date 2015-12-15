@@ -67,12 +67,12 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @created 30.05.2012
- * 
+ *
  */
 public class MarkupSpecimenImport extends MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupSpecimenImport.class);
-	
+
 	private static final String ALTERNATIVE_COLLECTION_TYPE_STATUS = "alternativeCollectionTypeStatus";
 	private static final String ALTERNATIVE_COLLECTOR = "alternativeCollector";
 	private static final String ALTERNATIVE_FIELD_NUM = "alternativeFieldNum";
@@ -101,11 +101,11 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	public MarkupSpecimenImport(MarkupDocumentImport docImport) {
 		super(docImport);
 	}
-	
+
 
 	public void handleSpecimenType(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
 				HomotypicalGroup homotypicalGroup) throws XMLStreamException {
-	
+
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String typeStatus = getAndRemoveAttributeValue(attributes, TYPE_STATUS);
@@ -181,12 +181,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleUnexpectedElement(next);
 			}
 		}
-		throw new IllegalStateException("Specimen type has no closing tag"); 
+		throw new IllegalStateException("Specimen type has no closing tag");
 	}
 
-	
 
-	private void makeSpecimenType(MarkupImportState state, DerivedUnitFacade facade, String text, String collectionAndType, 
+
+	private void makeSpecimenType(MarkupImportState state, DerivedUnitFacade facade, String text, String collectionAndType,
 			NonViralName<?> name, XMLEvent parentEvent) {
 		text = text.trim();
 		if (isPunctuation(text)){
@@ -195,7 +195,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			String message = "Text '%s' not handled for <SpecimenType>";
 			this.fireWarningEvent(String.format(message, text), parentEvent, 4);
 		}
-		
+
 		if (makeFotgSpecimenType(state, collectionAndType, facade, name, parentEvent) || state.getConfig().isUseFotGSpecimenTypeCollectionAndTypeOnly()){
 			return;
 		}else{
@@ -204,7 +204,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				collectionAndType = collectionAndType.replaceAll("\\.$", "");
 				collectionAndType = collectionAndType.substring(1, collectionAndType.length() - 1);
 			}
-			
+
 			String[] split = collectionAndType.split("[;,]");
 			for (String str : split) {
 				str = str.trim();
@@ -212,16 +212,16 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				TypeInfo typeInfo = makeSpecimenTypeTypeInfo(str, parentEvent);
 				SpecimenTypeDesignationStatus typeStatus = typeInfo.status;
 				Collection collection = this.getCollection(state, typeInfo.collectionString);
-				
+
 				// TODO improve cache strategy handling
 				DerivedUnit typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
 				typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
 				name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
 			}
 		}
-		
+
 	}
-	
+
 
 	private Pattern fotgTypePattern = null;
 	/**
@@ -235,7 +235,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	 */
 	private boolean makeFotgSpecimenType(MarkupImportState state, final String collectionAndTypeOrig, DerivedUnitFacade facade, NonViralName<?> name, XMLEvent parentEvent) {
 		String collectionAndType = collectionAndTypeOrig;
-		
+
 		String notDesignatedRE = "not\\s+designated";
 		String designatedByRE = "\\s*\\(((designated\\s+by\\s+|according\\s+to\\s+)[^\\)]+|here\\s+designated)\\)";
 		String typesRE = "(holotype|isotypes?|neotype|isoneotype|syntype|lectotype|isolectotypes?|typ\\.\\scons\\.,?)";
@@ -246,12 +246,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		String allTypesRE = String.format("(\\(not\\s+seen\\)|\\(%s([,;]\\s%s)?\\))", singleTypeTypeRE, singleTypeTypeRE);
 		String designatedRE = String.format("%s(%s)?", allTypesRE, designatedByRE);
 		if (fotgTypePattern == null){
-			
+
 			String pattern = String.format("(%s|%s)", notDesignatedRE, designatedRE );
 			fotgTypePattern = Pattern.compile(pattern);
 		}
 		Matcher matcher = fotgTypePattern.matcher(collectionAndType);
-		
+
 		if (matcher.matches()){
 			if (collectionAndType.matches(notDesignatedRE)){
 				SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
@@ -266,7 +266,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					designatedBy = desigMatcher.group(0);
 					collectionAndType = collectionAndType.replace(designatedBy, "");
 				}
-				
+
 				//remove brackets
 				collectionAndType = collectionAndType.substring(1, collectionAndType.length() -1);
 				List<String> singleTypes = new ArrayList<String>();
@@ -283,9 +283,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					}
 					matcher = singleTypePattern.matcher(collectionAndType);
 				}
-				
+
 				List<SpecimenTypeDesignation> designations = new ArrayList<SpecimenTypeDesignation>();
-				
+
 				//single types
 				for (String singleTypeOrig : singleTypes){
 					String singleType = singleTypeOrig;
@@ -308,7 +308,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						//TODO use also type info from state
 					}
 
-					
+
 					//collection
 					Pattern collectionPattern = Pattern.compile("^" + collectionsRE);
 					matcher = collectionPattern.matcher(singleType);
@@ -319,12 +319,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						collectionStr = collectionStr.replace("(", "").replace(")", "").replaceAll("\\s", "");
 						collectionStrings = collectionStr.split(",");
 					}
-					
+
 					//addInfo
 					if (!singleType.isEmpty() && singleType.startsWith(", ")){
 						singleType = singleType.substring(2);
 					}
-					
+
 					boolean notSeen = false;
 					if (singleType.equals("not seen")){
 						singleType = singleType.replace("not seen", "");
@@ -345,14 +345,14 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						singleType = singleType.replace("presumed destroyed", "");
 					}
 					boolean hasAddInfo = notSeen || destroyed || presumedDestroyed;
-					
-					
+
+
 					if (!singleType.isEmpty()){
 						String message = "SingleType was not fully read. Remaining: " + singleType + ". Original singleType was: " + singleTypeOrig;
 						fireWarningEvent(message, parentEvent, 6);
 						System.out.println(message);
 					}
-					
+
 					if (collectionStrings.length > 0){
 						boolean isFirst = true;
 						for (String collStr : collectionStrings){
@@ -379,7 +379,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						fireWarningEvent("No type designation could be created as collection info was not recognized", parentEvent, 4);
 					}
 				}
-				
+
 				if (designatedBy != null){
 					if (designations.size() != 1){
 						fireWarningEvent("Size of type designations is not exactly 1, which is expected for 'designated by'", parentEvent, 2);
@@ -388,7 +388,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					if (designatedBy.startsWith("(") && designatedBy.endsWith(")") ){
 						designatedBy = designatedBy.substring(1, designatedBy.length() - 1);
 					}
-					
+
 					for (SpecimenTypeDesignation desig : designations){
 						if (designatedBy.startsWith("designated by")){
 							String titleCache = designatedBy.replace("designated by", "").trim();
@@ -420,13 +420,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			}
 			return false;
 		}
-		
+
 //		// remove brackets
 //		if (collectionAndType.matches("^\\(.*\\)\\.?$")) {
 //			collectionAndType = collectionAndType.replaceAll("\\.$", "");
 //			collectionAndType = collectionAndType.substring(1, collectionAndType.length() - 1);
 //		}
-//		
+//
 //		String[] split = collectionAndType.split("[;,]");
 //		for (String str : split) {
 //			str = str.trim();
@@ -480,7 +480,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			result.notDesignated = true;
 			return result;
 		}
-		
+
 		for (String str : split) {
 			if (str.matches(SpecimenTypeParser.typeTypePattern)) {
 				SpecimenTypeDesignationStatus status;
@@ -502,15 +502,15 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 		return result;
 	}
-	
-	
+
+
 	private void handleGathering(MarkupImportState state, XMLEventReader readerOrig, XMLEvent parentEvent , DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		boolean hasCollector = false;
 		boolean hasFieldNum = false;
 
 		LookAheadEventReader reader = new LookAheadEventReader(parentEvent.asStartElement(), readerOrig);
-		
+
 		// elements
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -540,7 +540,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleAlternativeFieldNumber(state, reader, next, facade.innerFieldUnit());
 			} else if (isStartingElement(next, COLLECTION_TYPE_STATUS)) {
 				handleNotYetImplementedElement(next);
-			} else if (isStartingElement(next, COLLECTION_AND_TYPE)) { 
+			} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {
 				handleGatheringCollectionAndType(state, reader, next, facade);
 			} else if (isStartingElement(next, ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
 				handleNotYetImplementedElement(next);
@@ -586,41 +586,46 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		throw new IllegalStateException("Collection has no closing tag.");
 
 	}
-	
-	
-	private String fotgPattern = "^\\(([A-Z]{1,3})(?:,\\s?([A-Z]{1,3}))*\\)"; // eg. (US, B, CAN)
+
+
+	private final String fotgPattern = "^\\(([A-Z]{1,3})(?:,\\s?([A-Z]{1,3}))*\\)"; // eg. (US, B, CAN)
 	private void handleGatheringCollectionAndType(MarkupImportState state, XMLEventReader reader, XMLEvent parent, DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parent);
-		
+
 		XMLEvent next = readNoWhitespace(reader);
-		
+
 		if (next.isCharacters()){
 			String txt = next.asCharacters().getData().trim();
 			if (state.isSpecimenType()){
 				state.addCollectionAndType(txt);
 			}else{
-				
+
 				Matcher fotgMatcher = Pattern.compile(fotgPattern).matcher(txt);
-				
+
 				if (fotgMatcher.matches()){
 					txt = txt.substring(1, txt.length() - 1);  //remove bracket
 					String[] splits = txt.split(",");
 					for (String split : splits ){
 						Collection collection = getCollection(state, split.trim());
-						facade.addDuplicate(collection, null, null, null, null);
+						if (facade.innerDerivedUnit() == null){
+						    String message = "Adding a duplicate to a non derived unit based facade is not possible. Please check why no derived unit exists yet in facade!";
+						    this.fireWarningEvent(message, next, -6);
+						}else{
+						    facade.addDuplicate(collection, null, null, null, null);
+						}
 					}
 					//FIXME 9
 					//create derived units and and add collections
-					
+
 				}else{
 					fireWarningEvent("Collection and type pattern for gathering not recognized: " + txt, next, 4);
 				}
 			}
-			
+
 		}else{
 			fireUnexpectedEvent(next, 0);
 		}
-		
+
 		if (isMyEndingElement(next, parent)){
 			return;  //in case we have a completely empty element
 		}
@@ -643,7 +648,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			}else if (list.size() > 1){
 				fireWarningEvent("More then one occurrence for collection " + code +  " in database. Collection not reused" , "", 1);
 			}
-			
+
 			if (collection == null){
 				collection = Collection.NewInstance();
 				collection.setCode(code);
@@ -658,7 +663,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	private void handleAlternativeFieldNumber(MarkupImportState state, XMLEventReader reader, XMLEvent parent, FieldUnit fieldUnit) throws XMLStreamException {
 		Map<String, Attribute> attrs = getAttributes(parent);
 		Boolean doubtful = this.getAndRemoveBooleanAttributeValue(parent, attrs, "doubful", false);
-		
+
 		//for now we do not handle annotation and typeNotes
 		String altFieldNum = getCData(state, reader, parent, false).trim();
 		DefinedTerm type = this.getIdentifierType(state, MarkupTransformer.uuidIdentTypeAlternativeFieldNumber, "Alternative field number", "Alternative field number", "alt. field no.", null);
@@ -667,7 +672,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			fireWarningEvent("Marking alternative field numbers as doubtful not yet possible, see #4673", parent,4);
 //			Marker.NewInstance(identifier, "true", MarkerType.IS_DOUBTFUL());
 		}
-		
+
 	}
 
 
@@ -749,7 +754,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 
 	private boolean isAlternative(boolean first, boolean second, boolean third) {
-		return ( (first ^ second) && !third)  || 
+		return ( (first ^ second) && !third)  ||
 				(! first && ! second && third) ;
 	}
 
@@ -795,7 +800,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				handleUnexpectedElement(next);
 			}
 		}
-		throw new IllegalStateException("<SpecimenType> has no closing tag"); 
+		throw new IllegalStateException("<SpecimenType> has no closing tag");
 	}
 
 
@@ -804,7 +809,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		return createAuthor(collectorStr);
 	}
 
-	
+
 	public List<DescriptionElementBase> handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature, TaxonDescription defaultDescription) throws XMLStreamException {
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 		//reset current areas
@@ -829,7 +834,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 //				for (String key : inlineMarkup.keySet()){
 //					handleInlineMarkup(state, key, inlineMarkup);
 //				}
-				
+
 			} else if (isStartingElement(next, BR) || isEndingElement(next, BR)) {
 				//do nothing
 			} else if (isStartingElement(next, GATHERING)) {
@@ -846,7 +851,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
 			} else if (isStartingElement(next, GATHERING_GROUP)) {
-				List<DescriptionElementBase> list = getGatheringGroupDescription(state, reader, next);				
+				List<DescriptionElementBase> list = getGatheringGroupDescription(state, reader, next);
 				result.addAll(list);
 			}else if (next.isCharacters()) {
 				String text = next.asCharacters().getData().trim();
@@ -861,22 +866,22 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			}
 		}
 		throw new IllegalStateException("<String> has no closing tag");
-		
+
 	}
 
-	
+
 
 	private List<DescriptionElementBase> getGatheringGroupDescription(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String geoScope = getAndRemoveAttributeValue(attributes, "geoscope");
 		Boolean doubtful = getAndRemoveBooleanAttributeValue(parentEvent, attributes, DOUBTFUL, null);
 		checkNoAttributes(attributes, parentEvent);
-		
+
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 
-		
+
 		TaxonDescription td = null;
-		
+
 		if (isNotBlank(geoScope)){
 			NamedArea area = Country.getCountryByLabel(geoScope);
 			if (area == null){
@@ -908,7 +913,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				}
 			}
 		}
-		
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -930,7 +935,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
-				
+
 			}else if (next.isCharacters()) {
 				String text = next.asCharacters().getData().trim();
 				if (isPunctuation(text)){
@@ -945,7 +950,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			}
 		}
 		throw new IllegalStateException("<Gathering group> has no closing tag");
-		
+
 	}
 
 	private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUnitFacade facade) {
@@ -960,7 +965,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				facade.addCollectingArea(area);
 			}
 		}
-		
+
 	}
 
 
@@ -972,13 +977,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 //				state.addCurrentArea(area);
 //			}
 //		}
-//		
+//
 //	}
 
 
 	/**
 	 * Changes the feature if the (sub)-heading implies this. Also recognizes hidden country information
-	 * @param state 
+	 * @param state
 	 * @param parent
 	 * @param text
 	 * @param feature
@@ -990,11 +995,11 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		String examinedRegEx = "[\u00E9\u00C9]tudi[\u00E9\u00C9]";
 		String countryRegEx = "(gabonais)";
 		String postfixCountryRegEx = "\\s+(pour le Gabon)";
-		
+
 		String materialExaminedRegEx = "(?i)" + materialRegEx + "\\s+(" + countryRegEx +"\\s+)?" + examinedRegEx + "(" +postfixCountryRegEx + ")?:?";
-		
+
 		String text = originalText;
-		
+
 		if (isBlank(text)){
 			return feature;
 		}else{
@@ -1008,7 +1013,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					text = text.replace(" pour le Gabon", "");
 					state.addCurrentArea(Country.GABONGABONESEREPUBLIC());
 				}
-				
+
 				//update feature
 				feature = Feature.MATERIALS_EXAMINED();
 				state.putFeatureToGeneralSorterList(feature);
@@ -1043,7 +1048,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			String message = "Inline gaterhing has no field unit";
 			fireWarningEvent(message, parentEvent, 2);
 		}
-		
+
 		String result = "<cdm:specimen uuid='%s'>%s</specimen>";
 		if (specimen != null){
 			result = String.format(result, specimen.getUuid(), specimen.getTitleCache());
@@ -1052,7 +1057,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			fireWarningEvent(message, parentEvent, 4);
 		}
 		save(specimen, state);
-		return result;	
+		return result;
 	}
 
 
