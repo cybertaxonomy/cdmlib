@@ -192,25 +192,25 @@
       <!-- ${basedir}/src/test/resources -->
       <resource>
         <!-- replace the place holders like ${...} in datasources.xml -->
-        <targetPath>${project.build.directory}/test-classes</targetPath>
+        <targetPath>test-classes</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}${file.separator}src${file.separator}test${file.separator}resources</directory>
+        <directory>..${file.separator}src${file.separator}test${file.separator}resources</directory>
         <includes>
           <include>datasources.xml</include>
         </includes>
       </resource>
       <resource>
         <!-- all other test resources without filtering -->
-        <targetPath>${project.build.directory}/test-classes</targetPath>
-        <directory>${basedir}${file.separator}src${file.separator}test${file.separator}resources</directory>
+        <targetPath>test-classes</targetPath>
+        <directory>..${file.separator}src${file.separator}test${file.separator}resources</directory>
         <excludes>
           <exclude>datasources.xml</exclude>
         </excludes>
       </resource>
       <resource>
         <!-- all main resources without filtering -->
-        <targetPath>${project.build.directory}/classes</targetPath>
-        <directory>${basedir}${file.separator}src${file.separator}main${file.separator}resources</directory>
+        <targetPath>classes</targetPath>
+        <directory>..${file.separator}src${file.separator}main${file.separator}resources</directory>
       </resource>
     </resources>
     <plugins>
