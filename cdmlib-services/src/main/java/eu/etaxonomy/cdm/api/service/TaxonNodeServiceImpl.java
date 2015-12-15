@@ -436,7 +436,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         DeleteResult result = new DeleteResult();
         if (node == null){
             result.setAbort();
-            result.addException(new Exception("The TaxonNode is already deleted."));
+            result.addException(new Exception("The TaxonNode was already deleted."));
             return result;
         }
         Taxon taxon = null;
@@ -444,7 +444,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
         }catch(NullPointerException e){
             result.setAbort();
-            result.addException(new Exception("The Taxon is already deleted."));
+            result.addException(new Exception("The Taxon was already deleted."));
 
         }
     	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
