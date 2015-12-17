@@ -320,21 +320,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<DerivedUnitFacade>();
         IndividualsAssociation tempIndividualsAssociation;
         SpecimenOrObservationBase tempSpecimenOrObservationBase;
-        List<DescriptionElementBase> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
-        for (DescriptionElementBase element : elements) {
-            if (element.isInstanceOf(IndividualsAssociation.class)) {
-                tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
-                if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
-                    tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                    if (tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)) {
-                        try {
-                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
-                        } catch (DerivedUnitFacadeNotSupportedException e) {
-                            logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " + e.getMessage());
-                        }
+        List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
+        for (IndividualsAssociation element : elements) {
+            tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
+            if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
+                tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
+                if (tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)) {
+                    try {
+                        derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
+                    } catch (DerivedUnitFacadeNotSupportedException e) {
+                        logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " + e.getMessage());
                     }
                 }
-
             }
         }
 

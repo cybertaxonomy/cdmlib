@@ -248,7 +248,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testGetDescriptionElements() {
 
-        List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(null, null, null, null, null, null, null);
+        List<TextData> elements = descriptionDao.getDescriptionElements(null, null, null, null, null, null, null);
         assertEquals("expecting 37 description elements in total", 37, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, null, null, TextData.class, null, null, null);
@@ -331,7 +331,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
         assert description != null : "description must exist";
 
-        List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(null, null, features, TextData.class, null, null,null);
+        List<TextData> elements = descriptionDao.getDescriptionElements(null, null, features, TextData.class, null, null,null);
         assertNotNull("getDescriptionElements should return a List", elements);
         assertEquals("getDescriptionElement should return 2 elements", 2, elements.size());
 

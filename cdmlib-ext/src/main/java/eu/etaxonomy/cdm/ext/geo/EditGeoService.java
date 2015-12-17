@@ -99,8 +99,9 @@ public class EditGeoService implements IEditGeoService {
      */
     private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
         Set<Distribution> distributions = new HashSet<Distribution>();
+
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-            List<Distribution> result = (List) dao.getDescriptionElements(
+            List<Distribution> result = dao.getDescriptionElements(
                     taxonDescription,
                     null,
                     getDistributionFeatures(),

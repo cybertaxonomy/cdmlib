@@ -95,13 +95,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
     @Override
-    public int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
+    public <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> clazz) {
         return countDescriptionElements(description, null, features, clazz);
     }
 
     @Override
-    public int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
-            Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
+    public <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> clazz) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = null;
@@ -279,17 +279,17 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
     @Override
-    public List<DescriptionElementBase> getDescriptionElements(
+    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
             DescriptionBase description, Set<Feature> features,
-            Class<? extends DescriptionElementBase> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+            Class<T> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         return getDescriptionElements(description, null, features, clazz, pageSize, pageNumber, propertyPaths);
     }
 
     @Override
-    public List<DescriptionElementBase> getDescriptionElements(
+    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
             DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features,
-            Class<? extends DescriptionElementBase> clazz,
+            Class<T> clazz,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
@@ -319,13 +319,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 }
             }
 
-            List<DescriptionElementBase> results = criteria.list();
+            List<T> results = criteria.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
 
             return results;
         } else {
-            List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+            List<T> result = new ArrayList<T>();
             if(features != null && !features.isEmpty()) {
 
                 for(Feature f : features) {

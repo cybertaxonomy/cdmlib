@@ -160,7 +160,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *             instead
      */
     @Deprecated
-    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
     /**
@@ -191,7 +191,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *
      * @return a Pager containing DescriptionElementBase instances
      */
-    public Pager<DescriptionElementBase> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -219,7 +219,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @deprecated use {@link #listDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
      */
     @Deprecated
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -245,7 +245,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType

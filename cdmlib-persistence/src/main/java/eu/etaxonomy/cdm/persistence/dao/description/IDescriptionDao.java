@@ -85,7 +85,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @deprecated use {@link #getDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
      */
      @Deprecated
-    List<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+     <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -114,7 +114,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    List<DescriptionElementBase> getDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
     /**
@@ -127,7 +127,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @deprecated use {@link #countDescriptionElements(DescriptionBase, Class, Set, Class)} instead
      */
     @Deprecated
-     int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<? extends DescriptionElementBase> type);
+    <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> type);
 
     /**
      * Returns a count of description elements of type <TYPE>, belonging to a
@@ -146,7 +146,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            The type of description
      * @return a count of DescriptionElementBase instances
      */
-    int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type);
+    <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type);
 
     /**
      * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method

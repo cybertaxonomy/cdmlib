@@ -243,7 +243,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
             features = new DefinedTermBaseList<Feature>();
         }
 
-        Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
+        Pager pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
                 type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
 
         return pager;
