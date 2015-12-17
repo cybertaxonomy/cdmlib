@@ -192,7 +192,7 @@
       <!-- ${basedir}/src/test/resources -->
       <resource>
         <!-- replace the place holders like ${...} in datasources.xml -->
-        <targetPath>test-classes</targetPath>
+        <targetPath>${project.build.directory}/test-classes</targetPath>
         <filtering>true</filtering>
         <directory>..${file.separator}src${file.separator}test${file.separator}resources</directory>
         <includes>
