@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.common;
 
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 
 
 /**
- *  
+ *
  *  Creates Cursors from extern relational DB.
  *  Used only for developpers convienence hence undocumented.
  *  You may create input cursors in any other way you want
@@ -44,7 +44,7 @@ public class Source {
     //Mode
 	private final static boolean DEBUG_MODE = false;
     private final static boolean DEBUG_LOG_WRITER = false;
-	
+
     //DB info
 //	public final static String SQL_SERVER_2000 = "SQLServer2000";
 	public final static String SQL_SERVER_2005 = "SQLServer2005";
@@ -54,11 +54,12 @@ public class Source {
 	public final static String ODDBC = "ODBC";
 	public final static String ORACLE = "Oracle";
 	public final static String DB2 = "DB2";
-	
+	public final static String POSTGRESQL9 = "PostgreSQL9";
+
 	//coursor mode
 	public final static String SELECT_DIRECT = "direct";
 	public final static String SELECT_CURSOR = "cursor";
-		
+
     //driver class
 //    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsSQLServer2005 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -68,7 +69,8 @@ public class Source {
     private static String clsDB2 = "COM.ibm.db2.jdbc.net.DB2Driver";
     private static String clsSQLServerDdtek = "com.ddtek.jdbc.sqlserver.SQLServerDriver";
     private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
-    
+    private static String clsPostgreSQL = "org.postgresql.Driver";
+
     //url
 //    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
     private static String urlSQLServer2005 = "jdbc:sqlserver://";
@@ -77,34 +79,32 @@ public class Source {
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
     private static String urlODBC = "jdbc:odbc:";
-    // FIXME this default is not acceptable
-    private static String urlDefault = "jdbc:microsoft:sqlserver://LAPI:1433;DatabaseName=studienarbeit;SelectMethod=direct";
-    
-    
+    private static String urlPostgreSQL = "jdbc:postgresql://";
+
 /* *************** VARIABLES *******************************/
     private Connection mConn;
     private Statement mStmt;
     private String mQuery;
     private String mUrl = null;
-    private String mDb = null; 
+    private String mDb = null;
     private int mPort = 1433; //default port TODO 2 currently only for SQLServer, needs to be implemented also for othe DBMS
     private String mDbms = null;
     private String mServer = null;
     private boolean isCursor;
     private boolean connExist = false; //does a Connection exist?
-    private String mUserName; 
+    private String mUserName;
     private String mPwd;
 
-	private boolean doLog = false; 
+	private boolean doLog = false;
 
 
 	private static String userNameDefault = "sa"; //default user
     private static String pwdDefault = "sa"; //default PWD
-    
-    
+
+
 /* ******************** CONSTRUCTORS **********************************/
-    
-    
+
+
     /**
      * Creates a source and sets the according variables
      * @param dbms name of database management system (e.g. "SQLServer", "Access", "Excel", "Oracle"
@@ -139,7 +139,7 @@ public class Source {
         this(dbms, server, db);
     	isCursor = cursor;
     }
-    
+
 
     /**
     * Creates a source and sets the parameter. If port is -1 the databases default port is used.
@@ -154,10 +154,10 @@ public class Source {
         	this.setPort(port);
         };
     }
-    
+
     /**
      * Creates a source with parameters of a ICdmDataSource instance
-     * 
+     *
      * @param cdmDataSource
      */
     public Source(ICdmDataSource cdmDataSource){
@@ -168,12 +168,12 @@ public class Source {
         mUserName = cdmDataSource.getUsername();
         this.setPort(cdmDataSource.getPort());
     }
-    
+
 //********************* METHODS *****************************************************/
-   
+
     //******* RESULTSETS *******************//
     /**
-     * Returns the Resultset for query 'query'. 
+     * Returns the Resultset for query 'query'.
      * Does not change the Sources query-string!!
      * @return Resultset for the query.
      */
@@ -196,7 +196,7 @@ public class Source {
     //******* INSERT, UPDATE, DELETE *******************//
     /**
      * Executes an insert, update or delete statement.
-     * Returns the number of rows changed or -1 if updatedStatement was 0 or and error occurred. 
+     * Returns the number of rows changed or -1 if updatedStatement was 0 or and error occurred.
      * Does not change the Sources query-string!!
      * @return Resultset for the query.
      */
@@ -216,16 +216,16 @@ public class Source {
         }
     }
 
-    
-    /** 
-     * Returns the Resultset for Sources query. 
+
+    /**
+     * Returns the Resultset for Sources query.
      * @return Resultset for the Sources query
      */
     public ResultSet getResultSet (){
-    	return getResultSet(mQuery);  
+    	return getResultSet(mQuery);
     }
 
-    
+
     // ***************CONNECTION *************************************//
     /**
      * Returns the connection.
@@ -234,7 +234,7 @@ public class Source {
     public Connection getConnection(){
     	try {
 			if (this.connExist == false){
-				if (mConn != null){ 
+				if (mConn != null){
 					mConn.close();
 				}
 				this.makeConnection() ;
@@ -246,8 +246,8 @@ public class Source {
 			throw new RuntimeException("SQLException in getConnection.", e);
 		}
     }
-    
-    
+
+
     /**
      * Makes the connection.
      * @return true if connection created
@@ -270,59 +270,56 @@ public class Source {
 //			    DriverManager.setLogWriter(new PrintWriter(System.out));
 			    mConn = DriverManager.getConnection(mUrl, prop);
 			}else{
-				mConn = DriverManager.getConnection(mUrl, mUserName, mPwd);				
+				mConn = DriverManager.getConnection(mUrl, mUserName, mPwd);
 			}
 
-			
-			
+
+
 			mConn.setCatalog(mDb);  //
 			logger.info("Connected to " + mConn.getCatalog());
 			mStmt = mConn.createStatement();
 			this.connExist = true;
 			return true;
 		}catch (SQLException e){
-            logger.error("Problems when trying to open the database !!!\n" + 
+            logger.error("Problems when trying to open the database !!!\n" +
                     "URL: " + mUrl  + "\n" +
                     "Exception: " + e);
             throw new SourceConnectionException ();
-        } 
+        }
     }
-    
+
     /**
-     * Makes the connection string 
+     * Makes the connection string
      * @return false if ClassNotFoundException, else true
      */
     private boolean makeConnectionString(){
-    	String selectMethod; 
+    	String selectMethod;
         String server;
-        
-    	if (isCursor)
-	    	selectMethod = SELECT_CURSOR;
-	    else
-	    	selectMethod = SELECT_DIRECT;
+
+    	if (isCursor) {
+            selectMethod = SELECT_CURSOR;
+        } else {
+            selectMethod = SELECT_DIRECT;
+        }
 	    try{
-	        if (DEBUG_LOG_WRITER) DriverManager.setLogWriter((new PrintWriter(System.out)));
-//	        if (mDbms.equalsIgnoreCase(SQL_SERVER_2000)) {
-//	            Class.forName(clsSQLServer2000);
-//	            server = mServer + ":" + mPort;
-//	            mUrl = urlSQLServer + server + ";DataBase=" + mDb + ";SelectMethod="+ selectMethod; 
-//	        }
-	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
+	        if (DEBUG_LOG_WRITER) {
+                DriverManager.setLogWriter((new PrintWriter(System.out)));
+            } else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
 	            Class.forName(clsSQLServer2005);
 	            server = mServer + ":" + mPort;
-	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
+	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
 	        }
 	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2008)) {
 	            Class.forName(clsSQLServer2008);
 	            server = mServer + ":" + mPort;
-	            mUrl = urlSQLServer2008 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
+	            mUrl = urlSQLServer2008 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
 	        }
 	        else if (mDbms.equalsIgnoreCase(ACCESS)) {
 	        	Class.forName(clsODBC);
-	            
+
 	        	//mDb must be the file path
 	        	mUrl = urlODBC + "Driver={Microsoft Access Driver (*.mdb)};DBQ=";
-	        	mUrl += mDb.trim() + ";DriverID=22;READONLY=false}";  
+	        	mUrl += mDb.trim() + ";DriverID=22;READONLY=false}";
 	        }
 	        else if (mDbms.equalsIgnoreCase(EXCEL)) {
 	            Class.forName(clsODBC);
@@ -332,7 +329,7 @@ public class Source {
 	        else if (mDbms.equalsIgnoreCase(ODDBC)) {
 	            //mDb must be the System DNS name
 	        	Class.forName(clsODBC);
-	            mUrl = urlODBC + mDb ; 
+	            mUrl = urlODBC + mDb ;
 	        }
 	        else if (mDbms.equalsIgnoreCase(ORACLE)) {
 	            Class.forName(clsOracle);
@@ -340,25 +337,29 @@ public class Source {
 	        }
 	        else if (mDbms.equalsIgnoreCase(DB2)) {
 	            Class.forName(clsDB2);
-	            mUrl = urlDB2 + mDb; 
+	            mUrl = urlDB2 + mDb;
 	        }
 	        else if (mDbms.equalsIgnoreCase("SQLServerDdtek")) {
 	             Class.forName(clsSQLServerDdtek);
 	             mUrl = urlDataDirectSQLServer + mServer;
-	         }
-	        else {
-	            Class.forName(clsSQLServer2005);
-	            mUrl = urlDefault; 
 	        }
-	        logger.debug("Connection String: " + mUrl);	
+	        else if (mDbms.equalsIgnoreCase(POSTGRESQL9)) {
+	            Class.forName(clsPostgreSQL);
+	            server = mServer + ":" + mPort;
+	            mUrl = urlPostgreSQL + server+ "/" + mDb;
+	        }
+	        else {
+	            throw new RuntimeException("Unsupported Database type");
+	        }
+	        logger.debug("Connection String: " + mUrl);
 	        return true;
 	    }catch (ClassNotFoundException e){
 	        logger.error("Datenbank-Treiber-Klasse konnte nicht geladen werden\n" + "Exception: " + e.toString());
 	        return false;
 	    }
     }
- 
-    
+
+
 /* ******************** SETTER *************************************/
 
     /**
@@ -368,7 +369,7 @@ public class Source {
         mQuery = query;
         return this;
     }
-    
+
     /**
      * Sets the username.
      * @param userName
@@ -382,7 +383,7 @@ public class Source {
     	this.connExist = false;
 		return this;
     }
-        
+
     /**
      * Sets the password.
      * @param pwd
@@ -396,7 +397,7 @@ public class Source {
     	this.connExist = false;
 		return this;
 	}
-    
+
     /**
      * Sets the username and password.
      * @param userName
@@ -407,7 +408,7 @@ public class Source {
     	setPassword(pwd);
     	return this;
 	}
-    
+
     /**
      * Sets the port.
      * @param userName
@@ -418,16 +419,16 @@ public class Source {
 		this.connExist = false;
 		return this;
 	}
-    
+
     public String getDatabase(){
     	return mDb;
     }
-    
+
     public String getServer(){
     	return mServer;
     }
-    
-    
+
+
     public boolean isDoLog() {
 		return doLog;
 	}
@@ -435,7 +436,7 @@ public class Source {
 	public void setDoLog(boolean doLog) {
 		this.doLog = doLog;
 	}
-    
+
     /**
      * Checks if an attribute exists in the database schema. At the moment only supported
      * for SQL Server.
@@ -450,10 +451,10 @@ public class Source {
     		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +
-				" WHERE (t.xtype = 'U') AND " + 
-				" (t.name = '" + tableName + "') AND " + 
+				" WHERE (t.xtype = 'U') AND " +
+				" (t.name = '" + tableName + "') AND " +
 				" (c.name = '" + dbAttribute + "')";
-			ResultSet rs = getResultSet(strQuery) ;		
+			ResultSet rs = getResultSet(strQuery) ;
 			int n;
 			try {
 				rs.next();
@@ -478,6 +479,6 @@ public class Source {
         	return mUrl;
     	}
     }
-    
+
 
 }
