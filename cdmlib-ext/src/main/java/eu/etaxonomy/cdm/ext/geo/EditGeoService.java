@@ -33,10 +33,12 @@ import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -98,20 +100,34 @@ public class EditGeoService implements IEditGeoService {
      * @return
      */
     private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> result = new HashSet<Distribution>();
 
+        Set<Feature> features = getDistributionFeatures();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-            List<Distribution> result = dao.getDescriptionElements(
-                    taxonDescription,
-                    null,
-                    getDistributionFeatures(),
-                    Distribution.class,
-                    null,
-                    null,
-                    null);
-            distributions.addAll(result);
+            List<Distribution> distributions;
+            if (taxonDescription.getId() > 0){
+                distributions = dao.getDescriptionElements(
+                        taxonDescription,
+                        null,
+                        null /*features*/,
+                        Distribution.class,
+                        null,
+                        null,
+                        null);
+            }else{
+                distributions = new ArrayList<Distribution>();
+                for (DescriptionElementBase deb : taxonDescription.getElements()){
+                    if (deb.isInstanceOf(Distribution.class)){
+                        if (features == null || features.isEmpty()
+                                || features.contains(deb.getFeature())) {
+                            distributions.add(CdmBase.deproxy(deb, Distribution.class));
+                        }
+                    }
+                }
+            }
+            result.addAll(distributions);
         }
-        return distributions;
+        return result;
     }
 
     /**
