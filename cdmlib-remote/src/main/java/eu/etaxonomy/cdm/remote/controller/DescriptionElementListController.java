@@ -129,7 +129,7 @@ public class DescriptionElementListController {
      * @throws IOException
      */
     @RequestMapping(value = "byFeature", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public Pager<DescriptionElementBase> doPageDescriptionElementsByFeature(
+    public Pager<? extends DescriptionElementBase> doPageDescriptionElementsByFeature(
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
             @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
             @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
@@ -146,7 +146,7 @@ public class DescriptionElementListController {
             features = new DefinedTermBaseList<Feature>();
         }
 
-        Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
+        Pager<? extends DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
                 type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
 
         return pager;
