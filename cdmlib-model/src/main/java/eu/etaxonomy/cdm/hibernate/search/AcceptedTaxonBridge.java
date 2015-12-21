@@ -12,7 +12,8 @@ import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.StringField;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
@@ -50,11 +51,9 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
         // in the case of taxon this is just the uuid
         if(value instanceof Taxon) {
             accTaxonUuids = ((Taxon)value).getUuid().toString();
-            Field canonicalNameIdField = new Field(name + DOC_KEY_ID_SUFFIX,
-                    Integer.toString(((Taxon)value).getId()),
-                    luceneOptions.getStore(),
-                    Index.NOT_ANALYZED,
-                    Field.TermVector.NO
+            Field canonicalNameIdField = new IntField(name + DOC_KEY_ID_SUFFIX,
+                    ((Taxon)value).getId(),
+                    luceneOptions.getStore()
                     );
             document.add(canonicalNameIdField);
         }
@@ -70,11 +69,9 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
                 sb.append(ACCEPTED_TAXON_UUID_LIST_SEP);
 
                 // adding the accTaxon id as multivalue field:
-                Field canonicalNameIdField = new Field(name + DOC_KEY_ID_SUFFIX,
+                Field canonicalNameIdField = new StringField(name + DOC_KEY_ID_SUFFIX,
                         Integer.toString(accTaxon.getId()),
-                        luceneOptions.getStore(),
-                        Index.NOT_ANALYZED,
-                        Field.TermVector.NO
+                        luceneOptions.getStore()
                         );
                 document.add(canonicalNameIdField);
             }
@@ -87,11 +84,10 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
         // TODO can't we also add the uuid as multivalue field?
 
         // the id field is shorter and should be sufficient
-        Field canonicalNameUuidField = new Field(name + DOC_KEY_UUID_SUFFIX,
+        Field canonicalNameUuidField = new StringField(name + DOC_KEY_UUID_SUFFIX,
                 accTaxonUuids,
-                luceneOptions.getStore(),
-                Index.NOT_ANALYZED,
-                Field.TermVector.NO);
+                luceneOptions.getStore()
+                );
         //TODO  do we really need to set the boost for an id field?
         canonicalNameUuidField.setBoost(luceneOptions.getBoost());
         document.add(canonicalNameUuidField);

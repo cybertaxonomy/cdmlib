@@ -28,7 +28,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.server.LSIDServerException;
 
-import eu.etaxonomy.cdm.api.service.lsid.impl.LsidAuthorityServiceImpl;
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;

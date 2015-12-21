@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore
 public class CdmCacherTest extends CdmIntegrationTest {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmCacherTest.class);
 
 	@SpringBeanByType
@@ -45,23 +44,16 @@ public class CdmCacherTest extends CdmIntegrationTest {
 
 		// Following test is just to make sure no exception is raised when saving a taxon corresponding
 		// to a taxon name with no name cache to begin with
-		Reference sec = ReferenceFactory.newDatabase();
+		Reference<?> sec = ReferenceFactory.newDatabase();
         referenceService.save(sec);
 		Taxon taxon = Taxon.NewInstance(NonViralName.NewInstance(Rank.SERIES()), sec);
         taxon.setTitleCache("Tax" + "CdmCacher", true);
         taxonService.save(taxon);
-        NonViralName nvn = (NonViralName)taxon.getName();
+        NonViralName<?> nvn = (NonViralName<?>)taxon.getName();
         String nameCache = nvn.getNameCache();
         logger.warn("name cache : " + nameCache);
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

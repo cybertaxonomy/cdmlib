@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -26,46 +25,47 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name="NaturalLanguageTerm")
 @XmlRootElement(name = "NaturalLanguageTerm")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	private static final long serialVersionUID = 6754598791831848705L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageTerm.class);
-	
-	protected static Map<UUID, NaturalLanguageTerm> termMap = null;		
 
-	
+	protected static Map<UUID, NaturalLanguageTerm> termMap = null;
+
+
 	private static NaturalLanguageTerm FROM = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm TO = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm UP_TO = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm MOST_FREQUENTLY = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm ON_AVERAGE = new NaturalLanguageTerm();
 	private static NaturalLanguageTerm MORE_OR_LESS = new NaturalLanguageTerm();
-	
+
 	private static final UUID uuidTo = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb494");
-	
-	
+
+
 	public static  NaturalLanguageTerm NewInstance(String term, String label, String labelAbbrev) {
 		return new NaturalLanguageTerm(term, label, labelAbbrev);
 	}
 
-	
-//********************************** Constructor *******************************************************************/	
+
+//********************************** Constructor *******************************************************************/
 
 	//for hibernate use only
 	@Deprecated
 	protected NaturalLanguageTerm() {
 		super(TermType.NaturalLanguageTerm);
 	}
-	
+
 	private NaturalLanguageTerm(String term, String label, String labelAbbrev) {
 		super(TermType.NaturalLanguageTerm, term, label, labelAbbrev);
 	}
-	
-//********************************** Methods *******************************************************************/	
-	
-	
+
+//********************************** Methods *******************************************************************/
+
+
 	@Override
 	protected void setDefaultTerms(
 			TermVocabulary<NaturalLanguageTerm> termVocabulary) {
@@ -73,7 +73,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		//NaturalLanguageTerm.TO.setLabel("eip");
 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -82,7 +82,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		termMap = null;
 	}
 
-	
+
 	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -91,10 +91,11 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		return super.getKindOf();
 	}
 
-	public void setKindOf(NaturalLanguageTerm kindOf){
+	@Override
+    public void setKindOf(NaturalLanguageTerm kindOf){
 		super.setKindOf(kindOf);
 	}
-	
+
 	/**
 	 * Returns the "from" term.
 	 */
@@ -108,7 +109,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		nlt.addRepresentation(representation3);
 		return nlt;
 	}
-	
+
 	/**
 	 * Returns the "to" term.
 	 */
@@ -120,7 +121,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		nlt.addRepresentation(representation2);
 		return nlt;
 	}
-	
+
 	public static final NaturalLanguageTerm UP_TO(){
 		NaturalLanguageTerm nlt = UP_TO;
 		Representation representation = Representation.NewInstance("", "up to", "", Language.ENGLISH());
@@ -129,7 +130,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		nlt.addRepresentation(representation2);
 		return nlt;
 	}
-	
+
 	public static final NaturalLanguageTerm MOST_FREQUENTLY(){
 		NaturalLanguageTerm nlt = MOST_FREQUENTLY;
 		Representation representation = Representation.NewInstance("", "most frequently", "", Language.ENGLISH());
@@ -138,7 +139,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		nlt.addRepresentation(representation2);
 		return nlt;
 	}
-	
+
 	public static final NaturalLanguageTerm ON_AVERAGE(){
 		NaturalLanguageTerm nlt = ON_AVERAGE;
 		Representation representation = Representation.NewInstance("", "on average", "", Language.ENGLISH());

@@ -10,12 +10,9 @@
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
-import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 

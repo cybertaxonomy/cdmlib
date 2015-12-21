@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xsi:schemaLocation="
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
     ">
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/>
@@ -17,23 +17,5 @@
         ======================================================================
      -->
 
-	 <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
-      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
-    </context:component-scan>
-
-    <context:component-scan base-package="eu/etaxonomy/cdm/search" />
-
-    <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
-
-    <!-- also find the implementation of ICdmApplicationConfiguration (otherwise it is not found by a component scan)
-    <bean name="cdmApplicationDefaultConfiguration" class="eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration">
-    </bean>
-    -->
-
-    <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
-    <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">
-    </bean>
-
-    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
-    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
+    <import resource="classpath:/eu/etaxonomy/cdm/services_base.xml"/>
 </beans>

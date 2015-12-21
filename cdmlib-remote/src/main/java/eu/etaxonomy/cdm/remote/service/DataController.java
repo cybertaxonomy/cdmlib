@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ibm.lsid.LSIDException;
 import com.ibm.lsid.server.LSIDServerException;
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.lsid.LSIDDataService;
 import eu.etaxonomy.cdm.model.common.LSID;

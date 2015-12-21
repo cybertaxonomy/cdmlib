@@ -9,6 +9,8 @@
  */
 package eu.etaxonomy.cdm.remote.controller.ext;
 
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -17,13 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;

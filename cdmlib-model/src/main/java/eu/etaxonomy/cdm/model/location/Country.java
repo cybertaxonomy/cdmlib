@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,6 +20,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -58,7 +58,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 })
 @XmlRootElement(name = "Country")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Country extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;
@@ -70,21 +71,25 @@ public class Country extends NamedArea {
 	@XmlAttribute(name = "iso3166_A2")
 	@Column(length=2)
 	private String iso3166_A2;
-	
+
     @XmlElementWrapper(name = "Continents")
     @XmlElement(name = "Continent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="DefinedTermBase_Continent")
-	private Set<NamedArea> continents = new HashSet<NamedArea>();
-	
+    //preliminary  #5369
+    @JoinTable(
+	        name="DefinedTermBase_Continent",
+            joinColumns = @JoinColumn( name="DefinedTermBase_id")
+	)
+	private final Set<NamedArea> continents = new HashSet<NamedArea>();
+
 	protected static Map<UUID, NamedArea> termMap = null;
 	protected static Map<String, UUID> labelMap = null;
 	protected static Map<String, UUID> isoA2Map = null;
-	
+
 	public static final UUID uuidCountryVocabulary = UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a");
-    
+
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
 	private static final UUID uuidAlbaniaPeoplesSocialistRepublicof = UUID.fromString("238a6a93-8857-4fd6-af9e-6437c90817ac");
 	private static final UUID uuidAlgeriaPeoplesDemocraticRepublicof = UUID.fromString("a14b38ac-e963-4c1a-85c2-de1f17f8c72a");
@@ -565,9 +570,9 @@ public class Country extends NamedArea {
 	public static final Country ZAMBIAREPUBLICOF () { return (Country)termMap.get(Country.uuidZambiaRepublicof );}
 	public static final Country ZIMBABWE () { return (Country)termMap.get(Country.uuidZimbabwe );}
 
-	
-//****************** FACTORY METHODS ******************************/	
-	
+
+//****************** FACTORY METHODS ******************************/
+
 	/**
 	 * Factory method
 	 * @return
@@ -575,8 +580,8 @@ public class Country extends NamedArea {
 	public static Country NewInstance(){
 		return new Country();
 	}
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -584,8 +589,8 @@ public class Country extends NamedArea {
 	public static Country NewInstance(String term, String label, String labelAbbrev){
 		return new Country(term, label, labelAbbrev);
 	}
-	
-//********************************** Constructor *********************************/	
+
+//********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -596,7 +601,7 @@ public class Country extends NamedArea {
 	}
 
 //***************************** METHODS *****************************************/
-	
+
 	public Set<NamedArea> getContinents() {
 		return continents;
 	}
@@ -604,7 +609,7 @@ public class Country extends NamedArea {
 	public void addContinent(NamedArea continent) {
 		this.continents.add(continent);
 	}
-	
+
 	public void removeContinent(NamedArea continent) {
 		this.continents.remove(continent);
 	}
@@ -618,7 +623,7 @@ public class Country extends NamedArea {
 	}
 
 	/**
-	 * Set 2 character ISO 3166 Country code 
+	 * Set 2 character ISO 3166 Country code
 	 * @param iso3166_A2  a String representation of the ISO 3166 code
 	 */
 	public void setIso3166_A2(String iso3166_A2){
@@ -636,12 +641,12 @@ public class Country extends NamedArea {
 			String text = csvLine.get(3).trim();
 			String abbreviatedLabel = csvLine.get(2);
 			newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
-			
+
 			// iso codes extra
 			newInstance.setIso3166_A2(csvLine.get(4).trim());
 			newInstance.setIdInVocabulary(abbreviatedLabel);
-			
-			
+
+
 			String[] continentList;
 			String tmp = csvLine.get(5).trim();
 			if (tmp.length()>2){
@@ -665,10 +670,10 @@ public class Country extends NamedArea {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
-	
+
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];
 		line[0] = getUuid().toString();
@@ -678,7 +683,7 @@ public class Country extends NamedArea {
 		line[4] = this.getIso3166_A2().toString();
 		line[5] = this.getContinents().toString();
 		writer.writeNext(line);
-	}	
+	}
 
 	public static boolean isCountryLabel(String label) {
 		if (labelMap.containsKey(label)){
@@ -689,16 +694,16 @@ public class Country extends NamedArea {
 	}
 
 
-	
+
 //************************** METHODS ********************************
-	
-	
+
+
 	private static void initMaps(){
 		labelMap = new HashMap<String, UUID>();
 		termMap = new HashMap<UUID, NamedArea>();
 		isoA2Map = new HashMap<String, UUID>();
 	}
-	
+
 	/**
 	 * FIXME This class should really be refactored into an interface and service implementation,
 	 * relying on TermVocabularyDao / service (Ben)
@@ -714,7 +719,7 @@ public class Country extends NamedArea {
 			logger.info("Unknown country: " + CdmUtils.Nz(label));
 			return null;
 		}
-		return (Country)termMap.get(uuid); 
+		return (Country)termMap.get(uuid);
 	}
 
 	public static Country getCountryByIso3166A2(String isoA2) {
@@ -726,10 +731,10 @@ public class Country extends NamedArea {
 			logger.info("Unknown country: " + CdmUtils.Nz(isoA2));
 			return null;
 		}
-		return (Country)termMap.get(uuid); 
+		return (Country)termMap.get(uuid);
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -740,22 +745,22 @@ public class Country extends NamedArea {
 	}
 
 
-	
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
 		initMaps();
 		for (NamedArea term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+			termMap.put(term.getUuid(), term);  //TODO casting
 		}
 		for (NamedArea term : termVocabulary.getTerms()){
-			labelMap.put(term.getLabel(), term.getUuid());  
+			labelMap.put(term.getLabel(), term.getUuid());
 		}
 		for (NamedArea term : termVocabulary.getTerms()){
 			Country country = CdmBase.deproxy(term, Country.class);
-			isoA2Map.put(country.getIso3166_A2(), term.getUuid());  
+			isoA2Map.put(country.getIso3166_A2(), term.getUuid());
 		}
-		
+
 	}
 
-	
+
 }

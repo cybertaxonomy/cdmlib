@@ -9,23 +9,8 @@
  
 package eu.etaxonomy.cdm.test.unit;
 
-import static org.junit.Assert.fail;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.Transient;
-
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 
 /**
  * Superclass for all (hibernate)entities to test if certain (hibernate) needs are fulfilled.

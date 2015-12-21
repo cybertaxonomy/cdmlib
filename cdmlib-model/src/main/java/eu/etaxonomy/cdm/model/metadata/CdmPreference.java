@@ -15,8 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.Length;
 
 

@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import java.util.UUID;
-
 /**
  * Exception for cases when a CDM object identified by its UUID is not existing
  * or the UUID is malformed and not even a valid UUID 

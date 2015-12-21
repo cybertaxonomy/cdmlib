@@ -20,12 +20,9 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Test;
-
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 import eu.etaxonomy.cdm.print.out.mediawiki.MediawikiOutputModule;
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
-import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
 
 /**
  * @author n.hoffmann

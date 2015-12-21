@@ -9,12 +9,11 @@
  */
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
@@ -81,7 +78,7 @@ public class ManagementController {
      * (javax.servlet.http.HttpServletRequest,
      * javax.servlet.http.HttpServletResponse)
      */
-    // @RequestMapping(value = { "//manager/datasources/list" }, method =
+    // @RequestMapping(value = { "/manager/datasources/list" }, method =
     // RequestMethod.GET)
     protected ModelAndView doList(HttpServletRequest request,
             HttpServletResponse respone) throws Exception {
@@ -93,7 +90,7 @@ public class ManagementController {
         return mv;
     }
 
-    // @RequestMapping(value = { "//manager/datasources/reload" }, method =
+    // @RequestMapping(value = { "/manager/datasources/reload" }, method =
     // RequestMethod.GET)
     public ModelAndView doReload(HttpServletRequest request,
             HttpServletResponse respone) throws Exception {
@@ -132,6 +129,7 @@ public class ManagementController {
         final List<Class<? extends CdmBase>> typeSet = asList(types);
 
         String processLabel = "Re-indexing";
+
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
                 progressMonitorController);
 
@@ -158,7 +156,7 @@ public class ManagementController {
      * @param types
      */
     private List<Class<? extends CdmBase>> asList(Class<? extends CdmBase>[] types) {
-        
+
     	List<Class<? extends CdmBase>> typeList = null;
         if(types != null) {
             typeList = new ArrayList<Class<? extends CdmBase>>();

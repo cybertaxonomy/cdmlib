@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 
 /**
@@ -35,7 +34,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExtensionType")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;

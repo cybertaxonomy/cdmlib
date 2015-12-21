@@ -31,9 +31,11 @@ import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
@@ -49,11 +51,15 @@ import eu.etaxonomy.cdm.validation.Level2;
  * @date 20 jan. 2015
  *
  */
+@Ignore
 public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
+
+    @SpringBeanByType
+    private EntityValidationCrudJdbcImpl validationCrudJdbcDao;
 
     /**
      * @throws java.lang.Exception
@@ -332,8 +338,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setValidator("eu.etaxonomy.cdm.persistence.validation.LastNameValidator");
         entityValidation.addEntityConstraintViolation(error);
 
-        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
-        dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
+//        EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
+        validationCrudJdbcDao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
     }
 
 
@@ -388,7 +394,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         EntityValidation result;
 
         result = dao.getEntityValidation(MEDIA, 100);
-        assertNotNull(result);
+        assertNotNull("A validation result for media id=100 should exist", result);
         assertEquals("Unexpected entity id", 1, result.getId());
         assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 

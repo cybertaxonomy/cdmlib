@@ -15,8 +15,10 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Filter;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
@@ -25,10 +27,11 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
-import org.apache.lucene.search.grouping.TermAllGroupsCollector;
-import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
-import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.search.grouping.term.TermAllGroupsCollector;
+import org.apache.lucene.search.grouping.term.TermFirstPassGroupingCollector;
+import org.apache.lucene.search.grouping.term.TermSecondPassGroupingCollector;
+import org.apache.lucene.util.BytesRef;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -60,7 +63,7 @@ public class LuceneSearch {
 
     private Class<? extends CdmBase> directorySelectClass;
 
-    private Filter filter = null;
+    private BooleanQuery filter = null;
 
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
@@ -79,14 +82,14 @@ public class LuceneSearch {
     /**
      * @return the filter
      */
-    public Filter getFilter() {
+    public BooleanQuery getFilter() {
         return filter;
     }
 
     /**
      * @param filter the filter to set
      */
-    public void setFilter(Filter filter) {
+    public void setFilter(BooleanQuery filter) {
         this.filter = filter;
     }
 
@@ -116,7 +119,7 @@ public class LuceneSearch {
      */
     public final int MAX_HITS_ALLOWED = 10000;
 
-    protected Query query;
+    protected BooleanQuery query;
 
     protected String[] highlightFields = new String[0];
 
@@ -181,7 +184,7 @@ public class LuceneSearch {
     public IndexSearcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(toolProvider.getIndexReaderFor(directorySelectClass));
-            searcher.setDefaultFieldSortScoring(true, true);
+//            searcher.setDefaultFieldSortScoring(true, true);
         }
         return searcher;
     }
@@ -206,11 +209,10 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroupsWithMaxScore executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups<BytesRef> executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
-        this.query = luceneQuery;
-
+        setQuery(luceneQuery);
         return executeSearch(pageSize, pageNumber);
     }
 
@@ -231,9 +233,9 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
-        Query fullQuery = expandQuery();
+        BooleanQuery fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, filter, maxNoOfHits);
+        return getSearcher().search(fullQuery, maxNoOfHits, Sort.RELEVANCE, true, true);
 
     }
     /**
@@ -243,7 +245,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroupsWithMaxScore executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups<BytesRef> executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
 
         if(pageNumber == null || pageNumber < 0){
@@ -254,7 +256,7 @@ public class LuceneSearch {
             logger.info("limiting pageSize to MAX_HITS_ALLOWED = " + MAX_HITS_ALLOWED + " items");
         }
 
-        Query fullQuery = expandQuery();
+        BooleanQuery fullQuery = expandQuery();
         logger.info("final query: " + fullQuery.toString());
 
         int offset = pageNumber * pageSize;
@@ -276,11 +278,10 @@ public class LuceneSearch {
                     ", groupSort=" + groupSort + ", withinGroupSort=" + withinGroupSort + ", limit=" + limit + ", maxDocsPerGroup="+ maxDocsPerGroup);
         }
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(
-                groupByField, groupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, groupSort, limit);
 
-        getSearcher().search(fullQuery, filter , firstPassCollector);
-        Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
+        getSearcher().search(fullQuery, firstPassCollector);
+        Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
               return null;
@@ -299,19 +300,39 @@ public class LuceneSearch {
                 groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores,
                 getMaxScores, fillFields
                 );
-        getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
+        getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
-        TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
+        TopGroups<BytesRef> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
+
+        // --- set the max score for the group results
 
         // get max score from very first result
         float maxScore = groupsResult.groups[0].maxScore;
+
         if(logger.isDebugEnabled()){
             logger.debug("TopGroups: maxScore=" + maxScore + ", offset=" + offset +
                     ", totalGroupCount=" + allGroupsCollector.getGroupCount() +
                     ", totalGroupedHitCount=" + groupsResult.totalGroupedHitCount);
         }
-        TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult,
-                offset, allGroupsCollector.getGroupCount(), maxScore);
+
+        TopGroups<BytesRef> newTopGroups;
+        if(offset > 0){
+            GroupDocs<BytesRef>[] newGroupDocs = new GroupDocs[groupsResult.groups.length - offset];
+            for(int i = offset; i < groupsResult.groups.length; i++){
+                newGroupDocs[i - offset] = groupsResult.groups[i];
+            }
+            newTopGroups = new TopGroups<BytesRef>(
+                    groupsResult.groupSort,
+                    groupsResult.withinGroupSort,
+                    groupsResult.totalHitCount,
+                    groupsResult.totalGroupedHitCount,
+                        newGroupDocs,
+                        maxScore);
+        } else {
+            newTopGroups = groupsResult;
+        }
+        TopGroups<BytesRef> topGroupsWithMaxScore = new TopGroups<BytesRef>(newTopGroups, allGroupsCollector.getGroupCount());
+        // --- done with max score for the group results
 
         return topGroupsWithMaxScore;
     }
@@ -319,26 +340,49 @@ public class LuceneSearch {
     /**
      * expands the query by adding a type restriction if the
      * <code>cdmTypeRestriction</code> is not <code>NULL</code>
+     * and adds the <code>filter</code> as Boolean query
+     * clause with {@link Occur#FILTER}
      */
-    protected Query expandQuery() {
-        Query fullQuery;
+    protected BooleanQuery expandQuery() {
+        BooleanQuery fullQuery = null;
+        Builder fullQueryBuilder = null;
+
         if(cdmTypeRestriction != null){
-            fullQuery = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
+            fullQueryBuilder = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
+        }
+
+        if(filter != null) {
+            if(fullQueryBuilder == null) {
+                fullQueryBuilder = new Builder();
+                fullQueryBuilder.add(this.query, Occur.MUST);
+            }
+            fullQueryBuilder.add(filter, Occur.FILTER);
+        }
+
+        if(fullQueryBuilder != null) {
+            fullQuery = fullQueryBuilder.build();
         } else {
             fullQuery = this.query;
         }
+
+        logger.debug("expandedQuery: " + fullQuery.toString());
         return fullQuery;
     }
 
     public void setQuery(Query query) {
-        this.query = query;
+        if( query instanceof BooleanQuery) {
+            this.query = (BooleanQuery)query;
+        } else {
+            Builder builder = new Builder();
+            this.query = builder.add(query, Occur.MUST).build();
+        }
     }
 
-    public Query getQuery() {
+    public BooleanQuery getQuery() {
         return query;
     }
 
-    public Query getExpandedQuery() {
+    public BooleanQuery getExpandedQuery() {
         expandQuery();
         return query;
     }
@@ -357,39 +401,6 @@ public class LuceneSearch {
 
     public String[] getHighlightFields() {
         return this.highlightFields;
-    }
-
-    /**
-     * may become obsolete with lucene 4.x when the TopGroups has a field for maxScore.
-     *
-     * @author a.kohlbecker
-     * @date Oct 4, 2012
-     *
-     */
-    public class TopGroupsWithMaxScore{
-        public TopGroups<String> topGroups;
-        public float maxScore = Float.NaN;
-
-        TopGroupsWithMaxScore(TopGroups<String> topGroups, int offset, int totalGroupCount, float maxScore){
-            this.maxScore = maxScore;
-            TopGroups<String> newTopGroups;
-            if(offset > 0){
-                GroupDocs<String>[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
-                for(int i = offset; i < topGroups.groups.length; i++){
-                    newGroupDocs[i - offset] = topGroups.groups[i];
-                }
-                newTopGroups = new TopGroups<String>(
-                            topGroups.groupSort,
-                            topGroups.withinGroupSort,
-                            topGroups.totalHitCount,
-                            topGroups.totalGroupedHitCount,
-                            newGroupDocs);
-            } else {
-                newTopGroups = topGroups;
-            }
-            this.topGroups = new TopGroups<String>(newTopGroups, totalGroupCount);
-        }
-
     }
 
 }

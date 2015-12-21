@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,7 +21,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SortField;
 import org.hibernate.search.indexes.IndexReaderAccessor;
@@ -50,7 +51,7 @@ public class LuceneMultiSearch extends LuceneSearch {
 
         this.toolProvider = toolProvider;
         groupByField = null; //reset
-        BooleanQuery query = new BooleanQuery();
+        Builder queryBuilder = new Builder();
 
         Set<String> highlightFields = new HashSet<String>();
         List<SortField> multiSearcherSortFields = new ArrayList<SortField>();
@@ -58,7 +59,7 @@ public class LuceneMultiSearch extends LuceneSearch {
         for(LuceneSearch search : luceneSearch){
 
             this.directorySelectClasses.add(search.getDirectorySelectClass());
-            query.add(search.getQuery(), Occur.SHOULD);
+            queryBuilder.add(search.getQuery(), Occur.SHOULD);
 
             // add the highlightFields from each of the sub searches
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
@@ -96,7 +97,7 @@ public class LuceneMultiSearch extends LuceneSearch {
 
         this.sortFields = multiSearcherSortFields.toArray(new SortField[multiSearcherSortFields.size()]);
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
-        this.query = query;
+        this.query = queryBuilder.build();
     }
 
     /**
@@ -119,7 +120,14 @@ public class LuceneMultiSearch extends LuceneSearch {
                 readers.add(reader);
             }
             if(readers.size() > 1){
-                MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);
+                IndexReader[] readersArray = readers.toArray(new IndexReader[readers.size()]);
+                MultiReader multireader;
+                try {
+                    multireader = new MultiReader(readersArray, true);
+                } catch (IOException e) {
+                    //or do we want to force clients to handle the IOs?
+                    throw new RuntimeException(e);
+                }
                 searcher = new IndexSearcher(multireader);
             } else {
                 searcher = new IndexSearcher(readers.get(0));

@@ -26,7 +26,6 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 
 
 /**

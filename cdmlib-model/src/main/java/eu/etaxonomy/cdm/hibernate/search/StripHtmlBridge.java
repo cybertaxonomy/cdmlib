@@ -12,12 +12,14 @@ package eu.etaxonomy.cdm.hibernate.search;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
- * @deprecated use HTMLStripStandardTokenizerFactory instead
+ * @deprecated use the solr HTMLStripStandardTokenizerFactory instead
+ *  why is the solr  implementation a better option?
  *
  */
 @Deprecated
 public class StripHtmlBridge implements StringBridge {
 
+    @Override
     public String objectToString(Object object) {
         if(object != null) {
           String string = (String) object;

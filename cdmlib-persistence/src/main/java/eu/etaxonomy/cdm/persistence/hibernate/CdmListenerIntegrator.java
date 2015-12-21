@@ -4,12 +4,11 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
-import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 /**
@@ -20,17 +19,12 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 public class CdmListenerIntegrator implements Integrator {
 	private static final Logger logger = Logger.getLogger(CdmListenerIntegrator.class);
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.hibernate.integrator.spi.Integrator#integrate(org.hibernate.cfg.Configuration,
-	 * org.hibernate.engine.spi.SessionFactoryImplementor,
-	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
-	 */
 	@Override
-	public void integrate(Configuration configuration, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry){
-		if (logger.isInfoEnabled()) {
+	public void integrate(Metadata metadata,
+	        SessionFactoryImplementor sessionFactory,
+	        SessionFactoryServiceRegistry serviceRegistry)
+	{
+	    if (logger.isInfoEnabled()) {
 			logger.info("Registering event listeners");
 		}
 
@@ -66,32 +60,12 @@ public class CdmListenerIntegrator implements Integrator {
 		eventRegistry.appendListeners(EventType.PRE_UPDATE, new CdmPreDataChangeListener());
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.hibernate.integrator.spi.Integrator#integrate(org.hibernate.metamodel.source.
-	 * MetadataImplementor, org.hibernate.engine.spi.SessionFactoryImplementor,
-	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
-	 */
 	@Override
-	public void integrate(MetadataImplementor metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry){
-		//nothing to do for now
-		logger.warn("Metadata integrate not yet implemented");
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.hibernate.integrator.spi.Integrator#disintegrate(org.hibernate.engine.spi.
-	 * SessionFactoryImplementor, org.hibernate.service.spi.SessionFactoryServiceRegistry)
-	 */
-	@Override
-	public void disintegrate(SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry)
+	public void disintegrate(SessionFactoryImplementor sessionFactory,
+	        SessionFactoryServiceRegistry serviceRegistry)
 	{
 		//nothing to do for now
-		logger.warn("Disintegrate not yet implemented");
+		logger.warn("Disintegrate ListenerIntegrator not yet implemented");
 	}
 
 }

@@ -137,9 +137,10 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * This class tries to create a database that has
- * at least one record in each database.
+ * at least one record in each table.
  * It is meant to test update scripts as well as imports
  * and exports.
+ *
  * ATTENTION: As the content of the created database may change
  * over time due to model changes and other requirements test using
  * this class should be written in a way that they do rather

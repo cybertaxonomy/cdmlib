@@ -1,14 +1,9 @@
 package eu.etaxonomy.cdm.remote.dto.namecatalogue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch.NameSearchRequest;
 
 public class AcceptedNameSearch implements RemoteResponse {
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c3p0-config>
+	<!-- this is a copy of the same file in
+	src/main/resources but with commented 
+	"automaticTestTable" property.
+	This property causes problems in tests as the table
+	is not found in the test database. Maybe we can fix 
+	this one day.
+	see also http://dev.e-taxonomy.eu/trac/ticket/3344
+	 -->
+	
+	<!--
+		for a reference please refer to
+		http://www.mchange.com/projects/c3p0/index.htm
+	-->
+	<default-config>
+		<!--
+			idleConnectionTestPeriod: if this is a number greater than 0, c3p0
+			will test all idle, pooled but unchecked-out connections, every this
+			number of seconds
+		-->
+		<property name="idleConnectionTestPeriod">60</property>
+		<!--
+			automaticTestTable: 
+			If provided, c3p0 will create an
+			empty table of the specified name, and use queries against that table
+			to test the Connection. If automaticTestTable is provided, c3p0 will
+			generate its own test query, therefore any preferredTestQuery set
+			will be ignored. You should not work with the named table after c3p0
+			creates it; it should be strictly for c3p0's use in testing your
+			Connection.
+		-->
+		
+		
+<!-- 		<property name="automaticTestTable">_c3p0ConnectionTest</property> -->
+		
+	</default-config>
+</c3p0-config>

@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
@@ -42,9 +41,6 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 })
 @Entity
 @Audited
-// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
-// this is needed, otherwise the fields of the also abstract super class are missed during indexing
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
@@ -55,13 +51,13 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 //    @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
-    
+
     //under construction #4311
     @XmlElement(name="CollectorTitle")
     @Field(index=Index.YES)
     @Size(max = 255)
     protected String collectorTitle;
-    
+
 
     @Transient
     @XmlTransient

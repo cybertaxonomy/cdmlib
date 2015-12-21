@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -42,7 +42,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	protected String getDefaultField() {
 		return "title.text";
 	}
-	
+
 	public MediaDaoHibernateImpl() {
 		super(Media.class);
 		indexedClasses = new Class[3];
@@ -51,11 +51,12 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		indexedClasses[2] = PhylogeneticTree.class;
 	}
 
-	public int countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
+	@Override
+    public int countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(MediaKey.class);
-			
+
 			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
 				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
 				for(Taxon n : taxonomicScope) {
@@ -63,7 +64,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 				}
 				criteria.createCriteria("taxonomicScope").add(Restrictions.in("id", taxonomicScopeIds));
 			}
-			
+
 			if(geoScopes != null && !geoScopes.isEmpty()) {
 				Set<Integer> geoScopeIds = new HashSet<Integer>();
 				for(NamedArea n : geoScopes) {
@@ -71,14 +72,14 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 				}
 				criteria.createCriteria("geographicalScope").add(Restrictions.in("id", geoScopeIds));
 			}
-			
+
 			criteria.setProjection(Projections.countDistinct("id"));
-			
+
 			return ((Number)criteria.uniqueResult()).intValue();
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
-				query.addProjection(AuditEntity.id().count("id"));
+				query.addProjection(AuditEntity.id().countDistinct());
 				return ((Long)query.getSingleResult()).intValue();
 			} else {
 				throw new OperationNotSupportedInPriorViewException("countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes)");
@@ -86,7 +87,8 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		}
 	}
 
-	public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	@Override
+    public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria inner = getSession().createCriteria(MediaKey.class);
@@ -110,7 +112,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			inner.setProjection(Projections.distinct(Projections.id()));
 
 			Criteria criteria = getSession().createCriteria(MediaKey.class);
-			criteria.add(Restrictions.in("id", (List<Integer>)inner.list()));
+			criteria.add(Restrictions.in("id", inner.list()));
 
 			if(pageSize != null) {
 				criteria.setMaxResults(pageSize);
@@ -119,7 +121,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 				}
 			}
 
-			List<MediaKey> results = (List<MediaKey>)criteria.list();
+			List<MediaKey> results = criteria.list();
 
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -127,7 +129,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
-				
+
 				if(pageSize != null) {
 			        query.setMaxResults(pageSize);
 			        if(pageNumber != null) {
@@ -136,7 +138,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			    	    query.setFirstResult(0);
 			        }
 			    }
-				List<MediaKey> results = (List<MediaKey>)query.getResultList();
+				List<MediaKey> results = query.getResultList();
 				defaultBeanInitializer.initializeAll(results, propertyPaths);
 				return results;
 			} else {
@@ -144,30 +146,32 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			}
 		}
 	}
-	
-	public List<Rights> getRights(Media media, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+	@Override
+    public List<Rights> getRights(Media media, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("MediaDaoHibernateImpl.getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = getSession().createQuery("select rights from Media media join media.rights rights where media = :media");
 		query.setParameter("media",media);
 		setPagingParameter(query, pageSize, pageNumber);
-		List<Rights> results = (List<Rights>)query.list();
+		List<Rights> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
-	
-	public int countRights(Media media) {
+
+	@Override
+    public int countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
 		Query query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media");
 		query.setParameter("media",media);
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	
+
 
 	@Override
 	public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		
+
 		for(Media media : list(null,null)) { // re-index all media
 			Hibernate.initialize(media.getTitle());
 			Hibernate.initialize(media.getAllDescriptions());
@@ -176,5 +180,5 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		}
 		fullTextSession.flushToIndexes();
 	}
-	
+
 }

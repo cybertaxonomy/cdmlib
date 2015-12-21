@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.model.description;
 
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 /**
  * This class represents a statement or a question within a (polytomous) key.
  * Compare with SDD SimpleRepresentation.
- * 
+ *
  * @author a.mueller
  *
  */
@@ -50,8 +50,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
 	private static final long serialVersionUID = 3771323100914695139L;
 	private static final Logger logger = Logger.getLogger(KeyStatement.class);
- 
-	
+
+
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
@@ -59,17 +59,17 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 //    @IndexedEmbedded
     private Map<Language, LanguageString> label = new HashMap<Language, LanguageString>();
-	
+
 	//private mediaObjects needs to be discussed (how to implement the role of the media)
 
-	
-	   
+
+
 	public static KeyStatement NewInstance(){
 		KeyStatement result = new KeyStatement();
 		return result;
 	}
 
-	
+
 	public static KeyStatement NewInstance(String defaultLanguageLabel){
 		KeyStatement result = new KeyStatement();
 		result.putLabel(Language.DEFAULT(), defaultLanguageLabel);
@@ -88,48 +88,48 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		result.putLabel(language, label);
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public KeyStatement() {
 	}
 
 // ********************************* METHODS ***************************/
-	
-	/** 
-	 * Returns the label with the content of <i>this</i> key statement. 
+
+	/**
+	 * Returns the label with the content of <i>this</i> key statement.
 	 * The different {@link LanguageString language strings} (texts) contained in the
 	 * label should all have the same meaning.
-	 * 
+	 *
 	 * @see	#getText(Language)
 	 */
     public Map<Language, LanguageString> getLabel() {
 		return label;
 	}
-    
+
     /**
      * Returns the label with the content of <i>this</i> key statement for
      * a specific language.
-     * 
+     *
      * @param language the language in which the label is formulated
      * @return
      */
     public LanguageString getLabel(Language language){
     	return label.get(language);
     }
-    
+
     public void setLabel(Map<Language,LanguageString> label) {
     	this.label = label;
     }
 
-	/** 
+	/**
 	 * Returns the text string in the given {@link Language language} with the content
 	 * of <i>this</i> key statement.
-	 * 
+	 *
 	 * @param language	the language in which the label is formulated
 	 * @see				#getLabel(Language)
-	 */ 
+	 */
 	public String getLabelText(Language language) {
 		LanguageString languageString = label.get(language);
 		if (languageString == null){
@@ -138,7 +138,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			return languageString.getText();
 		}
 	}
-    
+
     /**
 	 * Returns the LanguageString in the preferred language. Preferred languages
 	 * are specified by the parameter languages, which receives a list of
@@ -146,22 +146,22 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * any preferred languages is found the method falls back to return the
 	 * Representation in Language.DEFAULT() and if necessary further falls back
 	 * to return the first element found if any.
-	 * 
-	 * TODO think about this fall-back strategy & 
+	 *
+	 * TODO think about this fall-back strategy &
 	 * see also {@link TermBase#getPreferredRepresentation(List)}
-	 * 
+	 *
 	 * @param languages
 	 * @return
 	 */
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		return MultilanguageTextHelper.getPreferredLanguageString(label, languages);
 	}
-	
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language}, returns it and adds it to the multilanguage 
+	 * and the given {@link Language language}, returns it and adds it to the multilanguage
 	 * text representing the content of <i>this</i> text data.
-	 * 
+	 *
 	 * @param text		the string representing the content of the text data
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -171,15 +171,16 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
 	 * 					Use the {@link #putLabel(Language, String) putLabel} method
 	 */
-	public LanguageString putLabel(String label, Language language) {
+	@Deprecated
+    public LanguageString putLabel(String label, Language language) {
 		return putLabel(language, label);
 	}
-	
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language}, returns it and adds it to the multilanguage 
+	 * and the given {@link Language language}, returns it and adds it to the multilanguage
 	 * text representing the content of <i>this</i> text data.
-	 * 
+	 *
 	 * @param language	the language in which the text string is formulated
 	 * @param text		the string representing the content of the text data
 	 * 					in a particular language
@@ -187,7 +188,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @return			the language string
 	 * @see    	   		#getLabel()
 	 * @see    	   		#putLabel(LanguageString)
-	 * 
+	 *
 	 */
 	public LanguageString putLabel(Language language, String label) {
 		LanguageString result = this.label.put(language , LanguageString.NewInstance(label, language));
@@ -196,8 +197,8 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the label.
-	 * The given language string will be returned. 
-	 * 
+	 * The given language string will be returned.
+	 *
 	 * @param languageString	the language string representing the content of
 	 * 							the text data in a particular language
 	 * @return					the language string
@@ -212,25 +213,26 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			return this.label.put(language, languageString);
 		}
 	}
-	
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the label.
-	 * The given language string will be returned. 
-	 * 
+	 * The given language string will be returned.
+	 *
 	 * @param languageString	the language string representing the content of
 	 * 							the text data in a particular language
 	 * @return					the language string
 	 * @see    	   				#getLabel()
 	 * @see    	   				#putLabel(String, Language)
 	 * @deprecated				This method will be removed in v4.0
-	 * 							Use the {@link #putLabel(LanguageString) putLabel} method instead 
+	 * 							Use the {@link #putLabel(LanguageString) putLabel} method instead
 	 */
-	public LanguageString putText(LanguageString languageString) {
+	@Deprecated
+    public LanguageString putText(LanguageString languageString) {
 		return putLabel(languageString);
 	}
-	
-	/** 
+
+	/**
 	 * Removes from label the one {@link LanguageString language string}
 	 * with the given {@link Language language}. Returns the removed
 	 * language string.
@@ -240,13 +242,14 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @return			the language string associated with the given language
 	 * @see     		#getLabelText()
 	 * @deprecated		This method will be removed in v4.0
-	 * 					Use the {@link #removeLabel(Language)} method instead 
+	 * 					Use the {@link #removeLabel(Language)} method instead
 	 */
-	public LanguageString removeText(Language language) {
+	@Deprecated
+    public LanguageString removeText(Language language) {
 		return removeLabel(language);
 	}
 
-	/** 
+	/**
 	 * Removes from label the one {@link LanguageString language string}
 	 * with the given {@link Language language}. Returns the removed
 	 * language string.
@@ -259,25 +262,25 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	public LanguageString removeLabel(Language language) {
 		return this.label.remove(language);
 	}
-	
-	
-	/** 
+
+
+	/**
 	 * Returns the number of {@link Language languages} in which the label
 	 * of <i>this</i> key statement has been formulated.
-	 * 
+	 *
 	 * @see	#getMultilanguageText()
 	 */
 	public int countLanguages(){
 		return label.size();
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> KeyStatement. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> KeyStatement by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntitity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -286,15 +289,15 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		KeyStatement result;
 		try {
 			result = (KeyStatement) super.clone();
-			
+
 			result.label = new HashMap<Language, LanguageString>();
-			
-			
+
+
 			for (Entry<Language,LanguageString> entry: this.label.entrySet()){
-				
+
 				result.label.put(entry.getKey(), entry.getValue());
 			}
-			
+
 			return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
@@ -302,9 +305,9 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			return null;
 		}
 	}
-	
+
 //********************* toString() *************************************/
-	
+
 	@Override
 	public String toString(){
 		if (label != null && ! label.isEmpty()){
@@ -313,7 +316,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		}else{
 			return super.toString();
 		}
-		
+
 	}
 
 }

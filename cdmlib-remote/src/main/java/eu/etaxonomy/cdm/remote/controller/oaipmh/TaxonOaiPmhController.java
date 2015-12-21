@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
+import io.swagger.annotations.Api;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;

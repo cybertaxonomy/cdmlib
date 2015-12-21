@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 
 /**
  * Marker types similar to dynamically defined attributes. These  content types
@@ -35,7 +34,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MarkerType")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final long serialVersionUID = -9117424749919907396L;

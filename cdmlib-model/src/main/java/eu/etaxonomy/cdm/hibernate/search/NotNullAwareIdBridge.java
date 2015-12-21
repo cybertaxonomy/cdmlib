@@ -14,7 +14,9 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.Field.TermVector;
-import org.hibernate.search.bridge.FieldBridge;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
 
@@ -69,19 +71,22 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
             return;
         }
 
-        Field field = new Field(name,
+        Field field = new StringField(
+                name,
                 String.valueOf(value.toString()),
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
-        field.setBoost(luceneOptions.getBoost());
+                luceneOptions.getStore());
         document.add(field);
 
-        Field notNullField = new Field(notNullField(name),
+        Field sort_field = new SortedDocValuesField(
+                name + "__sort",
+                new BytesRef(value.toString()));
+        LuceneDocumentUtility.setOrReplaceDocValueField(sort_field, document);
+
+        Field notNullField = new StringField(
+                notNullField(name),
                 String.valueOf(NOT_NULL_VALUE),
-                Store.NO,
-                Index.NOT_ANALYZED,
-                TermVector.NO);
+                Store.NO
+                );
         document.add(notNullField);
     }
 

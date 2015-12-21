@@ -394,6 +394,14 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static <T extends ICdmBase> EntityValidation getEntityValidationRecord(Connection conn,
             String validatedEntityClass, int validatedEntityId) throws SQLException {
+        String sqlCount = "SELECT count(*) as n FROM entityvalidation";
+        PreparedStatement stmtCount = conn.prepareStatement(sqlCount);
+        ResultSet rsCount = stmtCount.executeQuery();
+        if (rsCount.next()) {
+            int n = rsCount.getInt("n");
+            System.out.println("count=" + n);
+        }
+
         String sql = "SELECT * FROM entityvalidation WHERE validatedentityclass=? AND validatedentityid=?";
         EntityValidation result = null;
         PreparedStatement stmt = null;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.search.indexes.IndexReaderAccessor;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;

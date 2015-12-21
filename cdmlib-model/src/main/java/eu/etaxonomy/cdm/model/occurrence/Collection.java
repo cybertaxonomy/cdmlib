@@ -30,7 +30,6 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -44,8 +43,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 /**
  * Instances of this class represent a collection for primary biodiversity data.
  * Collections may be part of other collections and may belong to an institution.
- * Collection inherits from 
- * 
+ * Collection inherits from
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:16
  */
@@ -60,7 +59,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 })
 @XmlRootElement(name = "Collection")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
 @Table(appliesTo="Collection", indexes = { @org.hibernate.annotations.Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
@@ -112,7 +112,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	private Collection superCollection;
 
 // ************** FACTORY METHODS *************************/
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -122,7 +122,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 // ******************** CONSTRUCTOR *************************/
-	
+
 	/**
 	 * Constructor
 	 */
@@ -131,10 +131,10 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
-// ******************* GETTER / SETTER ************************/	
-	
-	
-	
+// ******************* GETTER / SETTER ************************/
+
+
+
 	/**
 	 * The {@link Institution institution} this collection belongs to.
 	 * @see #getSuperCollection()
@@ -145,7 +145,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * @see #getInstitute() 
+	 * @see #getInstitute()
 	 * @param institute    institute
 	 */
 	public void setInstitute(Institution institute){
@@ -156,7 +156,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	 * The code for this collection. The standard this code belongs to
 	 * is given by the {@link #getCodeStandard() code standard}.
 	 * The code is NOT the {@link #getName()name} of the collection.
-	 * 
+	 *
 	 * @see #getCodeStandard()
 	 * @see #getName()
 	 * @return the code
@@ -174,7 +174,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * The standard used for the given {@link #getCode() collection code} 
+	 * The standard used for the given {@link #getCode() collection code}
 	 * @return the code standard
 	 */
 	public String getCodeStandard(){

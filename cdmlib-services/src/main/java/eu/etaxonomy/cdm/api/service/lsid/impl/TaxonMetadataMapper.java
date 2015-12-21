@@ -10,9 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service.lsid.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;
 //import org.cateproject.model.taxon.Taxon;

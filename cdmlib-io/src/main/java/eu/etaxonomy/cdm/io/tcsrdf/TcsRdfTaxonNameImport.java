@@ -9,9 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsrdf;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;

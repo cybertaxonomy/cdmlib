@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -70,7 +71,7 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
             Set<TaxonRelationship> relations) {
         Taxon relTaxon;
 
-        
+
         for(TaxonRelationship rel : relations){
 
             if(directionName.equals(FROM)){
@@ -79,13 +80,10 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
                 relTaxon = rel.getToTaxon();
             }
 
-            Field relfield = new Field(
+            Field relfield = new StringField(
                     name + "relation." + rel.getType().getUuid().toString() + directionName + "id",
                     Integer.toString(relTaxon.getId()),
-                    idFieldOptions.getStore(),
-                    idFieldOptions.getIndex(),
-                    idFieldOptions.getTermVector()
-                    );
+                    idFieldOptions.getStore());
             relfield.setBoost(idFieldOptions.getBoost());
             document.add(relfield);
         }

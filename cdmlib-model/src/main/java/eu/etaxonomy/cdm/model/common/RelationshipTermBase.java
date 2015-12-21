@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -35,7 +36,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -59,9 +59,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 })
 @Entity
 @Audited
-// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
-// this is needed, otherwise the fields of the also abstract super class are missed during indexing
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
@@ -79,18 +76,21 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
+	@JoinTable(
+	        name="RelationshipTermBase_inverseRepresentation",
+	        joinColumns = @JoinColumn(name="DefinedTermBase_id")
+	)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 
 //******************** CONSTRUCTOR ************************/
-	
+
     //for JAXB only, TODO needed?
     @Deprecated
     private RelationshipTermBase(){super();}
 
-	
+
 	protected RelationshipTermBase(TermType type) {
 		super(type);
 	}

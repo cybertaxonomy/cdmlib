@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,11 +36,13 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.engine.spi.SearchFactoryImplementor;
-import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
+import org.hibernate.search.SearchFactory;
+import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
+import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
 import org.hibernate.search.indexes.spi.IndexManager;
+import org.hibernate.search.spi.SearchIntegrator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +51,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -69,11 +73,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
     /*
-     *      !!! DO NOTE CHANGE THIS !!!
-     *
-     * batch_size optimized for 200MB of heap memory
+     * flag to enable old hibernate search 3.1 mode
      */
-    private static final int BATCH_SIZE = 200;
+    private static final boolean HS_31_MODE = false;
 
     public HibernateTransactionManager transactionManager;
 
@@ -87,7 +89,17 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return session;
     }
 
-    protected <T extends CdmBase>void reindex(Class<T> type, IProgressMonitor monitor) {
+    /**
+     * reindex method based on hibernate search  3.1
+     *
+     * @param type
+     * @param monitor
+     */
+    protected <T extends CdmBase>void reindex_31(Class<T> type, IProgressMonitor monitor) {
+
+        //TODO set the application in maintenance mode: making
+        // queries to the index is not recommended when a MassIndexer is busy.
+        // fullTextSession.createIndexer().startAndWait();
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -98,21 +110,24 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         monitor.subTask("indexing " + type.getSimpleName());
 
         Long countResult = countEntities(type);
-        int numOfBatches = calculateNumOfBatches(countResult);
+        int batchSize = sweetestBatchSize(type);
+        int numOfBatches = calculateNumOfBatches(countResult, batchSize);
 
         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
+
         // Scrollable results will avoid loading too many objects in memory
-        ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
+        ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(batchSize).scroll(ScrollMode.FORWARD_ONLY);
         long index = 0;
         int batchesWorked = 0;
+
 
         try {
             while (results.next()) {
                 index++;
                 fullTextSession.index(results.get(0)); // index each element
-                if (index % BATCH_SIZE == 0 || index == countResult) {
+                if (index % batchSize == 0 || index == countResult) {
                     batchesWorked++;
                     try {
                         fullTextSession.flushToIndexes(); // apply changes to indexes
@@ -151,8 +166,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             //TODO:give some indication that this class is infact not indexed
             return;
         }
-        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)Search.getFullTextSession(getSession()).getSearchFactory();
-        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
+        SearchFactory searchFactory = Search.getFullTextSession(getSession()).getSearchFactory();
+        IndexManager indexManager = obtainIndexManager(searchFactory, indexName);
+
         IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
         List<String> idFields = getIndexedDeclaredFields(type);
 
@@ -170,7 +186,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 String indexedField = itr.next();
                 logger.info("creating dictionary for field " + indexedField);
                 Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-                IndexWriterConfig iwc = new IndexWriterConfig(Configuration.luceneVersion, searchFactory.getAnalyzer(type));
+                IndexWriterConfig iwc = new IndexWriterConfig(searchFactory.getAnalyzer(type));
                 spellChecker.indexDictionary(dictionary, iwc, true);
             }
             subMonitor.internalWorked(1);
@@ -200,12 +216,54 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.done();
     }
 
+    private IndexManager obtainIndexManager(SearchFactory searchFactory, String indexName){
+        SearchIntegrator searchIntegrator = searchFactory.unwrap(SearchIntegrator.class );
+        IndexManager indexManager = searchIntegrator.getIndexManager(indexName);
+        return indexManager;
+    }
+
+    private int sweetestBatchSize(Class<? extends CdmBase> type){
+
+        Runtime.getRuntime().gc();
+        long freeMemoryMB;
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        if(memoryMXBean != null){
+            logger.debug("NonHeapMemoryUsage: "+memoryMXBean.getHeapMemoryUsage());
+             MemoryUsage memusage = memoryMXBean.getHeapMemoryUsage();
+             freeMemoryMB =( memusage.getMax() - memusage.getUsed()) / (1024 * 1024);
+        } else {
+            // will be smaller than the actual free mem since Runtime does not
+            // know about Committed heap mem
+            freeMemoryMB = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+        }
+
+        // TODO check for min free:
+        // < 600MB => ERROR may fail with out of memory
+        // < 750MB => WARNING may be slow
+        if(freeMemoryMB < 600) {
+            logger.error("The available free heap space appears to be too small (<600MB), the mass indexer may run out of memory!");
+        }
+        if(freeMemoryMB < 750) {
+            logger.warn("The available free heap space appears to be small (<750MB), the mass indexer could be slow!");
+        }
+
+        double factor = 0.769; // default
+        if(DescriptionElementBase.class.isAssignableFrom(type)) {
+            factor = 0.025;
+        }
+
+        int batchSize = (int) Math.floor( factor * freeMemoryMB);
+        logger.info("calculated batch size sweet spot for indexing " + type.getSimpleName()
+                + " with " +  freeMemoryMB +  "MB free mem is " + batchSize);
+        return batchSize;
+    }
+
     /**
      * @param countResult
      * @return
      */
-    private int calculateNumOfBatches(Long countResult) {
-        Long numOfBatches =  countResult > 0 ? ((countResult-1)/BATCH_SIZE)+1 : 0;
+    private int calculateNumOfBatches(Long countResult, int batchSize) {
+        Long numOfBatches =  countResult > 0 ? ((countResult-1)/batchSize)+1 : 0;
         return numOfBatches.intValue();
     }
 
@@ -232,8 +290,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         boolean doSpellIndex = false;
 
         if(doSpellIndex){
-            SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
-            IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
+            SearchFactory searchFactory = fullTextSession.getSearchFactory();
+            IndexManager indexManager = obtainIndexManager(searchFactory, type.getName());
             if(indexManager == null){
                 logger.info("No IndexManager found for " + type.getName() + ", thus nothing to purge");
                 return;
@@ -262,10 +320,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
-     */
     @Override
     public void reindex(Collection<Class<? extends CdmBase>> types, IProgressMonitor monitor){
 
@@ -276,24 +330,87 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             types = indexedClasses();
         }
 
-        monitor.setTaskName("CdmMassIndexer");
-        int steps = types.size() + 1; // +1 for optimize
-        monitor.beginTask("Reindexing " + types.size() + " classes", steps);
+        if(HS_31_MODE) {
 
-        for(Class<? extends CdmBase> type : types){
-            reindex(type, monitor);
         }
 
-        monitor.subTask("Optimizing Index");
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-        subMonitor.beginTask("Optimizing Index",1);
-        optimize();
-        subMonitor.worked(1);
-        logger.info("end index optimization");
-        subMonitor.done();
+        monitor.setTaskName("CdmMassIndexer");
+        int steps = types.size() + (HS_31_MODE ? 1 /* +1 for optimize */ : 0);
+        monitor.beginTask("Reindexing " + types.size() + " classes", steps);
+
+        boolean optimize = true;
+
+        long start = System.currentTimeMillis();
+        for(Class<? extends CdmBase> type : types){
+            long perTypeStart = System.currentTimeMillis();
+
+            if(HS_31_MODE) {
+                // TODO remove this mode and all related code once the old reindex method is vanished
+                reindex_31(type, monitor);
+            } else {
+                reindex_55(type, monitor);
+                optimize = false;
+            }
+
+
+            logger.info("Indexing of " + type.getSimpleName() + " in " + ((System.currentTimeMillis() - perTypeStart) / 1000) + "s");
+        }
+
+        if(HS_31_MODE) {
+            monitor.subTask("Optimizing Index");
+            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+            subMonitor.beginTask("Optimizing Index",1);
+            optimize();
+            logger.info("end index optimization");
+            subMonitor.worked(1);
+            subMonitor.done();
+        }
+        logger.info("reindexing completed in " + ((System.currentTimeMillis() - start) / 1000) + "s");
 
         //monitor.worked(1);
         monitor.done();
+
+    }
+
+    /**
+     * new reindex method which benefits from
+     * the mass indexer available in hibernate search 5.5
+     *
+     * @param type
+     * @param monitor
+     * @throws InterruptedException
+     */
+    protected void reindex_55(Class<? extends CdmBase> type, IProgressMonitor monitor) {
+
+        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+
+
+        logger.info("start indexing " + type.getName());
+        monitor.subTask("indexing " + type.getSimpleName());
+
+        Long countResult = countEntities(type);
+        int batchSize = sweetestBatchSize(type);
+        int numOfBatches = calculateNumOfBatches(countResult * 2, batchSize); // each entity is worked two times 1. document added, 2. document build
+
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
+
+
+        MassIndexerProgressMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
+
+        try {
+            fullTextSession
+            .createIndexer(type)
+            .batchSizeToLoadObjects(batchSize)
+            .cacheMode(CacheMode.IGNORE)
+            .threadsToLoadObjects(4) // optimize http://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#search-batchindexing-threadsandconnections
+            .idFetchSize(150) //TODO optimize
+            .progressMonitor(indexerMonitorWrapper)
+            .startAndWait();
+        } catch (InterruptedException ie) {
+            logger.info("Mass indexer has been interrupted");
+            subMonitor.isCanceled();
+        }
     }
 
     @Override
@@ -319,17 +436,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.getSearchFactory().optimize();
         fullTextSession.flushToIndexes();
         fullTextSession.clear();
-    }
-
-    /**
-     * @return
-     */
-    private int totalBatchCount() {
-        int totalNumOfBatches = 0;
-        for(Class type : indexedClasses()){
-            totalNumOfBatches += calculateNumOfBatches(countEntities(type));
-        }
-        return totalNumOfBatches;
     }
 
     /* (non-Javadoc)

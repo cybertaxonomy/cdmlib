@@ -1,6 +1,15 @@
-body.swagger-section #header {
+
+body.swagger-section #header , body.swagger-section #description{
   padding:0 50px;
   background-color:#F4F7E7;
+}
+
+body.swagger-section #content {
+  padding:0 50px;
+}
+
+#swagger-ui-container {
+  clear: both;
 }
 
 #header #banner, #header #menu{

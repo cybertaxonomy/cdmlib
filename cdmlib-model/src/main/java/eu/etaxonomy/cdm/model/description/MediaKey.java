@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,12 +32,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * {@link SpecimenOrObservationBase specimens or observations} (this means to assign {@link Taxon taxa} to).
  * The determination process is based on the tree structure of the key and on
  * the statements of its leads.
- * 
- * @author m.doering 
+ *
+ * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
@@ -62,29 +62,38 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "MediaKey")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class MediaKey extends Media implements IIdentificationKey{
 	private static final long serialVersionUID = -29095811051894471L;
 	private static final Logger logger = Logger.getLogger(MediaKey.class);
-	
+
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@NotNull
+	//preliminary  #5369
+	//TODO should we also name the JoinTable here as for the other scopes
+	//we may want to rename it to MediaKey_CoveredTaxa/Taxon
+    @JoinTable(joinColumns = @JoinColumn( name="Media_id"))
+    @NotNull
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
-	
+
 	@XmlElementWrapper( name = "GeographicalScope")
 	@XmlElement( name = "Area")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="MediaKey_NamedArea")
+	//preliminary  #5369
+	@JoinTable(
+	        name="MediaKey_NamedArea",
+	        joinColumns = @JoinColumn( name="Media_id")
+	)
 	@NotNull
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
-	
+
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
@@ -97,69 +106,75 @@ public class MediaKey extends Media implements IIdentificationKey{
 	)
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
-	
+
 	@XmlElementWrapper( name = "ScopeRestrictions")
 	@XmlElement( name = "Restriction")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="MediaKey_Scope")
+	//preliminary  #5369
+    @JoinTable(
+	        name="MediaKey_Scope",
+            joinColumns = @JoinColumn( name="Media_id"))
 	@NotNull
 	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
-	
+
 	@XmlElementWrapper( name = "KeyRepresentations")
 	@XmlElement( name = "KeyRepresentation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+	@JoinTable(joinColumns = @JoinColumn(name="Media_id"))
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<Representation>();
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new empty identification key instance.
 	 */
 	protected MediaKey() {
 		super();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new empty identification key instance.
 	 */
 	public static MediaKey NewInstance(){
 		return new MediaKey();
 	}
 
-	
-	/** 
+
+	/**
 	 * Returns the set of possible {@link Taxon taxa} corresponding to
 	 * <i>this</i> identification key.
 	 */
-	public Set<Taxon> getCoveredTaxa() {
+	@Override
+    public Set<Taxon> getCoveredTaxa() {
 		if(coveredTaxa == null) {
 			this.coveredTaxa = new HashSet<Taxon>();
 		}
 		return coveredTaxa;
 	}
 	/**
-	 * @see	#getCoveredTaxa() 
+	 * @see	#getCoveredTaxa()
 	 */
 	protected void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
-	
+
 	/**
 	 * Adds a {@link Taxon taxa} to the set of {@link #getCoveredTaxa() covered taxa}
 	 * corresponding to <i>this</i> identification key.
-	 * 
+	 *
 	 * @param	taxon	the taxon to be added to <i>this</i> identification key
 	 * @see    	   		#getCoveredTaxa()
 	 */
-	public void addCoveredTaxon(Taxon taxon) {
+	@Override
+    public void addCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.add(taxon);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of {@link #getCoveredTaxa() covered taxa}
 	 * corresponding to <i>this</i> identification key.
 	 *
@@ -167,32 +182,35 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see     		#getCoveredTaxa()
 	 * @see     		#addCoveredTaxon(Taxon)
 	 */
-	public void removeCoveredTaxon(Taxon taxon) {
+	@Override
+    public void removeCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.remove(taxon);
 	}
 
-	/** 
+	/**
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
 	 * data where <i>this</i> identification key is valid.
 	 */
-	public Set<NamedArea> getGeographicalScope() {
+	@Override
+    public Set<NamedArea> getGeographicalScope() {
 		if(geographicalScope == null) {
 			this.geographicalScope = new HashSet<NamedArea>();
 		}
 		return geographicalScope;
 	}
-	
+
 	/**
 	 * Adds a {@link NamedArea geoScope} to the set of {@link #getGeoScopes() geogspatial scopes}
 	 * corresponding to <i>this</i> identification key.
-	 * 
+	 *
 	 * @param	geoScope	the named area to be added to <i>this</i> identification key
 	 * @see    	   		 	#getGeoScopes()
 	 */
-	public void addGeographicalScope(NamedArea geoScope) {
+	@Override
+    public void addGeographicalScope(NamedArea geoScope) {
 		this.geographicalScope.add(geoScope);
 	}
-	/** 
+	/**
 	 * Removes one element from the set of {@link #getGeoScopes() geogspatial scopes}
 	 * corresponding to <i>this</i> identification key.
 	 *
@@ -200,33 +218,36 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see     			#getGeoScopes()
 	 * @see     			#addGeoScope(NamedArea)
 	 */
-	public void removeGeographicalScope(NamedArea geoScope) {
+	@Override
+    public void removeGeographicalScope(NamedArea geoScope) {
 		this.geographicalScope.remove(geoScope);
 	}
 
-	/** 
+	/**
 	 * Returns the set of {@link Taxon taxa} that define the taxonomic
-	 * scope of <i>this</i> identification key 
+	 * scope of <i>this</i> identification key
 	 */
-	public Set<Taxon> getTaxonomicScope() {
+	@Override
+    public Set<Taxon> getTaxonomicScope() {
 		if(taxonomicScope == null) {
 			this.taxonomicScope = new HashSet<Taxon>();
 		}
 		return taxonomicScope;
 	}
-	
+
 	/**
 	 * Adds a {@link Taxon taxa} to the set of {@link #getTaxonomicScope() taxonomic scopes}
 	 * corresponding to <i>this</i> identification key.
-	 * 
+	 *
 	 * @param	taxon	the taxon to be added to <i>this</i> identification key
 	 * @see    	   		#getTaxonomicScope()
 	 */
-	public void addTaxonomicScope(Taxon taxon) {
+	@Override
+    public void addTaxonomicScope(Taxon taxon) {
 		this.taxonomicScope.add(taxon);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of {@link #getTaxonomicScope() taxonomic scopes}
 	 * corresponding to <i>this</i> identification key.
 	 *
@@ -234,13 +255,14 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see     		#getTaxonomicScope()
 	 * @see     		#addTaxonomicScope(Taxon)
 	 */
-	public void removeTaxonomicScope(Taxon taxon) {
+	@Override
+    public void removeTaxonomicScope(Taxon taxon) {
 		this.taxonomicScope.remove(taxon);
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set of {@link Representation key representations} corresponding to
-	 * <i>this</i> identification key 
+	 * <i>this</i> identification key
 	 */
 	public Set<Representation> getKeyRepresentations() {
 		if(keyRepresentations == null) {
@@ -248,19 +270,19 @@ public class MediaKey extends Media implements IIdentificationKey{
 		}
 		return keyRepresentations;
 	}
-	
+
 	/**
 	 * Adds a {@link Representation key representation} to the set of {@link #getKeyRepresentations() key representations}
 	 * corresponding to <i>this</i> identification key.
-	 * 
+	 *
 	 * @param	keyRepresentation	the key representation to be added to <i>this</i> identification key
 	 * @see    	   		#getKeyRepresentations()
 	 */
 	public void addKeyRepresentation(Representation keyRepresentation) {
 		this.keyRepresentations.add(keyRepresentation);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of {@link #getKeyRepresentations() key representations}
 	 * corresponding to <i>this</i> identification key.
 	 *
@@ -271,30 +293,32 @@ public class MediaKey extends Media implements IIdentificationKey{
 	public void removeKeyRepresentation(Representation keyRepresentation) {
 		this.keyRepresentations.remove(keyRepresentation);
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set of {@link Scope scope restrictions} corresponding to
-	 * <i>this</i> identification key 
+	 * <i>this</i> identification key
 	 */
-	public Set<DefinedTerm> getScopeRestrictions() {
+	@Override
+    public Set<DefinedTerm> getScopeRestrictions() {
 		if(scopeRestrictions == null) {
 			this.scopeRestrictions = new HashSet<DefinedTerm>();
 		}
 		return scopeRestrictions;
 	}
-	
+
 	/**
 	 * Adds a {@link Scope scope restriction} to the set of {@link #getScopeRestrictions() scope restrictions}
 	 * corresponding to <i>this</i> identification key.
-	 * 
+	 *
 	 * @param	scopeRestriction	the scope restriction to be added to <i>this</i> identification key
 	 * @see    	   		#getScopeRestrictions()
 	 */
-	public void addScopeRestriction(DefinedTerm scopeRestriction) {
+	@Override
+    public void addScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.add(scopeRestriction);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of {@link #getScopeRestrictions() scope restrictions}
 	 * corresponding to <i>this</i> identification key.
 	 *
@@ -302,60 +326,61 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see     		#getScopeRestrictions()
 	 * @see     		#addScopeRestriction(Scope)
 	 */
-	public void removeScopeRestriction(DefinedTerm scopeRestriction) {
+	@Override
+    public void removeScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> MediaKey. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> MediaKey by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.Media#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Object clone() {
 		MediaKey result;
-		
+
 		try{
 			result = (MediaKey)super.clone();
-			
+
 			result.coveredTaxa = new HashSet<Taxon>();
 			for (Taxon taxon: this.coveredTaxa){
 				result.addCoveredTaxon(taxon);
 			}
-			
+
 			result.geographicalScope = new HashSet<NamedArea>();
 			for (NamedArea area: this.geographicalScope){
 				result.addGeographicalScope(area);
 			}
-			
+
 			result.keyRepresentations = new HashSet<Representation>();
 			for (Representation rep: this.keyRepresentations) {
 				result.addKeyRepresentation(rep);
 			}
-			
+
 			result.scopeRestrictions = new HashSet<DefinedTerm>();
 			for (DefinedTerm scope: this.scopeRestrictions){
 				result.addScopeRestriction(scope);
 			}
-			
+
 			result.taxonomicScope = new HashSet<Taxon>();
 			for (Taxon taxon: this.taxonomicScope){
 				result.addTaxonomicScope(taxon);
 			}
-			
+
 			return result;
-			
+
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
 			return null;
 		}
-		
-		
+
+
 	}
 }

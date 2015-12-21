@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.xhtml.XhtmlSinkFactory;
 import org.apache.maven.doxia.parser.ParseException;

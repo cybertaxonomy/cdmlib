@@ -15,6 +15,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
@@ -33,7 +35,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -63,7 +64,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 @XmlRootElement(name = "Institution")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+// @Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
@@ -89,6 +91,8 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
+    //preliminary  #5369
+    @JoinTable(joinColumns = @JoinColumn( name="AgentBase_id"))
 	private Set<DefinedTerm> types;  //InstitutionTypes
 
     @XmlElement(name = "IsPartOf")

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
@@ -67,15 +68,18 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4117554860254531809L;
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
-	
+
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
-	@JoinTable(name = "IndividualAssociation_LanguageString")
+	@JoinTable(
+	        name = "IndividualAssociation_LanguageString",
+            joinColumns = @JoinColumn(name="DescriptionElementBase_id")
+	)
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
-	
+
 	@XmlElement(name = "AssociatedSpecimenOrObservation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -83,21 +87,21 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private SpecimenOrObservationBase associatedSpecimenOrObservation;
 
-	/** 
+	/**
 	 * Class constructor: creates a new empty individuals association instance.
 	 */
 	protected IndividualsAssociation(){
 		super(null);
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new empty individuals association instance.
 	 */
 	public static IndividualsAssociation NewInstance(){
 		return NewInstance(null);
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new empty individuals association instance.
 	 */
 	public static IndividualsAssociation NewInstance(SpecimenOrObservationBase specimen){
@@ -106,9 +110,9 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 		result.setAssociatedSpecimenOrObservation(specimen);
 		return result;
 	}
-	
 
-	/** 
+
+	/**
 	 * Returns the second {@link SpecimenOrObservationBase specimen or observation}
 	 * involved in <i>this</i> individuals association.
 	 * The first specimen or observation is the specimen or observation
@@ -118,15 +122,15 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 		return associatedSpecimenOrObservation;
 	}
 	/**
-	 * @see	#getAssociatedSpecimenOrObservation() 
+	 * @see	#getAssociatedSpecimenOrObservation()
 	 */
 	public void setAssociatedSpecimenOrObservation(
 			SpecimenOrObservationBase associatedSpecimenOrObservation) {
 		this.associatedSpecimenOrObservation = associatedSpecimenOrObservation;
 	}
 
-	
-	/** 
+
+	/**
 	 * Returns the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> individuals association. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
@@ -134,12 +138,12 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	public Map<Language,LanguageString> getDescription(){
 		return this.description;
 	}
-	
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> individuals association.
-	 * 
+	 *
 	 * @param description	the language string describing the individuals association
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
@@ -147,29 +151,30 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	 * @deprecated 			should follow the put semantic of maps, this method will be removed in v4.0
 	 * 						Use the {@link #putDescription(LanguageString) putDescription} method instead
 	 */
-	public void addDescription(LanguageString description){
+	@Deprecated
+    public void addDescription(LanguageString description){
 		this.putDescription(description);
 	}
-	
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> individuals association.
-	 * 
+	 *
 	 * @param description	the language string describing the individuals association
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
 	 * @see    	   			#putDescription(Language, String)
-	 * 
+	 *
 	 */
 	public void putDescription(LanguageString description){
 		this.description.put(description.getLanguage(),description);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to describe <i>this</i> individuals association.
-	 * 
+	 *
 	 * @param text		the string describing the individuals association
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -179,12 +184,12 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	public void putDescription(Language language, String text){
 		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
-	
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to describe <i>this</i> individuals association.
-	 * 
+	 *
 	 * @param text		the string describing the individuals association
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -193,10 +198,11 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
 	 * 					Use the {@link #putDescription(Language, String) putDescription} method instead
 	 */
-	public void addDescription(String text, Language language){
+	@Deprecated
+    public void addDescription(String text, Language language){
 		this.putDescription(language, text);
 	}
-	/** 
+	/**
 	 * Removes from the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> individuals association the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
@@ -212,11 +218,11 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 
 //*********************************** CLONE *****************************************/
 
-	/** 
+	/**
 	 * Clones <i>this</i> individuals association. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> individuals association by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -225,7 +231,7 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 
 		try {
 			IndividualsAssociation result = (IndividualsAssociation)super.clone();
-			
+
 			//description
 			result.description = new HashMap<Language, LanguageString>();
 			for (Language language : getDescription().keySet()){
@@ -233,8 +239,8 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 				LanguageString newLanguageString = (LanguageString)getDescription().get(language).clone();
 				result.description.put(language, newLanguageString);
 			}
-	
-			
+
+
 			return result;
 			//no changes to: associatedSpecimenOrObservation
 		} catch (CloneNotSupportedException e) {
@@ -242,6 +248,6 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 			e.printStackTrace();
 			return null;
 		}
-	}	
-	
+	}
+
 }

@@ -71,12 +71,12 @@
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.4</version>
           </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.4</version>
           </dependency>
       </dependencies>
       </plugin>
@@ -100,16 +100,13 @@
       <artifactId>activation</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb1-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-jxc</artifactId>
+        <version>${jaxb.version}</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
@@ -127,17 +124,23 @@
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
     </dependency>
+    <!-- for KeywordAnalyzer in NonViralName -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.jdbc</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.test</artifactId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <!-- //TODO is this required here? -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.aspects</artifactId>
+      <artifactId>spring-aspects</artifactId>
     </dependency>
     <dependency>
       <groupId>net.sf.opencsv</groupId>
@@ -171,6 +174,7 @@
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
     </dependency>
+<!--     hibernate validator -->
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -179,6 +183,20 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
+<!-- these 3 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/-->
+    <dependency>
+       <groupId>javax.el</groupId>
+       <artifactId>javax.el-api</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.glassfish.web</groupId>
+       <artifactId>javax.el</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.hibernate</groupId>
+       <artifactId>hibernate-validator-cdi</artifactId>
+    </dependency>
+<!-- end validator -->    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -187,5 +205,9 @@
 	  <groupId>net.sf.ehcache</groupId>
 	  <artifactId>ehcache-core</artifactId>	  
 	</dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+  </dependency>
   </dependencies>
 </project>

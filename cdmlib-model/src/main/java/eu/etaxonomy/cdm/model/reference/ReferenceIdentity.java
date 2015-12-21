@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -49,14 +49,14 @@ public class ReferenceIdentity extends VersionableEntity {
 	private static final long serialVersionUID = -6114973116800471106L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceIdentity.class);
-	
+
 	@XmlElementWrapper(name = "References")
     @XmlElement(name = "Reference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
 	private Set<Reference> references;
-	
+
 	@XmlElement(name = "PreferredLongForm")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -73,8 +73,8 @@ public class ReferenceIdentity extends VersionableEntity {
 	//@IndexedEmbedded
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference preferredAbbreviation;
-	
-	
+
+
 	/**
 	 * @return the references
 	 */
@@ -97,7 +97,7 @@ public class ReferenceIdentity extends VersionableEntity {
 //		}
 //		return this.references.add(reference);
 //	}
-//	
+//
 //	public boolean removeReference(Reference reference){
 //		if (reference == null){
 //			return false;
@@ -105,7 +105,7 @@ public class ReferenceIdentity extends VersionableEntity {
 //		reference.setReferenceIdentity(null);
 //		return this.references.remove(reference);
 //	}
-	
+
 
 	/**
 	 * @return the preferredLongForm
@@ -134,7 +134,7 @@ public class ReferenceIdentity extends VersionableEntity {
 	public void setPreferredAbbreviation(Reference preferredAbbreviation) {
 		this.preferredAbbreviation = preferredAbbreviation;
 	}
-	
-	
-	
+
+
+
 }

@@ -15,6 +15,8 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,7 +33,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,7 +43,8 @@ import org.springframework.security.core.GrantedAuthority;
 })
 @XmlRootElement(name = "Group")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
     private static final long serialVersionUID = 7216686200093054648L;
@@ -85,6 +87,8 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+    //preliminary  #5369
+    @JoinTable(joinColumns = @JoinColumn( name="PermissionGroup_id"))
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
@@ -164,10 +168,6 @@ public class Group extends CdmBase {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();
             return null;
-
         }
-
-
     }
-
 }

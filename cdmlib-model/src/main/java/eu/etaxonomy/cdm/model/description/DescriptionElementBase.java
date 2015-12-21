@@ -26,6 +26,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,7 +41,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -132,7 +133,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @IndexColumn(name="sortIndex", base = 0)
+    @OrderColumn(name="sortIndex")
+    @ListIndexBase(value=0)  //not really needed as this is the default
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<Media>();
 
@@ -141,8 +143,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @IndexedEmbedded
-    private DescriptionBase inDescription;
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
+    private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();

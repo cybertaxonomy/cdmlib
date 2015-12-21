@@ -25,9 +25,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentMap;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.SortedMapProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedMapProxy;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 

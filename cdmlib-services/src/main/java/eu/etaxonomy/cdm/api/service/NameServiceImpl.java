@@ -23,10 +23,11 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.FuzzyLikeThisQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.criterion.Criterion;
@@ -480,8 +481,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         String searchSuffix = "~" + similarity;
 
 
-        BooleanQuery finalQuery = new BooleanQuery(false);
-        BooleanQuery textQuery = new BooleanQuery(false);
+        Builder finalQueryBuilder = new Builder();
+        finalQueryBuilder.setDisableCoord(false);
+        Builder textQueryBuilder = new Builder();
+        textQueryBuilder.setDisableCoord(false);
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
@@ -497,28 +500,28 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);
         } else {
             //textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
-            textQuery.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
             fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3);
         } else {
             //textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-            textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
             fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3);
         } else {
             //textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-            textQuery.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
             fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3);
         } else {
             //textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-            textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
@@ -527,11 +530,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             //textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
         }
 
-        textQuery.add(fltq, Occur.MUST);
+        textQueryBuilder.add(fltq, Occur.MUST);
 
-        finalQuery.add(textQuery, Occur.MUST);
+        BooleanQuery textQuery = textQueryBuilder.build();
+        finalQueryBuilder.add(textQuery, Occur.MUST);
 
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(finalQueryBuilder.build());
 
         if(highlightFragments){
             luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
@@ -575,8 +579,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean wildcard,
             List<Language> languages,
             boolean highlightFragments) {
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
+        Builder textQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
@@ -589,13 +592,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
         if(name != null && !name.equals("")) {
             if(wildcard) {
-                textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);
+                textQueryBuilder.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);
             } else {
-                textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);
+                textQueryBuilder.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);
             }
         }
 
-        luceneSearch.setQuery(textQuery);
+        luceneSearch.setQuery(textQueryBuilder.build());
 
         if(highlightFragments){
             luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());

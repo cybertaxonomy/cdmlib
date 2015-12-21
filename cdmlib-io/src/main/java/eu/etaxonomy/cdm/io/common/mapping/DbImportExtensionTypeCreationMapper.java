@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * This class retrives or creates an existing or a new extension type.

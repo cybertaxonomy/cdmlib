@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -51,7 +50,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -78,7 +76,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     protected Class<T> type;
 
-    protected Version version = Configuration.luceneVersion;
+//    protected Version version = Configuration.luceneVersion;
 
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
@@ -251,7 +249,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException {
         Session session = getSession();
         PostMergeEntityListener.addSession(session);
-        MergeResult result = null;
+        MergeResult<T> result = null;
         try {
             @SuppressWarnings("unchecked")
             T persistentObject = (T)session.merge(transientObject);
@@ -360,7 +358,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return persistentObject.getUuid();
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
     public T findById(int id) throws DataAccessException {
         return (T) getSession().get(type, id);
@@ -678,7 +675,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
         //FIXME preliminary hardcoded type:
-    	int type = SortField.STRING;
+    	SortField.Type type = SortField.Type.STRING;
 
     	if(orderHints != null && !orderHints.isEmpty()) {
             org.apache.lucene.search.Sort sort = new Sort();

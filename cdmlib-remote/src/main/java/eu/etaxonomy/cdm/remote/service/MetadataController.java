@@ -9,13 +9,10 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
+import io.swagger.annotations.Api;
+
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +26,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ibm.lsid.LSIDException;
 import com.ibm.lsid.MetadataResponse;
 import com.ibm.lsid.server.LSIDServerException;
-import com.wordnik.swagger.annotations.Api;
+
+import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
 /**
  * Controller which accepts requests for the metadata representation of an object
@@ -82,8 +83,9 @@ public class MetadataController {
         if (acceptedFormats != null) {
             boolean found = false;
             for (int i=0;i<acceptedFormats.length;i++) {
-                    if (acceptedFormats[i].equals(MetadataResponse.RDF_FORMAT ))
-                            found = true;
+                    if (acceptedFormats[i].equals(MetadataResponse.RDF_FORMAT )) {
+                        found = true;
+                    }
                     break;
             }
             if (!found) {

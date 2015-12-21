@@ -7,6 +7,8 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.remote.controller.dto;
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;

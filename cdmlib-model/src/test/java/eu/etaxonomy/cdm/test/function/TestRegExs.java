@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.UUID;
-
 
 /**
  * @author a.babadshanjan

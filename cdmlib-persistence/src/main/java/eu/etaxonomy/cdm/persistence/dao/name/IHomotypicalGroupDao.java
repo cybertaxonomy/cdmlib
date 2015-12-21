@@ -9,7 +9,6 @@ package eu.etaxonomy.cdm.persistence.dao.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;

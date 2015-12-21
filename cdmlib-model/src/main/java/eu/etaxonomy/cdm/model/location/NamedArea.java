@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -40,7 +41,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -79,7 +79,8 @@ import eu.etaxonomy.cdm.model.media.Media;
     Country.class
 })
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 @ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
     @Parameter(name="includeParentTerms", value="true")
@@ -172,7 +173,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private Point pointApproximation;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_Country")
+    //preliminary  #5369
+    @JoinTable(
+         name="DefinedTermBase_Country",
+         joinColumns = @JoinColumn( name="DefinedTermBase_id")
+    )
     private final Set<Country> countries = new HashSet<Country>();
 
     @ManyToOne(fetch = FetchType.LAZY)

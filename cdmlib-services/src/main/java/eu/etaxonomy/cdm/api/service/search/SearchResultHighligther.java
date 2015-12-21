@@ -20,7 +20,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.TermPositionVector;
+import org.apache.lucene.index.Terms;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Fragmenter;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -28,10 +28,9 @@ import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.Scorer;
 import org.apache.lucene.search.highlight.SimpleFragmenter;
-import org.apache.lucene.search.highlight.TokenSources;
+import org.apache.lucene.search.highlight.TokenStreamFromTermVector;
 
 /**
- *
  *
  * @author Andreas Kohlbecker
  *
@@ -81,7 +80,7 @@ public class SearchResultHighligther {
     public String[] getFragmentsWithHighlightedTerms(Analyzer analyzer, Query query,
                     String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException {
 
-            TokenStream stream = TokenSources.getTokenStream(fieldName, fieldContents, analyzer);
+            TokenStream stream = analyzer.tokenStream(fieldName, fieldContents);
             String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
 
             return fragments;
@@ -90,7 +89,7 @@ public class SearchResultHighligther {
 
     /**
      * Generates contextual fragments.
-     * @param termPosVector - Term Position Vector for fieldName
+     * @param terms - Terms obtained from the index reader by e.g.: <code>Terms terms = ir.getTermVector(docID, "text");</code>
      * @param query - query object created from user's input
      * @param fieldName - name of the field containing the text to be fragmented
      * @param fieldContents - contents of fieldName
@@ -100,14 +99,26 @@ public class SearchResultHighligther {
      * @return
      * @throws IOException
      */
-    public String[] getFragmentsWithHighlightedTerms(TermPositionVector termPosVector, Query query,
+
+    public String[] getFragmentsWithHighlightedTerms(Terms terms, Query query,
                     String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException  {
 
-            TokenStream stream = TokenSources.getTokenStream(termPosVector);
+            // ---- snipped
+           // from within deprecated method org.apache.lucene.search.highlight.TokenSources.getTokenStream(Terms tpv)
+            if (!terms.hasOffsets()) {
+                throw new IllegalArgumentException("Highlighting requires offsets from the TokenStream.");
+                //TokenStreamFromTermVector can handle a lack of offsets if there are positions. But
+                // highlighters require offsets, so we insist here.
+            }
+
+            TokenStream stream = new TokenStreamFromTermVector(terms, -1);
+            // --- snap END
+
             String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
 
             return fragments;
     }
+
 
     /**
      * @param stream

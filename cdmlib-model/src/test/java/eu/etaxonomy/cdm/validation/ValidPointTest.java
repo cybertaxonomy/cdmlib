@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
-import org.hibernate.validator.internal.constraintvalidators.NotNullValidator;
+import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 import org.junit.Before;
 import org.junit.Test;
 

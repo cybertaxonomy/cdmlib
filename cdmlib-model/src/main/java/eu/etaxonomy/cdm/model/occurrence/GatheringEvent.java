@@ -38,7 +38,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 import org.hibernate.validator.constraints.Length;
@@ -77,7 +76,8 @@ import eu.etaxonomy.cdm.model.location.Point;
 @XmlRootElement(name = "GatheringEvent")
 @Entity
 @Audited
-@Indexed
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed
 public class GatheringEvent extends EventBase implements Cloneable{
 	private static final long serialVersionUID = 7980806082366532180L;
 	private static final Logger logger = Logger.getLogger(GatheringEvent.class);

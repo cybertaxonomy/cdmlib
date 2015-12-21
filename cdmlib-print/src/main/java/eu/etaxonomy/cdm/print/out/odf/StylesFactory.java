@@ -18,7 +18,6 @@ import org.odftoolkit.odfdom.dom.element.style.StyleTabStopElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleTabStopsElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleTextPropertiesElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
-import org.odftoolkit.odfdom.dom.style.props.OdfStyleProperty;
 import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
 import org.odftoolkit.odfdom.incubator.doc.style.OdfDefaultStyle;
 import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;

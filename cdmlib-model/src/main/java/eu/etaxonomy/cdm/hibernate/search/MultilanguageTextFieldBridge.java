@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
@@ -39,25 +40,23 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
      */
+    @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
         // value should be the Map<Language, LanguageString>
         @SuppressWarnings("unchecked")
         Collection<LanguageString> langStrings = ((Map<Language, LanguageString>)value).values();
         for(LanguageString languageString : langStrings){
 
-            Field allField = new Field(name + ".ALL",
+            Field allField = new TextField(name + ".ALL",
                     languageString.getText(),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
+                    luceneOptions.getStore());
             allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
-            Field langField = new Field(name + "." + languageString.getLanguage().getUuid(),
+            Field langField = new TextField(name + "." + languageString.getLanguage().getUuid(),
                     languageString.getText(),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
+                    luceneOptions.getStore()
+                    );
             allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
         }

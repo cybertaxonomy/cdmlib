@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -35,7 +34,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "RightsType")
 @XmlRootElement(name = "RightsType")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class RightsType extends DefinedTermBase<RightsType> {
 	private static final long serialVersionUID = -5823263624000932116L;

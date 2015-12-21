@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.database.types;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.MySQL5InnoDBUtf8Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;

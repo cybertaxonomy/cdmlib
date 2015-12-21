@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @created 2013-09-28
  */
-//@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	private static final String sep = ITreeNode.separator;

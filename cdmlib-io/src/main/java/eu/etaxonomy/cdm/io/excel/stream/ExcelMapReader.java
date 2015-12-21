@@ -11,10 +11,7 @@ package eu.etaxonomy.cdm.io.excel.stream;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
 import eu.etaxonomy.cdm.io.common.ObservableBase;
-import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.IItemStream;
 import eu.etaxonomy.cdm.io.stream.StreamItem;

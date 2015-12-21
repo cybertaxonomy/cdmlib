@@ -37,10 +37,11 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -91,11 +92,11 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlSchemaType(name="IDREF")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @JoinColumn(name="specimen_id")
-    @IndexedEmbedded
+    @FieldBridge(impl=NotNullAwareIdBridge.class)
     //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
     private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
-    
-    
+
+
     @XmlElementWrapper(name = "DescriptionSources")
     @XmlElement(name = "DescriptionSource")
     @XmlIDREF
@@ -129,7 +130,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
 
-    
+
     /**
      * Returns a {@link SpecimenOrObservationBase specimen or observation} involved in
      * <i>this</i> description as a whole. {@link TaxonDescription Taxon descriptions} are also often based
@@ -208,7 +209,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public Set<DescriptionElementBase> getElements() {
         return this.descriptionElements;
     }
-    
+
     /**
      * Adds an existing {@link DescriptionElementBase elementary description} to the set of
      * {@link #getElements() elementary description data} which constitute <i>this</i>
@@ -226,7 +227,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         element.setInDescription(this);
         this.descriptionElements.add(element);
     }
-    
+
     /**
      * Convenience method to add multiple elements.
      * @param elements

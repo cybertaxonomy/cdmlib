@@ -10,7 +10,7 @@
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
-      <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl</property>
+      <property name="hibernate.connection.provider_class">org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl</property>
 	    <!--
           Configuring the C3P0ConnectionProvider
           ========================================

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -29,7 +28,7 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
  * <P>
  * This class corresponds to DescriptionsBaseType with an "Object" element
  * according to the SDD schema.
- *  
+ *
  * @author a.mueller
  * @version 1.0
  * @created 08-Jul-2008
@@ -38,14 +37,15 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
 @XmlType(name = "SpecimenDescription")
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
 public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>> implements Cloneable {
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
-	
+
 
 	/**
 	 * Class constructor: creates a new empty specimen description instance.
@@ -54,7 +54,7 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 		super();
 		this.cacheStrategy = new SpecimenDescriptionDefaultCacheStrategy();
 	}
-	
+
 
 	/**
 	 * Creates a new empty specimen description instance.
@@ -71,14 +71,14 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 		description.setDescribedSpecimenOrObservation(specimen);
 		return description;
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> specimen description. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> specimen description by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.description.DescriptionBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -88,7 +88,7 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 		result = (SpecimenDescription)super.clone();
 		//no changes to: taxonName
 		return result;
-	}	
-	
+	}
+
 
 }

@@ -38,12 +38,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -113,8 +114,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Size(max = 800)  //see #1592
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
+        //  If the field is only needed for sorting and nothing else, you may configure it as
+        //  un-indexed and un-stored, thus avoid unnecessary index growth.
+        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.NO, index = Index.NO)
     })
+    @SortableField(forField = "titleCache__sort")
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
 
@@ -133,7 +137,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
-    @IndexColumn(name="sortIndex", base = 0)
+    @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO

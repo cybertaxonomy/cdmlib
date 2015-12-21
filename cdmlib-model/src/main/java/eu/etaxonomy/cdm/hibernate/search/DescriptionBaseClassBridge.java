@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.hibernate.search.bridge.FieldBridge;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -48,6 +48,7 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
      * java.lang.Object, org.apache.lucene.document.Document,
      * org.hibernate.search.bridge.LuceneOptions)
      */
+    @Override
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
 
             if (entity instanceof TaxonDescription) {
@@ -58,16 +59,19 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
 
                     idFieldBridge.set(name + "taxon.id", taxon.getId(), document, idFieldOptions);
 
-                    Field titleCachefield = new Field(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES, Index.ANALYZED,
-                            luceneOptions.getTermVector());
+                    Field titleCachefield = new TextField(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES);
                     document.add(titleCachefield);
 
-                    Field titleCacheSortfield = new Field(name + "taxon.titleCache__sort", taxon.getTitleCache(), sortFieldOptions.getStore(), sortFieldOptions.getIndex(),
-                            luceneOptions.getTermVector());
-                    document.add(titleCacheSortfield);
+                    // this should not be necessary since the IdentifiableEntity.titleCache already has the according annotation
+                    /*
+                    Field titleCacheSortfield = new SortedDocValuesField(
+                            name + "taxon.titleCache__sort",
+                            new BytesRef(taxon.getTitleCache())
+                            );
+                    LuceneDocumentUtility.setOrReplaceDocValueField(titleCacheSortfield, document);
+                    */
 
-                    Field uuidfield = new Field(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES, Index.ANALYZED,
-                            luceneOptions.getTermVector());
+                    Field uuidfield = new StringField(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES);
                     document.add(uuidfield);
 
                     for(TaxonNode node : taxon.getTaxonNodes()){

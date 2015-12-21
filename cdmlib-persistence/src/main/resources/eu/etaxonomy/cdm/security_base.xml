@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    ">
+
+
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
+        <property name="implicitNamingStrategy">
+          <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
+        </property>
+
+        <property name="entityInterceptor" ref="securityHibernateInterceptor" />
+
+        <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
+
+        <!--
+              If dataSource is set, this will override corresponding settings in Hibernate properties.
+              If this is set, the Hibernate settings should not define a connection provider to
+              avoid meaningless double configuration.
+
+              see also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
+           -->
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties" ref="hibernateProperties"/>
+    </bean>
+
+
+    <!--
+      ============================== SECURITY ==============================
+    -->
+    <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.hibernate.permission.UnanimousBasedUnrevokable">
+        <constructor-arg>
+            <list>
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNameBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.ReferenceVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!--
+        CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+    -->
+    <bean id="cdmPermissionEvaluator" class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator">
+        <property name="accessDecisionManager" ref="accessDecisionManager" />
+    </bean>
+
+    <!-- The CdmSecurityHibernateInterceptor checks onSave() and on flushDirty() if the currently authenticated principal or token  has
+    sufficient permissions on the entity to be persisted -->
+    <bean id="securityHibernateInterceptor" class="eu.etaxonomy.cdm.persistence.hibernate.CdmSecurityHibernateInterceptor">
+        <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
+    </bean>
+
+</beans>

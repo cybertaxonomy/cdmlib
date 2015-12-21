@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @XmlType(name = "Identifier", propOrder = {
     "identifier",
     "type",
-    "identifiedObj"    
+    "identifiedObj"
 })
 @Entity
 @Audited
@@ -57,12 +57,11 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 	@Field
     @NullOrNotEmpty
 	private String identifier;
-	
+
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded(depth=1)
 	private DefinedTerm type;
 
     @XmlElement(name = "IdentifiedObject")
@@ -75,18 +74,18 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 	@JoinColumn(name = "identifiedObj_id")
 	@NotAudited
 	private T identifiedObj;
-    
-// **************************** FACTORY ******************************/    
-    
+
+// **************************** FACTORY ******************************/
+
     public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(T entity, String identifier, DefinedTerm type){
     	return new Identifier<T>(entity, identifier, type);
     }
 
-// ************************* CONSTRUCTOR ************************************    
-    
+// ************************* CONSTRUCTOR ************************************
+
     @Deprecated  //for hibernate use only
     protected Identifier(){};
-    
+
     public Identifier (T entity, String identifier, DefinedTerm type){
     	this.identifier = identifier;
     	this.type = type;
@@ -95,9 +94,9 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
     	identifiedObj.addIdentifier(this);
     }
 
-    
-// ****************** GETTER / SETTER **********************/    
-    
+
+// ****************** GETTER / SETTER **********************/
+
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -110,7 +109,7 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 
 	/**
 	 * The identifier type. E.g. DOI, LSID, Barcode, Sample Designation, ...
-	 * @see TermType#IdentifierType 
+	 * @see TermType#IdentifierType
 	 * @return
 	 */
 	public DefinedTerm getType() {
@@ -121,23 +120,23 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 	public void setType(DefinedTerm identifierType) {
 		this.type = identifierType;
 	}
-	
+
 	public T getIdentifiedObj() {
 		return identifiedObj;
 	}
 	protected void setIdentifiedObj(T identifiedObj) {
 		this.identifiedObj = identifiedObj;
 	}
-	
+
 	//****************** CLONE ************************************************/
-	 
+
 		@Override
 		public Object clone() throws CloneNotSupportedException{
-			Identifier<?> result = (Identifier<?>)super.clone();	
+			Identifier<?> result = (Identifier<?>)super.clone();
 			//no changes to: type, value
 			return result;
 		}
-	
+
 	/**
 	 * Clones this extension and sets the clone's extended object to 'extendedObject'
 	 * @see java.lang.Object#clone()
@@ -147,5 +146,5 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
 		result.setIdentifiedObj(identifiedObject);
 		return result;
 	}
-	
+
 }

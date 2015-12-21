@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -58,7 +57,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaSample extends DerivedUnit implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;

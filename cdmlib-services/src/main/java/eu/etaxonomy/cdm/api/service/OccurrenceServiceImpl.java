@@ -27,10 +27,12 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.joda.time.Partial;
@@ -60,7 +62,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
-import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
@@ -270,7 +271,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
@@ -282,7 +283,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
@@ -765,7 +766,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         LuceneSearch luceneSearch = prepareByFullTextSearch(clazz, queryString, boundingBox, languages, highlightFragments);
 
         // --- execute search
-        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroups<BytesRef> topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");
@@ -776,7 +777,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         List<SearchResult<SpecimenOrObservationBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
 
         return new DefaultPagerImpl<SearchResult<SpecimenOrObservationBase>>(pageNumber, totalHits, pageSize,
                 searchResults);
@@ -786,8 +787,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
             List<Language> languages, boolean highlightFragments) {
 
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
+        Builder finalQueryBuilder = new Builder();
+        Builder textQueryBuilder = new Builder();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, FieldUnit.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(FieldUnit.class);
@@ -795,19 +796,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         // --- criteria
         luceneSearch.setCdmTypRestriction(clazz);
         if (queryString != null) {
-            textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-            finalQuery.add(textQuery, Occur.MUST);
+            textQueryBuilder.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            finalQueryBuilder.add(textQueryBuilder.build(), Occur.MUST);
         }
 
         // --- spacial query
         if (bbox != null) {
-            finalQuery.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
+            finalQueryBuilder.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
         }
 
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(finalQueryBuilder.build());
 
         // --- sorting
-        SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false) };
+        SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
         luceneSearch.setSortFields(sortFields);
 
         if (highlightFragments) {
@@ -900,7 +901,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         if ((specimenFromUuid!=null && from == null) || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
-            		"Operation was move "+derivate+ " from "+from+" to "+to);
+                    "Operation was move "+derivate+ " from "+from+" to "+to);
         }
         UpdateResult result = new UpdateResult();
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();

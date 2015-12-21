@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -41,7 +40,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "StatisticalMeasure")
 @XmlRootElement(name = "StatisticalMeasure")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final long serialVersionUID = 9168097283660941430L;

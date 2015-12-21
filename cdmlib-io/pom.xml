@@ -35,12 +35,18 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-persistence</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-      <version>${project.version}</version>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-test</artifactId>
+        <scope>test</scope>
+        <version>${project.version}</version>
     </dependency>
+<!--     <dependency> -->
+<!--       <groupId>eu.etaxonomy</groupId> -->
+<!--       <artifactId>cdmlib-persistence</artifactId> -->
+<!--       <type>test-jar</type> -->
+<!--       <scope>test</scope> -->
+<!--       <version>${project.version}</version> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-ext</artifactId>
@@ -49,72 +55,72 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-dbcp</groupId>
-          <artifactId>commons-dbcp</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.persistence</groupId>
-          <artifactId>persistence-api</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.carrotsearch</groupId>
-      <artifactId>junit-benchmarks</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-core</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-database</artifactId> -->
+<!--       <exclusions> -->
+<!--         <exclusion> -->
+<!--           <groupId>commons-dbcp</groupId> -->
+<!--           <artifactId>commons-dbcp</artifactId> -->
+<!--         </exclusion> -->
+<!--       </exclusions> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-easymock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-mock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-inject</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-orm</artifactId> -->
+<!--       <exclusions> -->
+<!--         <exclusion> -->
+<!--           <groupId>javax.persistence</groupId> -->
+<!--           <artifactId>persistence-api</artifactId> -->
+<!--         </exclusion> -->
+<!--       </exclusions> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>com.carrotsearch</groupId> -->
+<!--       <artifactId>junit-benchmarks</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
@@ -125,17 +131,16 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.oxm</artifactId>
+      <artifactId>spring-oxm</artifactId>
     </dependency>
     <dependency>
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
     </dependency>
 		<dependency>
- 			<groupId>org.apache.jena</groupId>
- 			<artifactId>jena-tdb</artifactId>
- 			
-		</dependency>
+ 		<groupId>org.apache.jena</groupId>
+ 		<artifactId>jena-tdb</artifactId>	
+	</dependency>
   </dependencies>
 </project>
 

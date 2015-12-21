@@ -3,8 +3,6 @@ package eu.etaxonomy.cdm.model.name;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-
 public class TaxonNameComparator implements Comparator<TaxonNameBase>, Serializable {
 	private static final long serialVersionUID = -1007495803322700031L;
 

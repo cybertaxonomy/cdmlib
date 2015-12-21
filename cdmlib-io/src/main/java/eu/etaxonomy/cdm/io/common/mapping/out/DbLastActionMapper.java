@@ -1,26 +1,25 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -31,14 +30,14 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbLastActionMapper.class);
-	
+
 	public static final UUID uuidMarkerTypeHasNoLastAction = UUID.fromString("99652d5a-bc92-4251-b57d-0fec4d258ab7");
 	boolean isActionType;
-	
+
 	public static DbLastActionMapper NewInstance(String dbAttributeString, boolean isActionType){
 		return new DbLastActionMapper(dbAttributeString, null, true, isActionType);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
@@ -47,7 +46,7 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		super("updated, created", dbAttributeString, defaultValue, false);
 		this.isActionType = isActionType;
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -63,7 +62,7 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 					return null;
 				}
 			}
-			//return updated or created	
+			//return updated or created
 			VersionableEntity versionable = CdmBase.deproxy(cdmBase, VersionableEntity.class);
 			if (versionable.getUpdated() != null){
 				return makeChanged(versionable);
@@ -91,8 +90,8 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 			return cdmBase.getCreated();
 		}
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()

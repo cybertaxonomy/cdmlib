@@ -104,6 +104,10 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
         	this.currentIndex = 0;
         }
 
+        if(records == null) {
+            records = new ArrayList<T>(0);
+        }
+
         this.pageSize = pageSize;
 		this.pageNumbers = new HashMap<Integer,String>();
 		indices = new ArrayList<Integer>();

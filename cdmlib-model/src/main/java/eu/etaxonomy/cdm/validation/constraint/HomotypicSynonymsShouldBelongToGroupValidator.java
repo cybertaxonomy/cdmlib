@@ -27,6 +27,9 @@ public class HomotypicSynonymsShouldBelongToGroupValidator implements
 	@Override
     public boolean isValid(SynonymRelationship synonymRelationship, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
+		if (synonymRelationship.getType() == null){
+		    return valid;
+		}
 		if(synonymRelationship.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
 			Taxon accepted = synonymRelationship.getAcceptedTaxon();
 			Synonym synonym = synonymRelationship.getSynonym();

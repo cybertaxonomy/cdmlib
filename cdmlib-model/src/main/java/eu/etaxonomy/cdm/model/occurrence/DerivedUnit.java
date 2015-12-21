@@ -124,7 +124,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId=true)
 	private TaxonNameBase storedUnder;
 
 	@XmlElement(name = "DerivedFrom")

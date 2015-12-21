@@ -14,6 +14,8 @@ cdmlib-ext/bin
 cdmlib-ext/hibernate.log
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/database/schema/PUBLIC.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/database/schema/dataset.xsd
 cdmlib-ext/target
 cdmlib-io/.classpath
 cdmlib-io/.project
@@ -22,8 +24,8 @@ cdmlib-io/.umlproject
 cdmlib-io/bin
 cdmlib-io/cdmlib-io.uml
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/database/schema/PUBLIC.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/database/schema/dataset.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
@@ -65,7 +67,6 @@ cdmlib-print/test
 cdmlib-remote-webapp/.classpath
 cdmlib-remote-webapp/.project
 cdmlib-remote-webapp/.settings
-cdmlib-remote-webapp/src/main/java/eu
 cdmlib-remote-webapp/target
 cdmlib-remote/.classpath
 cdmlib-remote/.project
@@ -95,6 +96,11 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd
 cdmlib-services/target
 cdmlib-services/testTaxonNodeByNameComparator-dump.xml
+cdmlib-test/.classpath
+cdmlib-test/.project
+cdmlib-test/.settings
+cdmlib-test/bin
+cdmlib-test/target
 /latestChanges.patch
 /target
 /testANTLR

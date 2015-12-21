@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy
@@ -9,6 +8,8 @@
 */
 
 package eu.etaxonomy.cdm.remote.controller;
+
+import io.swagger.annotations.Api;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -24,8 +25,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.wordnik.swagger.annotations.Api;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -65,11 +65,6 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
- * IMPORTANT:
- *
- * This controller is mostly a 1:1 copy of the DescriptionController
- * and this provides identical end points which only differ in the depth of the
- * object graphs returned.
  *
  * @author a.kohlbecker
  * @date Jun 25, 2013
@@ -80,8 +75,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 @Transactional(readOnly=true)
 @RequestMapping(value = {
             "/portal/description/{uuid}",
-            "/portal/description/{uuid_list}",
-            "/portal/descriptionElement/{descriptionelement_uuid}"})
+            "/portal/description/{uuid_list}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
 

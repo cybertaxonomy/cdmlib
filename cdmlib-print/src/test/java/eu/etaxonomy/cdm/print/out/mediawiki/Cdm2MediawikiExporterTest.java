@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 
 public class Cdm2MediawikiExporterTest {
 

@@ -12,19 +12,14 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
-
 /**
- *
  * @author andreas
  * @date Sep 4, 2012
- *
  */
 public class PermissionDeniedException extends HibernateException {
-
-    private static final long serialVersionUID = 1L;
-
-    private static final Logger logger = Logger
-            .getLogger(PermissionDeniedException.class);
+    private static final long serialVersionUID = 6993452039967589921L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(PermissionDeniedException.class);
 
     /**
      * @param message

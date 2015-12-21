@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 
 
 public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{

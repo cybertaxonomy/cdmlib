@@ -64,7 +64,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedFrom;
 
     @XmlElement(name = "RelatedTo")
@@ -72,7 +72,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedTo;
 
     @XmlElement(name = "Type")

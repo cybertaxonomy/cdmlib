@@ -28,7 +28,6 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -43,14 +42,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -108,10 +103,10 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
     @XmlElement(name = "microReference")
     private String microReference;
-    
+
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();
-	
+
     @XmlElementWrapper( name = "GeoScopes")
     @XmlElement( name = "GeoScope")
     @XmlIDREF
@@ -120,7 +115,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @JoinTable(name="Classification_GeoScope")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
- 
+
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
@@ -129,7 +124,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@JoinTable(name = "Classification_Description")
 //	@Field(name="text", store=Store.YES)
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
-    private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
+    private final Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 
 
 
@@ -325,7 +320,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         if (taxon == null){
             return null;
         }
-        
+
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
         	Classification classification = HibernateProxyHelper.deproxy(taxonNode.getClassification(), Classification.class);
             if (classification.equals(this)){
@@ -425,7 +420,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                 if ( !(childNode.getParent().getTaxon().equals(parent) )){
                 	if (childNode.getParent().getTaxon().getId() != 0 && childNode.getParent().getTaxon().getName().equals(parent.getName())){
                 		throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
-                	} 
+                	}
                     //... same as the parent taxon do nothing but overwriting citation and microCitation
                 }else{
                     handleCitationOverwrite(childNode, citation, microCitation);
@@ -531,11 +526,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     public void setMicroReference(String microReference) {
         this.microReference = microReference;
     }
-    
+
 
     /**
-	 * The point in time, the time period or the season for which this description element 
-	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 * The point in time, the time period or the season for which this description element
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period.
 	 */
 	public TimePeriod getTimeperiod() {
 		return timeperiod;
@@ -550,7 +545,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		}
 		this.timeperiod = timeperiod;
 	}
-	
+
 
     /**
      * Returns the set of {@link NamedArea named areas} indicating the geospatial
@@ -582,9 +577,9 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     public void removeGeoScope(NamedArea geoScope){
         this.geoScopes.remove(geoScope);
     }
-    
-	
-	/** 
+
+
+	/**
 	 * Returns the i18n description used to describe
 	 * <i>this</i> {@link Classification}. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
@@ -592,26 +587,26 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public Map<Language,LanguageString> getDescription(){
 		return this.description;
 	}
-	
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText description} used to describe
 	 * <i>this</i> {@link Classification}.
-	 * 
+	 *
 	 * @param description	the language string describing the individuals association
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
 	 * @see    	   			#putDescription(Language, String)
-	 * 
+	 *
 	 */
 	public void putDescription(LanguageString description){
 		this.description.put(description.getLanguage(),description);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to describe <i>this</i> {@link Classification}.
-	 * 
+	 *
 	 * @param text		the string describing the individuals association
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -621,7 +616,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public void putDescription(Language language, String text){
 		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
-	/** 
+	/**
 	 * Removes from the {@link MultilanguageText description} used to describe
 	 * <i>this</i>  {@link Classification} the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
@@ -633,7 +628,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public void removeDescription(Language language){
 		this.description.remove(language);
 	}
-    
+
 
     @Override
     public String generateTitle() {
@@ -680,7 +675,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                 result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference());
                 rootNodeClone.setSynonymToBeUsed(rootNode.getSynonymToBeUsed());
             }
-            
+
             //geo-scopes
             result.geoScopes = new HashSet<NamedArea>();
             for (NamedArea namedArea : getGeoScopes()){

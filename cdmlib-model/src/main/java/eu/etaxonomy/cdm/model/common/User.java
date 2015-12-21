@@ -16,6 +16,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,7 +40,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,7 +63,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 })
 @XmlRootElement(name = "User")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
@@ -122,6 +124,8 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+    //preliminary  #5369
+    @JoinTable(joinColumns = @JoinColumn( name="UserAccount_id"))
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
@@ -131,7 +135,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.REFRESH, CascadeType.SAVE_UPDATE,CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
+        @Cascade({CascadeType.REFRESH, CascadeType.SAVE_UPDATE,CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
     @IndexedEmbedded(depth = 1)
     @NotAudited
     protected Set<Group> groups = new HashSet<Group>();
