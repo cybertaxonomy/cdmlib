@@ -172,6 +172,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	}
 
 	@Override
+	@Transactional(readOnly = false)
+	public Person convertTeam2Person(UUID teamUuid) throws MergeException {
+	    Team team = CdmBase.deproxy(dao.load(teamUuid), Team.class);
+	    return convertTeam2Person(team);
+	}
+
+	@Override
 	public Person convertTeam2Person(Team team) throws MergeException {
 		Person result = null;
 		team = CdmBase.deproxy(team, Team.class);
@@ -197,12 +204,19 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	}
 
 	@Override
+	@Transactional(readOnly = false)
+	public Team convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException {
+	    Person person = CdmBase.deproxy(dao.load(personUuid), Person.class);
+	    return convertPerson2Team(person);
+	}
+
+	@Override
 	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
 		Team team = Team.NewInstance();
 		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
 		strategy.setDefaultMergeMode(MergeMode.SECOND);
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-		strategy.setDeleteSecondObject(false);
+		strategy.setDeleteSecondObject(true);
 
 
 		if (! genericDao.isMergeable(team, person, strategy)){
@@ -210,10 +224,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		try {
 			this.save(team);
-			team.setProtectedNomenclaturalTitleCache(true);
+			team.setProtectedNomenclaturalTitleCache(false);
+			team.setProtectedTitleCache(true);
+			team.setTitleCache(person.getTitleCache(), true);
 			genericDao.merge(team, person, strategy);
-			team.addTeamMember(person);
-			this.save(team);
+			//team.addTeamMember(person);
+
+			//this.save(team);
 //			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);

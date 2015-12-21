@@ -38,11 +38,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
@@ -67,7 +65,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     private AuthenticationManager authenticationManager;
 
-    private IDatabaseService databaseService;
 
     private UserCache userCache = new NullUserCache();
 
@@ -109,10 +106,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         this.grantedAuthorityDao = grantedAuthorityDao;
     }
 
-    @Autowired
-    public void setDatabaseService(IDatabaseService databaseService) {
-        this.databaseService = databaseService;
-    }
 
     /**
      * Changes the own password of in the database of the user which is
@@ -492,17 +485,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      * ================================================ */
 
     @Override
+    @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public DeleteResult delete(User persistentObject)  {
         return super.delete(persistentObject);
     }
 
     @Override
+    @Transactional(readOnly=false)
     public DeleteResult delete(UUID userUuid)  {
         return delete(dao.load(userUuid));
     }
 
     @Override
+    @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
         Map<UUID, User> users = new HashMap<UUID, User>();
@@ -537,29 +533,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
         return super.saveOrUpdate(transientInstances);
-    }
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#getDbSchemaVersion()
-     */
-    @Override
-    public  String getDbSchemaVersion() throws CdmSourceException  {
-        return databaseService.getDbSchemaVersion();
-
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#isDbEmpty()
-     */
-    @Override
-    public boolean isDbEmpty() throws CdmSourceException {
-        return databaseService.isDbEmpty();
-    }
-
-    @Override
-    public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
-        return databaseService.getCdmMetadataMap();
     }
 
 }

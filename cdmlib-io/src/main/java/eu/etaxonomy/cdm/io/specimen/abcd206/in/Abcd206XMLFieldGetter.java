@@ -662,6 +662,32 @@ public class Abcd206XMLFieldGetter {
         }
     }
 
+    protected void getUnitNotes(Element root) {
+        NodeList childNodes = root.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if(childNodes.item(i).getNodeName().equals(prefix + "Notes")){
+                dataHolder.unitNotes = childNodes.item(i).getTextContent();
+                path = childNodes.item(i).getNodeName();
+                getHierarchie(childNodes.item(i));
+                dataHolder.knownABCDelements.add(path);
+                path = "";
+            }
+        }
+    }
+
+    //Gathering/SiteCoordinateSets/SiteCoordinates/CoordinatesLatLong/SpatialDatum ../CoordinateErrorMethod
+    protected void getGatheringSpatialDatum(Element root) {
+        NodeList group = root.getElementsByTagName(prefix + "Gathering");
+        for (int i = 0; i < group.getLength(); i++) {
+            NodeList spatialDatum = ((Element) group.item(i)).getElementsByTagName(prefix + "SpatialDatum");
+            dataHolder.gatheringSpatialDatum = AbcdParseUtility.parseFirstTextContent(spatialDatum);
+        }
+        for (int i = 0; i < group.getLength(); i++) {
+            NodeList coordinateMethod = ((Element) group.item(i)).getElementsByTagName(prefix + "CoordinateErrorMethod");
+            dataHolder.gatheringCoordinateErrorMethod = AbcdParseUtility.parseFirstTextContent(coordinateMethod);
+        }
+    }
+
     protected void getGatheringElevation(Element root) {
         try {
             //check for freetext elevation
@@ -733,6 +759,29 @@ public class Abcd206XMLFieldGetter {
         } catch (NullPointerException e) {
             dataHolder.gatheringElevationText = null;
         }
+    }
+
+    protected void getGatheringNotes(Element root) {
+        try {
+            NodeList group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Notes")) {
+                        path = children.item(j).getNodeName();
+                        getHierarchie(children.item(j));
+                        dataHolder.knownABCDelements.add(path);
+                        path = "";
+                        dataHolder.gatheringNotes = children.item(j).getTextContent();
+                    }
+                }
+            }
+
+
+        } catch (NullPointerException e) {
+            dataHolder.gatheringElevationText = null;
+        }
+
     }
 
     protected void getGatheringDate(Element root) {

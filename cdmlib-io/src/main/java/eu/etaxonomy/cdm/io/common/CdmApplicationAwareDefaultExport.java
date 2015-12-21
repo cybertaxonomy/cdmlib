@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -202,7 +203,9 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 					//result &= cdmIo.invoke(config, stores);
 					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
-					exportResult.addExportData(cdmIo.getByteArray());
+					if (config.getTarget().equals(TARGET.EXPORT_DATA)){
+					    exportResult.addExportData(cdmIo.getByteArray());
+					}
 //					IoState<S> state = null;
 //					result &= cdmIo.invoke(state);
 				}else{

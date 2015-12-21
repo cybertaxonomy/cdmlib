@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -38,7 +39,35 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase> {
 
-	/**
+    /**
+     * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
+     * @param clazz optionally restrict the counted occurrences to those of a certain subclass of SpecimenOrObservationBase
+     * @param determinedAs the taxon name that these specimens are determined to belong to
+     * @return
+     */
+    public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonNameBase determinedAs);
+
+    /**
+     * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
+     * of 'limit' objects are returned, starting at object with index 'start'. Only occurrences which
+     * have been determined to belong to the supplied name are returned.
+     *
+     * @param type
+     * @param determinedAs the taxon name that these specimens are determined to belong to
+     * @param limit
+     *            the maximum number of entities returned (can be null to return
+     *            all entities)
+     * @param start
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return
+     * @throws DataAccessException
+     */
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
 	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
 	 * @param clazz optionally restrict the counted occurrences to those of a certain subclass of SpecimenOrObservationBase
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
@@ -66,8 +95,12 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 */
 	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	    /**
-     * Queries the database for specimens which match the given criteria
+	/**
+     * Queries the database for specimens which match the given criteria<br>
+     * <b>Note:</b> Specifying a taxon will already check the name of this
+     * taxon, its synonymy and the synonym names for determinations of the
+     * specimen. So specifying a taxon name is only necessary if it does not
+     * belong to the before-mentioned group of names.
      *
      * @param clazz
      *            the class to match
@@ -79,6 +112,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            the taxon these specimens are in any way associated to via
      *            determination, type designations, individuals associations,
      *            etc.
+     * @param associatedTaxonName
+     *            the taxon name that the specimens have been determined as
      * @param matchmode
      *            determines how the query string should be matched
      * @param limit
@@ -93,17 +128,31 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return a list of specimens that match the given parameters
      */
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs, MatchMode matchmode,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
+            TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
-	/**
-	 * Returns the number of specimens that match the given parameters
-	 * @param clazz the class to match
-     * @param queryString the queryString to match
-     * @param type the {@link SpecimenOrObservationType} to match
-     * @param associatedTaxon the taxon these specimens are in any way associated to via
-     * determination, type designations, individuals associations, etc.
-     * @param matchmode determines how the query string should be matched
+    /**
+     * Returns the number of specimens that match the given parameters
+     * <b>Note:</b> Specifying a taxon will already check the name of this
+     * taxon, its synonymy and the synonym names for determinations of the
+     * specimen. So specifying a taxon name is only necessary if it does not
+     * belong to the before-mentioned group of names.
+     *
+     * @param clazz
+     *            the class to match
+     * @param queryString
+     *            the queryString to match
+     * @param type
+     *            the {@link SpecimenOrObservationType} to match
+     * @param associatedTaxon
+     *            the taxon these specimens are in any way associated to via
+     *            determination, type designations, individuals associations,
+     *            etc.
+     * @param associatedTaxonName
+     *            the taxon name that the specimens have been determined as
+     * @param matchmode
+     *            determines how the query string should be matched
      * @param limit
      *            the maximum number of entities returned (can be null to return
      *            all entities)
@@ -112,11 +161,12 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
      *            authorTeam.persistentTitleCache
-	 * @return the number of found specimens
-	 */
+     * @return the number of found specimens
+     */
     public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+            TaxonNameBase associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Returns a count of Media that are associated with a given occurence
@@ -192,12 +242,27 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 
 	/**
+	 * Lists all instances of {@link SpecimenOrObservationBase} which are determined as the <code>taxon name</code> specified as parameter.
+	 *
+	 * @param <T>
+	 * @param type
+	 * @param associatedTaxonName
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
+            TaxonNameBase associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
 	 * Lists all instances of {@link SpecimenOrObservationBase} which are associated with the <code>taxon</code> specified as parameter.
 	 * SpecimenOrObservationBase instances can be associated to taxa in multiple ways, all these possible relations are taken into account:
 	 * <ul>
 	 * <li>The {@link IndividualsAssociation} elements in a {@link TaxonDescription} contain {@link DerivedUnit}s</li>
 	 * <li>{@link SpecimenTypeDesignation}s may be associated with any {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
-	 * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
+	 * <li>A {@link Taxon} or a {@link TaxonNameBase} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
 	 * </ul>
 	 *
 	 * @param <T>
@@ -222,6 +287,27 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return collection of all associations
      */
 	public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
+	 * @param specimen the type specimen
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return collection of all designations with the given type specimen
+	 */
+
+	/**
+     * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
+	 * @param specimen
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return collection of all determinations with the given specimen
+	 */
+    public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
@@ -254,5 +340,5 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param propertyPaths
      * @return collection of specimen with the given type
      */
-    public Collection<SpecimenTypeDesignation> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

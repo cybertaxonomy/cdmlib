@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigu
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -92,10 +93,13 @@ public class UnitsGatheringEvent {
      * @param collectorNames
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
-            Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit, String date, List<String> collectorName, List<String> team, Abcd206ImportConfigurator config){
+            Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
+            String date, String gatheringNotes, ReferenceSystem referenceSystem, List<String> collectorName,
+            List<String> team, Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
-        this.setCoordinates(longitude, latitude);
+        this.setCoordinates(longitude, latitude, referenceSystem);
         this.setDate(date);
+        this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
         if (!collectorName.isEmpty()) {
             List<String> tmp =  new ArrayList<String>(new HashSet<String>(collectorName));
@@ -167,6 +171,10 @@ public class UnitsGatheringEvent {
      * @param: latitude
      */
     public void setCoordinates(Double longitude, Double latitude){
+        setCoordinates(longitude, latitude, null);
+    }
+
+    public void setCoordinates(Double longitude, Double latitude, ReferenceSystem referenceSystem){
         //create coordinates point
         if((longitude == null) || (latitude == null)){
             return;
@@ -179,10 +187,13 @@ public class UnitsGatheringEvent {
         if (latitude != 0.0) {
             coordinates.setLatitude(latitude);
         }
-        //for proiBiosphere Quentin's data
-        coordinates.setReferenceSystem(ReferenceSystem.WGS84());
+        coordinates.setReferenceSystem(referenceSystem);
         this.gatheringEvent.setExactLocation(coordinates);
 
+    }
+
+    public void setNotes(String gatheringNotes){
+        this.gatheringEvent.addAnnotation(Annotation.NewDefaultLanguageInstance(gatheringNotes));
     }
 
     public void setDate(String date){
@@ -207,7 +218,7 @@ public class UnitsGatheringEvent {
             }
             if(elevationMax!=null){
                 Integer max = Integer.parseInt(elevationMax.replaceAll(pattern, ""));
-                this.gatheringEvent.setAbsoluteElevation(max);
+                this.gatheringEvent.setAbsoluteElevationMax(max);
             }
             if(elevationUnit!=null){
                 if(!elevationUnit.equals("m")){

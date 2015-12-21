@@ -13,13 +13,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.Status;
 import org.hibernate.event.spi.DeleteEvent;
 import org.hibernate.event.spi.DeleteEventListener;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 
 /**
@@ -53,9 +49,9 @@ public class CdmDeleteListener implements DeleteEventListener {
      * @param event
      * @param entity
      */
-    private void deleteRelationship(DeleteEvent event, Object entity) {
+     private void deleteRelationship(DeleteEvent event, Object entity) {
         RelationshipBase relationshipEntity = (RelationshipBase)entity;
-        if (relationshipEntity.isRemoved()){
+      /*  if (relationshipEntity.isRemoved()){
             Set<IRelated> deletedObjects = relationshipEntity.getDeletedObjects();
             for (IRelated rel : deletedObjects){
                 if (rel != null){
@@ -70,6 +66,6 @@ public class CdmDeleteListener implements DeleteEventListener {
                     }
                 }
             }
-        }
+        }*/
     }
 }

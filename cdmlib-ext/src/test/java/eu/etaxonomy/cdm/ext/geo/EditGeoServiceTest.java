@@ -37,24 +37,32 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -68,7 +76,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;
 
-    //@SpringBeanByType
+    @SpringBeanByType
     private IDefinedTermDao termDao;
 
     @SpringBeanByType
@@ -82,15 +90,10 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IEditGeoService editGeoService;
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception {
-//		DefaultTermInitializer initializer = new DefaultTermInitializer();
-//		initializer.initialize();
-//	}
+
+    @SpringBeanByType
+    private ITaxonService taxonService ;
+
 
     /**
      * @throws java.lang.Exception
@@ -406,13 +409,77 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("GER(B BW) ?IT [aFR cFR(J) nS]", condensedDistribution.toString());
     }
 
+    @SuppressWarnings("deprecation")
+//    @Test
+    @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
+//    @DataSets({
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDB_with_Terms_DataSet.xml"),
+//        @DataSet("../../database/TermsDataSet-with_auditing_info.xml"),
+//        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
+//    })
+    public void getDistributionServiceRequestParameterString(){
+        boolean subAreaPreference = false;
+        boolean statusOrderPreference = false;
+        Set<MarkerType> hideMarkedAreas = null;
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
+        List<Language> langs = null;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        TaxonDescription description1 = TaxonDescription.NewInstance();
+        taxonDescriptions.add(description1);
+        Distribution distribution1 = Distribution.NewInstance(Country.GERMANY(), null);
+        description1.addElement(distribution1);
+        Distribution distribution2 = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), null);
+        distribution2.setFeature(Feature.COMMON_NAME());
+        description1.addElement(distribution2);
+
+        Taxon taxon = (Taxon)taxonService.find(UUID.fromString("7598f5d4-1cf2-4269-ae99-2adb79ae167c"));
+        TaxonDescription taxDesc = taxon.getDescriptions().iterator().next();
+        for (DescriptionElementBase deb : taxDesc.getElements()){
+            Distribution distribution = CdmBase.deproxy(deb, Distribution.class);
+            NamedArea area = distribution.getArea();
+            System.out.println(area.getTitleCache());
+        }
+        taxonDescriptions.addAll(taxon.getDescriptions());
+
+        String distributions = editGeoService.getDistributionServiceRequestParameterString(taxonDescriptions,
+                subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
+        System.out.println(distributions);
+        Assert.assertTrue("Distribution string should contain the non-persited distribution Germany", distributions.contains("DEU"));
+        Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
+
+//        CHE,POL
+    }
+
     @Override
+//    @Test
     public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+
+        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        TaxonDescription description1 = TaxonDescription.NewInstance();
+        taxonDescriptions.add(description1);
+        Distribution distribution1 = Distribution.NewInstance(Country.POLANDPOLISHPEOPLESREPUBLIC(), null);
+        description1.addElement(distribution1);
+        Distribution distribution2 = Distribution.NewInstance(Country.SWITZERLANDSWISSCONFEDERATION(), null);
+//        distribution2.setFeature(Feature.COMMON_NAME());
+        description1.addElement(distribution2);
+        Taxon taxon = Taxon.NewInstance(null, null);
+        taxon.setTitleCache("Dummy taxon", true);
+        taxon.addDescription(description1);
+        taxon.setUuid(UUID.fromString("7598f5d4-1cf2-4269-ae99-2adb79ae167c"));
+
+        taxonService.save(taxon);
+
+
+        setComplete();
+        endTransaction();
+
+        writeDbUnitDataSetFile(new String[] {
+                "TAXONBASE",
+                "DESCRIPTIONBASE", "DESCRIPTIONELEMENTBASE",
+                "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+                },
+                "getDistributionServiceRequestParameterString" );
 
     }
 

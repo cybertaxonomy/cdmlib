@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,18 +20,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
 /**
  * The AgentController class is a Spring MVC Controller.
@@ -66,6 +76,18 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 public class AgentController extends BaseController<AgentBase, IAgentService>
 {
 
+    private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
+            // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
+            // which is using join fetches
+            "taxonNode.taxon.name.nomenclaturalReference",
+            });
+
+    public List<String> getTaxonNodeAgentRelationsInitStrategy() {
+        return TAXONNODEAGENTRELATIONS_INIT_STRATEGY;
+    }
+
+    @Autowired
+    private ITaxonNodeService nodeService;
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
@@ -74,6 +96,13 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
     @Override
     public void setService(IAgentService service) {
         this.service = service;
+    }
+
+    @Override
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        super.initBinder(binder);
+        binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
     }
 
     /**
@@ -100,6 +129,43 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
         mv.addObject(agentbase.getTitleCache());
         return mv;
 
+    }
+    /**
+     *
+     * See also {@link TaxonController#doGetTaxonNodeAgentRelations(UUID, UUID, Integer, Integer, HttpServletRequest, HttpServletResponse)}
+     *
+     * @param uuid
+     * @param classificationUuid
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     */
+    @RequestMapping(value = "taxonNodeAgentRelations", method = RequestMethod.GET)
+    public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
+            @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "classification_uuid" , required = false) UUID classificationUuid,
+            @RequestParam(value = "taxon_uuid" , required = false) UUID taxonUuid,
+            @RequestParam(value = "relType_uuid" , required = false) UUID relTypeUuid,
+            @RequestParam(value = "rank" , required = false) Rank rank,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        UUID rankUuid = null;
+        if(rank != null) {
+            rankUuid = rank.getUuid();
+        }
+        Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(taxonUuid, classificationUuid, uuid,
+                rankUuid, relTypeUuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), getTaxonNodeAgentRelationsInitStrategy());
+        return pager;
     }
 
 }

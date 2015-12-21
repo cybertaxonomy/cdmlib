@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @created 30.05.2012
- * 
+ *
  */
 public class MarkupFeatureImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
@@ -54,8 +54,8 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 	protected static final String MODS_TITLEINFO = "titleInfo";
 
-	private MarkupSpecimenImport specimenImport;
-	private MarkupNomenclatureImport nomenclatureImport;
+	private final MarkupSpecimenImport specimenImport;
+	private final MarkupNomenclatureImport nomenclatureImport;
 
 	public MarkupFeatureImport(MarkupDocumentImport docImport, MarkupSpecimenImport specimenImport,
 			 MarkupNomenclatureImport nomenclatureImport) {
@@ -69,8 +69,8 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		Boolean isFreetext = getAndRemoveBooleanAttributeValue(parentEvent, attrs, IS_FREETEXT, false);
 		String classValue =getAndRemoveRequiredAttributeValue(parentEvent, attrs, CLASS);
 		checkNoAttributes(attrs, parentEvent);
-		
-		
+
+
 		Feature feature = makeFeature(classValue, state, parentEvent, null);
 		Taxon taxon = state.getCurrentTaxon();
 		TaxonDescription taxonDescription = getTaxonDescription(taxon, state.getConfig().getSourceReference(), NO_IMAGE_GALLERY, CREATE_NEW);
@@ -79,14 +79,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 		boolean isDescription = feature.equals(Feature.DESCRIPTION());
 		DescriptionElementBase lastDescriptionElement = null;
-		
+
 		CharOrder charOrder= new CharOrder();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				state.putFeatureToGeneralSorterList(feature);
 				return;
-			} else if (isEndingElement(next, DISTRIBUTION_LIST) || isEndingElement(next, HABITAT_LIST)) { 
+			} else if (isEndingElement(next, DISTRIBUTION_LIST) || isEndingElement(next, HABITAT_LIST)) {
 				// only handle list elements
 			} else if (isStartingElement(next, HEADING)) {
 				makeFeatureHeading(state, reader, classValue, feature, next);
@@ -102,7 +102,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				// only handle single list elements
 			} else if (isStartingElement(next, HABITAT)) {
 				if (!(feature.equals(Feature.HABITAT())
-						|| feature.equals(Feature.HABITAT_ECOLOGY()) 
+						|| feature.equals(Feature.HABITAT_ECOLOGY())
 						|| feature.equals(Feature.ECOLOGY()))) {
 					String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
 					fireWarningEvent(message, next, 4);
@@ -143,7 +143,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 		throw new IllegalStateException("<Feature> has no closing tag");
 	}
-	
+
 
 	/**
 	 * @param state
@@ -155,7 +155,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	public DescriptionElementBase makeFeatureFigureRef(MarkupImportState state, XMLEventReader reader,TaxonDescription taxonDescription, 
+	public DescriptionElementBase makeFeatureFigureRef(MarkupImportState state, XMLEventReader reader,TaxonDescription taxonDescription,
 					boolean isDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next) throws XMLStreamException {
 		FigureDataHolder figureHolder = handleFigureRef(state, reader, next);
 		Feature figureFeature = getFeature(state, MarkupTransformer.uuidFigures, "Figures", "Figures", "Fig.",null);
@@ -197,19 +197,19 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	 * @param feature
 	 * @param taxonDescription
 	 * @param lastDescriptionElement
-	 * @param distributionList 
+	 * @param distributionList
 	 * @param next
 	 * @return
 	 * @throws XMLStreamException
-	 * @throws  
+	 * @throws
 	 */
-	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature, 
+	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature,
 				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next, Boolean isFreetext) throws XMLStreamException {
-		
+
 		//for specimen only
-		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED()) 
+		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED())
 				|| feature.getUuid().equals(MarkupTransformer.uuidWoodSpecimens)){
-			
+
 			List<DescriptionElementBase> specimens = specimenImport.handleMaterialsExamined(state, reader, next, feature, taxonDescription);
 			for (DescriptionElementBase specimen : specimens){
 				if (specimen.getInDescription() == null){
@@ -218,7 +218,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				lastDescriptionElement = specimen;
 			}
 			state.setCurrentCollector(null);
-			
+
 			return lastDescriptionElement;
 		}else if (feature.equals(Feature.COMMON_NAME()) && (isFreetext == null || !isFreetext)){
 			List<DescriptionElementBase> commonNames = makeCommonNameString(state, reader, next);
@@ -230,7 +230,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			return lastDescriptionElement;
 		}
 		else{
-		
+
 			//others
 			Map<String, String> subheadingMap = handleString(state, reader, next, feature);
 			for (String subheading : subheadingMap.keySet()) {
@@ -239,7 +239,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 					subheadingFeature = makeFeature(subheading, state, next, null);
 				}
 				if (feature.equals(Feature.COMMON_NAME()) && (isFreetext == null || !isFreetext)){
-					//NOTE: see above 
+					//NOTE: see above
 //					List<DescriptionElementBase> commonNames = makeVernacular(state, subheading, subheadingMap.get(subheading));
 //					for (DescriptionElementBase commonName : commonNames){
 //						taxonDescription.addElement(commonName);
@@ -262,7 +262,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	 * @param classValue
 	 * @param state
 	 * @param parentEvent
-	 * @param parentFeature 
+	 * @param parentFeature
 	 * @return
 	 * @throws UndefinedTransformerMethodException
 	 */
@@ -277,18 +277,21 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				classValue = String.format(classValue, parentFeature.getTitleCache());
 			}
 
-			
+
 			//get existing feature
+			if (classValue.endsWith(".")){
+			    classValue = classValue.substring(0, classValue.length() - 1);
+			}
 			Feature feature = state.getTransformer().getFeatureByKey(classValue);
 			if (feature != null) {
 				return feature;
 			}
 			uuid = state.getTransformer().getFeatureUuid(classValue);
-			
+
 			if (uuid == null){
 				uuid = state.getUnknownFeatureUuid(classValue);
 			}
-			
+
 			if (uuid == null) {
 				// TODO
 				String message = "Uuid is not defined for '%s'";
@@ -309,7 +312,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				save(parentFeature, state);
 			}
 			save(feature, state);
-					
+
 			if (feature == null) {
 				throw new NullPointerException(classValue + " not recognized as a feature");
 			}
@@ -324,13 +327,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			return Feature.UNKNOWN();
 		}
 	}
-	
+
 	public class CharOrder{
 		static final int strlength = 3;
 		private int order = 1;
 		private CharOrder parent;
-		private List<CharOrder> children = new ArrayList<CharOrder>();
-		
+		private final List<CharOrder> children = new ArrayList<CharOrder>();
+
 		public CharOrder nextChild(){
 			CharOrder result = new CharOrder();
 			if (! children.isEmpty()) {
@@ -340,7 +343,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			children.add(result);
 			return result;
 		}
-		
+
 		public CharOrder next(){
 			CharOrder result = new CharOrder();
 			result.order = order + 1;
@@ -350,26 +353,27 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 			return result;
 		}
-		
+
 		public String orderString(){
 			String parentString = parent == null ? "" : parent.orderString();
 			String result = CdmUtils.concat("-", parentString, StringUtils.leftPad(String.valueOf(order), strlength, '0'));
 			return result;
 		}
-		
-		public String toString(){
+
+		@Override
+        public String toString(){
 			return orderString();
 		}
 	}
-	
+
 
 	/**
-	 * Handle the char or subchar element. As 
+	 * Handle the char or subchar element. As
 	 * @param state the import state
-	 * @param reader 
+	 * @param reader
 	 * @param parentEvent
 	 * @param parentFeature in case of subchars we need to attache the newly created feature to a parent feature, should be <code>null</code>
-	 * for top level chars.  
+	 * for top level chars.
 	 * @return List of TextData. Not a single one as the recursive TextData will also be returned
 	 * @throws XMLStreamException
 	 */
@@ -388,13 +392,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				state.getLatestCharFeatureSorterInfo().addSubFeature(new FeatureSorterInfo(feature));
 //			}
 		}
-		
+
 		TextData textData = TextData.NewInstance(feature);
 		result.add(textData);
-		
+
 		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, AnnotationType.TECHNICAL().getVocabulary());
 		textData.addAnnotation(Annotation.NewInstance(myCharOrder.orderString(), annType, Language.ENGLISH()));
-		
+
 		boolean isTextMode = true;
 		String text = "";
 		while (reader.hasNext()) {
@@ -452,7 +456,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 		throw new IllegalStateException("RefPart has no closing tag");
 	}
-	
+
 
 	/**
 	 * @param state
@@ -486,7 +490,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 	}
-	
+
 
 	/**
 	 * @param state
@@ -512,7 +516,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			fireWarningEvent(message, next, 4);
 		}
 	}
-	
+
 
 	private void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -554,7 +558,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 		throw new IllegalStateException("<Habitat> has no closing tag");
 	}
-	
+
 
 	private FigureDataHolder handleFigureRef(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)
 			throws XMLStreamException {
@@ -597,13 +601,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			demands.add(entity);
 		}
 	}
-	
+
 	private List<DescriptionElementBase> makeCommonNameString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
-		
+
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 
 		checkNoAttributes(parentEvent);
-		
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -630,14 +634,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-		
-		
+
+
 	}
 
 	private List<DescriptionElementBase> makeVernacularNames(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 		checkNoAttributes(parentEvent);
-	
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -653,12 +657,12 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-		
+
 	}
-	
+
 	private void makeVernacularNamesSubHeading(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
-		
+
 		String text = "";
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -672,7 +676,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 						fireWarningEvent("Vernacular subheading not recognized", next, 8);
 					}
 				}
-				
+
 				return ;
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
@@ -681,14 +685,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-		
+
 	}
 
 	private NamedArea getCommonNameArea(String text) {
 		if (text.endsWith(":")){
 			text = text.substring(0, text.length()-1);
 		}
-		
+
 		// for now we do it hardcoded
 		if (text.equalsIgnoreCase("Guyana")){
 			return Country.GUYANAREPUBLICOF();
@@ -703,7 +707,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	private List<CommonTaxonName> makeSingleVernacularName(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
 		checkNoAttributes(parentEvent);
 		List<CommonTaxonName> result = new ArrayList<CommonTaxonName>();
-				
+
 		Language language = state.getDefaultLanguage();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -716,7 +720,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 //				}else{
 //					fireWarningEvent("No name string for common name", parentEvent, 4);
 //				}
-				
+
 				return result;
 			} else if (isStartingElement(next, NAME)) {
 				//TODO test
@@ -754,14 +758,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 		throw new IllegalStateException("closing tag is missing");
 	}
-	
-	private CommonTaxonName handleVernacularNameName(MarkupImportState state, XMLEventReader reader, 
+
+	private CommonTaxonName handleVernacularNameName(MarkupImportState state, XMLEventReader reader,
 				XMLEvent parentEvent) throws XMLStreamException {
 		//attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		this.checkAndRemoveAttributeValue(attributes, CLASS, "vernacular");
 		this.checkNoAttributes(attributes, parentEvent);
-		
+
 		//
 		String text = getCData(state, reader, parentEvent, false);
 		CommonTaxonName name = CommonTaxonName.NewInstance(text, null);
@@ -781,14 +785,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		boolean doubtful = getAndRemoveBooleanAttributeValue(parentEvent, attributes, DOUBTFUL, false);
 		boolean unknown = getAndRemoveBooleanAttributeValue(parentEvent, attributes, UNKNOWN, false);
 		this.checkNoAttributes(attributes, parentEvent);
-		
+
 		if (doubtful == true){
 			fireWarningEvent("Doubtful not yet implemented for local language", parentEvent, 2);
 		}
 		if (unknown == true){
 			fireWarningEvent("Unknown not yet implemented for local language ", parentEvent, 2);
 		}
-		
+
 		//
 		String text = getCData(state, reader, parentEvent);
 		Language lang = makeLanguageByLangStr(state, text);
@@ -804,10 +808,10 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			if (! split.matches(".*\\(.*\\)\\.?")){
 				fireWarningEvent("Common name string '"+split+"' does not match given pattern", state.getReader().peek(), 4);
 			}
-			
+
 			String name = split.replaceAll("\\(.*\\)", "").replace(".", "").trim();
 			String languageStr = split.replaceFirst(".*\\(", "").replaceAll("\\)\\.?", "").trim();
-			
+
 			Language language = null;
 			if (StringUtils.isNotBlank(languageStr)){
 				language = makeLanguageByLangStr(state, languageStr);
@@ -826,7 +830,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 			result.add(commonName);
 		}
-		
+
 		return result;
 	}
 
@@ -837,7 +841,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				UUID langUuid = state.getTransformer().getLanguageUuid(languageStr);
 				TermVocabulary<?> voc = null;
 				language = getLanguage(state, langUuid, languageStr, languageStr, null, voc);
-			}	
+			}
 			if (language == null){
 				String warning = "Language " + languageStr + " not recognized by transformer";
 				fireWarningEvent(warning, state.getReader().peek(), 4);
@@ -872,7 +876,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		throw new IllegalStateException("<String> has no closing tag");
 
 	}
-	
+
 
 	private List<Reference<?>> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// attributes
@@ -943,7 +947,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 		throw new IllegalStateException("<References> has no closing tag");
 	}
-	
+
 
 	private String getTaggedCData(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);

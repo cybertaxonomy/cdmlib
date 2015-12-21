@@ -57,6 +57,8 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -243,6 +245,30 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         Session session = getSession();
         session.clear();
         if (logger.isDebugEnabled()){logger.debug("dao clear end");}
+    }
+
+    @Override
+    public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException {
+        Session session = getSession();
+        PostMergeEntityListener.addSession(session);
+        MergeResult result = null;
+        try {
+            @SuppressWarnings("unchecked")
+            T persistentObject = (T)session.merge(transientObject);
+            if (logger.isDebugEnabled()){logger.debug("dao merge end");}
+
+            if(returnTransientEntity) {
+                if(transientObject != null && persistentObject != null) {
+                    transientObject.setId(persistentObject.getId());
+                }
+                result = new MergeResult(transientObject, PostMergeEntityListener.getNewEntities(session));
+            } else {
+                result = new MergeResult(persistentObject, null);
+            }
+            return result;
+        } finally {
+            PostMergeEntityListener.removeSession(session);
+        }
     }
 
     @Override
@@ -888,3 +914,4 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     }
 }
+

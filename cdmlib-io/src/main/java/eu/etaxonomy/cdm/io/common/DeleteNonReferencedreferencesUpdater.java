@@ -10,12 +10,14 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 @Component
-public class DeleteNonReferencedreferencesUpdater extends CdmIoBase<DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+
+public class DeleteNonReferencedreferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+
 
 	@Override
 	protected void doInvoke(
 			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
-		
+
 		if (state.getConfig().isDoAuthors()){
 			List<TeamOrPersonBase> authors =getAgentService().list(TeamOrPersonBase.class, null, null, null, null);
 			DeleteResult result;
@@ -67,5 +69,6 @@ public class DeleteNonReferencedreferencesUpdater extends CdmIoBase<DefaultImpor
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }

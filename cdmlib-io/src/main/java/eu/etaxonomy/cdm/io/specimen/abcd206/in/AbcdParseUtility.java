@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +23,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner
@@ -110,6 +116,22 @@ public class AbcdParseUtility {
             date = dateTime.toDate();
         }
         return date;
+    }
+
+    public static Reference parseFirstReference(NodeList referenceNodeList, ICdmApplicationConfiguration cdmAppController){
+        String referenceCitation = AbcdParseUtility.parseFirstTextContent(referenceNodeList);
+        //check if reference already exists
+        List<Reference> matchingReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, referenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
+        Reference<?> reference;
+        if(matchingReferences.size()==1){
+            reference = matchingReferences.iterator().next();
+        }
+        else{
+            reference = ReferenceFactory.newGeneric();
+            reference.setTitle(referenceCitation);
+            cdmAppController.getReferenceService().saveOrUpdate(reference);
+        }
+        return reference;
     }
 
     /**

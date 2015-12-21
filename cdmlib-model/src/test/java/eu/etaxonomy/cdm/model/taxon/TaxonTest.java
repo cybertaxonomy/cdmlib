@@ -1,12 +1,12 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -14,14 +14,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -39,9 +40,9 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TaxonTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonTest.class);
 
-	
-	private Reference sec;
-	private Reference misSec;
+
+	private Reference<?> sec;
+	private Reference<?> misSec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
@@ -54,13 +55,13 @@ public class TaxonTest extends EntityTestBase {
 	private Taxon freeT;
 	private Taxon misTaxon1;
 	private Taxon misTaxon2;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		Person linne =new Person("Carl", "Linné", "L.");
@@ -69,7 +70,7 @@ public class TaxonTest extends EntityTestBase {
 		sec.setTitleCache("Schönes saftiges Allgäu", true);
 		misSec = ReferenceFactory.newBook();
 		misSec.setTitleCache("Stupid book", true);
-		
+
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
 		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
 		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
@@ -79,11 +80,11 @@ public class TaxonTest extends EntityTestBase {
 		// taxonomic children
 		child1 = Taxon.NewInstance(name2,sec);
 		child2 = Taxon.NewInstance(name3,sec);
-		
+
 //		Classification newTree = Classification.NewInstance("testTree");
 //		newTree.addParentChild(rootT, child1, sec, "p.998");
 //		newTree.addParentChild(rootT, child2, sec, "p.987");
-		
+
 		rootT.addTaxonomicChild(child1, sec, "p.998");
 		rootT.addTaxonomicChild(child2, sec, "p.987");
 		// synonymy
@@ -105,7 +106,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddTaxonomicChild() {
-		
+
 		rootT.addTaxonomicChild(freeT, null, null);
 		Assert.assertEquals(Integer.valueOf(3), Integer.valueOf(rootT.getTaxonomicChildren().size()));
 	}
@@ -154,7 +155,7 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue(misTaxon1.isMisapplication());
 		assertTrue(misTaxon2.isMisapplication());
 	}
-	
+
 	@Test
 	public void testGetSynonyms() {
 		assertTrue(child1.getSynonyms().contains(syn1));
@@ -176,7 +177,7 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue(syn1.getAcceptedTaxa().contains(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
 	}
-	
+
 	@Test
 	public void testAddAndRemoveDescriptionTaxonDescription() {
 		TaxonDescription desc = TaxonDescription.NewInstance();
@@ -486,15 +487,15 @@ public class TaxonTest extends EntityTestBase {
 	public void testGetHeterotypicSynonymyGroups() {
 		logger.warn("Not yet implemented");
 	}
-	
-	
+
+
 	@Test
 	public void testAddRemoveSynonymInSameGroup(){
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
 		TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> synonymName2 = BotanicalName.NewInstance(null);
-		
+
 		// add a synonym to the taxon
 		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1).getSynonym();
 		// get the homotypic group of that synonym
@@ -503,30 +504,37 @@ public class TaxonTest extends EntityTestBase {
 		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, homotypicGroupOfSynonym, null, null).getSynonym();
 		// everything is fine
 		Assert.assertEquals("We should have two synonyms in the group", 2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size());
-		
+
 		// removing the synonym from the taxon
 		taxon.removeSynonym(synonym2);
-		
+
 		// get the homotypical group via the methods in Taxon
 		HomotypicalGroup homotypicGroupViaTaxon = taxon.getHeterotypicSynonymyGroups().iterator().next();
-		
+
 		// the group is for sure the same as the synonyms one
 		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object", homotypicGroupOfSynonym, homotypicGroupViaTaxon);
-		
-		// although it might be correct that the synonym is not deleted from the taxonomic group 
+
+		// although it might be correct that the synonym is not deleted from the taxonomic group
 		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms
 		// via methods in Taxon
-		Assert.assertEquals("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted", 
-				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size()); 
+		Assert.assertEquals("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted",
+				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size());
 	}
-	
-	
+
+
 	@Test
 	public void testClone(){
 		Taxon clone = (Taxon)child2.clone();
 		assertNotNull(clone);
 		assertEquals(0,clone.getTaxonNodes().size());
 		assertSame(clone.getName(), child2.getName());
+	}
+
+	@Test
+	public void beanTests(){
+//	    #5307 Test that BeanUtils does not fail
+	    BeanUtils.getPropertyDescriptors(Taxon.class);
+	    BeanUtils.getPropertyDescriptors(Synonym.class);
 	}
 
 }

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -112,7 +114,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
     	if (recursive == true){
-    		Criteria crit = getSession().createCriteria(TaxonNode.class); 
+    		Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
     		if(pageSize != null) {
                 crit.setMaxResults(pageSize);
@@ -122,22 +124,22 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     crit.setFirstResult(0);
                 }
             }
-    		List<TaxonNode> results = (List<TaxonNode>) crit.list();
+    		List<TaxonNode> results = crit.list();
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
     	}else{
     		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), pageSize, pageIndex, propertyPaths);
     	}
-    	
+
     }
-    
+
     @Override
 	public Long countChildrenOf(TaxonNode node, Classification classification,
 			boolean recursive) {
-		
+
 		if (recursive == true){
-			Criteria crit = getSession().createCriteria(TaxonNode.class); 
+			Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
     		crit.setProjection(Projections.rowCount());
     		return ((Integer)crit.uniqueResult().hashCode()).longValue();
@@ -145,6 +147,140 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			return classificationDao.countChildrenOf(node.getTaxon(), classification);
 		}
 	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths) {
 
+
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, false);
+
+        Query query =  getSession().createQuery(hql.toString());
+
+        if(limit != null) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
+
+        List<TaxonNodeAgentRelation> records = query.list();
+
+        if(propertyPaths != null) {
+            defaultBeanInitializer.initializeAll(records, propertyPaths);
+        }
+        return records;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid) {
+
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, true);
+        Query query =  getSession().createQuery(hql.toString());
+
+        setParamsForListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, query);
+
+        Long count = Long.parseLong(query.uniqueResult().toString());
+
+        return count;
+    }
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param agentUuid
+     * @param relTypeUuid TODO
+     * @param doCount TODO
+     * @param rankId
+     *     limit to taxa having this rank, only applies if <code>taxonUuid = null</code>
+     * @return
+     */
+    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid, boolean doCount) {
+
+        StringBuilder hql = new StringBuilder();
+
+        String join_fetch_mode = doCount ? "join" : "join fetch";
+
+        if(doCount) {
+            hql.append("select count(tnar)");
+        } else {
+            hql.append("select tnar");
+        }
+
+        hql.append(" from TaxonNodeAgentRelation as tnar ");
+        if(taxonUuid != null) {
+            // taxonUuid is search filter, do not fetch it
+            hql.append(" join tnar.taxonNode as tn join tn.taxon as t ");
+        } else {
+            hql.append(join_fetch_mode).append(" tnar.taxonNode as tn ").append(join_fetch_mode).append(" tn.taxon as t ");
+            if(rankUuid != null) {
+                hql.append(" join t.name as n ");
+            }
+        }
+        hql.append(" join tn.classification as c ");
+        if(agentUuid != null) {
+            // agentUuid is search filter, do not fetch it
+//            hql.append(" join tnar.agent as a ");
+            hql.append(join_fetch_mode).append(" tnar.agent as a ");
+        } else {
+            hql.append(join_fetch_mode).append(" tnar.agent as a ");
+        }
+
+        hql.append(" where 1 = 1 ");
+
+        if(relTypeUuid != null) {
+            hql.append(" and tnar.type.uuid = :relTypeUuid ");
+        }
+
+        if(taxonUuid != null) {
+            hql.append(" and t.uuid = :taxonUuid ");
+        } else {
+            if(rankUuid != null) {
+                hql.append(" and n.rank.uuid = :rankUuid ");
+            }
+        }
+        if(classificationUuid != null) {
+            hql.append(" and c.uuid = :classificationUuid ");
+        }
+        if(agentUuid != null) {
+            hql.append(" and a.uuid = :agentUuid ");
+        }
+
+        hql.append(" order by a.titleCache");
+        return hql;
+    }
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param agentUuid
+     * @param relTypeUuid TODO
+     * @param query
+     * @param rankId TODO
+     */
+    private void setParamsForListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid,
+            UUID rankUuid, UUID relTypeUuid, Query query) {
+
+        if(taxonUuid != null) {
+            query.setParameter("taxonUuid", taxonUuid);
+        } else {
+            if(rankUuid != null) {
+                query.setParameter("rankUuid", rankUuid);
+            }
+        }
+        if(classificationUuid != null) {
+            query.setParameter("classificationUuid", classificationUuid);
+        }
+        if(agentUuid != null) {
+            query.setParameter("agentUuid", agentUuid);
+        }
+        if(relTypeUuid != null) {
+            query.setParameter("relTypeUuid", relTypeUuid);
+        }
+    }
 
 }

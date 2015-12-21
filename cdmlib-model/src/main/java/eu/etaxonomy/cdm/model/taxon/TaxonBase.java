@@ -338,11 +338,6 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
         return name == null ? null : name.getRank();
     }
 
-    @Override
-    public void setCacheStrategy(S cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-    }
-
 //*********************** CLONE ********************************************************/
 
     /**

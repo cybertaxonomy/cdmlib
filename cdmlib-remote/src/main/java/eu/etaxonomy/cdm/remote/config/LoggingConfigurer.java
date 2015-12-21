@@ -39,7 +39,7 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
         PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
         String logFile = findProperty(CDM_LOGFILE, false);
         if (logFile == null) {
-            logger.info("No logfile specified, runing without.");
+            logger.info("No logfile specified, running without.");
             return;
         }
         try {

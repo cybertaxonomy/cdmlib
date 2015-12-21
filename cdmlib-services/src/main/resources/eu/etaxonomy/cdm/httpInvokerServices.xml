@@ -151,6 +151,16 @@
       <value>eu.etaxonomy.cdm.api.service.IMediaService</value>
     </property>
   </bean>
+  
+    <bean id="httpMetadataService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="metadataServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IMetadataService</value>
+    </property>
+  </bean>
 
   <bean id="httpNameService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
@@ -190,6 +200,16 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
+    </property>
+  </bean>
+  
+  <bean id="httpProgressMonitorService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="progressMonitorServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IProgressMonitorService</value>
     </property>
   </bean>
 

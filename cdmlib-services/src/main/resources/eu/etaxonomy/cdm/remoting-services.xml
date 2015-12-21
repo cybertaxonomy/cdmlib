@@ -8,7 +8,12 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
+  <!-- Import services from cdmlib-services project -->
   <import resource="classpath:/eu/etaxonomy/cdm/httpInvokerServices.xml" />
+  <!-- Import services from cdmlib-ext project -->
+  <import resource="classpath:/eu/etaxonomy/cdm/httpInvokerExtServices.xml" />
+    <!-- Import services from cdmlib-io project -->
+  <import resource="classpath:/eu/etaxonomy/cdm/httpInvokerIOServices.xml" />
 
   <bean
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -18,6 +23,7 @@
       <!-- Needed for spring remoting with the http invoker -->
       <!-- The configuration of the services is imported from httpInvokerServices.xml -->
       <props>
+        <!-- services from cdmlib-services project -->
         <prop key="/remoting/agent.service">httpAgentService</prop>
         <prop key="/remoting/amplification.service">httpAmplificationService</prop>
         <prop key="/remoting/annotation.service">httpAnnotationService</prop>
@@ -44,6 +50,7 @@
         <prop key="/remoting/polytomouskeynode.service">httpPolytomousKeyNodeService</prop>
         <prop key="/remoting/polytomouskey.service">httpPolytomousKeyService</prop>
         <prop key="/remoting/primer.service">httpPrimerService</prop>
+        <prop key="/remoting/progressmonitor.service">httpProgressMonitorService</prop>
         <prop key="/remoting/reference.service">httpReferenceService</prop>        
         <prop key="/remoting/sequence.service">httpSequenceService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
@@ -52,10 +59,14 @@
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
         <prop key="/remoting-public/user.service">httpUserService</prop>
+        <prop key="/remoting-public/metadata.service">httpMetadataService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
         <prop key="/remoting/io.service">httpIOService</prop>
         <prop key="/remoting/test.service">httpTestService</prop>
+        <!-- services from cdmlib-ext project -->
+        <prop key="/remoting/editgeo.service">httpEditGeoService</prop>
+        <!-- services from cdmlib-io project -->
       </props>
     </property>
   </bean>

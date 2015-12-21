@@ -29,6 +29,7 @@ import org.apache.log4j.Level;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -261,7 +262,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //		assertEquals(results.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
 //		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 
-        results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, true, null, null);
+        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, true, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(numberOfTaxaByName_A, results.size());
 
@@ -325,13 +326,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Reference<?> sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false,"Mand*", null, MatchMode.BEGINNING, null);
+        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false,"Mand", null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
         assertTrue(results.size() == 5);
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,"A*",null, MatchMode.BEGINNING, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,"A",null, MatchMode.BEGINNING, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(results.size(), 12);
 
@@ -350,7 +351,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,"A*", null,MatchMode.BEGINNING,  null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,"A", null,MatchMode.BEGINNING,  null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",15,results.size());
 
@@ -471,7 +472,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
         // 3. searching for Synonyms
-        results = taxonDao.findByNameTitleCache(false, true, "Atropo", null, MatchMode.ANYWHERE, null,
+        results = taxonDao.findByNameTitleCache(false, true, "*Atropo", null, MatchMode.ANYWHERE, null,
             null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
 
@@ -503,7 +504,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         int numberOfClassifications = classificationDao.count();
         List<String> propertyPaths = new ArrayList<String>();
         propertyPaths.add("taxonNodes");
-        List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, "P*", null, MatchMode.BEGINNING, null, null, null, null);
+        List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, "P", null, MatchMode.BEGINNING, null, null, null, null);
         Taxon taxon = (Taxon)taxa.get(0);
         Set<TaxonNode> nodes = taxon.getTaxonNodes();
         assertTrue(nodes.size() == 1);
@@ -544,13 +545,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testCountTaxaByName() {
-        long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, "A*", null, MatchMode.BEGINNING, null);
+        long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, "A", null, MatchMode.BEGINNING, null);
         assertEquals(numberOfTaxa, 9);
         numberOfTaxa = taxonDao.countTaxaByName(true, false, false, "Aus aus", null, MatchMode.EXACT, null);
         assertEquals(numberOfTaxa, 1);
-        numberOfTaxa = taxonDao.countTaxaByName(false, true, false, "A*", null, MatchMode.BEGINNING, null);
+        numberOfTaxa = taxonDao.countTaxaByName(false, true, false, "A", null, MatchMode.BEGINNING, null);
         assertEquals(numberOfTaxa, 3);
-        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, "A*", null, MatchMode.BEGINNING, null);
+        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, "A", null, MatchMode.BEGINNING, null);
         assertEquals(numberOfTaxa,12);
         numberOfTaxa = taxonDao.countTaxaByName(true, true, false, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null);
         assertEquals(numberOfTaxa, 0);
@@ -1056,7 +1057,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
         Classification classification = classificationDao.findByUuid(classificationUuid);
-        assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification));
+        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
+        assertNotNull(result);
+        assertEquals(5, result.size());
+        UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+        List<UUID> excludeUUids = new ArrayList<UUID>();
+        excludeUUids.add(excludeUUID);
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids);
+        assertEquals(4, result.size());
+
     }
 
 
@@ -1126,10 +1135,45 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
     }
 
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testPropertyPath.xml")
+    public void testPropertyPath(){
+        //Test that BeanInitializer also works on HiberanteProxys
+        Classification c = classificationDao.load(UUID.fromString("4bceea53-893f-4685-8c63-6dcec6e85ab1"));
+        TaxonNode singleNode = c.getRootNode().getChildNodes().iterator().next();
+        Taxon taxonProxy = singleNode.getTaxon();
+        Assert.assertTrue("Object to test should be a proxy ", taxonProxy instanceof HibernateProxy);
+
+        List<String> propertyPaths = new ArrayList<String>();
+        propertyPaths.add("taxonNodes");
+        Taxon taxon = (Taxon)this.taxonDao.load(
+                UUID.fromString("4a5bc930-844f-45ec-aea8-dd155e1ab25f"),
+                propertyPaths);
+        Assert.assertSame("Returned object should be the same proxy to assure that we ran initialization on this proxy", taxonProxy, taxon);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {}
+//    @Test
+    public void createTestDataSet() throws FileNotFoundException {
+//        Classification classification  = Classification.NewInstance("Test");
+//        BotanicalName taxonNameBase = null;
+//        Reference<?> sec = null;
+//        Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
+//        classification.addChildTaxon(taxon, sec, null);
+//
+//        classificationDao.save(classification);
+//        this.commitAndStartNewTransaction(null);
+//
+//        writeDbUnitDataSetFile(new String[] {
+//                "CLASSIFICATION", "TAXONNAMEBASE",
+//                "REFERENCE","TAXONNODE",
+//                "TAXONBASE","LANGUAGESTRING",
+//                "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+//                },
+//                "testPropertyPath" );
+    }
 
 }

@@ -146,8 +146,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                 }
             }
         }
-
-        Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
+//        long start_t = System.currentTimeMillis();
+        Collections.sort(results, taxonNodeComparator); // TODO is ordering during the hibernate query in the dao possible?
+//        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
         return new DefaultPagerImpl<TaxonNode>(pageIndex, (int) totalNumberOfResults, pageSize, results);
 
     }
@@ -293,8 +294,13 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa);
     }
 
     @Override

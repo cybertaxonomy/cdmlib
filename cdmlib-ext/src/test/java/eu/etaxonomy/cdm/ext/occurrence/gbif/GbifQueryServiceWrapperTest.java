@@ -101,7 +101,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         GbifResponse gbifResponse = records.iterator().next();
         assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
         assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
-        assertEquals("protocol is wrong", new URI("http://api.gbif.org/v0.9/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
+        assertEquals("protocol is wrong", new URI("http://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
     }
 
     @Test
@@ -133,7 +133,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
             Collection<GbifResponse> gbifResponse = service.query(query);
             assertEquals("Usually this query retrieves at least two units. " +
             		"Test failure may also be due to GBIF!" +
-            		"Check http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
+            		"Check http://api.gbif.org/v1/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {

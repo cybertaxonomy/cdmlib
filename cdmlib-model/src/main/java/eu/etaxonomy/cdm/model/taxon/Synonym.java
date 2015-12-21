@@ -79,7 +79,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> implements 
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@NotNull
 	@NotEmpty(groups = Level2.class,message="{eu.etaxonomy.cdm.model.taxon.Synonym.noOrphanedSynonyms.message}")
 	@Valid

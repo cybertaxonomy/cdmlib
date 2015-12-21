@@ -5,7 +5,7 @@
          * are made available under the terms of the Eclipse Public License v1.0
          * which accompanies this distribution, and is available at
          * http://www.eclipse.org/legal/epl-v10.html
-         * 
+         *
          * Contributors:
          *     IBM Corporation - initial API and implementation
          *******************************************************************************/
@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.common.monitor;
 
 /**
  * For new implementations consider using {@link SubMonitor}.
- * 
+ *
  * A progress monitor that uses a given amount of work ticks
  * from a parent monitor. It can be used as follows:
  * <pre>
@@ -38,7 +38,7 @@ package eu.etaxonomy.cdm.common.monitor;
  * </p><p>
  * This class may be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @see SubMonitor
  */
 public class SubProgressMonitor extends ProgressMonitorWrapper {
@@ -51,7 +51,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      */
     public static final int SUPPRESS_SUBTASK_LABEL = 1 << 1;
     /**
-     * Style constant indicating that the main task label 
+     * Style constant indicating that the main task label
      * should be prepended to the subtask label.
      *
      * @see #SubProgressMonitor(IProgressMonitor,int,int)
@@ -68,8 +68,8 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     private String mainTaskLabel;
 
     /**
-     * Creates a new sub-progress monitor for the given monitor. The sub 
-     * progress monitor uses the given number of work ticks from its 
+     * Creates a new sub-progress monitor for the given monitor. The sub
+     * progress monitor uses the given number of work ticks from its
      * parent monitor.
      *
      * @param monitor the parent progress monitor
@@ -81,8 +81,8 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     }
 
     /**
-     * Creates a new sub-progress monitor for the given monitor. The sub 
-     * progress monitor uses the given number of work ticks from its 
+     * Creates a new sub-progress monitor for the given monitor. The sub
+     * progress monitor uses the given number of work ticks from its
      * parent monitor.
      *
      * @param monitor the parent progress monitor
@@ -108,20 +108,21 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      *
      * Starts a new main task. Since this progress monitor is a sub
      * progress monitor, the given name will NOT be used to update
-     * the progress bar's main task label. That means the given 
+     * the progress bar's main task label. That means the given
      * string will be ignored. If style <code>PREPEND_MAIN_LABEL_TO_SUBTASK
      * <code> is specified, then the given string will be prepended to
      * every string passed to <code>subTask(String)</code>.
      */
+    @Override
     public void beginTask(String name, int totalWork) {
         nestedBeginTasks++;
         // Ignore nested begin task calls.
         if (nestedBeginTasks > 1) {
             return;
         }
-        // be safe:  if the argument would cause math errors (zero or 
+        // be safe:  if the argument would cause math errors (zero or
         // negative), just use 0 as the scale.  This disables progress for
-        // this submonitor. 
+        // this submonitor.
         scale = totalWork <= 0 ? 0 : (double) parentTicks
                 / (double) totalWork;
         if ((style & PREPEND_MAIN_LABEL_TO_SUBTASK) != 0) {
@@ -132,18 +133,23 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     /* (Intentionally not javadoc'd)
      * Implements the method <code>IProgressMonitor.done</code>.
      */
+    @Override
     public void done() {
         // Ignore if more done calls than beginTask calls or if we are still
         // in some nested beginTasks
-        if (nestedBeginTasks == 0 || --nestedBeginTasks > 0)
+        if (nestedBeginTasks == 0 || --nestedBeginTasks > 0) {
             return;
+        }
         // Send any remaining ticks and clear out the subtask text
         double remaining = parentTicks - sentToParent;
-        if (remaining > 0)
+        if (remaining > 0) {
             super.internalWorked(remaining);
+        }
         //clear the sub task if there was one
         if (hasSubTask)
+         {
             subTask(""); //$NON-NLS-1$
+        }
         sentToParent = 0;
     }
 
@@ -168,6 +174,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     /* (Intentionally not javadoc'd)
      * Implements the method <code>IProgressMonitor.subTask</code>.
      */
+    @Override
     public void subTask(String name) {
         if ((style & SUPPRESS_SUBTASK_LABEL) != 0) {
             return;
@@ -184,6 +191,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
     /* (Intentionally not javadoc'd)
      * Implements the method <code>IProgressMonitor.worked</code>.
      */
+    @Override
     public void worked(int work) {
         internalWorked(work);
     }
@@ -191,12 +199,13 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
 	@Override
 	public void warning(String message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void warning(String message, Throwable throwable) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 }

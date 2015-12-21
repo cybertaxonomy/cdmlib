@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,11 +23,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.reference.endnote.in.EndnoteImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -37,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  *
  */
 public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
-	
+
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
 
@@ -45,7 +41,7 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
 	INameService nameService;
 
 	private IImportConfigurator configurator;
-	
+
 	@Before
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml";
@@ -59,25 +55,25 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
 		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
-	
-//***************************** TESTS *************************************//	
-	
+
+//***************************** TESTS *************************************//
+
 	@Test
 	public void testInit() {
 //		assertNotNull("XXX should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("configurator should not be null", configurator);
 	}
-	
+
 	@Test
 	public void testDoInvokeWithoutExceptions() {
 		defaultImport.invoke(configurator);
 	}
-	
+
 	@Test
 	@Ignore("Import does not fully work yet")
 	public void testDoInvoke() {
-		boolean result = defaultImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator).isSuccess();
 		//TODO result is still false
 		logger.warn("No real testing for endnote import yet");
 		Assert.assertTrue("Return value for import.invoke() should be true", result);
@@ -90,6 +86,6 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

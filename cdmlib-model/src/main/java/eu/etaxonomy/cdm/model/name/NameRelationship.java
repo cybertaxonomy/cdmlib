@@ -214,17 +214,17 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 
 	@Override
     protected void setRelatedFrom(TaxonNameBase relatedFrom) {
-		if (relatedFrom == null){
+		/*if (relatedFrom == null){
 			this.deletedObjects.add(this.relatedFrom);
-		}
+		}*/
 		this.relatedFrom = relatedFrom;
 	}
 
 	@Override
     protected void setRelatedTo(TaxonNameBase relatedTo) {
-		if (relatedTo == null){
+		/*if (relatedTo == null){
 			this.deletedObjects.add(this.relatedTo);
-		}
+		}*/
 		this.relatedTo = relatedTo;
 	}
 

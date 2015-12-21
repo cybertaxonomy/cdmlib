@@ -12,14 +12,19 @@ package eu.etaxonomy.cdm.io.service;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -46,6 +51,9 @@ public class IOServiceImpl implements IIOService {
     @Qualifier("defaultImport")
     CdmApplicationAwareDefaultImport cdmImport;
 
+    @Autowired
+    IProgressMonitorService progressMonitorService;
+
 
 
     /* (non-Javadoc)
@@ -58,6 +66,24 @@ public class IOServiceImpl implements IIOService {
     }
 
 
+    @Override
+    public UUID monitImportData(final IImportConfigurator configurator, final byte[] importData, final SOURCE_TYPE type) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                configurator.setProgressMonitor(monitor);
+                ImportResult result = importData(configurator, importData, type);
+                for(byte[] report : result.getReports()) {
+                    monitor.addReport(new String(report));
+                }
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
 
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {

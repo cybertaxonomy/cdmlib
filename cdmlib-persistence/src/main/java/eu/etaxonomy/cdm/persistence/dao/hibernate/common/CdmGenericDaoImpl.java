@@ -186,6 +186,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 	@Override
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
+	    if (referencedCdmBase == null){
+	        return null;
+	    }
 		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
 		Set<ReferenceHolder> holderSet = referenceMap.get(IdentifiableEntity.class);
 		try {
@@ -388,7 +391,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public List<CdmBase> getHqlResult(String hqlQuery){
 		Query query = getSession().createQuery(hqlQuery);
-		List<CdmBase> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<CdmBase> result = query.list();
 		return result;
 	}
 

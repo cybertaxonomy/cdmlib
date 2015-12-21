@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>3.11.1</version>
+  <version>3.12.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -1547,7 +1547,7 @@
         <groupId>com.mangofactory</groupId>
         <artifactId>swagger-springmvc</artifactId>
         <version>0.8.5</version>
-                <exclusions>
+        <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @version 1.0
  */
 public class InputTransformerBase implements IInputTransformer, Serializable {
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = 1824180329524647957L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(InputTransformerBase.class);
 
 	@Override

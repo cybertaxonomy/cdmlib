@@ -21,9 +21,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public class FindOccurrencesConfigurator extends IdentifiableServiceConfiguratorImpl<SpecimenOrObservationBase>{
 
+    private static final long serialVersionUID = 1L;
+
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;
-    private boolean isDetermined;
+    private UUID associatedTaxonNameUuid;
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
     public String getSignificantIdentifier() {
@@ -32,45 +34,42 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     public void setSignificantIdentifier(String significantIdentifier) {
         this.significantIdentifier = significantIdentifier;
     }
-    /**
-     * @return the specimenType
-     */
-    public synchronized SpecimenOrObservationType getSpecimenType() {
+    public SpecimenOrObservationType getSpecimenType() {
         return specimenType;
     }
-    /**
-     * @param specimenType the specimenType to set
-     */
-    public synchronized void setSpecimenType(SpecimenOrObservationType specimenType) {
+    public void setSpecimenType(SpecimenOrObservationType specimenType) {
         this.specimenType = specimenType;
     }
-    /**
-     * @return the associatedTaxon
-     */
-    public synchronized UUID getAssociatedTaxonUuid() {
+    public UUID getAssociatedTaxonUuid() {
         return associatedTaxonUuid;
     }
-    /**
-     * @param associatedTaxonUuid the associatedTaxon to set
-     */
-    public synchronized void setAssociatedTaxonUuid(UUID associatedTaxonUuid) {
+    public void setAssociatedTaxonUuid(UUID associatedTaxonUuid) {
         this.associatedTaxonUuid = associatedTaxonUuid;
     }
-    /**
-     * @return the isDetermined
-     */
-    public synchronized boolean isDetermined() {
-        return isDetermined;
+    public UUID getAssociatedTaxonNameUuid() {
+        return associatedTaxonNameUuid;
     }
-    /**
-     * @param isDetermined the isDetermined to set
-     */
-    public synchronized void setDetermined(boolean isDetermined) {
-        this.isDetermined = isDetermined;
+    public void setAssociatedTaxonNameUuid(UUID associatedTaxonNameUuid) {
+        this.associatedTaxonNameUuid = associatedTaxonNameUuid;
     }
+
+    /**
+     * if set to <code>true</code> the complete derivative hierarchy including
+     * all parent and child derivatives is returned of the associated specimen
+     * is retrieved
+     *
+     * @return the value of this flag
+     */
     public boolean isRetrieveIndirectlyAssociatedSpecimens() {
         return retrieveIndirectlyAssociatedSpecimens;
     }
+    /**
+     * if set to <code>true</code> the complete derivative hierarchy including
+     * all parent and child derivatives is returned of the associated specimen
+     * is retrieved
+     *
+     * @param retrieveIndirectlyAssociatedSpecimens the value of this flag
+     */
     public void setRetrieveIndirectlyAssociatedSpecimens(boolean retrieveIndirectlyAssociatedSpecimens) {
         this.retrieveIndirectlyAssociatedSpecimens = retrieveIndirectlyAssociatedSpecimens;
     }

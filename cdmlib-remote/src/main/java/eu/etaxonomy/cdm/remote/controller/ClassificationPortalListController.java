@@ -56,7 +56,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.sec",
-            "taxon.name.rank"
+            "taxon.name.rank",
             });
 
 
@@ -99,7 +99,9 @@ public class ClassificationPortalListController extends IdentifiableListControll
      * @param treeUuid
      * @param response
      * @return
-     * @throws IOException
+     * @throws IOException+
+     *
+     * @Deprecated use {@link ClassificationController#getChildNodes(UUID, HttpServletResponse)} instead
      */
     @RequestMapping(
             value = {"{treeUuid}/childNodes"},
@@ -114,6 +116,17 @@ public class ClassificationPortalListController extends IdentifiableListControll
     }
 
 
+    /**
+     *
+     * @param treeUuid
+     * @param rankUuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     * @Deprecated use {@link ClassificationController#getChildNodesAtRank(UUID, UUID, HttpServletResponse)} instead
+     */
     @RequestMapping(
             value = {"{treeUuid}/childNodesAt/{rankUuid}"},
             method = RequestMethod.GET)
@@ -138,7 +151,10 @@ public class ClassificationPortalListController extends IdentifiableListControll
         }
         rank = findRank(rankUuid);
 
-        return service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
+//        long start = System.currentTimeMillis();
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, DEFAULT_INIT_STRATEGY);
+//        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
+        return rootNodes;
     }
 
 

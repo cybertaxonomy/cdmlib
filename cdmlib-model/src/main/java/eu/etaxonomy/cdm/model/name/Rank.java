@@ -674,6 +674,7 @@ public class Rank extends OrderedTermBase<Rank> {
         }
         idInVoc = normalizeSectionAndSubsection(idInVoc);
         idInVoc = normalizeSpecialForm(idInVoc);
+        idInVoc = normalizeSpecialForm(idInVoc);
         UUID uuid = idInVocMap.get(idInVoc);
         if (uuid != null ){
             result = getTermByUuid(uuid);
@@ -705,6 +706,13 @@ public class Rank extends OrderedTermBase<Rank> {
     private static String normalizeSpecialForm(String idInVoc) {
         if (idInVoc.equals("f.sp.") || idInVoc.equals("f. sp.")){
             return "f.spec.";
+        }
+        return idInVoc;
+    }
+
+    private static String normalizeSsp(String idInVoc) {
+        if (idInVoc.equals("ssp.") && !idInVocMap.containsKey("ssp.") && idInVocMap.containsKey("subsp.")){
+            return "subsp.";
         }
         return idInVoc;
     }

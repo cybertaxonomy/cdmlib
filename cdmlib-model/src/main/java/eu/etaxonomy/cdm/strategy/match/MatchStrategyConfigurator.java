@@ -59,7 +59,7 @@ public class MatchStrategyConfigurator {
 	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
 	public static IMatchStrategy TeamOrPersonMatchStrategy() throws MatchException{
-		return null;// PreferencesUtil.getMatchStrategy(TeamOrPersonBase.class);
+		return getDefaultTeamOrPersonMatchStrategy();// PreferencesUtil.getMatchStrategy(TeamOrPersonBase.class);
 	}
 
 	/**

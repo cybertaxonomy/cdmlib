@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -158,6 +161,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
 
+
         Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
         sourceCollection.addAll(sourceDescription.getElements());
         sourceCollection.remove(element3Data);  //should work as it works on equal
@@ -173,9 +177,10 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         //		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
 
         Assert.assertTrue("Element3 should remain in the old description", sourceDescription.getElements().contains(element3Data));
-        this.service.save(sourceDescription);
-        this.service.save(targetDescription);
-
+        sourceDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
+        targetDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
+        assertNotNull(sourceDescription);
+        assertNotNull(targetDescription);
         try {
             service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false);
         } catch (Exception e) {
@@ -186,24 +191,53 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         Assert.assertEquals("Source description should have 3 elements again", 3, sourceDescription.getElements().size());
         Assert.assertEquals("Destination description should have no elements again", 0, targetDescription.getElements().size());
-        this.service.save(sourceDescription);
+        sourceDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
+        targetDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
+        assertNotNull(sourceDescription);
+        assertNull(targetDescription);
+
+
+
+
+    }
+
+    @Test
+    public void testMoveDescriptionElementsToTaxonAndResaveDeletedDescription(){
+
+      //Create data
+        UUID commonNameFeatureUuid = Feature.COMMON_NAME().getUuid();
+        Feature commonNameFeatureData = (Feature)termService.find(commonNameFeatureUuid);
+
+        TaxonDescription sourceDescriptionData = TaxonDescription.NewInstance();
+        TextData elementData = TextData.NewInstance();
+        elementData.setFeature(commonNameFeatureData);
+        sourceDescriptionData.addElement(elementData);
+
+        TextData element2 = TextData.NewInstance();
+        element2.setFeature(commonNameFeatureData);
+        sourceDescriptionData.addElement(element2);
+
+        TextData element3Data = TextData.NewInstance();
+        element3Data.setFeature(commonNameFeatureData);
+        sourceDescriptionData.addElement(element3Data);
+        Assert.assertEquals(3, sourceDescriptionData.getElements().size());
+        TaxonDescription targetDescriptionData = TaxonDescription.NewInstance();
+        this.service.save(sourceDescriptionData);
+        this.service.save(targetDescriptionData);
+
+        commitAndStartNewTransaction(null);
+
+        TaxonDescription sourceDescription = (TaxonDescription)this.service.find(sourceDescriptionData.getId());
+        Assert.assertEquals(3, sourceDescription.getElements().size());
+
+        TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
+        service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription, false);
+        TaxonDescription removedDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
+        assertNull(removedDescription);
         this.service.save(targetDescription);
 
-        //test copy
-        sourceCollection.clear();
-        sourceCollection.add(sourceDescription.getElements().iterator().next());
-        service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, true);
-
-        Assert.assertEquals("Source description should still have 3 elements", 3, sourceDescription.getElements().size());
-        int size = targetDescription.getElements().size();
-        Assert.assertEquals("Destination descirption should have 1 element again", 1, size);
-        for (DescriptionElementBase targetElement : targetDescription.getElements()){
-            Assert.assertFalse("Target elements may not be in sourced description as they are only clones (but not same).", sourceDescription.getElements().contains(targetElement));
-        }
-        this.service.save(targetDescription);
-        this.service.save(sourceDescription);
-
-
+        removedDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
+        assertNotNull(removedDescription);
     }
 
     @Override

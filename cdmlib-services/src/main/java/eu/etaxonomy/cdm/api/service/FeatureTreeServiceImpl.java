@@ -21,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
@@ -36,6 +39,9 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 
     @Autowired
     private IVocabularyService vocabularyService;
+
+    @Autowired
+    private IFeatureNodeService featureNodeService;
 
     @Override
     @Autowired
@@ -135,6 +141,23 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     @Override
     public FeatureTree createTransientDefaultFeatureTree() {
         return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
+    }
+
+    @Override
+    public DeleteResult delete(UUID featureTreeUuid){
+        DeleteResult result = new DeleteResult();
+        FeatureTree tree = dao.load(featureTreeUuid);
+
+        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot(), FeatureNode.class);
+        FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
+        config.setChildHandling(ChildHandling.DELETE);
+        result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
+        tree.setRoot(null);
+        if (result.isOk()){
+          dao.delete(tree);
+        }
+        return result;
+
     }
 
 

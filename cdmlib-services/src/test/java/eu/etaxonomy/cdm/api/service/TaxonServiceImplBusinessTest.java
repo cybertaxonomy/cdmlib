@@ -208,6 +208,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@Test
 	public final void testChangeSynonymToRelatedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
+		t1.addSynonym(s2, homoTypicSynonymRelationshipType);
 		HashSet newInstances = new HashSet<TaxonBase>();
 		newInstances.add(s1);
 		newInstances.add(t1);
@@ -228,6 +229,21 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		synonymName = nameService.find(synNameUUID);
 		assertFalse(synonymName.getTaxonBases().contains(s1));
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
+
+		synonymName = s2.getName();
+        newTaxon = service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail);
+        //check removeTaxonBase()
+        //UUID s1UUID = service.update(s1);
+        newTaxonUUID = service.save(newTaxon).getUuid();
+
+
+        s2 =(Synonym)service.find(s2.getUuid());
+        newTaxon = (Taxon)service.find(newTaxonUUID);
+        assertNull(s2);
+
+        assertFalse(synonymName.getTaxonBases().contains(s2));
+        assertTrue(synonymName.getTaxonBases().contains(newTaxon));
+
 
 	}
 //

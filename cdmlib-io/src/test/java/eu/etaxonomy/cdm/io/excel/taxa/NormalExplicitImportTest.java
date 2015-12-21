@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -71,20 +71,20 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	INameService nameService;
-	
+
 	@SpringBeanByType
 	ITaxonService taxonService;
-	
+
 	@SpringBeanByType
 	ITermService termService;
-	
+
 	@SpringBeanByType
 	IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
 	private IImportConfigurator configuratorXslx;
-	
+
 	@Before
 	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
@@ -92,33 +92,33 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
-		
+
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could be created", configurator);
-		
+
 		String inputFileXslx = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xlsx";
 		url = this.getClass().getResource(inputFileXslx);
 	 	assertNotNull("URL for the test file '" + inputFileXslx + "' does not exist", url);
 		configuratorXslx = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configuratorXslx);
-		
-		
+
+
 	}
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("normalExplicitImport should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
-	
+
 	@Test
 	@DataSet
 	public void testDoInvoke() {
 		//printDataSet(System.out);
-		boolean result = defaultImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
@@ -135,18 +135,18 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
 		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
 		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
-		
+
 		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
 		TaxonNode childNode1 = it.next();
 		TaxonNode childNode2 = it.next();
-		
+
 		TaxonNode noctuaPronubaNode;
 		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
 			noctuaPronubaNode = childNode1;
 		}else{
 			noctuaPronubaNode = childNode2;
 		}
-		
+
 		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
 		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
 		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
@@ -170,12 +170,12 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
 	}
-	
+
 	@Test
 	@DataSet
 	public void testDoInvokeXslx() {
 		//printDataSet(System.out);
-		boolean result = defaultImport.invoke(configuratorXslx);
+		boolean result = defaultImport.invoke(configuratorXslx).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
@@ -192,18 +192,18 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
 		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
 		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
-		
+
 		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
 		TaxonNode childNode1 = it.next();
 		TaxonNode childNode2 = it.next();
-		
+
 		TaxonNode noctuaPronubaNode;
 		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
 			noctuaPronubaNode = childNode1;
 		}else{
 			noctuaPronubaNode = childNode2;
 		}
-		
+
 		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
 		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
 		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
@@ -227,14 +227,14 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
 	}
-	
+
 	@Test
 	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
 	public void testUUID() throws URISyntaxException{
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
-		
-		
+
+
 		//test data set
 		assertEquals("Number of taxon bases should be 2", 2, taxonService.count(null));
 		Taxon taxon = (Taxon)taxonService.find(taxonUuid);
@@ -243,9 +243,9 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Synonym synonym = (Synonym)taxonService.find(synonymUuid);
 		assertNotNull("Synonym with given uuid should exist", synonym);
 		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
-		
+
 		//import
-		boolean result = defaultImport.invoke(uuidConfigurator);
+		boolean result = defaultImport.invoke(uuidConfigurator).isSuccess();
 		//test result
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of taxon names should be 2", 2, nameService.count(null));
@@ -254,7 +254,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
 		TaxonDescription description = taxon.getDescriptions().iterator().next();
 		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
-		
+
 		String expectedText = "Description for the first taxon";
 		TextData textData = getTextElement(description, expectedText);
 		assertNotNull("The element should exists", textData);
@@ -276,8 +276,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		TaxonNameBase<?,?> nameUsedInSource = source.getNameUsedInSource();
 		assertNotNull("Name used in source should not be null", nameUsedInSource);
 		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
-		
-		
+
+
 		//synonym
 		expectedText = "A synonym description";
 		textData = getTextElement(description, expectedText);
@@ -300,7 +300,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		nameUsedInSource = source.getNameUsedInSource();
 		assertNotNull("Name used in source should not be null", nameUsedInSource);
 		assertEquals("Name used in source title should be Pinus", "Pinus", nameUsedInSource.getTitleCache());
-		
+
 	}
 
 	/**
@@ -328,7 +328,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

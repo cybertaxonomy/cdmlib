@@ -42,9 +42,9 @@ import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.dto.FindByIdentifierDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
@@ -95,10 +95,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
-import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -158,6 +154,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private INameService nameService;
+
+    @Autowired
+    private IOccurrenceService occurrenceService;
 
     @Autowired
     private ITaxonNodeService nodeService;
@@ -899,32 +898,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }
 
-                // Collection
-                //TODO why may collections have media attached? #
                 if (occurrence.isInstanceOf(DerivedUnit.class)) {
                     DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    // Collection
+                    //TODO why may collections have media attached? #
                     if (derivedUnit.getCollection() != null){
                         taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
                 }
-
-                // pherograms & gelPhotos
-                if (occurrence.isInstanceOf(DnaSample.class)) {
-                    DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
-                    Set<Sequence> sequences = dnaSample.getSequences();
-                    //we do show only those gelPhotos which lead to a consensus sequence
-                    for (Sequence sequence : sequences) {
-                        Set<Media> dnaRelatedMedia = new HashSet<Media>();
-                        for (SingleRead singleRead : sequence.getSingleReads()){
-                            AmplificationResult amplification = singleRead.getAmplificationResult();
-                            dnaRelatedMedia.add(amplification.getGelPhoto());
-                            dnaRelatedMedia.add(singleRead.getPherogram());
-                            dnaRelatedMedia.remove(null);
-                        }
-                        taxonMedia.addAll(dnaRelatedMedia);
-                    }
-                }
-
+                //media in hierarchy
+                taxonMedia.addAll(occurrenceService.getMediainHierarchy(occurrence, null, null, propertyPath).getRecords());
             }
         }
 
@@ -984,8 +967,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new TaxonDeletionConfigurator();
         }
     	Taxon taxon = (Taxon)dao.load(taxonUUID);
+    	DeleteResult result = new DeleteResult();
+    	if (taxon == null){
+    	    result.setAbort();
+    	    result.addException(new Exception ("The taxon was already deleted."));
+    	    return result;
+    	}
+    	taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
-        DeleteResult result = isDeletable(taxon, config);
+        result = isDeletable(taxon, config);
 
         if (result.isOk()){
             // --- DeleteSynonymRelations
@@ -1011,18 +1001,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                     // relationship will be deleted by hibernate automatically,
                     // see comment above and http://dev.e-taxonomy.eu/trac/ticket/3797
-                    // else{
-                    //     deleteSynonymRelationships(synonym, taxon);
-                    // }
+
                 }
             }
 
             // --- DeleteTaxonRelationships
             if (! config.isDeleteTaxonRelationships()){
                 if (taxon.getTaxonRelations().size() > 0){
-                    String message = "Taxon can't be deleted as it is related to another taxon. " +
-                            "Remove taxon from all relations to other taxa prior to deletion.";
-                   // throw new ReferencedObjectUndeletableException(message);
+                    result.setAbort();
+                    result.addException(new Exception("Taxon can't be deleted as it is related to another taxon. " +
+                            "Remove taxon from all relations to other taxa prior to deletion."));
+
                 }
             } else{
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
@@ -1035,20 +1024,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         }
                     }
                     taxon.removeTaxonRelation(taxRel);
-                    /*if (taxFrom.equals(taxon)){
-                        try{
-                            this.deleteTaxon(taxTo, taxConf, classification);
-                        } catch(DataChangeNoRollbackException e){
-                            logger.debug("A related taxon will not be deleted." + e.getMessage());
-                        }
-                    } else {
-                        try{
-                            this.deleteTaxon(taxFrom, taxConf, classification);
-                        } catch(DataChangeNoRollbackException e){
-                            logger.debug("A related taxon will not be deleted." + e.getMessage());
-                        }
 
-                    }*/
                 }
             }
 
@@ -1060,33 +1036,32 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     //TODO use description delete configurator ?
                     //FIXME check if description is ALWAYS deletable
                     if (desc.getDescribedSpecimenOrObservation() != null){
-                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                " which also describes specimens or abservations";
-                        //throw new ReferencedObjectUndeletableException(message);
+                        result.setAbort();
+                        result.addException(new Exception("Taxon can't be deleted as it is used in a TaxonDescription" +
+                                " which also describes specimens or observations"));
+                        break;
                     }
                     removeDescriptions.add(desc);
 
 
                 }
-                for (TaxonDescription desc: removeDescriptions){
-                    taxon.removeDescription(desc);
-                    descriptionService.delete(desc);
+                if (result.isOk()){
+                    for (TaxonDescription desc: removeDescriptions){
+                        taxon.removeDescription(desc);
+                        descriptionService.delete(desc);
+                    }
+                } else {
+                    return result;
                 }
             }
 
 
-         /*   //check references with only reverse mapping
-        String message = checkForReferences(taxon);
-        if (message != null){
-            //throw new ReferencedObjectUndeletableException(message.toString());
-        }*/
-
-         if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null )){
+         if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null && taxon.getTaxonNodes().size() > 1)){
                 //if (taxon.getTaxonNodes().size() > 0){
-                   // message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion or define a classification where it should be deleted or adapt the taxon deletion configurator.";
+                 result.addException(new Exception( "Taxon can't be deleted as it is used in more than one classification."));
                    // throw new ReferencedObjectUndeletableException(message);
                 //}
-            }else{
+         }else{
                 if (taxon.getTaxonNodes().size() != 0){
                     Set<TaxonNode> nodes = taxon.getTaxonNodes();
                     Iterator<TaxonNode> iterator = nodes.iterator();
@@ -1107,6 +1082,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             node = null;
                         }
                         if (node != null){
+                            HibernateProxyHelper.deproxy(node, TaxonNode.class);
                             success =taxon.removeTaxonNode(node, deleteChildren);
                             nodeService.delete(node);
                         } else {
@@ -1114,28 +1090,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
                         }
                     } else if (config.isDeleteInAllClassifications()){
-                        Set<ITaxonTreeNode> nodesList = new HashSet<ITaxonTreeNode>();
+                        List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
                         nodesList.addAll(taxon.getTaxonNodes());
 
                             for (ITaxonTreeNode treeNode: nodesList){
                                 TaxonNode taxonNode = (TaxonNode) treeNode;
                                 if(!deleteChildren){
-                                   /* Object[] childNodes = taxonNode.getChildNodes().toArray();
-                                    //nodesList.addAll(taxonNode.getChildNodes());
-                                    for (Object childNode: childNodes){
-                                        TaxonNode childNodeCast = (TaxonNode) childNode;
-                                        deleteTaxon(childNodeCast.getTaxon(), config, classification);
-
-                                    }
-
-                                    /*for (TaxonNode childNode: taxonNode.getChildNodes()){
-                                        deleteTaxon(childNode.getTaxon(), config, classification);
-
-                                    }
-                                   // taxon.removeTaxonNode(taxonNode);
-                                    //nodeService.delete(taxonNode);
-                                } else{
-                                    */
                                     Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     for (Object childNode: childNodes){
                                         TaxonNode childNodeCast = (TaxonNode) childNode;
@@ -1145,7 +1105,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                     //taxon.removeTaxonNode(taxonNode);
                                 }
                             }
-                        config.getTaxonNodeConfig().setDeleteTaxon(false);
+                        config.getTaxonNodeConfig().setDeleteElement(false);
                         DeleteResult resultNodes = nodeService.deleteTaxonNodes(nodesList, config);
                         if (!resultNodes.isOk()){
                         	result.addExceptions(resultNodes.getExceptions());
@@ -1161,19 +1121,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
             }
 
-
-             //PolytomousKey TODO
-
-
             //TaxonNameBase
-            if (config.isDeleteNameIfPossible()){
+            if (config.isDeleteNameIfPossible() && result.isOk()){
 
 
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                     TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
                     //check whether taxon will be deleted or not
+
                     if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
-                        taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
+
                         //name.removeTaxonBase(taxon);
                         //nameService.saveOrUpdate(name);
                         taxon.setName(null);
@@ -1197,26 +1154,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 taxon.setName(null);
             }
 
-
-//        	TaxonDescription
-           /* Set<TaxonDescription> descriptions = taxon.getDescriptions();
-
-            for (TaxonDescription desc: descriptions){
-                if (config.isDeleteDescriptions()){
-                    //TODO use description delete configurator ?
-                    //FIXME check if description is ALWAYS deletable
-                    taxon.removeDescription(desc);
-                    descriptionService.delete(desc);
-                }else{
-                    if (desc.getDescribedSpecimenOrObservations().size()>0){
-                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                " which also describes specimens or observations";
-                            throw new ReferencedObjectUndeletableException(message);
-    }
-                    }
-                }*/
-
-            if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  ){
+            if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
             	try{
             		UUID uuid = dao.delete(taxon);
 
@@ -1227,20 +1165,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	}
             } else {
             	result.setError();
-            	result.addException(new Exception("The Taxon can't be deleted."));
+            	result.addException(new Exception("The Taxon can't be deleted because it is used in a classification."));
 
             }
         }
-//        }else {
-//        	List<Exception> exceptions = new ArrayList<Exception>();
-//        	for (String message: referencedObjects){
-//        		ReferencedObjectUndeletableException exception = new ReferencedObjectUndeletableException(message);
-//        		exceptions.add(exception);
-//        	}
-//        	result.addExceptions(exceptions);
-//        	result.setError();
-//
-//        }
+
         return result;
 
     }
@@ -1319,18 +1248,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         DeleteResult result = new DeleteResult();
     	if (synonym == null){
     		result.setAbort();
+    		result.addException(new Exception("The synonym was already deleted."));
     		return result;
         }
 
         if (config == null){
             config = new SynonymDeletionConfigurator();
         }
+
         result = isDeletable(synonym, config);
 
 
         if (result.isOk()){
 
-            synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(this.load(synonym.getUuid()), Synonym.class);
 
             //remove synonymRelationship
             Set<Taxon> taxonSet = new HashSet<Taxon>();
@@ -1362,7 +1293,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         DeleteResult nameDeleteresult = nameService.delete(name.getUuid(), config.getNameDeletionConfig());
                         if (nameDeleteresult.isAbort()){
                         	result.addExceptions(nameDeleteresult.getExceptions());
-                        	result.addUpdatedObject(name);
+                        	result.addRelatedObject(name);
                         }
 
                 }
@@ -3081,34 +3012,34 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (!(ref instanceof TaxonNameBase)){
             	message = null;
                 if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
-                    message = "The Taxon can't be deleted as long as it has synonyms.";
+                    message = "The taxon can't be deleted as long as it has synonyms.";
 
                 }
                 if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
-                    message = "The Taxon can't be deleted as long as it has factual data.";
+                    message = "The taxon can't be deleted as long as it has factual data.";
 
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
-                    message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                    message = "The taxon can't be deleted as long as it belongs to a taxon node.";
 
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
-                        message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
+                        message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
 
                     } else{
-                        message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                        message = "The taxon can't be deleted as long as it belongs to a taxon node.";
 
                     }
                 }
                 if (ref instanceof PolytomousKeyNode){
-                    message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
+                    message = "The taxon can't be deleted as long as it is referenced by a polytomous key node.";
 
                 }
 
                 if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
-                   message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+                   message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this taxon";
 
 
                 }

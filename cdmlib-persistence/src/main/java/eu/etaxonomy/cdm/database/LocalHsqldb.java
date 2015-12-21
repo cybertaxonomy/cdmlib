@@ -179,7 +179,7 @@ public class LocalHsqldb extends BasicDataSource {
 			}
 		} catch (SQLException e) {
 			try {
-				//server is probably not runing on the url (or login is wrong !!)
+				//server is probably not running on the url (or login is wrong !!)
 				logger.info("Start HsqldbServer");
 				hsqldbServer = new Server();
 				hsqldbServer.setSilent(this.isSilent);

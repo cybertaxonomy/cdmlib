@@ -25,7 +25,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 @Component
-public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfigurator>>{
+public class CacheUpdater extends
+    CdmImportBase<CacheUpdaterConfigurator, DefaultImportState<CacheUpdaterConfigurator>> {
 	private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
 	@Override
@@ -36,10 +37,10 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 			logger.warn("Create class list from boolean values is not yet implemented for cache updater");
 			createClassListFromBoolean();
 		}
-		
+
 		//handle class list
 		handleClassList(config.getClassList());
-		
+
 		return;
 	}
 
@@ -60,7 +61,7 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 	private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> clazz) {
 		if (clazz.isAssignableFrom(IdentifiableEntity.class)){
 			List list = Arrays.asList(new Class[]{
-					DescriptionBase.class, IdentifiableMediaEntity.class, 
+					DescriptionBase.class, IdentifiableMediaEntity.class,
 					Media.class, Sequence.class,
 					TaxonBase.class, TaxonNameBase.class,
 					Classification.class, TermBase.class
@@ -88,7 +89,7 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 				getFeatureTreeService().updateTitleCache((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				getVocabularyService().updateTitleCache((Class) clazz, null, null, null);
-			} 
+			}
 			//DescriptionBase
 			else if (DescriptionBase.class.isAssignableFrom(clazz)){
 				getDescriptionService().updateTitleCache((Class) clazz, null, null, null);
@@ -146,7 +147,7 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 
 
 // ************* inherited form CdmIoBase but not needed here ********************/
-	
+
 	@Override
 	protected boolean doCheck(DefaultImportState<CacheUpdaterConfigurator> state) {
 		//not needed here
@@ -158,5 +159,5 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 		//not needed here
 		return false;
 	}
-	
+
 }

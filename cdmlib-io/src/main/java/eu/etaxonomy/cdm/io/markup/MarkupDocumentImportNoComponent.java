@@ -30,11 +30,6 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -52,18 +47,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * 
+ *
  */
 public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImportNoComponent.class);
-	
-	private MarkupKeyImport keyImport;
 
-	private MarkupModsImport modsImport;
-	private MarkupFeatureImport featureImport;
-	private MarkupSpecimenImport specimenImport;
-	private MarkupNomenclatureImport nomenclatureImport;
+	private final MarkupKeyImport keyImport;
+
+	private final MarkupModsImport modsImport;
+	private final MarkupFeatureImport featureImport;
+	private final MarkupSpecimenImport specimenImport;
+	private final MarkupNomenclatureImport nomenclatureImport;
 
 	public MarkupDocumentImportNoComponent(MarkupDocumentImport docImport) {
 		super(docImport);
@@ -74,13 +69,13 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport);
 	}
 
-	public void doInvoke(MarkupImportState state) throws XMLStreamException { 
+	public void doInvoke(MarkupImportState state) throws XMLStreamException {
 		XMLEventReader reader = state.getReader();
-		
+
 		// publication (= root element)
 		String elName = PUBLICATION;
 		boolean hasPublication = false;
-		
+
 		while (reader.hasNext()) {
 			XMLEvent nextEvent = reader.nextEvent();
 			if (isStartingElement(nextEvent, elName)) {
@@ -97,7 +92,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			}
 		}
 
-		
+
 		return;
 
 	}
@@ -112,7 +107,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			Language language = getTermService().getLanguageByIso(lang);
 			state.setDefaultLanguage(language);
 		}
-		
+
 		handleUnexpectedAttributes(element.getLocation(), attributes, "noNamespaceSchemaLocation");
 
 		while (reader.hasNext()) {
@@ -160,7 +155,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					message = String.format(message, baseUrl);
 					fireWarningEvent(message, next, 8);
 				}
-			} else if (isStartingElement(next, MODS)){	
+			} else if (isStartingElement(next, MODS)){
 				modsImport.handleMods(state, reader, next);
 			} else {
 				handleUnexpectedElement(next);
@@ -187,8 +182,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				//unmatched key leads
 				UnmatchedLeads unmatched = state.getUnmatchedLeads();
 				if (unmatched.size() > 0){
-					String message = "The following key leads are unmatched: %s";
-					message = String.format(message, state.getUnmatchedLeads().toString());
+					String message = "The following %d key leads are unmatched: %s";
+					message = String.format(message, unmatched.size(), state.getUnmatchedLeads().toString());
 					fireWarningEvent(message, next, 6);
 				}
 //				save(keyNodesToSave, state);
@@ -220,7 +215,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		if (state.isTaxonInClassification() == false){
 			return;
 		}
-		
+
 		Classification tree = makeTree(state, dataLocation);
 		if (lastTaxon == null) {
 			tree.addChildTaxon(taxon, null, null);
@@ -272,7 +267,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 
 	/**
 	 * @param state
-	 * @param dataLocation 
+	 * @param dataLocation
 	 * @return
 	 */
 	private Classification makeTree(MarkupImportState state, Location dataLocation) {
@@ -308,7 +303,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		Taxon taxon = createTaxonAndName(state, attributes);
 		state.setCurrentTaxon(taxon);
 		state.addNewFeatureSorterLists(taxon.getUuid().toString());
-		
+
 		boolean hasTitle = false;
 		boolean hasNomenclature = false;
 		String taxonTitle = null;
@@ -327,7 +322,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					fireWarningEvent(warning, next, 12);
 					taxon.getName().setRank(Rank.UNKNOWN_RANK());
 				}
-				
+
 				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 				state.setCurrentTaxon(null);
 				state.setCurrentTaxonNum(null);

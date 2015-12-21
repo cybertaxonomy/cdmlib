@@ -74,9 +74,11 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
 
     @Override
-    public boolean invoke(IImportConfigurator config){
+    public ImportResult invoke(IImportConfigurator config){
         if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-            return doCheck(config);
+            ImportResult result = new ImportResult();
+            result.setSuccess(doCheck(config));
+            return result;
         }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
             doCheck(config);
             return doImport(config);
@@ -84,7 +86,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
             return doImport(config);
         }else{
             logger.error("Unknown CHECK type");
-            return false;
+            ImportResult result = new ImportResult();
+            result.setSuccess(false);
+            return result;
         }
     }
 
@@ -96,11 +100,11 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
             boolean success =  doCheck(config);
             if(success) {
-               success = doImport(config, result);
+               result = doImport(config);
             }
             result.setSuccess(success);
         } else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
-            doImport(config, result);
+            result = doImport(config);
         } else{
             logger.error("Unknown CHECK type");
             return null;
@@ -166,25 +170,20 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         }
     }
 
-    protected <S extends IImportConfigurator>  boolean doImport(S config){
-        ImportResult result = new ImportResult();
-        return doImport(config, result);
-    }
-
     /**
      * Executes the whole
      */
-    protected <S extends IImportConfigurator>  boolean doImport(S config, ImportResult importResult){
-        boolean result = true;
+    protected <S extends IImportConfigurator>  ImportResult doImport(S config){
+        ImportResult importResult = new ImportResult();
         //validate
         if (config == null){
             logger.warn("Configuration is null");
             importResult.setSuccess(false);
-            return false;
+            return importResult;
         }else if (! config.isValid()){
             logger.warn("Configuration is not valid");
             importResult.setSuccess(false);
-            return false;
+            return importResult;
         }
 
         config.getSourceReference();
@@ -204,17 +203,17 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
                     state.setCurrentIO(cdmIo);
-                    result &= cdmIo.invoke(state);
-                    importResult.addReport(cdmIo.getByteArray());
+                    importResult.setSuccess(cdmIo.invoke(state));
+                    importResult.addReport(state.getReportAsByteArray());
                     unRegisterObservers(config, cdmIo);
                 }else{
                     logger.error("cdmIO was null");
-                    result = false;
+                    importResult.setSuccess(false);
                 }
             } catch (Exception e) {
                     logger.error(e);
                     e.printStackTrace();
-                    result = false;
+                    importResult.setSuccess(false);
             }
         }
 
@@ -238,9 +237,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
         logger.info("End import from source '" + config.getSourceNameString()
                 + "' to destination '" + config.getDestinationNameString() + "'"+
-                (result? "(successful)":"(with errors)")) ;
-        importResult.setSuccess(result);
-        return result;
+                (importResult.isSuccess()? "(successful)":"(with errors)")) ;
+        return importResult;
     }
 
     /**

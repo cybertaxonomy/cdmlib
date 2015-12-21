@@ -47,10 +47,12 @@ import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -121,6 +123,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("mediaService")
 	private IMediaService mediaService;
+    @Autowired
+    //@Qualifier("mediaService")
+    private IMetadataService metadataService;
 	@Autowired
 	//@Qualifier("commonService")
 	private ICommonService commonService;
@@ -154,6 +159,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IPolytomousKeyService polytomousKeyService;
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
+	@Autowired
+	private IProgressMonitorService progressMonitorService;
 	@Autowired
 	private IEntityValidationService entityValidationService;
 	@Autowired
@@ -272,6 +279,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.mediaService;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMetadataService getMetadataService() {
+        return this.metadataService;
+    }
+
 	@Override
 	public ITermService getTermService(){
 		return this.termService;
@@ -360,6 +375,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return polytomousKeyNodeService;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IProgressMonitorService getProgressMonitorService() {
+        return progressMonitorService;
+    }
+
 	@Override
 	public IWorkingSetService getWorkingSetService(){
 		return workingSetService;
@@ -432,5 +455,4 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 	}
-
 }

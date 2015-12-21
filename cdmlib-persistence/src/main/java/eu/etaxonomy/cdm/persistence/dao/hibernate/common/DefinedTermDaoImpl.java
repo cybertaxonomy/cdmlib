@@ -648,7 +648,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 	 */
 	@Override
-	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start,
+	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
 	    Query query = getSession().createQuery("select term from DefinedTermBase term where term.termType = :termType");
 	    query.setParameter("termType", termType);

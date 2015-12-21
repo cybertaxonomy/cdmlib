@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -62,22 +62,22 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	INameService nameService;
-	
+
 	@SpringBeanByType
 	ITaxonService taxonService;
-	
+
 	@SpringBeanByType
 	ITermService termService;
-	
+
 	@SpringBeanByType
 	IClassificationService classificationService;
-	
+
 	@SpringBeanByType
 	IDescriptionService descriptionService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
-	
+
 	@Before
 	public void setUp() throws URISyntaxException {
 		//TODO create own test file
@@ -87,26 +87,26 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 		configurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
 		configurator.addObserver(new LoggingIoObserver());
-		
+
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		uuidConfigurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
-		
+
 	}
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("normalExplicitImport should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
-	
+
 	@Test
 	@DataSet
 	public void testDoInvoke() {
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
-		boolean result = defaultImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		commitAndStartNewTransaction(new String[]{"TAXONNAMEBASE", "ANNOTATION"});
 		assertEquals("Number of TaxonNames should be 10", 10 /*TODO */, nameService.count(null));
@@ -116,22 +116,22 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 		List<TaxonNode> rootNodes = tree.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		TaxonNode rootNode = rootNodes.iterator().next();
-		
+
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		Set<Annotation> annotationSet = rootNode.getTaxon().getAnnotations();
-		assertTrue("Annotation is set for first Taxon", !annotationSet.isEmpty()); 
+		assertTrue("Annotation is set for first Taxon", !annotationSet.isEmpty());
 
 		assertEquals("Root taxon name should be Metazoa", "Metazoa", rootNode.getTaxon().getName().getTitleCache());
 		TaxonNode secondTaxon = rootNode.getChildNodes().iterator().next();
 
 		Set<Annotation> secondAnnotation = secondTaxon.getTaxon().getAnnotations();
-		assertTrue("Annotation is empty for second Taxon", secondAnnotation.isEmpty()); 
-		
+		assertTrue("Annotation is empty for second Taxon", secondAnnotation.isEmpty());
+
 		Set<TaxonDescription> taxonSet = secondTaxon.getTaxon().getDescriptions();
 		assertTrue("Description is not Empty", !taxonSet.isEmpty());
 		assertEquals("Number of Distributions should be 7", 7, descriptionService.listDescriptionElements(null, null, Distribution.class, null, null, null).size());
 //		assertEquals("Number of Vernecular Names should be 7", 6, descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null).size());
-		List<DescriptionElementBase> list = descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null);
+		List<CommonTaxonName> list = descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null);
 		for(DescriptionElementBase db : list){
 			System.out.println(db.toString());
 		}
@@ -144,25 +144,25 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 			System.out.println("Namespace: " + s.getIdNamespace());
 			System.out.println("Reference: " + s.getCitation().toString());
 		}
-		
+
 		//		assertEquals("Arthropoda node taxon name should be Arthropoda", "Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache());
 //		TaxonNode insectaNode = arthropodaNode.getChildNodes().iterator().next();
 //		TaxonNode lepidopteraNode = insectaNode.getChildNodes().iterator().next();
 //		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
 //		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
 //		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
-//		
+//
 //		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
 //		TaxonNode childNode1 = it.next();
 //		TaxonNode childNode2 = it.next();
-//		
+//
 //		TaxonNode noctuaPronubaNode;
 //		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
 //			noctuaPronubaNode = childNode1;
 //		}else{
 //			noctuaPronubaNode = childNode2;
 //		}
-//		
+//
 //		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
 //		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
 //		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
@@ -186,14 +186,14 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
 //		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
 	}
-	
+
 //	@Test
 //	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
 //	public void testUUID() throws URISyntaxException{
 //		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 //		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
-//		
-//		
+//
+//
 //		//test data set
 //		assertEquals("Number of taxon bases should be 2", 2, taxonService.count(null));
 //		Taxon taxon = (Taxon)taxonService.find(taxonUuid);
@@ -202,7 +202,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		Synonym synonym = (Synonym)taxonService.find(synonymUuid);
 //		assertNotNull("Synonym with given uuid should exist", synonym);
 //		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
-//		
+//
 //		//import
 //		boolean result = defaultImport.invoke(uuidConfigurator);
 //		//test result
@@ -213,7 +213,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
 //		TaxonDescription description = taxon.getDescriptions().iterator().next();
 //		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
-//		
+//
 //		String expectedText = "Description for the first taxon";
 //		TextData textData = getTextElement(description, expectedText);
 //		assertNotNull("The element should exists", textData);
@@ -235,8 +235,8 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		TaxonNameBase nameUsedInSource = source.getNameUsedInSource();
 //		assertNotNull("Name used in source should not be null", nameUsedInSource);
 //		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
-//		
-//		
+//
+//
 //		//synonym
 //		expectedText = "A synonym description";
 //		textData = getTextElement(description, expectedText);
@@ -259,7 +259,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //		nameUsedInSource = source.getNameUsedInSource();
 //		assertNotNull("Name used in source should not be null", nameUsedInSource);
 //		assertEquals("Name used in source title should be Pinus", "Pinus", nameUsedInSource.getTitleCache());
-//		
+//
 //	}
 
 	/**
@@ -287,7 +287,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

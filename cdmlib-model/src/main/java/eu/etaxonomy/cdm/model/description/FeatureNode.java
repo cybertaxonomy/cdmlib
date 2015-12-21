@@ -81,7 +81,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE_ORPHAN}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
 	 //TODO Val #3379
 //    @NotNull
 	private FeatureTree featureTree;
@@ -320,6 +320,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 		if (child != null){
 			children.remove(index);
 			child.setParent(null);
+			child.setFeatureTree(null);
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
 				FeatureNode childAt = children.get(i);

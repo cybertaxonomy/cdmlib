@@ -402,7 +402,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             taxonPager = taxonService.page(Taxon.class, batchSize, pageIndex++, null, null);
 
             if(taxonPager.getCurrentIndex() == 0){
-                subMonitor.beginTask("Accumulating by area ",  taxonPager.getCount());
+                subMonitor.beginTask("Accumulating by area ",  taxonPager.getCount().intValue());
             }
 
             logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
@@ -539,7 +539,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
                 if(taxonSubMonitor == null) {
                     taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
-                    taxonSubMonitor.beginTask("Accumulating by rank " + rank.getLabel(), taxonPager.getCount());
+                    taxonSubMonitor.beginTask("Accumulating by rank " + rank.getLabel(), taxonPager.getCount().intValue());
 
                 }
 

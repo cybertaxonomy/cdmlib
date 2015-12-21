@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -38,16 +38,16 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -70,7 +70,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     /**
      * Returns a paged list of occurrences that have been determined to belong
      * to the taxon concept determinedAs, optionally restricted to objects
-     * belonging to a class that that extends SpecimenOrObservationBase.
+     * belonging to a class that that extends SpecimenOrObservationBase. This
+     * will also consider specimens that are determined as a taxon concept
+     * belonging to the synonymy of the given taxon concept.
      * <p>
      * In contrast to {@link #listByAnyAssociation(Class, Taxon, List)} this
      * method only takes SpecimenOrObservationBase instances into account which
@@ -101,6 +103,39 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * Returns a paged list of occurrences that have been determined to belong
+     * to the taxon name determinedAs, optionally restricted to objects
+     * belonging to a class that that extends SpecimenOrObservationBase.
+     * <p>
+     * In contrast to {@link #listByAnyAssociation(Class, Taxon, List)} this
+     * method only takes SpecimenOrObservationBase instances into account which
+     * are actually determined as the taxon specified by
+     * <code>determinedAs</code>.
+     *
+     * @param type
+     *            The type of entities to return (can be null to count all
+     *            entities of type <T>)
+     * @param determinedAs
+     *            the taxon name that the occurrences have been determined to
+     *            belong to
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            matching objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based, can be null, equivalent of starting at the
+     *            beginning of the recordset)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     *            properties to be initialized
+     * @return
+     */
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonNameBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
      * Returns a List of Media that are associated with a given occurence
      *
      * @param occurence the occurence associated with these media
@@ -110,6 +145,17 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a Pager of media instances
      */
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Returns all media attached to this occurence and its children. Also takes
+     * {@link MediaSpecimen} and molecular images into account.
+     *
+     * @param occurence the occurence and its children from which the media to get
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager of media instances
+     */
+    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
@@ -379,22 +425,18 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config);
 
     /**
-     * Deletes the specified specimen and all sub derivates.<br>
-     * <b>Note:</b> Be sure to allow child deletion in the config.
-     * @param from the specimen which should be deleted with all its sub derivates
-     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     * Deletes the specified specimen belonging to the given {@link UUID}
+     * according to the setting in the {@link SpecimenDeleteConfigurator}.
+     *
+     * @param specimen
+     *            the specimen which shoul be deleted
+     * @param config
+     *            specifies options if and how the specimen should be deleted
+     *            like e.g. including all of its children
+     * @return the {@link DeleteResult} which holds information about the
+     *         outcome of this operation
      */
-    public DeleteResult deleteDerivateHierarchy(CdmBase from, SpecimenDeleteConfigurator config);
-
-    /**
-     * Deletes the specified specimen and all sub derivates by first loading the corresponding uuids
-     * and then calling {@link #deleteDerivateHierarchy(CdmBase, SpecimenDeleteConfigurator) deleteDerivateHierarchy}
-     * @param fromUuid uuid of the specimen which should be deleted with all its sub derivates
-     * @param config the {@link SpecimenDeleteConfigurator} to specify how the deletion should be handled
-     * @return {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteDerivateHierarchy(UUID fromUuid, SpecimenDeleteConfigurator config);
+    public DeleteResult delete(UUID specimenUuid, SpecimenDeleteConfigurator config);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
@@ -407,6 +449,77 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+
+    /**
+     * Retrieves all taxa linked via {@link IndividualsAssociation} with the given specimen.<br>
+     * @param specimen the specimen which is linked to the taxa
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a collection of associated taxa
+     */
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all taxa that the given specimen is determined as
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return collection of all taxa the given specimen is determined as
+     */
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return collection of all determination events with the given specimen
+     */
+    public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all taxa with a {@link SpecimenTypeDesignation} with the given specimen as a type specimen.
+     * @param specimen the type specimen
+     * @param specimen
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a collection of all taxa where the given specimen is the type specimen
+     */
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimens as a type specimen.
+     * @param specimens the type specimens
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return map of all designations with the given type specimens
+     */
+    public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(Collection<DerivedUnit> specimens, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimen as a type specimen.
      * @param specimen the type specimen
@@ -416,7 +529,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return collection of all designations with the given type specimen
      */
-    public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<SpecimenTypeDesignation> listTypeDesignations(DerivedUnit specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link DescriptionBase}s that have the given specimen set as described specimen.
@@ -499,20 +612,10 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public List<DerivedUnit> getAllChildDerivatives(SpecimenOrObservationBase<?> specimen);
 
     /**
-     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult}.
-     * @param singleRead the single read to delete
-     * @param sequence the sequence to which the single read belongs
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
+     * Returns all child derivatives of the given specimen.
+     * @param specimen the UUID of a specimen or observation
+     * @return an unordered list of all child derivatives
      */
-    public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence);
-
-    /**
-     * Deletes a {@link SingleRead} from the given {@link Sequence} and its {@link AmplificationResult},
-     * by first loading the corresponding uuids and then calling {@link #deleteSingleRead(SingleRead, Sequence) deleteSingleRead}
-     * @param singleReadUuid uuid of the single read to delete
-     * @param sequenceUuid uuid of the sequence to which the single read belongs
-     * @return the {@link DeleteResult} which holds information about the outcome of this operation
-     */
-    public DeleteResult deleteSingleRead(UUID singleReadUuid, UUID sequenceUuid);
+    public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid);
 
 }

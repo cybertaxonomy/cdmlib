@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+
 /**
  * @author Andreas Kohlbecker
  * @date Jul 16, 2012
@@ -108,5 +109,6 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
     public String getOrigin() {
         return this.origin;
     }
+
 
 }

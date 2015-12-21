@@ -18,9 +18,20 @@ public aspect PropertyChangeAspect {
 	
 //	pointcut execAdder(CdmBase cb): target(cb) && execution(void CdmBase+.add*(..) );  //once implemented we may want to remove addToSetWithChangeEvent and remove... from CdmBase
 	
+	/**
+     * @param cb
+     * Around aspect that will be weaven into the original setter methods of the CdmBase derived classes
+     */
+    after() returning(CdmBase cb): call(CdmBase+.new(..)) { 
+        //logger.warn(" new instance aop " + cb.getClass().getName());
+        cb.fireOnCreateEvent(cb);
+    }
+    
 	pointcut execSetter(CdmBase cb): target(cb) && execution(void CdmBase+.set*(..) );
 //	/** *********** OLD ***********************/
 //	pointcut callSetter( CdmBase b ) : call( * CdmBase+.set*(..) ) && target( b );
+
+
 
 	/**
 	 * @param cb

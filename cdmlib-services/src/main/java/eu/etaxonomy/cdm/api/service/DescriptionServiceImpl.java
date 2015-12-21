@@ -146,10 +146,6 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-     */
     @Override
     @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
@@ -179,42 +175,41 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
     @Override
-    public Pager<DescriptionElementBase> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
-            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        List<DescriptionElementBase> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, results.size(), pageSize, results);
+        List<T> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
+        return new DefaultPagerImpl<T>(pageNumber, results.size(), pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
-     */
     @Override
     @Deprecated
-    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
-            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         return pageDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
     }
 
+
+
     @Override
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
-            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
+            Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths) {
 
         Integer numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
-        List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
+        List<T> results = new ArrayList<T>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
             results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;
+
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
-     */
+
     @Override
     @Deprecated
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
-            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         return listDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
     }
@@ -690,13 +685,27 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
             if (! isCopy){
                 description.removeElement(element);
-                dao.saveOrUpdate(description);
+                if (description.getElements().isEmpty()){
+                   if (description instanceof TaxonDescription){
+                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+                       if (taxDescription.getTaxon() != null){
+                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
+                       }
+                   }
+                    dao.delete(description);
+                }else{
+                    dao.saveOrUpdate(description);
+                    result.addUpdatedObject(description);
+                }
             }
-            result.addUpdatedObject(description);
+
 
         }
         dao.saveOrUpdate(targetDescription);
         result.addUpdatedObject(targetDescription);
+        if (targetDescription instanceof TaxonDescription){
+            result.addUpdatedObject(((TaxonDescription)targetDescription).getTaxon());
+        }
         return result;
     }
 
@@ -730,7 +739,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         targetDescription.addAnnotation(annotation);
 
         targetDescription = dao.save(targetDescription);
-        return moveDescriptionElementsToDescription(descriptionElementUUIDs, targetDescription.getUuid(), isCopy);
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            descriptionElements.add(descriptionElementDao.load(deUuid));
+        }
+
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
     }
 
     @Override
@@ -775,6 +789,33 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         Taxon sourceTaxon = HibernateProxyHelper.deproxy(taxonDao.load(sourceTaxonUuid), Taxon.class);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         return moveTaxonDescriptions(sourceTaxon, targetTaxon);
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid){
+        UpdateResult result = new UpdateResult();
+        TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
+
+        Taxon sourceTaxon = description.getTaxon();
+        String moveMessage = String.format("Description moved from %s", sourceTaxon);
+        if(description.isProtectedTitleCache()){
+            String separator = "";
+            if(!StringUtils.isBlank(description.getTitleCache())){
+                separator = " - ";
+            }
+            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+        }
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        description.addAnnotation(annotation);
+        Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        targetTaxon.addDescription(description);
+        result.addUpdatedObject(targetTaxon);
+        result.addUpdatedObject(sourceTaxon);
+       // dao.merge(description);
+        return result;
 
     }
 

@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service.pager;
 
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
+
 /**
  * @see also class <code>eu.etaxonomy.cdm.remote.controller.util.PagerParameter</code>
  *
@@ -34,6 +36,20 @@ public class PagerUtils {
             return null;
         }
         return pageSize;
+    }
+
+    /**
+     * The original method {@link AbstractPagerImpl#hasResultsInRange(Long, Integer, Integer)} is
+     * hard to find, therefore this method has been wired also into this Utility class
+     * this this is looked up more frequently.
+     *
+     * @param numberOfResults
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public static boolean hasResultsInRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
+        return AbstractPagerImpl.hasResultsInRange(numberOfResults, pageIndex, pageSize);
     }
 
 }

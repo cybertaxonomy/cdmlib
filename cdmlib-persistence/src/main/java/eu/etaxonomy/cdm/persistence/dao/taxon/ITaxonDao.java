@@ -422,7 +422,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
-  
+
     /**
      * Creates all inferred synonyms for the species in the tree and insert it to the database
      * @param tree
@@ -494,10 +494,18 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			MatchMode matchMode, Set namedAreas);
 
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(Class<S> clazz, String identifier,
-			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode, 
+			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
+
+    /**
+     * @param classification
+     * @param excludeUuid
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, List<UUID> excludeUuid);
 
 }

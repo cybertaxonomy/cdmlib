@@ -16,11 +16,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 
 
 /**
@@ -60,16 +61,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	        Reference citation,
 	        String citationMicroReference) ;
 
-	/**
-	 * deletes the given taxon nodes
-	 *
-	 * @param nodes
-	 * @param config
-	 * @return
-	 *
-	 */
-	public DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
-			TaxonDeletionConfigurator config) ;
+
     /**
      * @param nodeUuids
      * @param config
@@ -114,30 +106,52 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 
     /**
-     * @param taxonNode
-     * @param newParentTaxonNode
-     * @return
-     */
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParentTaxonNode);
-
-
-
-
-    /**
      * @param taxonNodeUuid
      * @param newParentTaxonNodeUuid
      * @return
      */
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, boolean parent);
+
+
 
     /**
      * @param taxonNodeUuids
      * @param newParentNodeUuid
      * @return
      */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid);
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean parent);
 
+    /**
+     * @param taxonNode
+     * @param newParent
+     * @param parent
+     * @return
+     */
+    UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean parent);
 
+    /**
+     * deletes the given taxon nodes
+     *
+     * @param nodes
+     * @param config
+     * @return
+     *
+     */
+    public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config);
+
+    /**
+     * Returns the of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the
+     * given TaxonUuid in the specified Classification.
+     *
+     * @param taxonUuid
+     * @param agentUuid TODO
+     * @param rankUuid TODO
+     * @param relTypeUuid TODO
+     * @param classification
+     * @return
+     */
+    public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
 
 }

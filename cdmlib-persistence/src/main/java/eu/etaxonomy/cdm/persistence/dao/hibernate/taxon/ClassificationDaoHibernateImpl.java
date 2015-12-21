@@ -62,14 +62,18 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         // the prepareRankSpecificRootNodes returns 1 or 2 queries
 
         Query q = queries[queryIndex];
-            if(limit != null) {
-                q.setMaxResults(limit);
-                if(start != null) {
-                    q.setFirstResult(start);
-                }
+        if(limit != null) {
+            q.setMaxResults(limit);
+            if(start != null) {
+                q.setFirstResult(start);
             }
-            results = q.list();
+        }
+//        long start_t = System.currentTimeMillis();
+        results = q.list();
+//        System.err.println("dao.listRankSpecificRootNodes() - query[" + queryIndex + "].list() " + (System.currentTimeMillis() - start_t));
+//        start_t = System.currentTimeMillis();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
+//        System.err.println("dao.listRankSpecificRootNodes() - defaultBeanInitializer.initializeAll() " + (System.currentTimeMillis() - start_t));
 
         return results;
 
@@ -108,25 +112,30 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         String selectWhat = doCount ? "count(distinct tn)" : "distinct tn";
 
+        String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n JOIN FETCH n.rank JOIN FETCH t.sec ";
+
         if(rank == null){
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn" +
-                " WHERE tn.parent.parent = null " +
-                whereClassification;
+                    joinFetch +
+                    " WHERE tn.parent.parent = null " +
+                    whereClassification;
             query1 = getSession().createQuery(hql);
         } else {
             // this is for the cases
             //   - exact match of the ranks
             //   - rank of root node is lower but is has no parents
             String hql1 = "SELECT " + selectWhat + " FROM TaxonNode tn " +
-                " WHERE " +
-                " (tn.taxon.name.rank = :rank" +
-                "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
-                " )"
-                + whereClassification ;
+                    joinFetch +
+                    " WHERE " +
+                    " (tn.taxon.name.rank = :rank" +
+                    "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
+                    " )"
+                    + whereClassification ;
 
             // this is for the case
             //   - rank of root node is lower and it has a parent with higher rank
             String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.parent as parent" +
+                    joinFetch +
                     " WHERE " +
                     " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
                     + whereClassification ;

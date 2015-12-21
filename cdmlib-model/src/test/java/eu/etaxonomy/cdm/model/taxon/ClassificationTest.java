@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,15 +25,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -75,9 +75,9 @@ public class ClassificationTest {
 	private static Reference<?> ref2;
 	private static Reference<?> ref3;
 	//private ReferenceFactory refFactory;
-	
-	
-	
+
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -113,7 +113,7 @@ public class ClassificationTest {
 		taxon3 = Taxon.NewInstance(taxonName3, ref3);
 		taxon12 = Taxon.NewInstance(taxonName12, ref3);
 		taxon121 = Taxon.NewInstance(taxonName121, ref3);
-		
+
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 	}
 
@@ -135,9 +135,9 @@ public class ClassificationTest {
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
-		
-		
-		
+
+
+
 		//test root node
 		List<TaxonNode> rootNodes = classification1.getChildNodes();
 		assertFalse("List of root nodes should not be empty", rootNodes.isEmpty());
@@ -148,7 +148,7 @@ public class ClassificationTest {
 		assertNull(root.getReference());
 		assertNull(root.getMicroReference());
 		assertEquals(synonym, root.getSynonymToBeUsed());
-		
+
 		//any node
 		List<TaxonNode> allNodes = classification1.getChildNodes();
 		assertFalse("List of root nodes should not be empty", allNodes.isEmpty());
@@ -156,7 +156,7 @@ public class ClassificationTest {
 		TaxonNode anyNode = allNodes.iterator().next();
 		assertSame("Taxon for TaxonNode should be the same added to the view", taxon1, anyNode.getTaxon());
 		assertSame("TaxonNode should be the same added to the view", taxonNode1, anyNode);
-				
+
 	}
 
 	/**
@@ -165,13 +165,13 @@ public class ClassificationTest {
 	@Test
 	public void testIsTaxonInTree() {
 		classification1.addChildTaxon(taxon1, null, null);
-		
+
 		assertTrue(classification1.isTaxonInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
 		assertFalse(classification1.isTaxonInTree(anyTaxon));
 	}
-	
-	
+
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#makeRootChildOfOtherNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.Reference, java.util.String)}.
 	 */
@@ -182,13 +182,13 @@ public class ClassificationTest {
 		Taxon taxon3 = Taxon.NewInstance(null, null);
 		root2.addChildTaxon(taxon3, null, null);
 		String microRef = "p55";
-		
+
 		assertFalse("Root1 must not yet be child of root 2", root2.getChildNodes().contains(root1));
 		assertNotSame("Root2 must not yet be parent of root 1", root2, root1.getParent());
 		assertEquals("view must contain 3 nodes", 3, classification1.getAllNodes().size());
 		assertEquals("view must still contain 2 root", 2, classification1.getChildNodes().size());
 		assertEquals("root2 must have 1 child", 1, root2.getChildNodes().size());
-		
+
 		classification1.makeTopmostNodeChildOfOtherNode(root1, root2, ref1, microRef);
 		assertTrue("Root1 must be child of root 2", root2.getChildNodes().contains(root1));
 		assertSame("Root2 must be parent of root 1", root2, root1.getParent());
@@ -197,13 +197,13 @@ public class ClassificationTest {
 		assertEquals("new child node must have the expected reference for parent child relationship", ref1, root1.getReference());
 		assertEquals("new child node must have the expected micro reference for parent child relationship", microRef, root1.getMicroReference());
 		assertEquals("root2 must have 2 children", 2, root2.getChildNodes().size());
-		
+
 	}
-	
+
 	@Test
 	public void testIsTopmostInTree() {
 		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
-		
+
 		assertTrue(classification1.isTaxonInTree(taxon1));
 		assertTrue(classification1.isTopmostInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
@@ -214,11 +214,11 @@ public class ClassificationTest {
 		assertTrue(classification1.isTaxonInTree(child));
 		assertFalse(classification1.isTopmostInTree(child));
 	}
-	
+
 	@Test
 	public void testGetTopmostNode() {
 		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
-		
+
 		assertEquals(root, classification1.getTopmostNode(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
 		assertFalse(classification1.isTaxonInTree(anyTaxon));
@@ -228,7 +228,7 @@ public class ClassificationTest {
 		assertTrue(classification1.isTaxonInTree(child));
 		assertNull(classification1.getTopmostNode(child));
 	}
-	
+
 	@Test
 	public void testAddParentChild() {
 
@@ -237,7 +237,7 @@ public class ClassificationTest {
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
 		Assert.assertEquals(0,rootNode.getChildNodes().size());
-		
+
 		//add child to existing root
 		classification1.addParentChild(taxon1, taxon2, ref1, "Micro1");
 		Assert.assertTrue(classification1.isTaxonInTree(taxon2));
@@ -245,7 +245,7 @@ public class ClassificationTest {
 		Assert.assertEquals(1,rootNode.getChildNodes().size());
 		TaxonNode childNode = rootNode.getChildNodes().iterator().next();
 		Assert.assertEquals(taxon2, childNode.getTaxon());
-		
+
 		//relationship already exists
 		classification1.addParentChild(taxon1, taxon2, ref2, "Micro2");
 		Assert.assertTrue(classification1.isTaxonInTree(taxon2));
@@ -256,7 +256,7 @@ public class ClassificationTest {
 		Assert.assertEquals(taxon2, childNode.getTaxon());
 		Assert.assertEquals(ref2, childNode.getReference());
 		Assert.assertEquals("Micro2", childNode.getMicroReference());
-		
+
 		logger.info("testAddParentChild not yet fully implemented");
 
 	}
@@ -270,27 +270,27 @@ public class ClassificationTest {
 		//Maybe changed if title cache is generated in a different way
 		assertEquals(treeName1, taxonomicViewLocal.getTitleCache());
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#generateTitle()}.
 	 */
 	@Test
 	public void play() {
-			
+
 			CdmBase referencedCdmBase = Person.NewInstance();
 			Set<Class<? extends CdmBase>> allCdmClasses = findAllCdmClasses();
-			
+
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 			Set<CdmBase> result = new HashSet<CdmBase>();
 			System.out.println("Referenced Class: " + referencedClass.getName());
-			
-			
+
+
 			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 				Set<Field> fields = getFields(cdmClass);
 				for (Field field: fields){
 					Class<?> type = field.getType();
 					if (! type.isInterface()){
-						if (referencedClass.isAssignableFrom(type)|| 
+						if (referencedClass.isAssignableFrom(type)||
 								type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
 							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase);
 						}
@@ -305,66 +305,67 @@ public class ClassificationTest {
 ////						if(interfaze.isAssignableFrom(returnType)){
 //						}
 //					}
-					
-					
-				}	
+
+
+				}
 			}
 			return ;
 //			find(cdmClass, )
-			
+
 		}
-		
-		private boolean handleSingleClass(Class<?> classToBeSearchedFor, Class<?> type, Field field, Class<?> cdmClass, Set<CdmBase> result, CdmBase value){
-			if (! Modifier.isStatic(field.getModifiers())){
-				String methodName = StringUtils.rightPad(field.getName(), 30);
-				String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
-				String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
-				
-				System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
-//				result_old.add(method);
-				result.addAll(getCdmBasesByFieldAndClass(field, cdmClass, value));
+
+	private boolean handleSingleClass(Class<?> classToBeSearchedFor, Class<?> type, Field field, Class<?> cdmClass, Set<CdmBase> result, CdmBase value){
+		if (! Modifier.isStatic(field.getModifiers())){
+			String methodName = StringUtils.rightPad(field.getName(), 30);
+			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
+			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
+
+			System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
+//			result_old.add(method);
+			result.addAll(getCdmBasesByFieldAndClass(field, cdmClass, value));
+		}
+		return true;
+	}
+
+	private Set<Field> getFields(Class<?> clazz){
+		Set<Field> result = new HashSet<Field>();
+		for (Field field: clazz.getDeclaredFields()){
+			if (!Modifier.isStatic(field.getModifiers())){
+				result.add(field);
 			}
-			return true;
 		}
-		
-		private Set<Field> getFields(Class<?> clazz){
-			Set<Field> result = new HashSet<Field>();
-			for (Field field: clazz.getDeclaredFields()){
-				if (!Modifier.isStatic(field.getModifiers())){
-					result.add(field);	
-				}
-			}
-			Class<?> superclass = clazz.getSuperclass();
-			if (CdmBase.class.isAssignableFrom(superclass)){
-				result.addAll(getFields(superclass));
-			}
-			return result;
+		Class<?> superclass = clazz.getSuperclass();
+		if (CdmBase.class.isAssignableFrom(superclass)){
+			result.addAll(getFields(superclass));
 		}
-		
-		private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class<?> clazz, CdmBase value){
-			//FIXME make not dummy but use dao
-			Set<CdmBase> result = new HashSet<CdmBase>();
-			
-			//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
-			
-			
-			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
-			name.setTitleCache("A dummy name", true);
-			result.add(name);
-			Reference<?> ref = ReferenceFactory.newBook();
-			ref.setTitleCache("A dummy book", true);
-			result.add(ref);
-			
-			return result;
-		}
+		return result;
+	}
+
+	private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class<?> clazz, CdmBase value){
+		//FIXME make not dummy but use dao
+		Set<CdmBase> result = new HashSet<CdmBase>();
+
+		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
+
+
+		BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
+		name.setTitleCache("A dummy name", true);
+		result.add(name);
+		Reference<?> ref = ReferenceFactory.newBook();
+		ref.setTitleCache("A dummy book", true);
+		result.add(ref);
+
+		return result;
+	}
+
 	private Set<Class<? extends CdmBase>> findAllCdmClasses(){
-		
-		
+
+
 		//init
 		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<Class<? extends CdmBase>>();
 		allCdmClasses.add(TaxonBase.class);
 		allCdmClasses.add(BotanicalName.class);
-		
+
 		int count;
 		do{
 			count = allCdmClasses.size();
@@ -379,9 +380,10 @@ public class ClassificationTest {
 					for (Class<?> paramClass : params){
 						handleClass(allCdmClasses, paramClass);
 					}
-				}	
+				}
 			}
-		}while (allCdmClasses.size() > count);
+		}
+		while (allCdmClasses.size() > count);
 		boolean withAbstract = false;
 		if (! withAbstract){
 			Iterator<Class<? extends CdmBase>> iterator = allCdmClasses.iterator();
@@ -394,7 +396,7 @@ public class ClassificationTest {
 		}
 		return allCdmClasses;
 	}
-	
+
 	private void handleClass(Set<Class<? extends CdmBase>> allCdmClasses, Class<?> returnType){
 		if (CdmBase.class.isAssignableFrom(returnType)){
 			if (! allCdmClasses.contains(returnType)){
@@ -405,16 +407,17 @@ public class ClassificationTest {
 			}
 		}
 	}
+
 	@Test
 	public void testCloneClassification(){
-		
+
 		taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
-		taxonName1.setTitleCache("name1");
-		taxonName12.setTitleCache("name12");
-		taxonName121.setTitleCache("name121");
-		taxonName2.setTitleCache("name2");
-		taxonName3.setTitleCache("name3");
-		
+		taxonName1.setTitleCache("name1", true);
+		taxonName12.setTitleCache("name12", true);
+		taxonName121.setTitleCache("name121", true);
+		taxonName2.setTitleCache("name2", true);
+		taxonName3.setTitleCache("name3", true);
+
 		taxonNode12 = taxonNode1.addChildTaxon(taxon12, null, null);
 		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null);
 		taxonNode2 = classification1.addChildTaxon(taxon2, null, null);
@@ -423,8 +426,12 @@ public class ClassificationTest {
 		assertEquals(classification1.getAllNodes().size(), clone.getAllNodes().size());
 		TaxonNode cloneNode = clone.getNode(taxon1);
 		assertNotSame(cloneNode, taxonNode1);
-		
-		
 	}
+
+    @Test
+    public void beanTests(){
+//	    #5307 Test that BeanUtils does not fail
+        BeanUtils.getPropertyDescriptors(Classification.class);
+    }
 
 }

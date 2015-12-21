@@ -19,10 +19,13 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -220,6 +223,21 @@ public interface IService<T extends ICdmBase>{
      */
     public T load(UUID uuid, List<String> propertyPaths);
 
+
+    /**
+     * Finds the cdm entities specified by the <code>uuids</code>,
+     * recursively initializes all bean properties given in the
+     * <code>propertyPaths</code> parameter and returns the initialised
+     * entity list;
+     * <p>
+     * For detailed description and examples <b>please refer to:</b>
+     * {@link IBeanInitializer#initialize(Object, List)}
+     * @param uuids
+     * @param propertyPaths
+     * @return
+     */
+    public List<T> load(List<UUID> uuids, List<String> propertyPaths);
+
     /**
      * Copy the state of the given object onto the persistent object with the same identifier.
      *
@@ -304,6 +322,16 @@ public interface IService<T extends ICdmBase>{
     public UUID update(T transientObject);
 
     /**
+     * Simply calls the load method.
+     * Required specifically for the editor to allow load calls which
+     * can also update the session cache.
+     *
+     * @param uuid
+     * @return
+     */
+    public T loadWithUpdate(UUID uuid);
+
+    /**
      * Method that lists the objects matching the example provided.
      * The includeProperties property is used to specify which properties of the example are used.
      *
@@ -349,6 +377,42 @@ public interface IService<T extends ICdmBase>{
      */
     public List<T> merge(List<T> detachedObjects);
 
+    /**
+     * This method allows for the possibility of returning the input transient
+     * entities instead of the merged persistent entity
+     *
+     * WARNING : This method should never be used when the objective of the merge
+     * is to attach to an existing session which is the standard use case.
+     * This method should only be used in the
+     * case of an external call which does not use hibernate sessions and is
+     * only interested in the entity as a POJO. Apart from the session information
+     * the only other difference between the transient and persisted object is in the case
+     * of new objects (id=0) where hibernate sets the id after commit. This id is copied
+     * over to the transient entity in {@link PostMergeEntityListener#onMerge(MergeEvent,Map)}
+     * making the two objects identical and allowing the transient object to be used further
+     * as a POJO
+     *
+     * @param detachedObjects
+     * @param returnTransientEntity
+     * @return
+     */
+    public List<MergeResult<T>> merge(List<T> detachedObjects, boolean returnTransientEntity);
 
+    /**
+     * This method allows for the possibility of returning the input transient
+     * entity instead of the merged persistent entity
+     *
+     * WARNING : This method should never be used when the objective of the merge
+     * is to attach to an existing session which is the standard use case.
+     * This method should only be used in the case of an external call which does
+     * not use hibernate sessions and is only interested in the entity as a POJO.
+     * This method returns the root merged transient entity as well as all newly merged
+     * persistent entities within the return object.
+     *
+     * @param newInstance
+     * @param returnTransientEntity
+     * @return
+     */
+    public MergeResult<T> merge(T newInstance, boolean returnTransientEntity);
 
 }

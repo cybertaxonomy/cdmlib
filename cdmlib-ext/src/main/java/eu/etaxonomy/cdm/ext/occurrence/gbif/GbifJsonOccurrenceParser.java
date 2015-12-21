@@ -235,7 +235,7 @@ public class GbifJsonOccurrenceParser {
                 // create dataset URL
                 URI uri = null;
                 try {
-                    uri = UriUtils.createUri(new URL(GbifQueryServiceWrapper.BASE_URL), "/v0.9/dataset/"+dataSetKey+"/endpoint", null, null);
+                    uri = UriUtils.createUri(new URL(GbifQueryServiceWrapper.BASE_URL), "/v1/dataset/"+dataSetKey+"/endpoint", null, null);
                 } catch (MalformedURLException e) {
                     logger.error("Endpoint URI could not be created!", e);
                 } catch (URISyntaxException e) {

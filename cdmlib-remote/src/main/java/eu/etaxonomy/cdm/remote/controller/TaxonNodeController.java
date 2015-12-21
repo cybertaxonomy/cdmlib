@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Api("taxonNode")
 @RequestMapping(value = {"/taxonNode/{uuid}"})
 public class TaxonNodeController extends BaseController<TaxonNode, ITaxonNodeService> {
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger
             .getLogger(TaxonNodeController.class);
 

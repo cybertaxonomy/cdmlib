@@ -136,7 +136,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param propertyPaths
      * @return a list containing the terms
      */
-    public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Delete the given term according to the given delete configuration.
@@ -167,4 +167,10 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return
      */
     public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
+
+    /**
+     * @param label
+     * @return
+     */
+    public Language getLanguageByLabel(String label);
 }

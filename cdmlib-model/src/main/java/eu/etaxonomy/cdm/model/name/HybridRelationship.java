@@ -199,17 +199,17 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 
 	@Override
     protected void setRelatedFrom(NonViralName relatedFrom) {
-		if (relatedFrom == null){
+		/*if (relatedFrom == null){
 			this.deletedObjects.add(this.relatedFrom);
-		}
+		}*/
 		this.relatedFrom = relatedFrom;
 	}
 
 	@Override
     protected void setRelatedTo(NonViralName relatedTo) {
-		if (relatedTo == null){
+		/*if (relatedTo == null){
 			this.deletedObjects.add(this.relatedTo);
-		}
+		}*/
 		this.relatedTo = relatedTo;
 	}
 

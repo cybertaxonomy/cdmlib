@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +94,9 @@ public class Abcd206ImportReport {
     }
 
     public void addException(String message, Exception e) {
-        infoMessages.add(message+"\n"+e.getMessage()+"\n"+e.toString());
+        StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        infoMessages.add(message+"\n"+e.getMessage()+"\n"+errors.toString());
     }
 
     public void addInfoMessage(String message) {
@@ -121,17 +125,18 @@ public class Abcd206ImportReport {
         out.println("++++++++Import Report+++++++++");
       //all specimens
         Set<UnitIdSpecimen> allSpecimens = new HashSet<UnitIdSpecimen>();
-        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
         for (Entry<UnitIdSpecimen, List<UnitIdSpecimen>> entry : derivateMap.entrySet()) {
             UnitIdSpecimen parentSpecimen = entry.getKey();
-            incrementSpecimenTypeCount(specimenTypeToCount, parentSpecimen);
             allSpecimens.add(parentSpecimen);
             for (UnitIdSpecimen childSpecimen : entry.getValue()) {
-                incrementSpecimenTypeCount(specimenTypeToCount, childSpecimen);
                 allSpecimens.add(childSpecimen);
             }
         }
         out.println("Specimens created: "+allSpecimens.size());
+        Map<SpecimenOrObservationType, Integer> specimenTypeToCount = new HashMap<SpecimenOrObservationType, Integer>();
+        for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
+            incrementSpecimenTypeCount(specimenTypeToCount, unitIdSpecimen);
+        }
         for(Entry<SpecimenOrObservationType, Integer> entry:specimenTypeToCount.entrySet()){
             SpecimenOrObservationType type = entry.getKey();
             out.println(type+": "+entry.getValue());

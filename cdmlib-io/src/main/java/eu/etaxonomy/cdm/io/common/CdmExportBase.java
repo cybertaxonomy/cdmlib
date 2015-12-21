@@ -33,6 +33,11 @@ public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TR
 
 	@Override
 	public  byte[] getByteArray() {
-	    return exportStream.toByteArray();
+	    if (exportStream != null){
+	        return exportStream.toByteArray();
+	    }else{
+	        return null;
+	    }
 	}
+
 }

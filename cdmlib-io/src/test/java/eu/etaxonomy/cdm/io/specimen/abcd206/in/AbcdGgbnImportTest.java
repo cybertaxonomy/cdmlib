@@ -108,7 +108,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 2, occurrenceService.count(DnaSample.class));
@@ -147,7 +147,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull("Configurator could not be created", importConfigurator);
 
         importConfigurator.setMapUnitIdToCatalogNumber(true);
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
     }
 
@@ -172,7 +172,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull("Configurator could not be created", importConfigurator);
 
         importConfigurator.setIgnoreAuthorship(true);
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
@@ -200,7 +200,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         }
         assertNotNull("Configurator could not be created", importConfigurator);
 
-        boolean result = defaultImport.invoke(importConfigurator);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
@@ -345,7 +345,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
@@ -400,7 +400,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
@@ -464,7 +464,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
@@ -518,7 +518,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
@@ -570,7 +570,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    }
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	}
 
@@ -624,7 +624,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
 	    assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
-	    boolean result = defaultImport.invoke(importConfigurator);
+	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);

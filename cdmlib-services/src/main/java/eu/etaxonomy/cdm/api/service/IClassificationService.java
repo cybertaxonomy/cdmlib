@@ -176,7 +176,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classification
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa);
 
     /**
      * @param taxon
@@ -252,6 +252,13 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public List<TaxonNode> getAllNodes();
 
 	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
+
+    /**
+     * @param classificationUuid
+     * @param excludeTaxa
+     * @return
+     */
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
 
 
 }

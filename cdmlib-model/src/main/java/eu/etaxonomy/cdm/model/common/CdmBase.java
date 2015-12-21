@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.model.NewEntityListener;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
@@ -90,6 +91,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Transient
     @XmlTransient
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    @Transient
+    @XmlTransient
+    private static NewEntityListener newEntityListener;
 
     //@XmlAttribute(name = "id", required = true)
     @XmlTransient
@@ -144,6 +149,16 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     public CdmBase() {
         this.uuid = UUID.randomUUID();
         this.created = new DateTime().withMillisOfSecond(0);
+    }
+
+    public static void setNewEntityListener(NewEntityListener nel) {
+        newEntityListener = nel;
+    }
+
+    public static void fireOnCreateEvent(CdmBase cdmBase) {
+        if(newEntityListener != null) {
+            newEntityListener.onCreate(cdmBase);
+        }
     }
 
     /**
@@ -260,7 +275,6 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Override
     public void setCreated(DateTime created) {
         if (created != null){
-            new DateTime();
             created = created.withMillisOfSecond(0);
             //created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
         }

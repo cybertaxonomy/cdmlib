@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -264,7 +263,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         newName.setTitleCache("Newby taxonEditor", true);
         UUID uuid = nameService.saveOrUpdate(newName);
         commitAndStartNewTransaction(null);
-        TaxonNameBase savedName = nameService.load(uuid);
+        TaxonNameBase<?,?> savedName = nameService.load(uuid);
         assertEquals(newName, savedName);
     }
 
@@ -276,13 +275,15 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        TaxonNameBase n_acherontia_thetis = taxon.getName();
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonNameBase<?,?> n_acherontia_thetis = taxon.getName();
 
-        Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, ReferenceFactory.newGeneric());
+        Reference<?> sec = ReferenceFactory.newGeneric();
+        sec.setUuid(UUID.fromString("bd7e4a15-6403-49a9-a6df-45b46fa99efd"));
+        Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, sec);
         Exception exception = null;
         try {
-            UUID uuid = taxonService.save(newTaxon).getUuid();
+            taxonService.save(newTaxon);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -306,7 +307,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference book = referenceService.load(BOOK1_UUID);
+        Reference<?> book = referenceService.load(BOOK1_UUID);
 
         TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
         TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
@@ -337,7 +338,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference book = referenceService.load(BOOK1_UUID);
+        Reference<?> book = referenceService.load(BOOK1_UUID);
 
         TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
         TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
@@ -383,7 +384,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference book = referenceService.load(BOOK1_UUID);
+        Reference<?> book = referenceService.load(BOOK1_UUID);
         book.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
@@ -413,11 +414,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         taxon.getName().getNomenclaturalReference().setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
-            UUID uuid = taxonService.saveOrUpdate(taxon);
+            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.debug("Expected failure of evaluation.", e);
@@ -763,9 +764,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         taxonService.delete(taxon);
         commitAndStartNewTransaction(null);
 
-
-
-
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
@@ -787,7 +785,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
            // try {
-        	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
+        	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, taxon.getTaxonNodes().iterator().next().getClassification().getUuid());
             /*} catch (DataChangeNoRollbackException e) {
                 Assert.fail();
             }*/
@@ -819,14 +817,14 @@ public class SecurityTest extends AbstractSecurityTestBase{
     public final void testTaxonDeleteDeny() {
 
         SecurityContext context = SecurityContextHolder.getContext();
-        RuntimeException securityException = null;
+//        RuntimeException securityException = null;
 
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
         Taxon taxon = (Taxon)taxonService.load(UUID_LACTUCA);
         try{
-        DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
+        taxonService.deleteTaxon(taxon.getUuid(), null, null);
         Assert.fail();
         }catch(PermissionDeniedException e){
 
@@ -858,7 +856,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache("test");
+        description.setTitleCache("test", true);
         try {
             descriptionService.saveOrUpdate(description);
             commitAndStartNewTransaction(null);
@@ -937,7 +935,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
         try {
-            DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
 //            synonymUuid = synonym.getUuid();
 //            taxonService.saveOrUpdate(synonym);
             commitAndStartNewTransaction(null);
@@ -1021,7 +1019,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         DescriptionElementBase descriptionText = TextData.NewInstance(Feature.DESCRIPTION());
         description.addElement(descriptionText);
 
-        securityException = null;
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
             descriptionService.saveOrUpdate(description);
@@ -1060,7 +1057,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         DescriptionElementBase ecologyText = TextData.NewInstance(Feature.ECOLOGY());
         description.addElement(ecologyText);
 
-        securityException = null;
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
             descriptionService.saveOrUpdate(description);
@@ -1120,7 +1116,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         // 2) test for denial
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
-        securityException = null;
         Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID synUuid = syn.getUuid();
         try{
@@ -1148,11 +1143,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         RuntimeException securityException = null;
-        Classification classification = classificationService.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+        classificationService.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
-        TaxonNode childNode = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+        acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 
         try{
             taxonNodeService.saveOrUpdate(acherontia_node);
@@ -1181,7 +1176,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         RuntimeException securityException = null;
 
         // test for denial
-        securityException = null;
         TaxonNode acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
         int numOfChildNodes = acherontiini_node.getCountChildren();
         acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);

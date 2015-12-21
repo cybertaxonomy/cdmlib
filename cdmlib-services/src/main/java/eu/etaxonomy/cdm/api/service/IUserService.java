@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
@@ -20,9 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.GroupManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
-import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -55,23 +52,6 @@ public interface IUserService extends IService<User>, UserDetailsManager, GroupM
      */
     public List<User> listByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * @return
-     * @throws CdmSourceException
-     */
-    public String getDbSchemaVersion() throws CdmSourceException;
-
-    /**
-     * @return
-     * @throws CdmSourceException
-     */
-    public boolean isDbEmpty() throws CdmSourceException;
-
-    /**
-     * @return
-     * @throws CdmSourceException
-     */
-    public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
 
 
 }

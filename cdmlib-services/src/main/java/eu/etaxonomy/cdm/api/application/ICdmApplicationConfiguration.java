@@ -31,10 +31,12 @@ import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -143,6 +145,11 @@ public interface ICdmApplicationConfiguration{
 	 * @return
 	 */
 	public IMediaService getMediaService();
+
+   /**
+     * @return
+     */
+    public IMetadataService getMetadataService();
 
 
 	/**
@@ -267,6 +274,10 @@ public interface ICdmApplicationConfiguration{
 	 */
 	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
 
+	/**
+     * @return
+     */
+	public IProgressMonitorService getProgressMonitorService();
 
 	/**
 	 * @return

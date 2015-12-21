@@ -59,12 +59,17 @@ public class Abcd206DataHolder {
     protected String isocountry;
     protected Integer depth;
     protected Integer altitude;
+    protected String unitNotes;
+    protected String gatheringNotes;
     protected String gatheringDateText;
     protected String gatheringElevationText;
     protected String gatheringElevation;
     protected String gatheringElevationMax;
     protected String gatheringElevationMin;
     protected String gatheringElevationUnit;
+    protected String gatheringSpatialDatum;
+    protected String gatheringCoordinateErrorMethod;
+
 
 
     public void reset() {
@@ -73,7 +78,9 @@ public class Abcd206DataHolder {
         institutionCode = null;
         collectionCode = null;
         unitID = null;
+        unitNotes = null;
         recordBasis = null;
+
         kindOfUnit = null;
         accessionNumber = null;
         fieldNumber = null;
@@ -86,11 +93,14 @@ public class Abcd206DataHolder {
         depth = null;
         altitude = null;
         gatheringDateText = null;
+        gatheringNotes = null;
         gatheringElevationText = null;
         gatheringElevation = null;
         gatheringElevationMax = null;
         gatheringElevationMin = null;
         gatheringElevationUnit = null;
+        gatheringSpatialDatum = null;
+        gatheringCoordinateErrorMethod = null;
 
         identificationList = new ArrayList<Identification>();
         atomisedIdentificationList = new ArrayList<HashMap<String, String>>();

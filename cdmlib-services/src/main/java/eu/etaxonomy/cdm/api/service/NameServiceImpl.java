@@ -846,7 +846,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public DeleteResult isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
-    	name = this.load(name.getUuid());
+    	//name = this.load(name.getUuid());
     	NameDeletionConfigurator nameConfig = null;
     	if (config instanceof NameDeletionConfigurator){
     		nameConfig = (NameDeletionConfigurator) config;

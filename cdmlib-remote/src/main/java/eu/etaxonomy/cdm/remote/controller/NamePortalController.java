@@ -74,8 +74,6 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 
 
     private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-            "uuid",
-            "feature",
             "elements.$",
             "elements.multilanguageText",
             "elements.media",
