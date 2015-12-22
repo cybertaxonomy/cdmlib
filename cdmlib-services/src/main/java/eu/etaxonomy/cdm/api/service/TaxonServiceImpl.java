@@ -1986,7 +1986,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     namedAreaList,
                     distributionStatusList,
                     distributionFilterQueryFactory,
-                    null, true
+                    Taxon.class, true
                     );
             multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
         }

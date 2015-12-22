@@ -86,7 +86,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
  */
-// @Ignore  //FIXED Temporarily set to ignore during upgrade to hibernate 5, needs to be fixed before release
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
@@ -778,6 +777,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //            "TAXONBASE", "TAXONNODE", "CLASSIFICATION"
 //        });
 
+        // reload classification
+        classification = classificationService.find(UUID.fromString(CLASSIFICATION_UUID));
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", alternateClassification, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("GERMAN 'Balsam-Tanne' should now be found in other classification", 1, pager.getCount().intValue());
 

@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
@@ -51,8 +50,8 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
         // in the case of taxon this is just the uuid
         if(value instanceof Taxon) {
             accTaxonUuids = ((Taxon)value).getUuid().toString();
-            Field canonicalNameIdField = new IntField(name + DOC_KEY_ID_SUFFIX,
-                    ((Taxon)value).getId(),
+            Field canonicalNameIdField = new StringField(name + DOC_KEY_ID_SUFFIX,
+                    Integer.toString(((Taxon)value).getId()),
                     luceneOptions.getStore()
                     );
             document.add(canonicalNameIdField);

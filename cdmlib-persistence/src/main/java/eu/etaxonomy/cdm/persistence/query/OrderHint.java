@@ -186,7 +186,7 @@ public class OrderHint {
         if(propertyName.equals(LUCENE_SCORE)){
             return SortField.FIELD_SCORE;
         }
-        return new SortField(propertyName, SortField.Type.STRING, sortOrder.equals(SortOrder.DESCENDING));
+        return new SortField(propertyName + "__sort", SortField.Type.STRING, sortOrder.equals(SortOrder.DESCENDING));
     }
 
     @Override
