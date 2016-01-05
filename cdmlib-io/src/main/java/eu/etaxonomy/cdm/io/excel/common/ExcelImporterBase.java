@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -28,31 +28,33 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.babadshanjan
  * @created 17.12.2008
- * @version 1.0
  */
-public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
-	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
+public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>>
+        extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
+    private static final long serialVersionUID = 2759164811664484732L;
+
+    private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
-	
+
 	ArrayList<HashMap<String, String>> recordList = null;
-	
-	private CdmApplicationController appCtr = null;
+
+	private final CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
 
-	
+
 	/** Reads data from an Excel file and stores them into a CDM DB.
-     * 
+     *
      * @param config
      * @param stores (not used)
      */
 	@Override
 	protected void doInvoke(STATE state){
-		
+
 		logger.debug("Importing excel data");
-    	
+
     	configurator = state.getConfig();
-    	
+
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		if (nc == null && needsNomenclaturalCode()) {
 			logger.error("Nomenclatural code could not be determined. Skip invoke.");
@@ -71,9 +73,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 			state.setUnsuccessfull();
 			return;
 		}
-    	
+
     	handleRecordList(state, source);
-    	logger.debug("End excel data import"); 
+    	logger.debug("End excel data import");
     	return;
 	}
 
@@ -91,7 +93,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		Integer startingLine = 2;
 		if (recordList != null) {
     		HashMap<String,String> record = null;
-    		
+
     		TransactionStatus txStatus = startTransaction();
 
     		//first pass
@@ -115,7 +117,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     			secondPass(state);
     			state.incCurrentLine();
     	   	}
-    		
+
     		commitTransaction(txStatus);
     	}else{
     		logger.warn("No records found in " + source);
@@ -137,29 +139,29 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		logger.warn("No check implemented for Excel import");
 		return result;
 	}
-	
-	/** 
-	 * 
-	 * 
+
+	/**
+	 *
+	 *
 	 * @param record
 	 * @return
 	 */
 	protected abstract void analyzeRecord(HashMap<String,String> record, STATE state);
-	
+
 	protected abstract void firstPass(STATE state);
 	protected abstract void secondPass(STATE state);
-	
-	
+
+
 	public ExcelImportConfiguratorBase getConfigurator() {
 		return configurator;
 	}
-	
-	
+
+
 	public CdmApplicationController getApplicationController() {
 		return appCtr;
 	}
-	
-	
+
+
 	protected int floatString2IntValue(String value) {
 		int intValue = 0;
 		try {
@@ -171,12 +173,12 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 		}
 		return intValue;
 	}
-	
+
 	protected String floatString2IntStringValue(String value) {
 		int i = floatString2IntValue(value);
 		return String.valueOf(i);
 	}
-	
+
 
 	/**
 	 * @param start
