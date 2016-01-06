@@ -27,6 +27,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator.AssignmentStatus;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -1183,8 +1184,49 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         config.setClazz(SpecimenOrObservationBase.class);
         config.setAssociatedTaxonUuid(taxon.getUuid());
         assertEquals(0, occurrenceService.countOccurrences(config));
-        List<SpecimenOrObservationBase> specimens = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(0, specimens.size());
+        List<SpecimenOrObservationBase> specimensOrObservations = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(0, specimensOrObservations.size());
+
+        //test assignment status
+        //all specimen
+        config = new FindOccurrencesConfigurator();
+        config.setAssignmentStatus(AssignmentStatus.ALL_SPECIMENS);
+        assertEquals(4, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> allSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(4, allSpecimens.size());
+        assertTrue(allSpecimens.contains(derivedUnit1));
+        assertTrue(allSpecimens.contains(derivedUnit2));
+        assertTrue(allSpecimens.contains(tissue));
+        assertTrue(allSpecimens.contains(dnaSample));
+
+        //assigned specimen
+        config = new FindOccurrencesConfigurator();
+        config.setAssignmentStatus(AssignmentStatus.ASSIGNED_SPECIMENS);
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> assignedSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, assignedSpecimens.size());
+        assertTrue(assignedSpecimens.contains(derivedUnit1));
+        assertTrue(assignedSpecimens.contains(tissue));
+
+        //unassigned specimen
+        config = new FindOccurrencesConfigurator();
+        config.setAssignmentStatus(AssignmentStatus.UNASSIGNED_SPECIMENS);
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> unAssignedSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, unAssignedSpecimens.size());
+        assertTrue(unAssignedSpecimens.contains(derivedUnit2));
+        assertTrue(unAssignedSpecimens.contains(dnaSample));
+
+        //ignore assignment status because taxon uuid is set
+        config = new FindOccurrencesConfigurator();
+        config.setAssociatedTaxonUuid(taxon.getUuid());
+        config.setAssignmentStatus(AssignmentStatus.UNASSIGNED_SPECIMENS);
+        assertEquals(2, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> ignoreAssignmentStatusSpecimens = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(2, ignoreAssignmentStatusSpecimens.size());
+        assertTrue(ignoreAssignmentStatusSpecimens.contains(derivedUnit1));
+        assertTrue(ignoreAssignmentStatusSpecimens.contains(tissue));
+
 
     }
 

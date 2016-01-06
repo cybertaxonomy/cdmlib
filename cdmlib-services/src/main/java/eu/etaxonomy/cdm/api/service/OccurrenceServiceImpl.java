@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator.AssignmentStatus;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
@@ -1401,6 +1402,26 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+            //filter out (un-)assigned specimens
+            if(taxon==null && taxonName==null){
+                AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
+                List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<SpecimenOrObservationBase<?>>();
+                if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
+                    for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
+                        Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
+                        if(!associatedTaxa.isEmpty()){
+                            specimenWithAssociations.add(specimenOrObservationBase);
+                            specimenWithAssociations.addAll(getFieldUnits(specimenOrObservationBase.getUuid()));
+                        }
+                    }
+                }
+                if(assignmentStatus.equals(AssignmentStatus.UNASSIGNED_SPECIMENS)){
+                    occurrences.removeAll(specimenWithAssociations);
+                }
+                if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
+                    occurrences = new ArrayList<SpecimenOrObservationBase>(specimenWithAssociations);
+                }
+            }
             // indirectly associated specimens
             List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<SpecimenOrObservationBase>(occurrences);
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
@@ -1458,29 +1479,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
-        if (config instanceof FindOccurrencesConfigurator) {
-            FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
-            Taxon taxon = null;
-            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
-                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
-                if(taxonBase.isInstanceOf(Taxon.class)){
-                    taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
-                }
-            }
-            TaxonNameBase taxonName = null;
-            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
-                taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
-            }
-            // indirectly associated specimens
-            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
-                return findByTitle(config).getRecords().size();
-            }
-            return dao.countOccurrences(occurrenceConfig.getClazz(), occurrenceConfig.getTitleSearchString(),
-                    occurrenceConfig.getSignificantIdentifier(), occurrenceConfig.getSpecimenType(), taxon, taxonName,
-                    occurrenceConfig.getMatchMode(), null, null, occurrenceConfig.getOrderHints(),
-                    occurrenceConfig.getPropertyPaths());
-        }
-        return super.countByTitle(config);
+        return findByTitle(config).getRecords().size();
     }
 
 }
