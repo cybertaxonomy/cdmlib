@@ -81,10 +81,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author a.mueller
  * @created 01.07.2008
- * @version 1.0
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
-	private static Logger logger = Logger.getLogger(CdmImportBase.class);
+    private static final long serialVersionUID = 8730012744209195616L;
+
+    private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
