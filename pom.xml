@@ -29,7 +29,7 @@
 	<hibernate.version>5.0.6.Final</hibernate.version>
 	<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
     <hibernate-search.version>5.5.2.Final</hibernate-search.version>
-    <lucene.version>5.3.1</lucene.version>
+    <lucene.version>5.4.0</lucene.version>
 	<unitils.version>3.4.2</unitils.version>
     <hsqldb.version>2.3.3</hsqldb.version>
 	<!-- <hsqldb.version>1.8.0.10</hsqldb.version>  -->
@@ -38,7 +38,7 @@
     <httpcomponents.version>4.5.1</httpcomponents.version>
     <doxia.version>1.6</doxia.version>
     <poi.version>3.13</poi.version>
-    <jackson.version>2.6.3</jackson.version>
+    <jackson.version>2.6.4</jackson.version>
 	<commons-logging.version>1.2</commons-logging.version>
 	<slf4j.version>1.7.13</slf4j.version>
 	<jaxb.version>2.2.11</jaxb.version>
@@ -1051,7 +1051,22 @@
         <artifactId>lucene-join</artifactId>
         <version>${lucene.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-backward-codecs</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-misc</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-facet</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+            
       <dependency>
         <groupId>com.ibm.lsid</groupId>
         <artifactId>lsid-client</artifactId>
@@ -1132,7 +1147,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>18.0</version>
+          <version>19.0</version>
       </dependency>
       <dependency>
         <groupId>jaxen</groupId>
@@ -1415,6 +1430,11 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${hibernate-validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml</groupId>
+        <artifactId>classmate</artifactId>
+        <version>1.3.1</version>
       </dependency>
 	  <dependency>
        <groupId>javax.el</groupId>

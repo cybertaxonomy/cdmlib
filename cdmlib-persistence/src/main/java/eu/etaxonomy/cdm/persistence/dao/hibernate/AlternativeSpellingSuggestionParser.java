@@ -109,11 +109,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 			// replacing construction of TermQuery with call to getTermQuery()
 			// which finds close matches.
 			TokenStream source;
-            try {
-                source = getAnalyzer().tokenStream(field, new StringReader(queryText));
-            } catch (IOException e1) {
-                throw new RuntimeException("An error occurred when calling tokenStream", e1);
-            }
+            source = getAnalyzer().tokenStream(field, new StringReader(queryText));
 			Vector<Object> v = new Vector<Object>();
 			Token t;
 
