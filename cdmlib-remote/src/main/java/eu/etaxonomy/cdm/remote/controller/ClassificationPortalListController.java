@@ -55,7 +55,6 @@ public class ClassificationPortalListController extends IdentifiableListControll
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
-            "taxon.sec",
             "taxon.name.rank",
             });
 
@@ -152,7 +151,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
         rank = findRank(rankUuid);
 
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, DEFAULT_INIT_STRATEGY);
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
         return rootNodes;
     }
