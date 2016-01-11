@@ -112,7 +112,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         String selectWhat = doCount ? "count(distinct tn)" : "distinct tn";
 
-        String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n JOIN FETCH n.rank JOIN FETCH t.sec ";
+        String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.sec ";
 
         if(rank == null){
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn" +
