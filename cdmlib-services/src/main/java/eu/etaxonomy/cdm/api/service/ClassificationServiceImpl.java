@@ -146,9 +146,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                 }
             }
         }
-        long start_t = System.currentTimeMillis();
+//        long start_t = System.currentTimeMillis();
         Collections.sort(results, taxonNodeComparator); // TODO is ordering during the hibernate query in the dao possible?
-        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
+//        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
         return new DefaultPagerImpl<TaxonNode>(pageIndex, (int) totalNumberOfResults, pageSize, results);
 
     }
