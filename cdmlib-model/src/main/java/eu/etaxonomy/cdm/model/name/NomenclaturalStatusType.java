@@ -758,9 +758,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 */
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation, NonViralName<?> name) throws UnknownCdmTypeException{
 		if (statusAbbreviation == null){
-			throw new NullPointerException("statusAbbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
-		}
-		if (statusAbbreviation == null){
 			throw new NullPointerException("Abbreviation is NULL in getNomenclaturalStatusTypeByAbbreviation");
 		}
 		NomenclaturalStatusType result = null;
