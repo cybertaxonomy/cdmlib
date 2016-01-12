@@ -18,6 +18,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
         <executions>
           <execution>
             <id>aspectj-main</id>
@@ -26,8 +27,8 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
-                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/org.springframework.aspects/${spring.version}/org.springframework.aspects-${spring.version}.jar" />
+              <target>
+                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
                 <path id="aspectPath">
                   <pathelement location="${spring.aspects.jar}" />
                 </path>
@@ -41,7 +42,7 @@
                     <pathelement location="src/main/java" />
                   </sourceroots>
                 </iajc>
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
@@ -51,7 +52,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
                 </taskdef>
@@ -63,7 +64,7 @@
                     <pathelement location="src/test/java" />
                   </sourceroots>
                 </iajc>
-              </tasks>
+              </target>
           </configuration>
         </execution>
       </executions>
