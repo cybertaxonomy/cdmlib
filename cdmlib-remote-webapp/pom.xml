@@ -233,7 +233,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.6.v20151106</version>
+        <version>9.1.3.v20140225</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
