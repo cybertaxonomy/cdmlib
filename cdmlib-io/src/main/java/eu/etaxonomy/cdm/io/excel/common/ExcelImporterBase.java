@@ -101,6 +101,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			analyzeRecord(record, state);
+    			state.setOriginalRecord(record);
     			try {
 					firstPass(state);
 				} catch (Exception e) {
@@ -114,7 +115,8 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			analyzeRecord(record, state);
-    			secondPass(state);
+    			state.setOriginalRecord(record);
+                secondPass(state);
     			state.incCurrentLine();
     	   	}
 
