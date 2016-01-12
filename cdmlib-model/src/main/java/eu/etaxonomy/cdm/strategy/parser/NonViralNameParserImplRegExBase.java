@@ -84,7 +84,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
 
     //AuthorString
-	protected static String authorPart = "(" + "(O'|d'|D'|L'|'t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
+	protected static String authorPart = "(" + "(O[’']|d[’']|D[’']|L[’']|'t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f\\.|fil\\.|secundus)?" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
@@ -218,8 +218,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.)";
     protected static String pNomStatusOpus = "opus\\." + fWs + "utique" + fWs + "oppr\\.";
+    protected static String pNomStatusIned = "ined\\.";
 
-    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + ")";
+    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + "|" + pNomStatusIned + ")";
     protected static String pNomStatusPhrase1 = "," + fWs + pNomStatus;
     protected static String pNomStatusPhrase2 = "\\[" + fWs + pNomStatus + "\\]";
 
