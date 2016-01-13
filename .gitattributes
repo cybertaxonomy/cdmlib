@@ -10,7 +10,7 @@ cdmlib-remote-webapp/pom.xml merge=ours
 cdmlib-remote/pom.xml merge=ours
 cdmlib-persistence/pom.xml merge=ours
 /LICENSE.txt -text
-/README.txt -text./cdmlib-commons/pom.xml
+/README.txt -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text

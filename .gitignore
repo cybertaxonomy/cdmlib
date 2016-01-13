@@ -68,6 +68,7 @@ cdmlib-remote-webapp/.classpath
 cdmlib-remote-webapp/.project
 cdmlib-remote-webapp/.settings
 cdmlib-remote-webapp/target
+cdmlib-remote-webapp/spy.log
 cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings
