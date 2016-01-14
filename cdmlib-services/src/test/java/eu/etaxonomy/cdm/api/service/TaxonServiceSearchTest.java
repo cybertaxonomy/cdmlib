@@ -1127,7 +1127,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
         Taxon t_abies_alba = (Taxon)taxonService.find(UUID.fromString(ABIES_ALBA_UUID));
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
-        taxonService.update(t_abies_alba);
+
+        taxonService.update(t_abies_kawakamii_sensu_komarov);
+
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1136,6 +1138,41 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
 
     }
+
+    @Test
+    @DataSet
+    @Ignore // remove once http://dev.e-taxonomy.eu/trac/ticket/5477 is solved
+    public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
+        a_germany_canada_russia.add(germany);
+        a_germany_canada_russia.add(canada);
+        a_germany_canada_russia.add(russia);
+
+
+        Set<PresenceAbsenceTerm> absent = new HashSet<PresenceAbsenceTerm>();
+        absent.add(PresenceAbsenceTerm.ABSENT());
+
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Taxon t_abies_alba = (Taxon)taxonService.find(UUID.fromString(ABIES_ALBA_UUID));
+        t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
+
+        /* Since the upgrade from hibernate search 4 to 5.5
+         * triggering an update of t_abies_alba is no longer sufficient to also update the
+         * document of t_abies_kawakamii_sensu_komarov in the lucene index.
+         * the last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
+         * This situation is reproduced here:
+         */
+        taxonService.update(t_abies_alba);
+
+          commitAndStartNewTransaction(null);
+
+          Pager pager = taxonService.findTaxaAndNamesByFullText(
+                  EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                  "Abies", null, a_germany_canada_russia, absent, null, true, null, null, null, null);
+          Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+    }
+
 
     /**
      * Regression test for #3119: fulltext search: Entity always null whatever search
