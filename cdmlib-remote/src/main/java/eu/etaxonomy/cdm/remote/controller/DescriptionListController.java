@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
@@ -78,6 +79,9 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
     @Autowired
     private ITermService termService;
+
+    @Autowired
+    private IVocabularyService vocabularyService ;
 
     @Autowired
     private ITaxonService taxonService;
@@ -258,7 +262,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService, vocabularyService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
                     hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getDescriptionInfoInitStrategy(), recipe);

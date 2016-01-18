@@ -38,11 +38,14 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -98,6 +101,8 @@ public class EditGeoServiceUtilities {
 
 
     private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors = null;
+
+    private static List<UUID>  presenceAbsenceTermVocabularyUuids = null;
 
     private static HashMap<PresenceAbsenceTerm, Color> getDefaultPresenceAbsenceTermBaseColors() {
         if(defaultPresenceAbsenceTermBaseColors == null){
@@ -359,6 +364,7 @@ public class EditGeoServiceUtilities {
             if(status == null){
                 status = defaultStatus;
             }
+            status = HibernateProxyHelper.deproxy(status, PresenceAbsenceTerm.class);
             if (! statusList.contains(status)){
                 statusList.add(status);
             }
@@ -682,12 +688,13 @@ public class EditGeoServiceUtilities {
 
     /**
      * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
+     * @param vocabularyService TODO
      * @return
      * @throws IOException
      * @throws JsonParseException
      * @throws JsonMappingException
      */
-    public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson, ITermService termService) throws IOException, JsonParseException,
+    public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson, ITermService termService, IVocabularyService vocabularyService) throws IOException, JsonParseException,
             JsonMappingException {
 
         Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
@@ -700,13 +707,19 @@ public class EditGeoServiceUtilities {
             MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, String.class);
 
             Map<String,String> statusColorMap = mapper.readValue(statusColorJson, mapType);
-            UUID presenceTermVocabUuid = PresenceAbsenceTerm.NATIVE().getVocabulary().getUuid();
             presenceAbsenceTermColors = new HashMap<PresenceAbsenceTerm, Color>();
             PresenceAbsenceTerm paTerm = null;
             for(String statusId : statusColorMap.keySet()){
                 try {
                     Color color = Color.decode(statusColorMap.get(statusId));
-                    paTerm = termService.findByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceAbsenceTerm.class);
+                    // the below loop is  a hack for #4522 (custom status colors not working in cyprus portal)
+                    // remove it once the ticket is solved
+                    for(UUID vocabUuid : presenceAbsenceTermVocabularyUuids(vocabularyService)) {
+                        paTerm = termService.findByIdInVocabulary(statusId, vocabUuid, PresenceAbsenceTerm.class);
+                        if(paTerm != null) {
+                            break;
+                        }
+                    }
                     if(paTerm != null){
                         presenceAbsenceTermColors.put(paTerm, color);
                     }
@@ -716,6 +729,35 @@ public class EditGeoServiceUtilities {
             }
         }
         return presenceAbsenceTermColors;
+    }
+
+    /**
+     * this is a hack for #4522 (custom status colors not working in cyprus portal)
+     * remove this method once the ticket is solved
+     *
+     * @param vocabularyService
+     * @return
+     */
+    private static List<UUID> presenceAbsenceTermVocabularyUuids(IVocabularyService vocabularyService) {
+
+        if(EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids == null) {
+
+            List<UUID> uuids = new ArrayList<UUID>();
+            // the default as first entry
+            UUID presenceTermVocabUuid = PresenceAbsenceTerm.NATIVE().getVocabulary().getUuid();
+            uuids.add(presenceTermVocabUuid);
+
+
+            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm)) {
+                if(!uuids.contains(vocab.getUuid())) {
+                    uuids.add(vocab.getUuid());
+                }
+            }
+
+            EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids = uuids;
+        }
+
+        return EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids;
     }
 
 
