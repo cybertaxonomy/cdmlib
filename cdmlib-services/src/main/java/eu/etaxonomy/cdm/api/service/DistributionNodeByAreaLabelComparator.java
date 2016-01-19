@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.description.Distribution;
