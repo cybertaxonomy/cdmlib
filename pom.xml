@@ -1382,7 +1382,7 @@
 	  <dependency>
 	     <groupId>org.postgresql</groupId>
 	     <artifactId>postgresql</artifactId>
-	     <version>9.4-1207</version>
+	     <version>9.4-1206-jdbc4</version>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
