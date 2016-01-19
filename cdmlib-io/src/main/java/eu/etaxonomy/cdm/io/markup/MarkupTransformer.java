@@ -137,6 +137,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidLevelOther = UUID.fromString("4b483cc8-b42d-40ba-9cc7-a656faf629e2");
 
 	public static final UUID uuidContinentalRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
+    public static final UUID uuidOceanicRegion = UUID.fromString("a8429a30-5d04-4c4c-9008-048e7f9f90f6");
+
 
 
 
@@ -2331,7 +2333,8 @@ public class MarkupTransformer extends InputTransformerBase {
 		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
 		}else if (key.equalsIgnoreCase("continental region")){return uuidContinentalRegion;
-		}else if (key.equalsIgnoreCase("world")){return uuidWorld;
+		}else if (key.equalsIgnoreCase("oceanic region")){return uuidOceanicRegion;
+        }else if (key.equalsIgnoreCase("world")){return uuidWorld;
 		}else if (key.equalsIgnoreCase("county")){return uuidCounty;
 		}else if (key.equalsIgnoreCase("continent")){return uuidContinent;
 		}else if (key.equalsIgnoreCase("district")){return uuidDistrict;

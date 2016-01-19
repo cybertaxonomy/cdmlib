@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -119,7 +119,7 @@ public abstract class MarkupImportBase  {
 	protected static final String TYPE = "type";
 	protected static final String TYPE_STATUS = "typeStatus";
 	protected static final String UNKNOWN = "unknown";
-	
+
 
 	protected static final boolean CREATE_NEW = true;
 	protected static final boolean NO_IMAGE_GALLERY = false;
@@ -168,11 +168,11 @@ public abstract class MarkupImportBase  {
 	protected static final String STRING = "string";
 	protected static final String URL = "url";
 	protected static final String WRITER = "writer";
-	
+
 	protected static final String LOCALITY = "locality";
-	
-	
-	
+
+
+
 	//Nomenclature
 	protected static final String ACCEPTED = "accepted";
 	protected static final String ACCEPTED_NAME = "acceptedName";
@@ -205,7 +205,7 @@ public abstract class MarkupImportBase  {
 	protected static final String VOLUME = "volume";
 	protected static final String YEAR = "year";
 
-	
+
 	//keys
 	protected static final String COUPLET = "couplet";
 	protected static final String IS_SPOTCHARACTERS = "isSpotcharacters";
@@ -218,28 +218,29 @@ public abstract class MarkupImportBase  {
 	protected static final String TO_COUPLET = "toCouplet";
 	protected static final String TO_KEY = "toKey";
 	protected static final String TO_TAXON = "toTaxon";
-	
-	
+
+
 	//Feature
 	protected static final String VERNACULAR_NAMES = "vernacularNames";
 	protected static final String VERNACULAR_NAME = "vernacularName";
 	protected static final String TRANSLATION = "translation";
 	protected static final String LOCAL_LANGUAGE = "localLanguage";
-	
+
 
 
 	protected MarkupDocumentImport docImport;
 
-	private IEditGeoService editGeoService;
-	
+	private final IEditGeoService editGeoService;
+	protected MarkupFeatureImport featureImport;
+
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
 		this.editGeoService = docImport.getEditGeoService();
 	}
 
-	private Stack<QName> unhandledElements = new Stack<QName>();
-	private Stack<QName> handledElements = new Stack<QName>();
+	private final Stack<QName> unhandledElements = new Stack<QName>();
+	private final Stack<QName> handledElements = new Stack<QName>();
 
 
 	protected <T extends CdmBase> void  save(Collection<T> collection, MarkupImportState state) {
@@ -260,11 +261,11 @@ public abstract class MarkupImportBase  {
 			Collection<DefinedTermBase> typedCollection = (Collection<DefinedTermBase>)collection;
 			getTermService().saveOrUpdate(typedCollection);
 		}
-		
-	}
-	
 
-	//TODO move to service layer for all IdentifiableEntities	
+	}
+
+
+	//TODO move to service layer for all IdentifiableEntities
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
 			return;
@@ -295,12 +296,12 @@ public abstract class MarkupImportBase  {
 		}
 		//logger.warn("Saved " +  cdmBase);
 	}
-	
-	
+
+
 	protected ITermService getTermService() {
 		return docImport.getTermService();
 	}
-	
+
 	protected IClassificationService getClassificationService() {
 		return docImport.getClassificationService();
 	}
@@ -318,7 +319,7 @@ public abstract class MarkupImportBase  {
 			fireWarningEvent("Event is not an startElement. Can't check attributes", makeLocationStr(event.getLocation()), 1, 1);
 			return result;
 		}
-		StartElement element = event.asStartElement(); 
+		StartElement element = event.asStartElement();
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()){
 			Attribute attribute = attributes.next();
@@ -336,16 +337,16 @@ public abstract class MarkupImportBase  {
 		String[] exceptions = new String[]{};
 		handleUnexpectedAttributes(event.getLocation(), attributes, 1, exceptions);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Throws an unexpected attributes event if the event has any attributes.
 	 * @param event
 	 */
 	protected void checkNoAttributes(XMLEvent event) {
 		String[] exceptions = new String[]{};
-		checkNoAttributes(event, 1, exceptions); 
+		checkNoAttributes(event, 1, exceptions);
 	}
 
 	/**
@@ -362,7 +363,7 @@ public abstract class MarkupImportBase  {
 		Map<String, Attribute> attributes = getAttributes(startElement);
 		handleUnexpectedAttributes(startElement.getLocation(), attributes, stackDepth+1, exceptions);
 	}
-	
+
 
 	/**
 	 * Checks if the given attribute exists and has the given value.
@@ -389,7 +390,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Returns the value of a given attribute name and removes the attribute from the attributes map. 
+	 * Returns the value of a given attribute name and removes the attribute from the attributes map.
 	 * @param attributes
 	 * @param attrName
 	 * @return
@@ -397,13 +398,13 @@ public abstract class MarkupImportBase  {
 	protected String getAndRemoveAttributeValue(Map<String, Attribute> attributes, String attrName) {
 		return getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
 	}
-	
+
 	/**
-	 * Returns the value of a boolean attribute with the given name and removes the attribute from the attributes map. 
+	 * Returns the value of a boolean attribute with the given name and removes the attribute from the attributes map.
 	 * Returns <code>defaultValue</code> if the attribute does not exist. ALso returns <code>defaultValue</code> and throws a warning if the
 	 * attribute has no boolean value (true, false).
-	 * @param 
-	 * @param attributes the 
+	 * @param
+	 * @param attributes the
 	 * @param attrName the name of the attribute
 	 * @param defaultValue the default value to return if attribute does not exist or can not be defined
 	 * @return
@@ -424,7 +425,7 @@ public abstract class MarkupImportBase  {
 		return result;
 	}
 
-	
+
 	/**
 	 * Returns the value of a given attribute name and returns the attribute from the attributes map.
 	 * Fires a mandatory field is missing event if the attribute does not exist.
@@ -436,7 +437,7 @@ public abstract class MarkupImportBase  {
 	protected String getAndRemoveRequiredAttributeValue(XMLEvent xmlEvent, Map<String, Attribute> attributes, String attrName) {
 		return getAndRemoveAttributeValue(xmlEvent, attributes, attrName, true, 1);
 	}
-	
+
 	/**
 	 * Returns the value of a given attribute name and returns the attribute from the attributes map.
 	 * If required is <code>true</code> and the attribute does not exist a mandatory field is missing event is fired.
@@ -457,7 +458,7 @@ public abstract class MarkupImportBase  {
 			attributes.remove(attrName);
 			return attr.getValue();
 		}
-	}	
+	}
 
 	/**
 	 * Fires an not yet implemented event if the given attribute exists in attributes.
@@ -483,7 +484,7 @@ public abstract class MarkupImportBase  {
 	protected void handleUnexpectedAttributes(Location location,Map<String, Attribute> attributes, String... exceptions) {
 		handleUnexpectedAttributes(location, attributes, 1, exceptions);
 	}
-		
+
 	/**
 	 * see {@link #handleUnexpectedAttributes(Location, Map, String...)}
      *
@@ -514,7 +515,7 @@ public abstract class MarkupImportBase  {
 		}
 	}
 
-	
+
 	private void fireUnexpectedAttributes(Location location, Map<String, Attribute> attributes, int stackDepth) {
 		String attributesString = "";
 		for (String key : attributes.keySet()){
@@ -523,9 +524,9 @@ public abstract class MarkupImportBase  {
 		}
 		String message = "Unexpected attributes: %s";
 		IoProblemEvent event = makeProblemEvent(location, String.format(message, attributesString), 1 , stackDepth +1 );
-		fire(event);	
+		fire(event);
 	}
-	
+
 
 	protected void fireUnexpectedAttributeValue(XMLEvent parentEvent, String attrName, String attrValue) {
 		String message = "Unexpected attribute value %s='%s'";
@@ -538,54 +539,54 @@ public abstract class MarkupImportBase  {
 		String message = "Attribute %s not yet implemented for value '%s'";
 		message = String.format(message, attrName, attrValue);
 		IIoEvent event = makeProblemEvent(xmlEvent.getLocation(), message, 1, 1 );
-		fire(event);		
+		fire(event);
 	}
-	
+
 	protected void fireNotYetImplementedAttribute(Location location, QName qName, int stackDepth) {
 		String message = "Attribute not yet implemented: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, qName.getLocalPart()), 1, stackDepth+1 );
-		fire(event);		
+		fire(event);
 	}
-	
+
 
 	protected void fireUnexpectedEvent(XMLEvent xmlEvent, int stackDepth) {
 		Location location = xmlEvent.getLocation();
 		String message = "Unexpected event: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, xmlEvent.toString()), 2, stackDepth +1);
-		fire(event);		
+		fire(event);
 	}
 
 	protected void fireUnexpectedStartElement(Location location, StartElement startElement, int stackDepth) {
 		QName qName = startElement.getName();
 		String message = "Unexpected start element: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, qName.getLocalPart()), 2, stackDepth +1);
-		fire(event);		
+		fire(event);
 	}
-	
+
 
 	protected void fireUnexpectedEndElement(Location location, EndElement endElement, int stackDepth) {
 		QName qName = endElement.getName();
 		String message = "Unexpected end element: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, qName.getLocalPart()), 16, stackDepth+1);
-		fire(event);		
+		fire(event);
 	}
-	
+
 	protected void fireNotYetImplementedElement(Location location, QName qName, int stackDepth) {
 		String message = "Element not yet implemented: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, qName.getLocalPart()), 1, stackDepth+1 );
-		fire(event);		
+		fire(event);
 	}
 
 	protected void fireNotYetImplementedCharacters(Location location, Characters chars, int stackDepth) {
 		String message = "Characters not yet handled: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, chars.getData()), 1, stackDepth+1 );
-		fire(event);		
+		fire(event);
 	}
 
 	/**
 	 * Creates a problem event.
 	 * Be aware of the right depths of the stack trace !
-	 * @param location 
+	 * @param location
 	 * @param message
 	 * @param severity
 	 * @return
@@ -603,7 +604,7 @@ public abstract class MarkupImportBase  {
 		} catch (ClassNotFoundException e) {
 			declaringClass = this.getClass();
 		}
-		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, 
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message,
 				locationStr, lineNumber, severity, methodName);
 		return event;
 	}
@@ -617,7 +618,7 @@ public abstract class MarkupImportBase  {
 		String locationStr = location == null ? " - no location - " : "l." + location.getLineNumber() + "/c."+ location.getColumnNumber();
 		return locationStr;
 	}
-	
+
 
 	/**
 	 * Fires an unexpected element event if the unhandled elements stack is empty.
@@ -627,7 +628,7 @@ public abstract class MarkupImportBase  {
 	protected void handleUnexpectedStartElement(XMLEvent event) {
 		handleUnexpectedStartElement(event, 1);
 	}
-	
+
 	/**
 	 * Fires an unexpected element event if the unhandled elements stack is empty.
 	 * Otherwise adds the element to the stack.
@@ -639,14 +640,14 @@ public abstract class MarkupImportBase  {
 			unhandledElements.push(qName);
 		}else{
 			fireUnexpectedStartElement(event.getLocation(), event.asStartElement(), stackDepth + 1);
-		}	
+		}
 	}
 
-	
+
 	protected void handleUnexpectedEndElement(EndElement event) {
 		handleUnexpectedEndElement(event, 1);
 	}
-	
+
 	/**
 	 * Fires an unexpected element event if the event is not the last on the stack.
 	 * Otherwise removes last stack element.
@@ -660,9 +661,9 @@ public abstract class MarkupImportBase  {
 			fireUnexpectedEndElement(event.getLocation(), event.asEndElement(), stackDepth + 1);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param endElement
 	 */
 	protected void popUnimplemented(EndElement endElement) {
@@ -675,10 +676,10 @@ public abstract class MarkupImportBase  {
 			IIoEvent event = makeProblemEvent(endElement.getLocation(), message, 16, 1);
 			fire(event);
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Fires an unexpected element event if the unhandled element stack is empty.
 	 * @param event
@@ -694,9 +695,9 @@ public abstract class MarkupImportBase  {
 			//do nothing
 		}else{
 			fireUnexpectedEvent(event, 1);
-		}	
+		}
 	}
-	
+
 	/**
 	 * Fires an not yet implemented event and adds the element name to the unhandled elements stack.
 	 * @param event
@@ -718,7 +719,7 @@ public abstract class MarkupImportBase  {
 			fireNotYetImplementedElement(event.getLocation(), qName, 1);
 		}
 	}
-	
+
 	/**
 	 * Fires an not yet implemented event and adds the element name to the unhandled elements stack.
 	 * @param event
@@ -727,13 +728,13 @@ public abstract class MarkupImportBase  {
 		QName qName = event.asStartElement().getName();
 		unhandledElements.push(qName);
 	}
-	
+
 	protected void handleAmbigousManually(MarkupImportState state,
 			XMLEventReader reader, StartElement startElement) {
 		QName qName = startElement.getName();
 		unhandledElements.push(qName);
 		fireWarningEvent(
-				"Handle manually: " + qName.getLocalPart() + " is ambigous and should therefore be handled manually", 
+				"Handle manually: " + qName.getLocalPart() + " is ambigous and should therefore be handled manually",
 				makeLocationStr(startElement.getLocation()), 2, 2);
 	}
 
@@ -752,7 +753,7 @@ public abstract class MarkupImportBase  {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Fires an mandatory element is missing event if exists is <code>false</code>.
 	 * @param hasMandatory
@@ -765,7 +766,7 @@ public abstract class MarkupImportBase  {
 		}
 	}
 
-	
+
 	/**
 	 * Fires an element is missing event.
 	 * @param xmlEvent
@@ -791,9 +792,9 @@ public abstract class MarkupImportBase  {
 		String message = "Mandatory %s '%s' is missing in %s";
 		message = String.format(message, typeName , missingEventName, qName.getLocalPart());
 		IIoEvent event = makeProblemEvent(location, message, severity, stackDepth +1);
-		fire(event);		
+		fire(event);
 	}
-	
+
 
 
 
@@ -812,7 +813,7 @@ public abstract class MarkupImportBase  {
 		}
 		return isEndingElement(next, parentEvent.asStartElement().getName().getLocalPart());
 	}
-	
+
 	/**
 	 * Trims the text and removes turns all whitespaces into single empty space.
 	 * @param text
@@ -823,7 +824,7 @@ public abstract class MarkupImportBase  {
 		text = text.replaceAll("\\s+", " ");
 		return text;
 	}
-	
+
 
 
 	/**
@@ -845,7 +846,7 @@ public abstract class MarkupImportBase  {
 			return result;
 		}
 	}
-	
+
 	/**
 	 * Currently not used.
 	 * @param str
@@ -872,12 +873,12 @@ public abstract class MarkupImportBase  {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Checks if <code>abbrev</code> is the short form for the genus name (strGenusName).
-	 * Usually this is the case if <code>abbrev</code> is the first letter (optional with ".") 
+	 * Usually this is the case if <code>abbrev</code> is the first letter (optional with ".")
 	 * of strGenusName. But in older floras it may also be the first 2 or 3 letters (optional with dot).
-	 * However, we allow only a maximum of 2 letters to be anambigous. In cases with 3 letters better 
+	 * However, we allow only a maximum of 2 letters to be anambigous. In cases with 3 letters better
 	 * change the original markup data.
 	 * @param single
 	 * @param strGenusName
@@ -887,7 +888,7 @@ public abstract class MarkupImportBase  {
 		if (! abbrev.matches("[A-Z][a-z]?\\.?")) {
 			return false;
 		}else if (abbrev.length() == 0 || strGenusName == null || strGenusName.length() == 0){
-			return false; 
+			return false;
 		}else{
 			abbrev = abbrev.replace(".", "");
 			return strGenusName.startsWith(abbrev);
@@ -899,7 +900,7 @@ public abstract class MarkupImportBase  {
 		}
 	}
 
-	
+
 	/**
 	 * Checks if all words in the given string start with a capital letter but do not have any further capital letter.
 	 * @param word the string to be checekd. Usually should be a single word.
@@ -915,7 +916,7 @@ public abstract class MarkupImportBase  {
 			return false;
 		}
 	}
-	
+
 
 	/**
 	 * Read next event. Ignore whitespace events.
@@ -938,7 +939,7 @@ public abstract class MarkupImportBase  {
 		}
 		return event;
 	}
-	
+
 	/**
 	 * Returns the REQUIRED "class" attribute for a given event and checks that it is the only attribute.
 	 * @param parentEvent
@@ -957,7 +958,7 @@ public abstract class MarkupImportBase  {
 	protected String getClassOnlyAttribute(XMLEvent parentEvent, boolean required) {
 		return getOnlyAttribute(parentEvent, CLASS, required);
 	}
-	
+
 	/**
 	 * Returns the value for the only attribute for a given event and checks that it is the only attribute.
 	 * @param parentEvent
@@ -969,41 +970,41 @@ public abstract class MarkupImportBase  {
 		checkNoAttributes(attributes, parentEvent);
 		return classValue;
 	}
-	
-	
+
+
 	protected void fireWarningEvent(String message, String locationStr, Integer severity, Integer depth) {
 		docImport.fireWarningEvent(message, locationStr, severity, depth);
 	}
-	
+
 	protected void fireWarningEvent(String message, XMLEvent event, Integer severity) {
 		docImport.fireWarningEvent(message, makeLocationStr(event.getLocation()), severity, 1);
 	}
-	
+
 	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		docImport.fireSchemaConflictEventExpectedStartTag(elName, reader);
 	}
 
-	
+
 	protected void fireWarningEvent(String message, String locationStr, int severity) {
-		docImport.fireWarningEvent(message, locationStr, severity, 1);	
+		docImport.fireWarningEvent(message, locationStr, severity, 1);
 	}
-	
+
 	protected void fire(IIoEvent event) {
 		docImport.fire(event);
 	}
-	
+
 	protected boolean isNotBlank(String str){
 		return StringUtils.isNotBlank(str);
 	}
-	
+
 	protected boolean isBlank(String str){
 		return StringUtils.isBlank(str);
 	}
 
 	protected TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
-		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);	
-	}	
-	
+		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);
+	}
+
 
 	/**
 	 * Returns the default language defined in the state. If no default language is defined in the state,
@@ -1024,48 +1025,48 @@ public abstract class MarkupImportBase  {
 	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
 		return docImport.isEndingElement(event, elName);
 	}
-	
+
 	protected boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
 		return docImport.isStartingElement(event, elName);
 	}
-	
+
 
 	protected void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
-		docImport.fillMissingEpithetsForTaxa(parentTaxon, childTaxon);	
+		docImport.fillMissingEpithetsForTaxa(parentTaxon, childTaxon);
 	}
-	
+
 	protected Feature getFeature(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
 		return docImport.getFeature(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	protected ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
 		return docImport.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
-	
+
 	protected DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		return docImport.getIdentifierType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	protected AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		return docImport.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	protected MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
 		return docImport.getMarkerType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	protected NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
 		return docImport.getNamedAreaLevel(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	protected NamedArea getNamedArea(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
 		return docImport.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode);
 	}
-	
+
 	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<?> voc){
 		return docImport.getLanguage(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 // *************************************** Concrete methods **********************************************/
 
 
@@ -1109,7 +1110,7 @@ public abstract class MarkupImportBase  {
 		TeamOrPersonBase<?> result = Team.NewTitledInstance(authorTitle, authorTitle);
 		return result;
 	}
-	
+
 	protected String getAndRemoveMapKey(Map<String, String> map, String key) {
 		String result = map.get(key);
 		map.remove(key);
@@ -1133,7 +1134,7 @@ public abstract class MarkupImportBase  {
 		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
 		return name;
 	}
-	
+
 	protected void handleFullName(MarkupImportState state, XMLEventReader reader,
 			NonViralName<?> name, XMLEvent next) throws XMLStreamException {
 		String fullNameStr;
@@ -1155,7 +1156,7 @@ public abstract class MarkupImportBase  {
 		NonViralNameParserImpl.NewInstance().parseFullName(name, fullNameStr, rank, false);
 //		name.setTitleCache(fullNameStr, true);
 	}
-	
+
 
 	/**
 	 * Returns the {@link NomenclaturalCode} for this import. Default is {@link NomenclaturalCode#ICBN} if
@@ -1196,20 +1197,20 @@ public abstract class MarkupImportBase  {
 		}
 		return level;
 	}
-	
+
 
 	/**
 	 * @param state
 	 * @param areaName
 	 * @param level
-	 * @return 
+	 * @return
 	 */
 	protected NamedArea makeArea(MarkupImportState state, String areaName, NamedAreaLevel level) {
-		
+
 		//TODO FM vocabulary
-		TermVocabulary<NamedArea> voc = null; 
+		TermVocabulary<NamedArea> voc = null;
 		NamedAreaType areaType = null;
-		
+
 		NamedArea area = null;
 		try {
 			area = state.getTransformer().getNamedAreaByKey(areaName);
@@ -1221,24 +1222,24 @@ public abstract class MarkupImportBase  {
 			UUID uuid = state.getAreaUuid(areaName);
 			if (uuid == null){
 				isNewInState = true;
-				
-				
+
+
 				try {
 					uuid = state.getTransformer().getNamedAreaUuid(areaName);
 				} catch (UndefinedTransformerMethodException e) {
 					throw new RuntimeException(e);
 				}
 			}
-			
+
 			CdmImportBase.TermMatchMode matchMode = CdmImportBase.TermMatchMode.UUID_LABEL;
 			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
 			if (isNewInState){
 				state.putAreaUuid(areaName, area.getUuid());
-				
+
 				//TODO just for testing -> make generic and move to better place
 				String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
 				String layerFieldName ="nam";
-				
+
 				if ("Bangka".equals(areaName)){
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
@@ -1248,20 +1249,20 @@ public abstract class MarkupImportBase  {
 				}
 				if ("Luzon".equals(areaName)){
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
-					
+
 					List<String> list = Arrays.asList("HERMANA MAYOR ISLAND#CENTRAL LUZON",
 							"HERMANA MENOR ISLAND#CENTRAL LUZON",
 							"CENTRAL LUZON");
 					for (String areaValue : list){
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
-					
+
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Mindanao".equals(areaName)){
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
-					
+
 					List<String> list = Arrays.asList("NORTHERN MINDANAO",
 							"SOUTHERN MINDANAO",
 							"WESTERN MINDANAO");
@@ -1269,18 +1270,18 @@ public abstract class MarkupImportBase  {
 					for (String areaValue : list){
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
-					
+
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Palawan".equals(areaName)){
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
-					
+
 					List<String> list = Arrays.asList("PALAWAN#SOUTHERN TAGALOG");
 					for (String areaValue : list){
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
-					
+
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
@@ -1290,8 +1291,8 @@ public abstract class MarkupImportBase  {
 		return area;
 	}
 
-	
-	
+
+
 	/**
 	 * Reads character data. Any element other than character data or the ending
 	 * tag will fire an unexpected element event.
@@ -1306,18 +1307,18 @@ public abstract class MarkupImportBase  {
 	protected String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
 		return getCData(state, reader, next, true);
 	}
-		
+
 	/**
 	 * Reads character data. Any element other than character data or the ending
 	 * tag will fire an unexpected element event.
-	 * 
+	 *
 	 * @param state
 	 * @param reader
 	 * @param next
 	 * @param inlineMarkup map for inline markup, this is used for e.g. the locality markup within a subheading
 	 * The map will be filled by the markup element name as key. The value may be a String, a CdmBase or any other object.
 	 * If null any markup text will be neglected but a warning will be fired if they exist.
-	 * @param removeInlineMarkupText if true the markedup text will be removed from the returned String 
+	 * @param removeInlineMarkupText if true the markedup text will be removed from the returned String
 	 * @param checkAttributes
 	 * @return
 	 * @throws XMLStreamException
@@ -1345,10 +1346,10 @@ public abstract class MarkupImportBase  {
 		throw new IllegalStateException("Event has no closing tag");
 
 	}
-	
+
 //	private void handleCDataLocality(MarkupImportState state, XMLEventReader reader, XMLEvent parent) {
 //		checkAndRemoveAttributeValue(attributes, attrName, value)
-//		
+//
 //	}
 
 
@@ -1366,7 +1367,7 @@ public abstract class MarkupImportBase  {
 		String annotation = getCData(state, reader, parentEvent);
 		return annotation;
 	}
-	
+
 	/**
 	 * True if text is single "." oder "," or ";" or ":"
 	 * @param text
@@ -1375,7 +1376,7 @@ public abstract class MarkupImportBase  {
 	protected boolean isPunctuation(String text) {
 		return text == null ? false : text.trim().matches("^[\\.,;:]$");
 	}
-	
+
 
 	/**
 	 * Text indicating that type information is following but no information about the type of the type
@@ -1385,7 +1386,7 @@ public abstract class MarkupImportBase  {
 	protected boolean charIsSimpleType(String text) {
 		return text.matches("(?i)Type:");
 	}
-	
+
 	protected String getXmlTag(XMLEvent event) {
 		String result;
 		if (event.isStartElement()) {
@@ -1418,7 +1419,7 @@ public abstract class MarkupImportBase  {
 
 					// Extension
 					UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
-					ExtensionType writerExtensionType = 
+					ExtensionType writerExtensionType =
 							this.getExtensionType(state, uuidWriterExtension,"Writer", "writer", "writer");
 					Extension extension = Extension.NewInstance();
 					extension.setType(writerExtensionType);
@@ -1452,14 +1453,14 @@ public abstract class MarkupImportBase  {
 		}
 		throw new IllegalStateException("<writer> has no end tag");
 	}
-	
+
 
 	protected void registerFootnotes(MarkupImportState state, AnnotatableEntity entity, List<FootnoteDataHolder> footnotes) {
 		for (FootnoteDataHolder footNote : footnotes) {
 			registerFootnoteDemand(state, entity, footNote);
 		}
 	}
-	
+
 
 	private void registerFootnoteDemand(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
 		FootnoteDataHolder existingFootnote = state.getFootnote(footnote.ref);
@@ -1474,7 +1475,7 @@ public abstract class MarkupImportBase  {
 			demands.add(entity);
 		}
 	}
-	
+
 
 	protected void attachFootnote(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
 		AnnotationType annotationType = this.getAnnotationType(state, MarkupTransformer.uuidFootnote, "Footnote", "An e-flora footnote", "fn", null);
@@ -1483,7 +1484,7 @@ public abstract class MarkupImportBase  {
 		entity.addAnnotation(annotation);
 		save(entity, state);
 	}
-	
+
 
 	protected void attachFigure(MarkupImportState state, XMLEvent next, AnnotatableEntity entity, Media figure) {
 		// IdentifiableEntity<?> toSave;
@@ -1506,7 +1507,7 @@ public abstract class MarkupImportBase  {
 		}
 		save(entity, state);
 	}
-	
+
 
 	protected void registerGivenFootnote(MarkupImportState state, FootnoteDataHolder footnote) {
 		state.registerFootnote(footnote);
@@ -1517,9 +1518,9 @@ public abstract class MarkupImportBase  {
 			}
 		}
 	}
-	
 
-	protected FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, 
+
+	protected FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
 			MarkupSpecimenImport specimenImport, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
 		FootnoteDataHolder result = new FootnoteDataHolder();
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
@@ -1540,9 +1541,9 @@ public abstract class MarkupImportBase  {
 		}
 		return result;
 	}
-	
 
-	protected Media handleFigure(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, 
+
+	protected Media handleFigure(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
 			MarkupSpecimenImport specimenImport, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
 		// FigureDataHolder result = new FigureDataHolder();
 
@@ -1605,7 +1606,7 @@ public abstract class MarkupImportBase  {
 	 * @param numString
 	 * @param next
 	 */
-	private Media makeFigure(MarkupImportState state, String id, String type, String urlString, 
+	private Media makeFigure(MarkupImportState state, String id, String type, String urlString,
 			String legendString, String titleString, String numString, XMLEvent next) {
 		Media media = null;
 //		boolean isFigure = false;  //no difference between figure and media since v3.3
@@ -1624,7 +1625,7 @@ public abstract class MarkupImportBase  {
 				fireWarningEvent(message, next, 2);
 			}
 			media = docImport.getImageMedia(urlString, docImport.getReadMediaData());
-			
+
 			if (media != null){
 				// title
 				if (StringUtils.isNotBlank(titleString)) {
@@ -1652,7 +1653,7 @@ public abstract class MarkupImportBase  {
 				// text
 				// do nothing
 				registerGivenFigure(state, next, id, media);
-				
+
 			}else{
 				String message = "No media found: ";
 				fireWarningEvent(message, next, 4);
@@ -1669,7 +1670,7 @@ public abstract class MarkupImportBase  {
 
 		return media;
 	}
-	
+
 
 	private void registerGivenFigure(MarkupImportState state, XMLEvent next, String id, Media figure) {
 		state.registerFigure(id, figure);
@@ -1681,7 +1682,7 @@ public abstract class MarkupImportBase  {
 		}
 		save(figure, state);
 	}
-	
+
 
 	private FootnoteDataHolder handleFootnoteRef(MarkupImportState state,
 			XMLEventReader reader, XMLEvent parentEvent)
@@ -1690,7 +1691,7 @@ public abstract class MarkupImportBase  {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		result.ref = getAndRemoveAttributeValue(attributes, REF);
 		checkNoAttributes(attributes, parentEvent);
-		
+
 		// text is not handled, needed only for debugging purposes
 		String text = "";
 		while (reader.hasNext()) {
@@ -1757,7 +1758,7 @@ public abstract class MarkupImportBase  {
 					String message = "footnoteString is not in text mode";
 					fireWarningEvent(message, next, 6);
 				} else {
-					text += next.asCharacters().getData().trim(); 
+					text += next.asCharacters().getData().trim();
 					// getCData(state, reader, next); does not work as we have inner tags like <references>
 				}
 			} else {
@@ -1769,7 +1770,7 @@ public abstract class MarkupImportBase  {
 	}
 
 	private static final List<String> htmlList = Arrays.asList("sub", "sup",
-			"ol", "ul", "li", "i", "b", "table", "br","tr","td");
+			"ol", "ul", "li", "i", "b", "table", "br","tr","td","th");
 
 	protected boolean isHtml(XMLEvent event) {
 		if (event.isStartElement()) {
@@ -1783,7 +1784,7 @@ public abstract class MarkupImportBase  {
 		}
 
 	}
-	
+
 
 	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -1812,7 +1813,7 @@ public abstract class MarkupImportBase  {
 		save(reference, state);
 		return result;
 	}
-	
+
 
 	/**
 	 * Handle string
@@ -1830,6 +1831,7 @@ public abstract class MarkupImportBase  {
 			String message = "class attribute for <string> not yet implemented";
 			fireWarningEvent(message, parentEvent, 2);
 		}
+		boolean isHabitat = false;
 
 		// subheadings
 		Map<String, String> subHeadingMap = new HashMap<String, String>();
@@ -1841,6 +1843,12 @@ public abstract class MarkupImportBase  {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				putCurrentSubheading(subHeadingMap, currentSubheading, text);
+				if (isHabitat ){
+				    if (currentSubheading != null && ! isHabitatHeading(currentSubheading) || isNotBlank(text)){
+				        String message = "String is habitat but currentSubHeading or text is not blank: " + CdmUtils.concat(", ", currentSubheading, text);
+				        fireWarningEvent(message, next, 4);
+				    }
+				}
 				return subHeadingMap;
 			} else if (isStartingElement(next, BR)) {
 				text += "<br/>";
@@ -1894,8 +1902,8 @@ public abstract class MarkupImportBase  {
 				//TODO  //TODO test handleSimpleAnnotation
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, HABITAT)) {
-				//TODO
-				handleNotYetImplementedElement(next);
+			    featureImport.handleHabitat(state, reader, next);
+			    isHabitat = true;
 			} else if (isStartingElement(next, FIGURE_REF)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -1920,9 +1928,18 @@ public abstract class MarkupImportBase  {
 		}
 		throw new IllegalStateException("<String> has no closing tag");
 	}
-	
 
-	/**
+
+    /**
+     * @param currentSubheading
+     * @return
+     */
+    private boolean isHabitatHeading(String heading) {
+        return heading.trim().matches("Ecol(ogy)?\\.?");
+    }
+
+
+    /**
 	 * @param subHeadingMap
 	 * @param currentSubheading
 	 * @param text
@@ -1944,8 +1961,8 @@ public abstract class MarkupImportBase  {
 		string = replaceStart(string, "--");
 		return string;
 	}
-	
-	
+
+
 	/**
 	 * @param value
 	 * @param replacementString
@@ -1959,14 +1976,14 @@ public abstract class MarkupImportBase  {
 		}
 		return value;
 	}
-	
+
 
 	private String handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
 		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
 		String frequencyValue =getAndRemoveAttributeValue(attributes, FREQUENCY);
-		
+
 
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
@@ -1980,7 +1997,7 @@ public abstract class MarkupImportBase  {
 					String label = CdmUtils.removeTrailingDot(normalize(text));
 					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
-					
+
 					//status
 					PresenceAbsenceTerm status = null;
 					if (isNotBlank(statusValue)){
@@ -1988,7 +2005,7 @@ public abstract class MarkupImportBase  {
 							status = state.getTransformer().getPresenceTermByKey(statusValue);
 							if (status == null){
 								//TODO
-								String message = "The presence/absence status '%s' could not be transformed to an CDM status";								
+								String message = "The presence/absence status '%s' could not be transformed to an CDM status";
 								fireWarningEvent(String.format(message, statusValue), next, 4);
 							}
 						} catch (UndefinedTransformerMethodException e) {
@@ -2002,15 +2019,15 @@ public abstract class MarkupImportBase  {
 						String message = "The frequency attribute is currently not yet available in CDM";
 						fireWarningEvent(message, parentEvent, 6);
 					}
-					
+
 					NamedArea higherArea = null;
-					List<NamedArea> areas = new ArrayList<NamedArea>(); 
-					
+					List<NamedArea> areas = new ArrayList<NamedArea>();
+
 					String patSingleArea = "([^,\\(]{3,})";
 					String patSeparator = "(,|\\sand\\s)";
 					String hierarchiePattern = String.format("%s\\((%s(%s%s)*)\\)",patSingleArea, patSingleArea, patSeparator, patSingleArea);
 					Pattern patHierarchie = Pattern.compile(hierarchiePattern, Pattern.CASE_INSENSITIVE);
-					Matcher matcher = patHierarchie.matcher(label); 
+					Matcher matcher = patHierarchie.matcher(label);
 					if (matcher.matches()){
 						String higherAreaStr = matcher.group(1).trim();
 						higherArea =  makeArea(state, higherAreaStr, level);
@@ -2029,7 +2046,7 @@ public abstract class MarkupImportBase  {
 						NamedArea singleArea = makeArea(state, label, level);
 						areas.add(singleArea);
 					}
-					
+
 					for (NamedArea area : areas){
 						//create distribution
 						Distribution distribution = Distribution.NewInstance(area,status);
@@ -2053,10 +2070,10 @@ public abstract class MarkupImportBase  {
 			}
 		}
 		throw new IllegalStateException("<DistributionLocality> has no closing tag");
-	}	
+	}
 
-	
-//********************************************** OLD *************************************	
+
+//********************************************** OLD *************************************
 
 //	protected boolean testAdditionalElements(Element parentElement, List<String> excludeList){
 //		boolean result = true;
@@ -2069,8 +2086,8 @@ public abstract class MarkupImportBase  {
 //		}
 //		return result;
 //	}
-//	
-//	
+//
+//
 //	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
 //		T result = null;
 //		String linkType = element.getAttributeValue("linkType");
@@ -2099,8 +2116,8 @@ public abstract class MarkupImportBase  {
 //		}
 //		return result;
 //	}
-//	
-//	
+//
+//
 //	protected Reference makeAccordingTo(Element elAccordingTo, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 //		Reference result = null;
 //		if (elAccordingTo != null){
@@ -2111,7 +2128,7 @@ public abstract class MarkupImportBase  {
 //			childName = "Simple";
 //			obligatory = true;
 //			Element elSimple = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
-//			
+//
 //			if (elAccordingToDetailed != null){
 //				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 //			}else{
@@ -2122,8 +2139,8 @@ public abstract class MarkupImportBase  {
 //		}
 //		return result;
 //	}
-//	
-//	
+//
+//
 //	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 //		Reference result = null;
 //		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
@@ -2133,13 +2150,13 @@ public abstract class MarkupImportBase  {
 //			boolean obligatory = false;
 //			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
 //			makeAccordingToAuthorTeam(elAuthorTeam, success);
-//			
+//
 //			//PublishedIn
 //			childName = "PublishedIn";
 //			obligatory = false;
 //			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
 //			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
-//			
+//
 //			//MicroReference
 //			childName = "MicroReference";
 //			obligatory = false;
@@ -2147,7 +2164,7 @@ public abstract class MarkupImportBase  {
 //			String microReference = elMicroReference.getTextNormalize();
 //			if (CdmUtils.Nz(microReference).equals("")){
 //				//TODO
-//				logger.warn("MicroReference not yet implemented for AccordingToDetailed");	
+//				logger.warn("MicroReference not yet implemented for AccordingToDetailed");
 //			}
 //		}
 //		return result;

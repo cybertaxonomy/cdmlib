@@ -56,7 +56,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private final MarkupKeyImport keyImport;
 
 	private final MarkupModsImport modsImport;
-	private final MarkupFeatureImport featureImport;
 	private final MarkupSpecimenImport specimenImport;
 	private final MarkupNomenclatureImport nomenclatureImport;
 

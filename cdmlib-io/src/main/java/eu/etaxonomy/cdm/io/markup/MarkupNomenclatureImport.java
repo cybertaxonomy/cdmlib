@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @created 30.05.2012
- * 
+ *
  */
 public class MarkupNomenclatureImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
@@ -59,7 +59,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 //	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
 
-	private MarkupSpecimenImport specimenImport;
+	private final MarkupSpecimenImport specimenImport;
 
 	public MarkupNomenclatureImport(MarkupDocumentImport docImport, MarkupSpecimenImport specimenImport) {
 		super(docImport);
@@ -187,7 +187,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	/**
 	 * Creates the name defined by a nom tag. Adds it to the given homotypical
 	 * group (if not null).
-	 * 
+	 *
 	 * @param state
 	 * @param reader
 	 * @param parentEvent
@@ -195,7 +195,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader, 
+	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
@@ -218,7 +218,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		Map<String, String> nameMap = new HashMap<String, String>();
 		String text = "";
-		
+
 		boolean nameFilled = false;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -250,7 +250,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, NOTES)) {
 				handleNotYetImplementedElement(next);
-			} else if (isStartingElement(next, ANNOTATION)) {
+			} else if (isStartingElement(next, NOMENCLATURAL_NOTES)) {
+                handleNotYetImplementedElement(next);
+            } else if (isStartingElement(next, ANNOTATION)) {
 				handleNotYetImplementedElement(next);
 			} else {
 				handleUnexpectedElement(next);
@@ -265,7 +267,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * Usually this is not expected except for some information that is already handled
 	 * elsewhere, e.g. the string Nametype is holding information that is available already
 	 * via the surrounding nametype tag. Therefore this information can be neglected.
-	 * This method is open for upcoming cases which need to be handled. 
+	 * This method is open for upcoming cases which need to be handled.
 	 * @param state
 	 * @param event
 	 * @param text
@@ -277,21 +279,21 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 		text = text.trim();
 		//neglect known redundant strings
-		if (isNameType && (text.matches("(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type\\:$") 
+		if (isNameType && (text.matches("(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type\\:$")
 							|| charIsSimpleType(text) )){
 			return;
 		}//neglect meaningless punctuation
 		else if (isPunctuation(text)){
-			return;	
+			return;
 		}//neglect mea
 		else if (isPunctuation(text)){
-			return;	
+			return;
 		}else{
 			String message = "Unhandled text in <nom> tag: \"%s\"";
 			fireWarningEvent(String.format(message, text), event, 4);
 		}
 	}
-	
+
 	/**
 	 * @param state
 	 * @param reader
@@ -475,7 +477,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	/**
-	 * @param state 
+	 * @param state
 	 * @param name
 	 * @param event
 	 * @param authorStr
@@ -483,7 +485,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, NonViralName<?> name, 
+	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, NonViralName<?> name,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
@@ -516,9 +518,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				name.setExBasionymAuthorship(authorAndEx[1]);
 			}
 		}
-		
+
 		//remember author for following citations
-		state.setLatestAuthorInHomotype((TeamOrPersonBase<?>)name.getCombinationAuthorship());
+		state.setLatestAuthorInHomotype(name.getCombinationAuthorship());
 	}
 
 	private TeamOrPersonBase<?>[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
@@ -542,7 +544,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	/**
 	 * Returns the (empty) name with the correct homotypical group depending on
 	 * the taxon status. Throws NPE if no currentTaxon is set in state.
-	 * 
+	 *
 	 * @param state
 	 * @param homotypicalGroup
 	 * @param isSynonym
@@ -652,7 +654,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	/**
 	 * Tests if the names rank is consistent with the given author strings.
 	 * NOTE: Tags for authors are differ depending on the rank.
-	 * 
+	 *
 	 * @param name
 	 * @param event
 	 * @param authorStr
@@ -717,19 +719,19 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			reference.getInBook().setDatePublished(timeperiod);
 		}
 		reference.setDatePublished(timeperiod);
-		
+
 		//Quickfix for these 2 attributes used in feature.references
 		Reference<?> inRef = reference.getInReference() == null ? reference : reference.getInReference();
 		//publocation
 		if (StringUtils.isNotEmpty(publisher)){
 			inRef.setPublisher(publisher);
 		}
-		
+
 		//publisher
 		if (StringUtils.isNotEmpty(publocation)){
 			inRef.setPlacePublished(publocation);
 		}
-		
+
 		// TODO
 		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };
 		for (String unhandled : unhandledList) {
@@ -748,7 +750,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		return reference;
 	}
 
-	
+
 	/**
 	 * Handles references used in the citation tag
 	 * @see #handleNonCitationSpecific(String, String, String, String, String, String, String, String)
@@ -756,7 +758,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	private Reference<?> handleCitationSpecific(MarkupImportState state,
 			String type, String authorStr, String titleStr, String titleCache,
 			String volume, String edition, String editors, String pubName, String pages, Map<String, String> refMap, XMLEvent parentEvent) {
-		
+
 		if (titleStr != null){
 			String message = "Currently it is not expected that a titleStr exists in a citation";
 			fireWarningEvent(message, parentEvent, 4);
@@ -785,7 +787,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			book.setTitle(pubName);
 			book.setVolume(volume);
 			book.setEdition(edition);
-			
+
 			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
 				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
 				book.setAuthorship(inAuthor);
@@ -804,7 +806,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			reference = ReferenceFactory.newGeneric();
 			reference.setTitle(pubName);
 			reference.setEdition(edition);
-			
+
 			//volume indicates an in-reference
 			if (isNotBlank(volume)){
 				Reference<?> partOf = ReferenceFactory.newGeneric();
@@ -832,13 +834,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				String message = "Edition not yet handled for incomplete citations";
 				fireWarningEvent(message, parentEvent, 4);
 			}
-			
+
 		}else{
 			String message = "Unhandled reference type: %s" ;
 			fireWarningEvent(String.format(message, refType.toString()), parentEvent, 8);
 			reference = ReferenceFactory.newGeneric();
 		}
-		
+
 		//author
 		TeamOrPersonBase<?> author;
 		if (isBlank(authorStr)){
@@ -851,20 +853,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			state.setLatestAuthorInHomotype(author);
 			reference.setAuthorship(author);
 		}
-		
+
 
 		//title, titleCache
 		handleTitlesInCitation(titleStr, titleCache, parentEvent, reference);
 
 		//editors
 		handleEditorsInCitation(edition, editors, reference, parentEvent);
-		
+
 		//pages
 		handlePages(state, refMap, parentEvent, reference, pages);
-		
+
 		//remember reference for following citation
 		state.setLatestReferenceInHomotype(reference);
-		
+
 		return reference;
 	}
 
@@ -899,8 +901,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		Generic,
 		LatestUsed
 	}
-	
-	private RefType defineRefTypeForCitation(String type, String volume, String editors, 
+
+	private RefType defineRefTypeForCitation(String type, String volume, String editors,
 			String authorStr, String pubName, XMLEvent parentEvent) {
 		if ("journal".equalsIgnoreCase(type)){
 			return RefType.Article;
@@ -971,7 +973,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (StringUtils.isNotBlank(titleCache)) {
 			reference.setTitleCache(titleCache, true);
 		}
-		
+
 		//edition
 		reference.setEdition(edition);
 		reference.setEditor(editors);
@@ -987,7 +989,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			inReference.setTitle(pubName);
 			reference.setInReference(inReference);
 		}
-		
+
 		//volume
 		reference.setVolume(volume);
 		return reference;
@@ -1008,7 +1010,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 						reference.setPages(pages);
 					}else{
 						//handle pages as detail, this is at least true for Flora Malesiana
-						refMap.put(DETAILS, pages); 
+						refMap.put(DETAILS, pages);
 					}
 				}else{
 					if (! pages.contains("-")){
