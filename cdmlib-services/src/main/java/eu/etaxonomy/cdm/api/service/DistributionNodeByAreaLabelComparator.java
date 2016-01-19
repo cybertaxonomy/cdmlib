@@ -11,13 +11,23 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Comparator;
 import java.util.Set;
 
+import org.codehaus.plexus.util.StringUtils;
+
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 public class DistributionNodeByAreaLabelComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
     @Override
-    public int compare(TreeNode<Set<Distribution>, NamedArea> arg0, TreeNode<Set<Distribution>, NamedArea> arg1) {
-        return arg0.getNodeId().getLabel().compareTo(arg1.getNodeId().getLabel());
+    public int compare(TreeNode<Set<Distribution>, NamedArea> node1, TreeNode<Set<Distribution>, NamedArea> node2) {
+        String label1 = node1.getNodeId().getLabel();
+        String label2 = node2.getNodeId().getLabel();
+        if (StringUtils.isBlank(label1)){
+            label1 = node1.getNodeId().getUuid().toString();
+        }
+        if (StringUtils.isBlank(label2)){
+            label2 = node2.getNodeId().getUuid().toString();
+        }
+        return label1.compareTo(label2);
     }
 }
