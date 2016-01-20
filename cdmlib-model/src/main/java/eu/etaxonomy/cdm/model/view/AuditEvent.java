@@ -41,6 +41,7 @@ public class AuditEvent implements Serializable {
 	private UUID uuid;
 
     @Id
+//    @GeneratedValue(strategy=GenerationType.AUTO)  // (generator = "custom-enhanced-table")  //see also CdmBase.id
     @GeneratedValue(generator = "custom-enhanced-table")  //see also CdmBase.id
     @RevisionNumber
     private Integer revisionNumber;

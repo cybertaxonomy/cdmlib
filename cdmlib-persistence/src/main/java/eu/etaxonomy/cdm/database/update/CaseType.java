@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * Tables may be stored in different cases: CamelCase (preferred), upper case (capital), or lower case,
  * depending on the database preferences.
  * This enumeration is defining the case used.
- *  
+ *
  * @author a.mueller
  *
  */
@@ -27,7 +27,12 @@ public enum CaseType {
 	CamelCase,
 	UpperCase,
 	LowerCase;
-	
+
+	/**
+	 * Transforms the camel case table name to the required case
+	 * @param camelCaseTableName
+	 * @return the transformed table name
+	 */
 	public String transformTo(String camelCaseTableName){
 		if (camelCaseTableName == null){
 			return null;
@@ -41,7 +46,7 @@ public enum CaseType {
 			throw new RuntimeException("Unhandled CaseType: " + this);
 		}
 	}
-	
+
 
     /**
      * Defines the CaseType (camel, upper, lower) of a datasource depending on the case used for the CdmMetaData table.
@@ -50,7 +55,7 @@ public enum CaseType {
      */
     public static CaseType caseTypeOfDatasource(ICdmDataSource datasource) {
 		String sql = "SELECT value FROM ";
-    	
+
     	try {
 			datasource.executeQuery(sql +  "CdmMetaData");
 			return CaseType.CamelCase;
@@ -72,22 +77,22 @@ public enum CaseType {
 
 	/**
 	 * Replaces all words marked with @@ at the beginning and end by the correctly cased name.
-	 * E.g. it replaces <i>@@CdmMetaData@@</i> by <i>cdmmetadata</i> if {@link CaseType} is 
-	 * {@link CaseType#LowerCase} 
+	 * E.g. it replaces <i>@@CdmMetaData@@</i> by <i>cdmmetadata</i> if {@link CaseType} is
+	 * {@link CaseType#LowerCase}
 	 * @param sql the original sql string with masked table names
 	 * @return the corrected sql string
 	 */
 	public String replaceTableNames(String sql) {
 		Pattern pattern = Pattern.compile("@@[a-zA-Z_]+@@");
-		
+
 		Matcher matcher = pattern.matcher(sql);
 		while (matcher.find()){
 			String newName = transformTo(matcher.group().replaceAll("@", ""));
 			sql = sql.replace(matcher.group(), newName);
 			matcher = pattern.matcher(sql);
 		}
-		
+
 		return sql;
 	}
-	
+
 }
