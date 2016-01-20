@@ -27,19 +27,12 @@ public class CdmTermCacher extends CdmCacher {
         DefinedTermBase.setCacher(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.cache.CdmCacher#findByUuid(java.util.UUID)
-	 */
 	@Override
 	protected  CdmBase findByUuid(UUID uuid) {
 		return termService.findWithoutFlush(uuid);
 	}
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#isCachable(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isCachable(CdmBase cdmEntity) {
         if(cdmEntity != null && cdmEntity instanceof DefinedTermBase) {
@@ -48,9 +41,6 @@ public class CdmTermCacher extends CdmCacher {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.cache.CdmCacher#load(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public CdmBase load(CdmBase cdmEntity) {
 
@@ -62,9 +52,4 @@ public class CdmTermCacher extends CdmCacher {
         return cachedCdmEntity;
 
     }
-
-
-
-
-
 }

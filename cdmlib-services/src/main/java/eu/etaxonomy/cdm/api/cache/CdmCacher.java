@@ -2,14 +2,14 @@ package eu.etaxonomy.cdm.api.cache;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.ICdmUuidCacher;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
-import eu.etaxonomy.cdm.model.ICdmUuidCacher;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * CDM Entity Cacher class based on EhCache.
@@ -65,12 +65,12 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size
         return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
-        .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-        .eternal(false)
-        // default ttl and tti set to 2 hours
-        .timeToLiveSeconds(60*60*2)
-        .timeToIdleSeconds(60*60*2)
-        .statistics(true);
+                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+                .eternal(false)
+                // default ttl and tti set to 2 hours
+                .timeToLiveSeconds(60*60*2)
+                .timeToIdleSeconds(60*60*2)
+                .statistics(true);
 
     }
 
@@ -102,9 +102,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         return getDefaultCache().get(uuid);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#put(java.util.UUID, eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public  void put(UUID uuid, CdmBase cdmEntity) {
         CdmBase cachedCdmEntity = getFromCache(uuid);
@@ -113,11 +110,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         }
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
-     */
     @Override
     public CdmBase load(UUID uuid) {
         Element e = getCacheElement(uuid);
@@ -141,9 +133,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
-     */
     @Override
     public  CdmBase getFromCache(UUID uuid) {
         Element e = getCacheElement(uuid);
@@ -154,20 +143,12 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public CdmBase getFromCache(CdmBase cdmBase) {
         return getFromCache(cdmBase.getUuid());
     }
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#put(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public void put(CdmBase cdmEntity) {
         if(cdmEntity != null) {
@@ -175,27 +156,15 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#load(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public abstract CdmBase load(CdmBase cdmEntity);
 
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#exists(java.util.UUID)
-     */
     @Override
     public boolean exists(UUID uuid) {
         return getCacheElement(uuid) != null;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#exists(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean exists(CdmBase cdmBase) {
         if(cdmBase != null) {
@@ -205,9 +174,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.ICdmCacher#existsAndIsNotNull(java.util.UUID)
-     */
     @Override
     public boolean existsAndIsNotNull(UUID uuid) {
         Element e = getCacheElement(uuid);
@@ -225,7 +191,5 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      * @return
      */
     protected abstract CdmBase findByUuid(UUID uuid);
-
-
 
 }
