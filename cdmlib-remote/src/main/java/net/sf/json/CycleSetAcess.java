@@ -14,7 +14,7 @@ package net.sf.json;
  * Base class for JSON Beanprocessors.
  *
  * This class must be located in the net.sf.json since it
- * need access to the protected static methods in {@link JSONObject}
+ * needs access to the protected static methods in {@link JSONObject}
  *
  * @author a.kohlbecker
  * @date 19.03.2009
