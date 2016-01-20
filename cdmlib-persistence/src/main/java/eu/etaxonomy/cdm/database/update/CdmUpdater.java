@@ -74,7 +74,7 @@ public class CdmUpdater {
     public static CdmUpdater NewInstance(){
         return new CdmUpdater();
     }
-    
+
 
     private ITermUpdater getCurrentTermUpdater() {
         return TermUpdater_35_36.NewInstance();
@@ -160,7 +160,7 @@ public class CdmUpdater {
             while (rs.next()){
                 String table = rs.getString("sequence_name");
                 Integer val = rs.getInt("next_val");
-                result &= updateSingleValue(datasource,monitor, table, val, caseType);
+                result &= updateSingleValue(datasource, monitor, table, val, caseType);
             }
         } catch (Exception e) {
             String message = "Exception occurred when trying to update hibernate_sequences table: " + e.getMessage();
@@ -189,8 +189,9 @@ public class CdmUpdater {
         try {
             Integer newVal;
             try {
-                String sql = " SELECT max(id) FROM %s ";
-                newVal = (Integer)datasource.getSingleValue(String.format(sql, caseType.transformTo(table)));
+                String id = table.equalsIgnoreCase("AuditEvent")? "revisionNumber" : "id";
+                String sql = " SELECT max(%s) FROM %s ";
+                newVal = (Integer)datasource.getSingleValue(String.format(sql, id, caseType.transformTo(table)));
             } catch (Exception e) {
                 String message = "Could not retrieve max value for table '%s'. Will not update hibernate_sequence for this table. " +
                         "Usually this will not cause problems, however, if new data has been added to " +
