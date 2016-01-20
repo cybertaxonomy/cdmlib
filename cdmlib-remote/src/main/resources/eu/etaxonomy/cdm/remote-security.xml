@@ -13,5 +13,6 @@
     <!-- (from http://docs.spring.io/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#el-access) -->
     <security:intercept-url pattern="/remoting/**" access="isFullyAuthenticated()" />
     <security:http-basic />
+    <security:csrf disabled="true"/>
   </security:http>
 </beans>
