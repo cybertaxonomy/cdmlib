@@ -230,10 +230,13 @@
           </execution>
         </executions>
       </plugin>
+      
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.1.3.v20140225</version>
+        <version>9.1.3.v20140225</version><!-- do not update, since later versions are no longer compatible to java 7  -->
+        <dependencies>
+        </dependencies>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
@@ -241,10 +244,21 @@
           <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
           <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->
           <systemProperties>
+            <force>true</force>
             <systemProperty>
               <name>cdm.datasource</name>
               <value>h2_cdmTest</value>
             </systemProperty>
+            <systemProperty>
+              <!-- 
+                The lucene index should be placed into the target folder,
+                so user.home needs to be set to this folder.
+                user.home needs to be overriden since it already 
+                exists, thus the force option is turned on above 
+              -->
+              <name>user.home</name>
+              <value>${basedir}/target/</value>
+            </systemProperty>            
             <systemProperty>
               <!-- datasources.xml is prepared by <plugins><resources>..</resources>
                 above -->
