@@ -20,7 +20,7 @@
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
-    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence_test.xml" />
 
     <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
 </beans>
