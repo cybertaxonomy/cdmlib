@@ -48,7 +48,7 @@ public class HibernateProxyHelper {
 
 
 	public static boolean isInstanceOf(Object object, Class clazz) throws ClassCastException {
-	     if (clazz == null){
+	     if (clazz == null || object == null){
 	    	 return false;
 	     }
 		 if (object instanceof HibernateProxy) {
