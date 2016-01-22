@@ -222,9 +222,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "legitimate" or a kind of "legitimate" (true)
-	 * or not (false). - this corresponds to "valid" for {@link ZoologicalName zoological names} -.
+	 * or not (false). Corresponds to "valid" for {@link ZoologicalName zoological names}.<BR>
 	 * Returns false if <i>this</i> nomenclatural status type is null.<BR>
-	 * A "valid" ("available") {@link TaxonNameBase taxon name}, unless "rejected",
+	 * A "valid" (zool.: "available") {@link TaxonNameBase taxon name}, unless "rejected",
 	 * is "legitimate" if it was not "superfluous" when published
 	 * or has been later "conserved".<BR>
 	 *
