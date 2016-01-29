@@ -1246,6 +1246,13 @@
       <dependency>
         <groupId>com.mchange</groupId>
         <artifactId>c3p0</artifactId>
+        <!-- 
+          IMPORTANT!!!
+          when changing the version of this artifact, the 
+          version in cdm-server pom.xml must be changed 
+          the same otherwise db connections through jndi 
+          will not work!
+        -->
         <version>0.9.5.2</version>
       </dependency>
       <dependency>
