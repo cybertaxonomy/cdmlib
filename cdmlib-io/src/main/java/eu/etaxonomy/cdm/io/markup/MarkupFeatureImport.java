@@ -472,14 +472,11 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		if (StringUtils.isNotBlank(heading)) {
 			if (!heading.equalsIgnoreCase(classValue)) {
 				try {
-					if (!feature.equals(state.getTransformer().getFeatureByKey(
-							heading))) {
-						UUID headerFeatureUuid = state.getTransformer()
-								.getFeatureUuid(heading);
+					if (!feature.equals(state.getTransformer().getFeatureByKey(heading))) {
+						UUID headerFeatureUuid = state.getTransformer().getFeatureUuid(heading);
 						if (!feature.getUuid().equals(headerFeatureUuid)) {
 							String message = "Feature heading '%s' differs from feature class '%s' and can not be transformed to feature";
-							message = String.format(message, heading,
-									classValue);
+							message = String.format(message, heading, classValue);
 							fireWarningEvent(message, next, 1);
 						}
 					}

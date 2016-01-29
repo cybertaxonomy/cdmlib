@@ -1844,8 +1844,8 @@ public abstract class MarkupImportBase  {
 			if (isMyEndingElement(next, parentEvent)) {
 				putCurrentSubheading(subHeadingMap, currentSubheading, text);
 				if (isHabitat ){
-				    if (currentSubheading != null && ! isHabitatHeading(currentSubheading) || isNotBlank(text)){
-				        String message = "String is habitat but currentSubHeading or text is not blank: " + CdmUtils.concat(", ", currentSubheading, text);
+				    if (currentSubheading != null && ! isHabitatHeading(currentSubheading) || ! isBlankOrPunctuation(text)){
+				        String message = "String is habitat but currentSubHeading or text is not blank: " + CdmUtils.concat(": ", currentSubheading, text);
 				        fireWarningEvent(message, next, 4);
 				    }
 				}
@@ -1931,11 +1931,24 @@ public abstract class MarkupImportBase  {
 
 
     /**
+     * @param text2
+     * @return
+     */
+    private boolean isBlankOrPunctuation(String text) {
+        if (text == null){
+            return true;
+        } else {
+            return text.matches("^[\\s\\.,;:]*$");
+        }
+    }
+
+
+    /**
      * @param currentSubheading
      * @return
      */
     private boolean isHabitatHeading(String heading) {
-        return heading.trim().matches("Ecol(ogy)?\\.?");
+        return heading.trim().matches("(Ecol(ogy)?|Habitat|Habitat\\s&\\sEcology)\\.?");
     }
 
 
