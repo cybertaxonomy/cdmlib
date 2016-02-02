@@ -582,4 +582,24 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return pager;
     }
 
+    @Override
+    @Transactional
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref){
+        UpdateResult result = new UpdateResult();
+        TaxonNode parent = dao.load(parentNodeUuid);
+        TaxonNode child = null;
+        try{
+            child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
+        }catch(Exception e){
+            logger.info("TaxonNode could not be created.");
+        }
+        child = dao.save(child);
+
+//        MergeResult mergeResult = dao.merge(child, true);
+        result.addUpdatedObject(parent);
+        result.setCdmEntity(child);
+        return result;
+
+    }
+
 }
