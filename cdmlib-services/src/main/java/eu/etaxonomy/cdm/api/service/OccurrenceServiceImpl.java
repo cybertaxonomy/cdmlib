@@ -1411,7 +1411,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
                         if(!associatedTaxa.isEmpty()){
                             specimenWithAssociations.add(specimenOrObservationBase);
-                            specimenWithAssociations.addAll(getFieldUnits(specimenOrObservationBase.getUuid()));
                         }
                     }
                 }
