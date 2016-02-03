@@ -1560,13 +1560,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid) {
 
         int classificationId = classification.getId();
-        StringBuffer excludeUuids = new StringBuffer();
+       // StringBuffer excludeUuids = new StringBuffer();
 
 
         String queryString = "SELECT nodes.uuid, nodes.id, taxa.titleCache FROM TaxonNode AS nodes, Taxon AS taxa WHERE nodes.taxon = taxa AND nodes.classification.id = " + classificationId ;
         @SuppressWarnings("unchecked")
         List<Object[]> result;
-        if (excludeUuid != null){
+        if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
             queryString = queryString + " AND taxa.uuid NOT IN (:excludeUuid)" ;
 
             result = getSession().createQuery(queryString).setParameterList("excludeUuid", excludeUuid).list();
