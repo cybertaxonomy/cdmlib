@@ -593,9 +593,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }catch(Exception e){
             logger.info("TaxonNode could not be created.");
         }
-        child = dao.save(child);
+//        child = dao.save(child);
 
-//        MergeResult mergeResult = dao.merge(child, true);
+        dao.saveOrUpdate(parent);
         result.addUpdatedObject(parent);
         result.setCdmEntity(child);
         return result;
