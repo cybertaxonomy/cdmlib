@@ -169,7 +169,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[a-z]?" + "(\\("+ nr4  + "\\))?";
+    protected static String volume = nr4 + "[a-z]?" + "(\\("+ nr4  + "(-"+nr4+")?\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
