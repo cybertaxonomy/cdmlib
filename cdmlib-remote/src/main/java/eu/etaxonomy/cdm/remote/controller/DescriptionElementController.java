@@ -110,25 +110,25 @@ public class DescriptionElementController
     }
 
 
-    @RequestMapping(method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public ModelAndView doGetDescriptionElement(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        ModelAndView mv = new ModelAndView();
-        logger.info("doGetDescriptionElement() - " + request.getRequestURI());
-        DescriptionElementBase element = service.loadDescriptionElement(uuid, getInitializationStrategy());
-        if(element == null) {
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
-        mv.addObject(element);
-        return mv;
-    }
+//    @RequestMapping(method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
+//    public ModelAndView doGetDescriptionElement(
+//            @PathVariable("uuid") UUID uuid,
+//            HttpServletRequest request,
+//            HttpServletResponse response) throws IOException {
+//
+//        ModelAndView mv = new ModelAndView();
+//        logger.info("doGetDescriptionElement() - " + request.getRequestURI());
+//        DescriptionElementBase element = service.loadDescriptionElement(uuid, getInitializationStrategy());
+//        if(element == null) {
+//            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+//        }
+//        mv.addObject(element);
+//        return mv;
+//    }
 
     @RequestMapping(value = "annotations", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<Annotation> doGetDescriptionElementAnnotations(
-            @PathVariable("descriptionelement_uuid") UUID uuid,
+            @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetDescriptionElementAnnotations() - " + request.getRequestURI());
@@ -145,7 +145,7 @@ public class DescriptionElementController
 
     @RequestMapping(value = "states", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGetDescriptionElementStates(
-            @PathVariable("descriptionelement_uuid") UUID uuid,
+            @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetDescriptionElementStates() - " + request.getRequestURI());
