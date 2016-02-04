@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
@@ -112,6 +113,7 @@ public class DescriptionElementListController {
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<Feature>(termService));
         binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<NamedAreaLevel>(termService));
         binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<Rank>(termService));
+        binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
     }
 
 
@@ -189,7 +191,7 @@ public class DescriptionElementListController {
         }
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageNumber, getInitializationStrategy());
+                pageNumber, DESCRIPTION_ELEMENT_INIT_STRATEGY);
         return pager;
     }
 
