@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,7 +27,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -69,7 +69,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	@XmlElement(name = "Breed")
 	@Field
 	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String breed;
 
 	@XmlElement(name = "PublicationYear")

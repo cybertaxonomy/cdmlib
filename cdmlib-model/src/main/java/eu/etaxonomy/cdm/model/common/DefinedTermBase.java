@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -44,7 +45,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -164,7 +164,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
    //open issues: is null allowed? If not, implement unique constraint
 
     @XmlElement(name = "idInVocabulary")
-    @Length(max=255)
+    @Column(length=255)
     //TODO Val #3379, #4245
 //  @NullOrNotEmpty
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479

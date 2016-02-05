@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -21,7 +22,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -40,7 +40,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
-import org.hibernate.validator.constraints.Length;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -114,7 +113,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String collectingMethod;
 
 	/**
@@ -144,7 +143,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 */
 	@XmlElement(name = "AbsoluteElevationText")
 	@Field
-	@Size(max=30)
+    @Column(length=30)
 	private String absoluteElevationText;
 
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
@@ -170,7 +169,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 */
 	@XmlElement(name = "distanceToGroundText")
 	@Field
-	@Size(max=30)
+    @Column(length=30)
 	private String distanceToGroundText;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
@@ -195,7 +194,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 */
 	@XmlElement(name = "distanceToGroundText")
 	@Field
-	@Size(max=30)
+    @Column(length=30)
 	private String distanceToWaterSurfaceText;
 
 

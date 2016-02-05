@@ -14,13 +14,13 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -125,12 +125,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 	/** @see #getGeneticAccessionNumber()*/
 	@XmlElement(name = "GeneticAccessionNumber")
-	@Size(max=20)
+    @Column(length=20)
 	private String geneticAccessionNumber;
 
 	/** @see #getBoldProcessId() */
 	@XmlElement(name = "BoldProcessId")
-	@Size(max=20)
+    @Column(length=20)
 	private String boldProcessId;
 
     @XmlElementWrapper(name = "SingleReadAlignments")
@@ -152,7 +152,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 	/** @see #getHaplotype() */
 	@XmlElement(name = "Haplotype")
-	@Size(max=100)
+    @Column(length=100)
 	private String haplotype;
 
 	/** @see #getCitations() */

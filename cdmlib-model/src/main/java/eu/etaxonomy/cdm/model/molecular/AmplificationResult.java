@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.model.molecular;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -133,7 +133,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     /** @see #getSuccessText() */
     @XmlElement(name = "successText")
 	@Field
-	@Size(max=255)
+    @Column(length=255)
 	private String successText;
 //
 //    /** @see #getGelRunningTime() */

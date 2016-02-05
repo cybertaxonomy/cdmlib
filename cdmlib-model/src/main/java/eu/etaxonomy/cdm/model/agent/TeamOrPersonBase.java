@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,13 +49,13 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     @Field(index=Index.YES)
   //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     protected String nomenclaturalTitle;
 
     //under construction #4311
     @XmlElement(name="CollectorTitle")
     @Field(index=Index.YES)
-    @Size(max = 255)
+    @Column(length=255)
     protected String collectorTitle;
 
 

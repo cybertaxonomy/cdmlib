@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +54,7 @@ public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 	/** @see #getStrain() */
     @XmlElement(name = "strain")
 	@Field
-	@Size(max=100)
+    @Column(length=100)
 	private String strain;
 
     /** @see #getForwardPrimer() */

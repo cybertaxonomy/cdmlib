@@ -13,13 +13,13 @@ package eu.etaxonomy.cdm.model.agent;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -76,14 +76,14 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String code;
 
     @XmlElement(name = "Name")
     @Field
 //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String name;
 
     @XmlElementWrapper(name = "Types", nillable = true)

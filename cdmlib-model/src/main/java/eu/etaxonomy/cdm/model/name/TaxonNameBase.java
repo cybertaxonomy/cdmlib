@@ -27,7 +27,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -119,11 +118,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
     @XmlElement(name = "FullTitleCache")
-    @Column(length=330, name="fullTitleCache")
+    @Column(length=800, name="fullTitleCache")  //see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @CacheUpdate(noUpdate ="titleCache")
     @NotEmpty(groups = Level2.class)
-    @Size(max = 800)  //see #1592
     protected String fullTitleCache;
 
     //if true titleCache will not be automatically generated/updated
@@ -143,7 +141,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @CacheUpdate(value ="nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     private String appendedPhrase;
 
     @XmlElement(name = "NomenclaturalMicroReference")
@@ -151,7 +149,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @CacheUpdate(noUpdate ="titleCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     private String nomenclaturalMicroReference;
 
     @XmlAttribute

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -68,7 +68,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String acronym;
 
 	// ************* CONSTRUCTORS *************/

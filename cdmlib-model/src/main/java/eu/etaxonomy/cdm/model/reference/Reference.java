@@ -45,7 +45,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
@@ -122,8 +121,11 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @ReferenceCheck(groups=Level2.class)
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
-public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
-	private static final long serialVersionUID = -2034764545042691295L;
+public class Reference<S extends IReferenceBaseCacheStrategy>
+        extends IdentifiableMediaEntity<S>
+        implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
+
+    private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
 
 	@XmlAttribute(name ="type")
@@ -143,7 +145,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Match(MatchMode.EQUAL_REQUIRED)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 4096)  //TODO is the length attribute really required twice (see @Column)??
 	private String title;
 
 	//Title of the reference
@@ -151,7 +152,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Field
 	@Match(MatchMode.EQUAL)  //TODO check if this is correct
 	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String abbrevTitle;
 
 	//Title of the reference
@@ -160,7 +161,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Match(MatchMode.CACHE)
     //TODO Val #3379
 //	@NotNull
-	@Length(max = 1024)
+	@Column(length=1024)
 	private String abbrevTitleCache;
 
 	@XmlElement(name = "protectedAbbrevTitleCache")
@@ -174,35 +175,35 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String editor;
 
     @XmlElement(name = "Volume")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String volume;
 
     @XmlElement(name = "Pages")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String pages;
 
     @XmlElement(name = "Edition")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String edition;
 
     @XmlElement(name = "ISBN")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}")
 	protected String isbn;
 
@@ -218,7 +219,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.issn.message}")
 	protected String issn;
 
@@ -226,21 +227,21 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String seriesPart;
 
 	@XmlElement(name = "Organization")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String organization;
 
 	@XmlElement(name = "Publisher")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String publisher;
 
 
@@ -248,7 +249,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+    @Column(length=255)
 	protected String placePublished;
 
 	@XmlElement(name = "Institution")
@@ -308,7 +309,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 
 

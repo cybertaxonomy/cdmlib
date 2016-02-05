@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -31,7 +32,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -72,28 +72,28 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String code;
 
 	@XmlElement(name = "CodeStandard")
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String codeStandard;
 
 	@XmlElement(name = "Name")
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String townOrLocation;
 
 	@XmlElement(name = "Institution")

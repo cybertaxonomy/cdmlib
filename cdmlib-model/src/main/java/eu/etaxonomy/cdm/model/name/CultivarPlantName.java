@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -50,14 +50,16 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Audited
 @Configurable
 public class CultivarPlantName extends BotanicalName implements Cloneable{
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = -7948375817971980004L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CultivarPlantName.class);
 
 	//the characteristical name of the cultivar
     @XmlElement(name = "CultivarName", required = true)
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Length(max = 255)
+    @Column(length=255)
 	private String cultivarName;
 
 	// ************* CONSTRUCTORS *************/
