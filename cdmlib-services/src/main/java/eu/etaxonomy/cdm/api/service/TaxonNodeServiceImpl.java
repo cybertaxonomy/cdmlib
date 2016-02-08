@@ -588,15 +588,27 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         UpdateResult result = new UpdateResult();
         TaxonNode parent = dao.load(parentNodeUuid);
         TaxonNode child = null;
-        try{
-            child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
-        }catch(Exception e){
-            logger.info("TaxonNode could not be created.");
+        if(parent!=null){
+            try{
+                child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
+                dao.saveOrUpdate(parent);
+                result.addUpdatedObject(parent);
+            }catch(Exception e){
+                logger.error("TaxonNode could not be created.");
+            }
+        }
+        else{
+            //check if parent is a classification
+            Classification classification = classService.load(parentNodeUuid);
+            if(classification!=null){
+                child = classification.addChildTaxon(newTaxon, classification.getReference(), classification.getMicroReference());
+                classService.saveOrUpdate(classification);
+                result.addUpdatedObject(classification.getRootNode());
+            }
+
         }
 //        child = dao.save(child);
 
-        dao.saveOrUpdate(parent);
-        result.addUpdatedObject(parent);
         result.setCdmEntity(child);
         return result;
 
