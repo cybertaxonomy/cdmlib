@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -189,10 +190,15 @@ public class MarkupDocumentImport
 		super.fillMissingEpithetsForTaxa(parentTaxon, childTaxon);
 	}
 
-	@Override
+    @Override
     public Feature getFeature(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
 		return super.getFeature(state, uuid, label, text, labelAbbrev, voc);
 	}
+
+    @Override
+    public PresenceAbsenceTerm getPresenceTerm(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm, TermVocabulary<PresenceAbsenceTerm> voc){
+        return super.getPresenceTerm(state, uuid, label, text, labelAbbrev, isAbsenceTerm, voc);
+    }
 
 	@Override
     public ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){

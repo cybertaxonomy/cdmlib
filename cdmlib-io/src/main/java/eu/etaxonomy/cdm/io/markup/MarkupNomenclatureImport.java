@@ -252,6 +252,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, NOMENCLATURAL_NOTES)) {
                 handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+                handleNotYetImplementedElement(next);
             } else if (isStartingElement(next, ANNOTATION)) {
 				handleNotYetImplementedElement(next);
 			} else {

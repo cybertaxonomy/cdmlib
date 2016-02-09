@@ -1040,6 +1040,10 @@ public abstract class MarkupImportBase  {
 		return docImport.getFeature(state, uuid, label, text, labelAbbrev, voc);
 	}
 
+    protected PresenceAbsenceTerm getPresenceAbsenceTerm(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm, TermVocabulary<PresenceAbsenceTerm> voc){
+        return docImport.getPresenceTerm(state, uuid, label, text, labelAbbrev, isAbsenceTerm, voc);
+    }
+
 	protected ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
 		return docImport.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
@@ -1093,6 +1097,8 @@ public abstract class MarkupImportBase  {
 				    return Rank.FORM();
 				}else if (value.toLowerCase().matches("(sub)?(section|genus|series|tribe)")){
 				    return Rank.getRankByEnglishName(value, nc, useUnknown);
+				}else if (value.equals("§")){
+                    return Rank.SECTION_BOTANY();  //Special case in Flora Malesiana
 				}
 			} else {
 				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
@@ -2022,6 +2028,12 @@ public abstract class MarkupImportBase  {
 					if (isNotBlank(statusValue)){
 						try {
 							status = state.getTransformer().getPresenceTermByKey(statusValue);
+							if (status == null){
+							    UUID uuid = state.getTransformer().getPresenceTermUuid(statusValue);
+							    if (uuid != null){
+							        status = this.getPresenceAbsenceTerm(state, uuid, statusValue, statusValue, statusValue, false, null);
+							    }
+							}
 							if (status == null){
 								//TODO
 								String message = "The presence/absence status '%s' could not be transformed to an CDM status";

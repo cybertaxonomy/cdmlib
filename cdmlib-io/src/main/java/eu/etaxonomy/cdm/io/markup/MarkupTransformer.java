@@ -2422,7 +2422,10 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("endemic")){return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 		}else if (key.equalsIgnoreCase("cultivated")){return PresenceAbsenceTerm.CULTIVATED();
 		}else if (key.equalsIgnoreCase("absent")){return PresenceAbsenceTerm.ABSENT();
-		}else{
+		}else if (key.equalsIgnoreCase("native")){return PresenceAbsenceTerm.NATIVE();
+        }else if (key.equalsIgnoreCase("introduced")){return PresenceAbsenceTerm.INTRODUCED();
+        }else if (key.equalsIgnoreCase("naturalized")){return PresenceAbsenceTerm.NATURALISED();
+        }else{
 			return null;
 		}
 	}
