@@ -177,6 +177,7 @@ public abstract class MarkupImportBase  {
 	protected static final String ACCEPTED = "accepted";
 	protected static final String ACCEPTED_NAME = "acceptedName";
 	protected static final String ALTERNATEPUBTITLE = "alternatepubtitle";
+	protected static final String APPENDIX = "appendix";
 	protected static final String AUTHOR = "author";
 	protected static final String DETAILS = "details";
 	protected static final String EDITION = "edition";
@@ -1087,7 +1088,12 @@ public abstract class MarkupImportBase  {
 			if (value.equals(GENUS_ABBREVIATION)){
 				rank = Rank.GENUS();
 			}else if (byAbbrev) {
-				rank = Rank.getRankByIdInVoc(value, nc, useUnknown);
+				rank = Rank.getRankByIdInVoc(value.toLowerCase(), nc, useUnknown);
+				if (value.equalsIgnoreCase("forma")){
+				    return Rank.FORM();
+				}else if (value.toLowerCase().matches("(sub)?(section|genus|series|tribe)")){
+				    return Rank.getRankByEnglishName(value, nc, useUnknown);
+				}
 			} else {
 				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
 			}

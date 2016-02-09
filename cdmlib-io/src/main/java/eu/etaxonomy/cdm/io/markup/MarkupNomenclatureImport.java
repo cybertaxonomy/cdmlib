@@ -703,14 +703,15 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String pages = getAndRemoveMapKey(refMap, PAGES);
 		String publocation = getAndRemoveMapKey(refMap, PUBLOCATION);
 		String publisher = getAndRemoveMapKey(refMap, PUBLISHER);
+		String appendix = getAndRemoveMapKey(refMap, APPENDIX);
 
 		if (state.isCitation()) {
 			reference = handleCitationSpecific(state, type, authorStr,
-					titleStr, titleCache, volume, edition, editors, pubName, pages, refMap, parentEvent);
+					titleStr, titleCache, volume, edition, editors, pubName, pages, appendix, refMap, parentEvent);
 
 		} else { // no citation
 			reference = handleNonCitationSpecific(type, authorStr, titleStr,
-					titleCache, volume, edition, editors, pubName);
+					titleCache, volume, edition, editors, pubName, appendix);
 		}
 
 		//year
@@ -753,11 +754,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	/**
 	 * Handles references used in the citation tag
+	 * @param appendix
 	 * @see #handleNonCitationSpecific(String, String, String, String, String, String, String, String)
 	 */
 	private Reference<?> handleCitationSpecific(MarkupImportState state,
 			String type, String authorStr, String titleStr, String titleCache,
-			String volume, String edition, String editors, String pubName, String pages, Map<String, String> refMap, XMLEvent parentEvent) {
+			String volume, String edition, String editors, String pubName,
+			String pages, String appendix, Map<String, String> refMap, XMLEvent parentEvent) {
 
 		if (titleStr != null){
 			String message = "Currently it is not expected that a titleStr exists in a citation";
@@ -766,6 +769,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
 		Reference<?> reference;
+
+		if (isNotBlank(appendix)){
+		    pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
+		}
+
 		if (refType == RefType.Article) {
 			IArticle article = ReferenceFactory.newArticle();
 			if (pubName != null) {
@@ -944,13 +952,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	/**
 	 * in work
+	 * @param appendix
 	 * @return
 	 */
 	private Reference<?> handleNonCitationSpecific(String type, String authorStr,
 			String titleStr, String titleCache, String volume, String edition,
-			String editors, String pubName) {
-		Reference<?> reference;
-		if (isArticle(type, volume, editors)) {
+			String editors, String pubName, String appendix) {
+
+	    Reference<?> reference;
+
+	    if (isNotBlank(appendix)){
+	        pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
+	    }
+
+	    if (isArticle(type, volume, editors)) {
 			IArticle article = ReferenceFactory.newArticle();
 			if (pubName != null) {
 				IJournal journal = ReferenceFactory.newJournal();
