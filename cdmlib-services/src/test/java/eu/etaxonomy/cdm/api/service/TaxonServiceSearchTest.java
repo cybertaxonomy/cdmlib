@@ -219,9 +219,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testSearchTaxaByName() {
     	 IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
-         configurator.setTitleSearchString("Abies*");
+         configurator.setTitleSearchString("Abies bor*");
          configurator.setMatchMode(MatchMode.BEGINNING);
-         configurator.setDoTaxa(false);
+         configurator.setDoTaxa(true);
          configurator.setDoSynonyms(false);
          configurator.setDoNamesWithoutTaxa(true);
          configurator.setDoTaxaByCommonNames(false);
