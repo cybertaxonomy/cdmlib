@@ -83,14 +83,14 @@ public class DescriptionElementListController {
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "multilanguageText",
+            "multilanguageText"
     });
 
     /**
      * @return
      */
     protected List<String> getInitializationStrategy() {
-        return AbstractController.DEFAULT_INIT_STRATEGY;
+        return DESCRIPTION_ELEMENT_INIT_STRATEGY;
     }
 
     /**
@@ -191,7 +191,7 @@ public class DescriptionElementListController {
         }
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageNumber, DESCRIPTION_ELEMENT_INIT_STRATEGY);
+                pageNumber, getInitializationStrategy());
         return pager;
     }
 
