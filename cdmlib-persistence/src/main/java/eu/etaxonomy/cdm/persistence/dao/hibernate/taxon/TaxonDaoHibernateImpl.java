@@ -295,11 +295,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            return resultObjects;
+
 
         }
 
-        return new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+        return resultObjects;
 
     }
 

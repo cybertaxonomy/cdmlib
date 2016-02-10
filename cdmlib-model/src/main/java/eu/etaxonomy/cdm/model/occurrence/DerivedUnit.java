@@ -188,10 +188,12 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 //************************** CONSTRUCTOR *********************************/
 
 	//Constructor: For hibernate use only
-	protected DerivedUnit() {super();}
+	protected DerivedUnit() {
+	    super();
+	}
 
 
-	/**
+    /**
 	 * Constructor
 	 * @param recordBasis
 	 */
@@ -225,7 +227,27 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		field.setGatheringEvent(gatheringEvent);
 	}
 
+    private static Class<?> facadeCacheStrategyClass;
+
+
+    @Override
+    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
+        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
+    }
+
+
+    @Override
+    protected Class<?> getFacadeCacheStrategyClass(){
+	    return facadeCacheStrategyClass;
+	}
+
+    @Override
+    protected String facadeStrategyClassName() {
+        return "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy";
+    }
+
 // ******************** GETTER / SETTER *************************************/
+
 
 	public DerivationEvent getDerivedFrom() {
 		return derivedFrom;

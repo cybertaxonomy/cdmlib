@@ -613,6 +613,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         // add this node to the parent's child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
+       //TODO: Only as a workaround. We have to find out why merge creates null entries.
+        while (parentChildren.contains(null)){
+            parentChildren.remove(null);
+        }
+        this.updateSortIndex(0);
         if (parentChildren.contains(this)){
             //avoid duplicates
             if (parentChildren.indexOf(this) < index){

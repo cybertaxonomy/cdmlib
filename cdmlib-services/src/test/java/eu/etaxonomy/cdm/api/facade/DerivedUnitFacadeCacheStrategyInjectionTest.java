@@ -41,13 +41,17 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
+ * NOTE: The only reason for having this test is to test if injection of the cache strategy into a
+ * standard specimen works. Once we use another default cache strategy then the derived unit facade
+ * this test can be deleted or adapted and moved to cdmlib-model.
+ *
  * @author a.mueller
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
+public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyInjectionTest.class);
 
 	DerivedUnit specimen;
 	DerivationEvent derivationEvent;
@@ -85,7 +89,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 	PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
-	DerivedUnitFacade specimenFacade;
+//	DerivedUnitFacade specimenFacade;
 
 	DerivedUnit collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
@@ -96,16 +100,15 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 //****************************** SET UP *****************************************/
 
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception {
-//		// FIXME maybe this will cause problems in other tests
-//		// INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-//		new DefaultTermInitializer().initialize();
-//	}
-
+// /**
+//  * @throws java.lang.Exception
+//  */
+// @BeforeClass
+// public static void setUpBeforeClass() throws Exception {
+//     // FIXME maybe this will cause problems in other tests
+//     // INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
+//     new DefaultTermInitializer().initialize();
+// }
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -154,7 +157,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		specimen.setPreservation(preservationMethod);
 		specimen.setExsiccatum(exsiccatum);
 
-		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
+//		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
 		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -179,13 +182,42 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
 	 */
 	@Test
-	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
-		specimenFacade.setEcology(ecology);
-		specimenFacade.setPlantDescription(plantDescription);
+	public void testGetSpecimenTitleCache() {
+//		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756).";
+
+//		DescriptionElementBase ecologyItem = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
+//		SpecimenDescription fieldUnitDescription = SpecimenDescription.NewInstance(fieldUnit);
+//		fieldUnitDescription.addElement(ecologyItem);
+////		specimenFacade.setEcology(ecology);
+//		DescriptionElementBase plantDescItem = TextData.NewInstance(Feature.DESCRIPTION(), plantDescription, Language.DEFAULT(), null);
+//		fieldUnitDescription.addElement(plantDescItem);
+////		specimenFacade.setPlantDescription(plantDescription);
+
 		collection.setCode("B");
-		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+		Assert.assertEquals(correctCache, specimen.getTitleCache());
+
+
+
 	}
+
+	   /**
+     * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
+     */
+    @Test
+    public void testGetFieldUnitTitleCache() {
+//        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3.5.2005, Kilian 5678, A. Muller & Kohlbecker.";
+
+//        DescriptionElementBase ecologyItem = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
+//        SpecimenDescription fieldUnitDescription = SpecimenDescription.NewInstance(fieldUnit);
+//        fieldUnitDescription.addElement(ecologyItem);
+//        DescriptionElementBase plantDescItem = TextData.NewInstance(Feature.DESCRIPTION(), plantDescription, Language.DEFAULT(), null);
+//        fieldUnitDescription.addElement(plantDescItem);
+
+        collection.setCode("B");
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

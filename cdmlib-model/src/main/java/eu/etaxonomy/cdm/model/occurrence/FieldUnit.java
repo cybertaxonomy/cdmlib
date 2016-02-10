@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  *
@@ -114,8 +113,32 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	 */
 	protected FieldUnit(){
 		super(SpecimenOrObservationType.FieldUnit);
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
+//		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
 	}
+
+//****************************** CACHE STRATEGY **************************************/
+
+    private static Class<?> facadeCacheStrategyClass;
+
+
+    @Override
+    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
+        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
+    }
+
+
+    @Override
+    protected Class<?> getFacadeCacheStrategyClass(){
+        return facadeCacheStrategyClass;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    protected String facadeStrategyClassName() {
+        return "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategy";
+    }
 
 // ************************ GETTER / SETTER *******************************************
 
