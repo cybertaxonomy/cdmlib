@@ -102,6 +102,10 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidLanguagesCreol = UUID.fromString("9fc6b094-8c94-4758-ab0a-8eaafd6a6e27");
 	public static final UUID uuidLanguagesBoni = UUID.fromString("48e52604-ee3f-4427-8c3d-e867811f6aee");
 
+	//presence/absence
+	public static final UUID uuidExpected = UUID.fromString("1834ee0e-9cd4-4843-bb3e-937efeeaa00f");
+    public static final UUID uuidPossible = UUID.fromString("fe22131c-ccb6-4499-bae8-fd74b11afbda");
+    public static final UUID uuidFossil = UUID.fromString("459a65bb-06b7-4c9d-bc6e-25e3de89f6f9");
 
 
 	//extension type uuids
@@ -2433,8 +2437,10 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
-//		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
-		}else{
+		}else if (key.equalsIgnoreCase("expected")){return uuidExpected;
+		}else if (key.equalsIgnoreCase("possible")){return uuidPossible;
+		}else if (key.equalsIgnoreCase("fossil")){return uuidFossil;
+        }else{
 			return null;
 		}
 	}
