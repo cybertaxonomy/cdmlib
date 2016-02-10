@@ -924,6 +924,16 @@ public class NonViralNameParserImplTest {
 		assertEquals("4(6)",((IArticle)ref).getVolume());
 		assertTrue("Name author and reference author should be the same", name3.getCombinationAuthorship() == name3.getNomenclaturalReference().getAuthorship());
 
+		//Article with volume range
+        fullReference = "Abies alba Mill. in Sp. Pl. 4(1-2): 455. 1987";
+        NonViralName<?> name3a = parser.parseReferencedName(fullReference, null, rankSpecies);
+        name3a.setTitleCache(null);
+        assertEquals(fullReference, name3a.getFullTitleCache());
+        assertFalse(name3a.hasProblem());
+        ref = name3a.getNomenclaturalReference();
+        assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.Article, ref.getType());
+        assertEquals("4(1-2)",((IArticle)ref).getVolume());
+
 		//SoftArticle - having "," on position > 4
 		String journalTitle = "Bull. Soc. Bot.France. Louis., Roi";
 		String yearPart = " 1987 - 1989";

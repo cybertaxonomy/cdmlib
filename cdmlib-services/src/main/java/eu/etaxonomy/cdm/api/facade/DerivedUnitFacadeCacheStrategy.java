@@ -33,9 +33,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
@@ -45,9 +42,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	private boolean includeReferenceSystem = true;
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
 	@Override
 	public String getTitleCache(DerivedUnit derivedUnit) {
 		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
@@ -120,23 +114,16 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		return includeEmptySeconds;
 	}
 
-
-
 	public void setIncludeSeconds(boolean includeSeconds) {
 		this.includeEmptySeconds = includeSeconds;
 	}
-
-
 
 	public void setIncludeReferenceSystem(boolean includeReferenceSystem) {
 		this.includeReferenceSystem = includeReferenceSystem;
 	}
 
-
-
 	public boolean isIncludeReferenceSystem() {
 		return includeReferenceSystem;
 	}
-
 
 }

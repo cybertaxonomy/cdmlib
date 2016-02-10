@@ -591,7 +591,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         try{
             child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
         }catch(Exception e){
-            logger.info("TaxonNode could not be created.");
+            logger.error("TaxonNode could not be created.");
         }
 //        child = dao.save(child);
 
