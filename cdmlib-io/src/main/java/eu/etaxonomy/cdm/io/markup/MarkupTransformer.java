@@ -139,10 +139,13 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidDistrict = UUID.fromString("1b778ba8-ba5f-47a9-ad67-222826f96863");
 	public static final UUID uuidLocality = UUID.fromString("224a4140-da1f-4046-91bb-fb948916d797");
 	public static final UUID uuidLevelOther = UUID.fromString("4b483cc8-b42d-40ba-9cc7-a656faf629e2");
-
 	public static final UUID uuidContinentalRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
     public static final UUID uuidOceanicRegion = UUID.fromString("a8429a30-5d04-4c4c-9008-048e7f9f90f6");
-
+    public static final UUID uuidLevelRegency = UUID.fromString("6770a344-282f-40f3-9b25-79ba3d355863");
+    public static final UUID uuidLevelSubprovince = UUID.fromString("2ac6275a-cb79-42db-89b6-41e5764b6d01");
+    public static final UUID uuidLevelTerritory = UUID.fromString("72d281c4-529a-4960-ad79-7433cece22bc");
+    public static final UUID uuidLevelDivision = UUID.fromString("7a2dfe0a-4d6c-4576-81c5-75c1f9acfb2c");
+    public static final UUID uuidLevelSubdistrict = UUID.fromString("58a70f7e-f806-422b-ae09-351ea17a0a60");
 
 
 
@@ -2345,7 +2348,13 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("district")){return uuidDistrict;
 		}else if (key.equalsIgnoreCase("locality")){return uuidLocality;
 		}else if (key.equalsIgnoreCase("other")){return uuidLevelOther;
-		}else{
+
+		}else if (key.equalsIgnoreCase("regency")){return uuidLevelRegency;
+		}else if (key.equalsIgnoreCase("subprovince")){return uuidLevelSubprovince;
+		}else if (key.equalsIgnoreCase("territory")){return uuidLevelTerritory;
+		}else if (key.equalsIgnoreCase("division")){return uuidLevelDivision;
+		}else if (key.equalsIgnoreCase("subdistrict")){return uuidLevelSubdistrict;
+        }else{
 			return null;
 		}
 	}

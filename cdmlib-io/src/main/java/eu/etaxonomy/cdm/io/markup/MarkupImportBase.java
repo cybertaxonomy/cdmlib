@@ -1577,7 +1577,9 @@ public abstract class MarkupImportBase  {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (isNotBlank(text)){
-					fireWarningEvent("Text not yet handled for figures: " + text, next, 4);
+				    if (isNeglectableFigureText(text)){
+				        fireWarningEvent("Text not yet handled for figures: " + text, next, 4);
+				    }
 				}
 				Media media = makeFigure(state, id, type, urlString, legendString, titleString, numString, next);
 				return media;
@@ -1599,7 +1601,7 @@ public abstract class MarkupImportBase  {
 			} else if (isStartingElement(next, NUM)) {
 				numString = getCData(state, reader, next);
 			} else if (next.isCharacters()) {
-				text += CdmUtils.concat("", text, next.asCharacters().getData());
+				text = CdmUtils.concat("", text, next.asCharacters().getData());
 			} else {
 				fireUnexpectedEvent(next, 0);
 			}
@@ -1609,6 +1611,19 @@ public abstract class MarkupImportBase  {
 
 
 	/**
+     * @param text2
+     * @return
+     */
+    private boolean isNeglectableFigureText(String text) {
+        if (text.matches("Fig\\.*")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    /**
 	 * @param state
 	 * @param id
 	 * @param type

@@ -331,10 +331,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			}
 			result = (result + " " + split[i]).trim();
 		}
-		//remove trailing "." except for "sp."
-		while (result.matches(".*(?<!sp)\\.$")){
-			result = result.substring(0, result.length()-1).trim();
-		}
+		result = removeTrailingDot(result);
 		return result;
 	}
 
@@ -383,6 +380,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 		String nameString = nvn.getNameCache();
 		nameString = normalizeKeyString(nameString, event.getLocation());
+        nameString = removeTrailingDot(nameString);
 //		String nameString = taxonTitle;
 
 		//try to find matching lead nodes
@@ -405,7 +403,19 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 	}
 
-	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {
+	/**
+     * remove trailing "." except for "sp."
+     * @param str
+     * @return
+     */
+    private String removeTrailingDot(String str) {
+        while (str.matches(".*(?<!sp)\\.$")){
+            str = str.substring(0, str.length()-1).trim();
+        }
+        return str;
+    }
+
+    private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (PolytomousKeyNode matchingNode : matchingNodes){
 			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);

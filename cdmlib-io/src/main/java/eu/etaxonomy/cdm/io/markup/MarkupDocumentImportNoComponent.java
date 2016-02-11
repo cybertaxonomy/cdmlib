@@ -237,7 +237,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
 				TaxonNode parent = lastNode.getParent();
-				if (parent != null) {
+				if (parent != null && parent.getTaxon() != null) {
 					parent.addChildTaxon(taxon, null, null);
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				} else {

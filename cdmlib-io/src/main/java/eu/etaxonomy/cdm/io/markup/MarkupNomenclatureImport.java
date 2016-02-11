@@ -252,8 +252,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, NOMENCLATURAL_NOTES)) {
                 handleNotYetImplementedElement(next);
-			} else if (isStartingElement(next, FOOTNOTE_REF)) {
-                handleNotYetImplementedElement(next);
             } else if (isStartingElement(next, ANNOTATION)) {
 				handleNotYetImplementedElement(next);
 			} else {
@@ -334,7 +332,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				return;
 			} else if (isStartingElement(next, ANNOTATION)) {
 				handleNotYetImplementedElement(next); // TODO test handleSimpleAnnotation
-			} else if (next.isCharacters()) {
+	         } else if (isStartingElement(next, FOOTNOTE_REF)) {
+	                handleNotYetImplementedElement(next);
+	         } else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedElement(next);
