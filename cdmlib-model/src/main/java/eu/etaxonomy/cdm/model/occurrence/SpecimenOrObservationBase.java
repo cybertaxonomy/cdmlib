@@ -194,50 +194,27 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 //********************************** CONSTRUCTOR *********************************/
 
-      //for hibernate use only
-      @Deprecated
-      protected SpecimenOrObservationBase(){
-          super();
-          setDefaultCacheStrategy();
-      }
+    //for hibernate use only
+    @Deprecated
+    protected SpecimenOrObservationBase(){
+        super();
+    }
 
     protected SpecimenOrObservationBase(SpecimenOrObservationType recordBasis) {
         super();
         if (recordBasis == null){ throw new IllegalArgumentException("RecordBasis must not be null");}
         this.recordBasis = recordBasis;
-        setDefaultCacheStrategy();
     }
 
-    //start very dirty workaround to have a cache strategy for specimen/observations
 
     /**
-     * Sets the default cache strategy
+     * Subclasses should implement setting the default cache strate
      */
-    protected void setDefaultCacheStrategy() {
-        if (getFacadeCacheStrategyClass() == null){
-            try {
-                setFacadeCacheStrategyClass(Class.forName(facadeStrategyClassName()));
+    protected abstract void initDefaultCacheStrategy();
 
-            } catch (ClassNotFoundException e) {
-                //TODO look for other cache strategy
-            }
-        }
-        if (getFacadeCacheStrategyClass() != null){
-            try {
-                this.cacheStrategy = (S)getFacadeCacheStrategyClass().newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    protected abstract void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass);
-    protected abstract Class<?> getFacadeCacheStrategyClass();
-    protected abstract String facadeStrategyClassName();
 
 //************************* GETTER / SETTER ***********************/
+
 
 
     /**
