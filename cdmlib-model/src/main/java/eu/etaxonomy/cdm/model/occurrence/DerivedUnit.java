@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * A derived unit is regarded as derived from a field unit,
@@ -189,6 +190,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	//Constructor: For hibernate use only
 	protected DerivedUnit() {
 	    super();
+        initDefaultCacheStrategy();
 	}
 
 
@@ -198,6 +200,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 */
 	protected DerivedUnit(SpecimenOrObservationType recordBasis) {
 		super(recordBasis);
+        initDefaultCacheStrategy();
 	}
 
 
@@ -206,7 +209,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 * @param fieldUnit existing field unit from where this unit is derived
 	 */
 	protected DerivedUnit(SpecimenOrObservationType recordBasis, FieldUnit fieldUnit) {
-		super(recordBasis);
+		this(recordBasis);
 		DerivationEvent derivedFrom = new DerivationEvent();
 		// TODO: should be done in a more controlled way. Probably by making derivation event implement a general relationship interface (for bidirectional add/remove etc)
 		fieldUnit.addDerivationEvent(derivedFrom);
@@ -226,24 +229,42 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		field.setGatheringEvent(gatheringEvent);
 	}
 
-    private static Class<?> facadeCacheStrategyClass;
-
-
-    @Override
-    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
-        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
+    private static final String facadeStrategyClassName = "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy";
+    /**
+     * Sets the default cache strategy
+     */
+	@Override
+    protected void initDefaultCacheStrategy() {
+        try {
+            String facadeClassName = facadeStrategyClassName;
+            Class<?> facadeClass = Class.forName(facadeClassName);
+            try {
+                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<SpecimenOrObservationBase>();
+        }
     }
+//
+//    private static Class<?> facadeCacheStrategyClass;
+//
+//
+//    @Override
+//    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
+//        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
+//    }
+//
+//
+//    @Override
+//    protected Class<?> getFacadeCacheStrategyClass(){
+//	    return facadeCacheStrategyClass;
+//	}
 
 
-    @Override
-    protected Class<?> getFacadeCacheStrategyClass(){
-	    return facadeCacheStrategyClass;
-	}
-
-    @Override
-    protected String facadeStrategyClassName() {
-        return "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy";
-    }
 
 // ******************** GETTER / SETTER *************************************/
 

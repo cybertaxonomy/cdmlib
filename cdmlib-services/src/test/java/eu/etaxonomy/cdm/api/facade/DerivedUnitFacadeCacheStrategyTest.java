@@ -189,5 +189,4 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

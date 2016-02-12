@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  *
@@ -113,32 +114,33 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	 */
 	protected FieldUnit(){
 		super(SpecimenOrObservationType.FieldUnit);
-//		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
+        initDefaultCacheStrategy();
 	}
 
 //****************************** CACHE STRATEGY **************************************/
 
-    private static Class<?> facadeCacheStrategyClass;
-
-
-    @Override
-    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
-        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
-    }
-
-
-    @Override
-    protected Class<?> getFacadeCacheStrategyClass(){
-        return facadeCacheStrategyClass;
-    }
-
+    private static final String facadeStrategyClassName =
+            "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategy";
     /**
-     * @return
+     * Sets the default cache strategy
      */
     @Override
-    protected String facadeStrategyClassName() {
-        return "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategy";
+    protected void initDefaultCacheStrategy() {
+        try {
+            String facadeClassName = facadeStrategyClassName;
+            Class<?> facadeClass = Class.forName(facadeClassName);
+            try {
+                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
+        }
     }
+
 
 // ************************ GETTER / SETTER *******************************************
 

@@ -508,7 +508,7 @@ public class DerivedUnitFacade {
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
 	private TextData inititializeTextDataWithSupportTest(Feature feature,
-			SpecimenOrObservationBase specimen, boolean createIfNotExists,
+			SpecimenOrObservationBase<?> specimen, boolean createIfNotExists,
 			boolean isImageGallery)
 			throws DerivedUnitFacadeNotSupportedException {
 		if (feature == null) {
@@ -2414,7 +2414,7 @@ public class DerivedUnitFacade {
 			return true;
 		}
 	}
-	
+
 	private void testDerivedUnit() /* throws MethodNotSupportedByDerivedUnitTypeException */ {
 		if (derivedUnit == null){
 			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field unit");
