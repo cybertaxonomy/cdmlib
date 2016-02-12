@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -123,15 +121,15 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 //****************************** SET UP *****************************************/
 
-     /**
-      * @throws java.lang.Exception
-      */
-     @BeforeClass
-     public static void setUpBeforeClass() throws Exception {
-         // FIXME maybe this will cause problems in other tests
-         // INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-         new DefaultTermInitializer().initialize();
-     }
+//     /**
+//      * @throws java.lang.Exception
+//      */
+//     @BeforeClass
+//     public static void setUpBeforeClass() throws Exception {
+//         // FIXME maybe this will cause problems in other tests
+//         // INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
+//         new DefaultTermInitializer().initialize();
+//     }
 
 	/**
 	 * @throws java.lang.Exception
