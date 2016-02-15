@@ -124,11 +124,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 
         Classification classification = oldTaxonNode.getClassification();
-        Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
+        Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-        TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
+        TaxonNameBase<?,?> synonymName = HibernateProxyHelper.deproxy(oldTaxon.getName());
         HomotypicalGroup group = synonymName.getHomotypicalGroup();
         group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
         if (synonymRelationshipType == null){
@@ -201,8 +201,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //Move Taxon RelationShips to new Taxon
         Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
         for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
-            Taxon fromTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
-            Taxon toTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
+            Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
+            Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
             if (fromTaxon == oldTaxon){
                 newAcceptedTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
@@ -441,7 +441,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         Taxon taxon = null;
         try{
-            taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+            taxon = HibernateProxyHelper.deproxy(node.getTaxon());
         }catch(NullPointerException e){
             result.setAbort();
             result.addException(new Exception("The Taxon was already deleted."));

@@ -168,7 +168,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 
 
             for (User user: users){
-                dataSet.addUser( (User)HibernateProxyHelper.deproxy(user));
+                dataSet.addUser(HibernateProxyHelper.deproxy(user));
             }
 
         }
@@ -231,7 +231,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
             //			dataSet.setSynonyms(new ArrayList<Synonym>());
             List<TaxonBase> tb = getTaxonService().list(null,taxonBaseRows, 0,null,null);
             for (TaxonBase taxonBase : tb) {
-                dataSet.addTaxonBase((TaxonBase)HibernateProxyHelper.deproxy(taxonBase));
+                dataSet.addTaxonBase(HibernateProxyHelper.deproxy(taxonBase));
             }
         }
 

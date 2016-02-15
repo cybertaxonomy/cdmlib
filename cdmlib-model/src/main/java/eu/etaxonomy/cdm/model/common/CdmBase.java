@@ -290,6 +290,18 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
 // ************************** Hibernate proxies *******************/
+
+    /**
+     * If entity is a HibernateProxy it returns the initialized object.
+     * Otherwise entity itself is returned.
+     * @param entity
+     * @return
+     * @throws ClassCastException
+     */
+    public static <T> T deproxy(T entity) {
+        return HibernateProxyHelper.deproxy(entity);
+    }
+
     /**
      * These methods are present due to HHH-1517 - that in a one-to-many
      * relationship with a superclass at the "one" end, the proxy created

@@ -568,7 +568,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		        }
 		    }
 
-		    List<T> results = query.list();
+		    @SuppressWarnings("unchecked")
+            List<T> results = query.list();
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return results;
 		} else {
@@ -610,7 +611,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    	query.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		List<T> r = query.list();
+		@SuppressWarnings("unchecked")
+        List<T> r = query.list();
 		/**
 		 * For some weird reason, hibernate returns proxies (extending the superclass), not the actual class on this,
 		 * despite querying the damn database and returning the discriminator along with the rest of the object properties!
@@ -621,9 +623,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		 */
 		List<T> results = new ArrayList<T>();
 		if(!definedTerms.isEmpty()) {
-		    Class<T> type = (Class<T>)definedTerms.iterator().next().getClass();
 		    for(T t : r) {
-			    results.add(CdmBase.deproxy(t, type));
+		        T deproxied = CdmBase.deproxy(t);
+                results.add(deproxied);
 		    }
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		}
@@ -636,24 +638,21 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri");
 		    query.setParameter("uri", uri);
-		    return (DefinedTermBase)query.uniqueResult();
+		    return (DefinedTermBase<?>)query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uri").eq(uri));
-		    return (DefinedTermBase)query.getSingleResult();
+		    return (DefinedTermBase<?>)query.getSingleResult();
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
 	@Override
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
 	    Query query = getSession().createQuery("select term from DefinedTermBase term where term.termType = :termType");
 	    query.setParameter("termType", termType);
 
-	    List result = query.list();
+	    List<T> result = query.list();
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 

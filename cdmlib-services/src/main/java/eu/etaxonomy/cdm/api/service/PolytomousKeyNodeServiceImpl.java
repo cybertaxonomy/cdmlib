@@ -41,7 +41,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 	public DeleteResult delete(UUID nodeUUID, boolean deleteChildren){
         DeleteResult result = new DeleteResult();
         PolytomousKeyNode node = dao.findByUuid(nodeUUID);
-        node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
+        node = HibernateProxyHelper.deproxy(node);
         if(node == null) {
             return null;
         }

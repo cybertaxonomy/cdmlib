@@ -973,7 +973,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     	    result.addException(new Exception ("The taxon was already deleted."));
     	    return result;
     	}
-    	taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
+    	taxon = HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
         result = isDeletable(taxon, config);
 
@@ -1126,7 +1126,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
-                    TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
+                    TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName());
                     //check whether taxon will be deleted or not
 
                     if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
@@ -2311,10 +2311,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (node.getClassification().equals(classification)){
                 if (!node.isTopmostNode()){
                     TaxonNode parent = node.getParent();
-                    parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
+                    parent = HibernateProxyHelper.deproxy(parent);
                     TaxonNameBase<?,?> parentName =  parent.getTaxon().getName();
                     ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
-                    Taxon parentTaxon = (Taxon)HibernateProxyHelper.deproxy(parent.getTaxon());
+                    Taxon parentTaxon = HibernateProxyHelper.deproxy(parent.getTaxon());
                     Rank rankOfTaxon = taxonName.getRank();
 
 

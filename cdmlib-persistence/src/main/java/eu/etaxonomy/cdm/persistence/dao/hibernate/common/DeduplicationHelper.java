@@ -170,8 +170,8 @@ public class DeduplicationHelper {
 		if (cdmBase1 == null || cdmBase2 == null){
 			throw new NullPointerException("Merge arguments must not be (null)");
 		}
-		cdmBase1 = (T)HibernateProxyHelper.deproxy(cdmBase1);
-		cdmBase2 = (T)HibernateProxyHelper.deproxy(cdmBase2);
+		cdmBase1 = HibernateProxyHelper.deproxy(cdmBase1);
+		cdmBase2 = HibernateProxyHelper.deproxy(cdmBase2);
 
 
 		if (cdmBase1.getClass() != cdmBase2.getClass()){
