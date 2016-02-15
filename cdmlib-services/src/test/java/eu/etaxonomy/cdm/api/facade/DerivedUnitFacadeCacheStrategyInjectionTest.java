@@ -248,8 +248,10 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
         IndividualsAssociation indivAssoc = getDescriptionElement(taxon, 5000);
         SpecimenOrObservationBase<?> specimen = indivAssoc.getAssociatedSpecimenOrObservation();
         Assert.assertTrue("Specimen should be proxy otherwise the test does not test what it should", specimen instanceof HibernateProxy);
+        DerivedUnit myUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
+        myUnit.setTitleCache(null);
         String expectedDerivedUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1.2\"N, 12°18'E, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (8909756).";
-        Assert.assertEquals(expectedDerivedUnitCache, specimen.getTitleCache());
+        Assert.assertEquals(expectedDerivedUnitCache, myUnit.getTitleCache());
     }
 
     @Test
@@ -262,7 +264,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
         FieldUnit myFieldUnit = CdmBase.deproxy(fieldUnit, FieldUnit.class);
         myFieldUnit.setTitleCache(null);
         String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1.2\"N, 12°18'E, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker.";
-        Assert.assertEquals(expectedFieldUnitCache, fieldUnit.getTitleCache());
+        Assert.assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
     }
 
 
