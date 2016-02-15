@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventReader;
@@ -23,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -246,6 +248,15 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String taxonCData = handleInnerToTaxon(state, reader, parentEvent, node).trim();
 
 		String taxonKeyStr = makeTaxonKey(taxonCData, state.getCurrentTaxon(), parentEvent.getLocation());
+        try{
+            if (taxonKeyStr.contains(":")){
+                System.out.println(":");
+                UUID.fromString(taxonKeyStr);
+                System.out.println("Here we have a uuid: " + taxonKeyStr );
+            }
+        }catch(Exception e){
+        }
+
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
 			NonViralName<?> name = createNameByCode(state, Rank.UNKNOWN_RANK());
@@ -355,7 +366,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		result = result.trim();
 		result = result.replaceAll("\\s+\\.", "\\.");   // " ." may be created by bracket replacement
 		result = result.replaceAll("\\.\\.", "\\.");   //replace
-        return result;
+        result = result.replace(UTF8.HYBRID.toString(), "x ");
+		return result;
     }
 
 
@@ -381,7 +393,14 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String nameString = nvn.getNameCache();
 		nameString = normalizeKeyString(nameString, event.getLocation());
         nameString = removeTrailingDot(nameString);
-//		String nameString = taxonTitle;
+        try{
+            if (nameString.contains(":")){
+                System.out.println(":");
+                UUID.fromString(nameString);
+                System.out.println("Here we have a uuid: " + nameString + "for" + nvn.getTitleCache());
+            }
+        }catch(Exception e){
+        }
 
 		//try to find matching lead nodes
 		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
