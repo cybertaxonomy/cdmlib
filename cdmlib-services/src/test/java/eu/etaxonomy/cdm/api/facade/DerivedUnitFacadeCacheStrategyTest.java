@@ -14,10 +14,12 @@ import java.io.FileNotFoundException;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -96,15 +98,15 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 //****************************** SET UP *****************************************/
 
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception {
-//		// FIXME maybe this will cause problems in other tests
-//		// INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-//		new DefaultTermInitializer().initialize();
-//	}
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		// FIXME maybe this will cause problems in other tests
+		// INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
+		new DefaultTermInitializer().initialize();
+	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -186,6 +188,19 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
+
+	   /**
+     * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
+     */
+    @Test
+    public void testGetTitleCacheWithEtAl() {
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+        collector.setHasMoreMembers(true);
+        specimenFacade.setEcology(ecology);
+        specimenFacade.setPlantDescription(plantDescription);
+        collection.setCode("B");
+        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
