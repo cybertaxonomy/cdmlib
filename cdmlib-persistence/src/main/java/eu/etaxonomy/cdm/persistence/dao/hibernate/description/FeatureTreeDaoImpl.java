@@ -60,7 +60,7 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 
         List<FeatureNode> childrenOfChildren = new ArrayList<FeatureNode>();
         for(FeatureNode node : nodes) {
-            if(node.getChildCount() > 0){
+            if(node != null && node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());
             }
         }
