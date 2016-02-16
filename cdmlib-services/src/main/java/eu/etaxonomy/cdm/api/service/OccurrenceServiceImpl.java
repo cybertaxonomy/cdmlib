@@ -1156,11 +1156,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = false)
     @Override
     public DeleteResult delete(UUID specimenUuid, SpecimenDeleteConfigurator config) {
         return delete(load(specimenUuid), config);
     }
 
+
+    @Transactional(readOnly = false)
     @Override
     public DeleteResult delete(SpecimenOrObservationBase<?> specimen, SpecimenDeleteConfigurator config) {
         specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
@@ -1255,6 +1258,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
 
         deleteResult.includeResult(delete(specimen));
+
         return deleteResult;
     }
 
