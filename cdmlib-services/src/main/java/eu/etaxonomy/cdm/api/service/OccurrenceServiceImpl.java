@@ -1090,11 +1090,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            // check for specimen/taxon description
-            else if((cdmBase.isInstanceOf(SpecimenDescription.class) || cdmBase.isInstanceOf(TaxonDescription.class))
+            // check for taxon description
+            else if(cdmBase.isInstanceOf(TaxonDescription.class)
+                    && HibernateProxyHelper.deproxy(cdmBase, TaxonDescription.class).getDescribedSpecimenOrObservation().equals(specimen)
                     && !specimenDeleteConfigurator.isDeleteFromDescription()){
                 deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used in a Description."));
+                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen is still used as \"Described Specimen\" in a taxon description."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
@@ -1132,14 +1133,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
             // check for amplification
-            else if (cdmBase.isInstanceOf(AmplificationResult.class) && !specimenDeleteConfigurator.isDeleteMolecularData()) {
+            else if (cdmBase.isInstanceOf(AmplificationResult.class)
+                    && !specimenDeleteConfigurator.isDeleteMolecularData()
+                    && !specimenDeleteConfigurator.isDeleteChildren()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in amplification results."));
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
             // check for sequence
-            else if (cdmBase.isInstanceOf(Sequence.class) && !specimenDeleteConfigurator.isDeleteMolecularData()) {
+            else if (cdmBase.isInstanceOf(Sequence.class)
+                    && !specimenDeleteConfigurator.isDeleteMolecularData()
+                    && !specimenDeleteConfigurator.isDeleteChildren()) {
                 deleteResult.setAbort();
                 deleteResult.addException(new ReferencedObjectUndeletableException("DnaSample is used in sequences."));
                 deleteResult.addRelatedObject(cdmBase);
@@ -1206,18 +1211,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 association.setAssociatedSpecimenOrObservation(null);
                 association.getInDescription().removeElement(association);
             }
-            // check for taxon description
+            // check for "described specimen" (deprecated)
             if (relatedObject.isInstanceOf(TaxonDescription.class)) {
-                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(relatedObject, TaxonDescription.class);
-                taxonDescription.setDescribedSpecimenOrObservation(null);
+                TaxonDescription description = HibernateProxyHelper.deproxy(relatedObject, TaxonDescription.class);
+                description.setDescribedSpecimenOrObservation(null);
             }
             // check for specimen description
             if (relatedObject.isInstanceOf(SpecimenDescription.class)) {
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(relatedObject, SpecimenDescription.class);
-                // check if specimen is "described" specimen
-                if (specimenDescription.getDescribedSpecimenOrObservation().equals(specimen)) {
-                    specimenDescription.setDescribedSpecimenOrObservation(null);
-                }
+                specimenDescription.setDescribedSpecimenOrObservation(null);
                 // check if description is a description of the given specimen
                 if (specimen.getDescriptions().contains(specimenDescription)) {
                     specimen.removeDescription(specimenDescription);

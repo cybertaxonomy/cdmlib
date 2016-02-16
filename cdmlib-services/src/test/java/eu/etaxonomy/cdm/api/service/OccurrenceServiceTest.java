@@ -564,11 +564,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DeleteResult deleteResult = null;
         // delete derivedUnit1
         deleteResult = occurrenceService.isDeletable(derivedUnit, config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-
-        // allow deletion from Descriptions
-        config.setDeleteFromDescription(true);
-        deleteResult = occurrenceService.isDeletable(derivedUnit, config);
+        //deletion of specimen description should always work because there are no
+        //specimen description without a specimen
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         occurrenceService.delete(derivedUnit, config);
         specimenDescription = (SpecimenDescription) descriptionService.find(specimenDescriptionUuid);
