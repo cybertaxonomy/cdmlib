@@ -211,14 +211,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
-
-    <!-- SQL Debugging -->
-    <dependency>
-      <groupId>p6spy</groupId>
-      <artifactId>p6spy</artifactId>
-    </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>

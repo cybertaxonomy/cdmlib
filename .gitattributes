@@ -1877,7 +1877,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/configurable.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text

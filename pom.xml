@@ -1466,11 +1466,6 @@
 		<version>${hibernate-validator.version}</version>
 	  </dependency>
 	  
-      <dependency>
-        <groupId>p6spy</groupId>
-        <artifactId>p6spy</artifactId>
-        <version>2.1.4</version>
-      </dependency>
       <!-- for ikey-plus -->
       <dependency>
         <groupId>identificationKeyAPI</groupId>
