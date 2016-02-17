@@ -102,9 +102,9 @@
 	@org.hibernate.annotations.TypeDef(name="partialUserType", typeClass=eu.etaxonomy.cdm.hibernate.PartialUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uuidUserType", typeClass=eu.etaxonomy.cdm.hibernate.UUIDUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uriUserType", typeClass=eu.etaxonomy.cdm.hibernate.URIUserType.class),
-	@org.hibernate.annotations.TypeDef(name="enumUserType", typeClass=eu.etaxonomy.cdm.hibernate.EnumUserType.class),	
-	@org.hibernate.annotations.TypeDef(name="doiUserType", typeClass=eu.etaxonomy.cdm.hibernate.DOIUserType.class),	
-	@org.hibernate.annotations.TypeDef(name="shiftUserType", typeClass=eu.etaxonomy.cdm.hibernate.ShiftUserType.class),	
+	@org.hibernate.annotations.TypeDef(name="enumUserType", typeClass=eu.etaxonomy.cdm.hibernate.EnumUserType.class),
+	@org.hibernate.annotations.TypeDef(name="doiUserType", typeClass=eu.etaxonomy.cdm.hibernate.DOIUserType.class),
+	@org.hibernate.annotations.TypeDef(name="shiftUserType", typeClass=eu.etaxonomy.cdm.hibernate.ShiftUserType.class),
 })
 @org.hibernate.annotations.AnyMetaDef(name = "CdmBase" ,
 		                              metaType="string",
@@ -134,6 +134,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Collection", targetEntity = Collection.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldUnit", targetEntity = FieldUnit.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit", targetEntity = DerivedUnit.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.molecular.DnaSample", targetEntity = eu.etaxonomy.cdm.model.molecular.DnaSample.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = Reference.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
@@ -175,8 +176,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
