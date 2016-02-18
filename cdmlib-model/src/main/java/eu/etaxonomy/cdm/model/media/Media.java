@@ -179,6 +179,8 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
         return media;
     }
 
+//********************************* CONSTRUCTOR **************************/
+
     /**
      * Constructor
      */
@@ -193,6 +195,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
 //      }
     }
 
+// ********************* GETTER / SETTER    **************************/
 
     public Set<MediaRepresentation> getRepresentations(){
         if(representations == null) {
