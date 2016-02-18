@@ -610,6 +610,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     public void addStatus(NomenclaturalStatus nomStatus) {
         this.status.add(nomStatus);
     }
+    public NomenclaturalStatus addStatus(NomenclaturalStatusType statusType, Reference<?> citation, String microCitation) {
+        NomenclaturalStatus newStatus = NomenclaturalStatus.NewInstance(statusType, citation, microCitation);
+        this.status.add(newStatus);
+        return newStatus;
+    }
 
     /**
      * Removes one element from the set of nomenclatural status of <i>this</i> taxon name.

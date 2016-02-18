@@ -66,8 +66,13 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             if (nameTags.size() > 0){
                 tags.addAll(nameTags);
 
+                String secSeparator =  " sec. ";
+                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
+                    secSeparator = "," + secSeparator;
+                }
+
                 //sec.
-                tags.add(new TaggedText(TagEnum.separator, " sec. "));
+                tags.add(new TaggedText(TagEnum.separator, secSeparator));
 
                 //ref.
                 List<TaggedText> secTags = getSecundumTags(taxonBase);
@@ -81,15 +86,18 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
     private List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
-        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName(),TaxonNameBase.class);
+        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
+            INameCacheStrategy<TaxonNameBase> nameCacheStrategy = name.getCacheStrategy();
             if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
-                List<TaggedText> nameCacheTags = name.getCacheStrategy().getTaggedName(name);
+                List<TaggedText> nameCacheTags = nameCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
             }else{
-                List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);
+                List<TaggedText> nameTags = nameCacheStrategy.getTaggedTitle(name);
                 tags.addAll(nameTags);
+                List<TaggedText> statusTags = nameCacheStrategy.getNomStatusTags(name, true, true);
+                tags.addAll(statusTags);
             }
             if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
                 tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));

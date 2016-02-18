@@ -18,23 +18,28 @@ import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TestingZoologicalNameCacheStrategy implements INonViralNameCacheStrategy<ZoologicalName> {
 
+    @Override
     public String getAuthorshipCache(ZoologicalName nonViralName) {
         return "test.zoological.authorshipCache"+ nonViralName.getId();
     }
 
+    @Override
     public String getLastEpithet(ZoologicalName taxonNameBase) {
         return "test.zoological.lastEpithet"+ taxonNameBase.getId();
     }
 
+    @Override
     public String getNameCache(ZoologicalName taxonNameBase) {
         return "test.zoological.nameCache"+ taxonNameBase.getId();
     }
 
+    @Override
     public String getFullTitleCache(ZoologicalName taxonNameBase) {
         return "test.zoological.fullTitleCache"+ taxonNameBase.getId();
     }
 
 
+    @Override
     public String getTitleCache(ZoologicalName object) {
         return "test.zoological.titleCache"+ object.getId();
     }
@@ -70,5 +75,11 @@ public class TestingZoologicalNameCacheStrategy implements INonViralNameCacheStr
 		return null;
 	}
 
+    @Override
+    public List<TaggedText> getNomStatusTags(ZoologicalName taxonName, boolean includeSeparatorBefore,
+            boolean includeSeparatorAfter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

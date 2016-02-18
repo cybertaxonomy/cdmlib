@@ -22,7 +22,9 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -41,14 +43,16 @@ public class TaxonBaseDefaultCacheStrategyTest {
 
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
-	BotanicalName name;
-	Reference<?> sec;
+	private BotanicalName name;
+	private Reference<?> sec;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+        DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+        vocabularyStore.initialize();
 	}
 
 	/**
@@ -88,20 +92,29 @@ public class TaxonBaseDefaultCacheStrategyTest {
 
 //******************************* TESTS ********************************************************
 
-	/**
+	@SuppressWarnings("deprecation")
+    /**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
 	 */
 	@Test
 	public void testGetTitleCache() {
 		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
+		//appended phrase
 		String appendedPhrase = "aff. 'schippii'";
 		taxonBase.setAppendedPhrase(appendedPhrase);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
+		//use name cache
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		taxonBase.setDoubtful(true);
         assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
+        //with nom status
+        taxonBase.setAppendedPhrase(null);
+        taxonBase.setUseNameCache(false);
+        taxonBase.setDoubtful(false);
+        name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxonBase.getTitleCache());
 	}
 
 	//test missing "&" in title cache  #3822
@@ -119,10 +132,10 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
-
 	}
 
-	@Test
+	@SuppressWarnings("deprecation")
+    @Test
 	public void testProtectedTitleCache(){
 	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
         taxonBase.setProtectedTitleCache(true);
