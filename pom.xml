@@ -1431,8 +1431,7 @@
       <dependency>
         <groupId>com.yourkit</groupId>
         <artifactId>yjp-controller-api-redist</artifactId>
-        <version>9.0.8</version>
-        <!-- <version>10.0.6</version> TODO find repo or put into our own -->
+        <version>2015-build-15086</version>
         <scope>test</scope>
       </dependency>
       <!-- For Validation -->
