@@ -1379,6 +1379,11 @@
         <version>3.1.0</version>
       </dependency>
       <!-- ******* DATABASES DRIVER ******* -->
+      <!-- 
+            IMPORTANT:
+            Any driver dependency listed here must be excluded from the 
+            cdmlib-remote depedency in cdmlib-remote-webapp
+       -->
       <dependency>
         <!-- SQL Server and Sybase -->
         <groupId>net.sourceforge.jtds</groupId>
@@ -1406,7 +1411,6 @@
         <artifactId>jdbc4</artifactId>
         <version>2.0</version>
       </dependency>
-
       <dependency>
         <groupId>oracle</groupId>
         <artifactId>ojdbc14</artifactId>
