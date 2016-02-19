@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 /**
  * @author a.mueller
  * @created 15.03.2010
- * @version 1.0
  */
 public class InputTransformerBase implements IInputTransformer, Serializable {
     private static final long serialVersionUID = 1824180329524647957L;
@@ -48,7 +47,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 
 	@Override
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
-		String warning = "getFeatureByKey is not implemented in implementing transformer class";
+		String warning = "getFeatureUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 
 	}
