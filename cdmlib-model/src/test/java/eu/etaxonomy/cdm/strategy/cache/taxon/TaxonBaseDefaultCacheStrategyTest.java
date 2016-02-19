@@ -92,7 +92,6 @@ public class TaxonBaseDefaultCacheStrategyTest {
 
 //******************************* TESTS ********************************************************
 
-	@SuppressWarnings("deprecation")
     /**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
 	 */
@@ -100,9 +99,15 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	public void testGetTitleCache() {
 		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
-		//appended phrase
+		//without sec.
+		taxonBase.setSec(null);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. ???", taxonBase.getTitleCache());
+		//appended phrase without sec.
 		String appendedPhrase = "aff. 'schippii'";
 		taxonBase.setAppendedPhrase(appendedPhrase);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxonBase.getTitleCache());
+		//appended phrase with sec.
+		taxonBase.setSec(sec);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		//use name cache
 		taxonBase.setUseNameCache(true);

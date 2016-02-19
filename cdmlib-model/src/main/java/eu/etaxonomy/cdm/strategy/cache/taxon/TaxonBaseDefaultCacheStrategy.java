@@ -71,12 +71,15 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     secSeparator = "," + secSeparator;
                 }
 
-                //sec.
-                tags.add(new TaggedText(TagEnum.separator, secSeparator));
-
                 //ref.
                 List<TaggedText> secTags = getSecundumTags(taxonBase);
-                tags.addAll(secTags);
+
+                //sec.
+                if (!secTags.isEmpty()){
+                    tags.add(new TaggedText(TagEnum.separator, secSeparator));
+                    tags.addAll(secTags);
+                }
+
             }else{
                 tags.add(new TaggedText(TagEnum.fullName, taxonBase.toString()));
             }
@@ -113,7 +116,11 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
         String secRef;
         if (ref == null){
-            secRef = "???";
+            if (isBlank(taxonBase.getAppendedPhrase())){
+                secRef = "???";
+            }else{
+                secRef = null;
+            }
         }else{
             if (ref.getCacheStrategy() != null &&
                     ref.getAuthorship() != null &&
@@ -124,7 +131,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 secRef = ref.getTitleCache();
             }
         }
-        tags.add(new TaggedText(TagEnum.secReference, secRef));
+        if (secRef != null){
+            tags.add(new TaggedText(TagEnum.secReference, secRef));
+        }
         return tags;
     }
 
