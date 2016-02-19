@@ -177,7 +177,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * @see					#NewInstance(String, Language, TextFormat)
      */
     public static TextData NewInstance(Feature feature, String text, Language language, TextFormat format){
-        TextData result =  new TextData();
+        TextData result =  new TextData(feature);
         result.putText(language, text);
         result.setFormat(format);
         return result;
