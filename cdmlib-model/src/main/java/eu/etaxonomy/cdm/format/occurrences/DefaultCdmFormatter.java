@@ -25,4 +25,9 @@ public class DefaultCdmFormatter extends AbstractCdmFormatter {
     public String format(Object object, FormatKey... formatKeys) {
         return object.toString();
     }
+    
+    @Override
+    public String format(Object object) {
+    	return object.toString();
+    }
 }

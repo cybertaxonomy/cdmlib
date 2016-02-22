@@ -24,7 +24,7 @@ public class FieldUnitFormatter extends SpecimenOrObservationBaseFormatter {
     }
 
     @Override
-    protected void initFormatKeys(Object object, FormatKey... formatKeys) {
+    protected void initFormatKeys(Object object) {
         super.initFormatKeys(object);
         FieldUnit fieldUnit = (FieldUnit)object;
         GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();

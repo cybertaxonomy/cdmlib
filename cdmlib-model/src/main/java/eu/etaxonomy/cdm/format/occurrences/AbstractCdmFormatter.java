@@ -21,10 +21,13 @@ import eu.etaxonomy.cdm.format.ICdmFormatter;
  */
 public abstract class AbstractCdmFormatter implements ICdmFormatter {
 
+    protected FormatKey[] formatKeys;
+    
     protected Map<FormatKey, String> formatKeyMap = new HashMap<ICdmFormatter.FormatKey, String>();
 
     public AbstractCdmFormatter(Object object, FormatKey[] formatKeys) {
-        initFormatKeys(object, formatKeys);
+    	this.formatKeys = formatKeys;
+        initFormatKeys(object);
     }
 
     @Override
@@ -38,8 +41,20 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         }
         return builder.toString().trim();
     }
+    
+    @Override
+    public String format(Object object) {
+        StringBuilder builder = new StringBuilder();
+        for (FormatKey formatKey : formatKeys) {
+            String string = formatKeyMap.get(formatKey);
+            if(string!=null){
+                builder.append(string);
+            }
+        }
+        return builder.toString().trim();
+    }
 
-    protected void initFormatKeys(Object object, FormatKey... formatKeys){
+    protected void initFormatKeys(Object object){
         formatKeyMap.put(FormatKey.CLOSE_BRACKET, ")");
         formatKeyMap.put(FormatKey.OPEN_BRACKET, "(");
         formatKeyMap.put(FormatKey.SPACE, " ");
