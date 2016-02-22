@@ -10,10 +10,7 @@
 package eu.etaxonomy.cdm.remote;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author a.kohlbecker
@@ -21,31 +18,13 @@ import org.springframework.web.client.RestTemplate;
  *
  */
 
-public class ClassificationIT extends Assert {
+public class ClassificationIT extends WebServiceTestBase  {
 
     public static final Logger logger = Logger.getLogger(ClassificationIT.class);
 
-    int port = 9180;
-    String baseUri = "";
-    RestTemplate template = new RestTemplate();
-
-    @Before
-    public void setUp() {
-        if(System.getProperty("sun.java.command") != null && System.getProperty("sun.java.command").startsWith("org.eclipse.jdt.internal.junit.runner.RemoteTestRunner")){
-            port = 8080;
-            logger.info(" setUp() : \n" +
-                        "==================================================================\n" +
-                        " Eclipse ide detected, expecting cdm remote instance at port 8080 \n" +
-                        "==================================================================");
-        };
-        baseUri = String.format("http://localhost:%1$d/", port);
-        logger.info("cdm remote instance url: " + baseUri);
-    }
-
-
     @Test
     public void checkInstanceIsOnline(){
-        String response = template.getForObject(baseUri + "classification.json", String.class);
+        String response = httpGetJson("classification.json", null);
         assertTrue(response.contains("My Classification"));
     }
 

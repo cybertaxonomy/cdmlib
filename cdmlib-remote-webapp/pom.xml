@@ -159,15 +159,18 @@
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
+      <scope>test</scope>
     </dependency>
-    <!-- dependencies for swagger-springmvc, added explicitly -->
+    <!-- dependencies for springfox-swagger2, added explicitly -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -203,28 +206,26 @@
 
   <build>
     <resources>
-      <!-- ${basedir}/src/test/resources -->
       <resource>
         <!-- replace the place holders like ${...} in datasources.xml -->
-        <targetPath>${project.build.directory}/test-classes</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}/src/test/resources</directory>
+        <directory>src/test/resources</directory>
+        <targetPath>../test-classes</targetPath>
         <includes>
           <include>datasources.xml</include>
         </includes>
       </resource>
       <resource>
         <!-- all other test resources without filtering -->
-        <targetPath>test-classes</targetPath>
-        <directory>${basedir}/src/test/resources</directory>
+        <directory>src/test/resources</directory>
+        <targetPath>../test-classes</targetPath>
         <excludes>
           <exclude>datasources.xml</exclude>
         </excludes>
       </resource>
       <resource>
         <!-- all main resources without filtering -->
-        <targetPath>classes</targetPath>
-        <directory>${basedir}/src/test/resources</directory>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
     <plugins>
@@ -244,7 +245,6 @@
           </execution>
         </executions>
       </plugin>
-      
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -278,6 +278,14 @@
               <name>cdm.beanDefinitionFile</name>
               <value>${project.build.directory}/test-classes/datasources.xml</value>
             </systemProperty>
+            <systemProperty>
+                <!--
+                    start with swagger profile so that the swagger doc 
+                    can be generated 
+                 -->
+                <name>spring.profiles.active</name>
+                <value>swagger</value>
+            </systemProperty>
           </systemProperties>
         </configuration>
         <executions>
@@ -299,6 +307,25 @@
               <goal>stop</goal>
             </goals>
           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+            <execution>
+                <!-- 
+                    The war must be created after running the integration-tests,
+                    since the SwaggerGroupsIT test populates the classes/api-docs-static/
+                    folder with static swagger doc files. The are otherwise not packed
+                     into the wae file.
+                  -->
+                <phase>verify</phase>
+                <goals>
+                  <goal>war</goal>
+                </goals>
+            </execution>
         </executions>
       </plugin>
     </plugins>

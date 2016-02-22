@@ -19,8 +19,6 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -52,18 +50,9 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  *
  */
 // @EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
-@Configuration
 @Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
 //@DependsOn("objectMapperConfigurer")
-@ComponentScan(basePackages = {
-        "springfox.documentation.spring.web", // --> CdmSwaggerConfig
-        "eu.etaxonomy.cdm.remote.l10n",
-        "eu.etaxonomy.cdm.remote.controller",
-        "eu.etaxonomy.cdm.remote.service",
-        "eu.etaxonomy.cdm.remote.config"
-        }
-)
-public class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
+public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     /**
      * turn caching off FOR DEBUGING ONLY !!!!

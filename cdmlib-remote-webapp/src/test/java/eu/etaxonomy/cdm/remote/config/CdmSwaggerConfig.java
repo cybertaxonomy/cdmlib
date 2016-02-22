@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import springfox.documentation.service.ApiInfo;
@@ -39,19 +40,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  *
  */
+@Profile("swagger")
 @EnableSwagger2
 @Configuration
 public class CdmSwaggerConfig {
-
-    private static final String LSID_AUTHORITY_SERVICES = "LSID authority services";
-
-    private static final String DATA_EXPORT = "Data export";
-
-    private static final String GENERIC_REST_API = "Generic REST API";
-
-    private static final String WEB_PORTAL_SERVICES = "Web Portal Services";
-
-    private static final String CATALOGUE_SERVICES = "Catalogue Services";
 
     public static final Logger logger = Logger.getLogger(CdmSwaggerConfig.class);
 
@@ -73,7 +65,7 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
-           .groupName(GENERIC_REST_API)
+           .groupName(SwaggerGroupsConfig.GENERIC_REST_API.groupName())
                .select()
                .paths(not(
                         or(
@@ -91,7 +83,7 @@ public class CdmSwaggerConfig {
                        )
                 )
                .build()
-          .apiInfo(apiInfo(GENERIC_REST_API, ""
+          .apiInfo(apiInfo(SwaggerGroupsConfig.GENERIC_REST_API.groupName(), ""
                   + "<p>The CDM REST API is a RESTful interface to resources stored in the CDM."
                   + " The RESTful architecture allows accessing the various resources like Taxa, "
                   + "Names, References, Media, etc by stable URIs. Due to security constraints "
@@ -114,11 +106,11 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
-           .groupName(WEB_PORTAL_SERVICES)
+           .groupName(SwaggerGroupsConfig.WEB_PORTAL_SERVICES.groupName())
                .select()
                .paths(regex("/portal/.*"))
                .build()
-          .apiInfo(apiInfo(WEB_PORTAL_SERVICES, "<p>The Portal Service is a specialization to the "
+          .apiInfo(apiInfo(SwaggerGroupsConfig.WEB_PORTAL_SERVICES.groupName(), "<p>The Portal Service is a specialization to the "
                   + "<a href=\"?group=Generic+REST+API\">Generic  REST API</a> as needed by CDM Dataportal "
                   + " that adds some fields like localized representations to the pure CDM entities. Another important difference "
                   + " is the initialization depth of the CDM entities. The Portal Service enpoints provide far bigger parts of the "
@@ -130,12 +122,12 @@ public class CdmSwaggerConfig {
    public Docket swaggerPluginNameCatalogue(){
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
-           .groupName(CATALOGUE_SERVICES)
+           .groupName(SwaggerGroupsConfig.CATALOGUE_SERVICES.groupName())
                .select()
                .paths(or(regex("/name_catalogue.*"),regex("/occurrence_catalogue.*")))
                .build()
            .apiInfo(apiInfo(
-                   CATALOGUE_SERVICES,
+                   SwaggerGroupsConfig.CATALOGUE_SERVICES.groupName(),
                    "<p>These web services are optimized for using names taxonomic information and occurence data in workflow environments "
                    + " but are suitabale for all applicatoins in which fast response times are crucial."
                    + " Additional detailed documentation of these services can also be found at:</p>"
@@ -175,11 +167,11 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
-           .groupName(LSID_AUTHORITY_SERVICES)
+           .groupName(SwaggerGroupsConfig.LSID_AUTHORITY_SERVICES.groupName())
                .select()
                .paths(regex("/authority/.*"))
                .build()
-          .apiInfo(apiInfo(LSID_AUTHORITY_SERVICES, ""))
+          .apiInfo(apiInfo(SwaggerGroupsConfig.LSID_AUTHORITY_SERVICES.groupName(), ""))
           .ignoredParameterTypes(allCdmTpyes());
    }
 
@@ -188,11 +180,11 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
-           .groupName(DATA_EXPORT)
+           .groupName(SwaggerGroupsConfig.DATA_EXPORT.groupName())
                .select()
                .paths(or(regex("/csv/.*"), regex("/checklist.*")))
                .build()
-          .apiInfo(apiInfo(DATA_EXPORT, ""))
+          .apiInfo(apiInfo(SwaggerGroupsConfig.DATA_EXPORT.groupName(), ""))
           .ignoredParameterTypes(allCdmTpyes());
    }
 
