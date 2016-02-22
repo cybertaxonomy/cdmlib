@@ -552,77 +552,79 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation);
                 if(associationWrapper!=null){
                     NodeList associatedUnits = associationWrapper.getAssociatedUnits();
-                    for(int m=0;m<associatedUnits.getLength();m++){
-                        if(associatedUnits.item(m) instanceof Element){
-                            state.reset();
-                            state.setPrefix(associationWrapper.getPrefix());
-                            this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
-                            handleSingleUnit(state, (Element) associatedUnits.item(m));
+                    if(associatedUnits!=null){
+                        for(int m=0;m<associatedUnits.getLength();m++){
+                            if(associatedUnits.item(m) instanceof Element){
+                                state.reset();
+                                state.setPrefix(associationWrapper.getPrefix());
+                                this.setUnitPropertiesXML((Element) associatedUnits.item(m), new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
+                                handleSingleUnit(state, (Element) associatedUnits.item(m));
 
-                            DerivedUnit associatedUnit = state.getDerivedUnitBase();
-                            FieldUnit associatedFieldUnit = null;
-                            java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
-                            //ignore field unit if associated unit has more than one
-                            if(associatedFieldUnits.size()>1){
-                                state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
-                            }
-                            else if(associatedFieldUnits.size()==1){
-                                associatedFieldUnit = associatedFieldUnits.iterator().next();
-                            }
+                                DerivedUnit associatedUnit = state.getDerivedUnitBase();
+                                FieldUnit associatedFieldUnit = null;
+                                java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                                //ignore field unit if associated unit has more than one
+                                if(associatedFieldUnits.size()>1){
+                                    state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
+                                }
+                                else if(associatedFieldUnits.size()==1){
+                                    associatedFieldUnit = associatedFieldUnits.iterator().next();
+                                }
 
-                            //attach current unit and associated unit depending on association type
+                                //attach current unit and associated unit depending on association type
 
-                            //parent-child relation:
-                            //copy derivation event and connect parent and sub derivative
-                            if(associationWrapper.getAssociationType().contains("individual")){
-                                if(currentDerivedFrom==null){
-                                    state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",AbcdImportUtility.getUnitID(currentUnit, state.getConfig())));
-                                    DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
-                                }
-                                else{
-                                    DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, currentDerivedFrom.getType());
-                                    updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                    updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                    updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                    updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-                                }
-                                state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
-                            }
-                            //siblings relation
-                            //connect current unit to field unit of associated unit
-                            else if(associationWrapper.getAssociationType().contains("population")){
-                                //no associated field unit -> using current one
-                                if(associatedFieldUnit==null){
-                                    if(currentFieldUnit!=null){
-                                        DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
-                                    }
-                                }
-                                else{
+                                //parent-child relation:
+                                //copy derivation event and connect parent and sub derivative
+                                if(associationWrapper.getAssociationType().contains("individual")){
                                     if(currentDerivedFrom==null){
-                                        state.getReport().addInfoMessage("No derivation event found for unit "+AbcdImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
-                                        DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+                                        state.getReport().addInfoMessage(String.format("No derivation event found for unit %s. Defaulting to ACCESSIONING event.",AbcdImportUtility.getUnitID(currentUnit, state.getConfig())));
+                                        DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, DerivationEventType.ACCESSIONING());
                                     }
-                                    if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
-                                        DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
+                                    else{
+                                        DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedUnit, currentUnit, currentDerivedFrom.getType());
                                         updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
                                         updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
                                         updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
                                         updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
                                     }
+                                    state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
                                 }
-                            }
+                                //siblings relation
+                                //connect current unit to field unit of associated unit
+                                else if(associationWrapper.getAssociationType().contains("population")){
+                                    //no associated field unit -> using current one
+                                    if(associatedFieldUnit==null){
+                                        if(currentFieldUnit!=null){
+                                            DerivationEvent.NewSimpleInstance(currentFieldUnit, associatedUnit, DerivationEventType.ACCESSIONING());
+                                        }
+                                    }
+                                    else{
+                                        if(currentDerivedFrom==null){
+                                            state.getReport().addInfoMessage("No derivation event found for unit "+AbcdImportUtility.getUnitID(currentUnit, state.getConfig())+". Defaulting to ACCESIONING event.");
+                                            DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, DerivationEventType.ACCESSIONING());
+                                        }
+                                        if(currentDerivedFrom!=null && associatedFieldUnit!=currentFieldUnit){
+                                            DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(associatedFieldUnit, currentUnit, currentDerivedFrom.getType());
+                                            updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
+                                            updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
+                                            updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
+                                            updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
+                                        }
+                                    }
+                                }
 
-                            //delete current field unit if replaced
-                            if(currentFieldUnit!=null && currentDerivedFrom!=null
-                                    && currentFieldUnit.getDerivationEvents().size()==1  && currentFieldUnit.getDerivationEvents().contains(currentDerivedFrom) //making sure that the field unit
-                                    && currentDerivedFrom.getDerivatives().size()==1 && currentDerivedFrom.getDerivatives().contains(currentUnit) //is not attached to other derived units
-                                    && currentDerivedFrom!=currentUnit.getDerivedFrom() // <- derivation has been replaced and can be deleted
-                                    ){
-                                currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
-                                state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit);
-                            }
+                                //delete current field unit if replaced
+                                if(currentFieldUnit!=null && currentDerivedFrom!=null
+                                        && currentFieldUnit.getDerivationEvents().size()==1  && currentFieldUnit.getDerivationEvents().contains(currentDerivedFrom) //making sure that the field unit
+                                        && currentDerivedFrom.getDerivatives().size()==1 && currentDerivedFrom.getDerivatives().contains(currentUnit) //is not attached to other derived units
+                                        && currentDerivedFrom!=currentUnit.getDerivedFrom() // <- derivation has been replaced and can be deleted
+                                        ){
+                                    currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
+                                    state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit);
+                                }
 
-                            save(associatedUnit, state);
+                                save(associatedUnit, state);
+                            }
                         }
                     }
                 }
