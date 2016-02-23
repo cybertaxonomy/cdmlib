@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 /*
  * Created on 14.05.2005
- * @author Andreas M�ller
+ * @author Andreas Müller
  * Updated 20.08.2006
  */
 
