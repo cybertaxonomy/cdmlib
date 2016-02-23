@@ -23,7 +23,8 @@ import org.springframework.stereotype.Component;
  */
 //TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
 //cdmlib-test again as it should be used only in test. Currently this is not possible because
-//sessionFactory bean has a dependsOn relationship to this class
+//sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
+//as the been is not available
 //see also TableGenerator
 @Component
 class TableGeneratorGlobalOverride {
