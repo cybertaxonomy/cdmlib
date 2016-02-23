@@ -51,19 +51,19 @@ public class CdmFormatterFactory {
 		if (object instanceof CdmBase) {
 			CdmBase cdmBase = (CdmBase) object;
 			if (cdmBase.isInstanceOf(Sequence.class)) {
-				formatter = new SequenceFormatter(object, formatKeys);
+				return new SequenceFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(SingleRead.class)) {
-				formatter = new SingleReadFormatter(object, formatKeys);
+			else if (cdmBase.isInstanceOf(SingleRead.class)) {
+				return new SingleReadFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(MediaSpecimen.class)) {
-				formatter = new MediaSpecimenFormatter(object, formatKeys);
+			else if (cdmBase.isInstanceOf(MediaSpecimen.class)) {
+				return new MediaSpecimenFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(DerivedUnit.class)) {
-				formatter = new DerivedUnitFormatter(object, formatKeys);
+			else if (cdmBase.isInstanceOf(DerivedUnit.class)) {
+				return new DerivedUnitFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(FieldUnit.class)) {
-				formatter = new FieldUnitFormatter(object, formatKeys);
+			else if (cdmBase.isInstanceOf(FieldUnit.class)) {
+				return new FieldUnitFormatter(object, formatKeys);
 			}
 		}
 		if (formatter == null) {
@@ -91,16 +91,16 @@ public class CdmFormatterFactory {
 			if (cdmBase.isInstanceOf(Sequence.class)) {
 				formatter = new SequenceFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(SingleRead.class)) {
+			else if (cdmBase.isInstanceOf(SingleRead.class)) {
 				formatter = new SingleReadFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(MediaSpecimen.class)) {
+			else if (cdmBase.isInstanceOf(MediaSpecimen.class)) {
 				formatter = new MediaSpecimenFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(DerivedUnit.class)) {
+			else if (cdmBase.isInstanceOf(DerivedUnit.class)) {
 				formatter = new DerivedUnitFormatter(object, formatKeys);
 			}
-			if (cdmBase.isInstanceOf(FieldUnit.class)) {
+			else if (cdmBase.isInstanceOf(FieldUnit.class)) {
 				formatter = new FieldUnitFormatter(object, formatKeys);
 			}
 		}

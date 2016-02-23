@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.format.occurrences;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.ICdmFormatter;
 
 /**
@@ -35,7 +36,7 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         StringBuilder builder = new StringBuilder();
         for (FormatKey formatKey : formatKeys) {
             String string = formatKeyMap.get(formatKey);
-            if(string!=null){
+            if(CdmUtils.isNotBlank(string)){
                 builder.append(string);
             }
         }
@@ -44,14 +45,7 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
     
     @Override
     public String format(Object object) {
-        StringBuilder builder = new StringBuilder();
-        for (FormatKey formatKey : formatKeys) {
-            String string = formatKeyMap.get(formatKey);
-            if(string!=null){
-                builder.append(string);
-            }
-        }
-        return builder.toString().trim();
+    	return format(object, formatKeys);
     }
 
     protected void initFormatKeys(Object object){
