@@ -4,6 +4,15 @@ import java.util.Properties;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * This class allows to globally override id generation settings in hibernate
+ *
+ * @see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
+ *
+ * @author a.kohlbecker
+ * @date Feb 23, 2016
+ *
+ */
 @Component
 class TableGeneratorGlobalOverride {
 
