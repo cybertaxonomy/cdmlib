@@ -106,7 +106,7 @@
     <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>      
-        <scope>test</scope>
+<!--         <scope>test</scope> -->
     </dependency>
     <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed?
@@ -161,16 +161,17 @@
       <artifactId>springfox-swagger2</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- dependencies for springfox-swagger2, added explicitly -->
+    <!-- 
+        dependencies for springfox-swagger2, added explicitly to pin the version
+        these dependencies are also required by the cdmlib!  
+    -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
