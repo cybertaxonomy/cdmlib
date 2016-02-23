@@ -329,7 +329,7 @@ public class NonViralNameParserImplTest {
 
         //author with 2 capitals
         fullNameString = "Campanula rhodensis A. DC.";
-        NonViralName name = parser.parseFullName(fullNameString);
+        NonViralName<?> name = parser.parseFullName(fullNameString);
         assertFalse(name.hasProblem());
 
 	}
@@ -354,7 +354,7 @@ public class NonViralNameParserImplTest {
 	}
 
 	@Test
-    public final void testMultipleAuthors() throws StringNotParsableException {
+    public final void testMultipleAuthors() {
         //multiple authors for inReference
         String fullTitleString = "Abies alba L. in Mill., Gregor & Behr., Sp. Pl. 173: 384. 1982.";
         NonViralName<?> multipleAuthorRefName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -1575,7 +1575,6 @@ public class NonViralNameParserImplTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 
-//	@Ignore // please add this test once #2750 is fixed
 	@Test
 	public final void testNomenclaturalStatus() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
@@ -1588,7 +1587,16 @@ public class NonViralNameParserImplTest {
 
 	@Test
 	public final void testSpecificAuthors(){
-//	    Campanula rhodensis A. DC.
+	    //McVaugh
+        NonViralName<?> name = parser.parseFullName("Psidium longipes var. orbiculare (O.Berg) McVaugh");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "McVaugh", combinationAuthor.getNomenclaturalTitle());
+        TeamOrPersonBase<?> basionymAuthor = name.getBasionymAuthorship();
+        assertEquals( "O.Berg", basionymAuthor.getNomenclaturalTitle());
+
+//      Campanula rhodensis A. DC.
+
 	}
 
 }
