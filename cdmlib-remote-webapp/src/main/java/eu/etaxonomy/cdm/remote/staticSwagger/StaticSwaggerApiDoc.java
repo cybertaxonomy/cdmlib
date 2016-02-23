@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.etaxonomy.cdm.remote.SwaggerGroupsIT;
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
 import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 
@@ -30,11 +29,10 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  * otherwise provided by springfox-swagger2. In contrast to the original controller
  * this implementation serves static json files which contain the api documentation.
  * <p>
- * The static api doc files are created by the integration test class {@link SwaggerGroupsIT}.
+ * The static api doc files are created by the integration test class <code>SwaggerGroupsIT</code>.
  * <p>
  * For more details see {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
- * @see {@link SwaggerGroupsIT}
  * @author a.kohlbecker
  * @date Feb 22, 2016
  *
