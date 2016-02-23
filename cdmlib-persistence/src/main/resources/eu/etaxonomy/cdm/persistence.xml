@@ -13,7 +13,7 @@
       <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
     <property name="implicitNamingStrategy">
         <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
     </property>
