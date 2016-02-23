@@ -55,8 +55,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="net.sourceforge.eclipsejetty.launcher.JettyLaunchClassPathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_60"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.eclipsejetty.starter.embedded.JettyEmbeddedLauncherMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdmlib-remote-webapp"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx500M&#10;&#10;-Dlog4j.configDebug=true&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#10;&#10;-agentlib:yjpagent&#10;&#10;-Dcdm.forceSchemaUpdate=true&#10;-Dspring.profiles.active=remoting"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx500M&#10;-XX:PermSize=150m&#10;&#10;&#10;-Dlog4j.configDebug=true&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#10;&#10;-agentlib:yjpagent&#10;&#10;-Dcdm.forceSchemaUpdate=true&#10;-Dspring.profiles.active=remoting"/>
 </launchConfiguration>
