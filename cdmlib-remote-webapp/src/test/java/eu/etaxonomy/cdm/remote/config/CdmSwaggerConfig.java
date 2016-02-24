@@ -246,7 +246,8 @@ private Collection<Class<? extends Object>> allCdmTypes() {
                description, //description
                null, //version
                null, // terms of service URL
-               "EditSupport@bgbm.org", // contact
+               "the Research and Development Group Biodiversity Informatics and Scientific "
+               + "Information Systems (BDI) at the Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM) ", // contact
                "Mozilla Public License 2.0", // license
                "http://www.mozilla.org/MPL/2.0/" // licenseUrl
          );
