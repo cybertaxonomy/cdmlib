@@ -210,7 +210,7 @@
       <resource>
         <!-- replace the place holders like ${...} in datasources.xml -->
         <filtering>true</filtering>
-        <directory>src/test/resources</directory>
+		<directory>src/test/resources</directory>
         <targetPath>../test-classes</targetPath>
         <includes>
           <include>datasources.xml</include>
@@ -329,6 +329,14 @@
             </execution>
         </executions>
       </plugin>
+	  <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+                <escapeWindowsPaths>false</escapeWindowsPaths>
+            </configuration>
+        </plugin>
+
     </plugins>
   </build>
 </project>
