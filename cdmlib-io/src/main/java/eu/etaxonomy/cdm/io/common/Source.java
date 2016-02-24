@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
  *  Creates Cursors from extern relational DB.
  *  Used only for developpers convienence hence undocumented.
  *  You may create input cursors in any other way you want
- *  @author Andreas M&uuml;ller
+ *  @author Andreas Müller
  */
 public class Source {
 	static Logger logger = Logger.getLogger(Source.class);
@@ -55,6 +55,8 @@ public class Source {
 	public final static String ORACLE = "Oracle";
 	public final static String DB2 = "DB2";
 	public final static String POSTGRESQL9 = "PostgreSQL9";
+	public final static String MYSQL = "MySQL";
+
 
 	//coursor mode
 	public final static String SELECT_DIRECT = "direct";
@@ -70,6 +72,7 @@ public class Source {
     private static String clsSQLServerDdtek = "com.ddtek.jdbc.sqlserver.SQLServerDriver";
     private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsPostgreSQL = "org.postgresql.Driver";
+    private static String clsMySQL = "com.mysql.jdbc.Driver";
 
     //url
 //    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
@@ -80,6 +83,8 @@ public class Source {
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
     private static String urlODBC = "jdbc:odbc:";
     private static String urlPostgreSQL = "jdbc:postgresql://";
+    private static String urlMySQL = "jdbc:mysql://";
+
 
 /* *************** VARIABLES *******************************/
     private Connection mConn;
@@ -348,6 +353,11 @@ public class Source {
 	            server = mServer + ":" + mPort;
 	            mUrl = urlPostgreSQL + server+ "/" + mDb;
 	        }
+	        else if (mDbms.equalsIgnoreCase(MYSQL)) {
+                Class.forName(clsMySQL);
+                server = mServer + ":" + mPort;
+                mUrl = urlMySQL + server+ "/" + mDb + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+            }
 	        else {
 	            throw new RuntimeException("Unsupported Database type");
 	        }
