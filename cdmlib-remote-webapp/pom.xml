@@ -106,7 +106,7 @@
     <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>      
-<!--         <scope>test</scope> -->
+        <scope>test</scope>
     </dependency>
     <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed?
