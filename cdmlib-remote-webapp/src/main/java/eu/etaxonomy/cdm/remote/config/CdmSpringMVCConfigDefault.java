@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Profile;
  *
  */
 //@EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
-@Profile({"default", "remoting"}) // see RESERVED_DEFAULT_PROFILE_NAME
+@Profile("!swagger")
 @Configuration
 @Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
 //@DependsOn("objectMapperConfigurer")
