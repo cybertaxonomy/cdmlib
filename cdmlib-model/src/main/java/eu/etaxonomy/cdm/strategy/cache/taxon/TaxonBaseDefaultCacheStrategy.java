@@ -67,9 +67,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 tags.addAll(nameTags);
 
                 String secSeparator =  " sec. ";
-                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
-                    secSeparator = "," + secSeparator;
-                }
+                //not used: we currently use a post-separator in the name tags
+//                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
+//                    secSeparator = "," + secSeparator;
+//                }
 
                 //ref.
                 List<TaggedText> secTags = getSecundumTags(taxonBase);

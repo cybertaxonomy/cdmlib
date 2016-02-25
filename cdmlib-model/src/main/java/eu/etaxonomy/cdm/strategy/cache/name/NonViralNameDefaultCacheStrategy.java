@@ -391,7 +391,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
             }
             nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr));
             if (includeSeparatorAfter){
-                nomStatusTags.add(new TaggedText(TagEnum.separator, ","));
+                nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
             }
         }
         return nomStatusTags;

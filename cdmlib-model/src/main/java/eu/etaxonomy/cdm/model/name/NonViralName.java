@@ -1379,6 +1379,29 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         }
     }
 
+
+    /**
+     * Defines the last part of the name.
+     * This is for infraspecific taxa, the infraspecific epithet,
+     * for species the specific epithet, for infageneric taxa the infrageneric epithet
+     * else the genusOrUninomial.
+     * However, the result does not depend on the rank (which may be not correctly set
+     * in case of dirty data) but returns the first name part which is not blank
+     * considering the above order.
+     * @return the first not blank name part in reverse order
+     */
+    public String getLastNamePart() {
+        String result =
+                StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
+                    this.getInfraSpecificEpithet() :
+                StringUtils.isNotBlank(this.getSpecificEpithet()) ?
+                    this.getSpecificEpithet():
+                StringUtils.isNotBlank(this.getInfraGenericEpithet()) ?
+                    this.getInfraGenericEpithet():
+                this.getGenusOrUninomial();
+        return result;
+    }
+
 //*********************** CLONE ********************************************************/
 
     /**
