@@ -4,7 +4,6 @@ spy.log
 .classpath
 .project
 .settings
-bin
 hibernate.log
 PUBLIC.xsd
 dataset.xsd
