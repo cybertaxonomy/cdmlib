@@ -32,15 +32,17 @@ import org.springframework.context.annotation.Profile;
 // @DependsOn("objectMapperConfigurer")
 @ComponentScan(basePackages = {
         "springfox.documentation.spring.web", // --> CdmSwaggerConfig
-        "eu.etaxonomy.cdm.remote.l10n", "eu.etaxonomy.cdm.remote.controller", "eu.etaxonomy.cdm.remote.service",
+        "eu.etaxonomy.cdm.remote.l10n",
+        "eu.etaxonomy.cdm.remote.controller",
+        "eu.etaxonomy.cdm.remote.service",
         "eu.etaxonomy.cdm.remote.config" })
 public class CdmSpringMVCConfigWithSwagger extends CdmSpringMVCConfig {
 
     public CdmSpringMVCConfigWithSwagger() {
         super();
-        logger.info("====================================");
-        logger.info(" CdmSpringMVCConfiguration: Swagger");
-        logger.info("====================================");
+        logger.info(" ==========================================");
+        logger.info("  Spring Configuration Profile: Swagger");
+        logger.info(" ==========================================");
     }
 
 }
