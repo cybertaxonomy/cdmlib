@@ -64,6 +64,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "sequences.annotations",
             "markers.markerType",
             "gatheringEvent.$",
+            "gatheringEvent.exactLocation.referenceSystem", // TODO implement auto initializer?
             "descriptions"
     });
 
