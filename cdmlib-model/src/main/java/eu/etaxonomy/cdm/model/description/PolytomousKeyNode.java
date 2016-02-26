@@ -179,6 +179,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
 
+
+
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -500,6 +502,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public void removeChild(PolytomousKeyNode child) {
 		int index = children.indexOf(child);
+		if (children.contains(null)){
+		    while(children.contains(null)){
+		        children.remove(null);
+		    }
+		}
 		if (index >= 0) {
 			removeChild(index);
 		}
@@ -589,7 +596,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		} else {
 			node.setNodeNumber(nodeN);
 			newNodeN++;
-			for (PolytomousKeyNode child : node.getChildren()) {
+			List<PolytomousKeyNode> children = node.getChildren();
+			 while (children.contains(null)){
+			     children.remove(null);
+		       }
+
+			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
 				}else{
