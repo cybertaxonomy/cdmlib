@@ -484,7 +484,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected boolean removeChildNode(TaxonNode childNode){
         boolean result = true;
-
+        while (childNodes.contains(null)){
+            childNodes.remove(null);
+        }
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }
@@ -512,6 +514,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @see				#deleteChildNode(TaxonNode)
      */
     public void removeChild(int index){
+        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
         TaxonNode child = childNodes.get(index);
         child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
@@ -650,6 +653,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 */
 	private void updateSortIndex(int index) {
 	    List<TaxonNode> children = this.getChildNodes();
+
+
 	    for(int i = index; i < children.size(); i++){
         	TaxonNode child = children.get(i);
         	if (child != null){
