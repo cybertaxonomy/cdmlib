@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import org.hibernate.envers.tools.Pair;
+
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
@@ -24,7 +29,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
     private String uuid;
-    private List<String> associatedTaxa;
+    private List<Pair<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
 
     public String getAccessionNumber() {
@@ -54,14 +59,14 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         types.put(typeStatus, typedTaxa);
     }
 
-    public List<String> getAssociatedTaxa() {
+    public List<Pair<UUID, String>> getAssociatedTaxa() {
         return associatedTaxa;
     }
-    public void addAssociatedTaxon(String taxonName){
+    public void addAssociatedTaxon(Taxon taxon){
         if(associatedTaxa==null){
-            associatedTaxa = new ArrayList<String>();
+            associatedTaxa = new ArrayList<Pair<UUID, String>>();
         }
-        associatedTaxa.add(taxonName);
+        associatedTaxa.add(new Pair<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
     }
 
 }

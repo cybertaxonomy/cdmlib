@@ -585,8 +585,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if (individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)) {
                     TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                     Taxon taxon = taxonDescription.getTaxon();
-                    if (taxon != null && taxon.getName() != null) {
-                        preservedSpecimenDTO.addAssociatedTaxon(taxon.getName().getTitleCache());
+                    if (taxon != null) {
+                        preservedSpecimenDTO.addAssociatedTaxon(taxon);
                     }
                 }
             }
