@@ -430,17 +430,19 @@ public class NonViralNameParserImplTest {
 	 */
 	@Test
 	public final void testHybrids() {
-		try {
-			Method parseMethod = parser.getClass().getDeclaredMethod("parseFullName", String.class, NomenclaturalCode.class, Rank.class);
-			testName_StringNomcodeRank(parseMethod);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		NonViralName<?> name1;
+
+
+        //Infrageneric hybrid
+        name1 = parser.parseFullName("Aegilops nothosubg. Insulae Scholz", botanicCode, null);
+        assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
+        assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+        assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
+        assertEquals("Infrageneric epithet must be 'Insulae'", "Insulae", name1.getInfraGenericEpithet());
 
 		//Species hybrid
 //		NonViralName nameTeam1 = parser.parseFullName("Aegilops \u00D7insulae-cypri H. Scholz");
-		NonViralName<?> name1 = parser.parseFullName("Aegilops \u00D7insulae Scholz", botanicCode, null);
+		name1 = parser.parseFullName("Aegilops \u00D7insulae Scholz", botanicCode, null);
 		assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
 		assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
 		assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
@@ -453,13 +455,27 @@ public class NonViralNameParserImplTest {
 		assertFalse("Name must not have trinom hybrid bit set", name1.isTrinomHybrid());
 		assertEquals("Uninomial must be 'Aegilops'", "Aegilops", name1.getGenusOrUninomial());
 
-		//Species hybrid
+		//Subspecies hybrid with hybrid sign
+		//maybe false: see http://dev.e-taxonomy.eu/trac/ticket/3868
 		name1 = parser.parseFullName("Aegilops insulae subsp. X abies Scholz", botanicCode, null);
 		assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
 		assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
 		assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
 		assertEquals("Infraspecific epithet must be 'abies'", "abies", name1.getInfraSpecificEpithet());
 
+        //Subspecies hybrid with notho / n
+        name1 = parser.parseFullName("Aegilops insulae nothosubsp. abies Scholz", botanicCode, null);
+        assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+        assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
+        assertFalse("Name must not be protected", name1.isProtectedTitleCache());
+        assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
+        assertEquals("Infraspecific epithet must be 'abies'", "abies", name1.getInfraSpecificEpithet());
+        name1 = parser.parseFullName("Aegilops insulae nsubsp. abies Scholz", botanicCode, null);
+        assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+        assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
+        assertFalse("Name must not be protected", name1.isProtectedTitleCache());
+        assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
+        assertEquals("Infraspecific epithet must be 'abies'", "abies", name1.getInfraSpecificEpithet());
 
 	}
 

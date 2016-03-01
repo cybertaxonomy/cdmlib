@@ -77,9 +77,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String status = "";
 
     //marker
-    protected static String InfraGenusMarker = "(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
+    protected static String InfraGenusMarker = "(n|notho)?(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
-    protected static String infraSpeciesMarker = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\. sp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarker = "(n|notho)?(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
     protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
@@ -237,8 +237,10 @@ public abstract class NonViralNameParserImplRegExBase  {
     //cultivars and hybrids
     protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
     protected static String cultivarMarker = oWs + "(cv\\.|')";
-    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|notho)";
-    protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + hybridPart;
+    protected static String notho = "notho";
+    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";
+    protected static String noNothoHybridPart = "([xX]" + oWs + "|"+hybridSign+")";
+    protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + noNothoHybridPart;  //for some reason infraspecific notho ranks do not parse if notho is allowed as uninomial prefix.
     protected static String hybridFormularSeparator = oWs + "[" + hybridSign + "xX]" + oWs;
 
 
@@ -269,7 +271,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern finalTeamSplitterPattern = Pattern.compile(finalTeamSplitter);
     protected static Pattern cultivarPattern = Pattern.compile(cultivar);
     protected static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
-    protected static Pattern hybridPattern = Pattern.compile(hybridFull);
 
     protected static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
