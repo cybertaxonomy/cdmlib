@@ -1167,12 +1167,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return array of Teams containing the Team[0],
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
+	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
 			throws StringNotParsableException{
-		if (fullAuthorString == null || clazz == null){
+		if (fullAuthorStringOrig == null || clazz == null){
 			return;
 		}
-		fullAuthorString = fullAuthorString.trim();
+		String fullAuthorString = fullAuthorStringOrig.trim();
 
 		//Botanic
 		if ( BotanicalName.class.isAssignableFrom(clazz) ){
@@ -1205,7 +1205,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			String basString = basionymMatcher.group();
 			basString = basString.replaceFirst(basStart, "");
 			basString = basString.replaceAll(basEnd, "").trim();
-			authorShipStart = basionymMatcher.end(1) + 1;
+			authorShipStart = basionymMatcher.end(1);
 
 			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[2];
 			Integer[] basYears = new Integer[2];
@@ -1216,7 +1216,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			years[3] = basYears[1];
 		}
 		if (fullAuthorString.length() >= authorShipStart){
-			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
+			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];
 			Integer[] combinationYears = new Integer[2];
 			authorsAndEx(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
 			authors[0]= combinationAuthors[0] ;
