@@ -1300,7 +1300,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             }else {
             	result.setError();
-            	result.addException(new ReferencedObjectUndeletableException("Synonym can not be deleted it is used in a synonymRelationship."));
+            	result.addException(new ReferencedObjectUndeletableException("Synonym can not be deleted it is used in an other synonymRelationship."));
                 return result;
             }
 
@@ -1487,7 +1487,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     @Transactional(readOnly = false)
-    public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
+    public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation,
             Taxon newTaxon,
             boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType,
@@ -1528,7 +1528,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 //        Assert.assertTrue("Synonym can only be moved with complete homotypic group", moveHomotypicGroup);
 
-        SynonymRelationship result = null;
+        UpdateResult result = new UpdateResult();
         //move all synonyms to new taxon
         List<Synonym> homotypicSynonyms = fromTaxon.getSynonymsInGroup(homotypicGroup);
         for (Synonym syn: homotypicSynonyms){
@@ -1553,13 +1553,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //                		newTaxon.getName().getHomotypicalGroup().addTypifiedName(syn.getName());
 //                	}
                     //set result
-                    if (synRelation.equals(oldSynonymRelation)){
-                        result = newSynRelation;
+                    if (!synRelation.equals(oldSynonymRelation)){
+                        result.setError();
                     }
                 }
             }
 
         }
+        result.addUpdatedObject(fromTaxon);
+        result.addUpdatedObject(newTaxon);
         saveOrUpdate(fromTaxon);
         saveOrUpdate(newTaxon);
         //Assert that there is a result
@@ -3250,10 +3252,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	    UpdateResult result = new UpdateResult();
 		Taxon newTaxon = (Taxon) dao.load(newTaxonUUID);
-		SynonymRelationship sr = moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
-		result.setCdmEntity(sr);
-		result.addUpdatedObject(sr);
-		result.addUpdatedObject(newTaxon);
+		result = moveSynonymToAnotherTaxon(oldSynonymRelation, newTaxon, moveHomotypicGroup, newSynonymRelationshipType, reference, referenceDetail, keepReference);
+
 		return result;
 	}
 
