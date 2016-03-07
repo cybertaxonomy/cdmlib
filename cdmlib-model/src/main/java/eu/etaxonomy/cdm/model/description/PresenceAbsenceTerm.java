@@ -69,6 +69,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidND=UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	private static final UUID uuidC=UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
+	private static final UUID uuidCQ=UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidI=UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
 	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
 	private static final UUID uuidID=UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
@@ -215,6 +216,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static final PresenceAbsenceTerm CULTIVATED(){
 		return getTermByUuid(uuidC);
 	}
+    public static final PresenceAbsenceTerm CULTIVATED_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidCQ);
+    }
 	public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
 		return getTermByUuid(uuidE);
 	}
