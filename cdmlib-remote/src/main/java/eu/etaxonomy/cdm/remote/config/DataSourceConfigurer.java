@@ -163,7 +163,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         try {
 
             Connection connection = dataSource.getConnection();
-            ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, "CdmMetaData", null);
+            String metadataTableName = "CdmMetaData";
+            if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
+                metadataTableName = metadataTableName.toUpperCase();
+            }
+            ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
             if(tables.first()){
                 ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
                 String version = null;
