@@ -47,6 +47,14 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 @Component
 public class CsvNameExport extends CsvNameExportBase {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+
     private static final Logger logger = Logger.getLogger(CsvNameExport.class);
 
     public CsvNameExport() {
@@ -291,16 +299,24 @@ public class CsvNameExport extends CsvNameExportBase {
         nameRecord.put("familyName", name.getNameCache());
         extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam");
 
-
-        taxon = (Taxon) getTaxonService().load(genusNode.getTaxon().getUuid());
-        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-        //  if (taxon.isPublish()){
-        nameRecord.put("genusTaxon", taxon.getTitleCache());
-        if (taxon.getSec()!= null){
-            nameRecord.put("secRef", taxon.getSec().getTitleCache());
+        if (genusNode.getTaxon() == null){
+            nameRecord.put("genusTaxon", null);
+            return nameRecord;
         }else{
-            nameRecord.put("secRef", null);
+            taxon = (Taxon) getTaxonService().load(genusNode.getTaxon().getUuid());
+            taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+            nameRecord.put("genusTaxon", taxon.getTitleCache());
+
+            if (taxon.getSec()!= null){
+                nameRecord.put("secRef", taxon.getSec().getTitleCache());
+            }else{
+                nameRecord.put("secRef", null);
+            }
         }
+
+        //  if (taxon.isPublish()){
+
+
 
         name = HibernateProxyHelper.deproxy(getNameService().load(taxon.getName().getUuid()), BotanicalName.class);
         nameRecord.put("genusName",name.getTitleCache());

@@ -11,7 +11,10 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
 
-	private ByteArrayOutputStream byteOutputStream;
+    private static final long serialVersionUID = 1L;
+
+
+    private ByteArrayOutputStream byteOutputStream;
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
 	private String fieldsEnclosedBy = "\"";
