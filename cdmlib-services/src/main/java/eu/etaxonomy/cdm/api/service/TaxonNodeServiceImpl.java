@@ -524,8 +524,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean isParent){
-        TaxonNode taxonNode = dao.load(taxonNodeUuid);
-    	TaxonNode targetNode = dao.load(targetNodeUuid);
+        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
+    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
     	return moveTaxonNode(taxonNode, targetNode, isParent);
     }
 
@@ -545,7 +545,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(newParent);
         result.addUpdatedObject(taxonNode.getParent());
         result.setCdmEntity(taxonNode);
-        newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        if (!isParent){
+            newParent.getParent().addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        } else{
+            newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        }
         dao.saveOrUpdate(newParent);
 
         return result;
@@ -591,14 +595,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         try{
             child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
         }catch(Exception e){
-            logger.error("TaxonNode could not be created. "+ e.getLocalizedMessage());
             result.addException(e);
+            result.setError();
         }
 //        child = dao.save(child);
 
         dao.saveOrUpdate(parent);
         result.addUpdatedObject(parent);
-        result.setCdmEntity(child);
+        if (child != null){
+            result.setCdmEntity(child);
+        }
         return result;
 
     }

@@ -173,46 +173,48 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 
 	@Override
 	@Transactional(readOnly = false)
-	public Person convertTeam2Person(UUID teamUuid) throws MergeException {
+	public UpdateResult convertTeam2Person(UUID teamUuid) throws MergeException {
 	    Team team = CdmBase.deproxy(dao.load(teamUuid), Team.class);
 	    return convertTeam2Person(team);
 	}
 
 	@Override
-	public Person convertTeam2Person(Team team) throws MergeException {
-		Person result = null;
+	public UpdateResult convertTeam2Person(Team team) throws MergeException {
+        UpdateResult result = new UpdateResult();
+        Person newPerson = null;
 		team = CdmBase.deproxy(team, Team.class);
 		if (team.getTeamMembers().size() > 1){
 			throw new IllegalArgumentException("Team must not have more than 1 member to be convertable into a person");
 		}else if (team.getTeamMembers().size() == 1){
-			result = team.getTeamMembers().get(0);
+		    newPerson = team.getTeamMembers().get(0);
 			IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 			strategy.setDefaultCollectionMergeMode(MergeMode.FIRST);
-			genericDao.merge(result, team, strategy);
+			genericDao.merge(newPerson, team, strategy);
 		}else if (team.getTeamMembers().isEmpty()){
-			result = Person.NewInstance();
-			genericDao.save(result);
+		    newPerson = Person.NewInstance();
+            genericDao.save(newPerson);
 			IMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 			strategy.setDefaultMergeMode(MergeMode.SECOND);
 			strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-			genericDao.merge(result, team, strategy);
+			genericDao.merge(newPerson, team, strategy);
 		}else{
 			throw new IllegalStateException("Unhandled state of team members collection");
 		}
-
+		result.setCdmEntity(newPerson);
 		return result;
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public Team convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException {
+	public UpdateResult convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException {
 	    Person person = CdmBase.deproxy(dao.load(personUuid), Person.class);
 	    return convertPerson2Team(person);
 	}
 
 	@Override
-	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
-		Team team = Team.NewInstance();
+	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
+	    UpdateResult result = new UpdateResult();
+        Team team = Team.NewInstance();
 		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
 		strategy.setDefaultMergeMode(MergeMode.SECOND);
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
@@ -235,7 +237,8 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);
 		}
-		return team;
+		result.setCdmEntity(team);
+        return result;
 	}
 
 
