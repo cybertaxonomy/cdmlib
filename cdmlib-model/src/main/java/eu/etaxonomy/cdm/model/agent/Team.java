@@ -234,6 +234,10 @@ public class Team extends TeamOrPersonBase<Team> {
 		}
 	}
 
+    public boolean replaceTeamMember(Person newObject, Person oldObject){
+        return replaceInList(this.teamMembers, newObject, oldObject);
+    }
+
 
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.

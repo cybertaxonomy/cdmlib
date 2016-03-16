@@ -14,6 +14,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -446,6 +447,22 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 	public String getUserFriendlyFieldName(String field){
 		return field;
 	}
+
+// ********************* HELPER ****************************************/
+
+    protected <T extends CdmBase> boolean replaceInList(List<T> list,
+            T newObject, T oldObject){
+        boolean result = false;
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).equals(oldObject)){
+                list.set(i, newObject);
+                result = true;
+            }
+        }
+        return result;
+    }
+
+
 
 //********************** CLONE *****************************************/
 

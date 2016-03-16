@@ -306,9 +306,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         getCredits().remove(index);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getIdentifiers()
-     */
+    @Override
+    public boolean replaceCredit(Credit newObject, Credit oldObject){
+        return replaceInList(this.credits, newObject, oldObject);
+    }
+
+
     @Override
     public List<Identifier> getIdentifiers(){
         if(this.identifiers == null) {
@@ -378,6 +381,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void removeIdentifier(int index){
     	getIdentifiers().remove(index);
     }
+
+    @Override
+    public boolean replaceIdentifier(Identifier newObject, Identifier oldObject){
+        return replaceInList(this.identifiers, newObject, oldObject);
+    }
+
 
     @Override
     public Set<Extension> getExtensions(){

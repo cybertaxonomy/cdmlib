@@ -746,6 +746,60 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
+	/**
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+     *
+     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5651
+     *
+     * @throws MergeException
+     */
+    @Test
+    public void testMergePersons() throws MergeException {
+        Team team1 = Team.NewInstance();
+        Team team2 = Team.NewInstance();
+        Team team3 = Team.NewInstance();
+        team1.setTitleCache("team1", true);
+        team2.setTitleCache("team2", true);
+        team3.setTitleCache("team3", true);
+
+        Person person1a = Person.NewTitledInstance("person1a");
+        Person person1b = Person.NewTitledInstance("person1b");
+        Person person2 = Person.NewTitledInstance("person2");
+        Person person3 = Person.NewTitledInstance("person3");
+
+        team1.addTeamMember(person1a);
+        team1.addTeamMember(person2);
+
+
+        team2.addTeamMember(person2);
+        team2.addTeamMember(person1a);
+        team2.addTeamMember(person3);
+
+        team3.addTeamMember(person3);
+
+        agentDao.save(team1);
+        agentDao.save(team2);
+        agentDao.save(team3);
+        agentDao.save(person1b);
+        commitAndStartNewTransaction(null);
+
+        IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
+        cdmGenericDao.merge(person1b, person1a, personMergeStrategy);
+
+        team1 = (Team)agentDao.load(team1.getUuid());
+        team2 = (Team)agentDao.load(team2.getUuid());
+
+        //order should not change and 1a should be replaced by 1b
+        Assert.assertEquals("person1b", team1.getTeamMembers().get(0).getTitleCache());
+        Assert.assertEquals("person2", team1.getTeamMembers().get(1).getTitleCache());
+
+        Assert.assertEquals("person2", team2.getTeamMembers().get(0).getTitleCache());
+        Assert.assertEquals("person1b", team2.getTeamMembers().get(1).getTitleCache());
+        Assert.assertEquals("person3", team2.getTeamMembers().get(2).getTitleCache());
+
+    }
+
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.

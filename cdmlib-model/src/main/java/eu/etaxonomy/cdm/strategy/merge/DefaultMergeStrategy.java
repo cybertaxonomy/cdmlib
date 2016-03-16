@@ -48,7 +48,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		return new DefaultMergeStrategy(mergeClazz);
 	}
 
-	private boolean onlyReallocateReferences = false;
+	private final boolean onlyReallocateReferences = false;
 
 	protected MergeMode defaultMergeMode = MergeMode.FIRST;
 	protected MergeMode defaultCollectionMergeMode = MergeMode.ADD;
@@ -327,20 +327,20 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 				Collection<ICdmBase> secondCollection = (Collection<ICdmBase>)field.get(mergeSecond);
 				List<ICdmBase> removeList = new ArrayList<ICdmBase>();
 				if(secondCollection != null) {
-				for (ICdmBase obj : secondCollection){
-					Object objectToAdd;
-					if (mergeMode == MergeMode.ADD){
-						objectToAdd = obj;
-					}else if(mergeMode == MergeMode.ADD_CLONE){
-						Method cloneMethod = obj.getClass().getDeclaredMethod("clone");
-						objectToAdd = cloneMethod.invoke(obj);
-						clonedObjects.add(obj);
-					}else{
-						throw new MergeException("Unknown collection merge mode: " + mergeMode);
-					}
-					addMethod.invoke(mergeFirst, objectToAdd);
-					removeList.add(obj);
-				}
+    				for (ICdmBase obj : secondCollection){
+    					Object objectToAdd;
+    					if (mergeMode == MergeMode.ADD){
+    						objectToAdd = obj;
+    					}else if(mergeMode == MergeMode.ADD_CLONE){
+    						Method cloneMethod = obj.getClass().getDeclaredMethod("clone");
+    						objectToAdd = cloneMethod.invoke(obj);
+    						clonedObjects.add(obj);
+    					}else{
+    						throw new MergeException("Unknown collection merge mode: " + mergeMode);
+    					}
+    					addMethod.invoke(mergeFirst, objectToAdd);
+    					removeList.add(obj);
+    				}
 				}
 				for (ICdmBase removeObj : removeList ){
 					//removeMethod.invoke(mergeSecond, removeObj);
@@ -391,18 +391,28 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 	}
 
+	public static Method getReplaceMethod(Field field) throws MergeException{
+	    return getAddMethod(field, false, true);
+	}
 
 	private Method getAddMethod(Field field) throws MergeException{
-		return getAddMethod(field, false);
+		return getAddMethod(field, false, false);
 	}
 
 	public static Method getAddMethod(Field field, boolean remove) throws MergeException{
+	    return getAddMethod(field, remove, false);
+	}
+
+	private static Method getAddMethod(Field field, boolean remove, boolean replace) throws MergeException{
 		Method result;
 		Class<?> parameterClass = getCollectionType(field);
+		Class<?>[] parameterClasses = replace ?
+		        new Class[]{parameterClass,parameterClass}:
+		        new Class[]{parameterClass};
 		String fieldName = field.getName();
 		String firstCapital = fieldName.substring(0, 1).toUpperCase();
 		String rest = fieldName.substring(1);
-		String prefix = remove? "remove": "add";
+		String prefix = replace? "replace" : remove? "remove": "add";
 		String methodName = prefix + firstCapital + rest;
 		boolean endsWithS = parameterClass.getSimpleName().endsWith("s");
 		if (! endsWithS && ! fieldName.equals("media")){
@@ -410,14 +420,14 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		}
 		Class<?> methodClass = field.getDeclaringClass();
 		try {
-			result = methodClass.getMethod(methodName, parameterClass);
+			result = methodClass.getMethod(methodName, parameterClasses);
 		}catch (NoSuchMethodException e1) {
 			try {
-				result = methodClass.getDeclaredMethod(methodName, parameterClass);
+				result = methodClass.getDeclaredMethod(methodName, parameterClasses);
 				result.setAccessible(true);
 			} catch (NoSuchMethodException e) {
 				logger.warn(methodName);
-				throw new IllegalArgumentException("Default adding method for collection field ("+field.getName()+") does not exist");
+				throw new IllegalArgumentException("Default '" +prefix+"' method for collection field ("+field.getName()+") does not exist");
 			}
 		} catch (SecurityException e) {
 			throw e;

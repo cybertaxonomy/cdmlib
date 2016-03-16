@@ -74,6 +74,15 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void removeCredit(int index);
 
+
+    /**
+     * Replaces all occurrences of oldObject in the credits list with newObject
+     * @param newObject the replacement object
+     * @param oldObject the object to be replaced
+     * @return true, if an object was replaced, false otherwise
+     */
+    public boolean replaceCredit(Credit newObject, Credit oldObject);
+
     public Set<Extension> getExtensions();
 
     public void addExtension(Extension extension);
@@ -83,10 +92,10 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     /**
      * Returns the list of {@link Identifier alternative identifiers}.
      * In case the order of these identifiers is important it should be
-     * implemented such that the first item in the list is the most 
+     * implemented such that the first item in the list is the most
      * important/most current identifier. <BR>
      * E.g. if a barcode identifier
-     * is more important than the accession number for a certain 
+     * is more important than the accession number for a certain
      * specimen, than the barcode identifier should be before the accession number.
      * <BR>Or if a sample designation is the most recent of all sample designations
      * than it should be the first in the list while all history designations come
@@ -103,36 +112,44 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * @return
      */
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType);
-    
+
     /**
      * @see #getIdentifiers()
      * @param identifier
      */
     public void addIdentifier(Identifier identifier);
-    
+
     /**
-     * Adds an identifier at the given position. For use of 
+     * Adds an identifier at the given position. For use of
      * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
      * @see #getIdentifiers()
-     * @param index the list index 
+     * @param index the list index
      * @param identifier the identifier
      */
     public void addIdentifier(int index, Identifier identifier);
 
     /**
-     * Removes an identifier at the given position. For use of 
+     * Removes an identifier at the given position. For use of
      * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
-     * @param index the list index 
+     * @param index the list index
      */
     public void removeIdentifier(int index);
 
-    
+
     /**
      * Removes an identifier
      * @see #getIdentifiers()
      * @param identifier
      */
     public void removeIdentifier(Identifier identifier);
+
+    /**
+     * Replaces all occurrences of oldObject in the identifiers list with newObject
+     * @param newObject the replacement object
+     * @param oldObject the object to be replaced
+     * @return true, if an object was replaced, false otherwise
+     */
+    public boolean replaceIdentifier(Identifier newObject, Identifier oldObject);
 
 
     /**
@@ -151,5 +168,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public byte[] getData();
 
 	void removeSources();
+
+
 
 }

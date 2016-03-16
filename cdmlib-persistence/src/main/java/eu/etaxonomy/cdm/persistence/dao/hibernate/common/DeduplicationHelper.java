@@ -143,17 +143,15 @@ public class DeduplicationHelper {
 	                if (toBeDeleted != cdmBase2){
 	                    session.delete(toBeDeleted);
 	                }
-
 	            }
 			}
-
-
 
 			//flush
 			session.flush();
 
 		} catch (Exception e) {
-			throw new MergeException(e);
+			e.printStackTrace();
+		    throw new MergeException(e);
 		}
 	}
 
@@ -517,11 +515,15 @@ public class DeduplicationHelper {
 			Object collection = referencingField.get(referencingObject);
 			if (! (collection instanceof Collection)){
 				throw new MergeException ("Reallocation of collections for collection other than set and list not yet implemented");
+			}else if (collection instanceof List){
+			    Method replaceMethod = DefaultMergeStrategy.getReplaceMethod(referencingField);
+			    replaceMethod.invoke(referencingObject, cdmBase1, cdmBase2);
+			}else{
+			    Method addMethod = DefaultMergeStrategy.getAddMethod(referencingField, false);
+			    Method removeMethod = DefaultMergeStrategy.getAddMethod(referencingField, true);
+			    addMethod.invoke(referencingObject, cdmBase1);
+			    removeMethod.invoke(referencingObject, cdmBase2);
 			}
-			Method addMethod = DefaultMergeStrategy.getAddMethod(referencingField, false);
-			Method removeMethod = DefaultMergeStrategy.getAddMethod(referencingField, true);
-			addMethod.invoke(referencingObject, cdmBase1);
-			removeMethod.invoke(referencingObject, cdmBase2);
 		}
 	}
 
