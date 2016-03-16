@@ -749,7 +749,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	/**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
      *
-     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5651
+     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5652
      *
      * @throws MergeException
      */
