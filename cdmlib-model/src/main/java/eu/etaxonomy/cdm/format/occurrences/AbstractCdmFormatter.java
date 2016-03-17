@@ -36,7 +36,7 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         StringBuilder builder = new StringBuilder();
         for (FormatKey formatKey : formatKeys) {
             String string = formatKeyMap.get(formatKey);
-            if(CdmUtils.isNotBlank(string)){
+            if(string!=null){
                 builder.append(string);
             }
         }
