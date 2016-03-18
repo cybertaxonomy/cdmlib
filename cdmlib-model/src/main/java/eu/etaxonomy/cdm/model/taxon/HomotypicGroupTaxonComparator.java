@@ -70,7 +70,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         TaxonNameBase<?,?> name1 = taxonBase1.getName();
         TaxonNameBase<?,?> name2 = taxonBase2.getName();
-        System.out.print(name1.getTitleCache() +" : "+ name2.getTitleCache());
+//        System.out.print(name1.getTitleCache() +" : "+ name2.getTitleCache());
 
 
         int compareStatus = compareStatus(name1, name2);
@@ -87,11 +87,16 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             name2 == null ||
             ! name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup())){
 
-            int result = name1.getHomotypicalGroup().getUuid().toString()
-                    .compareTo(name2.getHomotypicalGroup().getUuid().toString());
-            System.out.println(": t" + result);
-            System.out.println(name1.getHomotypicalGroup().getUuid());
-            System.out.println(name2.getHomotypicalGroup().getUuid());
+            String compareString1 = name1 != null ?
+                    name1.getHomotypicalGroup().getUuid().toString() :
+                    taxonBase1.getUuid().toString();
+            String compareString2 = name2 != null ?
+                    name2.getHomotypicalGroup().getUuid().toString() :
+                    taxonBase2.getUuid().toString();
+            int result = compareString1.compareTo(compareString2);
+//            System.out.println(": t" + result);
+//            System.out.println(name1.getHomotypicalGroup().getUuid());
+//            System.out.println(name2.getHomotypicalGroup().getUuid());
             return result;
         }
 
@@ -103,12 +108,12 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return 1;
         }
 
-        System.out.print("_");
+//        System.out.print("_");
         //same name => compare on taxon level
         if (name1.equals(name2)){
             return super.compare(taxonBase1, taxonBase2);  //if name is the same compare on taxon level
         }
-        System.out.print("_");
+//        System.out.print("_");
 
         TaxonNameBase<?,?> basionym1 = getPreferredInBasionymGroup(name1);
         TaxonNameBase<?,?> basionym2 = getPreferredInBasionymGroup(name2);
@@ -122,13 +127,13 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
 
         if (compareResult != 0){
-            System.out.println(": " + compareResult);
+//            System.out.println(": " + compareResult);
             return compareResult;
         }else{
             //names are uncomparable on name level (except for uuid, id, etc.)
 
             int result = super.compare(taxonBase1, taxonBase2);
-            System.out.println(": = " + result);
+//            System.out.println(": = " + result);
             return result;
         }
     }
@@ -195,8 +200,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         int result = super.compare(basionym1, basionym2);
         return result;
-
-
     }
 
     /**
@@ -252,6 +255,5 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return candidates.get(candidates.keySet().iterator().next());
         }
     }
-
 
 }
