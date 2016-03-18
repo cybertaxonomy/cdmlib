@@ -1704,6 +1704,17 @@ public class Taxon
      */
     @Transient
     public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup){
+        return getSynonymsInGroup(homotypicGroup, new TaxonComparator());
+    }
+
+    /**
+     * @param homotypicGroup
+     * @param comparator
+     * @return
+     * @see {@link #getSynonymsInGroup(HomotypicalGroup)}
+     */
+    @Transient
+    public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup, TaxonComparator comparator){
         List<Synonym> result = new ArrayList<Synonym>();
 
         for (TaxonNameBase<?, ?>name : homotypicGroup.getTypifiedNames()){
@@ -1715,7 +1726,7 @@ public class Taxon
                 }
             }
         }
-        Collections.sort(result, new TaxonComparator());
+        Collections.sort(result, comparator);
         return result;
     }
 
