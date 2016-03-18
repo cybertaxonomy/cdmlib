@@ -15,17 +15,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 
 public class HomotypicalGroupComparator implements
 		Comparator<HomotypicalGroup>, Serializable {
+    private static final long serialVersionUID = -676465815899137107L;
 
-	@Override
+    @Override
 	public int compare(HomotypicalGroup group1, HomotypicalGroup group2) {
 		TaxonBase<?> firstTypified1 = null;
 		TaxonBase<?> firstTypified2 = null;
-		TaxonComparator taxComparator = new TaxonComparator();
+		TaxonComparator taxComparator = new HomotypicGroupTaxonComparator(null);
 		Set<TaxonNameBase> typifiedNames1 = group1.getTypifiedNames();
 		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
 		for (TaxonNameBase<?,?> typifiedName:typifiedNames1){

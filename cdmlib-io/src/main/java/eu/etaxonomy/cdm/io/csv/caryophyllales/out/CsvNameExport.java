@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -388,7 +389,7 @@ public class CsvNameExport extends CsvNameExportBase {
         boolean first = true;
 
         for (List<Synonym> list: heterotypicSynonymsList.values()){
-            Collections.sort(list, new TaxonComparator());
+            Collections.sort(list, new HomotypicGroupTaxonComparator(null));
             first = true;
             for (TaxonBase<?> synonym : list){
                 if (first){

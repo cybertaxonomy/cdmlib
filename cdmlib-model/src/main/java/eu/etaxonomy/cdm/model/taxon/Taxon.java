@@ -1649,16 +1649,21 @@ public class Taxon
     }
 
     /**
-     * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups}
-     * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.
+     * Returns the ordered list of all
+     * {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups}
+     * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.<BR>
+     *
      * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms
      * belong to a homotypical group which cannot be the homotypical group to which the
-     * taxon name of <i>this</i> taxon belongs. This method returns the same
+     * taxon name of <i>this</i> taxon belongs.
+     * This method returns the same
      * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
      * but without the homotypical group to which the taxon name of <i>this</i> taxon
      * belongs.<BR>
-     * The list returned is ordered according to the date of publication of the
-     * first published name within each homotypical group.
+     * The list returned is <B>ordered</B> according to the rules defined for
+     * the {@link HomotypicGroupTaxonComparator} which includes 1) grouping of
+     * basionym groups, 2) replaced synonym relationships, 3) publication date,
+     * 4) ranks and 5) alphabetical order.
      *
      * @see			#getHeterotypicSynonymyGroups()
      * @see			#getSynonyms()
@@ -1679,7 +1684,7 @@ public class Taxon
         }
         List<Synonym> keyList = new ArrayList<Synonym>();
         keyList.addAll(map.keySet());
-        Collections.sort(keyList, new TaxonComparator());
+        Collections.sort(keyList, new HomotypicGroupTaxonComparator(null));
 
         List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
         for(Synonym synonym: keyList){
@@ -1690,28 +1695,31 @@ public class Taxon
     }
 
     /**
-     * Retrieves the ordered list (depending on the date of publication) of
+     * Retrieves the ordered list (depending on the rules defined for
+     * the {@link HomotypicGroupTaxonComparator}) of
      * {@link taxon.Synonym synonyms} (according to a given reference)
      * the {@link TaxonNameBase taxon names} of which belong to the homotypical group.
      * If other names are part of the group that are not considered synonyms of
      * <i>this</i> taxon, then they will not be included in
      * the result set.
      *
-     * @param homoGroup
+     * @param homotypicGroup
+     * @see          #getHeterotypicSynonymyGroups()
      * @see			TaxonNameBase#getSynonyms()
      * @see			TaxonNameBase#getTaxa()
      * @see			taxon.Synonym
      */
     @Transient
     public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup){
-        return getSynonymsInGroup(homotypicGroup, new TaxonComparator());
+        return getSynonymsInGroup(homotypicGroup, new HomotypicGroupTaxonComparator(this));
     }
 
     /**
      * @param homotypicGroup
      * @param comparator
      * @return
-     * @see {@link #getSynonymsInGroup(HomotypicalGroup)}
+     * @see     #getSynonymsInGroup(HomotypicalGroup)
+     * @see     #getHeterotypicSynonymyGroups()
      */
     @Transient
     public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup, TaxonComparator comparator){
