@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
@@ -15,24 +23,24 @@ public class HomotypicalGroupComparator implements
 
 	@Override
 	public int compare(HomotypicalGroup group1, HomotypicalGroup group2) {
-		TaxonBase firstTypified1 = null;
-		TaxonBase firstTypified2 = null;
+		TaxonBase<?> firstTypified1 = null;
+		TaxonBase<?> firstTypified2 = null;
 		TaxonComparator taxComparator = new TaxonComparator();
 		Set<TaxonNameBase> typifiedNames1 = group1.getTypifiedNames();
 		List<TaxonBase> taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
-		for (TaxonNameBase typifiedName:typifiedNames1){
+		for (TaxonNameBase<?,?> typifiedName:typifiedNames1){
 			if (!typifiedName.getTaxonBases().isEmpty()){
-				taxonBasesOfTypifiedNames.add((TaxonBase) typifiedName.getTaxonBases().iterator().next());
+				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}
 		}
 		Collections.sort(taxonBasesOfTypifiedNames, taxComparator);
 		firstTypified1 = taxonBasesOfTypifiedNames.get(0);
-		
+
 		Set<TaxonNameBase> typifiedNames2 = group2.getTypifiedNames();
 		taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
-		for (TaxonNameBase typifiedName:typifiedNames2){
+		for (TaxonNameBase<?,?> typifiedName:typifiedNames2){
 			if (!typifiedName.getTaxonBases().isEmpty()){
-				taxonBasesOfTypifiedNames.add((TaxonBase) typifiedName.getTaxonBases().iterator().next());
+				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
 			}
 		}
 		Collections.sort(taxonBasesOfTypifiedNames, taxComparator);
