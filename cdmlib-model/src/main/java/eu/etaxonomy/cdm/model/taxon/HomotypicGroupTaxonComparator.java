@@ -48,6 +48,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
     private final TaxonBase<?> firstTaxonInGroup;
     private final TaxonNameBase<?,?> firstNameInGroup;
+//    private final HomotypicalGroupComparator homotypicGroupComparator;
 
     /**
      * @param firstNameInGroup
@@ -87,7 +88,13 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             name2 == null ||
             ! name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup())){
 
+//
+//            HomotypicalGroup hg1 = name1.getHomotypicalGroup();
+//            HomotypicalGroup hg2 = name2.getHomotypicalGroup();
+
+
             String compareString1 = name1 != null ?
+//                    getFirstNameInHomotypicalGroup(name1)
                     name1.getHomotypicalGroup().getUuid().toString() :
                     taxonBase1.getUuid().toString();
             String compareString2 = name2 != null ?
@@ -151,6 +158,15 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 //        }
 //        Collections.sort(candidates, this);
 //        return candidates.isEmpty() ? null : candidates.get(0);
+//    }
+//
+//    /**
+//     * @param name1
+//     * @return
+//     */
+//    private TaxonNameBase<?, ?> getFirstNameInHomotypicalGroup(TaxonNameBase<?, ?> name1) {
+//        TaxonNameBase<?, ?> prefName = getPreferredInBasionymGroup(name1);
+//        return null;
 //    }
 
     /**

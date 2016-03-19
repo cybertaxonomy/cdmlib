@@ -1679,12 +1679,14 @@ public class Taxon
         for (HomotypicalGroup homotypicalGroup: list){
             List<Synonym> synonymList = getSynonymsInGroup(homotypicalGroup);
             if (synonymList.size() > 0){
+                //select the first synonym in the group
                 map.put(synonymList.get(0), homotypicalGroup);
             }
         }
         List<Synonym> keyList = new ArrayList<Synonym>();
         keyList.addAll(map.keySet());
-        Collections.sort(keyList, new HomotypicGroupTaxonComparator(null));
+        //order by first synonym
+        Collections.sort(keyList, new TaxonComparator());
 
         List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
         for(Synonym synonym: keyList){
