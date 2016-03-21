@@ -39,11 +39,37 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  */
 
 @Controller
-@RequestMapping(value = {"/v2/api-docs"})
 public class StaticSwaggerApiDoc {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public void group(
+    public static final String SWAGGER_STATIC = "swagger-static";
+
+
+    @RequestMapping(value = "configuration/ui", method = RequestMethod.GET)
+    public void configurationUi(
+            HttpServletResponse response) throws IOException {
+
+            response.addHeader("Content-Type", "application/json;charset=utf-8");
+            response.getOutputStream().write("{\"validatorUrl\":null}".getBytes());
+    }
+
+    @RequestMapping(value = "swagger-resources", method = RequestMethod.GET)
+    public void swaggerResources(
+             HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/swagger-resources");
+        if(staticDocStream == null) {
+            HttpStatusMessage.create("Static swagger-resources not found.", 500).send(response);
+        } else {
+            response.addHeader("Content-Type", "application/json;charset=utf-8");
+            IOUtils.copy(staticDocStream,  response.getOutputStream());
+            staticDocStream.close();
+        }
+    }
+
+    @RequestMapping(value = "/v2/api-docs", method = RequestMethod.GET)
+    public void apiDocs(
             @RequestParam(value = "group", required = true) String group,
              HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -52,7 +78,7 @@ public class StaticSwaggerApiDoc {
         if(groupConfig == null) {
             HttpStatusMessage.create("Unknown swagger group name.", 400).send(response);
         }
-        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream("api-docs-static/" + groupConfig.name());
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name());
         if(staticDocStream == null) {
             HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
         } else {

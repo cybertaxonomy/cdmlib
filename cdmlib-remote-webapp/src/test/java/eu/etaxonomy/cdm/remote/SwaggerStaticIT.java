@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
+import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
 
 /**
  * @author a.kohlbecker
@@ -24,16 +25,43 @@ import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
  *
  */
 
-public class SwaggerGroupsIT extends WebServiceTestBase {
+public class SwaggerStaticIT extends WebServiceTestBase {
 
-    public static final Logger logger = Logger.getLogger(SwaggerGroupsIT.class);
+    public static final Logger logger = Logger.getLogger(SwaggerStaticIT.class);
 
-    String swagger2Endpoint= "/v2/api-docs";
+
+    @Test
+    public void fetchSwaggerResources(){
+
+        String swagger2Endpoint= "/swagger-resources";
+
+        String staticResourcesFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/swagger-resources";
+
+        staticResourcesFolder.replace("/", File.separator);
+
+        logger.info("fetching swagger-resources");
+        String response =  httpGetJson(swagger2Endpoint, null);
+        try {
+            FileUtils.write(new File(staticResourcesFolder), response);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        File pwd = new File("pom.xml");
+
+
+//        System.err.println(pwd.getAbsolutePath());
+    }
+
 
     @Test
     public void fetchSwaggerGroups(){
 
-        String staticApiDocFolder = "./target/classes/api-docs-static/";
+        String swagger2Endpoint= "/v2/api-docs";
+
+
+        String staticApiDocFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/api-docs/";
 
         staticApiDocFolder.replace("/", File.separator);
 
@@ -52,7 +80,7 @@ public class SwaggerGroupsIT extends WebServiceTestBase {
         File pwd = new File("pom.xml");
 
 
-        System.err.println(pwd.getAbsolutePath());
+//        System.err.println(pwd.getAbsolutePath());
     }
 
 }
