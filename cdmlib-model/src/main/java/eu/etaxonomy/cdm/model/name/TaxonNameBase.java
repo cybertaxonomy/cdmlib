@@ -702,8 +702,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
         Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
-            if (rel.getType().isBasionymRelation()){
-                TaxonNameBase basionym = rel.getFromName();
+            if (rel.getType()!= null && rel.getType().isBasionymRelation()){
+                TaxonNameBase<?,?> basionym = rel.getFromName();
                 result.add(basionym);
             }
         }

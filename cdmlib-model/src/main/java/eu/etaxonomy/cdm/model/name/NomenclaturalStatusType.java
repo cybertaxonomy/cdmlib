@@ -98,6 +98,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
+	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
 
 	//zoological uuids
 	public static final UUID uuidIcznNomStatusVocabulary = UUID.fromString("5e3c08e9-13a9-498e-861e-b9b5656ab6ac");
@@ -274,13 +275,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 				this.equals(CONSERVED_PROP()) ||
 				this.equals(ORTHOGRAPHY_CONSERVED_PROP()) ||
 				this.equals(ZOO_INVALID()) ||
-				this.equals(ZOO_SUPPRESSED())
+				this.equals(ZOO_SUPPRESSED()) ||
+				this.equals(ORTHOGRAPHY_REJECTED())
 			){
 			return true;
 		}else{
 			return false;
 		}
 	}
+
 
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
@@ -528,6 +531,19 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getTermByUuid(uuidOrthographyConserved);
 	}
 
+    /**
+     * Returns the nomenclatural status type "orthography rejected". <BR>
+     * TBC.
+     * See also {@link http://dev.e-taxonomy.eu/trac/ticket/5649}
+     *
+     * @see  #ORTHOGRAPHY_CONSERVED()
+     * @see  #REJECTED()
+     * @see  #isIllegitimateType()
+     */
+    public static final NomenclaturalStatusType ORTHOGRAPHY_REJECTED(){
+        return getTermByUuid(uuidOrthographyRejected);
+    }
+
 	/**
 	 * Returns the nomenclatural status type "proposed to be rejected". A
 	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be rejected"
@@ -550,6 +566,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType REJECTED_PROP(){
 		return getTermByUuid(uuidRejectedProp);
 	}
+
 
 	/**
 	 * Returns the nomenclatural status type "conserved". A "valid"

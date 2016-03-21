@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -257,6 +258,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				Group.class,
 				IdentifiableSource.class,
 				Identifier.class,
+				IntextReference.class,
 				Language.class,
 				LanguageString.class,
 				LSIDAuthority.class,
@@ -749,7 +751,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	/**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
      *
-     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5651
+     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5652
      *
      * @throws MergeException
      */
