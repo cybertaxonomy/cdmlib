@@ -69,6 +69,8 @@ public class SwaggerStaticIT extends WebServiceTestBase {
         for(SwaggerGroupsConfig group : SwaggerGroupsConfig.values()) {
             logger.info(group.groupName());
             String response =  httpGetJson(swagger2Endpoint, "group=" + group.groupName());
+            response = response.replaceAll(",\"host\":\"([^\"]*)", ",\"host\":\"" + StaticSwaggerApiDoc.HOST);
+            response = response.replaceAll(",\"basePath\":\"([^\"]*)", ",\"basePath\":\"" + StaticSwaggerApiDoc.BASE_PATH);
             try {
                 FileUtils.write(new File(staticApiDocFolder + group.name()), response);
             } catch (IOException e) {

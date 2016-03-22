@@ -42,6 +42,10 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 public class StaticSwaggerApiDoc {
 
     public static final String SWAGGER_STATIC = "swagger-static";
+    public static final String HOST = "{HOST}";
+    public static final String HOST_REGEX = "\\{HOST\\}";
+    public static final String BASE_PATH = "{BASE_PATH}";
+    public static final String BASE_PATH_REGEX = "\\{BASE_PATH\\}";
 
 
     @RequestMapping(value = "configuration/ui", method = RequestMethod.GET)
@@ -74,6 +78,9 @@ public class StaticSwaggerApiDoc {
              HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
+        String hostValue = request.getServerName() + ":" + request.getServerPort();
+        String basePathValue = request.getContextPath();
+
         SwaggerGroupsConfig groupConfig = SwaggerGroupsConfig.byGroupName(group);
         if(groupConfig == null) {
             HttpStatusMessage.create("Unknown swagger group name.", 400).send(response);
@@ -83,7 +90,11 @@ public class StaticSwaggerApiDoc {
             HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
         } else {
             response.addHeader("Content-Type", "application/json;charset=utf-8");
-            IOUtils.copy(staticDocStream,  response.getOutputStream());
+            String staticDocText = IOUtils.toString(staticDocStream);
+            staticDocText = staticDocText.replaceFirst(HOST_REGEX, hostValue);
+            staticDocText = staticDocText.replaceFirst(BASE_PATH_REGEX, basePathValue);
+
+            IOUtils.write(staticDocText, response.getOutputStream());
             staticDocStream.close();
         }
     }
