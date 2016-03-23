@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  *
  */
-@Ignore //preliminary set to ignore
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
