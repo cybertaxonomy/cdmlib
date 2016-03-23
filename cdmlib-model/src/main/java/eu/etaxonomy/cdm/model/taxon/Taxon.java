@@ -1584,8 +1584,8 @@ public class Taxon
     }
 
     /**
-     * Retrieves the ordered list (depending on the date of publication) of
-     * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * Retrieves the list of homotypic {@link Synonym synonyms}
+     * (according to the same {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * as for <i>this</i> taxon) under the condition that these synonyms and
      * <i>this</i> taxon are involved in {@link SynonymRelationship synonym relationships} with an
      * "is homotypic synonym of" {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.
@@ -1595,7 +1595,11 @@ public class Taxon
      * @see			#getSynonyms()
      * @see			#getHomotypicSynonymyGroups()
      * @see			SynonymRelationshipType
+     * @deprecated as the method currently returns data not matching the original description of the method
+     * as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.
+     * In future this method will either be removed or semantics may change.
      */
+    @Deprecated
     @Transient
     public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
         Set<SynonymRelationship> synonymRelations = this.getSynonymRelations();

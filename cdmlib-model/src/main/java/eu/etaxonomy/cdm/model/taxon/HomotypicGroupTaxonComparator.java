@@ -204,7 +204,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         if (basionym1.equals(firstNameInGroup)){
             return -1;
-        }else if (basionym2.equals(firstTaxonInGroup)){
+        }else if (basionym2.equals(firstNameInGroup)){
             return 1;
         }
 
