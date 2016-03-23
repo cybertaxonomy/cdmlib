@@ -713,7 +713,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-        nameService.deleteTypeDesignation(null, null);
+        nameService.deleteTypeDesignation((TaxonNameBase)null, null);
 
         commitAndStartNewTransaction(tableNames);
 

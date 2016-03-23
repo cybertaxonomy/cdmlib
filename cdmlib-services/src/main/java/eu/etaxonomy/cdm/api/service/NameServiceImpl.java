@@ -195,9 +195,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
      */
     @Override
-    public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+    public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+        DeleteResult result = new DeleteResult();
         if (name == null && typeDesignation == null){
-            return;
+            result.setError();
+            return result;
         }else if (name != null && typeDesignation != null){
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
@@ -213,6 +215,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
+        result.addUpdatedObject(name);
+        return result;
+    }
+
+
+    @Override
+    public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
+        TaxonNameBase nameBase = load(nameUuid);
+        TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
     /**
