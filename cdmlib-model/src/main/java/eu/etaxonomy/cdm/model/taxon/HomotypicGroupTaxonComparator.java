@@ -213,9 +213,12 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return 1;
         }
 
-        if (getReplacedSynonymClosure(basionym1).contains(basionym2)){
+        boolean basio2IsReplacedSynForBasio1 = getReplacedSynonymClosure(basionym1).contains(basionym2);
+        boolean basio1IsReplacedSynForBasio2 = getReplacedSynonymClosure(basionym2).contains(basionym1);
+
+        if (basio2IsReplacedSynForBasio1 && !basio1IsReplacedSynForBasio2){
             return 1;
-        }else if (getReplacedSynonymClosure(basionym2).contains(basionym1)){
+        }else if (basio1IsReplacedSynForBasio2){  //&& !basio2IsReplacedSynForBasio1
             return -1;
         }
 
