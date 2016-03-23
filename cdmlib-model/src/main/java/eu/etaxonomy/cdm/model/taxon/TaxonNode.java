@@ -360,6 +360,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
+        Classification classification = HibernateProxyHelper.deproxy(this.getClassification(), Classification.class);
+
         if (this.getClassification().isTaxonInTree(taxon)){
             throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
@@ -623,6 +625,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             parentChildren.remove(null);
         }
         parent.updateSortIndex(0);
+        if (index > parent.getChildNodes().size()){
+            index = parent.getChildNodes().size();
+        }
         if (parentChildren.contains(this)){
             //avoid duplicates
             if (parentChildren.indexOf(this) < index){

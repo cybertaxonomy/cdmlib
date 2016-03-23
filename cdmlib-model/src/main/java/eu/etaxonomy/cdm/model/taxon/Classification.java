@@ -307,6 +307,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
      * @return
      */
     public boolean isTaxonInTree(Taxon taxon){
+        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         return (getNode(taxon) != null);
     }
 
