@@ -47,6 +47,11 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
         Collection<LanguageString> langStrings = ((Map<Language, LanguageString>)value).values();
         for(LanguageString languageString : langStrings){
 
+            if(languageString.getText() == null) {
+                // TextField.value cannot be null
+                continue;
+            }
+
             Field allField = new TextField(name + ".ALL",
                     languageString.getText(),
                     luceneOptions.getStore());
