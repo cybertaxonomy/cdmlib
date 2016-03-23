@@ -55,7 +55,6 @@ public class HomotypicGroupTaxonComparatorTest {
     private List<TaxonBase<?>> list;
 
     private Taxon taxon1;
-    private Synonym synonym1;
     private Synonym synonym2;
     private Synonym synonym3;
 
@@ -211,7 +210,7 @@ public class HomotypicGroupTaxonComparatorTest {
     public void testCompare_BasionymGroupsSomeWithYears() {
 
         //2 basionym groups, 1 new combination with year (botName2) and 1 basionym with year (botName5)
-        //The later should come first according to the rules, though alphabetically behing
+        //The later should come first according to the rules, though alphabetically being
         //basionym botName4
 
         botName2.setNomenclaturalReference(ref2);
@@ -244,6 +243,86 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals("replacement name should come after replaced synonym but first in basionym group",
                             botName5, list.get(2).getName());
         Assert.assertEquals(botName3, list.get(3).getName());
+    }
+
+    @Test
+    public void testCompare_BasionymGroupsWithRanks1() {
+
+        botName2.setRank(Rank.VARIETY());
+        botName2.setInfraSpecificEpithet("varbbbb");
+
+        botName3.setRank(Rank.VARIETY());
+        botName3.setInfraSpecificEpithet("subspccc");
+
+        botName4.setRank(Rank.SUBSPECIES());
+        botName4.setInfraSpecificEpithet("subspddd");
+
+
+        HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
+        taxon1.addHeterotypicSynonymName(botName3);
+        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        botName3.addBasionym(botName5);
+
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
+        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        botName2.addBasionym(botName4);
+
+
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("basionym with rank species should comes first", botName5, list.get(0).getName());
+        Assert.assertEquals(botName3, list.get(1).getName());
+        Assert.assertEquals(botName4, list.get(2).getName());
+        Assert.assertEquals(botName2, list.get(3).getName());
+
+        //add replaced synonym relation between basionyms
+        botName5.addReplacedSynonym(botName4, null, null, null);
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+        Assert.assertEquals("basionym of second group should come first now as it is the replaced synonym",
+                            botName4, list.get(0).getName());
+        Assert.assertEquals(botName2, list.get(1).getName());
+        Assert.assertEquals("replacement name should come after replaced synonym but first in basionym group",
+                            botName5, list.get(2).getName());
+        Assert.assertEquals(botName3, list.get(3).getName());
+    }
+
+    @Test
+    public void testCompare_BasionymGroupsWithRanks2() {
+
+
+        botName2.setRank(Rank.VARIETY());
+        botName2.setInfraSpecificEpithet("varbbbb");
+
+        botName3.setRank(Rank.VARIETY());
+        botName3.setInfraSpecificEpithet("subspccc");
+
+        botName4.setRank(Rank.SUBSPECIES());
+        botName4.setInfraSpecificEpithet("subspddd");
+
+        botName5.setRank(Rank.VARIETY());
+        botName5.setInfraSpecificEpithet("vareee");
+
+
+        HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
+        taxon1.addHeterotypicSynonymName(botName3);
+        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        botName3.addBasionym(botName5);
+
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
+        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+        botName2.addBasionym(botName5);
+        botName4.addBasionym(botName5);
+
+
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("basionym should comes first", botName5, list.get(0).getName());
+        Assert.assertEquals("subspecies should come next", botName4, list.get(1).getName());
+        Assert.assertEquals("variety with b should come next", botName2, list.get(2).getName());
+        Assert.assertEquals("variety with c should come last", botName3, list.get(3).getName());
+
     }
 
     @Test

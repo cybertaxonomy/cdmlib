@@ -31,7 +31,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  *       basionyms (according to the following ordering)</li>
  *  <li>If a name is illegitimate or not does play a role for ordering</li>
  *  <li>Names with publication year should always come first</li>
- *  <li>Names with no publication year are sorted alphabetically</li>
+ *  <li>Names with no publication year are sorted by rank</li>
+ *  <li>Names with no publication year and equal rank are sorted alphabetically</li>
  *  <li>If 2 names have a replaced synonym relationship the replaced synonym comes first,
  *      the replacement name comes later as this reflects the order of publication</li>
  *  </ul>
@@ -54,6 +55,16 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * @param firstNameInGroup
      */
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup) {
+        super(true);
+        this.firstTaxonInGroup = firstTaxonInGroup;
+        this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
+    }
+
+    /**
+     * @param firstNameInGroup
+     */
+    public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup, boolean includeRanks) {
+        super(includeRanks);
         this.firstTaxonInGroup = firstTaxonInGroup;
         this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
     }
@@ -81,20 +92,14 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         //not same homotypical group -
         //NOTE: this comparator should usually not be used
-        //      for comparing names of different homotypcial groups.
+        //      for comparing names of different homotypical groups.
         //      The following is only to have a defined compare behavior
         //      which follows the contract of Comparator#compare.
         if (name1 == null ||
             name2 == null ||
             ! name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup())){
 
-//
-//            HomotypicalGroup hg1 = name1.getHomotypicalGroup();
-//            HomotypicalGroup hg2 = name2.getHomotypicalGroup();
-
-
             String compareString1 = name1 != null ?
-//                    getFirstNameInHomotypicalGroup(name1)
                     name1.getHomotypicalGroup().getUuid().toString() :
                     taxonBase1.getUuid().toString();
             String compareString2 = name2 != null ?
