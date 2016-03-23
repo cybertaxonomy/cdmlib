@@ -109,6 +109,13 @@ public class Datasource {
 
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
+
+//       server = "160.45.63.201";
+//       database = "cdm_integration_cichorieae";
+//       username = "edit";
+//       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+
 // 		try {
 //			CdmUpdater updater = new CdmUpdater();
 //			if (schema == DbSchemaValidation.VALIDATE){
@@ -122,9 +129,16 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 		List<String> propPath = Arrays.asList(new String[]{"name"});
-		Classification classification = appCtr.getClassificationService().list(null, null, null, null, propPath).get(0);
-		logger.warn(classification.getMicroReference());
-        logger.warn(classification.getName());
+//		Classification classification = appCtr.getClassificationService().list(null, null, null, null, propPath).get(0);
+//		logger.warn(classification.getMicroReference());
+//        logger.warn(classification.getName());
+
+//		TransactionStatus tx = appCtr.startTransaction();
+//		Taxon crepisZac = (Taxon)appCtr.getTaxonService().find(UUID.fromString("4ab40ac3-2e99-4f87-9871-3e6c3bc0ef26"));
+//		List<Synonym> list = crepisZac.getHomotypicSynonymsByHomotypicGroup();
+//        list = crepisZac.getHomotypicSynonymsByHomotypicRelationship();
+//        System.out.println("DONE");
+//        appCtr.commitTransaction(tx);
 
 //		logger.warn("Start adding persons");
 //		for (int i= 1; i<100; i++){
