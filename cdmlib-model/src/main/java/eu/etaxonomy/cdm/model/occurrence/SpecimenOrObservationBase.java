@@ -47,7 +47,6 @@ import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
@@ -122,7 +121,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @ContainedIn
     @NotNull
     private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 
