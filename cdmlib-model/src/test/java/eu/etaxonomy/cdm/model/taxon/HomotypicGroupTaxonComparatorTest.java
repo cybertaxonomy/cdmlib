@@ -327,15 +327,10 @@ public class HomotypicGroupTaxonComparatorTest {
 
     @Test
     public void testCompare_NoCircularProblemsWithBasionyms() {
-        //TODO not yet fully implemented
 
         taxon1.addHomotypicSynonymName(botName3, null, null);
         taxon1.addHomotypicSynonymName(botName5, null, null);
         botName3.addBasionym(botName5);
-
-//        taxon1.addHomotypicSynonymName(botName2, null, null);
-//        taxon1.addHomotypicSynonymName(botName4, null, null);
-//        botName2.addBasionym(botName4);
 
         Assert.assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
         botName5.addBasionym(botName1);
@@ -345,9 +340,23 @@ public class HomotypicGroupTaxonComparatorTest {
         list.add(taxon1);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-//        Assert.assertEquals(botName1, list.get(0).getName());
-//        Assert.assertEquals(botName3, list.get(1).getName());
-//        Assert.assertEquals(botName5, list.get(2).getName());
+        Assert.assertEquals(botName1, list.get(0).getName());
+        Assert.assertEquals(botName3, list.get(1).getName());
+        Assert.assertEquals(botName5, list.get(2).getName());
+
+        //additional basionym for botName3
+        taxon1.addHomotypicSynonymName(botName2, null, null);
+        Assert.assertEquals(botName1.getHomotypicalGroup(), botName2.getHomotypicalGroup());
+        botName3.addBasionym(botName2);
+        list.clear();
+        list.addAll(taxon1.getSynonyms());
+        list.add(taxon1);
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals(botName1, list.get(0).getName());
+        Assert.assertEquals(botName2, list.get(1).getName());
+        Assert.assertEquals(botName3, list.get(2).getName());
+        Assert.assertEquals(botName5, list.get(3).getName());
 
     }
 

@@ -10,10 +10,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -82,7 +80,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         TaxonNameBase<?,?> name1 = taxonBase1.getName();
         TaxonNameBase<?,?> name2 = taxonBase2.getName();
-//        System.out.print(name1.getTitleCache() +" : "+ name2.getTitleCache());
+//      System.out.println(name1.getTitleCache() +" : "+ name2.getTitleCache());
 
 
         int compareStatus = compareStatus(name1, name2);
@@ -106,9 +104,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
                     name2.getHomotypicalGroup().getUuid().toString() :
                     taxonBase2.getUuid().toString();
             int result = compareString1.compareTo(compareString2);
-//            System.out.println(": t" + result);
-//            System.out.println(name1.getHomotypicalGroup().getUuid());
-//            System.out.println(name2.getHomotypicalGroup().getUuid());
             return result;
         }
 
@@ -120,12 +115,10 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return 1;
         }
 
-//        System.out.print("_");
         //same name => compare on taxon level
         if (name1.equals(name2)){
             return super.compare(taxonBase1, taxonBase2);  //if name is the same compare on taxon level
         }
-//        System.out.print("_");
 
         TaxonNameBase<?,?> basionym1 = getPreferredInBasionymGroup(name1);
         TaxonNameBase<?,?> basionym2 = getPreferredInBasionymGroup(name2);
@@ -139,13 +132,12 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
 
         if (compareResult != 0){
-//            System.out.println(": " + compareResult);
+//          System.out.println(": " + compareResult);
             return compareResult;
         }else{
             //names are uncomparable on name level (except for uuid, id, etc.)
-
             int result = super.compare(taxonBase1, taxonBase2);
-//            System.out.println(": = " + result);
+//          System.out.println(": = " + result);
             return result;
         }
     }
@@ -164,15 +156,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 //        Collections.sort(candidates, this);
 //        return candidates.isEmpty() ? null : candidates.get(0);
 //    }
-//
-//    /**
-//     * @param name1
-//     * @return
-//     */
-//    private TaxonNameBase<?, ?> getFirstNameInHomotypicalGroup(TaxonNameBase<?, ?> name1) {
-//        TaxonNameBase<?, ?> prefName = getPreferredInBasionymGroup(name1);
-//        return null;
-//    }
+
 
     /**
      * Compare 2 names which have the same basionym.
@@ -218,7 +202,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         if (basio2IsReplacedSynForBasio1 && !basio1IsReplacedSynForBasio2){
             return 1;
-        }else if (basio1IsReplacedSynForBasio2){  //&& !basio2IsReplacedSynForBasio1
+        }else if (basio1IsReplacedSynForBasio2 && !basio2IsReplacedSynForBasio1){
             return -1;
         }
 
@@ -262,21 +246,59 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
     }
 
     /**
-     * @param name1
+     * @param name
      * @return
      */
     private TaxonNameBase<?,?> getPreferredInBasionymGroup(TaxonNameBase<?,?> name) {
-        HashMap<UUID, TaxonNameBase<?,?>> candidates = new HashMap<UUID, TaxonNameBase<?,?>>();
+        Set<TaxonNameBase<?,?>> candidates = new HashSet<TaxonNameBase<?,?>>();
+        //get all final basionyms, except for those being part of a basionym circle
         for (TaxonNameBase<?,?> candidate : name.getBasionyms()){
-            if (candidate != null && candidate.getHomotypicalGroup().equals(name.getHomotypicalGroup())){
-                candidates.put(candidate.getUuid(), candidate);
+            if (candidate != null
+                    && candidate.getHomotypicalGroup().equals(name.getHomotypicalGroup())
+                    && !hasBasionymCircle(candidate, null)){
+                candidate = getPreferredInBasionymGroup(candidate);
+                candidates.add(candidate);
             }
         }
 
         if (candidates.isEmpty()){
             return name;
+        }else if (candidates.size() == 1){
+            return candidates.iterator().next();
         }else{
-            return candidates.get(candidates.keySet().iterator().next());
+            TaxonNameBase<?,?> result = candidates.iterator().next();
+            candidates.remove(result);
+            for (TaxonNameBase<?,?> candidate : candidates){
+                if (super.compare(result, candidate) > 0){
+                    result = candidate;
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * @param candidate
+     * @return
+     */
+    private boolean hasBasionymCircle(TaxonNameBase<?, ?> name, Set<TaxonNameBase<?,?>> existing) {
+        if (existing == null){
+            existing = new HashSet<TaxonNameBase<?,?>>();
+        }
+        if (existing.contains(name)){
+            return true;
+        }else{
+            Set<TaxonNameBase> basionyms = name.getBasionyms();
+            if (basionyms.isEmpty()){
+                return false;
+            }
+            existing.add(name);
+            for (TaxonNameBase basionym : basionyms){
+                if (hasBasionymCircle(basionym, existing)){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
