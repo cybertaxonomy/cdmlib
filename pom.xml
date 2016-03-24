@@ -56,30 +56,26 @@
     <maven>3.0.5</maven>
   </prerequisites>
   
-  <mailingLists>
-    <mailingList>
-      <name>dev-edit</name>
-      <subscribe>
-                https://listes.mnhn.fr/wwsympa.fcgi/suboptions/dev-edit
+    <mailingLists>
+        <mailingList>
+            <name>EDIT Platform Developers</name>
+            <subscribe>
+                https://lists.fu-berlin.de/listinfo/editplatformdevelopers#subscribe
             </subscribe>
-      <unsubscribe>
-                https://listes.mnhn.fr/wwsympa.fcgi/signoff/dev-edit
+            <unsubscribe>
+                https://lists.fu-berlin.de/listinfo/editplatformdevelopers#options
             </unsubscribe>
-      <post>dev-edit@mnhn.fr</post>
-      <archive>https://listes.mnhn.fr/wwsympa.fcgi/arc/dev-edit</archive>
-    </mailingList>
-    <mailingList>
-      <name>cdm-edit</name>
-      <post>cdm-edit@mnhn.fr</post>
-      <subscribe>
-                https://listes.mnhn.fr/wwsympa.fcgi/suboptions/cdm-edit
+        </mailingList>
+        <mailingList>
+            <name>EDIT User</name>
+            <subscribe>
+                https://lists.fu-berlin.de/listinfo/edituser#subscribe
             </subscribe>
-      <unsubscribe>
-                https://listes.mnhn.fr/wwsympa.fcgi/signoff/cdm-edit
+            <unsubscribe>
+                https://lists.fu-berlin.de/listinfo/edituser#options
             </unsubscribe>
-      <archive>https://listes.mnhn.fr/wwsympa.fcgi/arc/cdm-edit</archive>
-    </mailingList>
-  </mailingLists>
+        </mailingList>
+    </mailingLists>
   <licenses>
     <license>
       <name>Mozilla Public License Version 1.1</name>
