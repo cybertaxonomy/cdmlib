@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
+import eu.etaxonomy.cdm.api.service.IEventBaseService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -120,6 +121,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("sequenceService")
 	private ISequenceService sequenceService;
+	@Autowired
+	//@Qualifier("eventBaseService")
+	private IEventBaseService eventBaseService;
 	@Autowired
 	//@Qualifier("mediaService")
 	private IMediaService mediaService;
@@ -272,6 +276,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Override
 	public ISequenceService getSequenceService(){
 		return this.sequenceService;
+	}
+
+	@Override
+	public IEventBaseService getEventBaseService() {
+	    return this.eventBaseService;
 	}
 
 	@Override

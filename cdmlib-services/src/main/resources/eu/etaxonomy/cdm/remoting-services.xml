@@ -53,6 +53,7 @@
         <prop key="/remoting/progressmonitor.service">httpProgressMonitorService</prop>
         <prop key="/remoting/reference.service">httpReferenceService</prop>        
         <prop key="/remoting/sequence.service">httpSequenceService</prop> 
+        <prop key="/remoting/eventbase.service">httpEventBaseService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
         <prop key="/remoting/taxon.service">httpTaxonService</prop>
         <prop key="/remoting/term.service">httpTermService</prop>

@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
+import eu.etaxonomy.cdm.api.service.IEventBaseService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
@@ -488,6 +489,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration {
 	public ISequenceService getSequenceService(){
 		return configuration.getSequenceService();
 	}
+
+	@Override
+	public IEventBaseService getEventBaseService() {
+	    return configuration.getEventBaseService();
+	}
+
 
 
 	@Override

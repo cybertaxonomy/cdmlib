@@ -411,6 +411,17 @@
       </value>
     </property>
   </bean>
+
+  <bean id="httpEventBaseService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="eventBaseServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IEventBaseService
+      </value>
+    </property>
+  </bean>
   
   <bean id="httpIOService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
