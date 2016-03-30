@@ -513,7 +513,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             " from SpecimenOrObservationBase sob" +
             " where sob in (:setOfAll)";
 
-        if(type != null){
+        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
             queryString += " and sob.class = :type";
         }
 
@@ -532,7 +532,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         Query query = getSession().createQuery(queryString);
         query.setParameterList("setOfAll", setOfAll);
 
-        if(type != null){
+        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
             query.setParameter("type", type.getSimpleName());
         }
 
@@ -603,7 +603,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             " from SpecimenOrObservationBase sob" +
             " where sob in (:setOfAll)";
 
-        if(type != null){
+        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
             queryString += " and sob.class = :type";
         }
 
@@ -622,7 +622,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         Query query = getSession().createQuery(queryString);
         query.setParameterList("setOfAll", setOfAll);
 
-        if(type != null){
+        if(type != null && !type.equals(SpecimenOrObservationBase.class)){
             query.setParameter("type", type.getSimpleName());
         }
 

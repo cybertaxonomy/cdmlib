@@ -1105,6 +1105,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(queryStringDerivates.contains(derivedUnit1));
         assertTrue(queryStringDerivates.contains(derivedUnit2));
 
+        // class search => 4 results
+        config = new FindOccurrencesConfigurator();
+        config.setClazz(SpecimenOrObservationBase.class);
+        assertEquals(4, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> specimenOrObservationBases = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(4, specimenOrObservationBases.size());
+
         // class search => 0 results
         config = new FindOccurrencesConfigurator();
         config.setClazz(FieldUnit.class);
