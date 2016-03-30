@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -65,6 +66,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+
+    private OccurenceQuery query;
 
     //TODO
     private static IInputTransformer defaultTransformer = null;
@@ -154,7 +157,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     @Override
     public void setSource(InputStream is) {
-    	this.sourceUri = null;
+    	//this.sourceUri = null;
     	super.setSource(is);
     }
 
@@ -394,5 +397,13 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     public void setIgnoreImportOfExistingSpecimens(boolean ignoreImportOfExistingSpecimens) {
         this.ignoreImportOfExistingSpecimens = ignoreImportOfExistingSpecimens;
+    }
+
+    public OccurenceQuery getOccurenceQuery(){
+        return query;
+    }
+
+    public void setOccurenceQuery(OccurenceQuery query){
+        this.query = query;
     }
 }
