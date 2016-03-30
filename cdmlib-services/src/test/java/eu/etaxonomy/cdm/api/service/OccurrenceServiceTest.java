@@ -1185,15 +1185,15 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(indirectlyAssociatedSpecimens.contains(dnaSample));
         assertTrue(indirectlyAssociatedSpecimens.contains(tissue));
 
-        // using the super class will lead to 0 results because
-        // listByAssociatedTaxon does type matching which obviously does not
-        // understand inheritance
+        // taxon association search
         config = new FindOccurrencesConfigurator();
         config.setClazz(SpecimenOrObservationBase.class);
         config.setAssociatedTaxonUuid(taxon.getUuid());
-        assertEquals(0, occurrenceService.countOccurrences(config));
+        assertEquals(2, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> specimensOrObservations = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(0, specimensOrObservations.size());
+        assertEquals(2, specimensOrObservations.size());
+        assertTrue(specimensOrObservations.contains(tissue));
+        assertTrue(specimensOrObservations.contains(derivedUnit1));
 
         //test assignment status
         //all specimen
