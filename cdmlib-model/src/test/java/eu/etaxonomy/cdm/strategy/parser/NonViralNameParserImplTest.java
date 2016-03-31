@@ -761,6 +761,13 @@ public class NonViralNameParserImplTest {
 		assertTrue(nameTestStatus.getStatus().size()== 1);
 		assertEquals( NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP(), nameTestStatus.getStatus().iterator().next().getType());
 
+	    //nom. cons. prop.
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. cons. des.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.CONSERVED_DESIG(), nameTestStatus.getStatus().iterator().next().getType());
+
 		//nom. legit.
 		strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. legit.";
 		nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
