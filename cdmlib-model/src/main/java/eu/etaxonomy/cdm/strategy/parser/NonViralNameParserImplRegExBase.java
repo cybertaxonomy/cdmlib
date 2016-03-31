@@ -214,10 +214,11 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
-    protected static String pNomStatusNom = "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s?prop\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
-    					"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
-    protected static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
-    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.)";
+    protected static String pNomStatusNom =
+            "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s?prop\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
+    			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
+    protected static String pNomStatusOrthVar = "orth\\." + fWs + "(var\\.|rej\\.)";
+    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";
     protected static String pNomStatusOpus = "opus\\." + fWs + "utique" + fWs + "oppr\\.";
     protected static String pNomStatusIned = "ined\\.";
 

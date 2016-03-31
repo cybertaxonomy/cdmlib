@@ -698,6 +698,13 @@ public class NonViralNameParserImplTest {
 		assertTrue(nameTestStatus.getStatus().size()== 1);
 		assertEquals( NomenclaturalStatusType.AMBIGUOUS(), nameTestStatus.getStatus().iterator().next().getType());
 
+        //nom. inval.
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. inval.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
+
 		//nom. dub.
 		strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. dub.";
 		nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
@@ -817,13 +824,6 @@ public class NonViralNameParserImplTest {
 		assertTrue(nameTestStatus.getStatus().size()== 1);
 		assertEquals( NomenclaturalStatusType.SANCTIONED(), nameTestStatus.getStatus().iterator().next().getType());
 
-		//nom. inval.
-		strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. inval.";
-		nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
-		assertFullRefStandard(nameTestStatus);
-		assertTrue(nameTestStatus.getStatus().size()== 1);
-		assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
-
 		//nom. nud.
 		strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. nud.";
 		nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
@@ -873,6 +873,21 @@ public class NonViralNameParserImplTest {
 		assertTrue(nameTestStatus.getStatus().size()== 1);
 		assertEquals( NomenclaturalStatusType.OPUS_UTIQUE_OPPR(), nameTestStatus.getStatus().iterator().next().getType());
 
+        //comb. nov.
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, comb. nov.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.COMB_NOV(), nameTestStatus.getStatus().iterator().next().getType());
+
+        //orth. rej.
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, orth. rej.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.ORTHOGRAPHY_REJECTED(), nameTestStatus.getStatus().iterator().next().getType());
+
+        //not yet parsed "not avail."
 	}
 
 	/**
