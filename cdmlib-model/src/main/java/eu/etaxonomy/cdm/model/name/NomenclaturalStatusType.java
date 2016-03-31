@@ -99,6 +99,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
+	private static final UUID uuidConservedDesig = UUID.fromString("4e9c9702-a74d-4033-9d47-792ad123712c");
+	private static final UUID uuidIned = UUID.fromString("51429574-c6f9-4aa1-bab9-0bbc5b160ba1");
 
 	//zoological uuids
 	public static final UUID uuidIcznNomStatusVocabulary = UUID.fromString("5e3c08e9-13a9-498e-861e-b9b5656ab6ac");
@@ -209,7 +211,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public boolean isInvalidType(){
 		if (this.equals(INVALID())
 			|| this.equals(NUDUM())
-			|| 	this.equals(PROVISIONAL())
+			|| 	this.equals(PROVISIONAL()) || this.equals(INED())
 			|| 	this.equals(COMBINATION_INVALID())
 			|| 	this.equals(OPUS_UTIQUE_OPPR())
 			||  this.equals(ZOO_NOT_AVAILABLE())
@@ -414,15 +416,44 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * A "proposed to be conserved" taxon name is therefore still "illegitimate"
 	 * ("invalid" for zoological names).
 	 *
+	 * {@link https://dev.e-taxonomy.eu/trac/ticket/5662}
+	 *
 	 * @see  #VALID()
 	 * @see  #isIllegitimateType()
 	 * @see  #isLegitimateType()
 	 * @see  #CONSERVED()
+	 * @see  #CONSERVED_DESIG()
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType CONSERVED_PROP(){
 		return getTermByUuid(uuidConservedProp);
 	}
+
+    /**
+     * Returns the nomenclatural status type "designated to be conserved". A
+     * "valid" ("available") {@link TaxonNameBase taxon name} is "designated to be conserved"
+     * if, even though by the strict application of the rules of
+     * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
+     * it is "illegitimate" ("invalid" for {@link ZoologicalName zoological names}),
+     * it has been submitted to competent authorities in order to decide whether
+     * it should be handled as "legitimate".<BR>
+     * A "proposed to be conserved" taxon name is therefore still "illegitimate"
+     * ("invalid" for zoological names).
+     *
+     * {@link https://dev.e-taxonomy.eu/trac/ticket/5662}
+     *
+     * @see  #VALID()
+     * @see  #isIllegitimateType()
+     * @see  #isLegitimateType()
+     * @see  #CONSERVED()
+     * @see  #CONSERVED_PROP()()
+     * @see  NameRelationshipType#CONSERVED_AGAINST()
+     */
+    public static final NomenclaturalStatusType CONSERVED_DESIG(){
+        return getTermByUuid(uuidConservedDesig);
+    }
+
+
 
 	/**
 	 * Returns the nomenclatural status type "proposed to be conserved
@@ -601,6 +632,19 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType SANCTIONED(){
 		return getTermByUuid(uuidSanctioned);
 	}
+
+	/**
+     * Returns the nomenclatural status type "inedited". {@link BotanicalName Botanical names}
+     * are "inedited" if they were not yet published.
+     *
+     * @see  #isInvalidType()
+     * @see #PROVISIONAL()
+     * @deprecated this status is deprecated as it is a duplicate for Provisional
+     */
+	@Deprecated
+    public static final NomenclaturalStatusType INED(){
+        return getTermByUuid(uuidIned);
+    }
 
 	/**
 	 * Returns the nomenclatural status type "invalid" (this corresponds to
@@ -851,9 +895,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeBylabel");
 		}
 		NomenclaturalStatusType result = null;
-		if (statusLabel == null){
-			throw new NullPointerException("Status label is NULL in getNomenclaturalStatusTypeByLabel");
-		}
 		if (labelMap == null){
 			return null;
 		}
