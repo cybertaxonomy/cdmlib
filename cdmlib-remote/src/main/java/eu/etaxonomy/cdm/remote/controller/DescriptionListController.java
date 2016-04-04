@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.A
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
@@ -62,7 +65,6 @@ import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
-import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -230,6 +232,8 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * @param omitLevels
      * @param request
      * @param response
+     * @param distributionOrder
+     *  Default is  LABEL
      * @param recipe
      *  The recipe for creating the condensed distribution status
      * @return
@@ -246,6 +250,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
             @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
             HttpServletRequest request,
             HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
@@ -266,7 +271,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
                     subAreaPreference, statusOrderPreference, hideMarkedAreas, omitLevels,
                     presenceAbsenceTermColors, LocaleContext.getLanguages(),
-                    getDescriptionInfoInitStrategy(), recipe, null);
+                    getDescriptionInfoInitStrategy(), recipe, distributionOrder);
 
             mv.addObject(dto);
 
