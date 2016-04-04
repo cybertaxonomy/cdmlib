@@ -243,7 +243,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 				this.equals(ORTHOGRAPHY_CONSERVED()) ||
 				this.equals(REJECTED_PROP()) ||
 				this.equals(UTIQUE_REJECTED_PROP()) ||
-				this.equals(COMB_NOV())
+				this.equals(COMB_NOV())||
+				this.equals(CONSERVED_DESIG())
 			){
 			return true;
 		}else{
@@ -430,14 +431,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
     /**
      * Returns the nomenclatural status type "designated to be conserved". A
-     * "valid" ("available") {@link TaxonNameBase taxon name} is "designated to be conserved"
-     * if, even though by the strict application of the rules of
-     * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
-     * it is "illegitimate" ("invalid" for {@link ZoologicalName zoological names}),
-     * it has been submitted to competent authorities in order to decide whether
-     * it should be handled as "legitimate".<BR>
-     * A "proposed to be conserved" taxon name is therefore still "illegitimate"
-     * ("invalid" for zoological names).
+     * "valid" ("available") {@link TaxonNameBase taxon name} is "designated to be conserved".
+     * The name is considered to be legitimate as it has been decided by the General Committee
+     * though not yet ratified by the Int. Bot./Zool. Congr.
+     *
+     * NOTE: This interpretation needs further clarification.
      *
      * {@link https://dev.e-taxonomy.eu/trac/ticket/5662}
      *
