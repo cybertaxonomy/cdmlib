@@ -60,7 +60,7 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 		} else if (isUseDescription) {
 			return "Use description for  ";
 		} else {
-			return "Taxon description for ";
+			return "Factual data for ";
 		}
 	}
 }
