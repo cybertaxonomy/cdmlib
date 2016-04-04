@@ -194,6 +194,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 // ************************* GETTER / SETTER *******************************/
 
     public Integer getSortIndex() {
+        TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
+        parent.removeNullValueFromChildren();
+
 		return sortIndex;
 	}
     /**
@@ -224,6 +227,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public List<TaxonNode> getChildNodes() {
+
         return childNodes;
     }
 	protected void setChildNodes(List<TaxonNode> childNodes) {
@@ -361,7 +365,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
         Classification classification = HibernateProxyHelper.deproxy(this.getClassification(), Classification.class);
-
+        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         if (this.getClassification().isTaxonInTree(taxon)){
             throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
@@ -486,9 +490,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected boolean removeChildNode(TaxonNode childNode){
         boolean result = true;
-        while (childNodes.contains(null)){
-            childNodes.remove(null);
-        }
+        removeNullValueFromChildren();
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }
@@ -621,6 +623,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
+
         while (parentChildren.contains(null)){
             parentChildren.remove(null);
         }
@@ -852,6 +855,15 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Transient
     public Rank getNullSafeRank() {
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
+    }
+
+    private void removeNullValueFromChildren(){
+        if (childNodes.contains(null)){
+            while(childNodes.contains(null)){
+                childNodes.remove(null);
+            }
+        }
+        this.updateSortIndex(0);
     }
 
 

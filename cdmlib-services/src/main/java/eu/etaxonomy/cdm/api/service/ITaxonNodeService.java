@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -162,6 +163,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref);
+
+    /**
+     * @param taxonNodeUUID
+     * @param agentUUID
+     * @param relationshipType
+     * @return
+     */
+    UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 
 
 }

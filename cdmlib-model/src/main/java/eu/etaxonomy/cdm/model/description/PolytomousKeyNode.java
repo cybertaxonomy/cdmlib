@@ -432,6 +432,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * <i>this</i> feature node.
 	 */
 	public List<PolytomousKeyNode> getChildren() {
+	    removeNullValueFromChildren();
 		return children;
 	}
 
@@ -471,10 +472,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
+		removeNullValueFromChildren();
 
 		if(nodeNumber == null) {
-			nodeNumber = getMaxNodeNumberFromRoot() + 1;
-		}
+            	nodeNumber = getMaxNodeNumberFromRoot() + 1;
+        }
+
 
 		children.add(index, child);
 		child.setKey(this.getKey());
@@ -502,16 +505,20 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public void removeChild(PolytomousKeyNode child) {
 		int index = children.indexOf(child);
-		if (children.contains(null)){
-		    while(children.contains(null)){
-		        children.remove(null);
-		    }
-		}
+		removeNullValueFromChildren();
 		if (index >= 0) {
 			removeChild(index);
 		}
 	}
 
+
+	private void removeNullValueFromChildren(){
+	    if (children.contains(null)){
+            while(children.contains(null)){
+                children.remove(null);
+            }
+        }
+	}
 	/**
 	 * Removes the feature node placed at the given (index + 1) position from
 	 * the list of {@link #getChildren() children} of <i>this</i> feature node.

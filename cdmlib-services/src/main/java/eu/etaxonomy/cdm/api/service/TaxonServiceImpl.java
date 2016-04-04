@@ -353,6 +353,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference citation, String microcitation){
 
         // Get name from synonym
+        if (synonym == null){
+            return null;
+        }
         TaxonNameBase<?, ?> synonymName = synonym.getName();
 
       /*  // remove synonym from taxon

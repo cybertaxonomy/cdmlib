@@ -221,6 +221,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see    	   		#getDescriptionSources()
      */
     public void addElement(DescriptionElementBase element) {
+        removeNullValue();
         if (element.getInDescription() != null){
             element.getInDescription().removeElement(element);
         }
@@ -233,7 +234,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @param elements
      */
     public void addElements(DescriptionElementBase ... elements) {
-    	for (DescriptionElementBase element : elements){
+        removeNullValue();
+        for (DescriptionElementBase element : elements){
     		addElement(element);
     	}
     }
@@ -247,8 +249,15 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see     		#addElement(DescriptionElementBase)
      */
     public void removeElement(DescriptionElementBase element) {
+        removeNullValue();
         this.descriptionElements.remove(element);
         element.setInDescription(null);
+    }
+
+    private void removeNullValue(){
+        while(this.descriptionElements.contains(null)){
+            this.descriptionElements.remove(null);
+        }
     }
 
     /**

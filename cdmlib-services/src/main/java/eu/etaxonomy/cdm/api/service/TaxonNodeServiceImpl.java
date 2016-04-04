@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -69,6 +71,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IAgentService agentService;
 
     @Autowired
     private IClassificationService classService;
@@ -534,22 +539,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean isParent){
         UpdateResult result = new UpdateResult();
 
+        TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent(), TaxonNode.class);
+
         Integer sortIndex;
         if (isParent){
 
             sortIndex = newParent.getChildNodes().size();
         }else{
             sortIndex = newParent.getSortIndex() +1;
-            newParent = newParent.getParent();
+            newParent = parentParent;
         }
         result.addUpdatedObject(newParent);
         result.addUpdatedObject(taxonNode.getParent());
         result.setCdmEntity(taxonNode);
-        if (!isParent){
-            newParent.getParent().addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
-        } else{
-            newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
-        }
+
+        newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+
         dao.saveOrUpdate(newParent);
 
         return result;
@@ -597,6 +602,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }catch(Exception e){
             result.addException(e);
             result.setError();
+            return result;
         }
 //        child = dao.save(child);
 
@@ -607,6 +613,23 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         return result;
 
+    }
+
+    @Override
+    @Transactional
+    public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType){
+        UpdateResult result = new UpdateResult();
+        TaxonNode node = dao.load(taxonNodeUUID);
+        TeamOrPersonBase agent = (TeamOrPersonBase) agentService.load(agentUUID);
+        node.addAgentRelation(relationshipType, agent);
+        try{
+            dao.merge(node, true);
+        }catch (Exception e){
+            result.setError();
+            result.addException(e);
+        }
+        result.setCdmEntity(node);
+        return result;
     }
 
 }
