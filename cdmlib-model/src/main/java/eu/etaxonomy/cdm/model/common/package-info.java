@@ -113,6 +113,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Institution", targetEntity = Institution.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Person", targetEntity = Person.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Team", targetEntity = Team.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.MediaKey", targetEntity = MediaKey.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
@@ -140,7 +141,6 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Classification", targetEntity = Classification.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.name.NomenclaturalStatus", targetEntity = NomenclaturalStatus.class)
