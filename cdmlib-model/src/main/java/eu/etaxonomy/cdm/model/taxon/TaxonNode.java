@@ -193,6 +193,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
 // ************************* GETTER / SETTER *******************************/
 
+    @Transient
     public Integer getSortIndex() {
         TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
         parent.removeNullValueFromChildren();
