@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
@@ -64,6 +62,7 @@ import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -264,8 +263,10 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService, vocabularyService);
 
-            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getDescriptionInfoInitStrategy(), recipe);
+            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
+                    subAreaPreference, statusOrderPreference, hideMarkedAreas, omitLevels,
+                    presenceAbsenceTermColors, LocaleContext.getLanguages(),
+                    getDescriptionInfoInitStrategy(), recipe, null);
 
             mv.addObject(dto);
 

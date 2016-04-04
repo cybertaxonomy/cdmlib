@@ -82,9 +82,6 @@ public class GeoServiceArea {
         private String field;
         private String value;
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
         @Override
         public int hashCode() {
             int hash;
@@ -94,9 +91,7 @@ public class GeoServiceArea {
             hash += value != null ? value.hashCode() * 37 : 32;
             return hash;
         }
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
+
         @Override
         public boolean equals(Object otherArea) {
             if (! (otherArea instanceof SubArea)){

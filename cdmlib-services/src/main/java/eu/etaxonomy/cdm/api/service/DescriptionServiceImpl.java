@@ -227,7 +227,6 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
-
     @Override
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
@@ -252,10 +251,6 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#pageMarkedTaxonDescriptions(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.Set, java.util.Set, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
-     */
     @Override
     public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
@@ -275,26 +270,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listTaxonDescriptionMedia(UUID, boolean, Set, Integer, Integer, List)
-     */
     @Override
     public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
         return this.dao.listTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes, pageSize, pageNumber, propertyPaths);
     }
 
-    /*
-     * @see IDescriptionService#countTaxonDescriptionMedia(UUID, boolean, Set)
-     */
     @Override
     public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes){
         return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getOrderedDistributions(java.util.Set, boolean, boolean, java.util.Set, java.util.List)
-     */
     @Override
     @Deprecated
     public DistributionTree getOrderedDistributions(
@@ -351,7 +336,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList, hiddenAreaMarkerTypes);
+        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList, hiddenAreaMarkerTypes, null);
     }
 
 
@@ -818,7 +803,5 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return result;
 
     }
-
-
 
 }

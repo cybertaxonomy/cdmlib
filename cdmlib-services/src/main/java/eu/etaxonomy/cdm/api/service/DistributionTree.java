@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -60,6 +62,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     /**
+     * Returns the (first) child node (of type TreeNode) with the given nodeID.
      * @param parentNode
      * @param nodeToFind
      * @return the found node or null
@@ -82,12 +85,14 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @param omitLevels
      * @param hiddenAreaMarkerTypes
      *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
-     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
-     *      are omitted from the hierarchy and the sub areas are moving one level up.
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified
+     *      as such are omitted from the hierarchy and the sub areas are moving one level up.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      */
-    public void orderAsTree(Collection<Distribution> distList, Set<NamedAreaLevel> omitLevels, Set<MarkerType> hiddenAreaMarkerTypes){
+    public void orderAsTree(Collection<Distribution> distList,
+            Set<NamedAreaLevel> omitLevels,
+            Set<MarkerType> hiddenAreaMarkerTypes){
 
         Set<NamedArea> areas = new HashSet<NamedArea>(distList.size());
         for (Distribution distribution : distList) {
@@ -130,19 +135,22 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
     }
 
-    public void recursiveSortChildrenByLabel(){
-        _recursiveSortChildrenByLabel(this.getRootElement());
+    public void recursiveSortChildren(DistributionOrder distributionOrder){
+        if (distributionOrder == null){
+            distributionOrder = DistributionOrder.getDefault();
+        }
+        _recursiveSortChildren(this.getRootElement(), distributionOrder.getComparator());
     }
 
-    private void _recursiveSortChildrenByLabel(TreeNode<Set<Distribution>, NamedArea> treeNode){
-        DistributionNodeByAreaLabelComparator comp = new DistributionNodeByAreaLabelComparator();
+    private void _recursiveSortChildren(TreeNode<Set<Distribution>, NamedArea> treeNode,
+            Comparator<TreeNode<Set<Distribution>, NamedArea>> comparator){
         if (treeNode.children == null) {
             //nothing => stop condition
             return;
         }else {
-            Collections.sort(treeNode.children, comp);
+            Collections.sort(treeNode.children, comparator);
             for (TreeNode<Set<Distribution>, NamedArea> child : treeNode.children) {
-                _recursiveSortChildrenByLabel(child);
+                _recursiveSortChildren(child, comparator);
             }
         }
     }
@@ -163,7 +171,9 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      *            root element of the sub tree to which the
      *            <code>distributionElement</code> is to be added
      */
-    private void addDistributionToSubTree(Distribution distribution, List<NamedArea> namedAreaPath, TreeNode<Set<Distribution>, NamedArea> root){
+    private void addDistributionToSubTree(Distribution distribution,
+            List<NamedArea> namedAreaPath,
+            TreeNode<Set<Distribution>, NamedArea> root){
 
 
         //if the list to merge is empty finish the execution

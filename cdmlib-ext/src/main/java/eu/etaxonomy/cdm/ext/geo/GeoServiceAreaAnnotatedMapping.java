@@ -40,9 +40,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     @Autowired
     private ITermService termService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.ext.geo.IGeoServiceAreaMapping#valueOf(eu.etaxonomy.cdm.model.location.NamedArea)
-     */
     @Override
     public GeoServiceArea valueOf(NamedArea area) {
         for (Annotation annotation : area.getAnnotations()){
@@ -56,10 +53,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     }
 
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.ext.geo.IGeoServiceAreaMapping#set(eu.etaxonomy.cdm.model.location.NamedArea, eu.etaxonomy.cdm.ext.geo.GeoServiceArea)
-     */
     @Override
     public void set(NamedArea area, GeoServiceArea geoServiceArea) {
         String xml = null;
@@ -87,10 +80,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.ext.geo.IGeoServiceAreaMapping#clear(eu.etaxonomy.cdm.model.location.NamedArea)
-     */
     @Override
     public void clear(NamedArea area){
 

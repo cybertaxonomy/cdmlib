@@ -248,18 +248,22 @@ public class DescriptionUtility {
      *      are omitted from the hierarchy and the sub areas are moving one level up.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
+     * @param distributionOrder
      * @param distList
      * @return
      */
-    public static DistributionTree orderDistributions(IDefinedTermDao termDao, Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes) {
+    public static DistributionTree orderDistributions(IDefinedTermDao termDao,
+            Set<NamedAreaLevel> omitLevels,
+            Collection<Distribution> distributions,
+            Set<MarkerType> hiddenAreaMarkerTypes,
+            DistributionOrder distributionOrder) {
 
         DistributionTree tree = new DistributionTree(termDao);
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
         tree.orderAsTree(distributions, omitLevels, hiddenAreaMarkerTypes);
-        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
+        tree.recursiveSortChildren(distributionOrder); // FIXME respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
     }
