@@ -26,7 +26,8 @@ public enum CondensedDistributionRecipe {
      *   <li>{@link http://dev.e-taxonomy.eu/trac/ticket/3907}</li>
      * </ul>
      */
-    EuroPlusMed(EuroPlusMedCondensedDistributionComposer.class);
+    EuroPlusMed(EuroPlusMedCondensedDistributionComposer.class),
+    FloraCuba(FloraCubaCondensedDistributionComposer.class);
 
     Class<? extends ICondensedDistributionComposer> implementation;
 
