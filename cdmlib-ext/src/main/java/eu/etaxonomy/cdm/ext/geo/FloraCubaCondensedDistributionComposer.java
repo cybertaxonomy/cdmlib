@@ -29,12 +29,13 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
- * @author a.kohlbecker
- * @date Jun 24, 2015
+ * @author a.mueller
+ * @date Apr 05, 2016
  *
  */
 public class FloraCubaCondensedDistributionComposer implements ICondensedDistributionComposer {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FloraCubaCondensedDistributionComposer.class);
 
     private final CondensedDistribution condensedDistribution;
@@ -58,37 +59,62 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
 
         // Lu native (incl. archaeophytes) TODO status archaeophytes?
         statusSymbols.put(PresenceAbsenceTerm.NATIVE().getUuid(), "");
-        statusSymbols.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE().getUuid(), "");
+//        statusSymbols.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE().getUuid(), "");
 
         // ?Lu doubtfully present (U+3F QUESTION MARK)
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE().getUuid(), "?");
+//        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE().getUuid(), "?");
         statusSymbols.put(PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE().getUuid(), "?");
-        statusSymbols.put(PresenceAbsenceTerm.PRESENT_DOUBTFULLY().getUuid(), "?");
+//        statusSymbols.put(PresenceAbsenceTerm.PRESENT_DOUBTFULLY().getUuid(), "?");
 
         // dLu doubtfully native
         statusSymbols.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE().getUuid(), "d");
 
         // -Lu absent but reported in error (U+2D HYPHEN-MINUS)
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR().getUuid(), "-");
+//        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR().getUuid(), "-");
         statusSymbols.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR().getUuid(), "-");
         statusSymbols.put(REPORTED_IN_ERROR_UUID, "-");
-
-        // †Lu (presumably) extinct (U+2020 DAGGER)
-        // no such status in database!!!
-
-        // [Lu] introduced (casual or naturalized) =  introduced, introduced: naturalized
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED().getUuid(), "");
 
         // [aLu] casual alien = introduced: adventitious (casual)
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid(), "a");
 
         // [cLu] cultivated
         statusSymbols.put(PresenceAbsenceTerm.CULTIVATED() .getUuid(), "c");
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid(), "c");
+//        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid(), "c");
 
         // [nLu] naturalized
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid(), "n");
+//        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid(), "n");
+
+        statusSymbols.put(PresenceAbsenceTerm.CULTIVATED_PRESENCE_QUESTIONABLE().getUuid(), "?c");
+        statusSymbols.put(PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR().getUuid(), "-c");
+
+
+
+        //Cuba specific
+        //occasionally cultivated
+        statusSymbols.put(UUID.fromString("936c3f9a-6099-4322-9792-0a72c6c2ce25"), "(c)");
+        //endemic, doubtfully present
+        statusSymbols.put(UUID.fromString("5f954f08-267a-4928-b073-12328f74c187"), "?e");
+        //non-native and doubtfully naturalised
+        statusSymbols.put(UUID.fromString("a1e26234-831e-4190-9fe3-011aca09ddba"), "p");
+        //rare casual
+        statusSymbols.put(UUID.fromString("8914ce0d-7d31-4c88-8317-985f2b3a493b"), "(a)");
+        //?non-native and doubtfully naturalised
+        statusSymbols.put(UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466"), "?p");
+        //?adventive (casual) alien
+        statusSymbols.put(UUID.fromString("c42ca644-1773-4230-a2ee-328a5d4a21ab"), "?a");
+        //endemic, reported in error
+        statusSymbols.put(UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad"), "-e");
+        //naturalised, reported in error
+        statusSymbols.put(UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa"), "-n");
+        //non-native and doubtfully naturalised, reported in error
+        statusSymbols.put(UUID.fromString("b9153d90-9e31-465a-a28c-79077a8ed4c2"), "-p");
+        //adventive alien , reported in error
+        statusSymbols.put(UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc"), "-a");
+
+
+
+
 
         foreignStatusUuids = new HashSet<UUID>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
@@ -188,8 +214,8 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
             }
 
         }
-        //5. order the condensedDistributions alphabetically
-        // FIXME
+//        //5. order the condensedDistributions alphabetically
+//        // FIXME
         condensedDistribution.sortForeign();
         condensedDistribution.sortIndigenous();
 
