@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.description;
 
@@ -34,21 +34,21 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 	public void setUp() throws Exception {
 	}
 
-	
+
 //*********************** TESTS ****************************************************/
-	
+
 	@Test
 	public void testGetTitleCache(){
-		
+
 		BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
 		botName.setGenusOrUninomial("Genus");
 		botName.setSpecificEpithet("species");
-		
-		Reference sec = ReferenceFactory.newGeneric();
+
+		Reference<?> sec = ReferenceFactory.newGeneric();
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
-		Assert.assertEquals("Wrong title cache for description", "Taxon description for Genus species", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Factual data for Genus species", taxonDescription.getTitleCache());
 		taxonDescription.setImageGallery(true);
 		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.getTitleCache());
 		taxonDescription = TaxonDescription.NewInstance();
@@ -57,5 +57,5 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.getTitleCache());
 
 	}
-	
+
 }
