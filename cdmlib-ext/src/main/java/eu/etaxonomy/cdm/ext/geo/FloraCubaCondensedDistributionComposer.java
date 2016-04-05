@@ -112,6 +112,11 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
         statusSymbols.put(UUID.fromString("b9153d90-9e31-465a-a28c-79077a8ed4c2"), "-p");
         //adventive alien , reported in error
         statusSymbols.put(UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc"), "-a");
+        //doubtfully native: reported in error
+        statusSymbols.put(UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06"), "-d");
+
+
+
 
 
 
