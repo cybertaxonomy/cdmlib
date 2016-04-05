@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.geo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +22,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -116,13 +117,13 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
 
 
 
-        foreignStatusUuids = new HashSet<UUID>();
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.CULTIVATED().getUuid());
+//        foreignStatusUuids = new HashSet<UUID>();
+//        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
+//        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid());
+//        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid());
+//        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid());
+//        foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
+//        foreignStatusUuids.add(PresenceAbsenceTerm.CULTIVATED().getUuid());
 
     }
 
@@ -139,87 +140,109 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
             List<Language> langs) {
 
         //1. order by PresenceAbsenceTerms
-        Map<PresenceAbsenceTerm, Collection<NamedArea>> byStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
-        for(Distribution d : filteredDistributions) {
-            PresenceAbsenceTerm status = d.getStatus();
-            if(status == null) {
-                continue;
+//        Map<PresenceAbsenceTerm, Collection<NamedArea>> byStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
+//        for(Distribution d : filteredDistributions) {
+//            PresenceAbsenceTerm status = d.getStatus();
+//            if(status == null) {
+//                continue;
+//            }
+//            if(!byStatus.containsKey(status)) {
+//                byStatus.put(status, new HashSet<NamedArea>());
+//            }
+//            byStatus.get(status).add(d.getArea());
+//        }
+
+//        //2. build the area hierarchy
+//        for(PresenceAbsenceTerm status : byStatus.keySet()) {
+//
+//            Map<NamedArea, AreaNode> areaNodeMap = new HashMap<NamedArea, AreaNode>();
+//
+//            for(NamedArea area : byStatus.get(status)) {
+//                AreaNode node;
+//                if(!areaNodeMap.containsKey(area)) {
+//                    // putting area into hierarchy as node
+//                    node = new AreaNode(area);
+//                    areaNodeMap.put(area, node);
+//                } else {
+//                    //  is parent of another and thus already has a node
+//                    node = areaNodeMap.get(area);
+//                }
+//
+//                NamedArea parent = findParentIn(area, byStatus.get(status));
+//                if(parent != null) {
+//                    AreaNode parentNode;
+//                    if(!areaNodeMap.containsKey(parent)) {
+//                        parentNode = new AreaNode(parent);
+//                        areaNodeMap.put(parent, parentNode);
+//                    } else {
+//                        parentNode = areaNodeMap.get(parent);
+//                    }
+//                    parentNode.addSubArea(node);
+//                }
+//            }
+//
+//            //3. find root nodes
+//            Set<AreaNode>hierarchy = new HashSet<AreaNode>();
+//            for(AreaNode node : areaNodeMap.values()) {
+//                if(!node.hasParent()) {
+//                    hierarchy.add(node);
+//                }
+//            }
+
+        if (filteredDistributions == null || filteredDistributions.isEmpty()){
+            return condensedDistribution;
+        }
+        OrderedTermVocabulary<NamedArea> areaVocabulary = CdmBase.deproxy(filteredDistributions.iterator().next().getArea().getVocabulary(), OrderedTermVocabulary.class);
+        for (NamedArea area : areaVocabulary.getOrderedTerms()){
+
+            if (area.getPartOf() != null){
+                continue;  //subarea are handled later
             }
-            if(!byStatus.containsKey(status)) {
-                byStatus.put(status, new HashSet<NamedArea>());
+            StringBuilder areaStatusString = new StringBuilder();
+            Distribution distribution = getDistribution(area, filteredDistributions);
+            PresenceAbsenceTerm status = distribution.getStatus();
+
+            String statusSymbol = statusSymbol(status);
+            areaStatusString.append(statusSymbol);
+
+            String areaLabel = area.getIdInVocabulary();  //TODO if not exist use abbrevLabel
+            areaStatusString.append(areaLabel);
+
+            if(!area.getIncludes().isEmpty()) {
+                areaStatusString.append('(');
+                subAreaLabels(langs, area.getIncludes(), areaStatusString, statusSymbol, areaLabel);
+                areaStatusString.append(')');
             }
-            byStatus.get(status).add(d.getArea());
+
+//            if(isForeignStatus(status)) {
+//                condensedDistribution.addForeignDistributionItem(status, areaStatusString.toString(), areaLabel);
+//            } else {
+                condensedDistribution.addIndigenousDistributionItem(status, areaStatusString.toString(), areaLabel);
+//            }
+
         }
 
-        //2. build the area hierarchy
-        for(PresenceAbsenceTerm status : byStatus.keySet()) {
-
-            Map<NamedArea, AreaNode> areaNodeMap = new HashMap<NamedArea, AreaNode>();
-
-            for(NamedArea area : byStatus.get(status)) {
-                AreaNode node;
-                if(!areaNodeMap.containsKey(area)) {
-                    // putting area into hierarchy as node
-                    node = new AreaNode(area);
-                    areaNodeMap.put(area, node);
-                } else {
-                    //  is parent of another and thus already has a node
-                    node = areaNodeMap.get(area);
-                }
-
-                NamedArea parent = findParentIn(area, byStatus.get(status));
-                if(parent != null) {
-                    AreaNode parentNode;
-                    if(!areaNodeMap.containsKey(parent)) {
-                        parentNode = new AreaNode(parent);
-                        areaNodeMap.put(parent, parentNode);
-                    } else {
-                        parentNode = areaNodeMap.get(parent);
-                    }
-                    parentNode.addSubArea(node);
-                }
-            }
-
-            //3. find root nodes
-            Set<AreaNode>hierarchy = new HashSet<AreaNode>();
-            for(AreaNode node : areaNodeMap.values()) {
-                if(!node.hasParent()) {
-                    hierarchy.add(node);
-                }
-            }
-
-            //4. replace the area by the abbreviated representation and add symbols
-            for(AreaNode node : hierarchy) {
-
-                StringBuilder areaStatusString = new StringBuilder();
-
-                String statusSymbol = statusSymbol(status);
-                areaStatusString.append(statusSymbol);
-
-                String areaLabel = node.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
-                areaStatusString.append(areaLabel);
-
-                if(!node.subAreas.isEmpty()) {
-                    areaStatusString.append('(');
-                    subAreaLabels(langs, node.subAreas, areaStatusString, statusSymbol, areaLabel);
-                    areaStatusString.append(')');
-                }
-
-                if(isForeignStatus(status)) {
-                    condensedDistribution.addForeignDistributionItem(status, areaStatusString.toString(), areaLabel);
-                } else {
-                    condensedDistribution.addIndigenousDistributionItem(status, areaStatusString.toString(), areaLabel);
-                }
-
-            }
-
-        }
+//        }
 //        //5. order the condensedDistributions alphabetically
 //        // FIXME
-        condensedDistribution.sortForeign();
-        condensedDistribution.sortIndigenous();
+//        condensedDistribution.sortForeign();
+//        condensedDistribution.sortIndigenous();
 
         return condensedDistribution;
+    }
+
+    /**
+     * @param area
+     * @param filteredDistributions
+     * @return
+     */
+    private Distribution getDistribution(NamedArea area, Collection<Distribution> filteredDistributions) {
+        for (Distribution dist : filteredDistributions){
+            if (dist.getArea() != null && dist.getArea().equals(area)){
+                return dist;
+            }
+        }
+        return null;
     }
 
     /**
@@ -247,29 +270,29 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
      * @param areaString
      * @param statusSymbol
      */
-    private void subAreaLabels(List<Language> langs, Collection<AreaNode> nodes, StringBuilder areaString, String statusSymbol, String parentLabel) {
-
+    private void subAreaLabels(List<Language> langs, Collection<NamedArea> nodes, StringBuilder areaString, String statusSymbol, String parentLabel) {
+        //TODO very redundant with main method
         List<String> subAreaLabels = new ArrayList<String>();
 
-        for(AreaNode node : nodes) {
+        for(NamedArea area : nodes) {
 
             StringBuilder subAreaString = new StringBuilder();
 
             subAreaString.append(statusSymbol);
 
-            String areaLabel = node.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
+            String areaLabel = area.getIdInVocabulary() != null ? area.getIdInVocabulary() :area.getPreferredRepresentation(langs).getAbbreviatedLabel();
             String cleanSubAreaLabel = StringUtils.replaceEach(areaLabel, new String[] {parentLabel, "(", ")"}, new String[] {"", "", ""});
             subAreaString.append(cleanSubAreaLabel);
 
-            if(!node.subAreas.isEmpty()) {
+            if(!area.getIncludes().isEmpty()) {
                 subAreaString.append('(');
-                subAreaLabels(langs, node.subAreas, subAreaString, statusSymbol, areaLabel);
+                subAreaLabels(langs, area.getIncludes(), subAreaString, statusSymbol, areaLabel);
                 subAreaString.append(')');
             }
 
             subAreaLabels.add(subAreaString.toString());
         }
-        Collections.sort(subAreaLabels);
+//        Collections.sort(subAreaLabels);
         areaString.append(StringUtils.join(subAreaLabels, " "));
 
     }
