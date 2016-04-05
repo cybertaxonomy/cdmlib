@@ -52,7 +52,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		taxonDescription.setImageGallery(true);
 		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.getTitleCache());
 		taxonDescription = TaxonDescription.NewInstance();
-		Assert.assertEquals("Wrong title cache for description", "Taxon description", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Factual data", taxonDescription.getTitleCache());
 		taxonDescription.setImageGallery(true);
 		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.getTitleCache());
 
