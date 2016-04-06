@@ -205,6 +205,10 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
             }
             StringBuilder areaStatusString = new StringBuilder();
             Distribution distribution = getDistribution(area, filteredDistributions);
+            if (distribution == null){
+                continue;
+            }
+
             PresenceAbsenceTerm status = distribution.getStatus();
 
             String statusSymbol = statusSymbol(status);
