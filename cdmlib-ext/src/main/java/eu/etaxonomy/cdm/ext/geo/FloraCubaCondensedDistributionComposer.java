@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.geo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -132,8 +132,11 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
 
         OrderedTermVocabulary<NamedArea> areaVocabulary = CdmBase.deproxy(filteredDistributions.iterator().next().getArea().getVocabulary(), OrderedTermVocabulary.class);
 
-        List<NamedArea> areaList = new ArrayList<NamedArea>(areaVocabulary.getOrderedTerms());
-        Collections.reverse(areaList);
+        //deproxy and reverse order
+        List<NamedArea> areaList = new ArrayList<NamedArea>();
+        for (DefinedTermBase<NamedArea> dtb : areaVocabulary.getOrderedTerms()){
+            areaList.add(0, (NamedArea)CdmBase.deproxy(dtb));
+        }
 
         for (NamedArea area : areaList){
 
@@ -222,8 +225,11 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
         //TODO very redundant with main method
         List<String> subAreaLabels = new ArrayList<String>();
 
-        List<NamedArea> areaList = new ArrayList<NamedArea>(subAreas);
-        Collections.reverse(areaList);
+        //deproxy and reverse order
+        List<NamedArea> areaList = new ArrayList<NamedArea>();
+        for (DefinedTermBase<NamedArea> dtb : subAreas){
+            areaList.add(0, (NamedArea)CdmBase.deproxy(dtb));
+        }
 
         for(NamedArea area : areaList) {
 
