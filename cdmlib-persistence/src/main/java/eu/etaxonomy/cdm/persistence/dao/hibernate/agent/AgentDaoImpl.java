@@ -164,4 +164,11 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
+	@Override
+	public List<Person> getPersonsUsedAsUser(){
+	       Query query = getSession().createQuery("select ab.uuid, ob.idInSource from AgentBase ab join OriginalSourceBase ob on ob.sourcedObj_id = ab.id where ob.idNamespace like 'User' and ob.sourcedObj_type like 'eu.etaxonomy.cdm.model.agent.Person'");
+	       List<Person> result = query.list();
+	       return result;
+	}
+
 }

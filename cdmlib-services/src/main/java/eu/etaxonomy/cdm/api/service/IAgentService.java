@@ -153,6 +153,11 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 */
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 
+    /**
+     * @return
+     */
+    List<Person> getAllAgentsUsedAsUser();
+
 
 
 }

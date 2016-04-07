@@ -7,6 +7,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
@@ -22,6 +23,8 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	private String fieldsTerminatedBy=";";
 	private boolean namesOnly = false;
 	private UUID classificationUUID;
+
+	private Rank rank = Rank.GENUS();
 
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
@@ -108,5 +111,19 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public void setClassificationUUID(UUID classificationUUID) {
 		this.classificationUUID = classificationUUID;
 	}
+
+    /**
+     * @return the rank
+     */
+    public Rank getRank() {
+        return rank;
+    }
+
+    /**
+     * @param rank the rank to set
+     */
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
 
 }
