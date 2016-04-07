@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
@@ -193,6 +194,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
 // ************************* GETTER / SETTER *******************************/
 
+    @Transient
     public Integer getSortIndex() {
         TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
         parent.removeNullValueFromChildren();
@@ -858,12 +860,16 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     }
 
     private void removeNullValueFromChildren(){
-        if (childNodes.contains(null)){
-            while(childNodes.contains(null)){
-                childNodes.remove(null);
+        try {
+            if (childNodes.contains(null)){
+                while(childNodes.contains(null)){
+                    childNodes.remove(null);
+                }
             }
+            this.updateSortIndex(0);
+        } catch (LazyInitializationException e) {
+            logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
-        this.updateSortIndex(0);
     }
 
 

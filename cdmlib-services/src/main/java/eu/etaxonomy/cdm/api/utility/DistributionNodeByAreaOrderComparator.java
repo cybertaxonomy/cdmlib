@@ -36,7 +36,7 @@ public class DistributionNodeByAreaOrderComparator implements Comparator<TreeNod
         }else if (area2 == null){
             return 1;
         }else{
-            return area1.compareTo(area2);
+            return - area1.compareTo(area2);  //term compare methods currently use wrong direction
         }
     }
 }

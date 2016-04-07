@@ -196,6 +196,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Override
     public DeleteResult deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+    	if(typeDesignation!=null && typeDesignation.getId()!=0){
+    		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
+    	}
+
         DeleteResult result = new DeleteResult();
         if (name == null && typeDesignation == null){
             result.setError();

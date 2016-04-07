@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
@@ -513,11 +514,15 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 
 	private void removeNullValueFromChildren(){
-	    if (children.contains(null)){
-            while(children.contains(null)){
-                children.remove(null);
+	    try {
+    	    if (children.contains(null)){
+                while(children.contains(null)){
+                    children.remove(null);
+                }
             }
-        }
+	    } catch (LazyInitializationException e) {
+	        logger.info("Cannot clean up uninitialized children without a session, skipping.");
+	    }
 	}
 	/**
 	 * Removes the feature node placed at the given (index + 1) position from
