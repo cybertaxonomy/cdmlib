@@ -17,18 +17,20 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -56,9 +58,13 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 public class CsvNameExport extends CsvNameExportBase {
     private static final Logger logger = Logger.getLogger(CsvNameExport.class);
 
+    @SpringBeanByType
+    EditGeoService geoService;
+
     public CsvNameExport() {
         super();
         this.ioName = this.getClass().getSimpleName();
+
     }
 
     @Override
@@ -273,11 +279,12 @@ public class CsvNameExport extends CsvNameExportBase {
         }
     }
 
-    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature, String columnName){
+    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature, String columnName, CsvNameExportState state){
         StringBuffer descriptionsString = new StringBuffer();
         TextData textElement;
         List<Distribution> distributions = new ArrayList<Distribution>();
         for (DescriptionBase<?> descriptionBase: taxon.getDescriptions()){
+
             Set<DescriptionElementBase> elements = descriptionBase.getElements();
             for (DescriptionElementBase element: elements){
                 if (element.getFeature().equals(feature)){
@@ -285,7 +292,7 @@ public class CsvNameExport extends CsvNameExportBase {
                         textElement = HibernateProxyHelper.deproxy(element, TextData.class);
                         descriptionsString.append(textElement.getText(Language.ENGLISH()));
 
-                    }else if (element instanceof Distribution){
+                    }else if (element instanceof Distribution && ! state.getConfig().isCondensedDistribution()){
 
                         Distribution distribution = HibernateProxyHelper.deproxy(element, Distribution.class);
                         distributions.add(distribution);
@@ -300,20 +307,28 @@ public class CsvNameExport extends CsvNameExportBase {
 
         }
      //   Collections.sort(distributions, new DistributionNodeByAreaLabelComparator());
-        EditGeoService.getCondensedDistribution(distributions, true,
-                Set<MarkerType> hideMarkedAreas,
-                MarkerType fallbackAreaMarkerType,
-                CondensedDistributionRecipe recipe,
-                List<Language> langs);
-        for (Distribution distribution:distributions){
 
-            if (descriptionsString.length()> 0 ){
-                descriptionsString.append(", ");
+        if (state.getConfig().isCondensedDistribution()){
+            List<Language> langs = new ArrayList<Language>();
+            langs.add(Language.ENGLISH());
+            List<TaxonDescription> descriptions = new ArrayList(taxon.getDescriptions());
+
+            CondensedDistribution conDis = geoService.getCondensedDistribution(descriptions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );
+
+            nameRecord.put(columnName, conDis.toString());
+
+        } else{
+            for (Distribution distribution:distributions){
+
+                if (descriptionsString.length()> 0 ){
+                    descriptionsString.append(", ");
+                }
+                descriptionsString.append(distribution.getArea().getIdInVocabulary());
+
             }
-            descriptionsString.append(distribution.getArea().getIdInVocabulary());
-
+            nameRecord.put(columnName, descriptionsString.toString());
         }
-        nameRecord.put(columnName, descriptionsString.toString());
+
     }
 
     private Feature getNotesFeature(CsvNameExportState state){
@@ -354,7 +369,7 @@ public class CsvNameExport extends CsvNameExportBase {
         //  if (taxon.isPublish()){
         BotanicalName name = HibernateProxyHelper.deproxy(taxon.getName(), BotanicalName.class);
         nameRecord.put("familyName", name.getNameCache());
-        extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam");
+        extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
 
         TaxonNode genusNode = getHigherNode(childNode, Rank.GENUS());
         if (genusNode!= null){
@@ -373,7 +388,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }else{
                 nameRecord.put("genusName", name.getGenusOrUninomial());
             }
-            extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsGen");
+            extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsGen", state);
         }
         taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
@@ -509,7 +524,7 @@ public class CsvNameExport extends CsvNameExportBase {
         nameRecord.put("relatedName", relatedName);
         nameRecord.put("nameRelType", nameRelType);
 
-        extractDescriptions(nameRecord, taxon, Feature.DISTRIBUTION(), "description");
+        extractDescriptions(nameRecord, taxon, Feature.DISTRIBUTION(), "description", state);
         return nameRecord;
     }
 

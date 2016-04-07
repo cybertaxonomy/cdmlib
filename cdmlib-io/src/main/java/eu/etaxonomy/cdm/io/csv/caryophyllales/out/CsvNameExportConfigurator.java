@@ -24,7 +24,10 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	private boolean namesOnly = false;
 	private UUID classificationUUID;
 
-	private Rank rank = Rank.GENUS();
+	private boolean condensedDistribution = true;
+
+
+    private Rank rank = Rank.GENUS();
 
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
@@ -125,5 +128,20 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
     public void setRank(Rank rank) {
         this.rank = rank;
     }
+
+    /**
+     * @return the condensedDistribution
+     */
+    public boolean isCondensedDistribution() {
+        return condensedDistribution;
+    }
+
+    /**
+     * @param condensedDistribution the condensedDistribution to set
+     */
+    public void setCondensedDistribution(boolean condensedDistribution) {
+        this.condensedDistribution = condensedDistribution;
+    }
+
 
 }
