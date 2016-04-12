@@ -978,6 +978,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+	public static void initDefaultTerms() {
+        TermVocabulary<NomenclaturalStatusType> vocabulary = getTermByUuid(uuidDoubtful).getVocabulary();
+
+        (new NomenclaturalStatusType()).setDefaultTerms(vocabulary);
+    }
+
 	/**
 	 * Adds the status type to the (abbreviated) label maps
 	 * @param term
