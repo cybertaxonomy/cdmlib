@@ -259,7 +259,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         	for (TaxonNameBase name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache<IdentifiableEntity>(name.getUuid(), name.getId(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache(TaxonNameBase.class, name.getUuid(), name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa){
