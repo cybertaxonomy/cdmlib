@@ -1957,13 +1957,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return result;
         }
     }
-
+/*
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        return getUuidAndTitleCache();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return getUuidAndTitleCache(limit, pattern, true);
     }
-
+*/
 
   /*  public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
         String className;
