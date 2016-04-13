@@ -1960,8 +1960,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
-        return getUuidAndTitleCache(limit, pattern, true);
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
+        return getUuidAndTitleCache();
     }
 
 
