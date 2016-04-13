@@ -280,7 +280,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // new Boolean(result[3].toString()) is due to the fact that result[3] could be a Boolean ora String
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
-                    if (result[2].equals("synonym")) {
+                    if (result[3].equals("synonym")) {
                         resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                     else {
@@ -1960,6 +1960,45 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
     @Override
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return getUuidAndTitleCache(limit, pattern, true);
+    }
+
+
+  /*  public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
+        String className;
+        if (isTaxon){
+            className = Taxon.class.getSimpleName();
+        } else{
+            className = Synonym.class.getSimpleName();
+        }
+        String queryString;
+
+        if(pattern == null){
+            queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' ", type.getSimpleName(), className );
+       } else{
+           queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' and titleCache like :pattern", type.getSimpleName(), className);
+       }
+        Query query = getSession().createQuery(queryString);
+        if (pattern != null){
+          pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        }
+        if (limit  != null){
+            query.setMaxResults(limit);
+        }
+
+        List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
+
+        return result;
+    }
+    @Override
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern){
+
+        return getUuidAndTitleCache(limit, pattern, false);
+    }
+*/
+    @Override
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
         String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
         Query query = getSession().createQuery(queryString);
@@ -1978,8 +2017,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
     }
-
-
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
            boolean doAreaRestriction = areasExpanded.size() > 0;
