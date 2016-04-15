@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 
 /**
@@ -27,7 +26,7 @@ public class CoordinateConverterTest {
 	private static final Logger logger = Logger.getLogger(CoordinateConverterTest.class);
 
 	private CoordinateConverter coordinateConverter;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -44,7 +43,7 @@ public class CoordinateConverterTest {
 	}
 
 // ************************ TESTS ********************************************** /
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter#CoordinateConverter()}.
 	 */
@@ -63,14 +62,14 @@ public class CoordinateConverterTest {
 		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
 		Assert.assertFalse("Southern must be latitude", conversionResults.isLongitude);
 
-		conversionResults = coordinateConverter.tryConvert("35\u00BA34.744"); 
+		conversionResults = coordinateConverter.tryConvert("35\u00BA34.744");
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 		Assert.assertNull("Longitude must be undefined", conversionResults.isLongitude);
 
 		conversionResults = coordinateConverter.tryConvert("95\u00B034.744");
 		Assert.assertTrue("Longitude must be defined", conversionResults.isLongitude);
 
-		
+
 		conversionResults = coordinateConverter.tryConvert("-35\u00B034'55.67S");
 		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 
@@ -79,15 +78,22 @@ public class CoordinateConverterTest {
 
 		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SW");
 		Assert.assertTrue("Western must be longitude", conversionResults.isLongitude);
-		
+
 		conversionResults = coordinateConverter.tryConvert("35\u00B0 1'34.744SW");
 		Assert.assertTrue("Pattern with whitespace must be recognised", conversionResults.patternRecognised);
 		Assert.assertTrue("Pattern with whitespace must be recognised", conversionResults.conversionSuccessful);
-		
+
 		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
-		
-		
+
+        conversionResults = coordinateConverter.tryConvert("35\u00B0 1´34.744SW");
+        Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.conversionSuccessful);
+
+        conversionResults = coordinateConverter.tryConvert("35\u00B01\u00B434\u00B4\u00B4W");
+        Assert.assertTrue("Pattern with acute accent for seconds must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with acute accent for seconds  must be recognised", conversionResults.conversionSuccessful);
+
 	}
 
 	/**
