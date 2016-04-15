@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
+ * Tests for {@link FloraCubaCondensedDistributionComposer}
  * @author a.mueller
  * @date 07.04.2016
  *
@@ -77,6 +78,8 @@ public class FloraCubaCondensedDistributionComposerTest {
 
     }
 
+// ********************* TESTS ******************************/
+
     /**
      * Test method for {@link eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposer#createCondensedDistribution(java.util.Collection, java.util.List)}.
      */
@@ -95,6 +98,8 @@ public class FloraCubaCondensedDistributionComposerTest {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
         String condensedString = condensedDistribution.toString();
         System.out.println(condensedString);
+
+        //TODO work in progress
     }
 
 
