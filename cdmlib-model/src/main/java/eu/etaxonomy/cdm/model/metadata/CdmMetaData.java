@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,8 +33,8 @@ public class CdmMetaData extends CdmBase{
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
 
 	/* It is a little bit confusing that this specific information is located in
-	 * a generic class for metadata. Think about moving the schema version 
-	 *  
+	 * a generic class for metadata. Think about moving the schema version
+	 *
 	 */
 	/**
 	 * The database schema version number.
@@ -47,16 +47,16 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = "3.6.0.0.201527040000";
-//	private static final String dbSchemaVersion = "3.4.1.0.201411210000";
+//	private static final String dbSchemaVersion = "3.6.0.0.201527040000";
+	private static final String dbSchemaVersion = "4.0.0.0.201604200000";
 //	private static final String dbSchemaVersion = "3.5.0.0.201531030000";
-	
 
-	
-	
+
+
+
 
 	/**
-	 * @return a list of default metadata objects 
+	 * @return a list of default metadata objects
 	 */
 	public static final List<CdmMetaData> defaultMetaData(){
 		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
@@ -66,44 +66,44 @@ public class CdmMetaData extends CdmBase{
 		result.add(new CdmMetaData(MetaDataPropertyName.TERMS_VERSION, termsVersion));
 		// database create time
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
-		return result;	
+		return result;
 	}
-	
+
 	/**
 	 * The version number for the terms loaded by the termloader (csv-files)
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
-	 * 
+	 *
 	 * But it is not obligatory as there may be cases when the library number changes but the
 	 * schema version is not changing.
-	 * 
+	 *
 	 * The third should be incremented if the terms change in a way that is not compatible
 	 * to the previous version (e.g. by changing the type of a term)
-	 * 
+	 *
 	 * The fourth number should be incremented when compatible term changes take place
 	 * (e.g. when new terms were added)
-	 * 
+	 *
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "3.6.0.0.201527040000";
-//	private static final String termsVersion = "3.5.0.0.201531030000";
-	
-	
+//	private static final String termsVersion = "3.6.0.0.201527040000";
+	private static final String termsVersion = "4.0.0.0.201604200000";
+
+
 	public enum MetaDataPropertyName{
 		DB_SCHEMA_VERSION,
 		TERMS_VERSION,
  		DB_CREATE_DATE,
 		DB_CREATE_NOTE;
-		
+
 		public String getSqlQuery(){
 			return "SELECT value FROM CdmMetaData WHERE propertyname=" + this.ordinal();
 		}
 	}
-	
+
 	/* END OF CONFUSION */
 	private MetaDataPropertyName propertyName;
 	private String value;
 
-	
+
 	/**
 	 * Method to retrieve a CDM Libraries meta data
 	 * @return
@@ -116,7 +116,7 @@ public class CdmMetaData extends CdmBase{
 		return result;
 	}
 
-//********************* Constructor *********************************************/	
+//********************* Constructor *********************************************/
 
 	/**
 	 * Simple constructor to be used by Spring
@@ -131,8 +131,8 @@ public class CdmMetaData extends CdmBase{
 		this.value = value;
 	}
 
-//****************** instance methods ****************************************/	
-	
+//****************** instance methods ****************************************/
+
 	/**
 	 * @return the propertyName
 	 */
@@ -162,33 +162,34 @@ public class CdmMetaData extends CdmBase{
 	}
 
 //******************** Version comparator **********************************/
-	
+
 	public static class VersionComparator implements Comparator<String>{
 		Integer depth;
 		IProgressMonitor monitor;
-		
+
 		public VersionComparator(Integer depth, IProgressMonitor monitor){
 			this.depth = depth;
 			this.monitor = monitor;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(String version1, String version2) {
+		@Override
+        public int compare(String version1, String version2) {
 			int result = 0;
 			String[] version1Split = version1.split("\\.");
 			String[] version2Split = version2.split("\\.");
-			
+
 			if(version1Split.length == 1 || version2Split.length == 1){
 				throwException("Tried to compare version but given Strings don't seem to " +
-						"contain version numbers. version1: " + version1 + ", version2:" + version2); 
+						"contain version numbers. version1: " + version1 + ", version2:" + version2);
 			}
-			
+
 			if(depth != null && (version1Split.length < depth || version2Split.length < depth )){
-				throwException("Desired depth can not be achieved with the given strings. depth: " + depth  + ", version1: " + version1 + ", version2:" + version2); 
-			}			
-			
+				throwException("Desired depth can not be achieved with the given strings. depth: " + depth  + ", version1: " + version1 + ", version2:" + version2);
+			}
+
 			int length = (depth == null ||version1Split.length < depth) ? version1Split.length : depth;
 			for (int i = 0; i < length; i++){
 				Long version1Part = Long.valueOf(version1Split[i]);
@@ -200,7 +201,7 @@ public class CdmMetaData extends CdmBase{
 			}
 			return result;
 		}
-		
+
 		private Throwable throwException(String message){
 			RuntimeException exception =  new RuntimeException(message);
 			if (monitor != null){
@@ -208,7 +209,7 @@ public class CdmMetaData extends CdmBase{
 			}
 			throw exception;
 		}
-		
+
 	}
 
 	/**
@@ -225,7 +226,7 @@ public class CdmMetaData extends CdmBase{
 		VersionComparator versionComparator = new VersionComparator(depth, monitor);
 		return versionComparator.compare(version1, version2);
 	}
-	
+
 	public static boolean isDbSchemaVersionCompatible(String version){
 		return compareVersion(dbSchemaVersion, version, 3, null) == 0;
 	}
@@ -233,7 +234,7 @@ public class CdmMetaData extends CdmBase{
 	public static String getDbSchemaVersion() {
 		return dbSchemaVersion;
 	}
-	
+
 	public static String getTermsVersion() {
 		return termsVersion;
 	}
@@ -241,5 +242,5 @@ public class CdmMetaData extends CdmBase{
 	public static boolean isTermsVersionCompatible(String version){
 		return compareVersion(termsVersion, version, 3, null) == 0;
 	}
-	
+
 }
