@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -45,9 +46,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 /**
@@ -133,6 +136,12 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @NotNull(groups = Level2.class)
     @IndexedEmbedded
     private Reference<?> sec;
+
+    @XmlElement(name = "secMicroReference")
+    @CacheUpdate(noUpdate ="titleCache")
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String secMicroReference;
 
 
     @XmlElement(name = "AppendedPhrase")
