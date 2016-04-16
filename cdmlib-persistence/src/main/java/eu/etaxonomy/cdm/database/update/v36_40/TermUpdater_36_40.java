@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update.v35_36;
+package eu.etaxonomy.cdm.database.update.v36_40;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,30 +17,29 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
-import eu.etaxonomy.cdm.database.update.v34_35.TermUpdater_34_35;
-import eu.etaxonomy.cdm.database.update.v36_40.TermUpdater_36_40;
+import eu.etaxonomy.cdm.database.update.v35_36.TermUpdater_35_36;
 
 /**
  * @author a.mueller
- * @date 10.09.2010
+ * @date 16.04.2016
  *
  */
-public class TermUpdater_35_36 extends TermUpdaterBase {
+public class TermUpdater_36_40 extends TermUpdaterBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUpdater_35_36.class);
+	private static final Logger logger = Logger.getLogger(TermUpdater_36_40.class);
 
-	public static final String endTermVersion = "3.6.0.0.201527040000";
-	private static final String startTermVersion = "3.5.0.0.201531030000";
+	public static final String startTermVersion = "3.6.0.0.201527040000";
+	private static final String endTermVersion = "4.0.0.0.201604200000";
 
 // *************************** FACTORY **************************************/
 
-	public static TermUpdater_35_36 NewInstance(){
-		return new TermUpdater_35_36(startTermVersion, endTermVersion);
+	public static TermUpdater_36_40 NewInstance(){
+		return new TermUpdater_36_40(startTermVersion, endTermVersion);
 	}
 
 // *************************** CONSTRUCTOR ***********************************/
 
-	protected TermUpdater_35_36(String startTermVersion, String endTermVersion) {
+	protected TermUpdater_36_40(String startTermVersion, String endTermVersion) {
 		super(startTermVersion, endTermVersion);
 	}
 
@@ -72,12 +71,12 @@ public class TermUpdater_35_36 extends TermUpdaterBase {
 
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return TermUpdater_36_40.NewInstance();
+		return null;
 	}
 
 	@Override
 	public ITermUpdater getPreviousUpdater() {
-		return TermUpdater_34_35.NewInstance();
+		return TermUpdater_35_36.NewInstance();
 	}
 
 }
