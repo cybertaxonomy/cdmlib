@@ -70,7 +70,15 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-		return stepList;
+        //#5717
+        //Add sec micro reference
+        stepName = "Add secMicroReference to TaxonBase";
+        tableName = "TaxonBase";
+        newColumnName = "secMicroReference";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        return stepList;
 	}
 
 
