@@ -86,7 +86,7 @@ public class CoordinateConverterTest {
 		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 
-        conversionResults = coordinateConverter.tryConvert("35\u00B0 1´34.744SW");
+        conversionResults = coordinateConverter.tryConvert("35\u00B0 1\u00B434.744SW");
         Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.patternRecognised);
         Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.conversionSuccessful);
 
