@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -164,6 +165,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @NumericField
     @Min(0)
     private Integer individualCount;
+
+    //preferred stable identifer (URI) #5606
+    @XmlElement(name = "PreferredStableUri")
+    @Field(analyze = Analyze.NO)
+    @Type(type="uriUserType")
+    private URI preferredStableUri;
 
     // the verbatim description of this occurrence. Free text usable when no atomised data is available.
     // in conjunction with titleCache which serves as the "citation" string for this object

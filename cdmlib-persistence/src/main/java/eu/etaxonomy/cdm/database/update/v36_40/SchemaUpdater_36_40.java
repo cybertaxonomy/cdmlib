@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -61,7 +62,13 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
-
+        //#5606
+        //Add preferred stable URI to SpecimenOrObservation
+        stepName = "Add preferred stable URI to SpecimenOrObservation";
+        tableName = "SpecimenOrObservationBase";
+        newColumnName = "preferredStableUri";
+        step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
 
 		return stepList;
 	}
