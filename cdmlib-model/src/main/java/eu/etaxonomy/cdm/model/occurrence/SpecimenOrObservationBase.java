@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
     "recordBasis",
     "publish",
+    "preferredStableUri",
     "sex",
     "lifeStage",
     "kindOfUnit",
