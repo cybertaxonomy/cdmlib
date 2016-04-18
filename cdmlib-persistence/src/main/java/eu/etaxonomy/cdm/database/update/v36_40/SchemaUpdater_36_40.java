@@ -16,9 +16,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
 
 /**
@@ -77,6 +80,34 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         newColumnName = "secMicroReference";
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
+
+        //#5718
+        //Remove autoincrement from AuditEvent.revisionnumber
+        stepName = "Remove autoincrement from AuditEvent.revisionnumber";
+//        String query = "ALTER TABLE @@AuditEvent@@ ALTER revisionnumber DROP DEFAULT";
+//        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+//        stepList.add(step);
+        tableName = "AuditEvent";
+        oldColumnName = "revisionnumber";
+        newColumnName = "revisionnumberOld";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        tableName = "AuditEvent";
+        String columnName = oldColumnName;
+        Integer defaultValue = null;
+        boolean notNull = true;
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, ! INCLUDE_AUDIT, defaultValue, notNull);
+        stepList.add(step);
+
+        String query = "UPDATE @@AuditEvent@@ SET revisionnumber = revisionnumberOld";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+
+        step = ColumnRemover.NewInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+
 
         return stepList;
 	}

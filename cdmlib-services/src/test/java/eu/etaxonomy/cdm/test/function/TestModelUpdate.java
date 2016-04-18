@@ -36,10 +36,10 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
