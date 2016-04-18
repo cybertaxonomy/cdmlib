@@ -75,6 +75,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
     "name",
     "sec",
     "doubtful",
+    "secMicroReference",
     "appendedPhrase",
     "useNameCache",
     "publish"
@@ -142,7 +143,6 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @NullOrNotEmpty
     @Column(length=255)
     private String secMicroReference;
-
 
     @XmlElement(name = "AppendedPhrase")
     private String appendedPhrase;
