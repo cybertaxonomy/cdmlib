@@ -55,10 +55,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {
-    "emailaddresses",
+    "emailAddresses",
     "urls",
-    "phonenumbers",
-    "faxnumbers",
+    "phoneNumbers",
+    "faxNumbers",
     "addresses"
 })
 @XmlRootElement(name = "Contact")
@@ -73,7 +73,7 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "EmailAddress")
 	@ElementCollection(fetch = FetchType.LAZY)
 	@Column(name = "contact_emailaddresses_element")
-	private List<String> emailaddresses; // TODO #5369 revert to emailAddresses
+	private List<String> emailAddresses;
 
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
@@ -87,13 +87,13 @@ public class Contact implements Serializable, Cloneable {
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	private List<String> phonenumbers; // TODO #5369 revert to phoneNumbers
+	private List<String> phoneNumbers;
 
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_faxnumbers_element")
-	private List<String> faxnumbers; // TODO #5369 revert to faxNumbers
+	private List<String> faxNumbers;
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
@@ -152,13 +152,13 @@ public class Contact implements Serializable, Cloneable {
 			result.addresses = addresses;
 		}
 		if (emailAddresses != null){
-			result.emailaddresses = emailAddresses;
+			result.emailAddresses = emailAddresses;
 		}
 		if (faxNumbers != null){
-			result.faxnumbers = faxNumbers;
+			result.faxNumbers = faxNumbers;
 		}
 		if (phoneNumbers != null){
-			result.phonenumbers = phoneNumbers;
+			result.phoneNumbers = phoneNumbers;
 		}
 		if (urls != null){
 			for (URI uri : urls){
@@ -252,10 +252,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getEmailAddresses(){
-		if(this.emailaddresses == null) {
-			this.emailaddresses = new ArrayList<String>();
+		if(this.emailAddresses == null) {
+			this.emailAddresses = new ArrayList<String>();
 		}
-		return this.emailaddresses;
+		return this.emailAddresses;
 	}
 
 	/**
@@ -321,10 +321,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getPhoneNumbers(){
-		if(this.phonenumbers == null) {
-			this.phonenumbers = new ArrayList<String>();
+		if(this.phoneNumbers == null) {
+			this.phoneNumbers = new ArrayList<String>();
 		}
-		return this.phonenumbers;
+		return this.phoneNumbers;
 	}
 
 	/**
@@ -349,10 +349,10 @@ public class Contact implements Serializable, Cloneable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getFaxNumbers(){
-		if(this.faxnumbers == null) {
-			this.faxnumbers = new ArrayList<String>();
+		if(this.faxNumbers == null) {
+			this.faxNumbers = new ArrayList<String>();
 		}
-		return this.faxnumbers;
+		return this.faxNumbers;
 	}
 
 	/**

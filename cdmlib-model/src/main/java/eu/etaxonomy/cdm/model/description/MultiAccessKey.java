@@ -15,7 +15,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
@@ -70,10 +69,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-	//TODO should we also name the JoinTable here as for the other scopes
-    //we may want to rename it to MediaKey_CoveredTaxa/Taxon
-    @JoinTable(joinColumns = @JoinColumn( name="WorkingSet_id"))
+    @JoinTable(name="MultiAccessKey_CoveredTaxon")
     @NotNull
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 
@@ -82,11 +78,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-	        name="MultiAccessKey_Taxon",
-	        joinColumns=@JoinColumn(name="multiAccessKey_id"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_id")
-	)
+	@JoinTable(name="MultiAccessKey_TaxonScope")
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 
@@ -95,10 +87,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-    @JoinTable(name="MultiAccessKey_NamedArea",
-            joinColumns = @JoinColumn( name="WorkingSet_id")
-    )
+    @JoinTable(name="MultiAccessKey_NamedArea")
 	@NotNull
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 
@@ -107,10 +96,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-    @JoinTable(name="MultiAccessKey_Scope",
-            joinColumns = @JoinColumn( name="WorkingSet_id")
-    )
+    @JoinTable(name="MultiAccessKey_Scope")
 	@NotNull
 	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 

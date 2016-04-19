@@ -16,8 +16,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
@@ -96,8 +94,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	@ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
-    //preliminary  #5369
-    @JoinTable(joinColumns = @JoinColumn( name="AgentBase_id"))
 	private List<Person> teamMembers;
 
     @XmlElement(name = "hasMoreMembers")

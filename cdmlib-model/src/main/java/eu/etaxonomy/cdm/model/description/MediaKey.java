@@ -14,7 +14,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -74,10 +73,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-	//TODO should we also name the JoinTable here as for the other scopes
-	//we may want to rename it to MediaKey_CoveredTaxa/Taxon
-    @JoinTable(joinColumns = @JoinColumn( name="Media_id"))
+    @JoinTable(name="MediaKey_CoveredTaxon")
     @NotNull
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 
@@ -86,11 +82,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-	@JoinTable(
-	        name="MediaKey_NamedArea",
-	        joinColumns = @JoinColumn( name="Media_id")
-	)
+	@JoinTable(name="MediaKey_NamedArea")
 	@NotNull
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 
@@ -99,11 +91,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-	        name="MediaKey_Taxon",
-	        joinColumns=@JoinColumn(name="mediaKey_id"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_id")
-	)
+	@JoinTable(name="MediaKey_TaxonScope")
 	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 
@@ -112,10 +100,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-    @JoinTable(
-	        name="MediaKey_Scope",
-            joinColumns = @JoinColumn( name="Media_id"))
+    @JoinTable(name="MediaKey_Scope")
 	@NotNull
 	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 
@@ -124,7 +109,6 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-	@JoinTable(joinColumns = @JoinColumn(name="Media_id"))
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<Representation>();

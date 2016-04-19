@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -119,37 +118,21 @@ public class Feature extends DefinedTermBase<Feature> {
 
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
-    //join columns preliminary  #5369
-	@JoinTable(
-            name="DefinedTermBase_RecommendedModifierEnumeration",
-            joinColumns = @JoinColumn( name="DefinedTermBase_id")
-    )
+    @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
 	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
-    //join columns preliminary  #5369
-    @JoinTable(
-            name="DefinedTermBase_StatisticalMeasure",
-            joinColumns = @JoinColumn( name="DefinedTermBase_id")
-    )
+    @JoinTable(name="DefinedTermBase_StatisticalMeasure")
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 
 	/* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
-    //join columns preliminary  #5369
-	@JoinTable(
-            name="DefinedTermBase_SupportedCategoricalEnumeration",
-            joinColumns = @JoinColumn( name="DefinedTermBase_id")
-    )
+	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	//join columns preliminary  #5369
-    @JoinTable(
-            name="DefinedTermBase_MeasurementUnit",
-            joinColumns = @JoinColumn( name="DefinedTermBase_id")
-    )
+    @JoinTable(name="DefinedTermBase_MeasurementUnit")
 	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/

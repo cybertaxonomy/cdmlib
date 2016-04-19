@@ -16,8 +16,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -124,8 +122,6 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    //preliminary  #5369
-    @JoinTable(joinColumns = @JoinColumn( name="UserAccount_id"))
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only

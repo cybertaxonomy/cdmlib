@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
 
 /**
@@ -107,13 +108,326 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT);
         stepList.add(step);
 
+        ///#5369
+        renameColumnsAccordingToHibernate5(stepList);
 
 
         return stepList;
 	}
 
 
-	@Override
+	//#5369
+    private void renameColumnsAccordingToHibernate5(List<ISchemaUpdaterStep> stepList) {
+
+        //AgenBase_AgentBase.AgentBase_ID  -> Team_ID
+        String stepName = "Rename columns according to hibernate5";
+        String tableName = "AgentBase_AgentBase";
+        String oldColumnName = "agentbase_id";
+        String newColumnName = "team_id";
+        ISchemaUpdaterStep step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DescriptionElementBase_LanguageString.DescriptionElementBase_ID -> TextData_ID
+        stepName = "Rename DescriptionElementBase_LanguageString.DescriptionElementBase_ID";
+        tableName = "DescriptionElementBase_LanguageString";
+        oldColumnName = "descriptionElementBase_id";
+        newColumnName = "textdata_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //AgentBase_DefinedTermBase.AgentBase_ID -> Institution_id
+        stepName = "Rename AgentBase_DefinedTermBase.AgentBase_ID -> Institution_id";
+        tableName = "AgentBase_DefinedTermBase";
+        oldColumnName = "agentbase_id";
+        newColumnName = "institution_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //PermissionGroup_GrantedAuthorityImpl.PermsiionsGroup_id -> Group_id
+        stepName = "PermissionGroup_GrantedAuthorityImpl.PermsiionsGroup_id -> Group_id ";
+        tableName = "PermissionGroup_GrantedAuthorityImpl";
+        oldColumnName = "Permissiongroup_id";
+        newColumnName = "group_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //UserAccount_GrantedAuthorityImpl.UserAccount_id -> User_id
+        stepName = "UserAccount_GrantedAuthorityImpl.UserAccount_id -> User_id ";
+        tableName = "UserAccount_GrantedAuthorityImpl";
+        oldColumnName = "useraccount_id";
+        newColumnName = "user_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_RecommendedModifierEnumeration.DefinedTermBase_id -> Feature_id
+        stepName = "DefinedTermBase_RecommendedModifierEnumeration.DefinedTermBase_id -> Feature_id";
+        tableName = "DefinedTermBase_RecommendedModifierEnumeration";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "feature_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_StatisticalMeasure.DefinedTermBase_id -> Feature_id
+        stepName = "DefinedTermBase_StatisticalMeasure.DefinedTermBase_id -> Feature_id";
+        tableName = "DefinedTermBase_StatisticalMeasure";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "feature_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_SupportedCategoricalEnumeration.DefinedTermBase_id -> Feature_id
+        stepName = "DefinedTermBase_SupportedCategoricalEnumeration.DefinedTermBase_id -> Feature_id";
+        tableName = "DefinedTermBase_SupportedCategoricalEnumeration";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "feature_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_MeasurementUnit.DefinedTermBase_id -> Feature_id
+        stepName = "DefinedTermBase_MeasurementUnit.DefinedTermBase_id -> Feature_id";
+        tableName = "DefinedTermBase_MeasurementUnit";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "feature_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Media_TaxonBase.Media_id -> MediaKey_id
+        stepName = "DefinedTermBase_MeasurementUnit.DefinedTermBase_id -> Feature_id";
+        tableName = "Media_TaxonBase";
+        oldColumnName = "media_id";
+        newColumnName = "mediakey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Rename Media_TaxonBase -> MediaKey_CoveredTaxon
+        stepName = "Rename Media_TaxonBase -> MediaKey_CoveredTaxon";
+        String oldTableName = "Media_TaxonBase";
+        String newTableName = "MediaKey_CoveredTaxon";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MediaKey_NamedArea.Media_id -> MediaKey_id
+        stepName = "MediaKey_NamedArea.Media_id -> MediaKey_id";
+        tableName = "MediaKey_NamedArea";
+        oldColumnName = "media_id";
+        newColumnName = "mediakey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MediaKey_Scope.Media_id -> MediaKey_id
+        stepName = "MediaKey_Scope.Media_id -> MediaKey_id";
+        tableName = "MediaKey_Scope";
+        oldColumnName = "media_id";
+        newColumnName = "mediakey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Rename MediaKey_Taxon -> MediaKey_TaxonScope
+        stepName = "Rename MediaKey_Taxon -> MediaKey_TaxonScope";
+        oldTableName = "MediaKey_Taxon";
+        newTableName = "MediaKey_TaxonScope";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MediaKey_TaxonScope.taxon_id -> taxonomicScope_id
+        stepName = "MediaKey_TaxonScope.taxon_id -> taxonomicScope_id";
+        tableName = "MediaKey_TaxonScope";
+        oldColumnName = "taxon_id";
+        newColumnName = "taxonomicScope_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Rename WorkingSet_TaxonBase -> MultiAccessKey_CoveredTaxon
+        stepName = "Rename WorkingSet_TaxonBase -> MultiAccessKey_CoveredTaxon";
+        oldTableName = "WorkingSet_TaxonBase";
+        newTableName = "MultiAccessKey_CoveredTaxon";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MultiAccessKey_CoveredTaxon.WorkingSet_id -> MultiAccessKey_id
+        stepName = "MultiAccessKey_CoveredTaxon.WorkingSet_id -> MultiAccessKey_id";
+        tableName = "MultiAccessKey_CoveredTaxon";
+        oldColumnName = "workingset_id";
+        newColumnName = "multiaccesskey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+//         (also rename table)
+
+        //MultiAccessKey_NamedArea.WorkingSet_id -> MultiAccessKey_id
+        stepName = "MultiAccessKey_NamedArea.WorkingSet_id -> MultiAccessKey_id";
+        tableName = "MultiAccessKey_NamedArea";
+        oldColumnName = "workingset_id";
+        newColumnName = "multiaccesskey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MultiAccessKey_Scope.WorkingSet_id -> MultiAccessKey_id
+        stepName = "MultiAccessKey_Scope.WorkingSet_id -> MultiAccessKey_id ";
+        tableName = "MultiAccessKey_Scope";
+        oldColumnName = "workingset_id";
+        newColumnName = "multiaccesskey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Rename MultiAccessKey_Taxon -> MultiAccessKey_TaxonScope
+        stepName = "Rename MultiAccessKey_Taxon -> MultiAccessKey_TaxonScope";
+        oldTableName = "MultiAccessKey_Taxon";
+        newTableName = "MultiAccessKey_TaxonScope";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //MultiAccessKey_TaxonScope.taxon_id -> taxonomicScope_id
+        stepName = "MultiAccessKey_TaxonScope.taxon_id -> taxonomicScope_id";
+        tableName = "MultiAccessKey_TaxonScope";
+        oldColumnName = "taxon_id";
+        newColumnName = "taxonomicScope_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DescriptionBase_Scope.DescriptionBase_id -> TaxonDescription_id
+        stepName = "DescriptionBase_Scope.DescriptionBase_id -> TaxonDescription_id";
+        tableName = "DescriptionBase_Scope";
+        oldColumnName = "descriptionbase_id";
+        newColumnName = "taxondescription_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DescriptionBase_GeoScope.DescriptionBase_id -> TaxonDescription_id
+        stepName = "DescriptionBase_GeoScope.DescriptionBase_id -> TaxonDescription_id";
+        tableName = "DescriptionBase_GeoScope";
+        oldColumnName = "descriptionbase_id";
+        newColumnName = "taxondescription_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_Continent.DefinedTermBase_id -> Country_id
+        stepName = "DefinedTermBase_Continent.DefinedTermBase_id -> Country_id";
+        tableName = "DefinedTermBase_Continent";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "country_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //DefinedTermBase_Country.DefinedTermBase_id -> NamedArea_id
+        stepName = "DefinedTermBase_Country.DefinedTermBase_id -> NamedArea_id";
+        tableName = "DefinedTermBase_Country";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "namedarea_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Media_Sequence.Media_id -> PhylogeneticTree_id
+        stepName = "Media_Sequence.Media_id -> PhylogeneticTree_id";
+        tableName = "Media_Sequence";
+        oldColumnName = "media_id";
+        newColumnName = "phylogenetictree_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+
+        //RelationshipTermBase_inverseRepresentation.DefinedTermBase_id ->RelationshipTermBase_id
+        stepName = "RelationshipTermBase_inverseRepresentation.DefinedTermBase_id ->RelationshipTermBase_id";
+        tableName = "RelationshipTermBase_inverseRepresentation";
+        oldColumnName = "definedtermbase_id";
+        newColumnName = "relationshiptermbase_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //TaxonInteraction_LanguageString.DescriptionElementBase_id -> TaxonInteraction_id
+        stepName = "TaxonInteraction_LanguageString.DescriptionElementBase_id -> TaxonInteraction_id";
+        tableName = "TaxonInteraction_LanguageString";
+        oldColumnName = "descriptionelementbase_id";
+        newColumnName = "taxoninteraction_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //IndividualAssociation_LanguageString.DescriptionElementBase_id -> IndividualsAssociation_id
+        stepName = "IndividualAssociation_LanguageString.DescriptionElementBase_id -> IndividualsAssociation_id";
+        tableName = "IndividualAssociation_LanguageString";
+        oldColumnName = "descriptionelementbase_id";
+        newColumnName = "individualsassociation_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Media_Representation.Media_id -> MediaKey_id
+        stepName = "Media_Representation.Media_id -> MediaKey_id";
+        tableName = "Media_Representation";
+        oldColumnName = "media_id";
+        newColumnName = "mediakey_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //RightsInfo_Annotation. RightsInfo_id->Rights_id (see AssociationOverrides on class level)
+        stepName = "RightsInfo_Annotation. RightsInfo_id->Rights_id";
+        tableName = "RightsInfo_Annotation";
+        oldColumnName = "rightsinfo_id";
+        newColumnName = "rights_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        // RightsInfo_Marker. RightsInfo_id->Rights_id (see AssociationOverrides on class level)
+        stepName = "RightsInfo_Marker. RightsInfo_id->Rights_id";
+        tableName = "RightsInfo_Marker";
+        oldColumnName = "rightsinfo_id";
+        newColumnName = "rights_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        // WorkingSet_DescriptionBase.workingSet_id->workingSets_id
+        stepName = "WorkingSet_DescriptionBase.workingSet_id->workingSets_id";
+        tableName = "WorkingSet_DescriptionBase";
+        oldColumnName = "workingSet_id";
+        newColumnName = "workingSets_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        // IndividualAssociation_LanguageString -> IndividualsAssociation_LanguageString
+        stepName = "IndividualAssociation_LanguageString -> IndividualsAssociation_LanguageString";
+        oldTableName = "IndividualAssociation_LanguageString";
+        newTableName = "IndividualsAssociation_LanguageString";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Contact tables
+        // AgentBase_contact_emailaddresses-> AgentBase_contact_emailAddresses
+        //in 2 steps to avoid "table already exists" on non sensitive systems
+        stepName = "AgentBase_contact_emailaddresses-> AgentBase_contact_emailAddresses(I)";
+        oldTableName = "AgentBase_contact_emailaddresses";
+        newTableName = "AgentBase_contact_emailaddresses2";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+        stepName = "AgentBase_contact_emailaddresses-> AgentBase_contact_emailAddresses(II)";
+        oldTableName = "AgentBase_contact_emailaddresses2";
+        newTableName = "AgentBase_contact_emailAddresses";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        // AgentBase_contact_faxnumbers-> AgentBase_contact_faxNumbers
+        stepName = "AgentBase_contact_faxnumbers-> AgentBase_contact_faxNumbers(I)";
+        oldTableName = "AgentBase_contact_faxnumbers";
+        newTableName = "AgentBase_contact_faxnumbers2";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+        stepName = "AgentBase_contact_faxnumbers-> AgentBase_contact_faxNumbers(II)";
+        oldTableName = "AgentBase_contact_faxnumbers2";
+        newTableName = "AgentBase_contact_faxNumbers";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        // AgentBase_contact_phoneNumbers-> AgentBase_contact_phoneNumbers
+        stepName = "AgentBase_contact_phonenumbers-> AgentBase_contact_phoneNumbers(I)";
+        oldTableName = "AgentBase_contact_phonenumbers";
+        newTableName = "AgentBase_contact_phonenumbers2";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+        stepName = "AgentBase_contact_phonenumbers-> AgentBase_contact_phoneNumbers(II)";
+        oldTableName = "AgentBase_contact_phonenumbers2";
+        newTableName = "AgentBase_contact_phoneNumbers";
+        step = TableNameChanger.NewInstance(stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+        stepList.add(step);
+    }
+
+    @Override
 	public ISchemaUpdater getNextUpdater() {
 		return null;
 	}
