@@ -15,7 +15,6 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
@@ -75,10 +74,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @JoinTable(
-            name = "TaxonInteraction_LanguageString",
-            joinColumns = @JoinColumn(name="DescriptionElementBase_id")
-	)
+    @JoinTable(name = "TaxonInteraction_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 

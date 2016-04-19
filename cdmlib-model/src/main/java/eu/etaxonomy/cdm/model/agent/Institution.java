@@ -16,8 +16,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -91,8 +89,6 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    //preliminary  #5369
-    @JoinTable(joinColumns = @JoinColumn( name="AgentBase_id"))
 	private Set<DefinedTerm> types;  //InstitutionTypes
 
     @XmlElement(name = "IsPartOf")

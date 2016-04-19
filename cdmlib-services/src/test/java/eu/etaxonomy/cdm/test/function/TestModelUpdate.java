@@ -68,6 +68,7 @@ public class TestModelUpdate {
 
 
 		appCtr.close();
+		System.exit(0);
 	}
 
 

@@ -247,7 +247,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "ModifyingText")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
-	// @JoinTable(name = "DescriptionElementBase_ModifyingText")
 	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();

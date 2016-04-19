@@ -15,8 +15,6 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -63,10 +61,6 @@ public class PhylogeneticTree extends Media implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	//preliminary  #5369
-    @JoinTable(
-            joinColumns = @JoinColumn( name="Media_id")
-    )
     @NotNull
 	private Set<Sequence> usedSequences = new HashSet<Sequence>();
 

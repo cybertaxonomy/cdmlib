@@ -20,7 +20,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -77,11 +76,7 @@ public class Country extends NamedArea {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    //preliminary  #5369
-    @JoinTable(
-	        name="DefinedTermBase_Continent",
-            joinColumns = @JoinColumn( name="DefinedTermBase_id")
-	)
+    @JoinTable(name="DefinedTermBase_Continent")
 	private final Set<NamedArea> continents = new HashSet<NamedArea>();
 
 	protected static Map<UUID, NamedArea> termMap = null;
