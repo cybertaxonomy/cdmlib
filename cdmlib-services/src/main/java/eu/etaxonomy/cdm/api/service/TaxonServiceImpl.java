@@ -796,8 +796,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
     }
 
-    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(){
-        return dao.getUuidAndTitleCache();
+    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(Integer limit, String pattern){
+        return dao.getUuidAndTitleCache(limit, pattern);
     }
 
     @Override
@@ -1017,13 +1017,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 }
             } else{
+                TaxonDeletionConfigurator configRelTaxon = new TaxonDeletionConfigurator();
+                configRelTaxon.setDeleteTaxonNodes(false);
+                configRelTaxon.setDeleteConceptRelationships(true);
+
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
                     if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
                         if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
                             if (taxon.equals(taxRel.getToTaxon())){
-
                                 this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
                             }
+                        }
+                    } else if (config.isDeleteConceptRelationships() && taxRel.getType().isConceptRelationship()){
+
+                        if (taxon.equals(taxRel.getToTaxon()) && isDeletable(taxRel.getFromTaxon(), configRelTaxon).isOk()){
+                            this.deleteTaxon(taxRel.getFromTaxon().getUuid(), configRelTaxon, classificationUuid);
+                        }else if (isDeletable(taxRel.getToTaxon(), configRelTaxon).isOk()){
+                            this.deleteTaxon(taxRel.getToTaxon().getUuid(), configRelTaxon, classificationUuid);
                         }
                     }
                     taxon.removeTaxonRelation(taxRel);
@@ -1156,6 +1166,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }else {
                 taxon.setName(null);
             }
+
 
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
             	try{
@@ -1576,13 +1587,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        return dao.getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheTaxon(limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
-        return dao.getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheSynonym(limit, pattern);
     }
 
     @Override

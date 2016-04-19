@@ -45,13 +45,13 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
 
-    private boolean deleteSynonymRelations = true;
+
 
     private boolean deleteSynonymsIfPossible = true;
 
     private boolean deleteMisappliedNamesAndInvalidDesignations = true;
 
-   // private boolean deleteNameIfPossible = true;
+    private boolean deleteConceptRelationships = false;
 
     //private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
 
@@ -119,20 +119,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     }
 
 
-    /**
-     *
-     * If <code>true</code> all {@link SynonymRelationship relations to synonyms} will be
-     * removed.
-     * Synonyms itself will be removed depending on {@link #deleteSynonymsIfPossible}.
-     * @return
-     */
-    public boolean isDeleteSynonymRelations() {
-        return deleteSynonymRelations;
-    }
-
-    public void setDeleteSynonymRelations(boolean deleteSynonymRelations) {
-        this.deleteSynonymRelations = deleteSynonymRelations;
-    }
 
 
     /**
@@ -189,6 +175,22 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 
     public void setDeleteDescriptions(boolean deleteDescriptions) {
         this.deleteDescriptions = deleteDescriptions;
+    }
+
+
+    /**
+     * @return the deleteConceptRelationships
+     */
+    public boolean isDeleteConceptRelationships() {
+        return deleteConceptRelationships;
+    }
+
+
+    /**
+     * @param deleteConceptRelationships the deleteConceptRelationships to set
+     */
+    public void setDeleteConceptRelationships(boolean deleteConceptRelationships) {
+        this.deleteConceptRelationships = deleteConceptRelationships;
     }
 
 
