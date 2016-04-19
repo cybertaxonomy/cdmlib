@@ -208,7 +208,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         return service.findTaxaAndNamesByFullText(searchModes, query,
                 classification, areaSet, status, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                OrderHint.NOMENCLATURAL_SORT_ORDER, getSimpleTaxonInitStrategy());
+                OrderHint.NOMENCLATURAL_SORT_ORDER.asList(), getSimpleTaxonInitStrategy());
     }
 
     /**

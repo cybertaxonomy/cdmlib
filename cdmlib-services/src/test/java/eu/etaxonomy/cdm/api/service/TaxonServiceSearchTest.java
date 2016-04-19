@@ -1002,7 +1002,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         String[] docFields2log = new String[]{"id"};
 
         // SortById
-        orderHints.addAll(OrderHint.ORDER_BY_ID);
+        orderHints.addAll(OrderHint.ORDER_BY_ID.asList());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
                 "Abies", null, null, null, null, true, null, null, orderHints, null);
@@ -1015,7 +1015,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             lastId = rs.getEntity().getId();
         }
 
-        orderHints.addAll(OrderHint.ORDER_BY_ID);
+        orderHints.addAll(OrderHint.ORDER_BY_ID.asList());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, orderHints, null);
@@ -1031,7 +1031,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // Sortby NOMENCLATURAL_SORT_ORDER TODO make assertions !!!
         orderHints.clear();
-        orderHints.addAll(OrderHint.NOMENCLATURAL_SORT_ORDER);
+        orderHints.addAll(OrderHint.NOMENCLATURAL_SORT_ORDER.asList());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, orderHints, null);

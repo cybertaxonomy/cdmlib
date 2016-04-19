@@ -69,11 +69,13 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
      * @return
      * @throws IOException
      */
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public Pager<T> doPage(
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
+            @RequestParam(name="orderBy", defaultValue="ORDER_BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
@@ -82,7 +84,11 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, getInitializationStrategy());
+        if(type != null) {
+            orderBy = orderBy.checkSuitableFor(type);
+            // TODO how can we check in case type == null?
+        }
+        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), getInitializationStrategy());
     }
 
 //    /**
