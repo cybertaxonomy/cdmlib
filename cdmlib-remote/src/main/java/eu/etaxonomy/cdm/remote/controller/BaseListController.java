@@ -75,7 +75,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
-            @RequestParam(name="orderBy", defaultValue="ORDER_BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
+            @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
