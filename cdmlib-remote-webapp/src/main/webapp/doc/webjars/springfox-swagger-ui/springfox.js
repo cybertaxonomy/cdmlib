@@ -1,7 +1,7 @@
 $(function() {
   var springfox = {
     "baseUrl": function() {
-      var urlMatches = /(.*)\/doc\/index.html.*/.exec(window.location.href);
+      var urlMatches = /(.*)\/doc\/.*/.exec(window.location.href); 
       return urlMatches[1];
     },
     "securityConfig": function(cb) {
