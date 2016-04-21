@@ -20,14 +20,14 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 enum OrderHintPreset {
 
-    ORDER_BY_ID_ASC(OrderHint.ORDER_BY_ID),
-    ORDER_BY_ID_DESC(OrderHint.ORDER_BY_ID_DESC),
+    BY_ID_ASC(OrderHint.ORDER_BY_ID),
+    BY_ID_DESC(OrderHint.ORDER_BY_ID_DESC),
     BY_ORDER_INDEX_DESC(OrderHint.BY_ORDER_INDEX_DESC),
     BY_ORDER_INDEX_ASC(OrderHint.BY_ORDER_INDEX),
-    ORDER_BY_TITLE_CACHE_ASC(OrderHint.ORDER_BY_TITLE_CACHE),
-    ORDER_BY_TITLE_CACHE_DESC(OrderHint.ORDER_BY_TITLE_CACHE_DESC),
-    NOMENCLATURAL_SORT_ORDER_ASC(OrderHint.NOMENCLATURAL_SORT_ORDER),
-    NOMENCLATURAL_SORT_ORDER_DESC(OrderHint.NOMENCLATURAL_SORT_ORDER_DESC);
+    BY_TITLE_CACHE_ASC(OrderHint.ORDER_BY_TITLE_CACHE),
+    BY_TITLE_CACHE_DESC(OrderHint.ORDER_BY_TITLE_CACHE_DESC),
+    BY_NOMENCLATURAL_ORDER_ASC(OrderHint.NOMENCLATURAL_SORT_ORDER),
+    BY_NOMENCLATURAL_ORDER_DESC(OrderHint.NOMENCLATURAL_SORT_ORDER_DESC);
 
     public static final Logger logger = Logger.getLogger(OrderHintPreset.class);
 
@@ -43,8 +43,8 @@ enum OrderHintPreset {
 
     /**
      * Checks if the OrderHintPreset is suitable for the given <code>type</code>.
-     * In case this check fails the <code>ORDER_BY_TITLE_CACHE_ASC</code> or
-     * <code>ORDER_BY_TITLE_CACHE_DESC</code> is returned as fallback, depending on
+     * In case this check fails the <code>BY_TITLE_CACHE_ASC</code> or
+     * <code>BY_TITLE_CACHE_DESC</code> is returned as fallback, depending on
      * the sort order of the original sort order.
      *
      * @param type
@@ -56,14 +56,14 @@ enum OrderHintPreset {
         switch(this) {
         case BY_ORDER_INDEX_ASC:
             if(!OrderedTermVocabulary.class.isAssignableFrom(type)) {
-            logger.warn("BY_ORDER_INDEX_ASC not possible with " + type.getSimpleName() +" , falling back to ORDER_BY_TITLE_CACHE_ASC");
-                return OrderHintPreset.ORDER_BY_TITLE_CACHE_ASC;
+            logger.warn("BY_ORDER_INDEX_ASC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_ASC");
+                return OrderHintPreset.BY_TITLE_CACHE_ASC;
             }
             break;
         case BY_ORDER_INDEX_DESC:
             if(!OrderedTermVocabulary.class.isAssignableFrom(type)) {
-                logger.warn( "BY_ORDER_INDEX_DESC not possible with " + type.getSimpleName() +" , falling back to ORDER_BY_TITLE_CACHE_DESC");
-                return OrderHintPreset.ORDER_BY_TITLE_CACHE_DESC;
+                logger.warn( "BY_ORDER_INDEX_DESC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_DESC");
+                return OrderHintPreset.BY_TITLE_CACHE_DESC;
             }
             break;
         default:
