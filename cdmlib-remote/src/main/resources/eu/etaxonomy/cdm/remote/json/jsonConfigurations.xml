@@ -223,7 +223,7 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
           <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDaoBeanProcessor" />
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
         </entry>
       </map>
     </property>
