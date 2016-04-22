@@ -528,26 +528,31 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean isParent){
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
         TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
     	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
-    	return moveTaxonNode(taxonNode, targetNode, isParent);
+    	return moveTaxonNode(taxonNode, targetNode, movingType);
     }
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean isParent){
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType){
         UpdateResult result = new UpdateResult();
 
         TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent(), TaxonNode.class);
 
-        Integer sortIndex;
-        if (isParent){
-
-            sortIndex = newParent.getChildNodes().size();
-        }else{
+        Integer sortIndex = -1;
+        if (movingType == 0){
+            sortIndex = 0;
+        }else if (movingType == 1){
+            sortIndex = newParent.getSortIndex();
+            newParent = parentParent;
+        } else if (movingType == 2){
             sortIndex = newParent.getSortIndex() +1;
             newParent = parentParent;
+        } else{
+            result.setAbort();
+            result.addException(new Exception("The moving type "+ movingType +" is not supported."));
         }
         result.addUpdatedObject(newParent);
         result.addUpdatedObject(taxonNode.getParent());
@@ -564,12 +569,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean isParent){
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType){
         UpdateResult result = new UpdateResult();
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         for (UUID taxonNodeUuid: taxonNodeUuids){
             TaxonNode taxonNode = dao.load(taxonNodeUuid);
-            result.includeResult(moveTaxonNode(taxonNode,targetNode, isParent));
+            result.includeResult(moveTaxonNode(taxonNode,targetNode, movingType));
         }
         return result;
     }
