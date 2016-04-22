@@ -25,6 +25,8 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 //import eu.etaxonomy.cdm.model.reference.Book;
@@ -106,10 +108,6 @@ public class HomotypicGroupTaxonComparatorTest {
 
     }
 
-
-    /**
-     *
-     */
     private void setNameParts(NonViralName<?> name, String genus, String speciesEpi) {
         name.setGenusOrUninomial(genus);
         name.setSpecificEpithet(speciesEpi);
@@ -234,6 +232,16 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName4, list.get(2).getName());
         Assert.assertEquals(botName2, list.get(3).getName());
 
+        //even with nom. illeg. the name with date should come first
+        NomenclaturalStatus illegStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+        botName5.addStatus(illegStatus);
+
+        Assert.assertEquals("basionym with date should comes first", botName5, list.get(0).getName());
+        Assert.assertEquals(botName3, list.get(1).getName());
+        Assert.assertEquals(botName4, list.get(2).getName());
+        Assert.assertEquals(botName2, list.get(3).getName());
+
+
         //add replaced synonym relation between basionyms
         botName5.addReplacedSynonym(botName4, null, null, null);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
@@ -322,6 +330,53 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals("subspecies should come next", botName4, list.get(1).getName());
         Assert.assertEquals("variety with b should come next", botName2, list.get(2).getName());
         Assert.assertEquals("variety with c should come last", botName3, list.get(3).getName());
+
+    }
+
+    @Test
+    public void testCompare_BasionymGroupsWithNomIlleg() {
+        NomenclaturalStatus illegStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+        botName4.addStatus(illegStatus);
+
+        //2 basionym groups
+
+        HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
+        taxon1.addHeterotypicSynonymName(botName3);
+        taxon1.addHeterotypicSynonymName(botName5, homotypicalGroup, null, null);
+        botName3.addBasionym(botName5);
+
+        synonym2 = taxon1.addHeterotypicSynonymName(botName2).getSynonym();
+        taxon1.addHeterotypicSynonymName(botName4, homotypicalGroup, null, null);
+//        botName2.addBasionym(botName4);
+
+
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName2, list.get(0).getName());
+        Assert.assertEquals(botName5, list.get(1).getName());
+        Assert.assertEquals(botName3, list.get(2).getName());
+        Assert.assertEquals("Nom illeg should come last", botName4, list.get(3).getName());
+
+        //name having a nom. illeg. as basionym should stay in its basionym group
+        //NOTE: this is dirty data as nom. illeg. is not allowed as basionym by the code
+        botName2.addBasionym(botName4);
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName5, list.get(0).getName());
+        Assert.assertEquals(botName3, list.get(1).getName());
+        Assert.assertEquals("Nom illeg basionym group should come last", botName4, list.get(2).getName());
+        Assert.assertEquals("Names with nom. illeg. as basionym should stay in basionym group", botName2, list.get(3).getName());
+
+        //non basionym nom. illeg. should not change the order
+        botName4.removeStatus(illegStatus);
+        botName2.addStatus(illegStatus);
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName4, list.get(0).getName());
+        Assert.assertEquals(botName2, list.get(1).getName());
+        Assert.assertEquals("Nom illeg basionym group should come last", botName5, list.get(2).getName());
+        Assert.assertEquals("Names with nom. illeg. as basionym should stay in basionym group", botName3, list.get(3).getName());
 
     }
 

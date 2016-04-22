@@ -176,7 +176,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }else if (basionym.equals(name2)){
             return 1;
         }else{
-            super.compare(name1, name2);
+            super.compare(name1, name2, false);
         }
         return 0;
     }
@@ -191,12 +191,14 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         TaxonNameBase<?,?> basionym1 = getFirstNameInGroup(basionym1Orig);
         TaxonNameBase<?,?> basionym2 = getFirstNameInGroup(basionym2Orig);
 
+        //handle accepted taxon case
         if (basionym1.equals(firstNameInGroup)){
             return -1;
         }else if (basionym2.equals(firstNameInGroup)){
             return 1;
         }
 
+        //handle replaced synonyms
         boolean basio2IsReplacedSynForBasio1 = getReplacedSynonymClosure(basionym1).contains(basionym2);
         boolean basio1IsReplacedSynForBasio2 = getReplacedSynonymClosure(basionym2).contains(basionym1);
 
@@ -206,8 +208,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return -1;
         }
 
-        int result = super.compare(basionym1, basionym2);
-        return result;
+        //compare by date, nom. illeg., rank and alphabetically
+        return super.compare(basionym1, basionym2, true);
+
     }
 
     /**
@@ -269,7 +272,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             TaxonNameBase<?,?> result = candidates.iterator().next();
             candidates.remove(result);
             for (TaxonNameBase<?,?> candidate : candidates){
-                if (super.compare(result, candidate) > 0){
+                if (super.compare(result, candidate, false) > 0){
                     result = candidate;
                 }
             }
