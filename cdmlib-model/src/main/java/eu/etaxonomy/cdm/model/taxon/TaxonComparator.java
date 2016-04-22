@@ -97,7 +97,8 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
         	return Integer.signum(statusCompareWeight);
         }
 
-        result = compare(name1, name2);
+        //TODO discuss if we should also include nom. illeg. here on taxon level comparison
+        result = compare(name1, name2, false);
 
         if (result == 0){
             DateTime date11 = taxonBase1.getCreated();
@@ -158,6 +159,27 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		return result;
 	}
 
+    protected int compareNomIlleg(TaxonNameBase<?,?> taxonNameBase1, TaxonNameBase<?,?> taxonNameBase2) {
+        int isNomIlleg1 = isNomIlleg(taxonNameBase1);
+        int isNomIlleg2 = isNomIlleg(taxonNameBase2);
+        return isNomIlleg1 - isNomIlleg2;
+    }
+
+    private int isNomIlleg(TaxonNameBase<?,?> taxonNameBase) {
+        if (taxonNameBase == null || taxonNameBase.getStatus() == null){
+            return 0;
+        }
+        Set<NomenclaturalStatus> status = taxonNameBase.getStatus();
+        for (NomenclaturalStatus nomStatus : status){
+            if (nomStatus.getType() != null){
+                if (nomStatus.getType().equals(NomenclaturalStatusType.ILLEGITIMATE())){
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
 
     private Integer getIntegerDate(TaxonNameBase<?,?> name){
         Integer result;
@@ -198,9 +220,12 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
      *
      * @param name1
      * @param name2
+     * @param includeNomIlleg if true and if both names have no date or same date, the only
+     * name having nom. illeg. state is handled as if the name was published later than the name
+     * without status nom. illeg.
      * @return
      */
-    protected int compare(TaxonNameBase<?,?> name1, TaxonNameBase<?,?> name2) {
+    protected int compare(TaxonNameBase<?,?> name1, TaxonNameBase<?,?> name2, boolean includeNomIlleg) {
         int result;
 
         //dates
@@ -215,6 +240,14 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
             return -1;
         }else{
             result = intDate1.compareTo(intDate2);
+        }
+
+        //nom. illeg.
+        if (includeNomIlleg){
+            result = compareNomIlleg(name1, name2);
+            if (result != 0){
+                return result;
+            }
         }
 
         if (result == 0 && includeRanks){
