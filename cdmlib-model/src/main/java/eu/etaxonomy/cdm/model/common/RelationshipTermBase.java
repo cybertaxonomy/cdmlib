@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 @XmlType(name = "RelationshipTermBase", propOrder = {
     "symmetric",
     "transitive",
-    "inverseRepresentations"
+    "inverseRepresentations",
+    "reverseSymbol"
 })
 @XmlSeeAlso({
 	HybridRelationshipType.class,
@@ -79,6 +80,13 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
+
+    @XmlElement(name = "reverseSymbol")
+    @Column(length=10)
+    //the symbol to be used in String representations for the reverse representation of this term #5734
+    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //empty string is explicitly allowed and should be distinguished from NULL!
+    private String reverseSymbol;
 
 //******************** CONSTRUCTOR ************************/
 

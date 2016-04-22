@@ -108,7 +108,24 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT);
         stepList.add(step);
 
-        ///#5369
+        //#5734
+        //Add symbol to terms
+        stepName = "Add symbols to terms";
+        tableName = "DefinedTermBase";
+        newColumnName = "symbol";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //Add reverse symbol to terms
+        stepName = "Add reverse symbol to terms";
+        tableName = "DefinedTermBase";
+        newColumnName = "reverseSymbol";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //TODO update existing terms like concept relationship types or presenceAbsenceTerms
+
+        //#5369
         renameColumnsAccordingToHibernate5(stepList);
 
 
