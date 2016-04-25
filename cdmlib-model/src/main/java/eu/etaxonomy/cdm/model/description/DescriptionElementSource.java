@@ -121,6 +121,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	}
 
 
+//TODO evtl. JoinTable http://www.programcreek.com/java-api-examples/index.php?api=org.hibernate.annotations.AnyMetaDef
 
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
@@ -157,17 +158,11 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 // **************************  GETTER / SETTER ***************************/
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
-	 */
 	@Override
     public DescriptionElementBase getSourcedObj() {
 		return sourcedObj;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#setSourcedObj(eu.etaxonomy.cdm.model.common.ISourceable)
-	 */
 	@Override
     public void setSourcedObj(DescriptionElementBase sourcedObj) {
 		this.sourcedObj = sourcedObj;
@@ -202,11 +197,6 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.OriginalSourceBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		DescriptionElementSource result = (DescriptionElementSource)super.clone();
