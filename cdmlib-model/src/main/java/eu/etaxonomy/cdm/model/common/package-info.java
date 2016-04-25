@@ -110,40 +110,115 @@
 		                              metaType="string",
 		                              idType="integer",
 		                              metaValues={
+		 //Identifiable Entities
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Institution", targetEntity = Institution.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Person", targetEntity = Person.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Team", targetEntity = Team.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.MediaKey", targetEntity = MediaKey.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.SpecimenDescription", targetEntity = SpecimenDescription.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonNameDescription", targetEntity = TaxonNameDescription.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.MediaKey", targetEntity = MediaKey.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.SpecimenDescription", targetEntity = SpecimenDescription.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonNameDescription", targetEntity = TaxonNameDescription.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.media.Media", targetEntity = Media.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.molecular.DnaSample", targetEntity = DnaSample.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.name.BacterialName", targetEntity = BacterialName.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.name.BotanicalName", targetEntity = BotanicalName.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.name.CultivarPlantName", targetEntity = CultivarPlantName.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.name.ViralName", targetEntity = ViralName.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.name.ZoologicalName", targetEntity = ZoologicalName.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Collection", targetEntity = Collection.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldUnit", targetEntity = FieldUnit.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit", targetEntity = DerivedUnit.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = Reference.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Classification", targetEntity = Classification.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
+        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
+
+        @MetaValue(value = "FeatureTree", targetEntity = FeatureTree.class),
+        @MetaValue(value = "PhylogeneticTree", targetEntity = PhylogeneticTree.class),
+        @MetaValue(value = "MediaSpecimen", targetEntity = MediaSpecimen.class),
+        @MetaValue(value = "NonViralName", targetEntity = NonViralName.class),
+        @MetaValue(value = "TermVocabulary", targetEntity = TermVocabulary.class),
+        @MetaValue(value = "OrderedTermVocabulary", targetEntity = OrderedTermVocabulary.class),
+
+        @MetaValue(value = "AnnotationType", targetEntity = AnnotationType.class),
+        @MetaValue(value = "DefinedTerm", targetEntity = DefinedTerm.class),
+        @MetaValue(value = "DerivationEventType", targetEntity = DerivationEventType.class),
+        @MetaValue(value = "ExtensionType", targetEntity = ExtensionType.class),
+        @MetaValue(value = "Feature", targetEntity = Feature.class),
+        @MetaValue(value = "Language", targetEntity = Language.class),
+        @MetaValue(value = "MarkerType", targetEntity = MarkerType.class),
+        @MetaValue(value = "MeasurementUnit", targetEntity = MeasurementUnit.class),
+        @MetaValue(value = "NamedAreaType", targetEntity = NamedAreaType.class),
+        @MetaValue(value = "NaturalLanguageTerm", targetEntity = NaturalLanguageTerm.class),
+        @MetaValue(value = "ReferenceSystem", targetEntity = ReferenceSystem.class),
+        @MetaValue(value = "RightsType", targetEntity = RightsType.class),
+        @MetaValue(value = "StatisticalMeasure", targetEntity = StatisticalMeasure.class),
+        @MetaValue(value = "TextFormat", targetEntity = TextFormat.class),
+
+        @MetaValue(value = "NamedArea", targetEntity = NamedArea.class),
+        @MetaValue(value = "Country", targetEntity = Country.class),
+        @MetaValue(value = "NamedAreaLevel", targetEntity = NamedAreaLevel.class),
+        @MetaValue(value = "NomenclaturalStatusType", targetEntity = NomenclaturalStatusType.class),
+        @MetaValue(value = "OrderedTerm", targetEntity = OrderedTerm.class),
+        @MetaValue(value = "PresenceAbsenceTerm", targetEntity = PresenceAbsenceTerm.class),
+        @MetaValue(value = "Rank", targetEntity = Rank.class),
+        @MetaValue(value = "HybridRelationshipType", targetEntity = HybridRelationshipType.class),
+        @MetaValue(value = "NameRelationshipType", targetEntity = NameRelationshipType.class),
+        @MetaValue(value = "SynonymRelationshipType", targetEntity = SynonymRelationshipType.class),
+        @MetaValue(value = "TaxonRelationshipType", targetEntity = TaxonRelationshipType.class),
+        @MetaValue(value = "State", targetEntity = State.class),
+        @MetaValue(value = "NameTypeDesignationStatus", targetEntity = NameTypeDesignationStatus.class),
+        @MetaValue(value = "SpecimenTypeDesignationStatus", targetEntity = SpecimenTypeDesignationStatus.class),
+
+
+        //Annotatable Entities
+        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CategoricalData", targetEntity = CategoricalData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CommonTaxonName", targetEntity = CommonTaxonName.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.Distribution", targetEntity = Distribution.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.IndividualsAssociation", targetEntity = IndividualsAssociation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.QuantitativeData", targetEntity = QuantitativeData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonInteraction", targetEntity = TaxonInteraction.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.media.Media", targetEntity = Media.class),
+
+
 		@MetaValue(value = "eu.etaxonomy.cdm.model.molecular.Sequence", targetEntity = Sequence.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.BacterialName", targetEntity = BacterialName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.BotanicalName", targetEntity = BotanicalName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.CultivarPlantName", targetEntity = CultivarPlantName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.ViralName", targetEntity = ViralName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.ZoologicalName", targetEntity = ZoologicalName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Collection", targetEntity = Collection.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldUnit", targetEntity = FieldUnit.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit", targetEntity = DerivedUnit.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.molecular.DnaSample", targetEntity = eu.etaxonomy.cdm.model.molecular.DnaSample.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = Reference.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Classification", targetEntity = Classification.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.name.NomenclaturalStatus", targetEntity = NomenclaturalStatus.class),
+
+		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
+
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.NomenclaturalStatus", targetEntity = NomenclaturalStatus.class)
+
+
+		@MetaValue(value = "AmplificationResult", targetEntity = AmplificationResult.class),
+		@MetaValue(value = "Amplification", targetEntity = Amplification.class),
+        @MetaValue(value = "DerivationEvent", targetEntity = DerivationEvent.class),
+        @MetaValue(value = "DeterminationEvent", targetEntity = DeterminationEvent.class),
+        @MetaValue(value = "GatheringEvent", targetEntity = GatheringEvent.class),
+        @MetaValue(value = "MaterialOrMethodEvent", targetEntity = MaterialOrMethodEvent.class),
+        @MetaValue(value = "Cloning", targetEntity = Cloning.class),
+        @MetaValue(value = "PreservationMethod", targetEntity = PreservationMethod.class),
+        @MetaValue(value = "SingleRead", targetEntity = SingleRead.class),
+        @MetaValue(value = "HomotypicalGroup", targetEntity = HomotypicalGroup.class),
+        @MetaValue(value = "Identifier", targetEntity = Identifier.class),
+        @MetaValue(value = "Credit", targetEntity = Credit.class),
+        @MetaValue(value = "LanguageString", targetEntity = LanguageString.class),
+        @MetaValue(value = "Representation", targetEntity = Representation.class),
+        @MetaValue(value = "Rights", targetEntity = Rights.class),
+        @MetaValue(value = "Primer", targetEntity = Primer.class),
+        @MetaValue(value = "TaxonNode", targetEntity = TaxonNode.class),
+        @MetaValue(value = "TaxonNodeAgentRelation", targetEntity = TaxonNodeAgentRelation.class),
+        @MetaValue(value = "WorkingSet", targetEntity = WorkingSet.class),
+        @MetaValue(value = "MultiAccessKey", targetEntity = MultiAccessKey.class),
+
+        @MetaValue(value = "MultiAccessKey", targetEntity = DescriptionElementSource.class),
+        @MetaValue(value = "MultiAccessKey", targetEntity = IdentifiableSource.class),
+        @MetaValue(value = "HybridRelationship", targetEntity = HybridRelationship.class),
+        @MetaValue(value = "NameRelationship", targetEntity = NameRelationship.class),
+        @MetaValue(value = "SynonymRelationship", targetEntity = SynonymRelationship.class),
+        @MetaValue(value = "TaxonRelationship", targetEntity = TaxonRelationship.class),
+
+
 })
 package eu.etaxonomy.cdm.model.common;
 
@@ -154,32 +229,79 @@ import org.hibernate.annotations.Parameter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
+import eu.etaxonomy.cdm.model.description.MultiAccessKey;
+import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsType;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
+import eu.etaxonomy.cdm.model.molecular.Cloning;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
+import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
