@@ -111,28 +111,28 @@
 		                              idType="integer",
 		                              metaValues={
 		 //Identifiable Entities
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Institution", targetEntity = Institution.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Person", targetEntity = Person.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Team", targetEntity = Team.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.MediaKey", targetEntity = MediaKey.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.SpecimenDescription", targetEntity = SpecimenDescription.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonNameDescription", targetEntity = TaxonNameDescription.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.media.Media", targetEntity = Media.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.molecular.DnaSample", targetEntity = DnaSample.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.name.BacterialName", targetEntity = BacterialName.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.name.BotanicalName", targetEntity = BotanicalName.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.name.CultivarPlantName", targetEntity = CultivarPlantName.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.name.ViralName", targetEntity = ViralName.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.name.ZoologicalName", targetEntity = ZoologicalName.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Collection", targetEntity = Collection.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldUnit", targetEntity = FieldUnit.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit", targetEntity = DerivedUnit.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = Reference.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Classification", targetEntity = Classification.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
-        @MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
+		@MetaValue(value = "Institution", targetEntity = Institution.class),
+		@MetaValue(value = "Person", targetEntity = Person.class),
+		@MetaValue(value = "Team", targetEntity = Team.class),
+        @MetaValue(value = "MediaKey", targetEntity = MediaKey.class),
+        @MetaValue(value = "SpecimenDescription", targetEntity = SpecimenDescription.class),
+        @MetaValue(value = "TaxonDescription", targetEntity = TaxonDescription.class),
+        @MetaValue(value = "TaxonNameDescription", targetEntity = TaxonNameDescription.class),
+        @MetaValue(value = "PolytomousKey", targetEntity = PolytomousKey.class),
+        @MetaValue(value = "Media", targetEntity = Media.class),
+        @MetaValue(value = "DnaSample", targetEntity = DnaSample.class),
+        @MetaValue(value = "BacterialName", targetEntity = BacterialName.class),
+        @MetaValue(value = "BotanicalName", targetEntity = BotanicalName.class),
+        @MetaValue(value = "CultivarPlantName", targetEntity = CultivarPlantName.class),
+        @MetaValue(value = "ViralName", targetEntity = ViralName.class),
+        @MetaValue(value = "ZoologicalName", targetEntity = ZoologicalName.class),
+        @MetaValue(value = "Collection", targetEntity = Collection.class),
+        @MetaValue(value = "FieldUnit", targetEntity = FieldUnit.class),
+        @MetaValue(value = "DerivedUnit", targetEntity = DerivedUnit.class),
+        @MetaValue(value = "Reference", targetEntity = Reference.class),
+        @MetaValue(value = "Classification", targetEntity = Classification.class),
+        @MetaValue(value = "Synonym", targetEntity = Synonym.class),
+        @MetaValue(value = "Taxon", targetEntity = Taxon.class),
 
         @MetaValue(value = "FeatureTree", targetEntity = FeatureTree.class),
         @MetaValue(value = "PhylogeneticTree", targetEntity = PhylogeneticTree.class),
@@ -173,21 +173,21 @@
 
 
         //Annotatable Entities
-        @MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CategoricalData", targetEntity = CategoricalData.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CommonTaxonName", targetEntity = CommonTaxonName.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.Distribution", targetEntity = Distribution.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.IndividualsAssociation", targetEntity = IndividualsAssociation.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.QuantitativeData", targetEntity = QuantitativeData.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonInteraction", targetEntity = TaxonInteraction.class),
+        @MetaValue(value = "TextData", targetEntity = TextData.class),
+		@MetaValue(value = "CategoricalData", targetEntity = CategoricalData.class),
+		@MetaValue(value = "CommonTaxonName", targetEntity = CommonTaxonName.class),
+		@MetaValue(value = "Distribution", targetEntity = Distribution.class),
+		@MetaValue(value = "IndividualsAssociation", targetEntity = IndividualsAssociation.class),
+		@MetaValue(value = "QuantitativeData", targetEntity = QuantitativeData.class),
+		@MetaValue(value = "TaxonInteraction", targetEntity = TaxonInteraction.class),
 
 
-		@MetaValue(value = "eu.etaxonomy.cdm.model.molecular.Sequence", targetEntity = Sequence.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.name.NomenclaturalStatus", targetEntity = NomenclaturalStatus.class),
+		@MetaValue(value = "Sequence", targetEntity = Sequence.class),
+		@MetaValue(value = "NomenclaturalStatus", targetEntity = NomenclaturalStatus.class),
 
-		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
+		@MetaValue(value = "Annotation", targetEntity = Annotation.class),
 
-		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),  //required?
+		@MetaValue(value = "User", targetEntity = User.class),  //required?
 
 
 		@MetaValue(value = "AmplificationResult", targetEntity = AmplificationResult.class),
