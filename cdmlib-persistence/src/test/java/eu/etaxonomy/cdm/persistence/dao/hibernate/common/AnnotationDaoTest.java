@@ -35,9 +35,9 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class AnnotationDaoTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IAnnotationDao annotationDao;
+	private IAnnotationDao annotationDao;
 
-	UUID uuid;
+	private UUID uuid;
 
 	@Before
 	public void setUp() {
