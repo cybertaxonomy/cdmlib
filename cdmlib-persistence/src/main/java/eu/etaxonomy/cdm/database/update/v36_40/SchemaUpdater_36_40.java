@@ -128,6 +128,9 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         //#5369
         renameColumnsAccordingToHibernate5(stepList);
 
+        //Update xxxObj_type  (#3701)
+        step = ReferencedObjTypeUpdater.NewInstance();
+        stepList.add(step);
 
         return stepList;
 	}
