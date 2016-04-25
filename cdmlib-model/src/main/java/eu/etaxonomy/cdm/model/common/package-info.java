@@ -211,12 +211,15 @@
         @MetaValue(value = "WorkingSet", targetEntity = WorkingSet.class),
         @MetaValue(value = "MultiAccessKey", targetEntity = MultiAccessKey.class),
 
-        @MetaValue(value = "MultiAccessKey", targetEntity = DescriptionElementSource.class),
-        @MetaValue(value = "MultiAccessKey", targetEntity = IdentifiableSource.class),
+        @MetaValue(value = "DescriptionElementSource", targetEntity = DescriptionElementSource.class),
+        @MetaValue(value = "IdentifiableSource", targetEntity = IdentifiableSource.class),
         @MetaValue(value = "HybridRelationship", targetEntity = HybridRelationship.class),
         @MetaValue(value = "NameRelationship", targetEntity = NameRelationship.class),
         @MetaValue(value = "SynonymRelationship", targetEntity = SynonymRelationship.class),
         @MetaValue(value = "TaxonRelationship", targetEntity = TaxonRelationship.class),
+        @MetaValue(value = "NameTypeDesignation", targetEntity = NameTypeDesignation.class),
+        @MetaValue(value = "SpecimenTypeDesignation", targetEntity = SpecimenTypeDesignation.class),
+
 
 
 })
@@ -276,11 +279,13 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
