@@ -187,7 +187,7 @@
 
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
 
-		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),  //required?
 
 
 		@MetaValue(value = "AmplificationResult", targetEntity = AmplificationResult.class),
