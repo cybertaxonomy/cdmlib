@@ -116,14 +116,27 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //Add reverse symbol to terms
-        stepName = "Add reverse symbol to terms";
+        stepName = "Update symbols for terms";
+        query = "UPDATE @@DefinedTermBase@@ SET symbol = idInVocabulary WHERE idInVocabulary <> ''";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
+
+
+        //Add inverse symbol to terms
+        stepName = "Add inverse symbol to terms";
         tableName = "DefinedTermBase";
-        newColumnName = "reverseSymbol";
+        newColumnName = "inverseSymbol";
         step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //TODO update existing terms like concept relationship types or presenceAbsenceTerms
+        stepName = "Update symbols for terms";
+        query = "UPDATE DefinedTermBase dtb SET dtb.verseSymbol = ( " +
+            " SELECT  r.abbreviatedlabel " +
+            " FROM RelationshipTermBase_inverseRepresentation MN " +
+                " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
+            " WHERE dtb.id = MN.relationshiptermbase_id AND r.abbreviatedlabel <> '' ) ";
+        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
+        stepList.add(step);
 
         //#5369
         renameColumnsAccordingToHibernate5(stepList);
