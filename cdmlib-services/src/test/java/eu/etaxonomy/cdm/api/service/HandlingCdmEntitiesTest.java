@@ -25,6 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -33,6 +34,8 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -51,6 +54,12 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
     private static final String LIE_NOSESSION = "could not initialize proxy - no Session";
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
+
+    @SpringBeanByType
+    private IAnnotationService annotationService;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -372,7 +381,27 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         textData.addSource(descriptionElementSource);
 
-
         taxonService.merge(taxon);
+    }
+
+    @Test  //testing of bidirectionality of supplemental data #5743
+    public final void testReferenceWithAnnotationMerge() {
+
+        Reference<?> ref = ReferenceFactory.newBook();
+
+        ref.addAnnotation(Annotation.NewDefaultLanguageInstance("ref"));
+
+        referenceService.merge(ref);
+    }
+
+    @Test //testing of bidirectionality of supplemental data #5743
+    public final void testAnnotationMerge() {
+
+        Reference<?> ref = ReferenceFactory.newBook();
+
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("anno");
+        ref.addAnnotation(annotation);
+
+        annotationService.merge(annotation);
     }
 }
