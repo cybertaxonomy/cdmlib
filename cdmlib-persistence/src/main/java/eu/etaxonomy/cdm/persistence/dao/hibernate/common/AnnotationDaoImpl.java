@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -30,86 +30,90 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 		super(Annotation.class);
 	}
 
+	@Override
 	public int count(Person commentator, MarkerType status) {
 		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
-		
+
 		 if(commentator != null) {
 	        criteria.add(Restrictions.eq("commentator",commentator));
 	     }
-			
+
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		} 
-		
+		}
+
 		criteria.setProjection(Projections.countDistinct("id"));
-		
+
 		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
-	public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	@Override
+    public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(Annotation.class);
-        
+
         if(commentator != null) {
             criteria.add(Restrictions.eq("commentator",commentator));
         }
-		
+
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		} 
-		
+		}
+
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	criteria.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
+
 		addOrder(criteria, orderHints);
-		List<Annotation> results = (List<Annotation>)criteria.list();		
+		List<Annotation> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
 
-	public int count(User creator, MarkerType status) {
+	@Override
+    public int count(User creator, MarkerType status) {
 		checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
-		
+
 		 if(creator != null) {
 	        criteria.add(Restrictions.eq("createdBy",creator));
 	     }
-			
+
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		} 
-		
+		}
+
 		criteria.setProjection(Projections.countDistinct("id"));
-		
+
 		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
-	public List<Annotation> list(User creator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+	@Override
+    public List<Annotation> list(User creator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		checkNotInPriorView("AnnotationDaoImpl.list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(Annotation.class);
-        
+
         if(creator != null) {
             criteria.add(Restrictions.eq("createdBy",creator));
         }
-		
+
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		} 
-		
+		}
+
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	criteria.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
+
 		addOrder(criteria, orderHints);
-		List<Annotation> results = (List<Annotation>)criteria.list();		
+		List<Annotation> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
