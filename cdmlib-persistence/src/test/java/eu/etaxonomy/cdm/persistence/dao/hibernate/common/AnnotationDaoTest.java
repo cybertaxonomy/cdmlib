@@ -115,9 +115,6 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assertEquals("getAnnotations should return 2",2,annotations.size());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub

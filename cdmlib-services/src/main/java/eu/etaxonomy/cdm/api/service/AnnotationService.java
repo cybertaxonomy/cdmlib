@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -31,39 +31,44 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class AnnotationService extends AnnotatableServiceBase<Annotation, AnnotationDaoImpl> implements
 		IAnnotationService {
 
-	@Autowired
+	@Override
+    @Autowired
 	protected void setDao(AnnotationDaoImpl dao) {
 		this.dao = dao;
 	}
 
-	public int count(Person commentator, MarkerType status) {
+	@Override
+    public int count(Person commentator, MarkerType status) {
 		return dao.count(commentator, status);
 	}
 
-	public Pager<Annotation> list(Person commentator, MarkerType status,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	@Override
+    public Pager<Annotation> list(Person commentator, MarkerType status,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.count(commentator, status);
-		
+
 		List<Annotation> results = new ArrayList<Annotation>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(commentator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public int count(User creator, MarkerType status) {
+	@Override
+    public int count(User creator, MarkerType status) {
 		return dao.count(creator, status);
 	}
 
-	public Pager<Annotation> list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+	@Override
+    public Pager<Annotation> list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
         Integer numberOfResults = dao.count(creator, status);
-		
+
 		List<Annotation> results = new ArrayList<Annotation>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(creator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
 	}
 }
