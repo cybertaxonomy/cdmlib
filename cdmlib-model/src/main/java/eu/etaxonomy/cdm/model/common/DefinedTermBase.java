@@ -171,7 +171,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
 
     @XmlElement(name = "symbol")
-    @Column(length=10)
+    @Column(length=30)
     //the symbol to be used in String representations for this term  #5734
     //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
     //empty string is explicitly allowed and should be distinguished from NULL!

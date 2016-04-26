@@ -113,7 +113,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepName = "Add symbols to terms";
         tableName = "DefinedTermBase";
         newColumnName = "symbol";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 30, INCLUDE_AUDIT);
         stepList.add(step);
 
         stepName = "Update symbols for terms";
@@ -126,7 +126,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepName = "Add inverse symbol to terms";
         tableName = "DefinedTermBase";
         newColumnName = "inverseSymbol";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 10, INCLUDE_AUDIT);
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 30, INCLUDE_AUDIT);
         stepList.add(step);
 
         stepName = "Update symbols for terms";
