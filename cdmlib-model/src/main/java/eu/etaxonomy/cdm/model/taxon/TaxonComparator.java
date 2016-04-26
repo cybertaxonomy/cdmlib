@@ -243,7 +243,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
         }
 
         //nom. illeg.
-        if (includeNomIlleg){
+        if (result == 0 && includeNomIlleg){
             result = compareNomIlleg(name1, name2);
             if (result != 0){
                 return result;

@@ -380,6 +380,24 @@ public class HomotypicGroupTaxonComparatorTest {
 
     }
 
+    @Test  //failing selenium test
+    public void testCompare_NomIllegWithDate() {
+        NomenclaturalStatus illegStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+        botName3.addStatus(illegStatus);
+        botName3.setNomenclaturalReference(ref1);
+        botName2.setNomenclaturalReference(ref2);
+
+        taxon1.addHomotypicSynonymName(botName3, null, null);
+        taxon1.addHomotypicSynonymName(botName2, null, null);
+
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(taxon1));
+
+        Assert.assertEquals("Earlier nom. illeg. should come next", botName3, list.get(0).getName());
+        Assert.assertEquals("Later name should come last", botName2, list.get(1).getName());
+
+    }
+
     @Test
     public void testCompare_NoCircularProblemsWithBasionyms() {
 
