@@ -90,7 +90,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @Audited
 @MappedSuperclass
-public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
+public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends SourceableEntity<IdentifiableSource>
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
     private static final long serialVersionUID = -5610995424730659058L;
     private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
@@ -160,13 +160,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @NotNull
     private List<Identifier> identifiers = new ArrayList<Identifier>();
 
-    @XmlElementWrapper(name = "Sources", nillable = true)
-    @XmlElement(name = "IdentifiableSource")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
+//    @XmlElementWrapper(name = "Sources", nillable = true)
+//    @XmlElement(name = "IdentifiableSource")
+//    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+//    @Merge(MergeMode.ADD_CLONE)
+//    @NotNull
+//    private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
 
     @XmlTransient
     @Transient
@@ -445,77 +445,82 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         this.protectedTitleCache = protectedTitleCache;
     }
 
-    @Override
-    public Set<IdentifiableSource> getSources() {
-        if(sources == null) {
-            this.sources = new HashSet<IdentifiableSource>();
-        }
-        return this.sources;
-    }
+//    @Override
+//    public Set<IdentifiableSource> getSources() {
+//        if(sources == null) {
+//            this.sources = new HashSet<IdentifiableSource>();
+//        }
+//        return this.sources;
+//    }
+//
+//    @Override
+//    public void addSource(IdentifiableSource source) {
+//        if (source != null){
+//            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
+//            if (oldSourcedObj != null && oldSourcedObj != this){
+//                oldSourcedObj.getSources().remove(source);
+//            }
+//            getSources().add(source);
+//            source.setSourcedObj(this);
+//        }
+//    }
+//
+//    @Override
+//    public void addSources(Set<IdentifiableSource> sources) {
+//        if (sources != null){
+//        	for (IdentifiableSource source: sources){
+//	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
+//	            if (oldSourcedObj != null && oldSourcedObj != this){
+//	                oldSourcedObj.getSources().remove(source);
+//	            }
+//	            getSources().add(source);
+//	            source.setSourcedObj(this);
+//        	}
+//        }
+//    }
+//
+//    @Override
+//    public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
+//        if (id == null && idNamespace == null && citation == null && microCitation == null){
+//            return null;
+//        }
+//        IdentifiableSource source = IdentifiableSource.NewInstance(type, id, idNamespace, citation, microCitation);
+//        addSource(source);
+//        return source;
+//    }
+//
+//
+//    @Override
+//    public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+//        if (id == null && idNamespace == null && citation == null && microCitation == null){
+//            return null;
+//        }
+//        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
+//        addSource(source);
+//        return source;
+//    }
+//
+//
+//    @Override
+//    public void removeSource(IdentifiableSource source) {
+//        getSources().remove(source);
+//    }
 
-    @Override
-    public void addSource(IdentifiableSource source) {
-        if (source != null){
-            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
-            getSources().add(source);
-            source.setSourcedObj(this);
-        }
-    }
-
-    @Override
-    public void addSources(Set<IdentifiableSource> sources) {
-        if (sources != null){
-        	for (IdentifiableSource source: sources){
-	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-	            if (oldSourcedObj != null && oldSourcedObj != this){
-	                oldSourcedObj.getSources().remove(source);
-	            }
-	            getSources().add(source);
-	            source.setSourcedObj(this);
-        	}
-        }
-    }
-
+    //
     @Override
     public void removeSources() {
        this.sources.clear();
     }
 
     @Override
-    public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        IdentifiableSource source = IdentifiableSource.NewInstance(type, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
+    protected IdentifiableSource sourceInstance(OriginalSourceType type, String id, String idNamespace,
+            Reference<?> citation, String microCitation) {
+        return IdentifiableSource.NewInstance(type, id, idNamespace, citation, microCitation);
     }
 
-
-    @Override
-    public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
-    }
-
-
-    @Override
-    public void removeSource(IdentifiableSource source) {
-        getSources().remove(source);
-    }
 
 //******************************** TO STRING *****************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#toString()
-     */
      @Override
     public String toString() {
         String result;
@@ -526,7 +531,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return result;
     }
-
 
     public int compareTo(IdentifiableEntity identifiableEntity) {
 

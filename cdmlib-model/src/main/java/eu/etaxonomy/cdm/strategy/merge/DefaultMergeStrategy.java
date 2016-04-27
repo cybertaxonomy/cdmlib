@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.merge;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -523,13 +522,19 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			Type[] arguments = paraType.getActualTypeArguments();
 
 			if (arguments.length == 1){
-				Class collectionClass;
+				Class<?> collectionClass;
 				if (arguments[0] instanceof Class){
-					collectionClass = (Class)arguments[0];
+					collectionClass = (Class<?>)arguments[0];
 				}else if(arguments[0] instanceof TypeVariable/*Impl*/){
-					TypeVariable typeVariable = (TypeVariable)arguments[0];
-					GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
-					collectionClass = (Class)genericDeclaration;
+					TypeVariable<Class<?>> typeVariable = (TypeVariable<Class<?>>)arguments[0];
+
+					//NEW:
+					//TODO is index = 0 always correct or only for SourceableEntity
+					collectionClass = (Class<?>)typeVariable.getBounds()[0];
+
+//					OLD:
+//					GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
+//					collectionClass = (Class)genericDeclaration;
 				}else{
 					throw new MergeException("Collection with other types than TypeVariableImpl are not yet supported");
 				}

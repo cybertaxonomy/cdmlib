@@ -34,9 +34,9 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.H2;
 
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
@@ -53,7 +53,8 @@ public class TestModelUpdate {
 			e.printStackTrace();
 		}
 
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		try {
+            CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
 //		Classification classification = Classification.NewInstance("Me");
 //		Taxon taxon = Taxon.NewInstance(null, null);
@@ -63,12 +64,21 @@ public class TestModelUpdate {
 //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
 //      appCtr.getClassificationService().save(classification);
 
-//		appCtr.getCommonService().createFullSampleData();
+//            BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
+//            Reference ref = ReferenceFactory.newBook();
+//            botName.addImportSource("1", "ns", ref, "detail");
+//            appCtr.getNameService().save(botName);
+
+            appCtr.getCommonService().createFullSampleData();
 
 
 
-		appCtr.close();
-		System.exit(0);
+            appCtr.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            System.exit(0);
+        }
 	}
 
 

@@ -46,7 +46,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
@@ -55,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.SourceableEntity;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -62,8 +62,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for a piece of information) about
@@ -95,7 +93,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends AnnotatableEntity implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
+public abstract class DescriptionElementBase
+        extends SourceableEntity<DescriptionElementSource>
+        implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
+
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
@@ -149,12 +150,12 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();
 
-    @XmlElementWrapper(name = "Sources")
-    @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @Merge(MergeMode.ADD_CLONE)
-    private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
+//    @XmlElementWrapper(name = "Sources")
+//    @XmlElement(name = "DescriptionElementSource")
+//    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+//    @Merge(MergeMode.ADD_CLONE)
+//    private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
 
 
 
@@ -387,62 +388,50 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         return this.modifyingText.remove(language);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
-     */
-    @Override
-    public Set<DescriptionElementSource> getSources() {
-        return this.sources;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
-    @Override
-    public void addSource(DescriptionElementSource source) {
-        if (source != null){
-            DescriptionElementBase oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
-            this.sources.add(source);
-            source.setSourcedObj(this);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceType, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
-    @Override
-    public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
-    }
-    @Override
-    public void addSources(Set<DescriptionElementSource> sources){
-    	for (DescriptionElementSource source:sources){
-    		addSource(source);
-    	}
-    }
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
-    @Override
-    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
-    }
-
+//    @Override
+//    public Set<DescriptionElementSource> getSources() {
+//        return this.sources;
+//    }
+//
+//    @Override
+//    public void addSource(DescriptionElementSource source) {
+//        if (source != null){
+//            DescriptionElementBase oldSourcedObj = source.getSourcedObj();
+//            if (oldSourcedObj != null && oldSourcedObj != this){
+//                oldSourcedObj.getSources().remove(source);
+//            }
+//            this.sources.add(source);
+//            source.setSourcedObj(this);
+//        }
+//    }
+//
+//    @Override
+//    public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
+//        if (id == null && idNamespace == null && citation == null && microCitation == null){
+//            return null;
+//        }
+//        DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace, citation, microCitation);
+//        addSource(source);
+//        return source;
+//    }
+//    @Override
+//    public void addSources(Set<DescriptionElementSource> sources){
+//    	for (DescriptionElementSource source:sources){
+//    		addSource(source);
+//    	}
+//    }
+//
+//
+//    @Override
+//    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+//        if (id == null && idNamespace == null && citation == null && microCitation == null){
+//            return null;
+//        }
+//        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
+//        addSource(source);
+//        return source;
+//    }
+//
     /**
      * Adds a {@link IOriginalSource source} to this description element.
      * @param type the type of the source
@@ -453,17 +442,23 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @param nameUsedInSource the taxon name used in the source
      * @param originalNameString the name as text used in the source
      */
+//    @Override
     public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
         addSource(newSource);
     }
+//
+//    @Override
+//    public void removeSource(DescriptionElementSource source) {
+//        this.sources.remove(source);
+//    }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
+
+
     @Override
-    public void removeSource(DescriptionElementSource source) {
-        this.sources.remove(source);
+    protected DescriptionElementSource sourceInstance(OriginalSourceType type, String idInSource, String idNamespace,
+            Reference<?> citation, String microCitation) {
+        return DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microCitation);
     }
 
 // ******************* METHODS *************************************************************/
@@ -479,6 +474,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
         return result;
     }
+
 
     public List<DefinedTerm> getModifiers(TermVocabulary voc){
         List<DefinedTerm> result = makeModifierMap().get(voc);

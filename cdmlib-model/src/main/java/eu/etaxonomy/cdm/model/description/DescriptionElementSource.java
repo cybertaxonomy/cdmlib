@@ -10,10 +10,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -21,11 +19,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -123,18 +119,22 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 //TODO evtl. JoinTable http://www.programcreek.com/java-api-examples/index.php?api=org.hibernate.annotations.AnyMetaDef
 
-	@XmlElement(name = "SourcedObject")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "sourcedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "sourcedObj_id")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	@NotAudited
-	private DescriptionElementBase sourcedObj;
+//	@XmlElement(name = "SourcedObject")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//	@Any(metaDef = "CdmBase",
+//	    	 metaColumn=@Column(name = "sourcedObj_type"),
+//	    	 fetch = FetchType.LAZY,
+//	    	 optional = false)
+//	@JoinTable(
+//	        name = "DescriptionElementBase_OriginalSourceBase",
+//	        joinColumns = @JoinColumn( name = "DescriptionElementBase_id" ),
+//	        inverseJoinColumns = @JoinColumn( name = "sources_id" ) )
+////	@JoinColumn(name = "sourcedObj_id")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//	@NotAudited
+//	private DescriptionElementBase sourcedObj;
 
 	@XmlElement(name = "nameUsedInSource")
 	@XmlIDREF

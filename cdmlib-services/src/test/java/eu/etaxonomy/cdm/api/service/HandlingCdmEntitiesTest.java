@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -377,9 +375,11 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         textData.setFeature(Feature.ECOLOGY());
         description.addElement(textData);
 
-        DescriptionElementSource descriptionElementSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+//        DescriptionElementSource descriptionElementSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+//
+//        textData.addSource(descriptionElementSource);
 
-        textData.addSource(descriptionElementSource);
+        textData.addAnnotation(Annotation.NewDefaultLanguageInstance("abc"));
 
         taxonService.merge(taxon);
     }

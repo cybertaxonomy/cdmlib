@@ -294,7 +294,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			makePropertyType(result, referencedClass, sessionFactory, cdmClass, elType, propertyName, true);
 		}else if (propertyType.isAnyType()){
 //			AnyType anyType = (AnyType)propertyType;
-			Field field = cdmClass.getDeclaredField(propertyName);
+			Field field = getDeclaredFieldRecursive(cdmClass, propertyName);
 			Class<?> returnType = field.getType();
 			if (returnType.isInterface()){
 				logger.debug("There is an interface");
@@ -334,7 +334,26 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 	}
 
-	private boolean makeSingleProperty(Class<?> itemClass, Class<?> type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
+	/**
+     * @param cdmClass
+     * @param propertyName
+     * @return
+     */
+    private Field getDeclaredFieldRecursive(Class<? extends CdmBase> cdmClass, String propertyName) {
+        for (Field field : cdmClass.getDeclaredFields()){
+            if (field.getName().equals(propertyName)){
+                return field;
+            }
+        }
+        Class<?> superClass = cdmClass.getSuperclass();
+        if (superClass == Object.class){
+            throw new IllegalStateException("Field not found in class hierarchy: " + propertyName);
+        }else{
+            return getDeclaredFieldRecursive((Class<? extends CdmBase>)superClass, propertyName);
+        }
+    }
+
+    private boolean makeSingleProperty(Class<?> itemClass, Class<?> type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
 //			String fieldName = StringUtils.rightPad(propertyName, 30);
 //			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 //			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);

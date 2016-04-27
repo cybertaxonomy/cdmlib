@@ -10,19 +10,11 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -88,24 +80,16 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 
 // ******************************** FIELDS ************************************/
 
-	@XmlElement(name = "SourcedObject")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "sourcedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "sourcedObj_id")
-	@NotAudited
-
-//	@org.hibernate.annotations.AnyMetaDef(name = "OriginalSource" ,
-//        metaType="string",
-//        idType="integer",
-//        metaValues={
-//        @MetaValue(value = "eu.etaxonomy.cdm.model.common.IdentifiableEntity", targetEntity = IdentifiableEntity.class),
-//        @MetaValue(value = "eu.etaxonomy.cdm.model.description.DescriptionElementBase", targetEntity = DescriptionElementBase.class),
-//    })
-	private IdentifiableEntity<?> sourcedObj;
+//	@XmlElement(name = "SourcedObject")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//	@Any(metaDef = "CdmBase",
+//	    	 metaColumn=@Column(name = "sourcedObj_type"),
+//	    	 fetch = FetchType.LAZY,
+//	    	 optional = true)
+//	@JoinColumn(name = "sourcedObj_id")
+//	@NotAudited
+//	private IdentifiableEntity<?> sourcedObj;
 
 // ****************** CONSTRUCTOR ********************************/
 
