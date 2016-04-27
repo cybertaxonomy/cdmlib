@@ -192,8 +192,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public int countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
-        Query query = getSession().createQuery("select count(source) from OriginalSourceBase source where source.sourcedObj = :identifiableEntity");
-        query.setParameter("identifiableEntity",identifiableEntity);
+        Query query = getSession().createQuery("SELECT COUNT(source) FROM "+identifiableEntity.getClass().getName() + " ie JOIN ie.sources source WHERE ie = :identifiableEntity");
+        query.setParameter("identifiableEntity", identifiableEntity);
         return ((Long)query.uniqueResult()).intValue();
     }
 
@@ -220,10 +220,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
-        Query query = getSession().createQuery("select source from OriginalSourceBase source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
+        Query query = getSession().createQuery("SELECT source FROM "+ identifiableEntity.getClass().getName()+ " ie JOIN ie.sources source WHERE ie.id = :id");
         query.setParameter("id",identifiableEntity.getId());
-        query.setParameter("class",identifiableEntity.getClass().getName());
         setPagingParameter(query, pageSize, pageNumber);
+        @SuppressWarnings("unchecked")
         List<IdentifiableSource> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;

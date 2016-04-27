@@ -417,7 +417,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		for (CdmBase obj: referencedObjects){
 			System.out.println("Object1: " + obj.getClass().getSimpleName() + " - " + obj);
 		}
-		assertEquals(3, referencedObjects.size());
+		//was 3 before bidirectionality was removed for supplemental data
+		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
 
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");

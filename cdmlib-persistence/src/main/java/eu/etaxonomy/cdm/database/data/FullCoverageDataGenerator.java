@@ -903,7 +903,7 @@ public class FullCoverageDataGenerator {
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
 
 		//Identifier
-		Identifier<?> identifier = Identifier.NewInstance(identifiableEntity, "ident23", DefinedTerm.SEX_FEMALE());
+		Identifier<?> identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(identifier);
 
 

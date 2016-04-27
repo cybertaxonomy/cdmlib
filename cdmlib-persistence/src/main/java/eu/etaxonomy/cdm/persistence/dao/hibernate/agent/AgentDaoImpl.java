@@ -166,7 +166,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
 	@Override
 	public List<Person> getPersonsUsedAsUser(){
-	       Query query = getSession().createQuery("select ab.uuid, ob.idInSource from AgentBase ab join OriginalSourceBase ob on ob.sourcedObj_id = ab.id where ob.idNamespace like 'User' and ob.sourcedObj_type like 'eu.etaxonomy.cdm.model.agent.Person'");
+	       Query query = getSession().createQuery("SELECT ab.uuid, ob.idInSource FROM Person ab JOIN ab.sources ob WHERE ob.idNamespace LIKE 'User'");
 	       List<Person> result = query.list();
 	       return result;
 	}

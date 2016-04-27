@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -17,7 +17,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
@@ -31,44 +30,35 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		super(Marker.class);
 	}
 
-	public int count(MarkerType markerType) {
+	@Override
+    public int count(MarkerType markerType) {
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("markerType", markerType));
 		criteria.setProjection(Projections.rowCount());
         return ((Number)criteria.uniqueResult()).intValue();
 	}
 
-	public List<Marker> list(MarkerType markerType, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+	@Override
+    public List<Marker> list(MarkerType markerType, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("markerType", markerType));
-		
+
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	criteria.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
+
 		addOrder(criteria, orderHints);
-		List<Marker> results = (List<Marker>)criteria.list();		
+		List<Marker> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
-	
+
 	@Override
 	public UUID delete(Marker marker) {
-		if(marker.getMarkedObj() != null) {
-			AnnotatableEntity markedObject = marker.getMarkedObj();
-			marker.setMarkedObj(null);
-			if(markedObject.getMarkers().contains(marker)) {
-				markedObject.getMarkers().remove(marker);
-				getSession().merge(markedObject);
-			} 			
-		} else {
-		    marker.setMarkedObj(null);
-		    getSession().delete(marker);
-		}
-		return marker.getUuid();
+		throw new RuntimeException("Delete is not supported for markers. Markers must be removed from the marked object instead.");
 	}
 
 	public Integer count(User creator, MarkerType markerType) {
@@ -87,16 +77,16 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		if(markerType != null) {
 		    criteria.add(Restrictions.eq("markerType", markerType));
 		}
-		
+
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	criteria.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
+
 		addOrder(criteria, orderHints);
-		List<Marker> results = (List<Marker>)criteria.list();		
+		List<Marker> results = criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}

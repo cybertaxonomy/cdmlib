@@ -58,7 +58,4 @@ public class CollectionDefaultCacheStrategy extends StrategyBase implements IIde
 			return result;
 		}
 	}
-
-
-
 }

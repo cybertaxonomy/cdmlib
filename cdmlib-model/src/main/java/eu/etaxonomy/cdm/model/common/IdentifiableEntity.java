@@ -244,6 +244,17 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return cache;
     }
 
+
+    @Override
+    public boolean isProtectedTitleCache() {
+        return protectedTitleCache;
+    }
+
+    @Override
+    public void setProtectedTitleCache(boolean protectedTitleCache) {
+        this.protectedTitleCache = protectedTitleCache;
+    }
+
 //**************************************************************************************
 
     @Override
@@ -332,7 +343,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<String>();
-        for (Identifier identifier : getIdentifiers()){
+        for (Identifier<?> identifier : getIdentifiers()){
             if (identifier.getType().getUuid().equals(identifierTypeUuid)){
                 result.add(identifier.getIdentifier());
             }
@@ -342,17 +353,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
-    	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
+    	Identifier<?> result = Identifier.NewInstance(identifier, identifierType);
+    	addIdentifier(result);
     	return result;
     }
 
      @Override
     public void addIdentifier(int index, Identifier identifier){
         if (identifier != null){
-        	if (identifier.getIdentifiedObj() != null && ! identifier.getIdentifiedObj().equals(this)){
-        		identifier.getIdentifiedObj().removeIdentifier(identifier);
-        	}
-        	identifier.setIdentifiedObj(this);
         	//deduplication
         	int oldIndex = getIdentifiers().indexOf(identifier);
         	if(oldIndex > -1){
@@ -373,7 +381,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void removeIdentifier(Identifier identifier){
         if (identifier != null){
-        	identifier.setIdentifiedObj(null);
             getIdentifiers().remove(identifier);
         }
     }
@@ -423,27 +430,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void addExtension(Extension extension){
         if (extension != null){
-            extension.setExtendedObj(this);
             getExtensions().add(extension);
         }
     }
     @Override
     public void removeExtension(Extension extension){
         if (extension != null){
-            extension.setExtendedObj(null);
             getExtensions().remove(extension);
         }
     }
 
-    @Override
-    public boolean isProtectedTitleCache() {
-        return protectedTitleCache;
-    }
-
-    @Override
-    public void setProtectedTitleCache(boolean protectedTitleCache) {
-        this.protectedTitleCache = protectedTitleCache;
-    }
 
     @Override
     public Set<IdentifiableSource> getSources() {
@@ -456,12 +452,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void addSource(IdentifiableSource source) {
         if (source != null){
-            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
             getSources().add(source);
-            source.setSourcedObj(this);
         }
     }
 
@@ -469,12 +460,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void addSources(Set<IdentifiableSource> sources) {
         if (sources != null){
         	for (IdentifiableSource source: sources){
-	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-	            if (oldSourcedObj != null && oldSourcedObj != this){
-	                oldSourcedObj.getSources().remove(source);
-	            }
 	            getSources().add(source);
-	            source.setSourcedObj(this);
         	}
         }
     }
@@ -513,10 +499,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //******************************** TO STRING *****************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#toString()
-     */
-     @Override
+    @Override
     public String toString() {
         String result;
         if (titleCache == null){
