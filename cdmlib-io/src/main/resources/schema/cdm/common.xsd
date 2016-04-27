@@ -333,7 +333,6 @@
         <xs:sequence>
           <xs:element name="Value" type="xs:string" minOccurs="0"/>
           <xs:element name="ExtensionType" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="ExtendedObject" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

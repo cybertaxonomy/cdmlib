@@ -353,7 +353,7 @@ public class DeduplicationHelper {
 		for (Annotation annotation : annotatableEntity2.getAnnotations()){
 			Annotation clone = null;
 			try {
-				clone = annotation.clone(annotatableEntity1);
+				clone = (Annotation)annotation.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -364,12 +364,13 @@ public class DeduplicationHelper {
 			annotatableEntity2.removeAnnotation(annotation);
 			session.delete(annotation);
 		}
+
 		//marker
 		List<Marker> removeListMarker = new ArrayList<Marker>();
 		for (Marker marker : annotatableEntity2.getMarkers()){
 			Marker clone = null;
 			try {
-				clone = marker.clone(annotatableEntity1);
+				clone = (Marker)marker.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -390,7 +391,7 @@ public class DeduplicationHelper {
 	 * @param cdmBase2
 	 * @param session
 	 */
-	//TODO Why do we not handle credits (credits are reusable), identifier and sources here
+	//TODO Why do we not handle credits (credits are reusable), rights and sources here
 	private <T> void copyIdentifiableExtensions(T cdmBase1, T cdmBase2,
 			Session session) {
 		IdentifiableEntity identifiableEntity1 = (IdentifiableEntity)cdmBase1;
@@ -400,7 +401,7 @@ public class DeduplicationHelper {
 		List<Extension> removeListExtension = new ArrayList<Extension>();
 		for (Extension changeObject : (Set<Extension>)identifiableEntity2.getExtensions()){
 			try {
-				Extension clone = changeObject.clone(identifiableEntity1);
+				Extension clone = (Extension)changeObject.clone();
 				identifiableEntity1.addExtension(clone);
 				removeListExtension.add(changeObject);
 			} catch (CloneNotSupportedException e) {
@@ -417,7 +418,7 @@ public class DeduplicationHelper {
 		List<Identifier> removeListIdentifier = new ArrayList<Identifier>();
 		for (Identifier<?> changeObject : (List<Identifier>)identifiableEntity2.getIdentifiers()){
 			try {
-				Identifier<?> clone = changeObject.clone(identifiableEntity1);
+				Identifier<?> clone = (Identifier)changeObject.clone();
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,9 +13,9 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -47,8 +47,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		String dbMicroReferenceAttribute = null;
 		return new DbImportDescriptionElementSourceCreationMapper(dbDescriptionElementFkAttribute, descriptionElementNamespace, dbReferenceFkAttribute, referenceNamespace, dbMicroReferenceAttribute);
 	}
-	
-	
+
+
 	/**
 	 * Returns an description element source creation mapper.
 	 * @param dbDescriptionElementFkAttribute
@@ -61,8 +61,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	public static DbImportDescriptionElementSourceCreationMapper NewInstance(String dbDescriptionElementFkAttribute, String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace, String dbMicroReferenceAttribute){
 		return new DbImportDescriptionElementSourceCreationMapper(dbDescriptionElementFkAttribute, descriptionElementNamespace, dbReferenceFkAttribute, referenceNamespace, dbMicroReferenceAttribute);
 	}
-	
-	
+
+
 //******************************* VARIABLES ***********************************************/
 
 	protected String descriptionElementNamespace;
@@ -70,10 +70,10 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	protected String referenceNamespace;
 	protected String dbReferenceFkAttribute;
 	protected String dbMicroReferenceAttribute;
-	
-	
+
+
 //******************************* CONSTRUCTOR ***********************************************/
-	
+
 	/**
 	 * @param dbIdAttribute
 	 * @param objectToCreateNamespace
@@ -117,7 +117,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	private void setDescriptionElement(ResultSet rs,
 			DescriptionElementSource source) throws SQLException {
 		DescriptionElementBase descriptionElement = (DescriptionElementBase)getRelatedObject(rs, descriptionElementNamespace, dbDescriptionElementFkAttribute);
-		source.setSourcedObj(descriptionElement);
+		descriptionElement.addSource(source);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	 */
 	private void addMicroCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		String microReference = null;
-		if (CdmUtils.isNotEmpty(dbMicroReferenceAttribute)){
+		if (StringUtils.isNotBlank(dbMicroReferenceAttribute)){
 			microReference = rs.getString(dbMicroReferenceAttribute);
 		}
 		source.setCitationMicroReference(microReference);

@@ -10,10 +10,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -21,11 +19,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -49,7 +45,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 18.09.2009
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
-	    "sourcedObj",
 	    "nameUsedInSource"
 	})
 @Entity
@@ -120,21 +115,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
-
-//TODO evtl. JoinTable http://www.programcreek.com/java-api-examples/index.php?api=org.hibernate.annotations.AnyMetaDef
-
-	@XmlElement(name = "SourcedObject")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "sourcedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "sourcedObj_id")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	@NotAudited
-	private DescriptionElementBase sourcedObj;
+// ************************* FIELDS ********************************/
 
 	@XmlElement(name = "nameUsedInSource")
 	@XmlIDREF
@@ -157,18 +138,6 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 // **************************  GETTER / SETTER ***************************/
 
-
-	@Override
-    public DescriptionElementBase getSourcedObj() {
-		return sourcedObj;
-	}
-
-	@Override
-    public void setSourcedObj(DescriptionElementBase sourcedObj) {
-		this.sourcedObj = sourcedObj;
-	}
-
-
 	/**
 	 * @return the taxonNameUsedInSource
 	 */
@@ -186,22 +155,11 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 //*********************************** CLONE *********************************************************/
 
-
-	/**
-	 * Clones this original source and sets the clones sourced object to 'sourceObj'
-	 * @see java.lang.Object#clone()
-	 */
-	public DescriptionElementSource clone(DescriptionElementBase sourcedObj) throws CloneNotSupportedException{
-		DescriptionElementSource result = (DescriptionElementSource)clone();
-		result.setSourcedObj(sourcedObj);
-		return result;
-	}
-
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		DescriptionElementSource result = (DescriptionElementSource)super.clone();
 
-		//no changes to: sourcedObj
+		//no changes
 		return result;
 	}
 

@@ -1506,19 +1506,17 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID dnaSampleUuid = UUID.fromString("4bee91b9-23d8-438b-8569-6d6aaa5b6587");
         DnaSample dnaSample = HibernateProxyHelper.deproxy(occurrenceService.load(dnaSampleUuid), DnaSample.class);
         assertEquals(1, dnaSample.getIdentifiers().size());
-        Identifier identifier = dnaSample.getIdentifiers().iterator().next();
+        Identifier<?> identifier = dnaSample.getIdentifiers().iterator().next();
         assertEquals("NK 2088", identifier.getIdentifier());
-        assertEquals(dnaSample, identifier.getIdentifiedObj());
         assertEquals(sampleDesignationTermType, identifier.getType());
 
         //change identifier, save and reload
         identifier.setIdentifier("WB10");
         occurrenceService.saveOrUpdate(dnaSample);
-        SpecimenOrObservationBase dnaSampleReloaded = occurrenceService.load(dnaSampleUuid);
+        SpecimenOrObservationBase<?> dnaSampleReloaded = occurrenceService.load(dnaSampleUuid);
         assertEquals(1, dnaSample.getIdentifiers().size());
-        Identifier identifierReloaded = dnaSample.getIdentifiers().iterator().next();
+        Identifier<?> identifierReloaded = dnaSample.getIdentifiers().iterator().next();
         assertEquals("WB10", identifierReloaded.getIdentifier());
-        assertEquals(dnaSample, identifierReloaded.getIdentifiedObj());
         assertEquals(sampleDesignationTermType, identifierReloaded.getType());
 
 

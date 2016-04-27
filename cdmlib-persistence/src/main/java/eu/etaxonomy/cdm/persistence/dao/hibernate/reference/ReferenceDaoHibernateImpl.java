@@ -123,11 +123,11 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	@Override
     public List<Reference> getAllReferencesForPublishing(){
 		@SuppressWarnings("unchecked")
-        List<Reference> references = getSession().createQuery("Select r from Reference r "+
-				"where r.id IN "+
-					"(Select m.markedObj.id from Marker m where "+
+        List<Reference> references = getSession().createQuery("SELECT r FROM Reference r "+
+				"WHERE r.id IN "+
+					"(SELECT m.markedObj.id FROM Marker m WHERE "+
 						"m.markerType.id = "+
-							"(Select dtb.id from DefinedTermBase dtb, Representation r where r member of dtb.representations and r.text='publish'))").list();
+							"(SELECT dtb.id FROM DefinedTermBase dtb, Representation r WHERE r MEMBER OF dtb.representations AND r.text='publish'))").list();
 		return references;
 	}
 

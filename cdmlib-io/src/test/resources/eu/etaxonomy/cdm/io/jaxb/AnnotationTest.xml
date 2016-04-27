@@ -41,12 +41,10 @@
               <common:CreatedBy>urn-uuid-cb0a8800-5900-11dd-ae16-0800200c9a66</common:CreatedBy>
               <common:Text>What a load of old rubbish</common:Text>
               <common:Language>urn-uuid-09f563bd-a65f-4b4a-968e-d4fb953e1a8d</common:Language>
-              <common:AnnotatedObject>urn-uuid-775f5099-0908-4b8b-a59e-4398800a2e1c</common:AnnotatedObject>
             </common:Annotation>
           </common:Annotations>
           <common:Text>Bibbly bobbly BOING</common:Text>
           <common:Language>urn-uuid-09f563bd-a65f-4b4a-968e-d4fb953e1a8d</common:Language>
-          <common:AnnotatedObject>urn-uuid-2c980a17-4a96-4ea1-b688-90396c0771d9</common:AnnotatedObject>           
         </common:Annotation> 
       </common:Annotations>
       <common:TitleCache>Aus aus L., 1758 sec CATE 2008</common:TitleCache>

@@ -181,6 +181,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         this.feature = feature;
     }
 
+// ******************** GETTER / SETTER ***********************************/
+
     /**
      * Returns the list of {@link Media media} (that is pictures, movies,
      * recorded sounds ...) <i>this</i> description element is based on.
@@ -395,24 +397,13 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         return this.sources;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
     @Override
     public void addSource(DescriptionElementSource source) {
         if (source != null){
-            DescriptionElementBase oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
             this.sources.add(source);
-            source.setSourcedObj(this);
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceType, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -429,10 +420,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     	}
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -458,9 +445,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         addSource(newSource);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
     @Override
     public void removeSource(DescriptionElementSource source) {
         this.sources.remove(source);

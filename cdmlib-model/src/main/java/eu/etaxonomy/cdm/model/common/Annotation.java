@@ -14,10 +14,8 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,24 +28,20 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Annotation", propOrder = {
     "commentator",
-    "annotatedObj",
     "annotationType",
     "linkbackUri",
     "intextReferences"
@@ -58,14 +52,6 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	private static final long serialVersionUID = -4484677078599520233L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
-
-	//TODO do we need to add it to JAXB? #4706
-	@XmlElementWrapper(name = "IntextReferences", nillable = true)
-	@XmlElement(name = "IntextReference")
-	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-//	@Merge(MergeMode.ADD_CLONE)
-    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
 
 	/**
 	 * Factory method.
@@ -93,6 +79,14 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 	}
 
 
+    //TODO do we need to add it to JAXB? #4706
+    @XmlElementWrapper(name = "IntextReferences", nillable = true)
+    @XmlElement(name = "IntextReference")
+    @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+//  @Merge(MergeMode.ADD_CLONE)
+    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
+
 	//Human annotation
 	@XmlElement(name = "Commentator")
     @XmlIDREF
@@ -100,17 +94,6 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Person commentator;
-
-	@XmlElement(name = "AnnotatedObject")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "annotatedObj_type"),
-	    	 fetch = FetchType.EAGER,
-	    	 optional = false)
-	@JoinColumn(name = "annotatedObj_id")
-	@NotAudited
-	private AnnotatableEntity annotatedObj;
 
     @XmlElement(name = "AnnotationType")
     @XmlIDREF
@@ -143,25 +126,6 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 
 //******************** GETTER /SETTER *************************/
 
-
-	/**
-	 * Currently envers does not support @Any
-	 * @return
-	 */
-	public AnnotatableEntity getAnnotatedObj() {
-		return annotatedObj;
-	}
-
-	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
-	/**
-	 *
-	 * @param newAnnotatedObj
-	 * @deprecated should not be used, is only public for internal reasons
-	 */
-	@Deprecated
-	public void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
-		this.annotatedObj = newAnnotatedObj;
-	}
 
 	public AnnotationType getAnnotationType() {
 		return annotationType;
@@ -252,15 +216,4 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 		return result;
 	}
 
-
-	/**
-	 * Clones this annotation and sets the clone's annotated object to 'annotatedObject'
-	 * @see java.lang.Object#clone()
-	 */
-	public Annotation clone(AnnotatableEntity annotatedObject) throws CloneNotSupportedException{
-		Annotation result = (Annotation)clone();
-		result.setAnnotatedObj(annotatedObject);
-
-		return result;
-	}
 }

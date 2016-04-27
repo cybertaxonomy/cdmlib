@@ -130,11 +130,11 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         stepName = "Update symbols for terms";
-        query = "UPDATE DefinedTermBase dtb SET dtb.verseSymbol = ( " +
+        query = "UPDATE DefinedTermBase dtb SET dtb.inverseSymbol = ( " +
             " SELECT  r.abbreviatedlabel " +
             " FROM RelationshipTermBase_inverseRepresentation MN " +
                 " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
-            " WHERE dtb.id = MN.relationshiptermbase_id AND r.abbreviatedlabel <> '' ) ";
+            " WHERE dtb.id = MN.DefinedTermBase_id AND r.abbreviatedlabel <> '' ) ";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 
@@ -143,6 +143,72 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 
         //Update xxxObj_type  (#3701)
         step = ReferencedObjTypeUpdater.NewInstance();
+        stepList.add(step);
+
+        //remove bidirectionality from supplemental data #5743
+        //annotation
+        stepName = "Remove Annotation.annotatedObj_type";
+        tableName = "Annotation";
+        oldColumnName = "annotatedObj_type";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Remove Annotation.annotatedObj_id";
+        tableName = "Annotation";
+        oldColumnName = "annotatedObj_id";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //marker
+        stepName = "Remove Marker.markedObj_type";
+        tableName = "Marker";
+        oldColumnName = "markedObj_type";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Remove Marker.markedObj_id";
+        tableName = "Marker";
+        oldColumnName = "markedObj_id";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //extension
+        stepName = "Remove Extension.extendedObj_type";
+        tableName = "Extension";
+        oldColumnName = "extendedObj_type";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Remove Extension.extendedObj_id";
+        tableName = "Extension";
+        oldColumnName = "extendedObj_id";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //sources
+        stepName = "Remove OriginalSourceBase.sourcedObj_type";
+        tableName = "OriginalSourceBase";
+        oldColumnName = "sourcedObj_type";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Remove OriginalSourceBase.sourcedObj_id";
+        tableName = "OriginalSourceBase";
+        oldColumnName = "sourcedObj_id";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //identifier
+        stepName = "Remove Identifier.identifiedObj_type";
+        tableName = "Identifier";
+        oldColumnName = "identifiedObj_type";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
+        stepList.add(step);
+
+        stepName = "Remove Identifier.identifiedObj_id";
+        tableName = "Identifier";
+        oldColumnName = "identifiedObj_id";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, ! INCLUDE_AUDIT);
         stepList.add(step);
 
         return stepList;

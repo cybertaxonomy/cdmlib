@@ -60,7 +60,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		List<OrderHint> orderHints = new ArrayList<OrderHint>();
 		orderHints.add(new OrderHint("created", SortOrder.ASCENDING));
 		List<String> propertyPaths = new ArrayList<String>();
-		propertyPaths.add("annotatedObj");
+//		propertyPaths.add("annotatedObj");
 		propertyPaths.add("createdBy");
 
 		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null,null,null,orderHints,propertyPaths);

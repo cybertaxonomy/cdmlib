@@ -27,7 +27,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -35,12 +34,12 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  *
  */
 public class AnnotationTest extends EntityTestBase {
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationTest.class);
 
 	private static final String TEST_URI_STR = "http://test.abc.de";
-	
+
 	private static Annotation annotation1;
 	private static Person commentator;
 	private static URI linkbackUri;
@@ -96,20 +95,6 @@ public class AnnotationTest extends EntityTestBase {
 		assertSame(linkbackUri, annotation1.getLinkbackUri());
 		assertSame(annotatedObject.getAnnotations().iterator().next(), annotation1);
 	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#getAnnotatedObj()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#setAnnotatedObj(eu.etaxonomy.cdm.model.common.AnnotatableEntity)}.
-	 */
-	@Test
-	public void testGetSetAnnotatedObj() {
-		AnnotatableEntity database = ReferenceFactory.newDatabase();
-		annotation1.setAnnotatedObj(database);
-		assertSame(database, annotation1.getAnnotatedObj());
-		annotation1.setAnnotatedObj(null);
-		assertNull(annotation1.getAnnotatedObj());
-	}
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#getCommentator()}.

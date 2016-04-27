@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,188 +25,203 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 /**
  * @author n.hoffmann
  * @created 24.09.2008
- * @version 1.0
  */
 public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity> extends VersionableDaoBase<T> implements IAnnotatableDao<T> {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(AnnotatableDaoImpl.class);
-	
+
 	/**
 	 * @param type
 	 */
 	public AnnotatableDaoImpl(Class<T> type) {
 		super(type);
 	}
-	
-	public int countAnnotations(T annotatableEntity, MarkerType status) {
+
+	@Override
+    public int countAnnotations(T annotatableEntity, MarkerType status) {
 		checkNotInPriorView("AnnotatableDaoImpl.countAnnotations(T annotatableEntity, MarkerType status)");
 		Query query = null;
-		
-		if(status == null) {
-			query = getSession().createQuery("select count(annotation) from Annotation annotation where annotation.annotatedObj.id = :id and annotation.annotatedObj.class = :class");
-		} else {
-			query = getSession().createQuery("select count(annotation) from Annotation annotation join annotation.markers marker where annotation.annotatedObj.id = :id and annotation.annotatedObj.class = :class and marker.markerType = :status");
-			query.setParameter("status",status);
-		}
-		
-		query.setParameter("id",annotatableEntity.getId());
-		query.setParameter("class", annotatableEntity.getClass().getName());
-		
+
+		String className = annotatableEntity.getClass().getName();
+        if(status == null) {
+           //AND annoEnt.class = :class" does not work for some reason
+        	query = getSession().createQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id" );
+        } else {
+        	query = getSession().createQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker "
+        	        + " WHERE annoEnt.id = :id AND marker.markerType = :status");
+        	query.setParameter("status", status);
+        }
+
+        query.setParameter("id", annotatableEntity.getId());
+
+
 		return ((Long)query.uniqueResult()).intValue();
 	}
-	
-	public List<Annotation> getAnnotations(T annotatableEntity,	MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+	@Override
+    public List<Annotation> getAnnotations(T annotatableEntity,	MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotatableDaoImpl.getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber)");
         Query query = null;
-        
+
         StringBuffer orderString = new StringBuffer();
-        
+
         if(orderHints != null && !orderHints.isEmpty()) {
-		    orderString.append(" order by");
+		    orderString.append(" ORDER BY");
 		    for(OrderHint orderHint : orderHints) {
 		    	orderString.append(" annotation." + orderHint.getPropertyName() + " ");
-		    	
+
 		    	if(orderHint.getSortOrder() == SortOrder.ASCENDING) {
-		    		orderString.append("asc");
+		    		orderString.append("ASC");
 		    	} else {
-		    		orderString.append("desc");
+		    		orderString.append("DESC");
 		    	}
 		    }
 		}
-        
-		
-		if(status == null) {
-			query = getSession().createQuery("select annotation from Annotation annotation where annotation.annotatedObj.id = :id and annotation.annotatedObj.class = :class" + orderString.toString());
-		} else {
-			query = getSession().createQuery("select annotation from Annotation annotation join annotation.markers marker where annotation.annotatedObj.id = :id and annotation.annotatedObj.class = :class and marker.markerType = :status" + orderString.toString());
-			query.setParameter("status",status);
-		}
-		
-		query.setParameter("id",annotatableEntity.getId());
-		query.setParameter("class", annotatableEntity.getClass().getName());
-		
+
+        String className = annotatableEntity.getClass().getName();
+        if(status == null) {
+            //AND annoEnt.class = :class  does not work for some reason
+        	query = getSession().createQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id " + orderString.toString());
+        } else {
+        	query = getSession().createQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker " +
+        	        " WHERE annoEnt.id = :id AND marker.markerType = :status" + orderString.toString());
+        	query.setParameter("status",status);
+        }
+
+        query.setParameter("id",annotatableEntity.getId());
+
+
 		if(pageSize != null) {
 			query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	query.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
-		List<Annotation> results = (List<Annotation>)query.list();
+
+		List<Annotation> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
-	
-	public int countMarkers(T annotatableEntity, Boolean technical) {
+
+	@Override
+    public int countMarkers(T annotatableEntity, Boolean technical) {
 		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(T annotatableEntity, Boolean technical");
         Query query = null;
-		
+
+        String className = annotatableEntity.getClass().getName();
 		if(technical == null) {
-			query = getSession().createQuery("select count(marker) from Marker marker where marker.markedObj.id = :id and marker.markedObj.class = :class");
+			query = getSession().createQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker  WHERE annoEnt.id = :id ");
 		} else {
-			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.id = :id and marker.markedObj.class = :class and type.isTechnical = :technical");
-			query.setParameter("technical",technical);
+			query = getSession().createQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			        + " WHERE annoEnt.id = :id AND type.isTechnical = :technical");
+			query.setParameter("technical", technical);
 		}
-		
+
 		query.setParameter("id",annotatableEntity.getId());
-		query.setParameter("class", annotatableEntity.getClass().getName());
-		
+
 		return ((Long)query.uniqueResult()).intValue();
 	}
-	
+
+    @Override
     public List<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("AnnotatableDaoImpl.getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
         Query query = null;
-        
+
         StringBuffer orderString = new StringBuffer();
-        
+
         if(orderHints != null && !orderHints.isEmpty()) {
-		    orderString.append(" order by");
+		    orderString.append(" ORDER BY");
 		    for(OrderHint orderHint : orderHints) {
 		    	orderString.append(" marker." + orderHint.getPropertyName() + " ");
-		    	
+
 		    	if(orderHint.getSortOrder() == SortOrder.ASCENDING) {
-		    		orderString.append("asc");
+		    		orderString.append("ASC");
 		    	} else {
-		    		orderString.append("desc");
+		    		orderString.append("DESC");
 		    	}
 		    }
 		}
-        
-		
+
+        String className = annotatableEntity.getClass().getName();
 		if(technical == null) {
-			query = getSession().createQuery("select marker from Marker marker where marker.markedObj.id = :id and marker.markedObj.class = :class" + orderString.toString());
+			query = getSession().createQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker WHERE annoEnt.id = :id" + orderString.toString());
 		} else {
-			query = getSession().createQuery("select marker from Marker marker join marker.markerType type where marker.markedObj.id = :id and marker.markedObj.class = :class and type.isTechnical = :technical" + orderString.toString());
+			query = getSession().createQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			        + " WHERE annoEnt.id = :id AND type.isTechnical = :technical" + orderString.toString());
 			query.setParameter("technical",technical);
 		}
-		
+
 		query.setParameter("id",annotatableEntity.getId());
-		query.setParameter("class", annotatableEntity.getClass().getName());
-		
+
 		if(pageSize != null) {
 			query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	query.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
-		List<Marker> results = (List<Marker>)query.list();
+
+		List<Marker> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
     }
-	
+
+    @Override
     public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = null;
+		String className = clazz == null ? type.getName() : clazz.getName();
 		if(technical == null) {
-			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class");
+			query = getSession().createQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type");
 		} else {
-			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class and type.technical = :technical");
-			query.setParameter("technical",technical);
+			query = getSession().createQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			        + " WHERE type.technical = :technical");
+			query.setParameter("technical", technical);
 		}
-		
-		if(clazz == null) {
-		  query.setParameter("class", type.getName());
-		} else {
-	      query.setParameter("class", clazz.getName());
-		}
-		
+
+//		if(clazz == null) {
+//		  query.setParameter("class", type.getName());
+//		} else {
+//	      query.setParameter("class", clazz.getName());
+//		}
+
 		return ((Long)query.uniqueResult()).intValue();
 	}
-	
-	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+	@Override
+    public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotatableDaoImpl.groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = null;
-		if(technical == null) {
-			query = getSession().createQuery("select type, count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class group by type order by type.titleCache asc");
+		String className = clazz == null ? type.getName() : clazz.getName();
+        if(technical == null) {
+			query = getSession().createQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type GROUP BY type ORDER BY type.titleCache ASC");
 		} else {
-			query = getSession().createQuery("select type, count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class and type.technical = :technical group by type order by type.titleCache asc");
-			query.setParameter("technical",technical);
+			query = getSession().createQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			        + " WHERE type.technical = :technical GROUP BY type ORDER BY type.titleCache ASC");
+			query.setParameter("technical", technical);
 		}
-		
-		if(clazz == null) {
-			  query.setParameter("class", type.getName());
-		} else {
-		      query.setParameter("class", clazz.getName());
-		}
-		
+
+//		if(clazz == null) {
+//			  query.setParameter("class", type.getName());
+//		} else {
+//		      query.setParameter("class", clazz.getName());
+//		}
+
 		if(pageSize != null) {
 			query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
 		    	query.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
-		List<Object[]> result = (List<Object[]>)query.list();
-		
+
+		List<Object[]> result = query.list();
+
 		if(propertyPaths != null && !propertyPaths.isEmpty()) {
 		  for(Object[] objects : result) {
 			defaultBeanInitializer.initialize(objects[0], propertyPaths);
 		  }
 		}
-		
+
 		return result;
 	}
-	
+
 }

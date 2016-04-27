@@ -130,6 +130,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 
 /**
+ * Updates the xxxObj_type field in Annotations, Markers, Extensions, Identifiers.
+ * Not needed anymore as long as we gave up bidirectionality #5743
+ *
  * @author a.mueller
  * @date 25.04.2016
  */
