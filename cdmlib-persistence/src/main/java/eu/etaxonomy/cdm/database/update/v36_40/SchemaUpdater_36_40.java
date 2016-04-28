@@ -57,6 +57,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 		String tableName;
 		ISchemaUpdaterStep step;
 //		String columnName;
+		String query;
 		String newColumnName;
 		String oldColumnName;
 		String columnNames[];
@@ -83,30 +84,10 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         //#5718
-        //Remove autoincrement from AuditEvent.revisionnumber
+        //Remove autoincrement from AuditEvent.revisionnumber if necessary
         stepName = "Remove autoincrement from AuditEvent.revisionnumber";
-//        String query = "ALTER TABLE @@AuditEvent@@ ALTER revisionnumber DROP DEFAULT";
-//        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-//        stepList.add(step);
-        tableName = "AuditEvent";
-        oldColumnName = "revisionnumber";
-        newColumnName = "revisionnumberOld";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, ! INCLUDE_AUDIT);
-        stepList.add(step);
+        RevisionNumberUpdater.NewInstance(stepName, stepList);
 
-        tableName = "AuditEvent";
-        String columnName = oldColumnName;
-        Integer defaultValue = null;
-        boolean notNull = false;  //TODO set to true after data has filled, but we are missing a NOT-NULL-Constraint adder.
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, ! INCLUDE_AUDIT, defaultValue, notNull);
-        stepList.add(step);
-
-        String query = "UPDATE @@AuditEvent@@ SET revisionnumber = revisionnumberOld";
-        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-        stepList.add(step);
-
-        step = ColumnRemover.NewInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT);
-        stepList.add(step);
 
         //#5734
         //Add symbol to terms
@@ -130,7 +111,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         stepName = "Update symbols for terms";
-        query = "UPDATE DefinedTermBase dtb SET dtb.inverseSymbol = ( " +
+        query = "UPDATE DefinedTermBase dtb SET inverseSymbol = ( " +
             " SELECT  r.abbreviatedlabel " +
             " FROM RelationshipTermBase_inverseRepresentation MN " +
                 " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
