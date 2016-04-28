@@ -34,9 +34,9 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.H2;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
@@ -52,22 +52,25 @@ public class TestModelUpdate {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+ 		try{
+    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+    //		Classification classification = Classification.NewInstance("Me");
+    //		Taxon taxon = Taxon.NewInstance(null, null);
+    //		Person person = Person.NewInstance();
+    //		TaxonNode node = classification.addChildTaxon(taxon, null, null);
+    //		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
+    //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
+    //      appCtr.getClassificationService().save(classification);
 
-//		Classification classification = Classification.NewInstance("Me");
-//		Taxon taxon = Taxon.NewInstance(null, null);
-//		Person person = Person.NewInstance();
-//		TaxonNode node = classification.addChildTaxon(taxon, null, null);
-//		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
-//		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
-//      appCtr.getClassificationService().save(classification);
-
-//		appCtr.getCommonService().createFullSampleData();
+    //		appCtr.getCommonService().createFullSampleData();
 
 
 
-		appCtr.close();
+    		appCtr.close();
+ 		}catch (Exception e) {
+ 		    e.printStackTrace();
+ 		}
 		System.exit(0);
 	}
 
@@ -114,7 +117,10 @@ public class TestModelUpdate {
 	 */
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+	    String pathToCdmlib = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\";
+
+	    String pathInCdmlib = "cdmlib-remote-webapp\\src\\test\\resources\\h2";
+	    String path = pathToCdmlib + pathInCdmlib;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 
 
