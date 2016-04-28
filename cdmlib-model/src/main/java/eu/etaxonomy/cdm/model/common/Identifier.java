@@ -66,6 +66,13 @@ public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEnti
     	return new Identifier<T>(identifier, type);
     }
 
+    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(IdentifiableEntity identifiableEntity,
+            String identifier, DefinedTerm type){
+        Identifier<T> result = new Identifier<T>(identifier, type);
+        identifiableEntity.addIdentifier(result);
+        return result;
+    }
+
 // ************************* CONSTRUCTOR ************************************
 
     @Deprecated  //for hibernate use only
