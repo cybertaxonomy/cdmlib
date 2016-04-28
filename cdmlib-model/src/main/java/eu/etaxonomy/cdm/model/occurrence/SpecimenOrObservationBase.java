@@ -104,7 +104,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      *
      * NOTE: The name of the attribute was chosen against the common naming conventions of the CDM
      * as it is well known in common standards like ABCD and DarwinCore. According to CDM naming
-     * conventions it would specimenOrObservationType.
+     * conventions it would be specimenOrObservationType.
      *
      * @see ABCD: DataSets/DataSet/Units/Unit/RecordBasis
      * @see Darwin Core: http://wiki.tdwg.org/twiki/bin/view/DarwinCore/BasisOfRecord
@@ -167,7 +167,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Min(0)
     private Integer individualCount;
 
-    //preferred stable identifer (URI) #5606
+    /**
+     * The preferred stable identifer (URI) as discussed in
+     * {@link  http://dev.e-taxonomy.eu/trac/ticket/5606}
+     */
     @XmlElement(name = "PreferredStableUri")
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
@@ -222,21 +225,23 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 //************************* GETTER / SETTER ***********************/
 
 
-
-    /**
-     * @see #recordBasis
-     * @return
-     */
+    /**@see #recordBasis */
     public SpecimenOrObservationType getRecordBasis() {
         return recordBasis;
     }
-
-    /**
-     * @see #recordBasis
-     * @param recordBasis
-     */
+    /**@see #recordBasis */
     public void setRecordBasis(SpecimenOrObservationType recordBasis) {
         this.recordBasis = recordBasis;
+    }
+
+
+    /**@see #preferredStableUri */
+    public URI getPreferredStableUri() {
+        return preferredStableUri;
+    }
+    /**@see #preferredStableUri */
+    public void setPreferredStableUri(URI preferredStableUri) {
+        this.preferredStableUri = preferredStableUri;
     }
 
 
