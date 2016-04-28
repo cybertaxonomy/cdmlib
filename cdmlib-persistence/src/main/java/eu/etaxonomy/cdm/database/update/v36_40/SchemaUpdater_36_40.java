@@ -98,7 +98,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         stepName = "Update symbols for terms";
-        query = "UPDATE @@DefinedTermBase@@ SET symbol = idInVocabulary WHERE idInVocabulary <> ''";
+        query = "UPDATE @@DefinedTermBase@@ SET symbol = idInVocabulary WHERE idInVocabulary <> '' AND termType IN ('PAT','TRT')";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 
@@ -111,11 +111,13 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         stepName = "Update symbols for terms";
-        query = "UPDATE DefinedTermBase dtb SET inverseSymbol = ( " +
-            " SELECT  r.abbreviatedlabel " +
-            " FROM RelationshipTermBase_inverseRepresentation MN " +
-                " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
-            " WHERE dtb.id = MN.DefinedTermBase_id AND r.abbreviatedlabel <> '' ) ";
+        query = "UPDATE DefinedTermBase dtb "
+            + "SET inverseSymbol = ( " +
+                " SELECT  r.abbreviatedlabel " +
+                " FROM RelationshipTermBase_inverseRepresentation MN " +
+                    " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
+                " WHERE dtb.id = MN.DefinedTermBase_id AND r.abbreviatedlabel <> '' ) "
+            + " WHERE termType IN ('PAT','TRT') ";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
         stepList.add(step);
 

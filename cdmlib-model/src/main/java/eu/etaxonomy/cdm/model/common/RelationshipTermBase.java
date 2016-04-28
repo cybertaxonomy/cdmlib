@@ -168,7 +168,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 * @param languages
 	 * @return
 	 */
-	public Representation getPreferredInverseRepresentation(List<Language> languages) {
+    public Representation getPreferredInverseRepresentation(List<Language> languages) {
 		Representation repr = null;
 		if(languages != null){
 			for(Language language : languages) {
@@ -223,6 +223,15 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	public String getInverseDescription(Language lang) {
 		return this.getInverseRepresentation(lang).getDescription();
 	}
+
+    public String getInverseSymbol() {
+        return inverseSymbol;
+    }
+    public void setInverseSymbol(String inverseSymbol) {
+        this.inverseSymbol = inverseSymbol;
+    }
+
+//**************** CSV *************************/
 
 	@Override
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
