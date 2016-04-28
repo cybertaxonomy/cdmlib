@@ -97,7 +97,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         tableName = "AuditEvent";
         String columnName = oldColumnName;
         Integer defaultValue = null;
-        boolean notNull = true;
+        boolean notNull = false;  //TODO set to true after data has filled, but we are missing a NOT-NULL-Constraint adder.
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, ! INCLUDE_AUDIT, defaultValue, notNull);
         stepList.add(step);
 
