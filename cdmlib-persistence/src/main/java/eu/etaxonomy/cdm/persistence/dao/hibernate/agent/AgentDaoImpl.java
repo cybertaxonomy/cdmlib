@@ -164,11 +164,4 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
-	@Override
-	public List<Person> getPersonsUsedAsUser(){
-	       Query query = getSession().createQuery("SELECT ab.uuid, ob.idInSource FROM Person ab JOIN ab.sources ob WHERE ob.idNamespace LIKE 'User'");
-	       List<Person> result = query.list();
-	       return result;
-	}
-
 }
