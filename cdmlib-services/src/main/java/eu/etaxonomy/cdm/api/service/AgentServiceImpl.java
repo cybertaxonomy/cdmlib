@@ -241,11 +241,4 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
         return result;
 	}
 
-	@Override
-    @Transactional(readOnly = false)
-    public List<Person> getAllAgentsUsedAsUser(){
-	    return dao.getPersonsUsedAsUser();
-	}
-
-
 }
