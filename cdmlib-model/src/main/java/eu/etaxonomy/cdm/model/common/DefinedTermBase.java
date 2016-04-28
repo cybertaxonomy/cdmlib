@@ -179,9 +179,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 //***************************** CONSTRUCTOR *******************************************/
 
-
-
-	//for javassit only
+    //for javassit only
     @Deprecated
     protected DefinedTermBase(){};
 
@@ -326,6 +324,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
        */
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
+    }
+
+
+    public String getSymbol() {
+        return symbol;
+    }
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
 //******************************* METHODS ******************************************************/

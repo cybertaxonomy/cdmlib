@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -426,8 +428,13 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		return getTermByUuid(uuidAllRelationships);
 	}
 
-//	@Override
-//	public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-//		return super.readCsvLine(termClass, csvLine, terms);
-//	}
+    @Override
+    public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+
+        String inverseLabelAbbrev = csvLine.get(7).trim();
+        newInstance.setSymbol(newInstance.getIdInVocabulary());
+        newInstance.setInverseSymbol(inverseLabelAbbrev);
+        return newInstance;
+    }
 }
