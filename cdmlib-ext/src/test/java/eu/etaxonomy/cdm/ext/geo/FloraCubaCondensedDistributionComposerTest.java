@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,12 +62,55 @@ public class FloraCubaCondensedDistributionComposerTest {
         DefaultTermInitializer initializer = new DefaultTermInitializer();
         initializer.initialize();
 
+        defineSymbolsForExistingTerms();
         statusVoc = OrderedTermVocabulary.NewInstance(TermType.PresenceAbsenceTerm);
-        statusVoc.addTerm(makeStatusTerm("occasionally cultivated","(c)",false, uuidStatusOccasionallyCultivated));
-        statusVoc.addTerm(makeStatusTerm("not native but possibly naturalised","p",false,uuidStatusNotNativButNaturalised));
-        statusVoc.addTerm(makeStatusTerm("doubtfully native: reported in error","-d",false,uuidStatusDoubtfullyNativeError));
+        statusVoc.addTerm(makeStatusTerm("occasionally cultivated","oc","(c)",false, uuidStatusOccasionallyCultivated));
+        statusVoc.addTerm(makeStatusTerm("not native but possibly naturalised","p","p", false,uuidStatusNotNativButNaturalised));
+        statusVoc.addTerm(makeStatusTerm("doubtfully native: reported in error","df","-d",false,uuidStatusDoubtfullyNativeError));
 
         makeAreas();
+    }
+
+
+    /**
+     *
+     */
+    private static void defineSymbolsForExistingTerms() {
+        PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA().setSymbol("\u25CF");
+        PresenceAbsenceTerm.NATIVE().setSymbol("");
+        PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE().setSymbol("?");
+        PresenceAbsenceTerm.PRESENT_DOUBTFULLY().setSymbol("?");
+        PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE().setSymbol("d");
+        PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR().setSymbol("-");
+        PresenceAbsenceTerm.REPORTED_IN_ERROR().setSymbol("-");
+        PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().setSymbol("a");
+        PresenceAbsenceTerm.CULTIVATED().setSymbol("c");
+        PresenceAbsenceTerm.NATURALISED().setSymbol("n");
+        PresenceAbsenceTerm.CULTIVATED_PRESENCE_QUESTIONABLE().setSymbol("?c");
+        PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR().setSymbol("-c");
+        PresenceAbsenceTerm.NATIVE().setSymbol("");
+        //Cuba specific
+//      statusSymbols.put(UUID.fromString("936c3f9a-6099-4322-9792-0a72c6c2ce25"), "(c)");
+//      //endemic, doubtfully present
+//      statusSymbols.put(UUID.fromString("5f954f08-267a-4928-b073-12328f74c187"), "?e");
+//      //non-native and doubtfully naturalised
+//      statusSymbols.put(UUID.fromString("a1e26234-831e-4190-9fe3-011aca09ddba"), "p");
+//      //rare casual
+//      statusSymbols.put(UUID.fromString("8914ce0d-7d31-4c88-8317-985f2b3a493b"), "(a)");
+//      //?non-native and doubtfully naturalised
+//      statusSymbols.put(UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466"), "?p");
+//      //?adventive (casual) alien
+//      statusSymbols.put(UUID.fromString("c42ca644-1773-4230-a2ee-328a5d4a21ab"), "?a");
+//      //endemic, reported in error
+//      statusSymbols.put(UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad"), "-e");
+//      //naturalised, reported in error
+//      statusSymbols.put(UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa"), "-n");
+//      //non-native and doubtfully naturalised, reported in error
+//      statusSymbols.put(UUID.fromString("b9153d90-9e31-465a-a28c-79077a8ed4c2"), "-p");
+//      //adventive alien , reported in error
+//      statusSymbols.put(UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc"), "-a");
+//      //doubtfully native: reported in error
+//      statusSymbols.put(UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06"), "-d");
     }
 
 
@@ -97,7 +141,9 @@ public class FloraCubaCondensedDistributionComposerTest {
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
         String condensedString = condensedDistribution.toString();
-        System.out.println(condensedString);
+
+        Assert.assertEquals("Condensed string for Cuba differs", "nCu((c)CuE(nHo)) Bah ?VM ", condensedString);
+
 
         //TODO work in progress
     }
@@ -330,10 +376,11 @@ public class FloraCubaCondensedDistributionComposerTest {
     }
 
 
-    private static PresenceAbsenceTerm makeStatusTerm(String desc, String abbrev, boolean absent, UUID uuid) {
+    private static PresenceAbsenceTerm makeStatusTerm(String desc, String abbrev, String symbol, boolean absent, UUID uuid) {
         PresenceAbsenceTerm result = PresenceAbsenceTerm.NewPresenceInstance(desc, desc, abbrev);
         result.setAbsenceTerm(absent);
         result.setUuid(uuid);
+        result.setSymbol(symbol);
         return result;
     }
 
