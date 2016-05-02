@@ -122,7 +122,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
 	@JoinTable(name="FeatureNode_DefinedTermBase_OnlyApplicable")
 	private final Set<State> onlyApplicableIf = new HashSet<State>();
 
@@ -131,7 +131,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
 	private final Set<State> inapplicableIf = new HashSet<State>();
 

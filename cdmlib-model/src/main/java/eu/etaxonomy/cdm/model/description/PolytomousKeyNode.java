@@ -149,15 +149,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
-	// reference
-	// <code>this</code> node, a node usually belongs to a given key.
+	// reference <code>this</code> node, a node usually belongs to a given key.
 	@XmlElement(name = "PolytomousKey")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-//	@ManyToOne(fetch = FetchType.LAZY, optional=false)
-//	@JoinColumn(nullable=false)
 //	@NotNull
-//	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE /*, CascadeType.DELETE_ORPHAN */})
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKey key;
@@ -187,10 +183,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlSchemaType(name = "IDREF")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
-	@JoinColumn(name = "parent_id" /*
-									 * , insertable=false, updatable=false,
-									 * nullable=false
-									 */)
+	@JoinColumn(name = "parent_id" /*, insertable=false, updatable=false, nullable=false */)
 	private PolytomousKeyNode parent;
 
 	// see comment on children @IndexColumn
@@ -214,7 +207,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  remove cascade #5755
 	private Feature feature;
 
 	@XmlElement(name = "Taxon")

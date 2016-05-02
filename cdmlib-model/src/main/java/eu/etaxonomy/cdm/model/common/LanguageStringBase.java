@@ -25,8 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -67,7 +65,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.EAGER)
-    @Cascade({CascadeType.MERGE})
+//    @Cascade({CascadeType.MERGE})  remove cascade #5755
     @IndexedEmbedded(depth=1)
     protected Language language;
 
