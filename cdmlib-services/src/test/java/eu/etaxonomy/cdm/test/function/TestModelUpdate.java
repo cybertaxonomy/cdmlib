@@ -117,10 +117,13 @@ public class TestModelUpdate {
 	 */
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-	    String pathToCdmlib = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
 
-	    String pathInCdmlib = "cdmlib-remote-webapp\\src\\test\\resources\\h2";
-	    String path = pathToCdmlib + pathInCdmlib;
+	    String pathInProject = "src\\test\\resources\\h2";
+
+	    String path = pathToProject + pathInProject;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 
 
