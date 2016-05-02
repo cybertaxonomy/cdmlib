@@ -75,7 +75,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
