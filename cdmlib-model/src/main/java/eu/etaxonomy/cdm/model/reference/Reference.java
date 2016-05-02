@@ -275,25 +275,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 //    @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
    // @InReference(groups=Level2.class)
-
    	protected Reference<?> inReference;
-
-//    @XmlElement(name = "FullReference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-////    @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//    protected Reference fullReference;
-//
-//    @XmlElement(name = "AbbreviatedReference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-////    @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//    protected Reference abbreviatedReference;
-
 
 //********************************************************/
 
@@ -331,16 +313,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	@IndexedEmbedded
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
-
-
-//	@XmlElement(name = "ReferenceIdentity")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	//@IndexedEmbedded
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//	@Transient
-//	private ReferenceIdentity referenceIdentity;
 
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
@@ -449,16 +421,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
     public void setEditor(String editor) {
 		this.editor = StringUtils.isBlank(editor)? null : editor;
 	}
-
-//	@Override
-//    public String getSeries() {
-//		return series;
-//	}
-//
-//	@Override
-//    public void setSeries(String series) {
-//		this.series = series;
-//	}
 
 	@Override
     public String getVolume() {
@@ -598,12 +560,12 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setType(ReferenceType type) {
-		this.setCacheStrategy(type.getCacheStrategy());
 		if (type == null){
 			this.type = ReferenceType.Generic;
 		} else{
 			this.type = type;
 		}
+		this.setCacheStrategy(type.getCacheStrategy());
 
 	}
 
@@ -723,8 +685,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	}
 
 
-
-
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This
 	 * indicates that a {@link TaxonNameBase taxon name} has been originally
@@ -749,137 +709,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	}
 
 
-//	/**
-//	 * Returns the full reference that belongs to this abbreviated reference. If this
-//	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
-//	 * A full reference should be added to a reference
-//	 * which represents the abbreviated form of a reference. The full reference can be used
-//	 * by publication tools to link to the unabbreviated and therefore more complete version
-//	 * of the reference.
-//	 *
-//	 * @see #getAbbreviatedReference()
-//	 * @return the full reference
-//	 */
-//	public Reference getFullReference() {
-//		return fullReference;
-//	}
-//
-//	/**
-//	 * @see #getFullReference()
-//	 * @param fullReference
-//	 */
-//	public void setFullReference(Reference fullReference) {
-//		this.fullReference = fullReference;
-//	}
-//
-//	/**
-//	 * Returns the abbreviated reference that belongs to this full reference. If this
-//	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
-//	 * An abbreviated reference should be added to a reference which represents the long (full)
-//	 * form of a reference.
-//	 * In future this may become a set or handled differently as there are multiple
-//	 *
-//	 * @see #getFullReference()
-//	 * @return the full reference
-//	 */
-//	public Reference getAbbreviatedReference() {
-//		return abbreviatedReference;
-//	}
-//
-//	/**
-//	 * @see #getAbbreviatedReference()
-//	 * @param abbreviatedReference
-//	 *
-//	 */
-//	public void setAbbreviatedReference(Reference abbreviatedReference) {
-//		this.abbreviatedReference = abbreviatedReference;
-//	}
-
 //****************************************************  /
-
-//	/**
-//	 * Returns the string representing the name of the editor of <i>this</i>
-//	 * generic reference. An editor is mostly a person (team) who assumed the
-//	 * responsibility for the content of the publication as a whole without
-//	 * being the author of this content.<BR>
-//	 * If there is an editor then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit}.
-//	 *
-//	 * @return  the string identifying the editor of <i>this</i>
-//	 * 			generic reference
-//	 * @see 	#getPublisher()
-//	 */
-//	protected String getEditor(){
-//		return this.editor;
-//	}
-//
-//	/**
-//	 * @see #getEditor()
-//	 */
-//	protected void setEditor(String editor){
-//		this.editor = editor;
-//	}
-//
-//	/**
-//	 * Returns the string representing the series (for instance for books or
-//	 * within journals) - and series part - in which <i>this</i> generic reference
-//	 * was published.<BR>
-//	 * If there is a series then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string identifying the series for <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getSeries(){
-//		return this.series;
-//	}
-//
-//	/**
-//	 * @see #getSeries()
-//	 */
-//	protected void setSeries(String series){
-//		this.series = series;
-//	}
-//
-//	/**
-//	 * Returns the string representing the volume (for instance for books or
-//	 * within journals) in which <i>this</i> generic reference was published.<BR>
-//	 * If there is a volume then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string identifying the volume for <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getVolume(){
-//		return this.volume;
-//	}
-//
-//	/**
-//	 * @see #getVolume()
-//	 */
-//	protected void setVolume(String volume){
-//		this.volume = volume;
-//	}
-//
-//	/**
-//	 * Returns the string representing the page(s) where the content of
-//	 * <i>this</i> generic reference is located.<BR>
-//	 * If there is a pages information then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string containing the pages corresponding to <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getPages(){
-//		return this.pages;
-//	}
-//
-//	/**
-//	 * @see #getPages()
-//	 */
-//	protected void setPages(String pages){
-//		this.pages = pages;
-//	}
 
 
 	/**
@@ -1050,31 +880,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 
 
-//	/**
-//	 * Returns the reference identity object
-//	 * @return the referenceIdentity
-//	 */
-//	public ReferenceIdentity getReferenceIdentity() {
-//		return referenceIdentity;
-//	}
-//
-//	/**
-//	 * For bidirectional use only
-//	 * @param referenceIdentity the referenceIdentity to set
-//	 */
-//	protected void setReferenceIdentity(ReferenceIdentity referenceIdentity) {
-//		this.referenceIdentity = referenceIdentity;
-//	}
-//
-//	/**
-//	 * Returns the set of all identical references. Same as getReferenceIdentity().getReferences()
-//	 * @return
-//	 */
-//	public Set<Reference> identicalReferences(){
-//		return referenceIdentity.getReferences();
-//	}
-
-
 //********** Casting methods ***********************************/
 
 	/**
@@ -1234,10 +1039,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 		}
 	}
 
-
-	//public void setCacheStrategy(S cacheStrategy){
-	//	this.cacheStrategy = cacheStrategy;
-	//}
 
 	@Override
     public void setCacheStrategy(IReferenceBaseCacheStrategy iReferenceBaseCacheStrategy) {

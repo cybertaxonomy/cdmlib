@@ -159,16 +159,6 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 
 // ****************** GETTER / SETTER **********************************/
 
-
-//	@OneToMany
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//	public Set<FeatureNode> getNodes() {
-//		return nodes;
-//	}
-//	public void setNodes(Set<FeatureNode> nodes) {
-//		this.nodes = nodes;
-//	}
-
 	/**
 	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
 	 * feature tree. The root node does not have any parent. Since feature nodes
@@ -222,7 +212,6 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-
 	public Object clone() {
 		FeatureTree result;
 		try {
@@ -238,6 +227,4 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 		return result;
 
 	}
-
-
 }
