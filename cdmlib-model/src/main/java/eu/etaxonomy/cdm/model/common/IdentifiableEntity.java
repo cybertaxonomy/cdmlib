@@ -694,14 +694,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         //Rights
         result.rights = new HashSet<Rights>();
         for(Rights rights : getRights()) {
-            result.addRights(rights);
+            Rights newRights = (Rights)rights.clone();
+            result.addRights(newRights);
         }
 
 
         //Credits
         result.credits = new ArrayList<Credit>();
         for(Credit credit : getCredits()) {
-            result.addCredit(credit);
+            Credit newCredit = (Credit)credit.clone();
+            result.addCredit(newCredit);
         }
 
         //no changes to: lsid, titleCache, protectedTitleCache
