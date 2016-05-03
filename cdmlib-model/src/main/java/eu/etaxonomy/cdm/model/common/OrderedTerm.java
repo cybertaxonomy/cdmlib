@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 
 /**
@@ -31,7 +30,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "OrderedTerm")
 @XmlRootElement(name = "OrderedTerm")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 	private static final long serialVersionUID = 5122485867783720769L;

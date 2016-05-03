@@ -14,9 +14,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
-import javassist.util.proxy.ProxyObject;
-
-import net.sf.cglib.proxy.Enhancer;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
 
 /**

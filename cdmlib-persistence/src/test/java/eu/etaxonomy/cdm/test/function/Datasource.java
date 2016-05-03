@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);

@@ -31,8 +31,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-import org.springframework.orm.hibernate4.HibernateSystemException;
-import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.hibernate5.HibernateSystemException;
+import org.springframework.orm.hibernate5.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -94,11 +94,11 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
     @SpringBeanByType
     private ITaxonDao taxonDao;
 
-    ConversationHolder conversationHolder1 = null;
-    ConversationHolder conversationHolder2 = null;
-    ConversationHolder conversationHolder3 = null;
+    private ConversationHolder conversationHolder1 = null;
+    private ConversationHolder conversationHolder2 = null;
+    private ConversationHolder conversationHolder3 = null;
 
-    DataSource targetDataSource;
+    private DataSource targetDataSource;
 
     private final UUID taxonUuid1 = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
     private final UUID taxonUuid2 = UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46");
@@ -111,7 +111,10 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     @Before
     public void setup(){
-        targetDataSource = ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource();
+
+        targetDataSource = dataSource instanceof TransactionAwareDataSourceProxy ?
+                ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource():
+                dataSource;
     }
 
     @After
@@ -907,7 +910,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 

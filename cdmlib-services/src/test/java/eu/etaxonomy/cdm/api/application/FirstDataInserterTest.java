@@ -76,9 +76,8 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     public void testInsertData(){
     	commitAndStartNewTransaction(null);
     	TaxonGenerator.getTestTaxon();
-    	Taxon newTaxon = 	TaxonGenerator.getTestTaxon();
+    	Taxon newTaxon = TaxonGenerator.getTestTaxon();
     	UUID taxonUUID = taxonService.save(newTaxon).getUuid();
-
 
     	TaxonDescription description = TaxonGenerator.getTestDescription(1);
     	newTaxon.addDescription(description);

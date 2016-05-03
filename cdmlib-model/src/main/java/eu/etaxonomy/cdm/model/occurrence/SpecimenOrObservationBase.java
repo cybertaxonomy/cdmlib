@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +48,6 @@ import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
     "recordBasis",
     "publish",
+    "preferredStableUri",
     "sex",
     "lifeStage",
     "kindOfUnit",
@@ -103,7 +104,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      *
      * NOTE: The name of the attribute was chosen against the common naming conventions of the CDM
      * as it is well known in common standards like ABCD and DarwinCore. According to CDM naming
-     * conventions it would specimenOrObservationType.
+     * conventions it would be specimenOrObservationType.
      *
      * @see ABCD: DataSets/DataSet/Units/Unit/RecordBasis
      * @see Darwin Core: http://wiki.tdwg.org/twiki/bin/view/DarwinCore/BasisOfRecord
@@ -122,7 +123,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @ContainedIn
     @NotNull
     private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 
@@ -166,6 +166,15 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @NumericField
     @Min(0)
     private Integer individualCount;
+
+    /**
+     * The preferred stable identifer (URI) as discussed in
+     * {@link  http://dev.e-taxonomy.eu/trac/ticket/5606}
+     */
+    @XmlElement(name = "PreferredStableUri")
+    @Field(analyze = Analyze.NO)
+    @Type(type="uriUserType")
+    private URI preferredStableUri;
 
     // the verbatim description of this occurrence. Free text usable when no atomised data is available.
     // in conjunction with titleCache which serves as the "citation" string for this object
@@ -216,21 +225,23 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 //************************* GETTER / SETTER ***********************/
 
 
-
-    /**
-     * @see #recordBasis
-     * @return
-     */
+    /**@see #recordBasis */
     public SpecimenOrObservationType getRecordBasis() {
         return recordBasis;
     }
-
-    /**
-     * @see #recordBasis
-     * @param recordBasis
-     */
+    /**@see #recordBasis */
     public void setRecordBasis(SpecimenOrObservationType recordBasis) {
         this.recordBasis = recordBasis;
+    }
+
+
+    /**@see #preferredStableUri */
+    public URI getPreferredStableUri() {
+        return preferredStableUri;
+    }
+    /**@see #preferredStableUri */
+    public void setPreferredStableUri(URI preferredStableUri) {
+        this.preferredStableUri = preferredStableUri;
     }
 
 

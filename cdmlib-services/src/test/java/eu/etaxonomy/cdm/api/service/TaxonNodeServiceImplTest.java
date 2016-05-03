@@ -155,7 +155,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		UUID uuidT1 = taxonService.saveOrUpdate(t1);
 		t1 = null;
 		t1 =(Taxon) taxonService.load(uuidT1);
-		t1 = (Taxon)HibernateProxyHelper.deproxy(t1);
+		t1 = HibernateProxyHelper.deproxy(t1);
 		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
@@ -413,7 +413,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(rootNodeUuid);
-		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+		node1 = HibernateProxyHelper.deproxy(node1);
 
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
@@ -447,7 +447,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         classification = classificationService.load(classificationUuid);
         node1 = taxonNodeService.load(node1Uuid);
         node2 = taxonNodeService.load(rootNodeUuid);
-        node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+        node1 = HibernateProxyHelper.deproxy(node1);
 
 
         Classification classification2 = Classification.NewInstance("Classification2");
@@ -494,8 +494,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(rootNodeUuid);
-		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
-		node2 = (TaxonNode)HibernateProxyHelper.deproxy(node2);
+		node1 = HibernateProxyHelper.deproxy(node1);
+		node2 = HibernateProxyHelper.deproxy(node2);
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
 		List<TaxonNode> treeNodes = new ArrayList<TaxonNode>();

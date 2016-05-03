@@ -9,12 +9,8 @@
  */
 package eu.etaxonomy.cdm.api.service.statistics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * This class is meant to hold the result of a statistical request to a CDM

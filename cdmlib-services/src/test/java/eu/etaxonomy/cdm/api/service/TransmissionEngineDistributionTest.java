@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
@@ -125,15 +126,20 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     @Test
     @DataSet
-    public void testPriorities() throws FileNotFoundException {
+    public void testPriorities(){
 
-        Set extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
-        assertEquals(TransmissionEngineDistribution.EXTENSION_VALUE_PREFIX + "45", ((Extension)extensions.iterator().next()).getValue());
+        Set<Extension> extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
+        assertEquals(TransmissionEngineDistribution.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void test_ignore() throws FileNotFoundException {
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
+//  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./BlankDataSet.xml")
+    public void test_ignore() {
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
@@ -170,7 +176,11 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
     public void testArea_area() {
 
         addDistributions(
@@ -274,9 +284,9 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     public void createTestDataSet() throws FileNotFoundException {
 
         // --- References --- //
-        Reference sec = ReferenceFactory.newDatabase();
+        Reference<?> sec = ReferenceFactory.newDatabase();
         sec.setTitleCache("Test", true);
-        Reference nomRef = ReferenceFactory.newBook();
+        Reference<?> nomRef = ReferenceFactory.newBook();
         sec.setTitleCache("Sp.Pl.", true);
 
         referenceService.save(sec);

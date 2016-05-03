@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -69,6 +71,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IAgentService agentService;
 
     @Autowired
     private IClassificationService classService;
@@ -124,11 +129,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 
         Classification classification = oldTaxonNode.getClassification();
-        Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
+        Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.load(newAcceptedTaxonNode.getTaxon().getUuid());
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-        TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
+        TaxonNameBase<?,?> synonymName = HibernateProxyHelper.deproxy(oldTaxon.getName());
         HomotypicalGroup group = synonymName.getHomotypicalGroup();
         group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
         if (synonymRelationshipType == null){
@@ -201,8 +206,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         //Move Taxon RelationShips to new Taxon
         Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
         for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
-            Taxon fromTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
-            Taxon toTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
+            Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
+            Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
             if (fromTaxon == oldTaxon){
                 newAcceptedTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
@@ -441,7 +446,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         Taxon taxon = null;
         try{
-            taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+            taxon = HibernateProxyHelper.deproxy(node.getTaxon());
         }catch(NullPointerException e){
             result.setAbort();
             result.addException(new Exception("The Taxon was already deleted."));
@@ -523,29 +528,38 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, boolean isParent){
-        TaxonNode taxonNode = dao.load(taxonNodeUuid);
-    	TaxonNode targetNode = dao.load(targetNodeUuid);
-    	return moveTaxonNode(taxonNode, targetNode, isParent);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
+        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
+    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
+    	return moveTaxonNode(taxonNode, targetNode, movingType);
     }
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean isParent){
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType){
         UpdateResult result = new UpdateResult();
 
-        Integer sortIndex;
-        if (isParent){
+        TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent(), TaxonNode.class);
 
-            sortIndex = newParent.getChildNodes().size();
-        }else{
+        Integer sortIndex = -1;
+        if (movingType == 0){
+            sortIndex = 0;
+        }else if (movingType == 1){
+            sortIndex = newParent.getSortIndex();
+            newParent = parentParent;
+        } else if (movingType == 2){
             sortIndex = newParent.getSortIndex() +1;
-            newParent = newParent.getParent();
+            newParent = parentParent;
+        } else{
+            result.setAbort();
+            result.addException(new Exception("The moving type "+ movingType +" is not supported."));
         }
         result.addUpdatedObject(newParent);
         result.addUpdatedObject(taxonNode.getParent());
         result.setCdmEntity(taxonNode);
+
         newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+
         dao.saveOrUpdate(newParent);
 
         return result;
@@ -555,12 +569,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean isParent){
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType){
         UpdateResult result = new UpdateResult();
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         for (UUID taxonNodeUuid: taxonNodeUuids){
             TaxonNode taxonNode = dao.load(taxonNodeUuid);
-            result.includeResult(moveTaxonNode(taxonNode,targetNode, isParent));
+            result.includeResult(moveTaxonNode(taxonNode,targetNode, movingType));
         }
         return result;
     }
@@ -591,15 +605,36 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         try{
             child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
         }catch(Exception e){
-            logger.error("TaxonNode could not be created.");
+            result.addException(e);
+            result.setError();
+            return result;
         }
 //        child = dao.save(child);
 
         dao.saveOrUpdate(parent);
         result.addUpdatedObject(parent);
-        result.setCdmEntity(child);
+        if (child != null){
+            result.setCdmEntity(child);
+        }
         return result;
 
+    }
+
+    @Override
+    @Transactional
+    public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType){
+        UpdateResult result = new UpdateResult();
+        TaxonNode node = dao.load(taxonNodeUUID);
+        TeamOrPersonBase agent = (TeamOrPersonBase) agentService.load(agentUUID);
+        node.addAgentRelation(relationshipType, agent);
+        try{
+            dao.merge(node, true);
+        }catch (Exception e){
+            result.setError();
+            result.addException(e);
+        }
+        result.setCdmEntity(node);
+        return result;
     }
 
 }

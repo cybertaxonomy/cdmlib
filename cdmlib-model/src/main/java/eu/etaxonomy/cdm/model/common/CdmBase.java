@@ -14,6 +14,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,7 +49,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.search.annotations.TermVector;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -99,12 +99,11 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     //@XmlAttribute(name = "id", required = true)
     @XmlTransient
     @Id
-//	@GeneratedValue(generator = "system-increment")
+//	@GeneratedValue(generator = "system-increment")  //see also AuditEvent.revisionNumber
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
     @FieldBridge(impl=NotNullAwareIdBridge.class)
-    @Field(store=Store.YES, termVector=TermVector.NO)
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)
@@ -292,6 +291,18 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
 // ************************** Hibernate proxies *******************/
+
+    /**
+     * If entity is a HibernateProxy it returns the initialized object.
+     * Otherwise entity itself is returned.
+     * @param entity
+     * @return
+     * @throws ClassCastException
+     */
+    public static <T> T deproxy(T entity) {
+        return HibernateProxyHelper.deproxy(entity);
+    }
+
     /**
      * These methods are present due to HHH-1517 - that in a one-to-many
      * relationship with a superclass at the "one" end, the proxy created
@@ -436,6 +447,22 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 	public String getUserFriendlyFieldName(String field){
 		return field;
 	}
+
+// ********************* HELPER ****************************************/
+
+    protected <T extends CdmBase> boolean replaceInList(List<T> list,
+            T newObject, T oldObject){
+        boolean result = false;
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).equals(oldObject)){
+                list.set(i, newObject);
+                result = true;
+            }
+        }
+        return result;
+    }
+
+
 
 //********************** CLONE *****************************************/
 

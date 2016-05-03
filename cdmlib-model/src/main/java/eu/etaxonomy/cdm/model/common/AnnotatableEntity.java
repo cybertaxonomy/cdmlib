@@ -57,8 +57,8 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 
 	@XmlElementWrapper(name = "Annotations", nillable = true)
 	@XmlElement(name = "Annotation")
-	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 
@@ -77,7 +77,6 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	@Override
     public void addMarker(Marker marker){
 		if (marker != null){
-			marker.setMarkedObj(this);
 			getMarkers().add(marker);
 		}
 	}
@@ -85,7 +84,6 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
     public void removeMarker(Marker marker){
 		if(getMarkers().contains(marker)) {
 			getMarkers().remove(marker);
-		    marker.setMarkedObj(null);
 		}
 	}
 
@@ -115,7 +113,6 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	@Override
     public void addAnnotation(Annotation annotation){
 		if (annotation != null){
-			annotation.setAnnotatedObj(this);
 			getAnnotations().add(annotation);
 		}
 	}
@@ -124,7 +121,6 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
     public void removeAnnotation(Annotation annotation){
 		if(getAnnotations().contains(annotation)) {
 			getAnnotations().remove(annotation);
-		    annotation.setAnnotatedObj(null);
 		}
 	}
 

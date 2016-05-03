@@ -26,6 +26,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,7 +41,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -132,7 +133,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @IndexColumn(name="sortIndex", base = 0)
+    @OrderColumn(name="sortIndex")
+    @ListIndexBase(value=0)  //not really needed as this is the default
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<Media>();
 
@@ -141,8 +143,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @IndexedEmbedded
-    private DescriptionBase inDescription;
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
+    private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();
@@ -178,6 +180,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
         this.feature = feature;
     }
+
+// ******************** GETTER / SETTER ***********************************/
 
     /**
      * Returns the list of {@link Media media} (that is pictures, movies,
@@ -393,24 +397,13 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         return this.sources;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
     @Override
     public void addSource(DescriptionElementSource source) {
         if (source != null){
-            DescriptionElementBase oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
             this.sources.add(source);
-            source.setSourcedObj(this);
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceType, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -427,10 +420,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     	}
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -456,9 +445,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         addSource(newSource);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
     @Override
     public void removeSource(DescriptionElementSource source) {
         this.sources.remove(source);

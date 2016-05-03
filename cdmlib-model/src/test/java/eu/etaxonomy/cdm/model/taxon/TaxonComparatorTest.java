@@ -15,9 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +30,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 11.06.2008
- * @version 1.0
  */
 public class TaxonComparatorTest {
     private static final Logger logger = Logger.getLogger(TaxonComparatorTest.class);
@@ -44,26 +41,6 @@ public class TaxonComparatorTest {
     public static void setUpBeforeClass() throws Exception {
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
 
 /******************** TESTS *****************************************************/
 
@@ -72,13 +49,12 @@ public class TaxonComparatorTest {
      */
     @Test
     public void testCompare() {
-        logger.debug("start testCompare");
 
-        Reference sec = ReferenceFactory.newBook();
+        Reference<?> sec = ReferenceFactory.newBook();
 
-        Reference ref1 = ReferenceFactory.newBook();
-        Reference ref2 = ReferenceFactory.newBook();
-        Reference ref3 = ReferenceFactory.newBook();
+        Reference<?> ref1 = ReferenceFactory.newBook();
+        Reference<?> ref2 = ReferenceFactory.newBook();
+        Reference<?> ref3 = ReferenceFactory.newBook();
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         Calendar cal3 = Calendar.getInstance();
@@ -100,7 +76,7 @@ public class TaxonComparatorTest {
         botName3.setNomenclaturalReference(ref3);
         zooName1.setPublicationYear(1823);
 
-        List<TaxonBase> list = new ArrayList<TaxonBase>();
+        List<TaxonBase<?>> list = new ArrayList<TaxonBase<?>>();
 
         Taxon taxon1 = Taxon.NewInstance(botName1, sec);
         Taxon taxon2 = Taxon.NewInstance(botName2, sec);
@@ -112,22 +88,42 @@ public class TaxonComparatorTest {
         taxon3.setId(3);
         zooTaxon4.setId(4);
 
-
         list.add(taxon3);
         list.add(taxon2);
         list.add(taxon1);
         list.add(zooTaxon4);
         Collections.sort(list, new TaxonComparator());
 
-        for (TaxonBase taxon : list){
-            String year = "";
-            TaxonNameBase<?,?> tnb = taxon.getName();
-            if (tnb instanceof ZoologicalName){
-                year = String.valueOf(((ZoologicalName)tnb).getPublicationYear());
-            }else{
-                year = tnb.getNomenclaturalReference().getYear();
-            }
-            System.out.println(taxon.getId() + ": " + year);
+        //Order should be
+//        4: 1823
+//        3: 1943
+//        1: 1945
+//        2:
+        Assert.assertEquals(list.get(0).getId(), 4);
+        Assert.assertEquals(getYear(list.get(0)), "1823");
+        Assert.assertEquals(list.get(1).getId(), 3);
+        Assert.assertEquals(getYear(list.get(1)), "1943");
+        Assert.assertEquals(list.get(2).getId(), 1);
+        Assert.assertEquals(getYear(list.get(2)), "1945");
+        Assert.assertEquals(list.get(3).getId(), 2);
+        Assert.assertEquals(getYear(list.get(3)), "");
+
+
+    }
+
+
+    /**
+     * @param taxonBase
+     * @return
+     */
+    private String getYear(TaxonBase<?> taxon) {
+        String year = "";
+        TaxonNameBase<?,?> tnb = taxon.getName();
+        if (tnb instanceof ZoologicalName){
+            year = String.valueOf(((ZoologicalName)tnb).getPublicationYear());
+        }else{
+            year = tnb.getNomenclaturalReference().getYear();
         }
+        return year;
     }
 }

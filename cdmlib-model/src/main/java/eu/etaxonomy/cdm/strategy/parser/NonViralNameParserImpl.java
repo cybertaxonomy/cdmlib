@@ -794,12 +794,18 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			 //infra genus
 			 else if (infraGenusPattern.matcher(fullNameString).matches()){
 				Rank infraGenericRank;
-
-
 				if ("[unranked]".equals(epi[1])){
 					infraGenericRank = Rank.INFRAGENERICTAXON();
 				}else{
-					infraGenericRank = Rank.getRankByIdInVoc(epi[1], nameToBeFilledOrig.getNomenclaturalCode());
+				    String infraGenericRankMarker = epi[1];
+				    if (infraGenericRankMarker.startsWith(notho)){  //#3868
+                        nameToBeFilled.setBinomHybrid(true);
+                        infraGenericRankMarker = infraGenericRankMarker.substring(notho.length());
+                    }else if(infraGenericRankMarker.startsWith("n")){
+                        nameToBeFilled.setBinomHybrid(true);
+                        infraGenericRankMarker = infraGenericRankMarker.substring(1);
+                    }
+                    infraGenericRank = Rank.getRankByIdInVoc(infraGenericRankMarker, nameToBeFilledOrig.getNomenclaturalCode());
 				}
 				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -841,7 +847,17 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if ("[unranked]".equals(infraSpecRankMarker)){
 					infraSpecificRank = Rank.INFRASPECIFICTAXON();
 				}else{
-					infraSpecificRank = Rank.getRankByIdInVoc(infraSpecRankMarker);
+					String localInfraSpecRankMarker;
+					if (infraSpecRankMarker.startsWith(notho)){  //#3868
+	                    nameToBeFilled.setTrinomHybrid(true);
+	                    localInfraSpecRankMarker = infraSpecRankMarker.substring(notho.length());
+					}else if(infraSpecRankMarker.startsWith("n")){
+	                    nameToBeFilled.setTrinomHybrid(true);
+	                    localInfraSpecRankMarker = infraSpecRankMarker.substring(1);
+                    }else{
+                        localInfraSpecRankMarker = infraSpecRankMarker;
+                    }
+				    infraSpecificRank = Rank.getRankByIdInVoc(localInfraSpecRankMarker);
 				}
 				nameToBeFilled.setRank(infraSpecificRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -934,7 +950,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				nameToBeFilled.addParsingProblem(ParserProblem.UnparsableNamePart);
 				nameToBeFilled.setTitleCache(fullNameString,true);
 				// FIXME Quick fix, otherwise search would not deilver results for unparsable names
-				nameToBeFilled.setNameCache(fullNameString,true);
+				nameToBeFilled.setNameCache(fullNameString, true);
 				// END
 				logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");
 		    }
@@ -1071,9 +1087,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			fullAuthors(authorString, authors, years, clazz);
 		} catch (StringNotParsableException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.UnparsableAuthorPart);
-			nameToBeFilled.setTitleCache(fullNameString,true);
+			nameToBeFilled.setTitleCache(fullNameString, true);
 			// FIXME Quick fix, otherwise search would not deliver results for unparsable names
-			nameToBeFilled.setNameCache(fullNameString,true);
+			nameToBeFilled.setNameCache(fullNameString, true);
 			// END
 			logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
 		}
@@ -1151,12 +1167,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return array of Teams containing the Team[0],
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
+	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
 			throws StringNotParsableException{
-		if (fullAuthorString == null || clazz == null){
+		if (fullAuthorStringOrig == null || clazz == null){
 			return;
 		}
-		fullAuthorString = fullAuthorString.trim();
+		String fullAuthorString = fullAuthorStringOrig.trim();
 
 		//Botanic
 		if ( BotanicalName.class.isAssignableFrom(clazz) ){
@@ -1189,7 +1205,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			String basString = basionymMatcher.group();
 			basString = basString.replaceFirst(basStart, "");
 			basString = basString.replaceAll(basEnd, "").trim();
-			authorShipStart = basionymMatcher.end(1) + 1;
+			authorShipStart = basionymMatcher.end(1);
 
 			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[2];
 			Integer[] basYears = new Integer[2];
@@ -1200,7 +1216,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			years[3] = basYears[1];
 		}
 		if (fullAuthorString.length() >= authorShipStart){
-			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
+			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];
 			Integer[] combinationYears = new Integer[2];
 			authorsAndEx(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
 			authors[0]= combinationAuthors[0] ;
@@ -1304,54 +1320,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		return result;
 	}
 
-
-	//Parsing of the given full name that has been identified as hybrid already somewhere else.
-	private void parseHybrid(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty){
-	    logger.warn("parseHybrid --> function not yet implemented");
-
-//	    String nonHybridName  = fullNameString;
-//	    boolean isMonomHybrid = isMonomHybrid(fullNameString);
-//	    if (isMonomHybrid){
-//	    	nonHybridName.replaceAll(hybrid, "");
-//	    }
-//
-//	    String[] split = nonHybridName.split("\\s");
-//	    parseFullName(nameToBeFilled, nonHybridName, rank, makeEmpty);
-//
-//	    nonHybridName = nonHybridName.replaceAll(hybrid, " ");
-//
-//	    boolean isBinomHybrid = isBinomHybrid(split);
-////	    boolean isTrinomHybrid = isTrinomHybrid(split);
-//
-//	    nonHybridName = nonHybridName.replaceAll(hybrid, " ");
-//
-//	    parseFullName(nameToBeFilled, nonHybridName, rank, makeEmpty);
-//	    nameToBeFilled.getTitleCache();
-//	    nameToBeFilled.setMonomHybrid(isMonomHybrid);
-//	    nameToBeFilled.setBinomHybrid(isBinomHybrid);
-//	    nameToBeFilled.setBinomHybrid(isTrinomHybrid);
-
-	    nameToBeFilled.setTitleCache(fullNameString,true);
-	    return;
-    }
-
-//	private boolean isBinomHybrid(String[] split) {
-//		if (){
-//
-//		}
-//		return false;
-//	}
-
-	private boolean isMonomHybrid(String fullNameString) {
-		Matcher matcher = hybridPattern.matcher(fullNameString);
-		boolean find = matcher.find();
-		int start = matcher.start();
-		if (find == true && start == 0){
-			return true;
-		}else{
-			return false;
-		}
-	}
 
 //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
 //	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.

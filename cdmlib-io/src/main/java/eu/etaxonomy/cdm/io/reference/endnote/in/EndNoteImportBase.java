@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
-import org.jdom.Namespace;
-
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 
 /**

@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.model.molecular;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -45,28 +45,28 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * a given {@link #getDnaSample() DNA Sample} . The part of the DNA being replicated is defined by the
  * {@link Amplification#getDnaMarker() marker} (also called locus) - implemented in CDM as a {@link DefinedTerm}
  * of term type {@link TermType#DnaMarker}.
- * 
+ *
  * <BR>
  * To execute the replication {@link Primer primers} (short DNA fractions) are
  * used. They may work in both directions of the DNA part therefore we do have a
  * {@link #getForwardPrimer() forward primer} and a {@link #getReversePrimer() reverse primer}.
  * Most (or all?) amplifications require a {@link #getPurification() purification process}. Additionally
  * some use {@link #getCloning()} for replication.
- * 
+ *
  * <H3>Quality control</H3>
  * <BR>
  * For quality control the resulting product (PCR) is tested using a chromatographic method called
  * electrophoresis. The parameters (voltage, ladder used, running time, and gel concentration) used
  * for this electrophoresis as well as the resulting
- * {@link #getGelPhoto() photo} are also relevant for an amplification. 
- * 
+ * {@link #getGelPhoto() photo} are also relevant for an amplification.
+ *
  * We have 2 classes to store the core data for an amplification: {@link Amplification} and {@link AmplificationResult}.
  * <BR>
  * In {@link Amplification} we store all data that is equal for an amplification event which includes amplification
  * of many {@link DnaSample dna samples}. Those data which are relevant only for a specific dna sample are
  * stored in {@link AmplificationResult}. Theoretically this includes data on the resulting PCR. However, as the
  * PCR itself is not persistent we do not store further information on it in the CDM and do not handle
- * {@link AmplificationResult} as a {@link DerivedUnit}. 
+ * {@link AmplificationResult} as a {@link DerivedUnit}.
  * <BR>
  * This may change in future: http://dev.e-taxonomy.eu/trac/ticket/3717.
  * <BR>
@@ -101,7 +101,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     private DnaSample dnaSample;
-	
+
    /** @see #getAmplification() */
 	@XmlElement( name = "Amplification")
     @XmlIDREF
@@ -133,7 +133,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
     /** @see #getSuccessText() */
     @XmlElement(name = "successText")
 	@Field
-	@Size(max=255)
+    @Column(length=255)
 	private String successText;
 //
 //    /** @see #getGelRunningTime() */
@@ -163,8 +163,8 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
 	    result.addSingleRead(singleRead);
 	    return result;
 	}
-	
-	public static AmplificationResult NewInstance(DnaSample dnaSample, 
+
+	public static AmplificationResult NewInstance(DnaSample dnaSample,
 			Amplification amplification) {
 		AmplificationResult result = new AmplificationResult();
 		dnaSample.addAmplificationResult(result);
@@ -199,11 +199,11 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
 	protected void setDnaSample(DnaSample dnaSample) {
 		this.dnaSample = dnaSample;
 	}
-	
+
 	/**
 	 * The {@link Amplification amplification event} this amplification result resulted from.
 	 * @see #setAmplification(Amplification)
-	 * @see Amplification 
+	 * @see Amplification
 	 * @return the amplification event
 	 */
 	public Amplification getAmplification() {

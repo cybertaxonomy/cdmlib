@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 /**
  * @author a.mueller
@@ -35,7 +34,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "OrderedTermVocabulary")
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
 @Audited
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;

@@ -62,6 +62,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		super(docImport);
 		this.specimenImport = specimenImport;
 		this.nomenclatureImport = nomenclatureImport;
+		this.featureImport = this;
 	}
 
 	public void handleFeature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
@@ -471,14 +472,11 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		if (StringUtils.isNotBlank(heading)) {
 			if (!heading.equalsIgnoreCase(classValue)) {
 				try {
-					if (!feature.equals(state.getTransformer().getFeatureByKey(
-							heading))) {
-						UUID headerFeatureUuid = state.getTransformer()
-								.getFeatureUuid(heading);
+					if (!feature.equals(state.getTransformer().getFeatureByKey(heading))) {
+						UUID headerFeatureUuid = state.getTransformer().getFeatureUuid(heading);
 						if (!feature.getUuid().equals(headerFeatureUuid)) {
 							String message = "Feature heading '%s' differs from feature class '%s' and can not be transformed to feature";
-							message = String.format(message, heading,
-									classValue);
+							message = String.format(message, heading, classValue);
 							fireWarningEvent(message, next, 1);
 						}
 					}
@@ -518,12 +516,14 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	}
 
 
-	private void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+	protected void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
 		Reference<?> ref = state.getConfig().getSourceReference();
 
+
+		boolean isTextMode = true;
 		String text = "";
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -542,17 +542,30 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				description.addElement(habitat);
 
 				return;
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, ALTITUDE)) {
-					text = text.trim() + getTaggedCData(state, reader, next);
-				} else if (isStartingElement(next, LIFE_CYCLE_PERIODS)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
-				}
+			} else if (isStartingElement(next, ALTITUDE)) {
+				text = text.trim() + getTaggedCData(state, reader, next);
+			} else if (isStartingElement(next, LIFE_CYCLE_PERIODS)) {
+				handleNotYetImplementedElement(next);
 			} else if (next.isCharacters()) {
-				text += next.asCharacters().getData();
-			} else {
+			    if (! isTextMode) {
+                    String message = "String is not in text mode";
+                    fireWarningEvent(message, next, 6);
+                } else {
+                    text += next.asCharacters().getData();
+                }
+	         } else if (isStartingElement(next, BR)) {
+	                text += "<br/>";
+	                isTextMode = false;
+	        } else if (isEndingElement(next, BR)) {
+	                isTextMode = true;
+	        } else if (isStartingElement(next, REFERENCES)) {
+	            handleNotYetImplementedElement(next);
+	        } else if (isStartingElement(next, FIGURE_REF)) {
+                handleNotYetImplementedElement(next);
+            } else {
+                String type = next.toString();
+                String location = String.valueOf(next.getLocation().getLineNumber());
+                System.out.println("MarkupFeature.handleHabitat: Unexpected element in habitat: " + type + ":  " + location);
 				handleUnexpectedElement(next);
 			}
 		}
@@ -619,7 +632,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				result = makeVernacularNames(state, reader, next);
 			} else if (isStartingElement(next, SUB_HEADING)) {
 				String subheading = getCData(state, reader, next);
-				if (! subheading.matches("Nom(s)? vernaculaire(s)?\\:")){
+				if (! subheading.matches("(Nom(s)? vernaculaire(s)?\\:|Vern.)")){
 					fireWarningEvent("Subheading for vernacular name not recognized: " + subheading, next, 4);
 				}
 			} else if (next.isCharacters()) {
@@ -629,7 +642,9 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				}else{
 					fireWarningEvent("Character not handled in vernacular name: " + chars, next, 4);
 				}
-			}else {
+			} else if (isStartingElement(next, REFERENCES)) {
+			    handleNotYetImplementedElement(next);
+            }else {
 				handleUnexpectedElement(next);
 			}
 		}

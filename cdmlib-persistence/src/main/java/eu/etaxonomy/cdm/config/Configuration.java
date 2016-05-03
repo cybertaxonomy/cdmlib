@@ -9,7 +9,6 @@
  */
 package eu.etaxonomy.cdm.config;
 
-import org.apache.lucene.util.Version;
 
 /**
  * @author a.kohlbecker
@@ -17,22 +16,6 @@ import org.apache.lucene.util.Version;
  *
  */
 public class Configuration {
-
-    /**
-     * This should be set via the hibernate properties but at the time being it
-     * is quite complex to get <code>hibernate.search.lucene_version</code> from
-     * the configuration and to pass it to all classes which require this
-     * version As a preliminary and unobtrusive solution the luceneVersion is
-     * now provided by this.
-     * <p>
-     * TODO A better solution for the future would be to provide all Lucene
-     * related instances of <code>LuceneSearch</code>, etc via a special
-     * factory. This factors would be a spring bean and thus could have access
-     * to the hibernate configuration. see #3369 (Lucene search factory or builder implemented)
-     *
-     */
-    @Deprecated // so we now it is not 100% save to use this
-    public static Version luceneVersion = Version.LUCENE_36;
 
     /**
      * Login name for the first user 'admin'

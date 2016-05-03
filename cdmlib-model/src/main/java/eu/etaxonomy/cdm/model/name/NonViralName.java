@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -27,7 +28,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -130,11 +130,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         @Field(name = "nameCache_tokenized"),
         @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
     })
-    @Analyzer (impl = org.apache.lucene.analysis.KeywordAnalyzer.class)
+    @Analyzer(impl = org.apache.lucene.analysis.core.KeywordAnalyzer.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
     @NotEmpty(groups = Level2.class) // implicitly NotNull
-    @Size(max = 255)
+    @Column(length=255)
     private String nameCache;
 
     @XmlElement(name = "ProtectedNameCache")
@@ -145,7 +145,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
-    @Size(max = 255)
+    @Column(length=255)
     @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
     @NullOrNotEmpty
     @NotNull(groups = Level2.class)
@@ -156,7 +156,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class,message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraGenericEpithet;
 
@@ -165,7 +165,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String specificEpithet;
 
@@ -174,7 +174,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
@@ -231,7 +231,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
             cacheReplacedProperties={"combinationAuthorship", "basionymAuthorship", "exCombinationAuthorship", "exBasionymAuthorship"} )
     //TODO Val #3379
 //    @NotNull
-    @Size(max = 255)
+    @Column(length=255)
     @Pattern(regexp = "^[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+$", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
     private String authorshipCache;
 
@@ -1377,6 +1377,29 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         }else{
             return author.getNomenclaturalTitle();
         }
+    }
+
+
+    /**
+     * Defines the last part of the name.
+     * This is for infraspecific taxa, the infraspecific epithet,
+     * for species the specific epithet, for infageneric taxa the infrageneric epithet
+     * else the genusOrUninomial.
+     * However, the result does not depend on the rank (which may be not correctly set
+     * in case of dirty data) but returns the first name part which is not blank
+     * considering the above order.
+     * @return the first not blank name part in reverse order
+     */
+    public String getLastNamePart() {
+        String result =
+                StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
+                    this.getInfraSpecificEpithet() :
+                StringUtils.isNotBlank(this.getSpecificEpithet()) ?
+                    this.getSpecificEpithet():
+                StringUtils.isNotBlank(this.getInfraGenericEpithet()) ?
+                    this.getInfraGenericEpithet():
+                this.getGenusOrUninomial();
+        return result;
     }
 
 //*********************** CLONE ********************************************************/

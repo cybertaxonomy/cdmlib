@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.exception;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,8 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import com.ibm.lsid.LSIDException;
-
-import eu.etaxonomy.cdm.remote.controller.BaseController;
 
 public class CdmExceptionResolver extends SimpleMappingExceptionResolver {
 	

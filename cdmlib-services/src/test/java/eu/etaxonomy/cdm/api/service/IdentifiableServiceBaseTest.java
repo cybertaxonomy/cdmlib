@@ -213,13 +213,13 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
     	BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
         Taxon tb = Taxon.NewInstance(name, null);
-        Identifier.NewInstance(tb, "ext-1234", identifierType1);
-        Identifier.NewInstance(name, "ext-name12", identifierType2);
+        tb.addIdentifier("ext-1234", identifierType1);
+        name.addIdentifier("ext-name12", identifierType2);
         taxonService.saveOrUpdate(tb);
 
         Taxon tb2 = Taxon.NewInstance(null, null);
         tb2.setTitleCache("Cached taxon", true);
-        Identifier.NewInstance(tb2, "ext-cache1", identifierType2);
+        tb2.addIdentifier("ext-cache1", identifierType2);
         taxonService.saveOrUpdate(tb2);
 
         Classification classification = Classification.NewInstance("My classification");

@@ -12,6 +12,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -56,8 +57,19 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 
 
     /**
+     * Get {@link TaggedText} for the nomenclatural status part
+     * @param taxonName
+     * @param includeSeparatorBefore if a separator should be added before
+     * @param includePostSeparator if a {@link TagEnum#postSeparator post-separator}
+     *  should be added after
+     * @return
+     */
+    public List<TaggedText> getNomStatusTags(T taxonName, boolean includeSeparatorBefore,
+            boolean includePostSeparator);
+
+    /**
      * Returns the full title cache as a string. The full title cache contains
-     * the name cache, followed by the nomencl. reference, followed by the 
+     * the name cache, followed by the nomencl. reference, followed by the
      * nomencl. status
      * @param taxonNameBase
      * @return
@@ -72,14 +84,14 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 */
 	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
 
-    
+
     /**
      * Returns the name cache as a string.
      * @param taxonNameBase
      * @return
      */
     public String getNameCache(T taxonNameBase);
-    
+
 
 	/**
 	 * Returns the title cache tagged by html tags according to tag rules.

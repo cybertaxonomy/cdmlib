@@ -25,9 +25,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.grouping.GroupDocs;
-import org.hibernate.search.ProjectionConstants;
+import org.apache.lucene.search.grouping.TopGroups;
+import org.apache.lucene.util.BytesRef;
+import org.hibernate.search.engine.ProjectionConstants;
 
-import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -83,7 +84,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * too many terms match the wildcard.
      */
     @Override
-    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups<BytesRef> topGroupsResultSet,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
@@ -97,7 +98,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             highlighter = new SearchResultHighligther();
         }
 
-        for (GroupDocs groupDoc : topGroupsResultSet.topGroups.groups) {
+        for (GroupDocs groupDoc : topGroupsResultSet.groups) {
 
             String cdmEntityId = null;
             SearchResult<T> searchResult = new SearchResult<T>();
@@ -142,11 +143,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
         return searchResults;
     }
-    
+
     /**
      * {@inheritDoc}
      *
      */
+    @Override
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
@@ -169,7 +171,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         	Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
         	searchResult.addDoc(document);
 
-        	if(cdmEntityId == null){                    
+        	if(cdmEntityId == null){
         		cdmEntityId = findId(idFields, document);
         	}
 
@@ -197,11 +199,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         return searchResults;
     }
 
-    
+
     /**
      * {@inheritDoc}
      *
      */
+    @Override
     public  List<DocumentSearchResult> createResultSet(TopDocs topDocs, String[] highlightFields) throws CorruptIndexException, IOException {
 
         List<DocumentSearchResult> searchResults = new ArrayList<DocumentSearchResult>();

@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date 25.11.2010
  *
  */
-public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalIntegrationTest{
+public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(DescriptionElementDaoHibernateImplTest.class);
 
 	@SpringBeanByType

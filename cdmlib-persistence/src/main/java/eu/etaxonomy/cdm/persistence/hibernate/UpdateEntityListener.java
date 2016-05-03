@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
@@ -26,10 +26,11 @@ public class UpdateEntityListener implements SaveOrUpdateEventListener {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(UpdateEntityListener.class);
 
-	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
+	@Override
+    public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
 		if(entity != null && VersionableEntity.class.isAssignableFrom(entity.getClass())) {
-			
+
 			VersionableEntity versionableEntity = (VersionableEntity)entity;
 			versionableEntity.setUpdated(new DateTime());
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -40,7 +41,9 @@ public class UpdateEntityListener implements SaveOrUpdateEventListener {
 			 if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
 						throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
 			  }*/
-			} 
+			}
 		}
+
+
 	}
 }

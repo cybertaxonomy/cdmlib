@@ -14,8 +14,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel.AboutTaxon;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel.HasInformation;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InfoItem", propOrder = {

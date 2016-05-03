@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -111,7 +112,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param newParentTaxonNodeUuid
      * @return
      */
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, boolean parent);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType);
 
 
 
@@ -120,7 +121,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param newParentNodeUuid
      * @return
      */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, boolean parent);
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType);
 
     /**
      * @param taxonNode
@@ -128,7 +129,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param parent
      * @return
      */
-    UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, boolean parent);
+    UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType);
 
     /**
      * deletes the given taxon nodes
@@ -162,6 +163,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref);
+
+    /**
+     * @param taxonNodeUUID
+     * @param agentUUID
+     * @param relationshipType
+     * @return
+     */
+    UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 
 
 }

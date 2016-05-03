@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
@@ -179,6 +180,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
 
+
+
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -235,7 +238,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private PolytomousKeyNode otherNode;
 
 	private Integer nodeNumber = null;
@@ -244,7 +247,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "ModifyingText")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
-	// @JoinTable(name = "DescriptionElementBase_ModifyingText")
 	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
@@ -430,6 +432,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * <i>this</i> feature node.
 	 */
 	public List<PolytomousKeyNode> getChildren() {
+	    removeNullValueFromChildren();
 		return children;
 	}
 
@@ -469,10 +472,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
+		removeNullValueFromChildren();
 
 		if(nodeNumber == null) {
-			nodeNumber = getMaxNodeNumberFromRoot() + 1;
-		}
+            	nodeNumber = getMaxNodeNumberFromRoot() + 1;
+        }
+
 
 		children.add(index, child);
 		child.setKey(this.getKey());
@@ -500,11 +505,24 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public void removeChild(PolytomousKeyNode child) {
 		int index = children.indexOf(child);
+		removeNullValueFromChildren();
 		if (index >= 0) {
 			removeChild(index);
 		}
 	}
 
+
+	private void removeNullValueFromChildren(){
+	    try {
+    	    if (children.contains(null)){
+                while(children.contains(null)){
+                    children.remove(null);
+                }
+            }
+	    } catch (LazyInitializationException e) {
+	        logger.info("Cannot clean up uninitialized children without a session, skipping.");
+	    }
+	}
 	/**
 	 * Removes the feature node placed at the given (index + 1) position from
 	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
@@ -589,7 +607,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		} else {
 			node.setNodeNumber(nodeN);
 			newNodeN++;
-			for (PolytomousKeyNode child : node.getChildren()) {
+			List<PolytomousKeyNode> children = node.getChildren();
+			 while (children.contains(null)){
+			     children.remove(null);
+		       }
+
+			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
 				}else{

@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
-import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 /**
  * 

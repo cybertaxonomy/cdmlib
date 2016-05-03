@@ -82,6 +82,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private AgentBase<?> agent;
 
+// ******************** FACTORY ***********************/
 
 	/**
 	 * Factory method
@@ -100,6 +101,8 @@ public class Rights extends LanguageStringBase implements Cloneable{
 		return new Rights(text, language);
 	}
 
+//*********************** CONSTRUCTOR *************************/
+
 	/**
 	 * Default Constructor
 	 */
@@ -113,6 +116,8 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	protected Rights(String text, Language language) {
 		super(text, language);
 	}
+
+//*********************** GETTER /SETTER *****************************/
 
 	public RightsType getType(){
 		return this.type;
@@ -148,10 +153,6 @@ public class Rights extends LanguageStringBase implements Cloneable{
 
 //************************* CLONE **************************/
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Rights result = (Rights)super.clone();

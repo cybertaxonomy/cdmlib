@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -59,16 +57,16 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 				datasource.executeUpdate(updateQuery);
 			}
 
-			if (isAnnotatable){
-				updateAnnotatables(tableName, datasource, monitor, caseType);
-			}
-			if (isSourcable){
-				updateSourcable(tableName, datasource, monitor, caseType);
-			}
-
-			if (isIdentifiable){
-				updateIdentifiables(tableName, datasource, monitor, caseType);
-			}
+//			if (isAnnotatable){
+//				updateAnnotatables(tableName, datasource, monitor, caseType);
+//			}
+//			if (isSourcable){
+//				updateSourcable(tableName, datasource, monitor, caseType);
+//			}
+//
+//			if (isIdentifiable){
+//				updateIdentifiables(tableName, datasource, monitor, caseType);
+//			}
 
 			return result;
 		} catch ( Exception e) {
@@ -78,28 +76,29 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 		}
 	}
 
-	private void updateSourcable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		updateSingleExtension("OriginalSourceBase", "sourcedObj_type" , datasource, monitor, caseType);
-	}
-	private void updateIdentifiables(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		updateSingleExtension("Extension", "extendedObj_type" , datasource, monitor, caseType);
-	}
-	private void updateAnnotatables(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
-		updateSingleExtension("Marker", "markedObj_type" , datasource, monitor, caseType);
-		updateSingleExtension("Annotation", "annotatedObj_type" , datasource, monitor, caseType);
-	}
-	private void updateSingleExtension(String extensionClass, String typeAttr, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
-		String sql = " UPDATE %s " +
-				" SET %s = '%s' " +
-				" WHERE %s = '%s'";
-
-		for (String oldClassPath : oldClassNames){
-			String query = String.format(sql, caseType.transformTo(extensionClass),
-					typeAttr, newClassName,
-					typeAttr, oldClassPath);
-			datasource.executeUpdate(query);
-		}
-	}
+// not required anymore since #5743
+//	private void updateSourcable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+//		updateSingleExtension("OriginalSourceBase", "sourcedObj_type" , datasource, monitor, caseType);
+//	}
+//	private void updateIdentifiables(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+//		updateSingleExtension("Extension", "extendedObj_type" , datasource, monitor, caseType);
+//	}
+//	private void updateAnnotatables(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+//		updateSingleExtension("Marker", "markedObj_type" , datasource, monitor, caseType);
+//		updateSingleExtension("Annotation", "annotatedObj_type" , datasource, monitor, caseType);
+//	}
+//	private void updateSingleExtension(String extensionClass, String typeAttr, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
+//		String sql = " UPDATE %s " +
+//				" SET %s = '%s' " +
+//				" WHERE %s = '%s'";
+//
+//		for (String oldClassPath : oldClassNames){
+//			String query = String.format(sql, caseType.transformTo(extensionClass),
+//					typeAttr, newClassName,
+//					typeAttr, oldClassPath);
+//			datasource.executeUpdate(query);
+//		}
+//	}
 
 
 	public String getDtypeUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {

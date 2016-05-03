@@ -7,15 +7,15 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-
-  <!-- This will cause SpringMVCConfig to be found. All further component 
-    scans are defined in this mvc configuration class -->
+  <!-- 
+    NOTE: 
+    For a detailed overview on the spring MVC and application context configuration and 
+    bootstrapping of this web application see: 
+    http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+   -->
+  <!-- 
+    Initialize SpringMVCConfig and its dependency SpringSwaggerConfig.
+    All further component scans are defined in this mvc configuration class 
+  -->
   <context:component-scan base-package="eu/etaxonomy/cdm/remote/config" />
-
-  <!-- FIXME:Remoting Expose remoting services currently only for testing -->
-  <!-- Using Spring Beans Profile (>3.1) http://spring.io/blog/2011/02/11/spring-framework-3-1-m1-released/ 
-    only valid if it is at the end of the xml file activated by the vmarg -Dspring.profiles.active=remoting -->
-  <beans profile="remoting">
-    <import resource="classpath:/eu/etaxonomy/cdm/remoting-services.xml" />
-  </beans>
 </beans>

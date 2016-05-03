@@ -35,7 +35,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.config.CdmPersistentSourceUtils;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;

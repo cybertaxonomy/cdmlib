@@ -18,22 +18,27 @@ import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStrategy<BotanicalName> {
 
+    @Override
     public String getAuthorshipCache(BotanicalName nonViralName) {
         return "test.botanical.authorshipCache"+ nonViralName.getId();
     }
 
+    @Override
     public String getLastEpithet(BotanicalName taxonNameBase) {
         return "test.botanical.lastEpithet"+ taxonNameBase.getId();
     }
 
+    @Override
     public String getNameCache(BotanicalName taxonNameBase) {
         return "test.botanical.nameCache"+ taxonNameBase.getId();
     }
 
+    @Override
     public String getFullTitleCache(BotanicalName taxonNameBase) {
         return "test.botanical.fullTitleCache"+ taxonNameBase.getId();
     }
 
+    @Override
     public String getTitleCache(BotanicalName object) {
         return "test.botanical.titleCache"+ object.getId();
     }
@@ -68,5 +73,12 @@ public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStra
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public List<TaggedText> getNomStatusTags(BotanicalName taxonName, boolean includeSeparatorBefore,
+            boolean includeSeparatorAfter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

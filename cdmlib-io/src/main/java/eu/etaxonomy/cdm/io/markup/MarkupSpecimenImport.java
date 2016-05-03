@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -667,7 +666,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		//for now we do not handle annotation and typeNotes
 		String altFieldNum = getCData(state, reader, parent, false).trim();
 		DefinedTerm type = this.getIdentifierType(state, MarkupTransformer.uuidIdentTypeAlternativeFieldNumber, "Alternative field number", "Alternative field number", "alt. field no.", null);
-		Identifier<?> identifier = Identifier.NewInstance(fieldUnit, altFieldNum, type);
+		fieldUnit.addIdentifier(altFieldNum, type);
 		if (doubtful){
 			fireWarningEvent("Marking alternative field numbers as doubtful not yet possible, see #4673", parent,4);
 //			Marker.NewInstance(identifier, "true", MarkerType.IS_DOUBTFUL());

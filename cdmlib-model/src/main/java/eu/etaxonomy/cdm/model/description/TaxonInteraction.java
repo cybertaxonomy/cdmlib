@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -69,39 +69,39 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TaxonInteraction extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -5014025677925668627L;
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
-	
+
 	@XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @JoinTable(name = "TaxonInteraction_LanguageString")
+    @JoinTable(name = "TaxonInteraction_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
-	
+
 	@XmlElement(name = "Taxon2")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Taxon taxon2;
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new empty taxon interaction instance.
 	 */
 	public TaxonInteraction() {
 		super(null);
 	}
 
-	/** 
+	/**
 	 * Creates a new empty taxon interaction instance.
 	 */
 	public static TaxonInteraction NewInstance(){
 		return new TaxonInteraction();
 	}
-	
+
 	/**
 	 * Creates a new empty taxon interaction instance and also sets the feature
-	 * 
+	 *
 	 * @param feature
 	 * @return
 	 */
@@ -112,9 +112,9 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 		}
 		return taxonInteraction;
 	}
-	
-	
-	/** 
+
+
+	/**
 	 * Returns the second {@link Taxon taxon} involved in <i>this</i> taxon interaction.
 	 * The first taxon is the taxon described in the corresponding
 	 * {@link TaxonDescription taxon description}.
@@ -123,13 +123,13 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 		return this.taxon2;
 	}
 	/**
-	 * @see	#getTaxon2() 
+	 * @see	#getTaxon2()
 	 */
 	public void setTaxon2(Taxon taxon2){
 		this.taxon2 = taxon2;
 	}
 
-	/** 
+	/**
 	 * Returns the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
@@ -137,13 +137,13 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	public Map<Language,LanguageString> getDescriptions(){
 		return this.description;
 	}
-	
-	/** 
+
+	/**
 	 * Returns the description string in the given {@link Language language}
-	 * 
+	 *
 	 * @param language	the language in which the description string looked for is formulated
 	 * @see				#getDescriptions()
-	 */ 
+	 */
 	public String getDescription(Language language){
 		LanguageString languageString = description.get(language);
 		if (languageString == null){
@@ -157,7 +157,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction.
-	 * 
+	 *
 	 * @param description	the language string describing the taxon interaction
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
@@ -169,12 +169,12 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	public void addDescription(LanguageString description){
 		this.putDescription(description);
 	}
-	
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction.
-	 * 
+	 *
 	 * @param description	the language string describing the taxon interaction
 	 * 						in a particular language
 	 * @see    	   			#getDescription()
@@ -185,9 +185,9 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to describe <i>this</i> taxon interaction.
-	 * 
+	 *
 	 * @param text		the string describing the taxon interaction
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -197,12 +197,12 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	public void putDescription(Language language, String text){
 		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
-	
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to describe <i>this</i> taxon interaction.
-	 * 
+	 *
 	 * @param text		the string describing the taxon interaction
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
@@ -215,7 +215,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	public void addDescription(String text, Language language){
 		this.putDescription(language, text);
 	}
-	/** 
+	/**
 	 * Removes from the {@link MultilanguageText multilanguage text} used to describe
 	 * <i>this</i> taxon interaction the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
@@ -231,11 +231,11 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 
 //*********************************** CLONE *****************************************/
 
-	/** 
+	/**
 	 * Clones <i>this</i> taxon interaction. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> taxon interaction by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -252,8 +252,8 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 				LanguageString newLanguageString = (LanguageString)getDescriptions().get(language).clone();
 				result.description.put(language, newLanguageString);
 			}
-			
-						
+
+
 			return result;
 			//no changes to: taxon2
 		} catch (CloneNotSupportedException e) {

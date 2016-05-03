@@ -72,7 +72,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(InstitutionalMembership.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("person").eq(person.getId()));
-			query.addProjection(AuditEntity.id().count("id"));
+			query.addProjection(AuditEntity.id());
 			return ((Long)query.getSingleResult()).intValue();
 		}
 	}

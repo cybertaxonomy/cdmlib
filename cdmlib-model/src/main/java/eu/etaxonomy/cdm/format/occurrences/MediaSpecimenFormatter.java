@@ -24,7 +24,7 @@ public class MediaSpecimenFormatter extends DerivedUnitFormatter {
     }
 
     @Override
-    protected void initFormatKeys(Object object, FormatKey... formatKeys) {
+    protected void initFormatKeys(Object object) {
         super.initFormatKeys(object);
         MediaSpecimen mediaSpecimen = (MediaSpecimen)object;
         Media media = mediaSpecimen.getMediaSpecimen();

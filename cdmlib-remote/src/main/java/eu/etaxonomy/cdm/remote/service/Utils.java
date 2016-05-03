@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import org.springframework.stereotype.Component;
-
 
 public class Utils {
 	

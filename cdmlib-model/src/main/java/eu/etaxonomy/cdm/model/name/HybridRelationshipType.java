@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -54,7 +53,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "HybridRelationshipType")
 @XmlRootElement(name = "HybridRelationshipType")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
 	private static final long serialVersionUID = 5225908742890437668L;

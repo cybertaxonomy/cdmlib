@@ -86,7 +86,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      * @param request
      * @return request path and query parameters as string.
      */
-    protected String requestPathAndQuery(HttpServletRequest request) {
+    protected static String requestPathAndQuery(HttpServletRequest request) {
         if(request == null) {
             return "";
         }

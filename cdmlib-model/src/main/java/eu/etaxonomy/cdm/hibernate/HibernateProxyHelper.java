@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.hibernate;
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.LazyInitializer;
 
 /**
  * @author a.mueller
@@ -26,9 +26,6 @@ public class HibernateProxyHelper {
 
 
 	// ************************** Hibernate proxies *******************/
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IProxyHelper#deproxy(java.lang.Object, java.lang.Class)
-	 */
 	 public static <T> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
 	     if (object instanceof HibernateProxy) {
 	         return clazz.cast(((HibernateProxy) object).getHibernateLazyInitializer().getImplementation());
@@ -37,21 +34,23 @@ public class HibernateProxyHelper {
 	     }
 	 }
 
-		/**
-		 * Unwrap the target instance from the proxy.
-		 */
-		public static Object deproxy(Object object){
-			if(object instanceof HibernateProxy) {
-				LazyInitializer lazyInitializer = ((HibernateProxy)object).getHibernateLazyInitializer();
-				return lazyInitializer.getImplementation();
-			} else {
-				return object;
-			}
-		}
+	 /**
+	  * Unwrap the target instance from the proxy.
+	  */
+	 public static <T> T deproxy(T entity){
+	     if (entity == null){
+	         return null;
+	     }
+	     if(entity instanceof HibernateProxy) {
+	         Hibernate.initialize(entity);
+	         entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
+	     }
+	     return entity;
+	}
 
 
 	public static boolean isInstanceOf(Object object, Class clazz) throws ClassCastException {
-	     if (clazz == null){
+	     if (clazz == null || object == null){
 	    	 return false;
 	     }
 		 if (object instanceof HibernateProxy) {

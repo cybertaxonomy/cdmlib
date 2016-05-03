@@ -60,8 +60,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	nameSerivce.save(name);
 
     	Team team = null;
+    	UpdateResult result = null;
 		try {
-			team = service.convertPerson2Team(person);
+		    result = service.convertPerson2Team(person);
+		    team = (Team) result.getCdmEntity();
 		} catch (MergeException e) {
 			Assert.fail("No Merge exception should be thrown");
 		}
@@ -95,9 +97,11 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	service.save(team);
     	nameSerivce.save(name);
 
+    	UpdateResult result = null;
     	Person person = null;
 		try {
-			person = service.convertTeam2Person(team);
+			result = service.convertTeam2Person(team);
+			person = (Person)result.getCdmEntity();
 		} catch (IllegalArgumentException e) {
 			Assert.fail("No IllegalArgumentException should be thrown");
 		} catch (MergeException e) {
@@ -135,8 +139,10 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	nameSerivce.save(name);
 
     	Person person = null;
+    	UpdateResult result = null;
 		try {
-			person = service.convertTeam2Person(team);
+		    result = service.convertTeam2Person(team);
+		    person = (Person) result.getCdmEntity();
 		} catch (IllegalArgumentException e) {
 			Assert.fail("No IllegalArgumentException should be thrown");
 		} catch (MergeException e) {

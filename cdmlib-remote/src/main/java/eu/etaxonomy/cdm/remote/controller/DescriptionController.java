@@ -10,20 +10,16 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.awt.Color;
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -31,30 +27,16 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.wordnik.swagger.annotations.Api;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
-import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -82,10 +64,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
     @Autowired
     private ITermService termService;
-
-
-    @Autowired
-    private IEditGeoService geoService;
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -136,68 +114,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return mv;
     }
 
-    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public ModelAndView doGetDescriptionElement(
-            @PathVariable("descriptionelement_uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        ModelAndView mv = new ModelAndView();
-        logger.info("doGetDescriptionElement() - " + request.getRequestURI());
-        DescriptionElementBase element = service.getDescriptionElementByUuid(uuid);
-        if(element == null) {
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
-        mv.addObject(element);
-        return mv;
-    }
-
-    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public Pager<Annotation> doGetDescriptionElementAnnotations(
-            @PathVariable("descriptionelement_uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementAnnotations() - " + request.getRequestURI());
-        DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
-        if(annotatableEntity == null){
-            HttpStatusMessage.UUID_INVALID.send(response);
-            // method will exit here
-            return null;
-        }
-
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
-        return annotations;
-    }
-
-    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}/states", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public ModelAndView doGetDescriptionElementStates(
-            @PathVariable("descriptionelement_uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementStates() - " + request.getRequestURI());
-
-        ModelAndView mv = new ModelAndView();
-
-        DescriptionElementBase descriptionElement = service.loadDescriptionElement(uuid,
-                Arrays.asList( new String[]{
-                        "states.state.representations",
-                        "modifiers",
-                        "modifyingText"
-                        } ));
-        if(descriptionElement == null){
-            HttpStatusMessage.UUID_INVALID.send(response);
-            // method will exit here
-            return null;
-        }
-
-        if(descriptionElement instanceof CategoricalData){
-
-        }
-        List<StateData> states = ((CategoricalData)descriptionElement).getStateData();
-        mv.addObject(states);
-        return mv;
-    }
-
     /*
     @RequestMapping(value = "{uuid_list}/namedAreaTree", method = RequestMethod.GET)
     public NamedAreaTree doGetOrderedDistributions(
@@ -217,7 +133,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     }
     */
 
-    @RequestMapping(value = "//description/{uuid}/naturalLanguageDescription/{featuretree_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
+    @RequestMapping(value = "naturalLanguageDescription/{featuretree_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGenerateNaturalLanguageDescription(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("featuretree_uuid") UUID featureTreeUuid,
@@ -253,58 +169,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return mv;
     }
 
-    /**
-     * @param taxonUuid
-     * @param parts
-     *            possible values: condensedStatus, tree, mapUriParams,
-     *            elements,
-     * @param subAreaPreference
-     * @param statusOrderPreference
-     * @param hideMarkedAreasList
-     * @param omitLevels
-     * @param request
-     * @param response
-     * @param recipe
-     *  The recipe for creating the condensed distribution status
-     * @return
-     * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
-     */
-    @RequestMapping(value = "//description/distributionInfoFor/{uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-    public ModelAndView doGetDistributionInfo(
-            @PathVariable("uuid") UUID taxonUuid,
-            @RequestParam("part") Set<InfoPart> partSet,
-            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
-            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
-            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
-            @RequestParam(value = "statusColors", required = false) String statusColorsString,
-            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
-            HttpServletRequest request,
-            HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
-
-            logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
-
-            ModelAndView mv = new ModelAndView();
-
-            Set<MarkerType> hideMarkedAreas = null;
-            if(hideMarkedAreasList != null){
-                hideMarkedAreas = hideMarkedAreasList.asSet();
-            }
-
-
-            EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
-
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
-
-            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), getInitializationStrategy(), recipe);
-
-            mv.addObject(dto);
-
-            return mv;
-    }
 
 
 }

@@ -29,9 +29,9 @@
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="935" /> <!-- ASSOCIATEDSPECIMENOROBSERVATION_ID="5000" -->
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="935" />  <!-- ASSOCIATEDSPECIMENOROBSERVATION_ID="5002" -->
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="935" /> <!-- ASSOCIATEDSPECIMENOROBSERVATION_ID="5004" -->
-  <EXTENSION EXTENDEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit" VALUE="Label name: Vaccinium stanleyi Schweinf. ::"/>
-  <EXTENSION EXTENDEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit" VALUE="Label name: Philippia johnstonii engl. :: Det. as: Erica mannii (Hook.f.) Beentje by Geerinck D. (BR) in: Nov 2007. (Verification # 57888):: Det. as: Erica johnstonii (Schweinf. ex Engl.) Dorr by : Geerinck D. (BR) in Aug 2007. (Verification #"/>
-  <EXTENSION EXTENDEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit" VALUE="Label name: Erica arborea ::"/>
+  <EXTENSION VALUE="Label name: Vaccinium stanleyi Schweinf. ::"/>
+  <EXTENSION VALUE="Label name: Philippia johnstonii engl. :: Det. as: Erica mannii (Hook.f.) Beentje by Geerinck D. (BR) in: Nov 2007. (Verification # 57888):: Det. as: Erica johnstonii (Schweinf. ex Engl.) Dorr by : Geerinck D. (BR) in Aug 2007. (Verification #"/>
+  <EXTENSION VALUE="Label name: Erica arborea ::"/>
   <GATHERINGEVENT TIMEPERIOD_FREETEXT="[null]" TIMEPERIOD_START="19590306" TIMEPERIOD_END="[null]" ABSOLUTEELEVATION="1300" EXACTLOCATION_REFERENCESYSTEM_ID="2039"/>
   <GATHERINGEVENT TIMEPERIOD_FREETEXT="[null]" TIMEPERIOD_START="19800407" TIMEPERIOD_END="19800506" ABSOLUTEELEVATION="1400" EXACTLOCATION_REFERENCESYSTEM_ID="2053"/>
   <GATHERINGEVENT TIMEPERIOD_FREETEXT="[null]" TIMEPERIOD_START="18740110" TIMEPERIOD_END="[null]" ABSOLUTEELEVATION="2100" EXACTLOCATION_REFERENCESYSTEM_ID="2054"/>
@@ -43,9 +43,9 @@
   <LANGUAGESTRING ID="15" TEXT="rien d&apos;ecology" LANGUAGE_ID="124"/>
   <LANGUAGESTRING ID="16" TEXT="A place somewhere out there" LANGUAGE_ID="124"/>
   <LANGUAGESTRING ID="17" TEXT="Buisson de 2 m de hauteur. Fleurs roses" LANGUAGE_ID="124"/-->
-  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="777526" SOURCEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
-  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="222" SOURCEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
-  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="479998" SOURCEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
+  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="777526" />
+  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="222" />
+  <ORIGINALSOURCEBASE DTYPE="IdentifiableSource" IDINSOURCE="479998"/>
   <REFERENCE PROTECTEDTITLECACHE="true" TITLECACHE="My first source" REFTYPE="GEN" PROTECTEDABBREVTITLECACHE="false" ABBREVTITLECACHE="Sp. Pl." ABBREVTITLE="Sp. Pl." NOMENCLATURALLYRELEVANT="false"/>
   <REFERENCE PROTECTEDTITLECACHE="true" TITLECACHE="My nice source" REFTYPE="GEN"  PROTECTEDABBREVTITLECACHE="false" ABBREVTITLECACHE="My nice source" ABBREVTITLE="[null]" NOMENCLATURALLYRELEVANT="false"/>
   <REFERENCE PROTECTEDTITLECACHE="true" TITLECACHE="Another source" REFTYPE="GEN" PROTECTEDABBREVTITLECACHE="false" ABBREVTITLECACHE="Another source" ABBREVTITLE="[null]" NOMENCLATURALLYRELEVANT="false"/>

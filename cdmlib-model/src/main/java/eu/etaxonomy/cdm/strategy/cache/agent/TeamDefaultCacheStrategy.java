@@ -65,10 +65,19 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		if (teamMembers.size() == 0){
 			result = team.getTitleCache();
 		}else if (team.isHasMoreMembers()){
-		    result += ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
+		    result = addHasMoreMembers(result);
 		}
 		return result;
 	}
+
+    /**
+     * Add the et al. to the team string
+     * @param str team string without et al.
+     * @return
+     */
+    public static String addHasMoreMembers(String str) {
+        return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
+    }
 
 	@Override
     public String getTitleCache(Team team) {
@@ -90,7 +99,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		return result;
 	}
 
-	private String concatString(Team team, List<Person> teamMembers, int i) {
+	public static String concatString(Team team, List<Person> teamMembers, int i) {
 		String concat;
 		if (i <= 1){
 			concat = "";

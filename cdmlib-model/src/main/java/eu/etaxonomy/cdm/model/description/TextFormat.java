@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -31,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 /**
  * The class representing kinds of formats used for structuring text
  * (like "xml schema namespace", "rdf", or any other format).
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:59
  */
@@ -39,29 +38,30 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "TextFormat")
 @XmlRootElement(name = "TextFormat")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class TextFormat extends DefinedTermBase<TextFormat> {
 	private static final long serialVersionUID = 2063382669537212917L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TextFormat.class);
-	
+
 	protected static Map<UUID, TextFormat> termMap = null;
-	
-	/** 
+
+	/**
 	 * Creates a new empty text format instance.
-	 * 
+	 *
 	 * @see 	#NewInstance(String, String, String, boolean, boolean)
 	 */
 	public static TextFormat NewInstance(){
 		return new TextFormat();
 	}
-	/** 
+	/**
 	 * Creates a new text format instance with a description, a label
 	 * and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new text format to be created 
+	 * 						 new text format to be created
 	 * @param	label  		 the string identifying the new text format to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new text format to be created
@@ -70,8 +70,8 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
 		return new TextFormat(term, label, labelAbbrev);
 	}
-	
-//********************************** Constructor *******************************************************************/	
+
+//********************************** Constructor *******************************************************************/
 
 	//for hibernate use only
 	@Deprecated
@@ -79,12 +79,12 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 		super(TermType.TextFormat);
 	}
 
-	/** 
+	/**
 	 * Class constructor: creates a new text format instance with a description,
 	 * a label and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new text format to be created 
+	 * 						 new text format to be created
 	 * @param	label  		 the string identifying the new text format to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new text format to be created
@@ -96,7 +96,7 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 
 //********* METHODS **************************************/
 
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -109,8 +109,8 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	protected void setDefaultTerms(TermVocabulary<TextFormat> termVocabulary){
 		termMap = new HashMap<UUID, TextFormat>();
 		for (TextFormat term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), term); 
+			termMap.put(term.getUuid(), term);
 		}
 	}
-	
+
 }

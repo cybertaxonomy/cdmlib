@@ -1,4 +1,14 @@
 * text=auto !eol
+pom.xml merge=ours
+cdmlib-print/pom.xml merge=ours
+cdmlib-test/pom.xml merge=ours
+cdmlib-io/pom.xml merge=ours
+cdmlib-ext/pom.xml merge=ours
+cdmlib-model/pom.xml merge=ours
+cdmlib-services/pom.xml merge=ours
+cdmlib-remote-webapp/pom.xml merge=ours
+cdmlib-remote/pom.xml merge=ours
+cdmlib-persistence/pom.xml merge=ours
 /LICENSE.txt -text
 /README.txt -text
 cdmlib-commons/LICENSE.TXT -text
@@ -1867,7 +1877,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/configurable.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text

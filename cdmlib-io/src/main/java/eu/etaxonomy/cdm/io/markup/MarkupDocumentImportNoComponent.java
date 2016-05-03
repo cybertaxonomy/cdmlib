@@ -56,7 +56,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private final MarkupKeyImport keyImport;
 
 	private final MarkupModsImport modsImport;
-	private final MarkupFeatureImport featureImport;
 	private final MarkupSpecimenImport specimenImport;
 	private final MarkupNomenclatureImport nomenclatureImport;
 
@@ -238,7 +237,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
 				TaxonNode parent = lastNode.getParent();
-				if (parent != null) {
+				if (parent != null && parent.getTaxon() != null) {
 					parent.addChildTaxon(taxon, null, null);
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				} else {

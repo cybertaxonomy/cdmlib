@@ -11,9 +11,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-
 /**
  * 
  * Class for testing foreign key constraints. Will move to another package in future.

@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.api.service.config;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-
 /**
  * This class is used to configure term deletion.
  * 

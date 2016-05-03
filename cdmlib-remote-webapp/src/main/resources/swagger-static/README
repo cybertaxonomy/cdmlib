@@ -1,0 +1,3 @@
+This folder will contains static swagger api documentation files.
+
+It is initially empty and will filled automatically when the SwaggerGroupsIT integration test is run. 

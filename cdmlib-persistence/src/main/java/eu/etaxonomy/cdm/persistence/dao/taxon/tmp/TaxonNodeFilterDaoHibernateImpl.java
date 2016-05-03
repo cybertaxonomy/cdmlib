@@ -10,9 +10,7 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonNodeDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.tmp.LogicFilter.Op;
 
 /**

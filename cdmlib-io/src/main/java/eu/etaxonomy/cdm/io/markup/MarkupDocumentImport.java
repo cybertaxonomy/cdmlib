@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -43,11 +44,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
- * 
+ *
  */
 @Component
-public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator, MarkupImportState> implements ICdmIO<MarkupImportState> {
-	@SuppressWarnings("unused")
+public class MarkupDocumentImport
+        extends XmlImportBase<MarkupImportConfigurator, MarkupImportState>
+        implements ICdmIO<MarkupImportState> {
+
+    private static final long serialVersionUID = -961438861319456892L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 
@@ -58,7 +63,7 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 
 	@Autowired
 	private IEditGeoService editGeoService;
-	
+
 	public MarkupDocumentImport() {
 		super();
 	}
@@ -72,9 +77,9 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 	}
 
 	@Override
-	public void doInvoke(MarkupImportState state) { 
+	public void doInvoke(MarkupImportState state) {
 		fireProgressEvent("Start import markup document", "Before start of document");
-		
+
 		TransactionStatus tx = startTransaction();
 		// FIXME reset state
 		doAllTheOldOtherStuff(state);
@@ -84,7 +89,7 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 			// StAX
 			XMLEventReader reader = getStaxReader(state);
 			state.setReader(reader);
-			
+
 			// start document
 			if (!validateStartOfDocument(reader)) {
 				state.setUnsuccessfull();
@@ -93,7 +98,7 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 
 			MarkupDocumentImportNoComponent x = new MarkupDocumentImportNoComponent(this);
 			x.doInvoke(state);
-			
+
 			commitTransaction(tx);
 
 			// //SAX
@@ -107,7 +112,7 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
 			state.setUnsuccessfull();
 		}
-		
+
 		return;
 
 	}
@@ -115,7 +120,7 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 
 	/**
 	 * This comes from the old version, needs to be checked on need
-	 * 
+	 *
 	 * @param state
 	 */
 	private void doAllTheOldOtherStuff(MarkupImportState state) {
@@ -135,98 +140,119 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common
 	 * .IImportConfigurator)
 	 */
-	protected boolean isIgnore(MarkupImportState state) {
+	@Override
+    protected boolean isIgnore(MarkupImportState state) {
 		return !state.getConfig().isDoTaxa();
 	}
-	
 
-// ************************* OPEN AFTER REFACTORING ****************************************/	
 
-	
+// ************************* OPEN AFTER REFACTORING ****************************************/
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#fireWarningEvent(java.lang.String, java.lang.String, java.lang.Integer)
 	 */
-	public void fireWarningEvent(String message, String dataLocation, Integer severity) {
+	@Override
+    public void fireWarningEvent(String message, String dataLocation, Integer severity) {
 		super.fireWarningEvent(message, dataLocation, severity, 1);
 	}
-	
-	public void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
+
+	@Override
+    public void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
 		super.fireWarningEvent(message, dataLocation, severity, stackDepth + 1);
 	}
-	
-	public void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
+
+	@Override
+    public void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		super.fireSchemaConflictEventExpectedStartTag(elName, reader);
 	}
 
 // ************************* END Events ************************************************************
-	
-	
-	public boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
+
+
+	@Override
+    public boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
 		return super.isStartingElement(event, elName);
 	}
 
-	public boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
+	@Override
+    public boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
 		return super.isEndingElement(event, elName);
-	}	
-	
-	public void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
+	}
+
+	@Override
+    public void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
 		super.fillMissingEpithetsForTaxa(parentTaxon, childTaxon);
 	}
-	
-	public Feature getFeature(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
+
+    @Override
+    public Feature getFeature(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
 		return super.getFeature(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
-	public ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
+
+    @Override
+    public PresenceAbsenceTerm getPresenceTerm(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm, TermVocabulary<PresenceAbsenceTerm> voc){
+        return super.getPresenceTerm(state, uuid, label, text, labelAbbrev, isAbsenceTerm, voc);
+    }
+
+	@Override
+    public ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
 		return super.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
 
 	public DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		return super.getIdentiferType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
-	public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
+
+	@Override
+    public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		return super.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
-	public MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
+
+	@Override
+    public MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
 		return super.getMarkerType(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
-	public TextData getFeaturePlaceholder(MarkupImportState state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
+
+	@Override
+    public TextData getFeaturePlaceholder(MarkupImportState state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
 		return super.getFeaturePlaceholder(state, description, feature, createIfNotExists);
 	}
-	
-	public NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+
+	@Override
+    public NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
 		return super.getNamedAreaLevel(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
-	public NamedArea getNamedArea(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+
+	@Override
+    public NamedArea getNamedArea(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
 		return super.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode);
 	}
-	
-	public Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+
+	@Override
+    public Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		return super.getLanguage(state, uuid, label, text, labelAbbrev, voc);
 	}
-	
+
 	public boolean getReadMediaData(){
 		return this.READ_MEDIA_DATA;
 	}
-	
-	public Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
+
+	@Override
+    public Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
 		return super.getImageMedia(uriString, readMediaData);
 	}
 
 	public IEditGeoService getEditGeoService() {
 		return editGeoService;
 	}
-	
-	
-		
-	
+
+
+
+
 }

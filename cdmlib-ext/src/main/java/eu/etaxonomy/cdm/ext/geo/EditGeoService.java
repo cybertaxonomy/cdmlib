@@ -28,11 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -344,7 +346,8 @@ public class EditGeoService implements IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe){
+            List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe,
+            DistributionOrder distributionOrder){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
@@ -382,7 +385,8 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if(parts.contains(InfoPart.tree)) {
-            dto.setTree(DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions, hiddenAreaMarkerTypes));
+            DistributionTree tree = DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions, hiddenAreaMarkerTypes,distributionOrder);
+            dto.setTree(tree);
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {

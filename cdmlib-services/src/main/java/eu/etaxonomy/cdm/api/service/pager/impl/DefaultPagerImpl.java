@@ -63,9 +63,6 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
         super(currentIndex, count, pageSize, records,suggestion);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl#createLabel(java.lang.String, java.lang.String)
-     */
     @Override
     protected String createLabel(String s1, String s2) {
         return s1 + DefaultPagerImpl.LABEL_DIVIDER + s2;

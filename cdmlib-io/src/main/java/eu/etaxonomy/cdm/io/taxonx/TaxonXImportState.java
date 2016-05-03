@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.io.taxonx;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 

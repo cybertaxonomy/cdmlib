@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 public class LocalH2 extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalH2.class);
 
-	private String sep = System.getProperty("file.separator");
+	private final String sep = System.getProperty("file.separator");
 
 	/** url without database name */
 	protected String pureUrl = "jdbc:h2:";

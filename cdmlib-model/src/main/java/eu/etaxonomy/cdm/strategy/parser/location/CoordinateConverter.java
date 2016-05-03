@@ -1,12 +1,12 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-* 
+*
 * This file is an Java adaption from the orginal CoordinateConverter written by Dominik Mikiewicz
 * @see www.cartomatic.pl
 * @see http://dev.e-taxonomy.eu/svn/trunk/geo/coordinateConverter/CoordinateConverter.cs
@@ -34,19 +34,23 @@ public class CoordinateConverter {
     //Patterns
     private List<CoordinatePattern> patterns;
 
+    private static String minuteUtf8 = "\u02B9|\u00B4|\u02CA|\u0301|\u0374";
+    private static String secondUtf8 = "\u02BA|\u030B|\u2033|\u00B4\u00B4";
+
 
     private class CoordinatePattern{
     	String description;
     	String pattern;
     }
-    
-    
+
+
     private Comparator<CustomHemisphereIndicator> lengthComparator = new Comparator<CustomHemisphereIndicator>(){
-		public int compare(CustomHemisphereIndicator ind1, CustomHemisphereIndicator ind2) {
+		@Override
+        public int compare(CustomHemisphereIndicator ind1, CustomHemisphereIndicator ind2) {
 			return Integer.valueOf(ind1.getLength()).compareTo(ind2.getLength());
 		}
     };
-    
+
     //Class constructor
     public CoordinateConverter() {
         //initialise pattern array
@@ -79,10 +83,10 @@ public class CoordinateConverter {
         pattern.pattern =
             "(^" +
             "(\\s)*(\\+|-|W|w|E|e|N|n|S|s)?(\\s)*" +
-            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*$))" +
+            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?("+ minuteUtf8 + "|'|M|m)?$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*("+ minuteUtf8 + "|'|M|m)?(\\s)*$))" +
             ")" +
             "|(^" +
-            "(\\s)*((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?(\u02B9|'|M|m)?)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02B9|'|M|m)?(\\s)*))" +
+            "(\\s)*((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)?("+ minuteUtf8 + "|'|M|m)?)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*("+ minuteUtf8 + "|'|M|m)?(\\s)*))" +
             "(W|w|E|e|N|n|S|s)?(\\s)*$" +
             ")";
         patterns.add(pattern);
@@ -90,22 +94,22 @@ public class CoordinateConverter {
 
         //Variations of DD\u00B0MM'SS.SSS" with whitespace characters
         pattern = new CoordinatePattern();
-        pattern.description = "Variation of DD(\u00B0|d)MM(\u02B9|m)SS.SSS(\u02BA|s)";
+        pattern.description = "Variation of DD(\u00B0|d)MM("+ minuteUtf8 + "|m)SS.SSS("+secondUtf8+"|s)";
         pattern.pattern =
-            //+/-/Nn/Ss/Ww/EeDD\u00B0MM\u02B9SS.SSS
+            //+/-/Nn/Ss/Ww/EeDD\u00B0MM"+ minuteUtf8 + "SS.SSS
             "(^" +
             "(\\s)*(\\+|-|W|w|E|e|N|n|S|s)?(\\s)*" +
             "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)" +
-            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*$)" +
-            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$)" +
-            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$))" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)?(\\s)*$)" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*("+secondUtf8+"|\"|''|S|s)?(\\s)*$)" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*("+secondUtf8+"|\"|''|S|s)?(\\s)*$))" +
             ")" +
-            //DD°MM\u02B9SS.SSSNn/Ss/Ww/Ee
+            //DD°MM"+ minuteUtf8 + "SS.SSSNn/Ss/Ww/Ee
             "|(^(\\s)*" +
             "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|" +
-            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*)|" +
-            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*)|" +
-            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*))" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)?(\\s)*)|" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*("+secondUtf8+"|\"|''|S|s)?(\\s)*)|" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*("+ minuteUtf8 + "|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*("+secondUtf8+"|\"|''|S|s)?(\\s)*))" +
             "(W|w|E|e|N|n|S|s)?(\\s)*$" +
             ")";
         patterns.add(pattern);
@@ -139,9 +143,9 @@ public class CoordinateConverter {
 
         	CoordinatePattern pattern = patterns.get(i);
         	Pattern regEx = Pattern.compile(pattern.pattern);
-        	if (regEx.matcher(str).find()) { 
-        		recognised = i; 
-            	break; 
+        	if (regEx.matcher(str).find()) {
+        		recognised = i;
+            	break;
             }
 
         }
@@ -180,14 +184,14 @@ public class CoordinateConverter {
         //Indicators are evaluated from the longest ones to the shortes ones
         //So when searching for "P" does not affect "PN" as "PN" is evaluated earlier
 
-        
+
         //search for the presence of indicators
         boolean hasPositive = false;
         boolean hasNegative = false;
 
         //keep previous negative indicators here
         List<String> previousNegatives = new ArrayList<String>();
-        
+
         //compare the string with user supplied custom pattern
         for (int x = customPtrn.hemisphereIndicators.size() - 1; x >= 0; x--){
 
@@ -213,7 +217,7 @@ public class CoordinateConverter {
                         /* Note:
                          * See the note below to understand why checking for previous negatives is performed here
                         */
-                        
+
                         //check the previous negatives
                         if (previousNegatives.size() != 0){
                             boolean sameNegative = false;
@@ -230,7 +234,7 @@ public class CoordinateConverter {
                                 hasPositive = true;
                             }
 
-                        }else{ //if no negatives before it already marks the sign as positive 
+                        }else{ //if no negatives before it already marks the sign as positive
                             hasPositive = true;
                         }
 
@@ -244,16 +248,16 @@ public class CoordinateConverter {
                          * positive is returned)
                          * testing for previous positives is not required since if a hasPositive is already true method will return
                          * true anyway
-                         * 
+                         *
                         */
                         previousNegatives.add(ind.getIndicator());
-                        
+
                         hasNegative = true;
 
                     }
                 }
             }
-            
+
         }
 
         //Note:
@@ -271,7 +275,7 @@ public class CoordinateConverter {
         }
     }
 
-      
+
 
     //returns a currently used decimal separator
     private String getDecimalSeparator(){
@@ -290,7 +294,7 @@ public class CoordinateConverter {
 
         String regExReplaceComma = "(\\,|\\.)";
         str = str.replaceAll(regExReplaceComma, getDecimalSeparator());
-        
+
         return str;
     }
 
@@ -329,8 +333,8 @@ public class CoordinateConverter {
 
         //sort the list (by element's Length property)
         Collections.sort(stringsToRemove, lengthComparator);
-        
-        
+
+
 //        ListSelectionEv.sort(lengthComparator);
 
 
@@ -382,9 +386,9 @@ public class CoordinateConverter {
         public boolean conversionSuccessful;
         public double convertedCoord;
         public boolean canBeLat;
-        
+
         public String conversionComments;
-        
+
         public Boolean isLongitude;
 
         public int dd;
@@ -397,14 +401,14 @@ public class CoordinateConverter {
 
 
     public ConversionResults tryConvert(String str){
-        //some local variables 
+        //some local variables
         int sign; //sign of the coordinate
         String[] decimalBit, ddmmss, ddmm; //arrays for splitting
         double dd = 0, mm = 0, ss = 0, mmm = 0, sss = 0, dec = 0; //parts of the coordinates
-        
+
         String decSeparatorRaw = String.valueOf(getDecimalSeparator()); //gets the current decimal separator
         String decSeparatorRegEx = decSeparatorRaw.replace(".", "\\.");
-        
+
         ConversionResults results = new ConversionResults();
 
         //Get the matched pattern
@@ -421,14 +425,14 @@ public class CoordinateConverter {
 
 
         if (pattern.description.equals("Variation of DD.DDD")){
-            
+
        	  	//Sets pattern machted, successful, pattern type and pattern info
         	initializeResult(results, pattern);
 
             //get sign
             sign = getSign(str);
             results.isLongitude = getIsLongitude(str);
-            
+
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -450,7 +454,7 @@ public class CoordinateConverter {
             //get sign
             sign = getSign(str);
             results.isLongitude = getIsLongitude(str);
-            
+
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -461,13 +465,13 @@ public class CoordinateConverter {
             //do some further replacing
             //Replace degree symbol
             str = str.replaceAll("(\u00B0|\u00BA|D|d)", ":");
-            
+
             //remove minute symbol
-            str = str.replaceAll("(\u02B9|'|M|m)", "");
-            
+            str = str.replaceAll("("+ minuteUtf8 + "|'|M|m)", "");
+
             //Extract decimal part
             decimalBit = str.split(decSeparatorRegEx);
-            
+
             //split degrees and minutes
             ddmm = decimalBit[0].split(":");
 
@@ -477,8 +481,8 @@ public class CoordinateConverter {
 
             if (ddmm.length > 1){ //Minutes
                 //check if the string is not empty
-                if (ddmm[1] != "") { 
-                	mm = Integer.valueOf(ddmm[1]); 
+                if (ddmm[1] != "") {
+                	mm = Integer.valueOf(ddmm[1]);
                 }
             }
 
@@ -492,15 +496,15 @@ public class CoordinateConverter {
             checkDegreeRange(dd, results);
             checkMinuteRange(mm, results);
             doConvertWithCheck(sign, dd, mm, mmm, ss, sss, results);
-            
-        }else if (pattern.description.equals("Variation of DD(\u00B0|d)MM(\u02B9|m)SS.SSS(\u02BA|s)")){
-        	
-        	/* 
+
+        }else if (pattern.description.equals("Variation of DD(\u00B0|d)MM("+ minuteUtf8 + "|m)SS.SSS("+secondUtf8+"|s)")){
+
+        	/*
              * Note:
              * This pattern allows the seconds to be specified with S, s or " or nothing at all
              * If the seconds are marked with "s" and there is no other indication of the hemisphere
              * the coordinate will be parsed as southern (negative).
-             * 
+             *
              * If the N / E / W / + indicator is found the coordinate will be parsed appropriately no matter
              * what is the second notation
             */
@@ -512,7 +516,7 @@ public class CoordinateConverter {
             sign = getSign(str);
             //TODO test S
             results.isLongitude = getIsLongitude(str);
-            
+
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -523,11 +527,11 @@ public class CoordinateConverter {
             //remove second symbol (s is removed by the get sign method)
             //double apostrophe is not removed here as single apostrphe may mark minutes!
             //it's taken care of later after extracting the decimal part
-            str = str.replaceAll("(\u02BA|\")", "");
-            
+            str = str.replaceAll("("+secondUtf8+"|\")", "");
+
             //do some further replacing
             //Replace degree symbol
-            str = str.replaceAll("(\u00B0|\u00B0|D|d|\u02B9|'|M|m)",":");
+            str = str.replaceAll("(\u00B0|\u00B0|D|d|"+ minuteUtf8 + "|'|M|m)",":");
 
             //Extract decimal part
             decimalBit = str.split(decSeparatorRegEx);
@@ -546,14 +550,14 @@ public class CoordinateConverter {
             dd = Integer.valueOf(ddmmss[0]); //Degrees
             if (ddmmss.length > 1){//Minutes
                 //check if the string is not empty
-                if (ddmmss[1] != "") { 
-                	mm = Integer.valueOf(ddmmss[1]); 
+                if (ddmmss[1] != "") {
+                	mm = Integer.valueOf(ddmmss[1]);
                 }
             }
             if (ddmmss.length > 2){//Seconds
                 //check if the string is not empty
-                if (ddmmss[2] != "") { 
-                	ss = Integer.valueOf(ddmmss[2]); 
+                if (ddmmss[2] != "") {
+                	ss = Integer.valueOf(ddmmss[2]);
                 }
             }
             if (decimalBit.length > 1) { //DecimalSeconds
@@ -577,7 +581,7 @@ public class CoordinateConverter {
             //get sign
             sign = getSign(str);
             results.isLongitude = getIsLongitude(str);
-            
+
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
@@ -599,8 +603,8 @@ public class CoordinateConverter {
             }
             if (ddmmss.length > 2) {//Seconds{
                 //check if the string is not empty
-                if (ddmmss[2] != "") { 
-                	ss = Integer.valueOf(ddmmss[2]); 
+                if (ddmmss[2] != "") {
+                	ss = Integer.valueOf(ddmmss[2]);
                 }
             }
             if (decimalBit.length > 1) { //DecimalSeconds
@@ -620,28 +624,28 @@ public class CoordinateConverter {
 
         	//Sets pattern machted, successful, pattern type and pattern info
         	initializeResult(results, pattern);
-	
-	
+
+
 	        //get sign
 	        sign = getCustomSign(str);
-	       
+
 	        //TODO still needs to be adapted to custom pattern
 	        results.isLongitude = getIsLongitude(str);
-	           
-	
+
+
 	        //Remove all the unwanted stuff
 	        //Note: This method also replaces the symbols with ":"
 	        //Note: In certain cases it may make the coord unparsable
 	        str = removeCustomPatternParts(str);
-	
+
 	        str = removeWhiteSpace(str);
-	
+
 	        //Replace comma or dot with a current decimal separator
 	        str = fixDecimalSeparator(str);
-	
+
 	        //remove the ":" here as it is not needed here for decimal degrees
 	        str = str.replace(":", "");
-	
+
 	        try {
 	            //Since this is already a decimal degree no spliting is needed
 	            dd = Double.valueOf(str);
@@ -650,21 +654,21 @@ public class CoordinateConverter {
 	            results.convertedCoord = 99999; //this is to mark an error...
 	            results.conversionComments =
 	                "It looks like the supplied pattern has some ambiguous elements and the parser was unable to parse the coordinate." +
-	                "<br/>If the supplied symbols used for marking degrees, minutes or seconds contain hemisphere indicators, " + 
+	                "<br/>If the supplied symbols used for marking degrees, minutes or seconds contain hemisphere indicators, " +
 	                "the parser is likely to fail or yield rubbish results even though the pattern itself has been recognised."
 	                ;
-	
+
 	            //exit method
 	            return results;
 	        }
-	
+
 	        //Since this is already a decimal degree no spliting is needed
 	        dd = Double.valueOf(str);
-	
+
 	        checkDegreeRange(dd, results);
 	        doConvertWithCheck(sign, dd, mm, mmm, ss, sss, results);
-	        
-	
+
+
 	    }else if (pattern.description.equals("Custom variation of DD:MM.MMM")){
            //-------------Customs patterns start here-------------
 
@@ -673,10 +677,10 @@ public class CoordinateConverter {
 
             //get sign
             sign = getCustomSign(str);
-          
+
             //TODO still needs to be adapted to custom pattern
 	        results.isLongitude = getIsLongitude(str);
-	        
+
 
 
             //Remove all the unwanted stuff
@@ -689,7 +693,7 @@ public class CoordinateConverter {
             //Replace comma or dot with a current decimal separator
             str = fixDecimalSeparator(str);
 
-            
+
             //Extract decimal part
             decimalBit = str.split(decSeparatorRegEx);
 
@@ -744,7 +748,7 @@ public class CoordinateConverter {
 
             //TODO still needs to be adapted to custom pattern
 	        results.isLongitude = getIsLongitude(str);
-	        
+
 
             //Remove all the unwanted stuff
             //Note: This method also replaces the symbols with ":"
@@ -770,14 +774,14 @@ public class CoordinateConverter {
                 dd = Integer.valueOf(ddmmss[0]); //Degrees
                 if (ddmmss.length > 1) {//Minutes
                     //check if the string is not empty
-                    if (ddmmss[1] != "") { 
-                    	mm = Integer.valueOf(ddmmss[1]); 
+                    if (ddmmss[1] != "") {
+                    	mm = Integer.valueOf(ddmmss[1]);
                     }
                 }
                 if (ddmmss.length > 2){ //Seconds
                     //check if the string is not empty
-                    if (ddmmss[2] != "") { 
-                    	ss = Integer.valueOf(ddmmss[2]); 
+                    if (ddmmss[2] != "") {
+                    	ss = Integer.valueOf(ddmmss[2]);
                     }
                 }
                 if (decimalBit.length > 1){ //DecimalSeconds
@@ -817,7 +821,7 @@ public class CoordinateConverter {
             results.conversionComments = "Coordinate pattern not recognised!";
 
  	    }
-        
+
         //do the self check here
         results = selfTest(results);
 
@@ -853,9 +857,9 @@ public class CoordinateConverter {
 		        results.conversionComments = "Conversion successful.";
 
 		        //Check whether the coordinate exceeds +/- 90 and mark it in comments
-		        
-		        if (dec <= 90 && dec >= -90 && (results.isLongitude == null || results.isLongitude == false) ) { 
-                	results.canBeLat = true; 
+
+		        if (dec <= 90 && dec >= -90 && (results.isLongitude == null || results.isLongitude == false) ) {
+                	results.canBeLat = true;
                 }else{
                 	results.isLongitude = true;
                 }
@@ -925,7 +929,7 @@ public class CoordinateConverter {
         	return false;
         }else if (regexLatitudeAmbigous.matcher(str).find()){
         	Pattern regexLiteralUnits = Pattern.compile("(D|d|M|m)");
-        	
+
         	//if there are no other literal units we assume that S is a
         	//direction and not a second indicator
             if (! regexLiteralUnits.matcher(str).find()){
@@ -966,10 +970,10 @@ public class CoordinateConverter {
 
         if (results.conversionSuccessful != false){
             int sign = 1;
-            if (Math.signum(results.convertedCoord) < 0) { 
-            	sign = -1; 
+            if (Math.signum(results.convertedCoord) < 0) {
+            	sign = -1;
             }
-            
+
             double decimalDegrees = sign * results.convertedCoord;
             int fullDegrees;
 
@@ -1023,7 +1027,7 @@ public class CoordinateConverter {
 
     }
 
-    
+
     private class CustomPattern{
 
         public List<CustomHemisphereIndicator> hemisphereIndicators;
@@ -1104,26 +1108,27 @@ public class CoordinateConverter {
             return this.m_length;
         }
         public void setLength(int value){
-            this.m_length = value; 
+            this.m_length = value;
         }
 
 
         public boolean getPositive(){
-            return this.m_positive; 
+            return this.m_positive;
         }
         public void setPositive(boolean value){
             this.m_positive = value;
         }
-        
+
         /* Less than zero if this instance is less than obj.
-         * Zero if this instance is equal to obj. 
-         * Greater than zero if this instance is greater than obj. 
-         * 
+         * Zero if this instance is equal to obj.
+         * Greater than zero if this instance is greater than obj.
+         *
          * This method uses the predefined method Int32.CompareTo
          * */
 
+        @Override
         public int compareTo(CustomHemisphereIndicator ind){
-	        
+
 	        //no need to rewrite the code again, we have Integer.compareTo ready to use
 	        return Integer.valueOf(this.getLength()).compareTo(Integer.valueOf(ind.getLength()));
         }
@@ -1144,7 +1149,7 @@ public class CoordinateConverter {
         //north
         CustomHemisphereIndicator ind = new CustomHemisphereIndicator("North", patternIn.north, patternIn.north.length() ,true);
         indicators.add(ind);
-        
+
         //south
         ind = new CustomHemisphereIndicator("South", patternIn.south, patternIn.south.length(), false);
         indicators.add(ind);
@@ -1160,10 +1165,10 @@ public class CoordinateConverter {
         //sort the arraylist
         Collections.sort(indicators, lengthComparator);
 
-        
+
         //add it to the pattern object
-        pattern.hemisphereIndicators = indicators; 
-        
+        pattern.hemisphereIndicators = indicators;
+
         //case insensitive
         pattern.caseInsensitive = patternIn.caseInsensitive;
 
@@ -1175,7 +1180,7 @@ public class CoordinateConverter {
 
         //save the data
         customPtrn = pattern;
-        
+
 
         //----------------build custom patterns----------------
 
@@ -1258,7 +1263,7 @@ public class CoordinateConverter {
         //Custom variation of DD.DDD
         ptrn = new CoordinatePattern();
         ptrn.description = "Custom variation of DD.DDD";
-        ptrn.pattern  = 
+        ptrn.pattern  =
             CaseInsensitive + "(^" +
             WhiteSpace + HemisphereIndicator + WhiteSpace +
             "(" +
@@ -1276,7 +1281,7 @@ public class CoordinateConverter {
         //Custom variation of DD:MM.MMM
         ptrn = new CoordinatePattern();
         ptrn.description = "Custom variation of DD:MM.MMM";
-        ptrn.pattern = 
+        ptrn.pattern =
             CaseInsensitive + "(^" +
             WhiteSpace + HemisphereIndicator + WhiteSpace +
             "(" +
@@ -1290,7 +1295,7 @@ public class CoordinateConverter {
             "))"
             ;
         customPatterns.add(ptrn);
-        
+
         //Custom variation of DD:MM:SS.SSS
         ptrn = new CoordinatePattern();
         ptrn.description = "Custom variation of DD:MM:SS.SSS";
@@ -1308,12 +1313,12 @@ public class CoordinateConverter {
             "))"
             ;
         customPatterns.add(ptrn);
-        
+
         //check if the default patterns are to be used
         if (patternIn.disableDefaultPatterns) {
             patterns = customPatterns;
         } else { //if all patterns are to be used check which set has the matching priority
-        
+
             //check if the custom patterns are to have priority over the default ones
             if (patternIn.priorityOverDefaultPatterns){
 

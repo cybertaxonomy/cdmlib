@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**

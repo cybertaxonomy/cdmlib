@@ -35,7 +35,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -49,7 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 @XmlType(name = "RelationshipTermBase", propOrder = {
     "symmetric",
     "transitive",
-    "inverseRepresentations"
+    "inverseRepresentations",
+    "inverseSymbol"
 })
 @XmlSeeAlso({
 	HybridRelationshipType.class,
@@ -59,9 +59,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 })
 @Entity
 @Audited
-// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
-// this is needed, otherwise the fields of the also abstract super class are missed during indexing
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
@@ -84,13 +81,20 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@IndexedEmbedded(depth = 2)
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 
+    @XmlElement(name = "inverseSymbol")
+    @Column(length=30)
+    //the symbol to be used in String representations for the reverse representation of this term #5734
+    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //empty string is explicitly allowed and should be distinguished from NULL!
+    private String inverseSymbol;
+
 //******************** CONSTRUCTOR ************************/
-	
+
     //for JAXB only, TODO needed?
     @Deprecated
     private RelationshipTermBase(){super();}
 
-	
+
 	protected RelationshipTermBase(TermType type) {
 		super(type);
 	}
@@ -164,7 +168,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 * @param languages
 	 * @return
 	 */
-	public Representation getPreferredInverseRepresentation(List<Language> languages) {
+    public Representation getPreferredInverseRepresentation(List<Language> languages) {
 		Representation repr = null;
 		if(languages != null){
 			for(Language language : languages) {
@@ -219,6 +223,15 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	public String getInverseDescription(Language lang) {
 		return this.getInverseRepresentation(lang).getDescription();
 	}
+
+    public String getInverseSymbol() {
+        return inverseSymbol;
+    }
+    public void setInverseSymbol(String inverseSymbol) {
+        this.inverseSymbol = inverseSymbol;
+    }
+
+//**************** CSV *************************/
 
 	@Override
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {

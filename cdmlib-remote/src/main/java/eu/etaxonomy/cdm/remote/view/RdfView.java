@@ -30,16 +30,8 @@ import org.springframework.web.servlet.view.AbstractView;
 
 import com.ibm.lsid.http.HTTPConstants;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
-import eu.etaxonomy.cdm.remote.view.JsonView.Type;
 import eu.etaxonomy.remote.dto.rdf.Rdf;
 
 /**

@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.dto.tdwg;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Set;
 
@@ -22,8 +21,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
-import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.LinkType;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;

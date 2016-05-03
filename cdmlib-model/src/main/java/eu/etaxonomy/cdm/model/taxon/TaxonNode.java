@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -22,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,13 +33,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -76,7 +76,8 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
 @Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
@@ -104,7 +105,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
 
     @XmlElement(name = "treeIndex")
-    @Size(max=255)
+    @Column(length=255)
     private String treeIndex;
 
 
@@ -114,7 +115,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
     private Classification classification;
 
     @XmlElementWrapper(name = "childNodes")
@@ -193,7 +194,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
 // ************************* GETTER / SETTER *******************************/
 
+    @Transient
     public Integer getSortIndex() {
+        TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
+        parent.removeNullValueFromChildren();
+
 		return sortIndex;
 	}
     /**
@@ -224,6 +229,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public List<TaxonNode> getChildNodes() {
+
         return childNodes;
     }
 	protected void setChildNodes(List<TaxonNode> childNodes) {
@@ -360,6 +366,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
+        Classification classification = HibernateProxyHelper.deproxy(this.getClassification(), Classification.class);
+        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         if (this.getClassification().isTaxonInTree(taxon)){
             throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
@@ -484,7 +492,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected boolean removeChildNode(TaxonNode childNode){
         boolean result = true;
-
+        removeNullValueFromChildren();
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }
@@ -512,6 +520,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @see				#deleteChildNode(TaxonNode)
      */
     public void removeChild(int index){
+        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
         TaxonNode child = childNodes.get(index);
         child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
@@ -609,15 +618,21 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         Classification classification = parent.getClassification();
         //FIXME also set the tree index here for performance reasons
+        classification = HibernateProxyHelper.deproxy(classification, Classification.class);
         setClassificationRecursively(classification);
 
         // add this node to the parent's child nodes
+        parent = HibernateProxyHelper.deproxy(parent, TaxonNode.class);
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
+
         while (parentChildren.contains(null)){
             parentChildren.remove(null);
         }
-        this.updateSortIndex(0);
+        parent.updateSortIndex(0);
+        if (index > parent.getChildNodes().size()){
+            index = parent.getChildNodes().size();
+        }
         if (parentChildren.contains(this)){
             //avoid duplicates
             if (parentChildren.indexOf(this) < index){
@@ -650,6 +665,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 */
 	private void updateSortIndex(int index) {
 	    List<TaxonNode> children = this.getChildNodes();
+
+
 	    for(int i = index; i < children.size(); i++){
         	TaxonNode child = children.get(i);
         	if (child != null){
@@ -840,6 +857,19 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Transient
     public Rank getNullSafeRank() {
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
+    }
+
+    private void removeNullValueFromChildren(){
+        try {
+            if (childNodes.contains(null)){
+                while(childNodes.contains(null)){
+                    childNodes.remove(null);
+                }
+            }
+            this.updateSortIndex(0);
+        } catch (LazyInitializationException e) {
+            logger.info("Cannot clean up uninitialized children without a session, skipping.");
+        }
     }
 
 

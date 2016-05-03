@@ -27,13 +27,13 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
  * @created 15.03.2010
- * @version 1.0
  */
 public class InputTransformerBase implements IInputTransformer, Serializable {
     private static final long serialVersionUID = 1824180329524647957L;
@@ -48,7 +48,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 
 	@Override
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
-		String warning = "getFeatureByKey is not implemented in implementing transformer class";
+		String warning = "getFeatureUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 
 	}
@@ -212,6 +212,12 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public Rank getRankByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getRankByKey is not yet implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	@Override
+	public NomenclaturalStatusType getNomenclaturalStatusByKey(String key) throws UndefinedTransformerMethodException {
+	    String warning = "getNomenclaturalStatusByKey is not yet implemented in implementing transformer class";
+	    throw new UndefinedTransformerMethodException(warning);
 	}
 
 	@Override

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdmlib-parent</artifactId>
+		<version>4.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>cdmlib-test</artifactId>
+  <name>CDM Integration Tests</name>
+  <description>EDIT CDM library integration test layer. Some base classes and resources for CDM Library integration testing</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-test/</connection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-test/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-test/</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2ddl</name>
+              <implementation>annotationconfigurationX</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <namingstrategy>org.hibernate.cfg.DefaultComponentSafeNamingStrategy</namingstrategy>
+            <propertyfile>/src/test/resources/dbscripts/hibernate.properties</propertyfile>
+            <outputfilename>001_cdm.ddl</outputfilename>
+            <configurationfile>/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml</configurationfile>
+          </componentProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.5.6-FINAL</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <configuration>
+          <tasks>
+            <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.EnversHibernateToolTask">
+              <classpath refid="maven.plugin.classpath" />
+            </taskdef>
+            <mkdir dir="target/generated-sources/hibernate3" />
+            <hibernatetool destdir=".">
+              <classpath>
+                <path refid="maven.plugin.classpath" />
+                <path refid="maven.compile.classpath" />
+                <path refid="maven.test.classpath" />
+              </classpath>
+              <jpaconfiguration persistenceunit="cdm" />
+              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />
+              </hibernatetool>
+          </tasks>
+        </configuration>
+         <dependencies>
+          <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+            <version>${hibernate.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+          </dependency>
+          <dependency>
+          	<!-- is this still needed ?? -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-tools</artifactId>
+            <version>3.2.4.GA</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+              <version>${commons-logging.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.unitils</groupId>
+        <artifactId>unitils-core</artifactId>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-database</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbmaintainer</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbunit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-easymock</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-mock</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-inject</artifactId>
+      <scope>compile</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-orm</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<groupId>javax.persistence</groupId>
+	      	<artifactId>persistence-api</artifactId>
+      	</exclusion>
+      </exclusions>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-spring</artifactId>
+      <scope>compile</scope>
+    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--       <scope>compile</scope> -->
+<!--     </dependency> -->
+    <dependency>
+		<groupId>xmlunit</groupId>
+		<artifactId>xmlunit</artifactId>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- ******* DATABASES DRIVER ******* -->
+
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- SQL Server and Sybase -->
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+  
+	<!-- Profiling -->
+	<dependency>
+		<groupId>com.yourkit</groupId>
+		<artifactId>yjp-controller-api-redist</artifactId>
+    <scope>compile</scope>
+	</dependency>
+
+    <!-- required by Xerces 2.11.0 -->
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-ext</artifactId>
+    </dependency>  
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-model</artifactId>
+    </dependency>
+  </dependencies>
+  
+</project>

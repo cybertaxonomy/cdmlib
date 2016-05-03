@@ -1,18 +1,19 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -26,17 +27,17 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbObjectMapper.class);
-	
+
 	boolean isCache;
-	
+
 	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
-	
+
 	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString, boolean isCache){
 		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, isCache);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
@@ -45,7 +46,7 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 		this.isCache = isCache;
 	}
-	
+
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		CdmBase value = (CdmBase)super.getValue(cdmBase);
@@ -66,7 +67,7 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		}else{
 			result = getId(value);
 		}
-		
+
 //		getState().getConfig().getCdmAppController().commitTransaction(tx);
 		return result;
 	}
@@ -80,7 +81,7 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 			Integer id = getState().getDbId(cdmBase);
 			return id;
 		}
-	}	
+	}
 
 	@Override
 	protected int getSqlType() {

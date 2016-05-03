@@ -1,22 +1,22 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);
-	
+
 	public enum EXCLUDE{
 		NONE,
 		WITH_ID,
@@ -42,10 +42,10 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 	public static int EXCLUDE_NONE = 0;
 	public static int EXCLUDE_WITH_ID = 1;
 	public static int EXCLUDE_WITH_NAMESPACE = 2;
-	
+
 	private boolean isCache = false;
-	private EnumSet<EXCLUDE> exclude;
-	
+	private final EnumSet<EXCLUDE> exclude;
+
 	public static DbSingleSourceMapper NewInstance(String dbAttributeString, EnumSet<EXCLUDE> exclude, boolean isCache){
 		return new DbSingleSourceMapper(dbAttributeString, exclude, isCache, null);
 	}
@@ -59,11 +59,11 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		this.isCache = isCache;
 		this.exclude = exclude;
 	}
-	
+
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		//TODO implement also for Identifiable sources
-		if (cdmBase.isInstanceOf(DescriptionElementBase.class)){ 
+		if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
 			//find source candidates
 			DescriptionElementBase el = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
 			Set<DescriptionElementSource> sourceCandidates = el.getSources();
@@ -73,7 +73,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 					filteredSources.add(sourceCandidate);
 				}
 			}
-			//filter 
+			//filter
 			if (filteredSources.size() == 0 ){
 				return null;
 			}else if (filteredSources.size() > 1){
@@ -92,9 +92,9 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 			}
 		}else{
 			throw new ClassCastException("CdmBase for "+this.getClass().getName() +" must be of type DescriptionElementBase, but was " + cdmBase.getClass());
-		}			
+		}
 	}
-	
+
 	private boolean isPesiSource(DescriptionElementSource source) {
 		boolean result = true;
 		if ( exclude.contains(EXCLUDE.NONE)){

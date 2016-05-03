@@ -26,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -60,7 +59,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rank")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Rank extends OrderedTermBase<Rank> {
     private static final long serialVersionUID = -8648081681348758485L;
@@ -674,7 +674,8 @@ public class Rank extends OrderedTermBase<Rank> {
         }
         idInVoc = normalizeSectionAndSubsection(idInVoc);
         idInVoc = normalizeSpecialForm(idInVoc);
-        idInVoc = normalizeSpecialForm(idInVoc);
+        idInVoc = normalizeSsp(idInVoc);
+        idInVoc = normalizeForma(idInVoc);
         UUID uuid = idInVocMap.get(idInVoc);
         if (uuid != null ){
             result = getTermByUuid(uuid);
@@ -706,6 +707,13 @@ public class Rank extends OrderedTermBase<Rank> {
     private static String normalizeSpecialForm(String idInVoc) {
         if (idInVoc.equals("f.sp.") || idInVoc.equals("f. sp.")){
             return "f.spec.";
+        }
+        return idInVoc;
+    }
+
+    private static String normalizeForma(String idInVoc) {
+        if (idInVoc.equals("forma")){
+            return "f.";
         }
         return idInVoc;
     }

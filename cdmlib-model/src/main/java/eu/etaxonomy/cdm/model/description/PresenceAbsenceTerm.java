@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -53,7 +52,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceAbsenceTerm")
 @XmlRootElement(name = "PresenceAbsenceTerm")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final long serialVersionUID = 1036807546935584396L;
@@ -69,6 +69,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidND=UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	private static final UUID uuidC=UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
+	private static final UUID uuidCQ=UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidI=UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
 	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
 	private static final UUID uuidID=UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
@@ -82,6 +83,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+	private static final UUID uuidReportedInError = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
+
 	private static final UUID uuidNF=UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
 	private static final UUID uuidIF=UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
 	private static final UUID uuidCF=UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
@@ -213,6 +216,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static final PresenceAbsenceTerm CULTIVATED(){
 		return getTermByUuid(uuidC);
 	}
+    public static final PresenceAbsenceTerm CULTIVATED_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidCQ);
+    }
 	public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
 		return getTermByUuid(uuidE);
 	}
@@ -267,6 +273,10 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		return getTermByUuid(uuidAbsence);
 	}
 
+	public static final PresenceAbsenceTerm REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidReportedInError);
+    }
+
 	public static final PresenceAbsenceTerm NATIVE_REPORTED_IN_ERROR(){
 		return getTermByUuid(uuidNF);
 	}
@@ -319,6 +329,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
         newInstance.setAbsenceTerm(isAbsence);
 
         newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
+        newInstance.setSymbol(abbreviatedLabel);
         return newInstance;
     }
 

@@ -357,7 +357,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:28.948+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">c9676be0-9f6d-4198-b832-9a3b6681e828</uuid>
@@ -522,7 +521,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.329+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">5ce90dfd-becf-466d-864e-a72c1ade8549</uuid>
@@ -687,7 +685,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.332+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">e47f8293-bcc9-4a70-b95e-c46e72b2638b</uuid>
@@ -852,7 +849,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.335+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">4d6c7db0-f57b-44d5-923c-65117d010c45</uuid>
@@ -1017,7 +1013,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.338+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">22f6ef25-63be-44de-92a1-67047443a121</uuid>
@@ -1181,7 +1176,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.345+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">0f447c25-5fe0-41ff-a62e-d719dd445f2c</uuid>
@@ -1346,7 +1340,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.348+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">cd21076e-4b6f-4973-a4a5-0ccaa0f2466a</uuid>
@@ -1510,7 +1503,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.351+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">c52aca45-e5f0-4495-b41a-a0a4299b20de</uuid>
@@ -1675,7 +1667,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.355+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">e0f40055-b4c0-4982-abac-2c86dda5f2a2</uuid>
@@ -1839,7 +1830,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.357+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">3d8b2646-2068-47ef-a093-85bb6a038490</uuid>
@@ -2004,7 +1994,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.360+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">46bd1c91-4e9c-4c22-ad98-c247b611d741</uuid>
@@ -2168,7 +2157,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.363+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">80c96468-5ca0-4a10-add0-c4968bbd6308</uuid>
@@ -2332,7 +2320,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.369+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">4322ecb2-a18d-4a47-8f44-fdda630b0d95</uuid>
@@ -2497,7 +2484,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.372+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">900d9732-0c4d-42e5-a874-45f7d2c3a9f5</uuid>
@@ -2662,7 +2648,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.375+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">4bce4788-b63d-4bdf-bc98-6ab8cb4129db</uuid>
@@ -2826,7 +2811,6 @@
                                     <idNamespace type="string"/>
                                     <nameUsedInSource class="object" null="true"/>
                                     <originalNameString type="string"/>
-                                    <sourcedObj class="object" null="true"/>
                                     <updated type="string">2010-04-28T17:30:29.379+02:00</updated>
                                     <updatedBy class="object" null="true"/>
                                     <uuid type="string">768d2563-0191-4b00-9967-adec0e1f8527</uuid>

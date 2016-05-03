@@ -17,6 +17,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,9 +31,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
@@ -67,7 +67,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 })
 @XmlRootElement(name = "Team")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Team extends TeamOrPersonBase<Team> {
@@ -79,21 +80,22 @@ public class Team extends TeamOrPersonBase<Team> {
 
     //under construction #4311
     @XmlElement(name = "ProtectedCollectorTitleCache")
-	private boolean protectedCollectorTitleCache = false;
-    
-	//An abbreviated name for the team (e. g. in case of nomenclatural authorteams). 
+	private final boolean protectedCollectorTitleCache = false;
+
+	//An abbreviated name for the team (e. g. in case of nomenclatural authorteams).
     //A non abbreviated name for the team (e. g.
 	//in case of some bibliographical references)
     @XmlElementWrapper(name = "TeamMembers", nillable = true)
     @XmlElement(name = "TeamMember")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @IndexColumn(name="sortIndex", base = 0)
+    @OrderColumn(name="sortIndex")
+    @ListIndexBase(value=0)  //not really needed as this is the default
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
-    
+
     @XmlElement(name = "hasMoreMembers")
 	private boolean hasMoreMembers;
 
@@ -228,6 +230,10 @@ public class Team extends TeamOrPersonBase<Team> {
 		}
 	}
 
+    public boolean replaceTeamMember(Person newObject, Person oldObject){
+        return replaceInList(this.teamMembers, newObject, oldObject);
+    }
+
 
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
@@ -304,7 +310,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	/**
 	 * Protected nomenclatural title cache flag should be set to true, if
 	 * the title cache is to be preferred against the atomized data.
-	 * This may be the case if no atomized data exists or if atomization 
+	 * This may be the case if no atomized data exists or if atomization
 	 * was incomplete for whatever reason.
 	 * @return
 	 */
@@ -316,7 +322,7 @@ public class Team extends TeamOrPersonBase<Team> {
 			boolean protectedNomenclaturalTitleCache) {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
-	
+
 
 	/**
 	 * The hasMoreMembers flag is true if this team has more members than

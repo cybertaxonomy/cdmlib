@@ -5,11 +5,8 @@ package eu.etaxonomy.cdm.remote.dto.namecatalogue;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**

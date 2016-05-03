@@ -349,6 +349,20 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         }
 
         //nomenclatural status
+        tags.addAll(getNomStatusTags(nonViralName, true, false));
+        return tags;
+
+    }
+
+
+    /**
+     * @param nonViralName
+     * @param tags
+     * @return
+     */
+    @Override
+    public List<TaggedText> getNomStatusTags(T nonViralName, boolean includeSeparatorBefore,
+            boolean includeSeparatorAfter) {
         Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
         List<TaggedText> nomStatusTags = new ArrayList<TaggedText>();
@@ -356,28 +370,31 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
             NomenclaturalStatus ncStatus = iterator.next();
             // since the NewInstance method of nomencatural status allows null as parameter
             // we have to check for null values here
-            String suffix = "not defined";
+            String nomStatusStr = "not defined";
             if(ncStatus.getType() != null){
                 NomenclaturalStatusType statusType =  ncStatus.getType();
                 Language lang = Language.LATIN();
                 Representation repr = statusType.getRepresentation(lang);
                 if (repr != null){
-                    suffix = repr.getAbbreviatedLabel();
+                    nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
                     String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
                     logger.warn(message);
                     throw new IllegalStateException(message);
                 }
-            }else if(ncStatus.getRuleConsidered() != null && ! ncStatus.getRuleConsidered().equals("")){
-                suffix = ncStatus.getRuleConsidered();
+            }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
+                nomStatusStr = ncStatus.getRuleConsidered();
             }
             String statusSeparator = ", ";
-            nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
-            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, suffix));
+            if (includeSeparatorBefore){
+                nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
+            }
+            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr));
+            if (includeSeparatorAfter){
+                nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
+            }
         }
-        tags.addAll(nomStatusTags);
-        return tags;
-
+        return nomStatusTags;
     }
 
     @Override

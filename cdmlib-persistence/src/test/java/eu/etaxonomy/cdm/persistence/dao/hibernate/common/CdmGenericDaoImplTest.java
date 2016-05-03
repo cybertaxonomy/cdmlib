@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -172,7 +173,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @created 27.07.2009
  */
-public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
+public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
@@ -257,6 +258,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Group.class,
 				IdentifiableSource.class,
 				Identifier.class,
+				IntextReference.class,
 				Language.class,
 				LanguageString.class,
 				LSIDAuthority.class,
@@ -415,7 +417,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		for (CdmBase obj: referencedObjects){
 			System.out.println("Object1: " + obj.getClass().getSimpleName() + " - " + obj);
 		}
-		assertEquals(3, referencedObjects.size());
+		//was 3 before bidirectionality was removed for supplemental data
+		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
 
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
@@ -745,6 +748,60 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
 		}
 	}
+
+	/**
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+     *
+     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5652
+     *
+     * @throws MergeException
+     */
+    @Test
+    public void testMergePersons() throws MergeException {
+        Team team1 = Team.NewInstance();
+        Team team2 = Team.NewInstance();
+        Team team3 = Team.NewInstance();
+        team1.setTitleCache("team1", true);
+        team2.setTitleCache("team2", true);
+        team3.setTitleCache("team3", true);
+
+        Person person1a = Person.NewTitledInstance("person1a");
+        Person person1b = Person.NewTitledInstance("person1b");
+        Person person2 = Person.NewTitledInstance("person2");
+        Person person3 = Person.NewTitledInstance("person3");
+
+        team1.addTeamMember(person1a);
+        team1.addTeamMember(person2);
+
+
+        team2.addTeamMember(person2);
+        team2.addTeamMember(person1a);
+        team2.addTeamMember(person3);
+
+        team3.addTeamMember(person3);
+
+        agentDao.save(team1);
+        agentDao.save(team2);
+        agentDao.save(team3);
+        agentDao.save(person1b);
+        commitAndStartNewTransaction(null);
+
+        IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
+        cdmGenericDao.merge(person1b, person1a, personMergeStrategy);
+
+        team1 = (Team)agentDao.load(team1.getUuid());
+        team2 = (Team)agentDao.load(team2.getUuid());
+
+        //order should not change and 1a should be replaced by 1b
+        Assert.assertEquals("person1b", team1.getTeamMembers().get(0).getTitleCache());
+        Assert.assertEquals("person2", team1.getTeamMembers().get(1).getTitleCache());
+
+        Assert.assertEquals("person2", team2.getTeamMembers().get(0).getTitleCache());
+        Assert.assertEquals("person1b", team2.getTeamMembers().get(1).getTitleCache());
+        Assert.assertEquals("person3", team2.getTeamMembers().get(2).getTitleCache());
+
+    }
+
 
 
 	/**

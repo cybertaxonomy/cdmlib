@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -53,7 +54,7 @@ public interface IEditGeoService {
      * 			A List of <code>TaxonDescription</code> holding the distribution data
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
      *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}     * @param hideMarkedAreas
@@ -81,10 +82,10 @@ public interface IEditGeoService {
      * @param distributions
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      * @param langs
      * @return
@@ -200,6 +201,7 @@ public interface IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe);
+            List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe,
+            DistributionOrder distributionOrder);
 
 }

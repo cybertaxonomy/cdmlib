@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+ 
+ <!-- 
+    This is a hibernate configuration which complements the hibernate.cfg.xml
+    found in cdmlib-persistence exclusively for a specific phase of the execution
+    of integration tests.
+    
+    This configuration is used to define properties for the session-factory which are
+    usually defined in the spring application context (applicationContext-test.common.xml).
+    Integration tests which are based on eu.etaxonomy.cdm.test.integration.CdmIntegrationTest 
+    are in general using the configuration of the spring application context, except 
+    in one situation:
+    
+    When Unitils calls the afterTestTearDown() method after the execution of a test method
+    it is directly using the Hibernate5Module to create a new  session instead of using the 
+    spring ApplicationContextManager. Unitils has explicitly configured to behave in this way
+    for somr reason (see the property dataSource.wrapInTransactionalProxy=false in 
+    /cdmlib-test/src/main/resources/unitils.properties). 
+    The session created by the Hibernate5Module gets its configuration only from the file defined 
+    in  @HibernateSessionFactory, therefore it misses the additional hibernate configuration 
+    properties defined in the spring  application context. 
+    In order to create a hibernate only way to define essential configuration properties this 
+    file exists.
+    
+    CdmIntegrationTest is configured to use this configuration file as second source to the 
+    main hibernate.cfg.xml. Both configurations are merged:
+    
+    @HibernateSessionFactory({"/eu/etaxonomy/cdm/hibernate.cfg.xml", "/eu/etaxonomy/cdm/hibernate-test.cfg.xml"})
+    
+  -->
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.search.default.indexBase">./target/index</property>
+    </session-factory>
+</hibernate-configuration>

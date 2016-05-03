@@ -70,6 +70,14 @@ public enum TagEnum {
 	 */
 	separator,
 	/**
+     *  A separator that needs to be added to the previous text if and only if
+     *  the previous tag is used (not filtered) and if it is not the last tag
+     *  in the list.
+     *  A post-separator should include all needed whitespaces. So adding of whitespace
+     *  is not needed if a post-separator is given.
+     */
+    postSeparator,
+	/**
 	 *  The hybrid sign.
 	 */
 	hybridSign,
@@ -103,7 +111,7 @@ public enum TagEnum {
 		return this == nomStatus;
 	}
 	public boolean isSeparator(){
-		return this == separator;
+		return this == separator || this == postSeparator;
 	}
 	public boolean isHybridSign(){
 		return this == hybridSign;

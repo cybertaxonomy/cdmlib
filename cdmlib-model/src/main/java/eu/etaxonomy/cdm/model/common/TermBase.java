@@ -210,10 +210,16 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
             return (repr == null)? null :repr.getLabel();
         }else{
             for (Representation r : representations){
-                return r.getLabel();
+                if (r.getLabel()!= null){
+                    return r.getLabel();
+                }
+            }
+            if (representations.size()>0){
+                return null;
+            }else{
+                return super.getUuid().toString();
             }
         }
-        return super.getUuid().toString();
     }
 
     public String getLabel(Language lang) {

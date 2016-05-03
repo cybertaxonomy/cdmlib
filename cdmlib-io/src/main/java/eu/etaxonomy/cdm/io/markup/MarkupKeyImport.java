@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventReader;
@@ -23,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -41,12 +43,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class MarkupKeyImport  extends MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupKeyImport.class);
-	
-	
+
+
 	public MarkupKeyImport(MarkupDocumentImport docImport) {
 		super(docImport);
 	}
-	
+
 	public void handleKey(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
@@ -58,11 +60,11 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 		boolean onlyNumberedTaxaExist = checkAndRemoveAttributeValue(attributes, ONLY_NUMBERED_TAXA_EXIST, "true");
 		state.setOnlyNumberedTaxaExist(onlyNumberedTaxaExist);
-		
+
 		PolytomousKey key = PolytomousKey.NewInstance();
 		key.addTaxonomicScope(state.getCurrentTaxon());
 		state.setCurrentKey(key);
-		
+
 		boolean isFirstCouplet = true;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -110,19 +112,19 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		if (state.getDefaultLanguage() != null && state.getDefaultLanguage().equals(Language.FRENCH())){
 			standardTitles = standardTitlesFrench;
 		}
-		
+
 		if (isNotBlank(keyTitle) ){
 			if (!state.getConfig().isReplaceStandardKeyTitles() || ! keyTitle.matches(standardTitles)){
 				key.setTitleCache(keyTitle, true);
 			}
 		}
 	}
-	
+
 
 	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
 		String num = getOnlyAttribute(parentEvent, NUM, true);
-		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>(); 
-		
+		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>();
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -149,7 +151,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 		throw new IllegalStateException("<couplet> has no closing tag");
 	}
-	
+
 
 	/**
 	 * @param state
@@ -194,11 +196,11 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		//TODO needed only for data lineage
 		String questionNum = getAndRemoveRequiredAttributeValue(parentEvent, attributes, NUM);
-		
+
 		PolytomousKeyNode myNode = PolytomousKeyNode.NewInstance();
 		myNode.setKey(state.getCurrentKey());  //to avoid NPE while computing num in PolytomousKeyNode in case this node is not matched correctly with a parent
 		nodesList.add(myNode);
-		
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -242,10 +244,19 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String num = getAndRemoveAttributeValue(attributes, NUM);
 		boolean taxonNotExists = checkAndRemoveAttributeValue(attributes, EXISTS, "false");
-		
+
 		String taxonCData = handleInnerToTaxon(state, reader, parentEvent, node).trim();
-		
+
 		String taxonKeyStr = makeTaxonKey(taxonCData, state.getCurrentTaxon(), parentEvent.getLocation());
+        try{
+            if (taxonKeyStr.contains(":")){
+                System.out.println(":");
+                UUID.fromString(taxonKeyStr);
+                System.out.println("Here we have a uuid: " + taxonKeyStr );
+            }
+        }catch(Exception e){
+        }
+
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
 			NonViralName<?> name = createNameByCode(state, Rank.UNKNOWN_RANK());
@@ -302,7 +313,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 	 * abbreviated genus epithets by its full name etc.
 	 * @param strGoto
 	 * @param taxon
-	 * @param location 
+	 * @param location
 	 * @return
 	 */
 	private String makeTaxonKey(String strGoto, Taxon taxon, Location location) {
@@ -310,23 +321,13 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		if (strGoto == null){
 			return "";
 		}
-		
+
 		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 		String strGenusName = name.getGenusOrUninomial();
-		
-		final String bracketPattern = "\\([^\\(\\)]*\\)";
-		final String bracketPatternSomewhere = String.format(".*%s.*", bracketPattern);
-		if (strGoto.matches(bracketPatternSomewhere)){
-			fireWarningEvent("toTaxon has bracket: " + strGoto, makeLocationStr(location), 4);
-			strGoto = strGoto.replaceAll(bracketPattern, "");  //replace all brackets
-		}
-		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
-		
-		strGoto = strGoto.trim();
-		strGoto = strGoto.replaceAll("\\s+\\.", "\\.");   // " ." may be created by bracket replacement
-		strGoto = strGoto.replaceAll("\\.\\.", "\\.");   //replace
-		
-		String[] split = strGoto.split("\\s");
+
+		String normalized = normalizeKeyString(strGoto, location);
+
+		String[] split = normalized.split("\\s");
 		//handle single epithets and markers
 		for (int i = 0; i<split.length; i++){
 			String single = split[i];
@@ -341,13 +342,34 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			}
 			result = (result + " " + split[i]).trim();
 		}
-		//remove trailing "." except for "sp."
-		while (result.matches(".*(?<!sp)\\.$")){
-			result = result.substring(0, result.length()-1).trim();
-		}
+		result = removeTrailingDot(result);
 		return result;
 	}
-	
+
+
+	final static String bracketPattern = "\\([^\\(\\)]*\\)";
+    final static String bracketPatternSomewhere = String.format(".*%s.*", bracketPattern);
+
+    /**
+     * @param strGoto
+     * @param location
+     * @return
+     */
+    private String normalizeKeyString(String strGoto, Location location) {
+        String result = strGoto;
+		if (result.matches(bracketPatternSomewhere)){
+			fireWarningEvent("keyString has bracket (uncritical for fullname matching): " + result, makeLocationStr(location), 4);
+			result = result.replaceAll(bracketPattern, "");  //replace all brackets
+		}
+		result = result.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
+
+		result = result.trim();
+		result = result.replaceAll("\\s+\\.", "\\.");   // " ." may be created by bracket replacement
+		result = result.replaceAll("\\.\\.", "\\.");   //replace
+        result = result.replace(UTF8.HYBRID.toString(), "x ");
+		return result;
+    }
+
 
 	private boolean isInfraSpecificMarker(String single) {
 		try {
@@ -366,14 +388,24 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 	public void makeKeyNodes(MarkupImportState state, XMLEvent event, String taxonTitle) {
 		Taxon taxon = state.getCurrentTaxon();
 		String num = state.getCurrentTaxonNum();
-		
-		String nameString = CdmBase.deproxy(taxon.getName(), NonViralName.class).getNameCache();
-//		String nameString = taxonTitle;
-		
-		//try to find matching lead nodes 
+
+		NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		String nameString = nvn.getNameCache();
+		nameString = normalizeKeyString(nameString, event.getLocation());
+        nameString = removeTrailingDot(nameString);
+        try{
+            if (nameString.contains(":")){
+                System.out.println(":");
+                UUID.fromString(nameString);
+                System.out.println("Here we have a uuid: " + nameString + "for" + nvn.getTitleCache());
+            }
+        }catch(Exception e){
+        }
+
+		//try to find matching lead nodes
 		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
 		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, event, taxon, leadsKey);
-		
+
 		if (num != null){//same without using the num
 			UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", nameString);
 			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, event, taxon, noNumLeadsKey);
@@ -387,16 +419,28 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
 			message = String.format(message, num, leadsKey.toString());
 			fireWarningEvent(message, event, 1);
-		}	
+		}
 	}
-	
-	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {
+
+	/**
+     * remove trailing "." except for "sp."
+     * @param str
+     * @return
+     */
+    private String removeTrailingDot(String str) {
+        while (str.matches(".*(?<!sp)\\.$")){
+            str = str.substring(0, str.length()-1).trim();
+        }
+        return str;
+    }
+
+    private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (PolytomousKeyNode matchingNode : matchingNodes){
 			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);
 			matchingNode.setTaxon(taxon);
 			//just to be on the save side
-			try{	
+			try{
 				matchingNode.refreshNodeNumbering();
 			} catch (Exception e) {
 				String message = "An exception occurred when trying to referesh the node numbering: " + e.getMessage();

@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
     ">
 
   <!-- Import services from cdmlib-services project -->
@@ -53,17 +53,19 @@
         <prop key="/remoting/progressmonitor.service">httpProgressMonitorService</prop>
         <prop key="/remoting/reference.service">httpReferenceService</prop>        
         <prop key="/remoting/sequence.service">httpSequenceService</prop> 
+        <prop key="/remoting/eventbase.service">httpEventBaseService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
         <prop key="/remoting/taxon.service">httpTaxonService</prop>
         <prop key="/remoting/term.service">httpTermService</prop>
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
-        <prop key="/remoting-public/user.service">httpUserService</prop>
-        <prop key="/remoting-public/metadata.service">httpMetadataService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
         <prop key="/remoting/io.service">httpIOService</prop>
         <prop key="/remoting/test.service">httpTestService</prop>
+        <!-- public services from cdmlib-services project -->
+        <prop key="/remoting-public/user.service">httpUserService</prop>
+        <prop key="/remoting-public/metadata.service">httpMetadataService</prop>
         <!-- services from cdmlib-ext project -->
         <prop key="/remoting/editgeo.service">httpEditGeoService</prop>
         <!-- services from cdmlib-io project -->

@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -121,7 +120,7 @@ public class AbcdDnaParser {
     private void parseSampleDesignations(Element item, DnaSample dnaSample) {
         NodeList sampleDesignationList = item.getElementsByTagName(prefix+"sampleDesignation");
         for(int i=0;i<sampleDesignationList.getLength();i++){
-            Identifier.NewInstance(dnaSample, sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
+            dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
         }
 
     }

@@ -21,7 +21,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.queryParser.ParseException;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
@@ -63,8 +62,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -81,7 +78,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 @Qualifier("taxonDaoHibernateImpl")
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
-    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
+//    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
     public TaxonDaoHibernateImpl() {
@@ -95,11 +92,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Autowired
     private ITaxonNameDao taxonNameDao;
 
-//    spelling support currently disabled in appcontext, see spelling.xml ... "
-//    @Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
-    public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
-        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
-    }
+////    spelling support currently disabled in appcontext, see spelling.xml ... "
+////    @Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
+//    public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
+//        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
+//    }
 
     @Override
     public List<Taxon> getRootTaxa(Reference sec) {
@@ -233,6 +230,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 
         if (query != null){
+            @SuppressWarnings("unchecked")
             List<TaxonBase> results = query.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -261,7 +259,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         	for (TaxonNameBase name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache<IdentifiableEntity>(name.getUuid(), name.getId(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache(TaxonNameBase.class, name.getUuid(), name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa){
@@ -282,7 +280,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // new Boolean(result[3].toString()) is due to the fact that result[3] could be a Boolean ora String
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
-                    if (result[2].equals("synonym")) {
+                    if (result[3].equals("synonym")) {
                         resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString())));
                     }
                     else {
@@ -1108,7 +1106,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1133,7 +1131,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1159,7 +1157,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1467,23 +1465,24 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     @Override
     public String suggestQuery(String queryString) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.suggestQuery(String queryString)");
-        String alternativeQueryString = null;
-        if (alternativeSpellingSuggestionParser != null) {
-            try {
-
-                alternativeSpellingSuggestionParser.parse(queryString);
-                org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
-                if (alternativeQuery != null) {
-                    alternativeQueryString = alternativeQuery
-                            .toString("name.titleCache");
-                }
-
-            } catch (ParseException e) {
-                throw new QueryParseException(e, queryString);
-            }
-        }
-        return alternativeQueryString;
+        throw new RuntimeException("Query suggestion currently not implemented in TaxonDaoHibernateImpl");
+//        checkNotInPriorView("TaxonDaoHibernateImpl.suggestQuery(String queryString)");
+//        String alternativeQueryString = null;
+//        if (alternativeSpellingSuggestionParser != null) {
+//            try {
+//
+//                alternativeSpellingSuggestionParser.parse(queryString);
+//                org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
+//                if (alternativeQuery != null) {
+//                    alternativeQueryString = alternativeQuery
+//                            .toString("name.titleCache");
+//                }
+//
+//            } catch (ParseException e) {
+//                throw new QueryParseException(e, queryString);
+//            }
+//        }
+//        return alternativeQueryString;
     }
 
     @Override
@@ -1561,13 +1560,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid) {
 
         int classificationId = classification.getId();
-        StringBuffer excludeUuids = new StringBuffer();
+       // StringBuffer excludeUuids = new StringBuffer();
 
 
         String queryString = "SELECT nodes.uuid, nodes.id, taxa.titleCache FROM TaxonNode AS nodes, Taxon AS taxa WHERE nodes.taxon = taxa AND nodes.classification.id = " + classificationId ;
         @SuppressWarnings("unchecked")
         List<Object[]> result;
-        if (excludeUuid != null){
+        if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
             queryString = queryString + " AND taxa.uuid NOT IN (:excludeUuid)" ;
 
             result = getSession().createQuery(queryString).setParameterList("excludeUuid", excludeUuid).list();
@@ -1876,7 +1875,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(relatedfrom.toString()).eq(taxonBase.getId()));
-            query.addProjection(AuditEntity.id().count("id"));
+            query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -1958,8 +1957,47 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return result;
         }
     }
+/*
 
+    @Override
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return getUuidAndTitleCache(limit, pattern, true);
+    }
+*/
 
+  /*  public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
+        String className;
+        if (isTaxon){
+            className = Taxon.class.getSimpleName();
+        } else{
+            className = Synonym.class.getSimpleName();
+        }
+        String queryString;
+
+        if(pattern == null){
+            queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' ", type.getSimpleName(), className );
+       } else{
+           queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s' and titleCache like :pattern", type.getSimpleName(), className);
+       }
+        Query query = getSession().createQuery(queryString);
+        if (pattern != null){
+          pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        }
+        if (limit  != null){
+            query.setMaxResults(limit);
+        }
+
+        List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
+
+        return result;
+    }
+    @Override
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern){
+
+        return getUuidAndTitleCache(limit, pattern, false);
+    }
+*/
     @Override
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
         String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
@@ -1979,8 +2017,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
     }
-
-
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
            boolean doAreaRestriction = areasExpanded.size() > 0;
@@ -2245,5 +2281,4 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,null);
     }
-
 }

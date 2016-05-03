@@ -187,6 +187,19 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
 
+	   /**
+     * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
+     */
+    @Test
+    public void testGetTitleCacheWithEtAl() {
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+        collector.setHasMoreMembers(true);
+        specimenFacade.setEcology(ecology);
+        specimenFacade.setPlantDescription(plantDescription);
+        collection.setCode("B");
+        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

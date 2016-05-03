@@ -15,8 +15,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -192,8 +192,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public int countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
-        Query query = getSession().createQuery("select count(source) from OriginalSourceBase source where source.sourcedObj = :identifiableEntity");
-        query.setParameter("identifiableEntity",identifiableEntity);
+        Query query = getSession().createQuery("SELECT COUNT(source) FROM "+identifiableEntity.getClass().getName() + " ie JOIN ie.sources source WHERE ie = :identifiableEntity");
+        query.setParameter("identifiableEntity", identifiableEntity);
         return ((Long)query.uniqueResult()).intValue();
     }
 
@@ -220,10 +220,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
-        Query query = getSession().createQuery("select source from OriginalSourceBase source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
+        Query query = getSession().createQuery("SELECT source FROM "+ identifiableEntity.getClass().getName()+ " ie JOIN ie.sources source WHERE ie.id = :id");
         query.setParameter("id",identifiableEntity.getId());
-        query.setParameter("class",identifiableEntity.getClass().getName());
         setPagingParameter(query, pageSize, pageNumber);
+        @SuppressWarnings("unchecked")
         List<IdentifiableSource> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -314,7 +314,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public int count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
-        QueryParser queryParser = new QueryParser(version, defaultField , new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(defaultField , new StandardAnalyzer());
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -368,7 +368,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     @Override
     public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
-        QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
+        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
         List<T> results = new ArrayList<T>();
 
         try {

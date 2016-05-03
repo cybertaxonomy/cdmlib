@@ -24,8 +24,8 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -35,7 +35,6 @@ import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefIterator;
-import org.apache.lucene.util.Version;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -44,7 +43,6 @@ import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
@@ -66,8 +64,6 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 	protected Directory directory;
 	private final Class<T> type;
 	private Class<? extends T> indexedClasses[];
-
-	private static Version version = Configuration.luceneVersion;
 
 
 	public AlternativeSpellingSuggestionParser(Class<T> type) {
@@ -91,13 +87,13 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 	@Override
     public Query parse(String queryString) throws ParseException {
-		QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
+		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 		return queryParser.parse(queryString);
 	}
 
 	@Override
     public Query suggest(String queryString) throws ParseException {
-		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer(version));
+		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer());
 		Query query = querySuggester.parse(queryString);
 		return querySuggester.hasSuggestedQuery() ? query : null;
 	}
@@ -105,14 +101,15 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 	private class QuerySuggester extends QueryParser {
 		private boolean suggestedQuery = false;
 		public QuerySuggester(String field, Analyzer analyzer) {
-			super(version, field, analyzer);
+			super(field, analyzer);
 		}
 		@Override
-        protected Query getFieldQuery(String field, String queryText) throws ParseException {
+        protected Query getFieldQuery(String field, String queryText, boolean quoted) throws ParseException {
 			// Copied from org.apache.lucene.queryParser.QueryParser
 			// replacing construction of TermQuery with call to getTermQuery()
 			// which finds close matches.
-			TokenStream source = getAnalyzer().tokenStream(field, new StringReader(queryText));
+			TokenStream source;
+            source = getAnalyzer().tokenStream(field, new StringReader(queryText));
 			Vector<Object> v = new Vector<Object>();
 			Token t;
 
@@ -138,7 +135,10 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 //		OLD		v.addElement(t.termText());
 				//FIXME unchecked #3344
-				v.addElement(t.term());
+				//FIXME #4716  not sure if this implementation equals the old t.term()
+                String term = new String(t.buffer(), 0, t.length());
+
+				v.addElement(term);
 			}
 			try {
 				source.close();
@@ -205,7 +205,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 					Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
 					if(log.isDebugEnabled()) {
-						BytesRefIterator iterator = dictionary.getWordsIterator();
+						BytesRefIterator iterator = dictionary.getEntryIterator();
 						BytesRef bytesRef;
 						while((bytesRef = iterator.next())  != null) {
 							log.debug("Indexing word " + bytesRef);
@@ -215,7 +215,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 //					OLD: spellChecker.indexDictionary(dictionary);
 					//FIXME preliminary for Hibernate 4 migration see # 3344
-					IndexWriterConfig config = new IndexWriterConfig(version, new StandardAnalyzer(version));
+					IndexWriterConfig config = new IndexWriterConfig( new StandardAnalyzer());
 					boolean fullMerge = true;
 					spellChecker.indexDictionary(dictionary, config, fullMerge);
 

@@ -36,7 +36,8 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         extends StrategyBase
         implements ITaxonCacheStrategy<T> {
 
-	final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
+    private static final long serialVersionUID = -2831618484053675222L;
+    final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
 
 	@Override
 	protected UUID getUuid() {
@@ -54,7 +55,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
 			String namePart = getNamePart(taxonBase);
 
-			title = namePart + " sec. ";
+			title = namePart + " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
 			title += getSecundumPart(taxonBase);
 		}else{
 			title = taxonBase.toString();
@@ -171,17 +172,22 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
                 tags.addAll(nameTags);
             }
 
-            //sec.
-            tags.add(new TaggedText(TagEnum.separator, "sec."));
-
             //ref.
+            List<TaggedText> secTags;
             Reference<?> ref = taxonBase.getSec();
             ref = HibernateProxyHelper.deproxy(ref, Reference.class);
             if (ref != null){
-                List<TaggedText> secTags = getSecReferenceTags(ref);
-                tags.addAll(secTags);
+                secTags = getSecReferenceTags(ref);
             }else{
-                tags.add(new TaggedText(TagEnum.reference, "???"));
+                secTags = new ArrayList<TaggedText>();
+                if (isBlank(taxonBase.getAppendedPhrase())){
+                    secTags.add(new TaggedText(TagEnum.reference, "???"));
+                }
+            }
+            if(! secTags.isEmpty()){
+                //sec.
+                tags.add(new TaggedText(TagEnum.separator, "sec."));
+                tags.addAll(secTags);
             }
         }
         return tags;

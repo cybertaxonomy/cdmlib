@@ -66,12 +66,21 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             if (nameTags.size() > 0){
                 tags.addAll(nameTags);
 
-                //sec.
-                tags.add(new TaggedText(TagEnum.separator, " sec. "));
+                String secSeparator =  " sec. ";
+                //not used: we currently use a post-separator in the name tags
+//                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
+//                    secSeparator = "," + secSeparator;
+//                }
 
                 //ref.
                 List<TaggedText> secTags = getSecundumTags(taxonBase);
-                tags.addAll(secTags);
+
+                //sec.
+                if (!secTags.isEmpty()){
+                    tags.add(new TaggedText(TagEnum.separator, secSeparator));
+                    tags.addAll(secTags);
+                }
+
             }else{
                 tags.add(new TaggedText(TagEnum.fullName, taxonBase.toString()));
             }
@@ -81,15 +90,18 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
     private List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
-        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName(),TaxonNameBase.class);
+        TaxonNameBase<?,INameCacheStrategy<TaxonNameBase>> name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
+            INameCacheStrategy<TaxonNameBase> nameCacheStrategy = name.getCacheStrategy();
             if (taxonBase.isUseNameCache() && name.isInstanceOf(NonViralName.class)){
-                List<TaggedText> nameCacheTags = name.getCacheStrategy().getTaggedName(name);
+                List<TaggedText> nameCacheTags = nameCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
             }else{
-                List<TaggedText> nameTags = name.getCacheStrategy().getTaggedTitle(name);
+                List<TaggedText> nameTags = nameCacheStrategy.getTaggedTitle(name);
                 tags.addAll(nameTags);
+                List<TaggedText> statusTags = nameCacheStrategy.getNomStatusTags(name, true, true);
+                tags.addAll(statusTags);
             }
             if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
                 tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
@@ -105,7 +117,11 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
         String secRef;
         if (ref == null){
-            secRef = "???";
+            if (isBlank(taxonBase.getAppendedPhrase())){
+                secRef = "???";
+            }else{
+                secRef = null;
+            }
         }else{
             if (ref.getCacheStrategy() != null &&
                     ref.getAuthorship() != null &&
@@ -116,7 +132,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 secRef = ref.getTitleCache();
             }
         }
-        tags.add(new TaggedText(TagEnum.secReference, secRef));
+        if (secRef != null){
+            tags.add(new TaggedText(TagEnum.secReference, secRef));
+        }
         return tags;
     }
 

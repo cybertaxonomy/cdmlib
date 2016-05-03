@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -39,7 +40,22 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Credit.class);
-	
+
+// ********************** FACTORY **********************************************/
+
+    public static Credit NewInstance(AgentBase agent, String text){
+        return NewInstance(agent, text, null, Language.DEFAULT());
+    }
+
+    public static Credit NewInstance(AgentBase agent, String text, String abbreviatedText, Language language){
+        Credit result = new Credit(text, language);
+        result.setAgent(agent);
+        result.setAbbreviatedText(abbreviatedText);
+        return result;
+    }
+
+// ********************** FACTORY **********************************************/
+
 	// owner etc as defined by the rightstype
 	@XmlElement(name = "Agent")
 	@XmlIDREF
@@ -47,31 +63,21 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private AgentBase<?> agent;
-	
+
 	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;
-	
-	public static Credit NewInstance(AgentBase agent, String text){
-		return NewInstance(agent, text, null, Language.DEFAULT());
-	}
 
-	public static Credit NewInstance(AgentBase agent, String text, String abbreviatedText, Language language){
-		Credit result = new Credit(text, language);
-		result.setAgent(agent);
-		result.setAbbreviatedText(abbreviatedText);
-		return result;
-	}
+// ********************** CONSTRUCTOR **********************************************/
 
-	
 	protected Credit(){
 		super();
 	}
-	
+
 	protected Credit(String text, Language language){
 		super(text, language);
 	}
 
-
+//*********************** GETTER /SETTER *****************************/
 
 	/**
 	 * @return the agent
@@ -79,16 +85,9 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	public AgentBase getAgent() {
 		return agent;
 	}
-
-
-
-	/**
-	 * @param agent the agent to set
-	 */
 	public void setAgent(AgentBase agent) {
 		this.agent = agent;
 	}
-
 
 
 	/**
@@ -97,21 +96,12 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	public String getAbbreviatedText() {
 		return abbreviatedText;
 	}
-
-
-
-	/**
-	 * @param abbreviatedText the abbreviatedText to set
-	 */
 	public void setAbbreviatedText(String abbreviatedText) {
 		this.abbreviatedText = abbreviatedText;
 	}
 
 //************************* CLONE **************************/
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
+
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Credit result = (Credit)super.clone();
@@ -119,5 +109,15 @@ public class Credit extends LanguageStringBase implements Cloneable{
 		return result;
 	}
 
-	
+    @Override
+    public String toString() {
+        if (StringUtils.isNotBlank(this.abbreviatedText)){
+            return this.abbreviatedText;
+        }else if (StringUtils.isNotBlank(this.text)){
+            return this.text;
+        }else{
+            return super.toString();
+        }
+    }
+
 }

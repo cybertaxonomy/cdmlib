@@ -13,6 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -105,14 +107,8 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             txt.append(StringUtils.rightPad(rankStr, 2, PAD_CHAR));
         }
 
-        Field nameSortField = new Field(NAME_SORT_FIELD_NAME,
-                txt.toString(),
-                sortFieldOptions.getStore(),
-                sortFieldOptions.getIndex(),
-                sortFieldOptions.getTermVector()
-                );
-        document.add(nameSortField);
-
+        Field nameSortField = new SortedDocValuesField(NAME_SORT_FIELD_NAME, new BytesRef(txt.toString()));
+        LuceneDocumentUtility.setOrReplaceDocValueField(nameSortField, document);
     }
 
 }

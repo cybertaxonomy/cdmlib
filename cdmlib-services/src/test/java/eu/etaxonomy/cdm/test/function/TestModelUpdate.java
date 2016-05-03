@@ -34,12 +34,12 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm35" : "cdm36");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm36" : "cdm40");
 //		database = "cdm36";
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
@@ -52,22 +52,26 @@ public class TestModelUpdate {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+ 		try{
+    		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+    //		Classification classification = Classification.NewInstance("Me");
+    //		Taxon taxon = Taxon.NewInstance(null, null);
+    //		Person person = Person.NewInstance();
+    //		TaxonNode node = classification.addChildTaxon(taxon, null, null);
+    //		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
+    //		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
+    //      appCtr.getClassificationService().save(classification);
 
-//		Classification classification = Classification.NewInstance("Me");
-//		Taxon taxon = Taxon.NewInstance(null, null);
-//		Person person = Person.NewInstance();
-//		TaxonNode node = classification.addChildTaxon(taxon, null, null);
-//		DefinedTerm lastScrutiny = (DefinedTerm)appCtr.getTermService().find(DefinedTerm.uuidLastScrutiny);
-//		TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
-//      appCtr.getClassificationService().save(classification);
-
-//		appCtr.getCommonService().createFullSampleData();
+    //		appCtr.getCommonService().createFullSampleData();
 
 
 
-		appCtr.close();
+    		appCtr.close();
+ 		}catch (Exception e) {
+ 		    e.printStackTrace();
+ 		}
+		System.exit(0);
 	}
 
 
@@ -113,7 +117,13 @@ public class TestModelUpdate {
 	 */
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
-		String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
+
+	    String pathInProject = "src\\test\\resources\\h2";
+
+	    String path = pathToProject + pathInProject;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path, NomenclaturalCode.ICNAFP);
 
 
@@ -128,6 +138,7 @@ public class TestModelUpdate {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
 		appCtr.close();
+		System.exit(0);
 	}
 
 

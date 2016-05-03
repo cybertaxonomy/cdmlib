@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlType;
 import com.sun.xml.bind.CycleRecoverable;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasName;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpeciesProfileModel", propOrder = {

@@ -13,9 +13,9 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexableField;
 
 /**
  * @author Andreas Kohlbecker
@@ -24,22 +24,16 @@ import org.apache.lucene.document.Fieldable;
  */
 public class LuceneDocumentBeanProcessor extends AbstractBeanProcessor<Document> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List getIgnorePropNames() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(Document document, JSONObject json, JsonConfig jsonConfig) {
 
-        List<Fieldable> fields = document.getFields();
-        for (Fieldable field : fields) {
+        List<IndexableField> fields = document.getFields();
+        for (IndexableField field : fields) {
             // no need to handle multivalued fields, since we don't have these in case of the cdmlib
             json.element(field.name(), field.stringValue());
         }

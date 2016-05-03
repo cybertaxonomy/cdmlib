@@ -32,10 +32,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -64,7 +64,8 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
 public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>> implements Cloneable{
@@ -94,7 +95,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @IndexedEmbedded
+    @FieldBridge(impl=NotNullAwareIdBridge.class)
     private Taxon taxon;
 
 

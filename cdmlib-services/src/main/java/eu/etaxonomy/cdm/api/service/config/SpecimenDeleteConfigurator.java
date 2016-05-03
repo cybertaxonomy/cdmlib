@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service.config;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
 
@@ -44,7 +43,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     /**
      * If <code>true</code> the specimen is deleted
      * from a {@link DescriptionBase} if it is set as "described" specimen.<br>
-     * If the description is a {@link SpecimenDescription} then it is also deleted
      */
     private boolean deleteFromDescription;
 

@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
 /**
@@ -38,7 +37,8 @@ import org.hibernate.search.annotations.Store;
 })
 @XmlRootElement(name = "Representation")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.Representation")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.Representation")
 @Audited
 public class Representation extends LanguageStringBase {
     private static final long serialVersionUID = -4202420199587324532L;

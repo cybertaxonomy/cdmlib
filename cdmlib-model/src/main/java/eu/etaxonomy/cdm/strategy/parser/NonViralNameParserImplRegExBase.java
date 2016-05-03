@@ -77,14 +77,15 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String status = "";
 
     //marker
-    protected static String InfraGenusMarker = "(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
+    protected static String InfraGenusMarker = "(n|notho)?(subgen\\.|subg\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
-    protected static String infraSpeciesMarker = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\. sp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
+    protected static String infraSpeciesMarker = "(n|notho)?(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|tax\\." + fWs + "infrasp\\.)";
     protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
     //AuthorString
-	protected static String authorPart = "(" + "(O'|d'|D'|L'|'t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
+    protected static String qm = "[" + UTF8.RIGHT_SINGLE_QUOT + "']";
+    protected static String authorPart = "(" + "([OdDL]"+qm+"|[’']t|ten\\s||le\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC.)" + "('" + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f\\.|fil\\.|secundus)?" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
@@ -213,10 +214,11 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
-    protected static String pNomStatusNom = "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s?prop\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
-    					"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
-    protected static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
-    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.)";
+    protected static String pNomStatusNom =
+            "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
+    			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
+    protected static String pNomStatusOrthVar = "orth\\." + fWs + "(var\\.|rej\\.)";
+    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";
     protected static String pNomStatusOpus = "opus\\." + fWs + "utique" + fWs + "oppr\\.";
 
     protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + ")";
@@ -235,8 +237,10 @@ public abstract class NonViralNameParserImplRegExBase  {
     //cultivars and hybrids
     protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
     protected static String cultivarMarker = oWs + "(cv\\.|')";
-    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|notho)";
-    protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + hybridPart;
+    protected static String notho = "notho";
+    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";
+    protected static String noNothoHybridPart = "([xX]" + oWs + "|"+hybridSign+")";
+    protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + noNothoHybridPart;  //for some reason infraspecific notho ranks do not parse if notho is allowed as uninomial prefix.
     protected static String hybridFormularSeparator = oWs + "[" + hybridSign + "xX]" + oWs;
 
 
@@ -267,7 +271,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern finalTeamSplitterPattern = Pattern.compile(finalTeamSplitter);
     protected static Pattern cultivarPattern = Pattern.compile(cultivar);
     protected static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
-    protected static Pattern hybridPattern = Pattern.compile(hybridFull);
 
     protected static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);

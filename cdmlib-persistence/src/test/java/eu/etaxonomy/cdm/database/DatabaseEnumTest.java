@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 

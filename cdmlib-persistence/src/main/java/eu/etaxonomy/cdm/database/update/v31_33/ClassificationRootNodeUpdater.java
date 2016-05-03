@@ -20,9 +20,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
-import eu.etaxonomy.cdm.database.update.TableDroper;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.RankClass;
 
 /**
  * Creates empty root nodes for each classification. Replacing MN tables for classification root nodes.

@@ -25,9 +25,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentMap;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.SortedMapProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
+import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedMapProxy;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -261,7 +261,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             throw new RuntimeException(message, e);
         } catch (NoSuchMethodException e) {
             String message = "Property " + propertyName + " not found for class " + parentClazz;
-            logger.error(message);
+            logger.info(message);
             //don't throw exception as sometimes property paths will include non matching property names due to subclassing
             //#5077  comment 12
         }

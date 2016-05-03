@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,20 +22,21 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @version 1.0
  */
 public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File, STATE, IExportTransformer> implements IExportConfigurator<STATE, IExportTransformer>{
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = 6078292713506530756L;
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
 
 	//	private XmlExportState<XmlExportConfigurator> state;
-	
+
 	public enum IdType{
 		CDM_ID,
 		ORIGINAL_SOURCE_ID
 	}
-	
+
 	private IdType idType = IdType.CDM_ID;
 
-	
-	
+
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -47,7 +48,7 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 	   setDestination(destination);
 //	   setState(new XmlExportState<XmlExportConfigurator>());
 	}
-	
+
 
 	/**
 	 * @return the idType
@@ -67,7 +68,8 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
 	 */
-	public String getDestinationNameString() {
+	@Override
+    public String getDestinationNameString() {
 		if (getDestination() != null){
 			return getDestination().getName();
 		}else{
@@ -89,8 +91,8 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 //	public void setState(BerlinModelExportState<XmlExportConfigurator> state) {
 //		this.state = state;
 //	}
-//	
-	
+//
 
-	
+
+
 }

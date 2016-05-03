@@ -1,14 +1,15 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.api.facade;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -40,10 +42,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;
@@ -51,11 +50,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
 	@Override
 	public String getTitleCache(FieldUnit fieldUnit) {
 		DerivedUnitFacade facade;
@@ -63,20 +58,20 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 		config.setFirePropertyChangeEvents(false);
 		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit, config);
-		result = getFieldData(facade);	
+		result = getFieldData(facade);
 		result = addPlantDescription(result, facade);
 		facade.close();
 		return result;
 	}
-	
+
 
 	protected String getFieldData(DerivedUnitFacade facade) {
 		String ALTITUDE_PREFIX = "alt. ";
 //		String ALTITUDE_POSTFIX = " m";
-		
+
 		String result = "";
-		
-			
+
+
 		//country
 		String strCountry = null;
 		NamedArea country = facade.getCountry();
@@ -85,47 +80,47 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		//this is against the common way of handling text, label and labelabbrev in defined terms
 		strCountry = repCountry == null ? null: repCountry.getText();
 		result = CdmUtils.concat(", ", result, strCountry);
-		
+
 		//locality
 		result = CdmUtils.concat(", ", result, facade.getLocalityText());
-		
+
 		//elevation
 		if (StringUtils.isNotBlank(facade.absoluteElevationToString())){
 			result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
 			result += facade.absoluteElevationToString();
 		}
-		
+
 		//exact locality
 		if (facade.getExactLocation() != null){
 			String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
 			result = CdmUtils.concat(", ", result, exactLocation);
 		}
-		
+
 		//ecology
 		result = CdmUtils.concat(", ", result, facade.getEcology());
-		
+
 		//gathering period
 		//TODO period.toString ??
 		TimePeriod gatheringPeriod = facade.getGatheringPeriod();
 		result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
-		
+
 		//collector (team) and field number
 		String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
 		result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
 
-		
+
 		return result;
 	}
-	
+
 
 	protected String addPlantDescription(String result, DerivedUnitFacade facade) {
-		
+
 		//plant description
 		result = CdmUtils.concat("; ", result, facade.getPlantDescription());
 		if (CdmUtils.isNotEmpty(result)){
 			result += ".";
 		}
-		
+
 		return result;
 	}
 
@@ -136,7 +131,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		AgentBase<?> collector = facade.getCollector();
 		String fieldNumber = facade.getFieldNumber();
 		Person primaryCollector = facade.getPrimaryCollector();
-		
+
 		if (collector == null){
 			return fieldNumber;
 		}else if(collector.isProtectedTitleCache()){
@@ -155,31 +150,34 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 			}else{
 				return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
 			}
-			
+
 			int counter = 0;
-			int teamSize = collectorTeam.getTeamMembers().size();
+//			int teamSize = collectorTeam.getTeamMembers().size();
 			boolean fieldNumberAdded = false;
-			for (Person member : collectorTeam.getTeamMembers()){
+			List<Person> teamMembers = collectorTeam.getTeamMembers();
+			for (Person member : teamMembers){
 				counter++;
-				String concatString = (counter >= teamSize)? " & " : ", "; 
+				String concatString = TeamDefaultCacheStrategy.concatString(collectorTeam, teamMembers, counter);
+				//(counter >= teamSize)? " & " : ", ";
 				result = CdmUtils.concat(concatString, result, getMemberString(member) );
 				if (member.equals(primaryCollector)){
 					result = addFieldNumber(result, fieldNumber);
 					fieldNumberAdded = true;
 				}
 			}
+			if (collectorTeam.isHasMoreMembers()){
+			    result = TeamDefaultCacheStrategy.addHasMoreMembers(result);
+			}
 			if (! fieldNumberAdded){
 				result = addFieldNumber(result, fieldNumber);
 			}
 			return result;
 		}
-		
+
 	}
 
-
-
-	private String addFieldNumber(String result, String fieldNumber) {
-		result = CdmUtils.concat(" ", result, fieldNumber);
+	private String addFieldNumber(String str, String fieldNumber) {
+		String result = CdmUtils.concat(" ", str, fieldNumber);
 		return result;
 	}
 
@@ -223,7 +221,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	 */
 	private String getCode(DerivedUnitFacade facade) {
 		String code = "";
-		if(facade.getCollection() != null){			
+		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
 			if (CdmUtils.isEmpty(code)){
 				Institution institution = facade.getCollection().getInstitute();
@@ -237,12 +235,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 					}
 				}
 			}
-		} 
+		}
 		return code;
 	}
-	
+
 // ************************** GETTER / SETTER ******************************************************
-	
+
 	public boolean isIncludeSeconds() {
 		return includeEmptySeconds;
 	}
@@ -265,5 +263,5 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		return includeReferenceSystem;
 	}
 
-	
+
 }

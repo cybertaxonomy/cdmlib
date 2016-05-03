@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 /**
  * This class is an instantiatable class for the base class {@link LanguageStringBase}.
@@ -39,7 +38,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "LanguageString")
 @XmlRootElement(name = "LanguageString")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
 @Audited
 public class LanguageString  extends LanguageStringBase implements Cloneable, IIntextReferencable {
 	private static final long serialVersionUID = -1502298496073201104L;

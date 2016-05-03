@@ -24,7 +24,7 @@ public class DerivedUnitFormatter extends SpecimenOrObservationBaseFormatter{
     }
 
     @Override
-    protected void initFormatKeys(Object object, FormatKey... formatKeys) {
+    protected void initFormatKeys(Object object) {
         super.initFormatKeys(object);
         DerivedUnit derivedUnit = (DerivedUnit)object;
         for (FormatKey formatKey : formatKeys) {

@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -140,7 +140,7 @@ public class Amplification extends EventBase implements Cloneable{
     /** @see #getLadderUsed() */
     @XmlElement(name = "ladderUsed")
 	@Field
-	@Size(max=255)
+    @Column(length=255)
 	private String ladderUsed;
 
     /** @see #getElectrophoresisVoltage()*/

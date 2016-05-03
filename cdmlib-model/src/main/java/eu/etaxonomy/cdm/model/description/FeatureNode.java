@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -24,7 +25,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -102,7 +102,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 
 
     @XmlElement(name = "treeIndex")
-    @Size(max=255)
+    @Column(length=255)
     private String treeIndex;
 
     @XmlElementWrapper(name = "Children")

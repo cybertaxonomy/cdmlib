@@ -35,9 +35,9 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class AnnotationDaoTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IAnnotationDao annotationDao;
+	private IAnnotationDao annotationDao;
 
-	UUID uuid;
+	private UUID uuid;
 
 	@Before
 	public void setUp() {
@@ -60,7 +60,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		List<OrderHint> orderHints = new ArrayList<OrderHint>();
 		orderHints.add(new OrderHint("created", SortOrder.ASCENDING));
 		List<String> propertyPaths = new ArrayList<String>();
-		propertyPaths.add("annotatedObj");
+//		propertyPaths.add("annotatedObj");
 		propertyPaths.add("createdBy");
 
 		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null,null,null,orderHints,propertyPaths);
@@ -115,9 +115,6 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assertEquals("getAnnotations should return 2",2,annotations.size());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub

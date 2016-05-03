@@ -222,10 +222,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1.getUuid(), config);
-       if (result.isOk()){
+        if (result.isOk()){
     	   Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
-
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
@@ -263,7 +262,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
        DeleteResult result = nameService.delete(name1.getUuid(), config);
-      if (result.isOk()){
+       if (result.isOk()){
     	  Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
 
@@ -370,9 +369,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         if (result.isOk()){
         	Assert.fail("Delete should throw an error as long as name is used in a concept.");
         }
-        TaxonNameBase nameBase =nameService.find(name1.getUuid());
+        TaxonNameBase<?,?> nameBase =nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",nameBase);
-        TaxonBase taxonBase = taxonService.find(taxon.getUuid());
+        TaxonBase<?> taxonBase = taxonService.find(taxon.getUuid());
         Assert.assertNotNull("Taxon should still be in database",taxonBase);
         taxon = (Taxon)taxonBase;
         taxon.setName(basionym);
@@ -615,7 +614,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-
     public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -699,9 +697,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //
 
 
-        TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-        TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-        TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        TaxonNameBase<?,?> name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonNameBase<?,?> name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonNameBase<?,?> name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
@@ -715,7 +713,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-        nameService.deleteTypeDesignation(null, null);
+        nameService.deleteTypeDesignation((TaxonNameBase)null, null);
 
         commitAndStartNewTransaction(tableNames);
 
@@ -814,9 +812,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
                 "TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase"};
 
 
-        TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-        TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-        TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        TaxonNameBase<?,?> name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonNameBase<?,?> name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonNameBase<?,?> name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 

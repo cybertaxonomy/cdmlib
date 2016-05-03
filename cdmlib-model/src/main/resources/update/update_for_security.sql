@@ -14,9 +14,9 @@ Insert into grantedauthorityimpl (id,uuid, authority) VALUES (4,'8a61c102-4643-4
 
 -- ##################### add granted authorities for admin ########################################################
 
-Insert into useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 4);
-Insert into useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 3);
-Insert into useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 2);
-Insert into useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 1);
+Insert into useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 4);
+Insert into useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 3);
+Insert into useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 2);
+Insert into useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id from useraccount where username like 'admin'), 1);
 
 

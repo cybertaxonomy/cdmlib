@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
 
-import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
-
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;

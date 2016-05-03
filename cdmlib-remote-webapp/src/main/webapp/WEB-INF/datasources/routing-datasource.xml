@@ -16,10 +16,6 @@
     	eu.etaxonomy.cdm.database.DataSourceBeanLoader
     	
     	-->
-    	<!--  The property defaultDatasourceName defaults to "default" 
-    	<property name="beanDefinitionFile" value="datasources-p6spy.xml" />
-    	<property name="defaultDatasourceName" value="cichorieae" />
-    	-->
     </bean>
     
     <!-- This configures default properties, which can overridden with the file specified by the location property -->

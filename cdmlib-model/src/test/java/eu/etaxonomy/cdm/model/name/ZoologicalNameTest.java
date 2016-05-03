@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
-
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;

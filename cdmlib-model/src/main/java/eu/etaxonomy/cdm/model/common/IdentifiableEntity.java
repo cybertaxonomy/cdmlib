@@ -26,7 +26,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,12 +37,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -107,14 +107,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElement(name = "TitleCache", required = true)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
-    @Column(name="titleCache")
+    @Column(name="titleCache", length=800) //see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
-    @Size(max = 800)  //see #1592
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
+        //  If the field is only needed for sorting and nothing else, you may configure it as
+        //  un-indexed and un-stored, thus avoid unnecessary index growth.
+        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.NO, index = Index.NO)
     })
+    @SortableField(forField = "titleCache__sort")
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
 
@@ -133,7 +135,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
-    @IndexColumn(name="sortIndex", base = 0)
+    @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
@@ -242,6 +244,17 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return cache;
     }
 
+
+    @Override
+    public boolean isProtectedTitleCache() {
+        return protectedTitleCache;
+    }
+
+    @Override
+    public void setProtectedTitleCache(boolean protectedTitleCache) {
+        this.protectedTitleCache = protectedTitleCache;
+    }
+
 //**************************************************************************************
 
     @Override
@@ -304,9 +317,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         getCredits().remove(index);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getIdentifiers()
-     */
+    @Override
+    public boolean replaceCredit(Credit newObject, Credit oldObject){
+        return replaceInList(this.credits, newObject, oldObject);
+    }
+
+
     @Override
     public List<Identifier> getIdentifiers(){
         if(this.identifiers == null) {
@@ -327,7 +343,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<String>();
-        for (Identifier identifier : getIdentifiers()){
+        for (Identifier<?> identifier : getIdentifiers()){
             if (identifier.getType().getUuid().equals(identifierTypeUuid)){
                 result.add(identifier.getIdentifier());
             }
@@ -337,17 +353,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
-    	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
+    	Identifier<?> result = Identifier.NewInstance(identifier, identifierType);
+    	addIdentifier(result);
     	return result;
     }
 
      @Override
     public void addIdentifier(int index, Identifier identifier){
         if (identifier != null){
-        	if (identifier.getIdentifiedObj() != null && ! identifier.getIdentifiedObj().equals(this)){
-        		identifier.getIdentifiedObj().removeIdentifier(identifier);
-        	}
-        	identifier.setIdentifiedObj(this);
         	//deduplication
         	int oldIndex = getIdentifiers().indexOf(identifier);
         	if(oldIndex > -1){
@@ -368,7 +381,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void removeIdentifier(Identifier identifier){
         if (identifier != null){
-        	identifier.setIdentifiedObj(null);
             getIdentifiers().remove(identifier);
         }
     }
@@ -376,6 +388,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void removeIdentifier(int index){
     	getIdentifiers().remove(index);
     }
+
+    @Override
+    public boolean replaceIdentifier(Identifier newObject, Identifier oldObject){
+        return replaceInList(this.identifiers, newObject, oldObject);
+    }
+
 
     @Override
     public Set<Extension> getExtensions(){
@@ -412,27 +430,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void addExtension(Extension extension){
         if (extension != null){
-            extension.setExtendedObj(this);
             getExtensions().add(extension);
         }
     }
     @Override
     public void removeExtension(Extension extension){
         if (extension != null){
-            extension.setExtendedObj(null);
             getExtensions().remove(extension);
         }
     }
 
-    @Override
-    public boolean isProtectedTitleCache() {
-        return protectedTitleCache;
-    }
-
-    @Override
-    public void setProtectedTitleCache(boolean protectedTitleCache) {
-        this.protectedTitleCache = protectedTitleCache;
-    }
 
     @Override
     public Set<IdentifiableSource> getSources() {
@@ -445,12 +452,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void addSource(IdentifiableSource source) {
         if (source != null){
-            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-            if (oldSourcedObj != null && oldSourcedObj != this){
-                oldSourcedObj.getSources().remove(source);
-            }
             getSources().add(source);
-            source.setSourcedObj(this);
         }
     }
 
@@ -458,12 +460,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void addSources(Set<IdentifiableSource> sources) {
         if (sources != null){
         	for (IdentifiableSource source: sources){
-	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
-	            if (oldSourcedObj != null && oldSourcedObj != this){
-	                oldSourcedObj.getSources().remove(source);
-	            }
 	            getSources().add(source);
-	            source.setSourcedObj(this);
         	}
         }
     }
@@ -502,10 +499,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //******************************** TO STRING *****************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#toString()
-     */
-     @Override
+    @Override
     public String toString() {
         String result;
         if (titleCache == null){

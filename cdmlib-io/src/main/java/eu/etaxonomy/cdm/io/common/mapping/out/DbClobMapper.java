@@ -1,17 +1,18 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
-import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbClobMapper.class);
-	
+
 	public static DbClobMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbClobMapper(cdmAttributeString, dbAttributeString, null);
 	}
@@ -39,7 +40,7 @@ public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	private DbClobMapper(String cdmAttributeString, String dbAttributeString, String defaultValue) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
 	 */
@@ -58,5 +59,5 @@ public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	}
 
 
-	
+
 }

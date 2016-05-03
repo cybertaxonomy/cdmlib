@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @created 30.05.2012
- * 
+ *
  */
 public class MarkupModsImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
@@ -53,7 +53,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_PLACE ="place";
 	protected static final String MODS_EDITION ="edition";
 
-	
+
 	public MarkupModsImport(MarkupDocumentImport docImport) {
 		super(docImport);
 	}
@@ -61,7 +61,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	public void handleMods(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
-		
+
 		Reference<?> modsRef = ReferenceFactory.newGeneric();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -94,7 +94,7 @@ public class MarkupModsImport extends MarkupImportBase {
 		checkNoAttributes(parentEvent);
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			
+
 			if (isMyEndingElement(next, parentEvent)) {
 				return;
 			}else if (isStartingElement(next, MODS_PUBLISHER)) {
@@ -131,17 +131,17 @@ public class MarkupModsImport extends MarkupImportBase {
 
 	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
-		
-		
+
+
 		String identifier = getCData(state, reader, parentEvent, true).trim();
-		
+
 		if (GeneralParser.isIsbn(identifier)){
 			modsRef.setIsbn(identifier);
 		}else{
 			String message = "Identifier pattern not recognized: %s";
 			fireWarningEvent(String.format(message, identifier), parentEvent, 4);
 		}
-		
+
 		return;
 	}
 
@@ -149,7 +149,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	 * Reads all titleInfo information.
 	 * ! Preliminary implementation !
 	 */
-	private void handleTitleInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) 
+	private void handleTitleInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
@@ -157,14 +157,14 @@ public class MarkupModsImport extends MarkupImportBase {
 		String subTitle = null;
 		String partNumber = null;
 		String partName = null;
-		
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			
+
 			if (isMyEndingElement(next, parentEvent)) {
 				String all = CdmUtils.concat(" - ", title, subTitle);
 				//TODO according to http://library.princeton.edu/departments/tsd/metadoc/mods/titleinfo.html
-				//partNumber and partName can be repeated and the order should be kept 
+				//partNumber and partName can be repeated and the order should be kept
 				String part = CdmUtils.concat(" ", partNumber, partName);
 				all = CdmUtils.concat(", ", all, part);
 				modsRef.setTitle(all);
@@ -182,25 +182,25 @@ public class MarkupModsImport extends MarkupImportBase {
 			}
 		}
 		return;
-		
+
 	}
-	
+
 	/**
 	 * Reads all titleInfo information.
 	 * ! Preliminary implementation !
 	 */
-	private void handleName(MarkupImportState state, XMLEventReader reader, XMLEvent parent, Reference<?> modsRef) 
+	private void handleName(MarkupImportState state, XMLEventReader reader, XMLEvent parent, Reference<?> modsRef)
 			throws XMLStreamException {
 		String type = getOnlyAttribute(parent, "type", true);
-		
+
 		String description = null;
 		String namePart = null;
 		String partNumber = null;
 		String affiliation = null;
-		
+
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			
+
 			if (isMyEndingElement(next, parent)) {
 				if (! type.equals("personal")){
 					fireUnexpectedAttributeValue(parent, "type", type);  //currently we handle only "personal"
@@ -227,9 +227,9 @@ public class MarkupModsImport extends MarkupImportBase {
 						institution.setTitleCache(affiliation, true);
 						person.addInstitutionalMembership(institution, null, null, null);
 					}
-					
+
 				}
-				
+
 				return;
 			}else if (isStartingElement(next, MODS_DESCRIPTION)) {
 				description = this.getCData(state, reader, next);
@@ -242,6 +242,6 @@ public class MarkupModsImport extends MarkupImportBase {
 			}
 		}
 		return;
-		
+
 	}
 }

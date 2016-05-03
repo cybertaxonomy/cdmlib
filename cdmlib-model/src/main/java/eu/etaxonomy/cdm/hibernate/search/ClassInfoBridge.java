@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 /**
@@ -28,19 +29,15 @@ public class ClassInfoBridge implements FieldBridge {
     @Override
     public void set(String name, Object value, Document document,
             LuceneOptions luceneOptions) {
-        Field nameField = new Field(name + ".name",
+        Field nameField = new StringField(name + ".name",
                 value.getClass().getName(),
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         nameField.setBoost(luceneOptions.getBoost());
         document.add(nameField);
 
-        Field canonicalNameField = new Field(name + ".canonicalName",
+        Field canonicalNameField = new StringField(name + ".canonicalName",
                 value.getClass().getCanonicalName(),
-                luceneOptions.getStore(),
-                luceneOptions.getIndex(),
-                luceneOptions.getTermVector());
+                luceneOptions.getStore());
         canonicalNameField.setBoost(luceneOptions.getBoost());
         document.add(canonicalNameField);
 

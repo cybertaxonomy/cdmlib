@@ -158,7 +158,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		try {
 
-			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
+			referencedCdmBase = HibernateProxyHelper.deproxy(referencedCdmBase);
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 
 			Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
@@ -431,7 +431,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths){
 	    Session session;
 	    session =  getSession();
-	    T bean = (T)session.get(clazz, id);
+	    T bean = session.get(clazz, id);
 	    if(bean == null){
             return bean;
         }

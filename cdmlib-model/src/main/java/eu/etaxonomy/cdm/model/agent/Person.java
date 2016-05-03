@@ -12,12 +12,10 @@ package eu.etaxonomy.cdm.model.agent;
 import java.util.HashSet;
 import java.util.Set;
 
-import javassist.compiler.ast.Keyword;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,7 +29,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -40,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import javassist.compiler.ast.Keyword;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -72,7 +70,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 })
 @XmlRootElement(name = "Person")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
+//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Person extends TeamOrPersonBase<Person>{
@@ -83,28 +82,28 @@ public class Person extends TeamOrPersonBase<Person>{
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String prefix;
 
     @XmlElement(name = "FirstName")
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String firstname;
 
     @XmlElement(name = "LastName")
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String lastname;
 
     @XmlElement(name = "Suffix")
     @Field
   //TODO Val #3379
 //    @NullOrNotEmpty
-    @Size(max = 255)
+    @Column(length=255)
 	private String suffix;
 
     @XmlElement(name = "Lifespan")

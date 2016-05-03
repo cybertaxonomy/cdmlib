@@ -20,24 +20,26 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
-import org.hibernate.search.ProjectionConstants;
+import org.apache.lucene.search.join.ScoreMode;
+import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
-import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
 
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
@@ -152,21 +154,21 @@ public class QueryFactory {
      */
     public Query newDefinedTermQuery(String name, String queryString, List<Language> languages) {
 
-        BooleanQuery localizedTermQuery = new BooleanQuery();
-        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
+        Builder localizedTermQueryBuilder = new Builder();
+        localizedTermQueryBuilder.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
         if(languages == null || languages.size() == 0){
-            localizedTermQuery.add(newTermQuery(name + ".representation.text.ALL", queryString), Occur.SHOULD);
-            localizedTermQuery.add(newTermQuery(name + ".representation.label.ALL", queryString), Occur.SHOULD);
-            localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.text.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.label.ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".representation.abbreviatedLabel.ALL", queryString), Occur.SHOULD);
 
         } else {
             for(Language lang : languages){
-                localizedTermQuery.add(newTermQuery(name + ".representation.text." + lang.getUuid().toString(), queryString), Occur.SHOULD);
-                localizedTermQuery.add(newTermQuery(name + ".representation.label." + lang.getUuid().toString(), queryString), Occur.SHOULD);
-                localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.text." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.label." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + ".representation.abbreviatedLabel." + lang.getUuid().toString(), queryString), Occur.SHOULD);
             }
         }
-        return localizedTermQuery;
+        return localizedTermQueryBuilder.build();
     }
 
     /**
@@ -187,16 +189,16 @@ public class QueryFactory {
      */
     public Query newMultilanguageTextQuery(String name, String queryString, List<Language> languages) {
 
-        BooleanQuery localizedTermQuery = new BooleanQuery();
-        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
+        Builder localizedTermQueryBuilder = new Builder();
+        localizedTermQueryBuilder.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
         if(languages == null || languages.size() == 0){
-            localizedTermQuery.add(newTermQuery(name + ".ALL", queryString), Occur.SHOULD);
+            localizedTermQueryBuilder.add(newTermQuery(name + ".ALL", queryString), Occur.SHOULD);
         } else {
             for(Language lang : languages){
-                localizedTermQuery.add(newTermQuery(name + "." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQueryBuilder.add(newTermQuery(name + "." + lang.getUuid().toString(), queryString), Occur.SHOULD);
             }
         }
-        return localizedTermQuery;
+        return localizedTermQueryBuilder.build();
     }
 
     /**
@@ -214,13 +216,13 @@ public class QueryFactory {
      * @return
      */
     public Query newEntityIdsQuery(String idFieldName, List<? extends CdmBase> entities){
-        BooleanQuery idInQuery = new BooleanQuery();
+        Builder idInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
             for(CdmBase entity : entities){
-                idInQuery.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
+                idInQueryBuilder.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
             }
         }
-        return idInQuery;
+        return idInQueryBuilder.build();
     }
 
     /**
@@ -249,13 +251,13 @@ public class QueryFactory {
      */
     public Query newEntityUuidsQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
 
-        BooleanQuery uuidInQuery = new BooleanQuery();
+        Builder uuidInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
             for(IdentifiableEntity entity : entities){
-                uuidInQuery.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
+                uuidInQueryBuilder.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
             }
         }
-        return uuidInQuery;
+        return uuidInQueryBuilder.build();
     }
 
 
@@ -269,13 +271,13 @@ public class QueryFactory {
      */
     public Query newUuidQuery(String uuidFieldName, List<UUID> uuids){
 
-        BooleanQuery uuidInQuery = new BooleanQuery();
+        Builder uuidInQueryBuilder = new Builder();
         if(uuids != null && uuids.size() > 0 ){
             for(UUID uuid : uuids){
-                uuidInQuery.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
+                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
             }
         }
-        return uuidInQuery;
+        return uuidInQueryBuilder.build();
     }
 
 
@@ -302,71 +304,93 @@ public class QueryFactory {
                 boundingBox.getUpperRight().getLatitude(), true, true
         );
 
-        Query longQuery= null;
+        Builder longQueryBuilder = new Builder();
         if ( boundingBox.getLowerLeft().getLongitude() <= boundingBox.getUpperRight().getLongitude() ) {
-            longQuery = NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-                    boundingBox.getUpperRight().getLongitude(), true, true );
+            longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+                    boundingBox.getUpperRight().getLongitude(), true, true ), Occur.MUST);
         }
         else {
-            longQuery= new BooleanQuery();
-            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
                     180.0, true, true ), BooleanClause.Occur.SHOULD );
-            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
+            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
                     boundingBox.getUpperRight().getLongitude(), true, true ), BooleanClause.Occur.SHOULD );
         }
 
-        BooleanQuery boxQuery = new BooleanQuery();
-        boxQuery.add( latQuery, BooleanClause.Occur.MUST );
-        boxQuery.add( longQuery, BooleanClause.Occur.MUST );
+        Builder boxQueryBuilder = new Builder();
+        boxQueryBuilder.add( latQuery, BooleanClause.Occur.MUST );
+        boxQueryBuilder.add( longQueryBuilder.build(), BooleanClause.Occur.MUST );
 
         return new FilteredQuery(
                 new MatchAllDocsQuery(),
-                new QueryWrapperFilter( boxQuery )
+                new QueryWrapperFilter( boxQueryBuilder.build() )
         );
     }
 
     /**
-     *
-     * @param fromField
-     * @param toField
-     * @param joinFromQuery
+     * Warning! JoinQuery do currently not work with numeric fields, see https://issues.apache.org/jira/browse/LUCENE-4824
      * @param fromType
+     * @param fromField
+     * @param fromFieldIsMultivalued TODO
+     * @param fromQuery
+     * @param toField
+     * @param toType
+     *      Optional parameter. Only used for debugging only, can be left null otherwise.
+     * @param scoreMode TODO
      * @return
      * @throws IOException
      */
-    public Query newJoinQuery(String fromField, String toField, Query joinFromQuery,
-            Class<? extends CdmBase> fromType) throws IOException {
-            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(fromType));
+    public Query newJoinQuery(Class<? extends CdmBase> fromType, String fromField, boolean fromFieldIsMultivalued,
+            Query fromQuery, String toField, Class<? extends CdmBase> toType, ScoreMode scoreMode) throws IOException {
+            boolean multipleValuesPerDocument = false;
+            Query joinQuery = JoinUtil.createJoinQuery(
+                    // need to use the sort field of the id field since
+                    // ScoreMode.Max forces the fromField to be a docValue
+                    // field of type [SORTED, SORTED_SET]
+                    fromField + "__sort",
+                    multipleValuesPerDocument, toField,
+                    fromQuery, indexSearcherFor(fromType), scoreMode);
+            if(logger.isDebugEnabled()) {
+                logger.debug("joinQuery: " + joinQuery);
+                if(toType != null) {
+                    TopDocs result = indexSearcherFor(toType).search(joinQuery, 10);
+                    ScoreDoc[] docs = result.scoreDocs;
+                    logger.debug("joinQuery '" + fromType.getSimpleName() + ". " + fromField + "=" + toField + " where " + fromType.getSimpleName() + " matches "+ fromQuery + "' has " + result.totalHits + " results:");
+                    for(ScoreDoc doc : docs) {
+                        logger.debug("    toType doc: " + doc);
+                            IndexReader indexReader = toolProvider.getIndexReaderFor(toType);
+                            logger.debug("              : " + indexReader.document(doc.doc));
+                        }
+                    }
+            }
+            return joinQuery;
     }
 
     /**
      * Creates a class restriction query and wraps the class restriction
      * query and the given <code>query</code> into a BooleanQuery where both must match.
      * <p>
-     * TODO instead of using a BooleanQuery for the class restriction it would be much more
-     *  performant to use a {@link Filter} instead.
      *
      * @param cdmTypeRestriction
      * @param query
      * @return
      */
-    public static Query addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
+    public static BooleanQuery.Builder addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
 
-        Query fullQuery;
-        BooleanQuery filteredQuery = new BooleanQuery();
-        BooleanQuery classFilter = new BooleanQuery();
+        BooleanQuery fullQuery;
+        Builder filteredQueryBuilder = new Builder();
+        Builder classFilterBuilder = new Builder();
 
         Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
         TermQuery termQuery = new TermQuery(t);
 
+        classFilterBuilder.add(termQuery, Occur.SHOULD);
+        BooleanQuery classFilter = classFilterBuilder.build();
         classFilter.setBoost(0);
-        classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
 
-        filteredQuery.add(query, BooleanClause.Occur.MUST);
-        filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+        filteredQueryBuilder.add(query, Occur.MUST);
+        filteredQueryBuilder.add(classFilter, Occur.MUST); // TODO using Occur.FILTER might be improve performance but causes wrong results
 
-        fullQuery = filteredQuery;
-        return fullQuery;
+        return filteredQueryBuilder;
     }
 
     /**
@@ -374,11 +398,10 @@ public class QueryFactory {
      * @return
      */
     private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
-        if(indexSearcherMap.get(clazz) == null){
 
+        if(indexSearcherMap.get(clazz) == null){
             IndexReader indexReader = toolProvider.getIndexReaderFor(clazz);
             IndexSearcher searcher = new IndexSearcher(indexReader);
-            searcher.setDefaultFieldSortScoring(true, true);
             indexSearcherMap.put(clazz, searcher);
         }
         IndexSearcher indexSearcher = indexSearcherMap.get(clazz);

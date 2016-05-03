@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -33,7 +34,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -69,7 +69,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String fieldNumber;
 
 	@XmlElement(name = "PrimaryCollector")
@@ -85,7 +85,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	@Field
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String fieldNotes;
 
 	@XmlElement(name = "GatheringEvent")

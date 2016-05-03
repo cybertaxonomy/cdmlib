@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
@@ -280,7 +280,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws HomotypicalGroupChangeException Exception is thrown if (1) synonym is homotypic to the old accepted taxon or
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
      */
-    public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
+    public UpdateResult moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
             SynonymRelationshipType newSynonymRelationshipType, Reference newReference, String newReferenceDetail, boolean keepReference) throws HomotypicalGroupChangeException;
 
     /**

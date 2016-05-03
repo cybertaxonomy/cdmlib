@@ -23,14 +23,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExportConfigurator;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoMetaDataRecord;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoRecord;
-import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView;
-import eu.etaxonomy.cdm.remote.view.oaipmh.ListIdentifiersView;
-import eu.etaxonomy.cdm.remote.view.oaipmh.ListMetadataFormatsView;
-import eu.etaxonomy.cdm.remote.view.oaipmh.ListSetsView;
-import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 
 @Ignore
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")

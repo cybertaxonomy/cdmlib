@@ -1,6 +1,10 @@
 package eu.etaxonomy.cdm.hibernate.search;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.util.BytesRef;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -34,7 +38,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class GroupByTaxonClassBridge extends AbstractClassBridge{
 
-    public static final String GROUPBY_TAXON_FIELD = "groupby_taxon.id";
+    public static final String GROUPBY_TAXON_FIELD = "groupby_taxon.id__sort";
+
+    public static final Logger logger = Logger.getLogger(GroupByTaxonClassBridge.class);
 
     public GroupByTaxonClassBridge() {
         super();
@@ -67,7 +73,8 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge{
 
         Taxon taxon = getAssociatedTaxon(value);
         if(taxon != null){
-            idFieldBridge.set(GROUPBY_TAXON_FIELD, taxon.getId(), document, idFieldOptions);
+            Field field = new SortedDocValuesField(GROUPBY_TAXON_FIELD, new BytesRef(String.valueOf(taxon.getId())));
+            LuceneDocumentUtility.setOrReplaceDocValueField(field, document);
         }
     }
 

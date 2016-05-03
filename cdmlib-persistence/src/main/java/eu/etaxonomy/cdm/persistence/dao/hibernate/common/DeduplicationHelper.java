@@ -143,17 +143,15 @@ public class DeduplicationHelper {
 	                if (toBeDeleted != cdmBase2){
 	                    session.delete(toBeDeleted);
 	                }
-
 	            }
 			}
-
-
 
 			//flush
 			session.flush();
 
 		} catch (Exception e) {
-			throw new MergeException(e);
+			e.printStackTrace();
+		    throw new MergeException(e);
 		}
 	}
 
@@ -170,8 +168,8 @@ public class DeduplicationHelper {
 		if (cdmBase1 == null || cdmBase2 == null){
 			throw new NullPointerException("Merge arguments must not be (null)");
 		}
-		cdmBase1 = (T)HibernateProxyHelper.deproxy(cdmBase1);
-		cdmBase2 = (T)HibernateProxyHelper.deproxy(cdmBase2);
+		cdmBase1 = HibernateProxyHelper.deproxy(cdmBase1);
+		cdmBase2 = HibernateProxyHelper.deproxy(cdmBase2);
 
 
 		if (cdmBase1.getClass() != cdmBase2.getClass()){
@@ -355,7 +353,7 @@ public class DeduplicationHelper {
 		for (Annotation annotation : annotatableEntity2.getAnnotations()){
 			Annotation clone = null;
 			try {
-				clone = annotation.clone(annotatableEntity1);
+				clone = (Annotation)annotation.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -366,12 +364,13 @@ public class DeduplicationHelper {
 			annotatableEntity2.removeAnnotation(annotation);
 			session.delete(annotation);
 		}
+
 		//marker
 		List<Marker> removeListMarker = new ArrayList<Marker>();
 		for (Marker marker : annotatableEntity2.getMarkers()){
 			Marker clone = null;
 			try {
-				clone = marker.clone(annotatableEntity1);
+				clone = (Marker)marker.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -392,7 +391,7 @@ public class DeduplicationHelper {
 	 * @param cdmBase2
 	 * @param session
 	 */
-	//TODO Why do we not handle credits (credits are reusable), identifier and sources here
+	//TODO Why do we not handle credits (credits are reusable), rights and sources here
 	private <T> void copyIdentifiableExtensions(T cdmBase1, T cdmBase2,
 			Session session) {
 		IdentifiableEntity identifiableEntity1 = (IdentifiableEntity)cdmBase1;
@@ -402,7 +401,7 @@ public class DeduplicationHelper {
 		List<Extension> removeListExtension = new ArrayList<Extension>();
 		for (Extension changeObject : (Set<Extension>)identifiableEntity2.getExtensions()){
 			try {
-				Extension clone = changeObject.clone(identifiableEntity1);
+				Extension clone = (Extension)changeObject.clone();
 				identifiableEntity1.addExtension(clone);
 				removeListExtension.add(changeObject);
 			} catch (CloneNotSupportedException e) {
@@ -419,7 +418,7 @@ public class DeduplicationHelper {
 		List<Identifier> removeListIdentifier = new ArrayList<Identifier>();
 		for (Identifier<?> changeObject : (List<Identifier>)identifiableEntity2.getIdentifiers()){
 			try {
-				Identifier<?> clone = changeObject.clone(identifiableEntity1);
+				Identifier<?> clone = (Identifier)changeObject.clone();
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {
@@ -517,11 +516,15 @@ public class DeduplicationHelper {
 			Object collection = referencingField.get(referencingObject);
 			if (! (collection instanceof Collection)){
 				throw new MergeException ("Reallocation of collections for collection other than set and list not yet implemented");
+			}else if (collection instanceof List){
+			    Method replaceMethod = DefaultMergeStrategy.getReplaceMethod(referencingField);
+			    replaceMethod.invoke(referencingObject, cdmBase1, cdmBase2);
+			}else{
+			    Method addMethod = DefaultMergeStrategy.getAddMethod(referencingField, false);
+			    Method removeMethod = DefaultMergeStrategy.getAddMethod(referencingField, true);
+			    addMethod.invoke(referencingObject, cdmBase1);
+			    removeMethod.invoke(referencingObject, cdmBase2);
 			}
-			Method addMethod = DefaultMergeStrategy.getAddMethod(referencingField, false);
-			Method removeMethod = DefaultMergeStrategy.getAddMethod(referencingField, true);
-			addMethod.invoke(referencingObject, cdmBase1);
-			removeMethod.invoke(referencingObject, cdmBase2);
 		}
 	}
 

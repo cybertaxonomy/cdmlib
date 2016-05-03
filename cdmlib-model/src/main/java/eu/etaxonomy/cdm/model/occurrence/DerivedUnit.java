@@ -12,13 +12,13 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +37,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -96,28 +95,28 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String catalogNumber;
 
 	@XmlElement(name = "AccessionNumber")
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String accessionNumber;
 
 	@XmlElement(name = "CollectorsNumber")
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String collectorsNumber;
 
 	@XmlElement(name = "Barcode")
 	@Field(analyze = Analyze.NO)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 255)
+	@Column(length=255)
 	private String barcode;
 
 	@XmlElement(name = "StoredUnder")
@@ -125,7 +124,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId=true)
 	private TaxonNameBase storedUnder;
 
 	@XmlElement(name = "DerivedFrom")
@@ -161,7 +160,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Field
-	@Size(max = 255)
+    @Column(length=255)
     private String exsiccatum;
 
 // ******************** FACTORY METHOD **********************************/

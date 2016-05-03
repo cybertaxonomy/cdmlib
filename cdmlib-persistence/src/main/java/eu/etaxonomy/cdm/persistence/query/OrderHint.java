@@ -59,11 +59,26 @@ public class OrderHint {
 
     public final String LUCENE_SCORE = "LUCENE_SCORE";
 
-    public static final List<OrderHint> ORDER_BY_ID = Arrays.asList(new OrderHint[]{new OrderHint("id", SortOrder.ASCENDING)});
+    public static final OrderHint ORDER_BY_ID = new OrderHint("id", SortOrder.ASCENDING);
 
-    public static final List<OrderHint> ORDER_BY_TITLE_CACHE = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
+    public static final OrderHint ORDER_BY_ID_DESC = new OrderHint("id", SortOrder.DESCENDING);
 
-    public static final List<OrderHint> NOMENCLATURAL_SORT_ORDER = Arrays.asList(new OrderHint[]{new OrderHint(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortOrder.ASCENDING)});
+    public static final OrderHint ORDER_BY_TITLE_CACHE = new OrderHint("titleCache", SortOrder.ASCENDING);
+
+    public static final OrderHint ORDER_BY_TITLE_CACHE_DESC = new OrderHint("titleCache", SortOrder.DESCENDING);
+
+    public static final OrderHint NOMENCLATURAL_SORT_ORDER = new OrderHint(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortOrder.ASCENDING);
+
+    public static final OrderHint NOMENCLATURAL_SORT_ORDER_DESC = new OrderHint(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortOrder.DESCENDING);
+
+    public static final OrderHint BY_ORDER_INDEX = new OrderHint("orderIndex", SortOrder.ASCENDING);
+
+    public static final OrderHint BY_ORDER_INDEX_DESC = new OrderHint("orderIndex", SortOrder.ASCENDING);
+
+
+    public List<OrderHint> asList() {
+        return Arrays.asList(new OrderHint[]{this});
+    }
 
     /**
      * @param clazz
@@ -71,9 +86,9 @@ public class OrderHint {
      */
     public static List<OrderHint> defaultOrderHintsFor(Class<? extends CdmBase> clazz) {
         if (clazz.isAssignableFrom(IdentifiableEntity.class)) {
-            return ORDER_BY_TITLE_CACHE;
+            return ORDER_BY_TITLE_CACHE.asList();
         } else {
-            return ORDER_BY_ID;
+            return ORDER_BY_ID.asList();
         }
     }
 
@@ -186,7 +201,7 @@ public class OrderHint {
         if(propertyName.equals(LUCENE_SCORE)){
             return SortField.FIELD_SCORE;
         }
-        return new SortField(propertyName, SortField.STRING, sortOrder.equals(SortOrder.DESCENDING));
+        return new SortField(propertyName + "__sort", SortField.Type.STRING, sortOrder.equals(SortOrder.DESCENDING));
     }
 
     @Override

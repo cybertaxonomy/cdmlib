@@ -19,9 +19,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
-import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 

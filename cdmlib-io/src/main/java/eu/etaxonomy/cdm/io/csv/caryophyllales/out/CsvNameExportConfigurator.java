@@ -7,11 +7,15 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
 
-	private ByteArrayOutputStream byteOutputStream;
+    private static final long serialVersionUID = 1L;
+
+
+    private ByteArrayOutputStream byteOutputStream;
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
 	private String fieldsEnclosedBy = "\"";
@@ -19,6 +23,11 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	private String fieldsTerminatedBy=";";
 	private boolean namesOnly = false;
 	private UUID classificationUUID;
+
+	private boolean condensedDistribution = true;
+
+
+    private Rank rank = Rank.GENUS();
 
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
@@ -105,5 +114,34 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public void setClassificationUUID(UUID classificationUUID) {
 		this.classificationUUID = classificationUUID;
 	}
+
+    /**
+     * @return the rank
+     */
+    public Rank getRank() {
+        return rank;
+    }
+
+    /**
+     * @param rank the rank to set
+     */
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
+    /**
+     * @return the condensedDistribution
+     */
+    public boolean isCondensedDistribution() {
+        return condensedDistribution;
+    }
+
+    /**
+     * @param condensedDistribution the condensedDistribution to set
+     */
+    public void setCondensedDistribution(boolean condensedDistribution) {
+        this.condensedDistribution = condensedDistribution;
+    }
+
 
 }

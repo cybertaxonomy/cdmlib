@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -55,7 +55,7 @@ public class Primer extends AnnotatableEntity {
 
 	/** @see #getLabel() */
 	@XmlElement(name = "Label")
-	@Size(max=255)
+    @Column(length=255)
 	private String label;
 
 	/** @see #getSequence() */
@@ -70,7 +70,7 @@ public class Primer extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     private DefinedTerm dnaMarker;
-	
+
 	/** @see #getPublishedIn() */
 	@XmlElement(name = "PublishedIn")
     @XmlIDREF
@@ -78,8 +78,8 @@ public class Primer extends AnnotatableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference<?> publishedIn;
-	
-	
+
+
 
 	// ******************** FACTORY METHOD ******************/
 
@@ -130,7 +130,7 @@ public class Primer extends AnnotatableEntity {
 		}
 		this.sequence = sequence;
 	}
-	
+
 
 	/**
 	 * #4470

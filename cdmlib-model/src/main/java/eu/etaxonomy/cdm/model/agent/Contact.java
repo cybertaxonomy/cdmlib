@@ -101,7 +101,6 @@ public class Contact implements Serializable, Cloneable {
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<Address> addresses = new HashSet<Address>();
 
-
 	public static Contact NewInstance() {
 		return new Contact();
 	}
@@ -390,7 +389,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address adr : this.addresses){
 				result.addAddress((Address)adr.clone());
 			}
-			//no changes to emailAdresses, faxNumbers, phoneNumbers, urls
+			//no changes to emailAdresses, faxnumbers, phonenumbers, urls
 			return result;
 		}catch (CloneNotSupportedException e){
 			logger.warn("Object does not implement cloneable");

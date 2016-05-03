@@ -113,7 +113,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
      * @return
      * @throws MergeException
      */
-    public Person convertTeam2Person(UUID teamUuid) throws MergeException;
+    public UpdateResult convertTeam2Person(UUID teamUuid) throws MergeException;
 
 	/**
 	 * If the given {@link Team} is a single member team all links to the team are redirected to the
@@ -129,7 +129,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @throws IllegalArgumentException if team has > 1 members
 	 * @throws MergeException if anything else goes wrong during merge
 	 */
-	public Person convertTeam2Person(Team team) throws MergeException, IllegalArgumentException;
+	public UpdateResult convertTeam2Person(Team team) throws MergeException, IllegalArgumentException;
 
 
     /**
@@ -138,7 +138,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
      * @throws MergeException
      * @throws IllegalArgumentException
      */
-    public Team convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException;
+    public UpdateResult convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException;
 
 	/**
 	 * If possible replaces the given person by a new {@link Team}.
@@ -151,8 +151,6 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return the new team that replaces the given person
 	 * @throws MergeException if anything else goes wrong during merge
 	 */
-	public Team convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
-
-
+	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 
 }

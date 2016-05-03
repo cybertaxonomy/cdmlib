@@ -1,5 +1,10 @@
 /**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
  *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
@@ -7,7 +12,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.dialect.Dialect;
+import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
 /**
@@ -38,10 +43,10 @@ import org.hibernate.type.Type;
  *</pre>
  *
  * If you set the optimizer to "none", hibernate will always query the database for each new id.
- * You must tell spring to intantiate the ... before the session factory:
+ * You must tell spring to instantiate the ... before the session factory:
  *
  * <pre>
- * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate4.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
+ * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate5.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
  * ...
  * </pre>
  *
@@ -50,6 +55,11 @@ import org.hibernate.type.Type;
  * @author Andreas Kohlbecker, 2012
  *
  */
+//TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
+//cdmlib-test again as it should be used only in test. Currently this is not possible because
+//sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
+//as the been is not available.
+//see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
 
@@ -58,14 +68,15 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void configure(Type type, Properties params, Dialect dialect) throws MappingException {
+	@Override
+    public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
 
 		Properties overrideProperies = TableGeneratorGlobalOverride.getProperties();
 		if(overrideProperies != null) {
 			params.putAll(overrideProperies);
 		}
 		logger.debug("overrideProperies:" + (overrideProperies != null ? overrideProperies :"NULL"));
-		super.configure(type, params, dialect);
+		super.configure(type, params, serviceRegistry);
 	}
 
 //	/**

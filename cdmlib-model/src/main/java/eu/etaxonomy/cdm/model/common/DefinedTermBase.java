@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -44,7 +45,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -73,7 +73,8 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @XmlType(name = "DefinedTermBase", propOrder = {
     "media",
     "vocabulary",
-    "idInVocabulary"
+    "idInVocabulary",
+    "symbol"
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -164,18 +165,21 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
    //open issues: is null allowed? If not, implement unique constraint
 
     @XmlElement(name = "idInVocabulary")
-    @Length(max=255)
+    @Column(length=255)
     //TODO Val #3379, #4245
 //  @NullOrNotEmpty
     private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
 
-
+    @XmlElement(name = "symbol")
+    @Column(length=30)
+    //the symbol to be used in String representations for this term  #5734
+    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //empty string is explicitly allowed and should be distinguished from NULL!
+    private String symbol;
 
 //***************************** CONSTRUCTOR *******************************************/
 
-
-
-	//for javassit only
+    //for javassit only
     @Deprecated
     protected DefinedTermBase(){};
 
@@ -320,6 +324,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
        */
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
+    }
+
+
+    public String getSymbol() {
+        return symbol;
+    }
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
 //******************************* METHODS ******************************************************/

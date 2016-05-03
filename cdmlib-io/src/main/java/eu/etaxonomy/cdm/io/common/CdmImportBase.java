@@ -81,10 +81,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author a.mueller
  * @created 01.07.2008
- * @version 1.0
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
-	private static Logger logger = Logger.getLogger(CdmImportBase.class);
+    private static final long serialVersionUID = 8730012744209195616L;
+
+    private static Logger logger = Logger.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
@@ -103,6 +104,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
+	public static final UUID uuidUserDefinedPresenceAbsenceVocabulary = UUID.fromString("6b8a2581-1471-4ea6-b8ad-b2d931cfbc23");
 
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
@@ -407,7 +409,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (vocabularyPreference == null){
 				vocabularyPreference =  new ArrayList<TermVocabulary<NamedArea>>();
 			}
-			if (vocabularyPreference.isEmpty()){
+			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
 				vocabularyPreference.add(Country.GERMANY().getVocabulary());
 				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
 			}
@@ -802,6 +804,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return label == null && text == null && labelAbbrev == null;
 	}
 
+	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm){
+	    return getPresenceTerm(state, uuid, label, text, labelAbbrev, isAbsenceTerm, null);
+	}
+
 
 	/**
 	 * Returns a presence term for a given uuid by first ...
@@ -812,7 +818,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm, TermVocabulary<PresenceAbsenceTerm> voc){
 		if (uuid == null){
 			return null;
 		}
@@ -822,9 +828,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (presenceTerm == null){
 				presenceTerm = PresenceAbsenceTerm.NewPresenceInstance(text, label, labelAbbrev);
 				presenceTerm.setUuid(uuid);
+				presenceTerm.setAbsenceTerm(isAbsenceTerm);
 				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidPresenceVoc = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05");
-				TermVocabulary<PresenceAbsenceTerm> voc = getVocabularyService().find(uuidPresenceVoc);
+				if (voc == null){
+                    boolean isOrdered = true;
+                    voc = getVocabulary(TermType.PresenceAbsenceTerm, uuidUserDefinedPresenceAbsenceVocabulary, "User defined vocabulary for distribution status", "User Defined Distribution Status", null, null, isOrdered, presenceTerm);
+                }
 				voc.addTerm(presenceTerm);
 				getTermService().save(presenceTerm);
 			}
@@ -1049,7 +1058,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
