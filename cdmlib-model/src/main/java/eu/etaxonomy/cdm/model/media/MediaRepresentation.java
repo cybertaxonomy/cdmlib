@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -34,7 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * representation consists of one or more parts. Each of them having the same
  * MIME Type, file suffix (if existing) and quality (more or less).
  * E.g. a list of jpg files that represent a scanned article of multiple pages.
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:34
@@ -64,37 +64,36 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -1520078266008619806L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
-	
+
 	//http://www.iana.org/assignments/media-types
 	@XmlElement(name = "MimeType")
 	private String mimeType;
-	
+
 	//the file suffix (e.g. jpg, tif, mov)
 	@XmlElement(name = "Suffix")
 	private String suffix;
-	
+
 	@XmlElement(name = "Media")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Media media;
-	
+
 	@XmlElementWrapper(name = "MediaRepresentationParts")
     @XmlElements({
         @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = AudioFile.class),
         @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
     })
-	//TODO why do we have cascade defined here and below
-    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY, orphanRemoval=true)
-	@IndexColumn(name="sortIndex", base = 0)
+    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
+	@OrderColumn(name="sortIndex")
 	@JoinColumn (name = "representation_id",  nullable=false)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
-		
-	
-	
+
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -103,7 +102,7 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 		logger.debug("NewInstance");
 		return new MediaRepresentation();
 	}
-	
+
 	/**
 	 * Factory method which sets the mime type and the suffix
 	 * @return
@@ -114,14 +113,14 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 		result.setSuffix(suffix);
 		return result;
 	}
-	
+
 	/**
 	 * Factory method which creates a new media representation and adds a media representation part
 	 * for the {@link URI uri} and the given size.
 	 * Returns <code>null</code> if uri is empty
 	 * @return
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
 	public static<T extends MediaRepresentationPart> MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size, Class<T> clazz) {
 		if (uri == null || CdmUtils.isEmpty(uri.toString())){
@@ -135,7 +134,7 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 				part = constr.newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
-			} 
+			}
 			part.setUri(uri);
 			part.setSize(size);
 		}else{
@@ -147,40 +146,40 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 		result.addRepresentationPart(part);
 		return result;
 	}
-	
-	
+
+
 	protected MediaRepresentation(){
 		super();
 	}
-	
+
 /***************  getter /setter *************************************/
-	
-	
+
+
 	public String getMimeType(){
 		return this.mimeType;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param mimeType    mimeType
 	 */
 	public void setMimeType(String mimeType){
 		this.mimeType = mimeType;
 	}
 
-	
+
 	public String getSuffix(){
 		return this.suffix;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param mimeType    mimeType
 	 */
 	public void setSuffix(String suffix){
 		this.suffix = suffix;
 	}
-	
+
 	public Media getMedia() {
 		return media;
 	}
@@ -193,8 +192,8 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	protected void setMedia(Media media) {
 		this.media = media;
 	}
-	
-	
+
+
 	public List<MediaRepresentationPart> getParts(){
 		return this.mediaRepresentationParts;
 	}
@@ -213,7 +212,7 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 			representationPart.setMediaRepresentation(null);
 		}
 	}
-	
+
 //************************* CLONE **************************/
 		/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
@@ -230,11 +229,11 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 		//media
 		//this.getMedia().addRepresentation(result);
 		this.setMedia(null);
-		
+
 		//no changes to: mimeType, suffix
 		return result;
-	}	
-	
-	
+	}
+
+
 
 }

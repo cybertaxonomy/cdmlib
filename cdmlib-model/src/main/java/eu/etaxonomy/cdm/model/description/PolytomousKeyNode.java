@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -170,7 +170,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	// http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
 	// reading works, but writing doesn't
 	//
-	@IndexColumn(name = "sortIndex", base = 0)
+	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
 	@OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
