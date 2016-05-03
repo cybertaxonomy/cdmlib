@@ -108,42 +108,49 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
 
-            //non-viral-name caches
-            if(NonViralName.class.isAssignableFrom(entityClazz)) {
-                NonViralName<?> nonViralName = (NonViralName<?>)entity;
-                nonViralName.getAuthorshipCache();
-                nonViralName.getNameCache();
-                nonViralName.getTitleCache();
-                nonViralName.getFullTitleCache();
-                //team-or-person caches
-            }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
-                TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
-                String nomTitle = teamOrPerson.getNomenclaturalTitle();
-                if (teamOrPerson instanceof Team){
-                    Team team =CdmBase.deproxy(teamOrPerson, Team.class);
-                    team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
-                }else{
-                    teamOrPerson.setNomenclaturalTitle(nomTitle);
+            if (IdentifiableEntity.class.isAssignableFrom(entityClazz)){
+                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
+                //non-viral-name caches
+                if(NonViralName.class.isAssignableFrom(entityClazz)) {
+                    NonViralName<?> nonViralName = (NonViralName<?>)entity;
+                    nonViralName.getAuthorshipCache();
+                    nonViralName.getNameCache();
+                    nonViralName.getTitleCache();
+                    nonViralName.getFullTitleCache();
+                    //team-or-person caches
+                }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
+                    TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
+                    String nomTitle = teamOrPerson.getNomenclaturalTitle();
+                    if (teamOrPerson instanceof Team){
+                        Team team =CdmBase.deproxy(teamOrPerson, Team.class);
+                        team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
+                    }else{
+                        teamOrPerson.setNomenclaturalTitle(nomTitle);
+                    }
+                    String titleCache = teamOrPerson.getTitleCache();
+                    if (! teamOrPerson.isProtectedTitleCache()){
+                        teamOrPerson.setTitleCache(titleCache, false);
+                    }
+
+                    //reference caches
+                }else if(Reference.class.isAssignableFrom(entityClazz)){
+                    Reference<?> ref = (Reference<?>)entity;
+                    ref.getAbbrevTitleCache();
+                    ref.getTitleCache();
+                }else { //any other
+                    //title cache
+                    identifiableEntity.getTitleCache();
                 }
-                String titleCache = teamOrPerson.getTitleCache();
-                if (! teamOrPerson.isProtectedTitleCache()){
-                    teamOrPerson.setTitleCache(titleCache, false);
+                //titleCache should never be empty, even if protected
+                if (identifiableEntity.isProtectedTitleCache() && identifiableEntity.hasEmptyTitleCache()){
+                    identifiableEntity.setTitleCache(null, false);
+                    identifiableEntity.getTitleCache();
                 }
 
-                //reference caches
-            }else if(Reference.class.isAssignableFrom(entityClazz)){
-                Reference<?> ref = (Reference<?>)entity;
-                ref.getAbbrevTitleCache();
-                ref.getTitleCache();
-                //title cache
-            }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
-                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
-                identifiableEntity.getTitleCache();
             }else if(Amplification.class.isAssignableFrom(entityClazz)) {
                 Amplification amplification = (Amplification)entity;
                 amplification.updateCache();
             }
-
         }
     }
 

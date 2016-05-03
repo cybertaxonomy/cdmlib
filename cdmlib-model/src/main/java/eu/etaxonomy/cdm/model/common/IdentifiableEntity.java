@@ -255,6 +255,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         this.protectedTitleCache = protectedTitleCache;
     }
 
+    /**
+     *
+     * @return true, if the current state of the titleCache (without generating it new)
+     * is the empty string. This is primarily meant for internal use.
+     */
+    public boolean hasEmptyTitleCache(){
+        return "".equals(this.titleCache);
+    }
+
 //**************************************************************************************
 
     @Override
