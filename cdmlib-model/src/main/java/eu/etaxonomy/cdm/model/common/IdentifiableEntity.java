@@ -92,7 +92,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
-    private static final long serialVersionUID = -5610995424730659058L;
+    private static final long serialVersionUID = 7912083412108359559L;
+
     private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
     @XmlTransient

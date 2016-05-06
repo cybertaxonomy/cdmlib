@@ -274,7 +274,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepList.add(step);
 
         //Media_TaxonBase.Media_id -> MediaKey_id
-        stepName = "DefinedTermBase_MeasurementUnit.DefinedTermBase_id -> Feature_id";
+        stepName = "Media_TaxonBase.DefinedTermBase_id -> Feature_id";
         tableName = "Media_TaxonBase";
         oldColumnName = "media_id";
         newColumnName = "mediakey_id";
