@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:44
  * @author a.mueller
  */
@@ -319,13 +318,15 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
         String abbreviatedLabel = csvLine.get(4);
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));
-        String color = csvLine.get(5);
+        String symbol = csvLine.get(5);
+        newInstance.setSymbol(symbol);
+        String color = csvLine.get(6);
         try {
 			newInstance.setDefaultColor(color);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
-        boolean isAbsence = csvLine.get(6).equals("1") ? true : false;
+        boolean isAbsence = csvLine.get(7).equals("1") ? true : false;
         newInstance.setAbsenceTerm(isAbsence);
 
         newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
