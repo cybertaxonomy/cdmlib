@@ -31,6 +31,7 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedM
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -511,7 +512,10 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 							" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s" +
 							" WHERE oc.id IN (:idSet) ";
 
-					AutoInit autoInit = addAutoinitFetchLoading((Class)collectionEntitiyType, "col");
+					if (collectionEntitiyType instanceof ParameterizedTypeImpl){
+					    collectionEntitiyType = ((ParameterizedTypeImpl)collectionEntitiyType).getRawType();
+					}
+					AutoInit autoInit = addAutoinitFetchLoading((Class<?>)collectionEntitiyType, "col");
                     hql = String.format(hql, ownerClazz.getSimpleName(), param,
 					        autoInit.leftJoinFetch);
 
