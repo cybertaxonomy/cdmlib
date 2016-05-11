@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
@@ -22,17 +21,6 @@ public abstract class AbstractClassBridge implements FieldBridge {
      */
     public static LuceneOptions idFieldOptions = new IdFieldOptions();
 
-    /**
-     * see {@link SortFieldOptions}
-     * @deprecated no longer needed since lucene 4, sort fields are now constructed as DocValues as {@link BinaryDocValuesField}
-     */
-    @Deprecated
-    public static LuceneOptions sortFieldOptions = new SortFieldOptions();
-
-
-    /* (non-Javadoc)
-     * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     abstract public void set(String name, Object value, Document document, LuceneOptions luceneOptions);
 
