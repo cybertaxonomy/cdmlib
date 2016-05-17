@@ -10,23 +10,28 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -36,7 +41,8 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	private IIdentificationKeyDao identificationKeyDao;
 	private ITaxonDao taxonDao;
-	private IPolytomousKeyNodeDao nodeDao;
+	@Autowired
+	private IPolytomousKeyNodeService nodeService;
 
 
 	@Override
@@ -55,10 +61,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		this.taxonDao = taxonDao;
 	}
 
-	@Autowired
-    protected void setDao(IPolytomousKeyNodeDao nodeDao) {
-        this.nodeDao = nodeDao;
-    }
+
 
 
 	/* (non-Javadoc)
@@ -153,24 +156,52 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	@Override
 	public DeleteResult delete(PolytomousKey key){
-	    DeleteResult result = new DeleteResult();
+	    //DeleteResult result = new DeleteResult();
 	    PolytomousKeyNode root = key.getRoot();
-	    key.setRoot(null);
-	    try{
-	        nodeDao.delete(root);
-	    }catch(Exception e){
-	        result.addException(e);
-	        result.setAbort();
-	        return result;
+
+
+	    DeleteResult result = isDeletable(key, null);
+
+	    if (result.isOk()){
+    	    try{
+    	        nodeService.delete(root.getUuid(), true);
+    	    }catch(Exception e){
+    	        result.addException(e);
+    	        result.setAbort();
+    	        return result;
+    	    }
+    	    try{
+    	        dao.delete(key);
+    	    }catch(Exception e){
+                result.addException(e);
+                result.setAbort();
+                return result;
+            }
 	    }
-	    try{
-	        dao.delete(key);
-	    }catch(Exception e){
-            result.addException(e);
-            result.setAbort();
-            return result;
-        }
         return result;
 	}
+
+	@Override
+    public DeleteResult isDeletable(PolytomousKey key, DeleteConfiguratorBase config){
+        DeleteResult result = new DeleteResult();
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(key);
+        if (references != null){
+           Iterator<CdmBase> iterator = references.iterator();
+           CdmBase ref;
+           while (iterator.hasNext()){
+               ref = iterator.next();
+               if ((ref instanceof PolytomousKeyNode) ){
+                   PolytomousKeyNode node = HibernateProxyHelper.deproxy(ref, PolytomousKeyNode.class);
+                   if (!node.getKey().equals(key)){
+                       String message = "The key is a subkey of " + node.getKey() + ", referenced in node with id: " + node.getId() + ". Please remove the subkey reference first and then delete the key. " ;
+                       result.addException(new ReferencedObjectUndeletableException(message));
+                       result.setAbort();
+                       result.addRelatedObject(ref);
+                   }
+               }
+           }
+        }
+        return result;
+    }
 
 }
