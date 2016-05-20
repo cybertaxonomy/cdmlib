@@ -190,12 +190,6 @@ public class Feature extends DefinedTermBase<Feature> {
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
-	//for hibernate use only
-	@Deprecated
-	protected Feature() {
-		super(TermType.Feature);
-	}
-
 	/**
 	 * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
@@ -235,6 +229,13 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static Feature NewInstance(String term, String label, String labelAbbrev){
 		return new Feature(term, label, labelAbbrev);
 	}
+
+
+    //for hibernate use only
+    @Deprecated
+    protected Feature() {
+        super(TermType.Feature);
+    }
 
 /* *************************************************************************************/
 
