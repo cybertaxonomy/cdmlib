@@ -293,12 +293,28 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     public Reference getSec() {
         return sec;
     }
-
     /**
      * @see  #getSec()
      */
     public void setSec(Reference sec) {
         this.sec = sec;
+    }
+
+    /**
+     * @return the micro reference (detail) for the sec(undum)
+     * reference
+     * @see #getSec()
+     */
+    public String getSecMicroReference() {
+        return secMicroReference;
+    }
+
+    /**
+     * @see #getSecMicroReference()
+     * @see #getSec()
+     */
+    public void setSecMicroReference(String secMicroReference) {
+        this.secMicroReference = secMicroReference;
     }
 
 
