@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -151,7 +150,7 @@ public class Feature extends DefinedTermBase<Feature> {
             joinColumns=@JoinColumn(name="relationshiptermbase_id")
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @IndexedEmbedded(depth = 2)
+//    @IndexedEmbedded(depth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
