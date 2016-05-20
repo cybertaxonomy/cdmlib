@@ -95,7 +95,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "recommendedModifierEnumeration",
 	    "recommendedStatisticalMeasures",
 	    "supportedCategoricalEnumerations",
-	    "recommendedMeasurementUnits"
+	    "recommendedMeasurementUnits",
+	    "inverseRepresentations"
 })
 @XmlRootElement(name = "Feature")
 @Entity
