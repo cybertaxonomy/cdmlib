@@ -21,6 +21,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,11 +33,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -134,6 +140,16 @@ public class Feature extends DefinedTermBase<Feature> {
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
 	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
+
+
+    //copy from RelationshipTermBase
+	@XmlElementWrapper(name = "InverseRepresentations")
+    @XmlElement(name = "Representation")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @JoinTable(name="RelationshipTermBase_inverseRepresentation")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @IndexedEmbedded(depth = 2)
+    private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
@@ -534,6 +550,48 @@ public class Feature extends DefinedTermBase<Feature> {
     protected void setIncludes(Set<Feature> includes) {
 		super.setIncludes(includes);
 	}
+
+	public Set<Representation> getInverseRepresentations() {
+        return inverseRepresentations;
+    }
+    public void addInverseRepresentation(Representation inverseRepresentation) {
+        this.inverseRepresentations.add(inverseRepresentation);
+    }
+    public void removeInverseRepresentation(Representation inverseRepresentation) {
+        this.inverseRepresentations.remove(inverseRepresentation);
+    }
+    /*
+     * Inverse representation convenience methods similar to TermBase.xxx
+     * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
+     */
+    @Transient
+    public String getInverseLabel() {
+        if(getInverseLabel(Language.DEFAULT()) != null){
+            return this.getInverseRepresentation(Language.DEFAULT()).getLabel();
+        }else{
+            for (Representation r : inverseRepresentations){
+                return r.getLabel();
+            }
+        }
+        return super.getUuid().toString();
+    }
+    public String getInverseLabel(Language lang) {
+        Representation r = this.getInverseRepresentation(lang);
+        if(r==null){
+            return null;
+        }else{
+            return r.getLabel();
+        }
+    }
+    public Representation getInverseRepresentation(Language lang) {
+        Representation result = null;
+        for (Representation repr : this.getInverseRepresentations()){
+            if (lang.equals(repr.getLanguage())){
+                result = repr;
+            }
+        }
+        return result;
+    }
 
 	private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
 	private static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
@@ -951,5 +1009,20 @@ public class Feature extends DefinedTermBase<Feature> {
 			termMap.put(term.getUuid(), term);
 		}
 	}
+
+//*********************************** CLONE *********************************************************/
+
+    @Override
+    public Object clone() {
+        Feature result = (Feature)super.clone();
+
+        result.inverseRepresentations = new HashSet<Representation>();
+        for (Representation rep: this.inverseRepresentations){
+            result.addInverseRepresentation((Representation)rep.clone());
+        }
+
+        //no changes to: symmetric, transitiv
+        return result;
+    }
 
 }
