@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -146,7 +147,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @JoinTable(name="RelationshipTermBase_inverseRepresentation")
+    @JoinTable(name="RelationshipTermBase_inverseRepresentation",
+            joinColumns=@JoinColumn(name="relationshiptermbase_id")
+    )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<Representation>();
@@ -589,6 +592,8 @@ public class Feature extends DefinedTermBase<Feature> {
 		super.setIncludes(includes);
 	}
 
+// ***************** Invers Label *****************************************/
+
 	public Set<Representation> getInverseRepresentations() {
         return inverseRepresentations;
     }
@@ -630,7 +635,7 @@ public class Feature extends DefinedTermBase<Feature> {
         }
         return result;
     }
-
+// ****************** END INVERS REPRESENTATION **************************/
 
 	/**
 	 * Creates and returns a new feature instance on the basis of a given string
