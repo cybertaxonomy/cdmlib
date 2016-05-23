@@ -43,10 +43,6 @@ public enum TagEnum {
 	 */
 	reference,
 	/**
-     * a secundum reference (for TaxonBase)
-     */
-    secReference,
-	/**
 	 * Volume, page number etc. of a reference
 	 */
 	microreference,
@@ -81,7 +77,14 @@ public enum TagEnum {
 	 *  The hybrid sign.
 	 */
 	hybridSign,
-
+    /**
+     * a secundum reference (for TaxonBase)
+     */
+    secReference,
+    /**
+     * a secundum micro reference (for TaxonBase)
+     */
+    secMicroReference,
 	;
 
 

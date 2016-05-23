@@ -139,13 +139,22 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
 	}
 
-	@SuppressWarnings("deprecation")
     @Test
 	public void testProtectedTitleCache(){
 	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-        taxonBase.setProtectedTitleCache(true);
-        taxonBase.setTitleCache("abc");
+        taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}
+
+    @Test
+    public void testMicroReference(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        String secMicroRef = "p. 553";
+        taxonBase.setSecMicroReference(secMicroRef);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+                taxonBase.getTitleCache());
+
+
+    }
 }

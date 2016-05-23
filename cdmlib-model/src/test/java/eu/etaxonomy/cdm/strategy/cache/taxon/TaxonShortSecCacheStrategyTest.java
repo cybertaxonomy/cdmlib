@@ -84,9 +84,6 @@ public class TaxonShortSecCacheStrategyTest {
 
 //******************************* TESTS ********************************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
-	 */
 	@Test
 	public void testGetTitleCache() {
 		TaxonBase taxonBase = Taxon.NewInstance(name, sec);
@@ -119,11 +116,19 @@ public class TaxonShortSecCacheStrategyTest {
 
 	}
 
+    @Test
+    public void testMicroReference(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        String secMicroRef = "p. 553";
+        taxonBase.setSecMicroReference(secMicroRef);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+                taxonBase.getTitleCache());
+    }
+
 	@Test
 	public void testProtectedTitleCache(){
 	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-        taxonBase.setProtectedTitleCache(true);
-        taxonBase.setTitleCache("abc");
+        taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}
