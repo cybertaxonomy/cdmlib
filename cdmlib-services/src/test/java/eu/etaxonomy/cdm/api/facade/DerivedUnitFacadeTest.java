@@ -77,7 +77,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
-	
+
     @SpringBeanByType
     private IOccurrenceService service;
 
@@ -122,6 +122,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     Collection collection = Collection.NewInstance();
     PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
     String originalLabelInfo = "original label info";
+    URI stableUri = URI.create("http://www.abc.de");
 
 
     DerivedUnitFacade specimenFacade;
@@ -179,6 +180,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimen.setCollection(collection);
         specimen.setPreservation(preservationMethod);
         specimen.setOriginalLabelInfo(originalLabelInfo);
+        specimen.setPreferredStableUri(stableUri);
 
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
@@ -370,9 +372,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
          Assert.assertNotNull("The gathering event should have been created",
         		 specimenFacade.innerGatheringEvent());
     }
-    
 
-    
+
+
 
     /**
      * Test method for
@@ -390,25 +392,25 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
     }
-    
+
     @Test
     public void testNewInstanceSpecimenWithoutFieldUnit() {
         DerivedUnit parent = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnit child = DerivedUnit.NewPreservedSpecimenInstance();
         DerivationEvent.NewSimpleInstance(parent, child, DerivationEventType.ACCESSIONING());
-        
+
         DerivedUnitFacade facade;
 		try {
 			facade = DerivedUnitFacade.NewInstance(child);
 		       	Assert.assertTrue(facade.innerDerivedUnit().getDerivedFrom().getOriginals().size() == 1);
 		       	Assert.assertNull(facade.getFieldUnit(false));
 		       	DerivationEvent.NewSimpleInstance(FieldUnit.NewInstance(), parent, DerivationEventType.ACCESSIONING());
-		        
+
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 			Assert.fail();
 		}
-        
+
     }
 
     @Test
@@ -1365,13 +1367,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetSetAccessionNumber() {
         Assert.assertEquals("Accession number must be same", accessionNumber,
-                specimenFacade.getAccessionNumber());  
+                specimenFacade.getAccessionNumber());
         specimenFacade.setAccessionNumber("A12345693");
 		Assert.assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
-    
-    
+
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
@@ -1428,7 +1430,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New accession number must be 'OrigLabel Info xxx'",
                 "OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo());
     }
-    
+
+    @Test
+    public void testGetSetStableUri() {
+        Assert.assertEquals("Preferred stable URI must be same", stableUri,
+                specimenFacade.getPreferredStableUri());
+        URI newURI = URI.create("http://www.fgh.ij");
+        specimenFacade.setPreferredStableUri(newURI);
+        Assert.assertEquals("New preferred stable must be '" + newURI.toString() + "'",
+                newURI, specimenFacade.getPreferredStableUri());
+    }
+
+
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
@@ -1700,7 +1714,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
