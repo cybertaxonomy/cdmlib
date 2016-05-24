@@ -135,8 +135,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     DerivedUnitFacade emptyFacade;
 
-    NamedArea country = Country.GERMANY();
-
     // ****************************** SET UP **********************************/
 
 
@@ -163,7 +161,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent.setDistanceToWaterSurfaceMax(distanceToSurfaceMax);
         gatheringEvent.setExactLocation(exactLocation);
         gatheringEvent.setDescription(gatheringEventDescription);
-        gatheringEvent.setCountry(country);
+        gatheringEvent.setCountry(Country.GERMANY());
 
         gatheringEvent.setTimeperiod(gatheringPeriod);
         gatheringEvent.setLocality(locality);
@@ -472,7 +470,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testGetSetCountry() {
-        Assert.assertEquals("Country must be same", country, specimenFacade.getCountry());
+        Assert.assertEquals("Country must be same", Country.GERMANY(), specimenFacade.getCountry());
         specimenFacade.setCountry(Country.FRANCEFRENCHREPUBLIC());
         Assert.assertEquals("New country must be France", Country.FRANCEFRENCHREPUBLIC(), specimenFacade.getCountry());
     }
