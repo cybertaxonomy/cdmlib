@@ -164,7 +164,9 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	    if (result.isOk()){
     	    try{
-    	        nodeService.delete(root.getUuid(), true);
+    	        if (root != null){
+    	            nodeService.delete(root.getUuid(), true);
+    	        }
     	    }catch(Exception e){
     	        result.addException(e);
     	        result.setAbort();
