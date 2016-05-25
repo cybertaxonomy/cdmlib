@@ -279,7 +279,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         TaxonNameBase<?,?> n_acherontia_thetis = taxon.getName();
 
-        Reference<?> sec = ReferenceFactory.newGeneric();
+        Reference sec = ReferenceFactory.newGeneric();
         sec.setUuid(UUID.fromString("bd7e4a15-6403-49a9-a6df-45b46fa99efd"));
         Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, sec);
         Exception exception = null;
@@ -308,7 +308,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference<?> book = referenceService.load(BOOK1_UUID);
+        Reference book = referenceService.load(BOOK1_UUID);
 
         TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
         TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
@@ -339,7 +339,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference<?> book = referenceService.load(BOOK1_UUID);
+        Reference book = referenceService.load(BOOK1_UUID);
 
         TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
         TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
@@ -385,7 +385,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference<?> book = referenceService.load(BOOK1_UUID);
+        Reference book = referenceService.load(BOOK1_UUID);
         book.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {

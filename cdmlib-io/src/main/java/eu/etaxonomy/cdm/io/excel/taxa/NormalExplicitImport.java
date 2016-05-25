@@ -254,7 +254,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 							if (parentTaxon != null) {
 								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 
-								Reference<?> sourceRef = state.getConfig().getSourceReference();
+								Reference sourceRef = state.getConfig().getSourceReference();
 								String microCitation = null;
 								Taxon childTaxon = taxon;
 								makeParent(state, parentTaxon, childTaxon, sourceRef, microCitation);
@@ -382,7 +382,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				for (Map<SourceType, String> sourceMap : sourceList){
 
 					//ref
-					Reference<?> ref = ReferenceFactory.newGeneric();
+					Reference ref = ReferenceFactory.newGeneric();
 					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
 					for (SourceType type : sourceMap.keySet()){
 						String value = sourceMap.get(type);
@@ -576,7 +576,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		//Create the taxon
-		Reference<?> sec = state.getConfig().getSourceReference();
+		Reference sec = state.getConfig().getSourceReference();
 		// Create the status
 		nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 		if (validMarkers.contains(nameStatus)){
@@ -609,8 +609,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 	}
 
-	private void makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, Reference<?> citation, String microCitation){
-		Reference<?> sec = state.getConfig().getSourceReference();
+	private void makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon, Reference citation, String microCitation){
+		Reference sec = state.getConfig().getSourceReference();
 
 //		Reference sec = parentTaxon.getSec();
 		Classification tree = state.getTree(sec);

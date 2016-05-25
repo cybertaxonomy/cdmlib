@@ -6,7 +6,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.function;
 
@@ -29,19 +29,19 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestPersistence {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestPersistence.class);
-	
-	
+
+
 	public void testAppController(){
-		
+
 		logger.info("Create name objects...");
 		NonViralName<?> tn = NonViralName.NewInstance(Rank.SPECIES());
 		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
-		
+
 		logger.info("Create reference objects...");
-		Reference<?> sec = ReferenceFactory.newJournal();
+		Reference sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
-		
+
 		logger.info("Create taxon objects...");
 		Taxon childTaxon = Taxon.NewInstance(tn, sec);
 		Synonym syn = Synonym.NewInstance(tn3, sec);
@@ -49,29 +49,29 @@ public class TestPersistence {
 		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
 		parentTaxon.setUuid(TEST_TAXON_UUID);
 		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
-		
-		
-		// test 
+
+
+		// test
 		tn.setGenusOrUninomial("tn1-Genus1");
 		tn3.setGenusOrUninomial("tn3-genus");
-		
+
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
 		team.setTitleCache("AuthorAgent1", true);
 		tn.setCombinationAuthorship(team);
-		
+
 		logger.info("Save objects ...");
- 		
+
 //		appCtr.getTaxonService().saveTaxon(parentTaxon);
-//		
-//		// load Name list 
+//
+//		// load Name list
 //		logger.info("Load existing names from db...");
 //		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
 //		for (TaxonNameBase tn2: tnList){
 //			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 //		}
-//		
-//		// load Name list 
+//
+//		// load Name list
 //		logger.info("Load taxon from db...");
 //		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(parentTaxon.getUuid());
 //		logger.info("Parent: "+ taxon.toString());
@@ -81,8 +81,8 @@ public class TestPersistence {
 //				logger.info("Synonym: "+ synonym.toString());
 //			}
 //		}
-//		
-//		// close 
+//
+//		// close
 //		appCtr.close();
 	}
 
@@ -95,7 +95,7 @@ public class TestPersistence {
     	sc.testAppController();
     	System.out.println("\nEnd ...");
 	}
-	
+
 	/**
 	 * @param args
 	 */

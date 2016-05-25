@@ -1,7 +1,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
 
@@ -21,7 +21,7 @@ public class MethodCacheImplTest {
     private BotanicalName botanicalName;
 
     IMethodCache methodCache;
-    private Reference<?> nomenclaturalReference;
+    private Reference nomenclaturalReference;
 
     @Before
     public void setUp() throws Exception {

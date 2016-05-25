@@ -228,7 +228,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		journal1.setAbbrevTitle("M. Journ.");
 		journal1.setAuthorship(journalAuthor);
 
-		referenceDao.save((Reference<?>)journal1);
+		referenceDao.save((Reference)journal1);
 
 		Person articleAuthor = makePerson2();
 		IArticle article1 = ReferenceFactory.newArticle();
@@ -240,7 +240,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		article1.setAuthorship(articleAuthor);
 		article1.getAbbrevTitleCache();
 
-		referenceDao.saveOrUpdate((Reference<?>)article1);
+		referenceDao.saveOrUpdate((Reference)article1);
 
 		commit();
 	}

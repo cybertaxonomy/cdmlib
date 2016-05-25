@@ -113,7 +113,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,Reference<?>> publications = new HashMap<String,Reference<?>>();
+	private Map<String,Reference> publications = new HashMap<String,Reference>();
 	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName<?>> taxonNameBases = new HashMap<String,NonViralName<?>>();
@@ -129,9 +129,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 //	private Set<Feature> featureSet = new HashSet<Feature>();
-	private Set<Reference<?>> sources = new HashSet<Reference<?>>();
-	private final Reference<?> sec = ReferenceFactory.newDatabase();
-	private Reference<?> sourceReference = null;
+	private Set<Reference> sources = new HashSet<Reference>();
+	private final Reference sec = ReferenceFactory.newDatabase();
+	private Reference sourceReference = null;
 
 	private Language datasetLanguage = null;
 	private WorkingSet workingSet = null;
@@ -165,7 +165,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	    locations = new HashMap<String,String>();
 	    mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	    mediaObject_Role = new HashMap<String,String>();
-	    publications = new HashMap<String,Reference<?>>();
+	    publications = new HashMap<String,Reference>();
 	    states = new HashMap<String,State>();
 	    taxonDescriptions = new HashMap<String,TaxonDescription>();
 	    taxonNameBases = new HashMap<String,NonViralName<?>>();
@@ -180,7 +180,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	    descriptiveConcepts = new HashSet<Feature>();
 	    annotationTypes = new HashSet<AnnotationType>();
-	    sources = new HashSet<Reference<?>>();
+	    sources = new HashSet<Reference>();
 	    statisticalMeasures = new HashSet<StatisticalMeasure>();
 	    featureData = new HashSet<VersionableEntity>();
 	    featureTrees = new HashSet<FeatureTree>();
@@ -429,7 +429,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					if (td.getSources().size() > 0) {
 						this.associateImageWithCdmBase(ref, td.getSources().iterator().next().getCitation());
 					} else {
-						Reference<?> descriptionSource = ReferenceFactory.newGeneric();
+						Reference descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
 						//TODO type
 						td.addSource(OriginalSourceType.Unknown, null, null, descriptionSource, null);
@@ -647,7 +647,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				Reference<?> publication = publications.get(citations.get(ref));
+				Reference publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					//TODO move to a generic place (implemented in hurry therefore dirty)
@@ -670,11 +670,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		saveFeatures();
 
-		for (Reference<?> publication : publications.values()){
+		for (Reference publication : publications.values()){
 			getReferenceService().save(publication);
 		}
 
-		for (Reference<?> source : sources){
+		for (Reference source : sources){
 			getReferenceService().save(source);
 		}
 
@@ -1546,7 +1546,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-					Reference<?> publication = ReferenceFactory.newArticle();
+					Reference publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, cdmState);
 
 					publications.put(idP,publication);
@@ -1640,7 +1640,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 									//										}
 									//									}
 								} else if (lcb.get(k) instanceof Reference) {
-									Reference<?> rb = (Reference<?>) lcb.get(k);
+									Reference rb = (Reference) lcb.get(k);
 									//} else if (lcb.get(0) instanceof Reference) {
 									//Reference rb = (Reference) lcb.get(0);
 									// rb.setTitleCache(label);

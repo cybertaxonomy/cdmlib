@@ -82,7 +82,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
 		InMemoryMapping partialMapping = mapping.getPartialMapping(foreignKeys);
-		Reference<?> sourceRef = state.getCurrentIO().getReferenceService().find(state.getConfig().getSourceRefUuid());
+		Reference sourceRef = state.getCurrentIO().getReferenceService().find(state.getConfig().getSourceRefUuid());
 		partialMapping.putMapping(TermUri.CDM_SOURCE_REFERENCE.toString(), state.getConfig().getSourceRefUuid().toString(), sourceRef);
 
 		state.loadRelatedObjects(partialMapping);

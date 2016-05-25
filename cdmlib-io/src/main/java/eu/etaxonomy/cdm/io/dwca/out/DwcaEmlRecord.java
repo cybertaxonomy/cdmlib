@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class DwcaEmlRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaEmlRecord.class);
-	
+
 //	BASIC
 	private String identifier;
 	private String title;
@@ -46,41 +46,42 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	private Rights creativeCommonsLicensing;
 	private Language metaDataLanguage;
 	private URI resourceLogoUri;
-	
+
 //	Research Project
 	private String projectTitle;
 	private String projectLead;
 	private String projectDescription;
-	
+
 //	People
 	private InstitutionalMembership resourceCreator;
 	private InstitutionalMembership metaDataAuthor;
 	private InstitutionalMembership contact;
 	private List<InstitutionalMembership> authors = new ArrayList<InstitutionalMembership>();
-	
+
 //	Keywords / Coverage
 	private String regionalScope;
 	private List<String> keywords = new ArrayList<String>();
 	private String keywordThesaurus; //maybe a URI
 	private TimePeriod date;
 	private List<String> taxonomicKeywords = new ArrayList<String>();
-	
+
 	private Point upperLeftCorner;
 	private Point lowerRightCorner;
-	
-	private List<Reference<?>> references = new ArrayList<Reference<?>>();
+
+	private List<Reference> references = new ArrayList<Reference>();
 
 
 	@Override
 	protected void registerKnownFields() {
 		//not needed
 	}
-	
+
 	public DwcaEmlRecord() {
 		super(new DwcaMetaDataRecord(false, null, null), null);
 	}
 
-	public void write(PrintWriter writer) {
+	@Override
+    public void write(PrintWriter writer) {
 
 	}
 
@@ -214,13 +215,13 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	public void setMetaDataAuthor(InstitutionalMembership metaDataAuthor) {
 		this.metaDataAuthor = metaDataAuthor;
 	}
-	
+
 
 
 	public InstitutionalMembership getContact() {
 		return contact;
 	}
-	
+
 	public void setContact(InstitutionalMembership contact) {
 		this.contact = contact;
 	}
@@ -290,11 +291,11 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		this.lowerRightCorner = lowerRightCorner;
 	}
 
-	public List<Reference<?>> getReferences() {
-		return references != null ? references : new ArrayList<Reference<?>>();
+	public List<Reference> getReferences() {
+		return references != null ? references : new ArrayList<Reference>();
 	}
 
-	public void setReferences(List<Reference<?>> references) {
+	public void setReferences(List<Reference> references) {
 		this.references = references;
 	}
 

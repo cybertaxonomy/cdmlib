@@ -57,7 +57,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private INameService nameService;
 	private String referenceDetail;
-	private Reference<?> reference;
+	private Reference reference;
 	private SynonymRelationshipType homoTypicSynonymRelationshipType;
 	private SynonymRelationshipType heteroTypicSynonymRelationshipType;
 	private NonViralName<?> s1n;
@@ -150,7 +150,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		t1.addHomotypicSynonym(homotypicSynonym, null, null);
 
 		HomotypicalGroup group = s1.getHomotypicGroup();
-		Reference<?> citation1 = ReferenceFactory.newBook();
+		Reference citation1 = ReferenceFactory.newBook();
 		String microReference1 = "p. 55";
 		SynonymRelationship s2rel = t1.addHeterotypicSynonymName(s2n, group, citation1, microReference1);
 		Synonym s2 = s2rel.getSynonym();

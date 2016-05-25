@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,11 +30,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @created 11.03.2010
- * @version 1.0
  */
 public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT extends DescriptionElementBase, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ELEMENT, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportDescriptionElementCreationMapperBase.class);
-	
+
 //******************************* ATTRIBUTES ***************************************/
 	protected String taxonNamespace;
 	protected String dbTaxonFkAttribute;
@@ -42,8 +41,8 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	protected String dbCitationAttribute;  //if there is a single source available
 	protected String sourceNamespace;
 	protected String dbMicroCitationAttribute;
-	
-	
+
+
 //********************************* CONSTRUCTOR ****************************************/
 	/**
 	 * @param mappingImport
@@ -62,7 +61,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		this.dbMicroCitationAttribute = dbMicroCitationAttribute;
 		return this;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
@@ -79,24 +78,24 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			addSource(rs, element);
 		}
 		return element;
-		
+
 	}
 
 	/**
 	 * @param rs
 	 * @param element
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
 		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
-		Reference<?> citation = (Reference<?>) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
+		Reference citation = (Reference) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
 		element.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation);
 	}
 
 	/**
 	 * @param taxonFk
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	protected Taxon getAcceptedTaxon(ResultSet rs) throws SQLException {
 		String taxonFk = getForeignKey(rs, dbTaxonFkAttribute);
@@ -106,7 +105,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			logger.warn("TaxonBase not found: " + taxonFk);
 		}else if (taxonBase instanceof Taxon){
 			taxon = (Taxon)taxonBase;
-			
+
 		}else if (taxonBase instanceof Synonym){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> taxa = synonym.getAcceptedTaxa();
@@ -124,7 +123,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	}
 
 
-	
+
 	/**
 	 * Adds a description element to the taxon's first description which is not an image gallery.
 	 * If no such description exists a new one is generated. Returns the element or, if null if taxon is null.
@@ -162,5 +161,5 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		return description;
 	}
 
-	
+
 }

@@ -391,13 +391,13 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					for (SpecimenTypeDesignation desig : designations){
 						if (designatedBy.startsWith("designated by")){
 							String titleCache = designatedBy.replace("designated by", "").trim();
-							Reference<?> reference = ReferenceFactory.newGeneric();
+							Reference reference = ReferenceFactory.newGeneric();
 							reference.setTitleCache(titleCache, true);
 							desig.setCitation(reference);
 							//in future we could also try to parse it automatically
 							fireWarningEvent("MANUALLY: Designated by should be parsed manually: " + titleCache, parentEvent, 1);
 						}else if (designatedBy.equals("designated here")){
-							Reference<?> ref = state.getConfig().getSourceReference();
+							Reference ref = state.getConfig().getSourceReference();
 							desig.setCitation(ref);
 							fireWarningEvent("MANUALLY: Microcitation should be added to 'designated here", parentEvent, 1);
 						}else if (designatedBy.startsWith("according to")){

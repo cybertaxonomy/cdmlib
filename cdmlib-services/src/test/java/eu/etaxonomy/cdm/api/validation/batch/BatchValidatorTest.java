@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.validation.batch.BatchValidator;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -81,7 +80,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
 
         IReferenceService refService = app.getReferenceService();
         for (int i = 0; i < 10; ++i) {
-            Reference<?> ref0 = ReferenceFactory.newBook();
+            Reference ref0 = ReferenceFactory.newBook();
             ref0.setIsbn("bla bla");
             ref0.setIssn("foo foo");
             // Each book should violate 3 constraints
@@ -93,7 +92,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
                 assert (errors.size() == 3);
             }
             refService.save(ref0);
-            Reference<?> ref1 = ReferenceFactory.newJournal();
+            Reference ref1 = ReferenceFactory.newJournal();
             ref1.setIsbn("bar bar");
             ref1.setIssn("baz baz");
             // Each journal should violate 4 constraints

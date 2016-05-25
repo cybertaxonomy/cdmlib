@@ -122,13 +122,13 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			} else if (isStartingElement(next, REFERENCES)) {
 				// TODO details/microcitation ??
 
-				List<Reference<?>> refs = handleReferences(state, reader, next);
+				List<Reference> refs = handleReferences(state, reader, next);
 				if (!refs.isEmpty()) {
 					// TODO
-					Reference<?> descriptionRef = state.getConfig().getSourceReference();
+					Reference descriptionRef = state.getConfig().getSourceReference();
 					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
 					TextData featurePlaceholder = docImport.getFeaturePlaceholder(state, description, feature, true);
-					for (Reference<?> citation : refs) {
+					for (Reference citation : refs) {
 						featurePlaceholder.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null);
 					}
 				} else {
@@ -502,7 +502,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		if (isNotBlank(writer.writer)) {
 			// TODO
-			Reference<?> ref = state.getConfig().getSourceReference();
+			Reference ref = state.getConfig().getSourceReference();
 			TaxonDescription description = getTaxonDescription(taxon, ref,
 					false, true);
 			TextData featurePlaceholder = docImport.getFeaturePlaceholder(state,
@@ -520,7 +520,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		checkNoAttributes(parentEvent);
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
-		Reference<?> ref = state.getConfig().getSourceReference();
+		Reference ref = state.getConfig().getSourceReference();
 
 
 		boolean isTextMode = true;
@@ -893,7 +893,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	}
 
 
-	private List<Reference<?>> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+	private List<Reference> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String bibliography = getAndRemoveAttributeValue(attributes,
@@ -905,7 +905,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			fireWarningEvent(message, parentEvent, 4);
 		}
 
-		List<Reference<?>> result = new ArrayList<Reference<?>>();
+		List<Reference> result = new ArrayList<Reference>();
 
 		// elements
 		while (reader.hasNext()) {
@@ -951,7 +951,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				} else if (isStartingElement(next, REF_NUM)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, REFERENCE)) {
-					Reference<?> ref = nomenclatureImport.handleReference(state, reader, next);
+					Reference ref = nomenclatureImport.handleReference(state, reader, next);
 					result.add(ref);
 				} else {
 					handleUnexpectedStartElement(next);

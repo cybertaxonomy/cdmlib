@@ -80,7 +80,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	public final void testGetReferencingObjects() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		Reference<?> ref1 = ReferenceFactory.newArticle();
+		Reference ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
@@ -155,15 +155,12 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	@DataSet
 	public final void testLoadCacheStrategyForReference(){
-		Reference<?> ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
+		Reference ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
 		ref.setType(ReferenceType.Article);
 		referenceService.update(ref);
 		referenceService.updateTitleCache();
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub

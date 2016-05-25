@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -52,9 +52,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "coreTax.txt";
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public DwcaTaxExport() {
 		super();
@@ -64,7 +64,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	/** Retrieves data from a CDM DB and serializes the CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -73,19 +73,19 @@ public class DwcaTaxExport extends DwcaExportBase {
 	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
-		
+
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
-		
+
 		Set<UUID> classificationUuidSet = config.getClassificationUuids();
 		List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
 		Set<Classification> classificationSet = new HashSet<Classification>();
 		classificationSet.addAll(classificationList);
-		
-		
+
+
 		PrintWriter writer = null;
 		try {
-			
+
 			writer = createPrintWriter(fileName, state);
 
 			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
@@ -94,7 +94,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				i++;
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
-				
+
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Taxon parent = node.getParent() == null ? null : node.getParent().getTaxon();
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
@@ -104,16 +104,16 @@ public class DwcaTaxExport extends DwcaExportBase {
 					record.write(writer);
 					this.addExistingRecord(taxon);
 				}
-				
+
 				node.getClassification().getName();
 				//synonyms
 				handleSynonyms(taxon, writer, classification, metaRecord, config);
-				
+
 				//misapplied names
 				handleMisapplication(taxon, writer, classification, metaRecord, config);
-				
+
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		}
 		commitTransaction(txStatus);
 		return;
-		
+
 	}
 
 	private void handleSynonyms(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
@@ -147,17 +147,17 @@ public class DwcaTaxExport extends DwcaExportBase {
 			//????
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
-			
+
 			if (! this.recordExists(synonym)){
 				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial, config);
 				record.write(writer);
 				this.addExistingRecord(synonym);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
@@ -168,13 +168,13 @@ public class DwcaTaxExport extends DwcaExportBase {
 			//????
 			Taxon parent = null;
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
-			
+
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false, config);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
-		}	
+		}
 	}
 
 	/**
@@ -184,30 +184,30 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param acceptedTaxon
 	 * @param parent
 	 * @param basionym
-	 * @param isPartial 
-	 * @param isProParte 
-	 * @param config 
+	 * @param isPartial
+	 * @param isProParte
+	 * @param config
 	 * @param type
 	 */
-	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, NonViralName<?> name, 
-			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification, 
+	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, NonViralName<?> name,
+			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification,
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
-		
+
 		//maybe wrong as according to the DwC-A documentation only resolvable ids are allowed, this differs from DwC documentation
 		record.setScientificNameId(name);
 		record.setScientificName(name.getTitleCache());
-		
+
 		record.setAcceptedNameUsageId(acceptedTaxon.getUuid());
 		record.setAcceptedNameUsage(acceptedTaxon.getName() == null? acceptedTaxon.getTitleCache() : acceptedTaxon.getName().getTitleCache());
-		
+
 		//parentNameUsage
 		if (parent != null){
 			record.setParentNameUsageId(parent.getUuid());
 			record.setParentNameUsage(parent.getTitleCache());
 		}
-		
+
 		//originalNameUsage
 		// ??? - is not a name usage (concept)
 		if (basionym != null){
@@ -216,9 +216,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 			record.setOriginalNameUsageId(null);
 			record.setOriginalNameUsage(basionym.getTitleCache());
 		}
-		
+
 		//nameAccordingTo
-		Reference<?> sec = taxonBase.getSec();
+		Reference sec = taxonBase.getSec();
 		if (sec == null){
 			String message = "There is a taxon without sec " + taxonBase.getTitleCache() + "( " + taxonBase.getId() + ")";
 			logger.warn(message);
@@ -226,17 +226,17 @@ public class DwcaTaxExport extends DwcaExportBase {
 			record.setNameAccordingToId(taxonBase.getSec().getUuid());
 			record.setNameAccordingTo(taxonBase.getSec().getTitleCache());
 		}
-		
+
 		//namePublishedIn
 		// ??? is not a nameUsage (concept)
 		if (name.getNomenclaturalReference() != null){
 			record.setNamePublishedInId(name.getNomenclaturalReference().getUuid());
 			record.setNamePublishedIn(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getTitleCache());
 		}
-			
+
 		// what is the exact difference to id and acceptedNameUsageId
 		record.setTaxonConceptId(taxonBase.getUuid());
-		
+
 		//Classification
 		if (config.isWithHigherClassification()){
 			//FIXME all classification and rank specific fields are meant to represent the classification
@@ -247,7 +247,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			//... higher ranks
 			handleUninomialOrGenus(record, name);
 			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
-				record.setSubgenus(name.getNameCache());	
+				record.setSubgenus(name.getNameCache());
 			}
 			//record.setSubgenus(name.getInfraGenericEpithet());
 		}
@@ -257,10 +257,10 @@ public class DwcaTaxExport extends DwcaExportBase {
 			record.setGenusPart(name.getGenusOrUninomial());
 		}
 		record.setInfraGenericEpithet(name.getInfraGenericEpithet());
-		
+
 		record.setSpecificEpithet(name.getSpecificEpithet());
 		record.setInfraspecificEpithet(name.getInfraSpecificEpithet());
-		
+
 		record.setTaxonRank(name.getRank());
 		if (name.getRank() != null){
 			record.setVerbatimTaxonRank(name.getRank().getAbbreviation());
@@ -268,17 +268,17 @@ public class DwcaTaxExport extends DwcaExportBase {
 			String message = "No rank available for " + name.getTitleCache() + "(" + name.getId() + ")";
 			logger.warn(message);
 		}
-		
+
 		record.setScientificNameAuthorship(name.getAuthorshipCache());
-		
+
 		// ??? - use for TextData common names?
 		record.setVernacularName(null);
-		
+
 		record.setNomenclaturalCode(name.getNomenclaturalCode());
 		// ??? TODO Misapplied Names, inferred synonyms
 		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 		handleNomStatus(record, taxonBase, name);
-		
+
 		// TODO we need to differentiate technical
 		String taxonRemarks = "";
 		for (Annotation annotation : taxonBase.getAnnotations()){
@@ -294,29 +294,29 @@ public class DwcaTaxExport extends DwcaExportBase {
 		if (StringUtils.isNotBlank(taxonRemarks)){
 			record.setTaxonRemarks(taxonRemarks);
 		}
-		
+
 		// TODO which date is needed here (taxon, name, sec, ... ?)
 		record.setModified(taxonBase.getUpdated());
-		
+
 		// ???
 		record.setLanguage(null);
-		
+
 		record.setRights(taxonBase.getRights());
-		
+
 		//TODO
 		record.setRightsHolder(null);
 		record.setAccessRights(null);
-		
+
 		//TODO currently only via default value
 		record.setBibliographicCitation(null);
 		record.setInformationWithheld(null);
-		
+
 		record.setDatasetId(classification);
 		record.setDatasetName(classification.getTitleCache());
-		
+
 		//TODO
 		record.setSource(null);
-		
+
 		return;
 	}
 
@@ -324,8 +324,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param record
 	 * @param name
 	 * @param type
-	 * @param isPartial 
-	 * @param isProParte 
+	 * @param isPartial
+	 * @param isProParte
 	 */
 	private void handleTaxonomicStatus(DwcaTaxRecord record,
 			NonViralName<?> name, RelationshipTermBase<?> type, boolean isProParte, boolean isPartial) {
@@ -347,7 +347,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				logger.warn(message);
 				status = "partialSynonym";
 			}
-			
+
 			record.setTaxonomicStatus(status);
 		}
 	}
@@ -363,26 +363,26 @@ public class DwcaTaxExport extends DwcaExportBase {
 			Rank rank = name.getRank();
 			if (rank != null){
 				if (rank.isLower(Rank.GENUS())){
-					record.setGenus(firstEpi);	
+					record.setGenus(firstEpi);
 				}else if (rank.equals(Rank.GENUS())){
-					record.setGenus(firstEpi);	
+					record.setGenus(firstEpi);
 				}else if (rank.equals(Rank.KINGDOM())){
-					record.setKingdom(firstEpi);	
+					record.setKingdom(firstEpi);
 				}else if (rank.equals(Rank.PHYLUM())){
-					record.setPhylum(firstEpi);	
+					record.setPhylum(firstEpi);
 				}else if (rank.equals(Rank.CLASS())){
-					record.setClazz(firstEpi);	
+					record.setClazz(firstEpi);
 				}else if (rank.equals(Rank.ORDER())){
-					record.setOrder(firstEpi);	
+					record.setOrder(firstEpi);
 				}else if (rank.equals(Rank.FAMILY())){
-					record.setFamily(firstEpi);	
+					record.setFamily(firstEpi);
 				}else{
 					// !!!
 					String message = "Rank not covered. Set uninomial as genus instead: " + rank.getLabel();
 					logger.warn(message);
-//					record.setGenus(firstEpi);	
-				} 
-				
+//					record.setGenus(firstEpi);
+				}
+
 			}
 		}
 	}
@@ -421,5 +421,5 @@ public class DwcaTaxExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
-	
+
 }

@@ -20,15 +20,12 @@ import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-
-
-
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -125,21 +122,21 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		Resource elTaxonName = root.getResource(taxonNameNamespace);
 
 		int i = 0;
-		
+
 		TaxonNameBase name;
 		Property property = root.getProperty(taxonNameNamespace+"authorship");
-		
+
 		ResIterator iterator = root.listSubjectsWithProperty(property, (RDFNode) null);
 		String id ;
 		while (iterator.hasNext()){
-			
+
 			Resource resource = iterator.next();
-			
+
 			name = handleNameResource(resource, config);
 			id = resource.getNameSpace();
 			taxonNameMap.put(id, name);
 		}
-		
+
 		logger.info(i + " names handled");
 		getNameService().save(taxonNameMap.objects());
 //		makeNameSpecificData(nameMap);
@@ -154,34 +151,34 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
     protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoTaxonNames();
 	}
-	
+
 	protected TaxonNameBase handleNameModel(Model model, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap, String uri){
 		Resource nameAbout = model.getResource(uri);
 		TaxonNameBase result = handleNameResource(nameAbout, config);
 		taxonNameMap.put(uri, result);
 		return result;
-		
+
 	}
-	
+
 	private TaxonNameBase handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
 		String idNamespace = "TaxonName";
-				
+
 		StmtIterator stmts = nameAbout.listProperties();
 		while(stmts.hasNext()){
 			System.out.println(stmts.next().getPredicate().toString());
 		}
-		
+
 		Property prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nomenclaturalCode");
 		Statement stateNomenclaturalCode = nameAbout.getProperty(prop);
 		String strNomenclaturalCode = stateNomenclaturalCode.getObject().toString();
 		//Rank
 		prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"rankString");
 		String strRank = nameAbout.getProperty(prop).getString();
-		
-		
-		
+
+
+
 		try {
-			
+
 			Rank rank = TcsRdfTransformer.rankString2Rank(strRank);
 			NomenclaturalCode nomCode;
 			if (strNomenclaturalCode != null){
@@ -189,16 +186,16 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}else{
 				nomCode = NomenclaturalCode.ICNAFP;
 			}
-				
+
 			TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
 
 			Set<String> omitAttributes = null;
 			//makeStandardMapper(nameAbout, nameBase, omitAttributes, standardMappers);
-			
+
 			prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nameComplete");
 			String strNameComplete = nameAbout.getProperty(prop).getString();
 			nameBase.setTitleCache(strNameComplete, true);
-			
+
 			prop =  nameAbout.getModel().getProperty(config.getCommonNamespaceURIString()+"publishedIn");
 			String strPublishedIn = nameAbout.getProperty(prop).getString();
 			if (strPublishedIn != null && strPublishedIn != ""){
@@ -221,10 +218,10 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				}catch(NullPointerException e){
 				}
 				if (config.isPublishReferences()){
-					((Reference<?>)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+					((Reference)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 				}
 			}
-			
+
 			if (nameBase instanceof NonViralName){
 				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"genusPart");
@@ -235,29 +232,29 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"uninomial");
 					strGenusPart = nameAbout.getProperty(prop).getString();
 				}
-				
+
 				nonViralName.setGenusOrUninomial(strGenusPart);
-				
+
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"infragenericEpithet");
 				try{
 					String strInfragenericEpithet = nameAbout.getProperty(prop).getString();
 					nonViralName.setInfraGenericEpithet(strInfragenericEpithet);
 				}catch(NullPointerException e){
-					
+
 				}
 				try {
 					prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"specificEpithet");
 					String strSpecificEpithet = nameAbout.getProperty(prop).getString();
 					nonViralName.setSpecificEpithet(strSpecificEpithet);
 				}catch(NullPointerException e){
-					
+
 				}
 				try{
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"infraspecificEpithet");
 				String strInfraspecificEpithet = nameAbout.getProperty(prop).getString();
 				nonViralName.setInfraSpecificEpithet(strInfraspecificEpithet);
 				}catch(NullPointerException e){
-					
+
 				}
 				//Authorships
 				//TODO
@@ -268,7 +265,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 							<tm:hasMember rdf:resource="urn:lsid:ipni.org:authors:2691-1"
 								tm:index="1"
 								tm:role="Combination Author"/>
-							<tm:hasMember rdf:resource="urn:lsid:ipni.org:authors:8096-1" 
+							<tm:hasMember rdf:resource="urn:lsid:ipni.org:authors:8096-1"
 								tm:index="1"
 								tm:role="Basionym Author"/>
 						</tm:Team>
@@ -288,13 +285,13 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					try{
 						stateAutorTeamTeam = stateAuthorTeam.getProperty(prop);
 					}catch(Exception e){
-						
+
 					}
 					try{
 						prop =  stateAuthorTeam.getModel().getProperty(config.getTeamNamespaceURIString()+"name");
 						stateAutorTeamName = stateAuthorTeam.getProperty(prop);
 					}catch(Exception e){
-						
+
 					}
 					try{
 						prop =  nameAbout.getModel().getProperty(config.getTeamNamespaceURIString()+"hasMember");
@@ -312,11 +309,11 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						System.err.println(e.getMessage());
 					}
 				}
-				
-				
-				
+
+
+
 				nonViralName.setCombinationAuthorship(authorTeam);
-				
+
 				//Annotations:
 				/*
 				 * <tn:hasAnnotation>
@@ -324,7 +321,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
                 <tn:noteType rdf:resource="http://rs.tdwg.org/ontology/voc/TaxonName#replacementNameFor"/>
                 <tn:objectTaxonName rdf:resource="urn:lsid:ipni.org:names:151538-1"/>
             </tn:NomenclaturalNote>
-        </tn:hasAnnotation>   
+        </tn:hasAnnotation>
 				 */
 				/*
 				String strInfraspecificEpithet = nameAbout.getProperty(prop).getString();
@@ -368,9 +365,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			//ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), nameAbout, idNamespace);
 
 			//checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
-			
+
 			return nameBase;
-				
+
 			}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -379,7 +376,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			//name
 			String strNameComplete = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "nameComplete", rdfNamespace);
 			nameBase.setTitleCache(strNameComplete, true);
-			
+
 			//Reference
 			//TODO
 			String tcsElementName = "publishedIn";
@@ -405,7 +402,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					}
 				}
 				if (config.isPublishReferences()){
-					((Reference<?>)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+					((Reference)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 				}
 			}
 
@@ -437,21 +434,21 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			if (nameBase instanceof NonViralName){
 				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
 				String strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "genusPart", rdfNamespace);
-				
+
 				//for names of rank genus the uninomial property should be used
 				if (strGenusPart == null){
 					strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "uninomial", rdfNamespace);
 				}
 				nonViralName.setGenusOrUninomial(strGenusPart);
-				
+
 				String strInfragenericEpithet =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "infragenericEpithet", rdfNamespace);
 				nonViralName.setGenusOrUninomial(strInfragenericEpithet);
-				
-				
-				
+
+
+
 				String strSpecificEpithet = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "specificEpithet", rdfNamespace);
 				nonViralName.setSpecificEpithet(strSpecificEpithet);
-				
+
 				String strInfraspecificEpithet = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "infraspecificEpithet", rdfNamespace);
 				nonViralName.setInfraSpecificEpithet(strInfraspecificEpithet);
 				//AuthorTeams
@@ -507,38 +504,38 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		}
 		return null;*/
 	}
-	
+
 	protected TaxonNameBase handleNameElement(Element elTaxonName, Namespace rdfNamespace, Namespace taxonNameNamespace, TcsRdfImportConfigurator config, MapWrapper<TaxonNameBase> taxonNameMap){
 		String idNamespace = "TaxonName";
 		Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
-		
+
 		//create TaxonName element
-		
-	
+
+
 		String nameAbout = elTaxonName.getAttributeValue("about", rdfNamespace);
 		if (nameAbout == null){
 			nameAbout = XmlHelp.getChildAttributeValue(elTaxonName, "TaxonName", taxonNameNamespace, "about", rdfNamespace);
 		}
-		
-		
+
+
 		String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rankString", taxonNameNamespace, "rankString", rdfNamespace);
 		if (strRank == null){
 			strRank = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "rankString", rdfNamespace);
-			
+
 		}
-		
+
 		if (strRank == null){
 			strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
-			
+
 		}
-		
+
 		String strNomenclaturalCode = XmlHelp.getChildContentAttributeValue(elTaxonName, "TaxonName", taxonNameNamespace, "nomenclaturalCode", rdfNamespace);
 		if (strNomenclaturalCode == null){
 			strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonNameNamespace, "resource", rdfNamespace);
-			
+
 		}
 		try {
-			
+
 			Rank rank = TcsRdfTransformer.rankString2Rank(strRank);
 			NomenclaturalCode nomCode;
 			if (strNomenclaturalCode != null){
@@ -546,16 +543,16 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}else{
 				nomCode = NomenclaturalCode.ICNAFP;
 			}
-				
+
 			TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
 
 			Set<String> omitAttributes = null;
 			//makeStandardMapper(elTaxonName, nameBase, omitAttributes, standardMappers);
-			
+
 			//name
 			String strNameComplete = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "nameComplete", rdfNamespace);
 			nameBase.setTitleCache(strNameComplete, true);
-			
+
 			//Reference
 			//TODO
 			String tcsElementName = "publishedIn";
@@ -581,7 +578,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					}
 				}
 				if (config.isPublishReferences()){
-					((Reference<?>)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+					((Reference)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 				}
 			}
 
@@ -613,21 +610,21 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			if (nameBase instanceof NonViralName){
 				NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
 				String strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "genusPart", rdfNamespace);
-				
+
 				//for names of rank genus the uninomial property should be used
 				if (strGenusPart == null){
 					strGenusPart =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "uninomial", rdfNamespace);
 				}
 				nonViralName.setGenusOrUninomial(strGenusPart);
-				
+
 				String strInfragenericEpithet =  XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "infragenericEpithet", rdfNamespace);
 				nonViralName.setGenusOrUninomial(strInfragenericEpithet);
-				
-				
-				
+
+
+
 				String strSpecificEpithet = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "specificEpithet", rdfNamespace);
 				nonViralName.setSpecificEpithet(strSpecificEpithet);
-				
+
 				String strInfraspecificEpithet = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "infraspecificEpithet", rdfNamespace);
 				nonViralName.setInfraSpecificEpithet(strInfraspecificEpithet);
 				//AuthorTeams
@@ -688,21 +685,21 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	Model model = ModelFactory.createDefaultModel();
 		try{
 			model.read(is, null);
-			
+
 			config.makeNamespaces(model);
-			
+
 			String rdfNamespace = config.getRdfNamespaceURIString();
 			String taxonNameNamespace = config.getTnNamespaceURIString();
 			return handleNameModel(model, config, taxonNameMap, uri);
-			
-			
+
+
 		}catch(Exception e){
 			logger.debug("The file was no valid rdf file");
 		}
-		
-		
-		
+
+
+
 		return null;
 	}
-	
+
 }

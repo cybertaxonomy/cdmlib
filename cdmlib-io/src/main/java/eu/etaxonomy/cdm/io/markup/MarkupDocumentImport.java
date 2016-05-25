@@ -134,7 +134,7 @@ public class MarkupDocumentImport
 		unmatchedLeads.saveToSession(getPolytomousKeyNodeService());
 
 		// TODO generally do not store the reference object in the config
-		Reference<?> sourceReference = state.getConfig().getSourceReference();
+		Reference sourceReference = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sourceReference);
 	}
 

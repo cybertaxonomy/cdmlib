@@ -55,7 +55,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	public void rebuildIndex() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-		for(Reference<?> reference : list(null,null)) { // re-index all agents
+		for(Reference reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorship());
 
 			if(reference.getType().equals(ReferenceType.Article)) {
@@ -164,9 +164,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		query.setParameter("reference", reference);
 
 		@SuppressWarnings("unchecked")
-	    List<Reference<?>> list = query.list();
+	    List<Reference> list = query.list();
 	    references.addAll(list);
-		for(Reference<?> ref : references){
+		for(Reference ref : references){
 			subordinateReferences.addAll(getSubordinateReferences(ref));
 		}
 		references.addAll(subordinateReferences);

@@ -134,7 +134,7 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
 
                     //reference caches
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
-                    Reference<?> ref = (Reference<?>)entity;
+                    Reference ref = (Reference)entity;
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
                 }else { //any other

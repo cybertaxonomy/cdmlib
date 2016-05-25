@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,14 +37,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifTypesAndSpecimen2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
-	
+
 	/**
 	 * @param state
 	 */
@@ -52,12 +52,13 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
@@ -68,24 +69,24 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				isType = true;
 				typeStatus = getTypeStatus(typeStatusStr, item);
 			}
-			
+
 			SpecimenOrObservationType unitType = SpecimenOrObservationType.DerivedUnit;
-			
+
 			if (hasDerivedUnit(item, isType)){
 				unitType = SpecimenOrObservationType.PreservedSpecimen;
 			}else{
 				unitType = SpecimenOrObservationType.FieldUnit;
 			}
-				
+
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(unitType);
-			
+
 			String catalogNumber = item.get(TermUri.DWC_CATALOG_NUMBER);
 			Collection collection = getCollection(state, item, resultList);
 			facade.setCollection(collection);
 			facade.setCatalogNumber(catalogNumber);
-			
+
 			DerivedUnit specimen = facade.innerDerivedUnit();
-			
+
 			if (isType){
 				TaxonNameBase<?,?> name = taxon.getName();
 				if (typeStatus.isInstanceOf(SpecimenTypeDesignationStatus.class)){
@@ -102,7 +103,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 					fireWarningEvent(message, item, 8);
 				}
 			}
-			
+
 			MappedCdmBase<?>  mcb = new MappedCdmBase(specimen);
 			resultList.add(mcb);
 
@@ -110,7 +111,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			String message = "Can't retrieve taxon from database for id '%s'";
 			fireWarningEvent(String.format(message, id), item, 12);
 		}
-		
+
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
 	}
@@ -133,14 +134,14 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		}
 		return collection;
 	}
-		
+
 	private Collection getCollectionByCollectionCode(StreamItem item, String collectionCode, Institution institution) {
 		String namespace = TermUri.DWC_COLLECTION_CODE.toString();
 		List<Collection> result = state.get(namespace, collectionCode, Collection.class);
 		if (result.isEmpty()){
 			return makeNewCollection(collectionCode, institution);
 		}else if (result.size() == 1){
-			return (Collection)result.iterator().next();
+			return result.iterator().next();
 		}else {
 			int equalInstitutes = 0;
 			Collection lastEqualInstituteCollection = null;
@@ -162,7 +163,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				return lastEqualInstituteCollection;
 			}
 		}
-		
+
 	}
 
 	/**
@@ -187,7 +188,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		newCollection.setInstitute(institution);
 		return newCollection;
 	}
-	
+
 	private Institution getInstitutionByInstitutionCode(StreamItem item, String institutionCode) {
 		String namespace = TermUri.DWC_COLLECTION_CODE.toString();
 		List<Institution> result = state.get(namespace, institutionCode, Institution.class);
@@ -201,7 +202,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			String message = "There is more than 1 cdm entity matching given institution code '%s'. I take an arbitrary one.";
 			fireWarningEvent(String.format(message, institutionCode), item, 4);
 		}
-		return (Institution)result.iterator().next();
+		return result.iterator().next();
 	}
 
 	private boolean hasDerivedUnit(StreamItem item, boolean isType) {
@@ -230,7 +231,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	 * @return
 	 */
 	private TypeDesignationStatusBase<?> getTypeStatus(String typeStatus, StreamItem item) {
-		//TODO move to transformer or handle somehow different (e.g. transformer for http://vocabularies.gbif.org/vocabularies/type_status ) 
+		//TODO move to transformer or handle somehow different (e.g. transformer for http://vocabularies.gbif.org/vocabularies/type_status )
 		//preliminary implementation for those types needed for eMonocots import
 		if (isBlank(typeStatus)){
 			return null;
@@ -252,7 +253,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return id;
 	}
 
-	
+
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -265,7 +266,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 		//collection code
 		TermUri uri = TermUri.DWC_COLLECTION_CODE;
 		String valueStr = item.get(uri);
@@ -274,10 +275,10 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
@@ -285,9 +286,9 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
  		result.add(TermUri.DWC_LOCATION_ID.toString());
  		return result;
 	}
-	
+
 //******************* TO STRING ******************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

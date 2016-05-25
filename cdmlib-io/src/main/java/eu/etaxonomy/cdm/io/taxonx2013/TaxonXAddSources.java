@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class TaxonXAddSources {
 
-    private Reference<?> sourceUrlRef;
+    private Reference sourceUrlRef;
     private TaxonXImport importer;
     private TaxonXImportState configState;
     @SuppressWarnings("unused")
@@ -59,25 +59,25 @@ public class TaxonXAddSources {
     /**
      * @return the sourceUrlRef
      */
-    public Reference<?> getSourceUrlRef() {
+    public Reference getSourceUrlRef() {
         return sourceUrlRef;
     }
 
     /**
      * @param sourceUrlRef the sourceUrlRef to set
      */
-    public void setSourceUrlRef(Reference<?> sourceUrlRef) {
+    public void setSourceUrlRef(Reference sourceUrlRef) {
         this.sourceUrlRef = sourceUrlRef;
     }
 
 
-    protected IdentifiableSource getIdentifiableSource(Reference<?> reference, Set<IdentifiableSource> sources, boolean original){
+    protected IdentifiableSource getIdentifiableSource(Reference reference, Set<IdentifiableSource> sources, boolean original){
 //        logger.info("getIdentifiableSource");
         boolean sourceExists=false;
         IdentifiableSource source=null;
         for (IdentifiableSource src : sources){
             String micro = src.getCitationMicroReference();
-            Reference<?> r = src.getCitation();
+            Reference r = src.getCitation();
             if (r.getTitleCache().equals(reference.getTitleCache())) {
                 sourceExists=true;
                 break;
@@ -93,13 +93,13 @@ public class TaxonXAddSources {
         return source;
     }
 
-    protected DescriptionElementSource getDescriptionElementSource(Reference<?> reference, Set<DescriptionElementSource> sources, boolean original){
+    protected DescriptionElementSource getDescriptionElementSource(Reference reference, Set<DescriptionElementSource> sources, boolean original){
         //logger.info("getDescriptionElementSource");
         boolean sourceExists=false;
         DescriptionElementSource source=null;
         for (DescriptionElementSource src : sources){
             String micro = src.getCitationMicroReference();
-            Reference<?> r = src.getCitation();
+            Reference r = src.getCitation();
             if (r.getTitleCache().equals(reference.getTitleCache())) {
                 sourceExists=true;
                 break;
@@ -120,10 +120,10 @@ public class TaxonXAddSources {
      * @param refMods
      * @param synonym
      */
-    protected void addSource(Reference<?> refMods, Synonym synonym) {
+    protected void addSource(Reference refMods, Synonym synonym) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
-        Reference<?> sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
         IdentifiableSource id = getIdentifiableSource(sourceUrlRef,synonym.getSources(), false);
         IdentifiableSource id2 = getIdentifiableSource(refMods,synonym.getSources(), true);
         IdentifiableSource id3 = getIdentifiableSource(sec,synonym.getSources(), false);
@@ -143,7 +143,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param indAssociation
      */
-    protected IndividualsAssociation addSource(Reference<?> refMods, IndividualsAssociation indAssociation) {
+    protected IndividualsAssociation addSource(Reference refMods, IndividualsAssociation indAssociation) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -167,10 +167,10 @@ public class TaxonXAddSources {
      * @param refMods
      * @param acceptedTaxon
      */
-    protected void addSource(Reference<?> refMods, Taxon acceptedTaxon) {
+    protected void addSource(Reference refMods, Taxon acceptedTaxon) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
-        Reference<?> sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
         IdentifiableSource id = getIdentifiableSource(sourceUrlRef, acceptedTaxon.getSources(), false);
         IdentifiableSource id2 = getIdentifiableSource(refMods, acceptedTaxon.getSources(), true);
         IdentifiableSource id3 = getIdentifiableSource(sec, acceptedTaxon.getSources(), false);
@@ -189,7 +189,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param nameToBeFilled
      */
-    protected void addSource(Reference<?> refMods, NonViralName<?> nameToBeFilled) {
+    protected void addSource(Reference refMods, NonViralName<?> nameToBeFilled) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -213,7 +213,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param textData
      */
-    protected void addSource(Reference<?> refMods, TextData textData) {
+    protected void addSource(Reference refMods, TextData textData) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -238,7 +238,7 @@ public class TaxonXAddSources {
      * @param taxonDescription
      * @param currentRef
      */
-    protected void addAndSaveSource(Reference<?> refMods, TaxonDescription taxonDescription, Reference<?> currentRef) {
+    protected void addAndSaveSource(Reference refMods, TaxonDescription taxonDescription, Reference currentRef) {
         //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -263,7 +263,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param derivedUnitBase
      */
-    protected void addAndSaveSource(Reference<?> refMods, DerivedUnit derivedUnitBase) {
+    protected void addAndSaveSource(Reference refMods, DerivedUnit derivedUnitBase) {
         //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -289,7 +289,7 @@ public class TaxonXAddSources {
      * @param refMods
      * @param taxonDescription
      */
-    public void addSource(Reference<?> refMods, TaxonDescription taxonDescription) {
+    public void addSource(Reference refMods, TaxonDescription taxonDescription) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -317,7 +317,7 @@ public class TaxonXAddSources {
      * @param name
      * @param ref
      */
-    public void addSource(Reference<?> reference, TextData textData, TaxonNameBase name, Reference<?> refMods) {
+    public void addSource(Reference reference, TextData textData, TaxonNameBase name, Reference refMods) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
@@ -335,14 +335,14 @@ public class TaxonXAddSources {
 
 
     @SuppressWarnings({ "unused", "rawtypes" })
-    private DescriptionElementSource getDescriptionElementSource(Reference<?> reference, Set<DescriptionElementSource> sources,
+    private DescriptionElementSource getDescriptionElementSource(Reference reference, Set<DescriptionElementSource> sources,
             TaxonNameBase originalname, boolean original){
         //logger.info("getDescriptionElementSource");
         boolean sourceExists=false;
         DescriptionElementSource source=null;
         for (DescriptionElementSource src : sources){
             String micro = src.getCitationMicroReference();
-            Reference<?> r = src.getCitation();
+            Reference r = src.getCitation();
             TaxonNameBase oname = src.getNameUsedInSource();
             try {
                 if (r.getTitleCache().equals(reference.getTitleCache())) {

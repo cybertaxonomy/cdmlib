@@ -96,7 +96,7 @@ public class TestDatabase {
 	    List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
-		Reference<?> citRef, sec;
+		Reference citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot1, nameFree, synName11, synName12, synName2, synNameFree;
 		BotanicalName nameRoot2, nameR2_1, nameR2_2;
 		Taxon child1, child2, child21, root1T, root2T, freeT;

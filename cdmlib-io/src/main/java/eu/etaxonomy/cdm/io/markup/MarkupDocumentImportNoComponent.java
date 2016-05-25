@@ -307,7 +307,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		boolean hasNomenclature = false;
 		String taxonTitle = null;
 
-		Reference<?> descriptionReference = state.getConfig().getSourceReference();
+		Reference descriptionReference = state.getConfig().getSourceReference();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -414,7 +414,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				fireWarningEvent("No taxon title defined for writer. Please add sec.title manually.", next, 6);
 				taxonTitle = null;
 			}
-			Reference<?> sec = ReferenceFactory.newBookSection();
+			Reference sec = ReferenceFactory.newBookSection();
 			sec.setTitle(taxonTitle);
 			TeamOrPersonBase<?> author = createAuthor(writer.writer);
 			sec.setAuthorship(author);

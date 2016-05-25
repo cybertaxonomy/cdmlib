@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -46,28 +46,30 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	public TaxonXModsImport(){
 		super();
 	}
-	
-	public boolean doCheck(TaxonXImportState state){
+
+	@Override
+    public boolean doCheck(TaxonXImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonXMods not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		
+
 		return result;
 	}
 
-	public void doInvoke(TaxonXImportState state){		
+	@Override
+    public void doInvoke(TaxonXImportState state){
 		logger.info("start make mods reference ...");
 		TaxonXImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
 		Namespace nsMods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-		
+
 		state.setModsReference(null);  //delete old reference
 		Element elTaxonHeader = root.getChild("taxonxHeader", nsTaxonx);
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				Reference<?> ref = ReferenceFactory.newGeneric();
+				Reference ref = ReferenceFactory.newGeneric();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
@@ -81,23 +83,23 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				//origin info
 				Element elOriginInfo = elMods.getChild("originInfo", nsMods);
 				makeOriginInfo(elOriginInfo, ref);
-				
+
 				//publish
 				if (state.getConfig().isPublishReferences()){
 					boolean publish = false;
 					ref.addMarker(Marker.NewInstance(MarkerType.IN_BIBLIOGRAPHY(), publish));
 				}
-				
+
 				//save
 				state.setModsReference(ref);
-				
+
 			}
 		}
 
 		logger.info("end make mods reference ...");
 		return;
 	}
-	
+
 
 	/**
 	 * @param contentList
@@ -114,21 +116,21 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		}
 		contentList.removeAll(removeList);
 	}
-	
+
 	/**
 	 * @param elModsName
 	 * @param ref
 	 */
-	private void makeOriginInfo(Element elOriginInfo, Reference<?> ref) {
+	private void makeOriginInfo(Element elOriginInfo, Reference ref) {
 		Namespace nsMods = elOriginInfo.getNamespace();
 		List<Content> contentList = elOriginInfo.getContent();
-		
+
 		//dateIssued
 		Element elDateIssued = elOriginInfo.getChild("dateIssued", nsMods);
 		if (elDateIssued != null){
 			String dateIssued = elDateIssued.getTextNormalize();
 			contentList.remove(elDateIssued);
-			
+
 			TimePeriod datePublished = TimePeriodParser.parseString(dateIssued);
 			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setDatePublished(datePublished );
@@ -136,20 +138,20 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				logger.warn("Reference has issue date but is not of type publication base. Date was not set");
 			}
 		}
-		
+
 		//dateIssued
 		Element elPublisher = elOriginInfo.getChild("publisher", nsMods);
 		if (elPublisher != null){
 			String publisher = elPublisher.getTextNormalize();
 			contentList.remove(elPublisher);
-			
+
 			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setPublisher(publisher);
 			}else{
 				logger.warn("Reference has publisher but is not of type publication base. Publisher was not set");
 			}
 		}
-		
+
 		removeEmptyContent(contentList);
 		for (Content o: contentList){
 			logger.warn(o + " (in mods:originInfo) not yet implemented for mods import");
@@ -166,13 +168,13 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	//THIS implementation is against the mods semantics but supports the current
 	//format for palmae taxonX files
 	//The later has to be changed and this part has to be adapted
-	private void makeModsName(Element elModsName, Reference<?> ref) {
+	private void makeModsName(Element elModsName, Reference ref) {
 		int UNPARSED = 0;
 		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
 		List<Content> contentList = elModsName.getContent();
 		Team authorship = Team.NewInstance();
-		
+
 		//name
 		List<Element> elNameParts = elModsName.getChildren("namePart", nsMods);
 		int mode = UNPARSED;
@@ -181,9 +183,9 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				mode = PARSED;
 			}
 		}
-		
+
 		if (mode == 0){
-			Element elNamePart = elNameParts.get(0); 
+			Element elNamePart = elNameParts.get(0);
 			if (elNamePart != null){
 				String namePart = elNamePart.getTextNormalize();
 				contentList.remove(elNamePart);
@@ -193,7 +195,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				logger.warn("Multiple nameparts of unexpected type");
 			}
 		}else{
-			
+
 			Person lastTeamMember = Person.NewInstance();
 			List<Element> tmpNamePartList = new ArrayList<Element>();
 			tmpNamePartList.addAll(elNameParts);
@@ -211,7 +213,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			}
 		}
 		ref.setAuthorship(authorship);
-		
+
 		removeEmptyContent(contentList);
 		for (Content o: contentList){
 			logger.warn(o + " (in mods:name) not yet implemented for mods import");
@@ -223,10 +225,10 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elTitleInfo
 	 * @param ref
 	 */
-	private void makeTitleInfo(Element elTitleInfo, Reference<?> ref) {
+	private void makeTitleInfo(Element elTitleInfo, Reference ref) {
 		Namespace nsMods = elTitleInfo.getNamespace();
 		List<Content> contentList = elTitleInfo.getContent();
-		
+
 		//title
 		Element elTitle = elTitleInfo.getChild("title", nsMods);
 		if (elTitle != null){
@@ -240,12 +242,13 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		}
 		return;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TaxonXImportState state){
+	@Override
+    protected boolean isIgnore(TaxonXImportState state){
 		return ! state.getConfig().isDoMods();
 	}
-	
+
 }

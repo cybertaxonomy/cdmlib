@@ -1532,7 +1532,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testAddGetRemoveSource() {
         Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
 
-        Reference<?> reference = ReferenceFactory.newBook();
+        Reference reference = ReferenceFactory.newBook();
         IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
         IdentifiableSource source2 = IdentifiableSource.NewDataImportInstance("1", "myTable");
@@ -1540,7 +1540,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
         specimenFacade.removeSource(source1);
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
-        Reference<?> reference2 = ReferenceFactory.newJournal();
+        Reference reference2 = ReferenceFactory.newJournal();
         IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
         Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());

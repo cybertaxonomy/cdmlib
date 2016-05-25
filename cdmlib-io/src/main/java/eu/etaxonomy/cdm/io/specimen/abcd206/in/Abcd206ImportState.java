@@ -46,7 +46,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private Classification classification = null;
 	private Classification defaultClassification = null;
-	private Reference<?> ref = null;
+	private Reference ref = null;
 
 	private Abcd206DataHolder dataHolder;
 	private DerivedUnit derivedUnitBase;
@@ -116,11 +116,11 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         this.defaultClassification = defaultClassification;
     }
 
-    public Reference<?> getRef() {
+    public Reference getRef() {
         return ref;
     }
 
-    public void setRef(Reference<?> ref) {
+    public void setRef(Reference ref) {
         this.ref = ref;
     }
 

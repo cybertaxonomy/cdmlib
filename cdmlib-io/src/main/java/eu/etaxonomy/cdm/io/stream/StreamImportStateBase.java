@@ -234,7 +234,7 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 	 * Returns the source reference object that is attached to the current transaction.
 	 * @return
 	 */
-	public Reference<?> getTransactionalSourceReference() {
+	public Reference getTransactionalSourceReference() {
 		TermUri namespaceSourceReference = TermUri.CDM_SOURCE_REFERENCE;
 		UUID sourceReferenceUuid = getConfig().getSourceRefUuid();
 		List<Reference> references = this.get(namespaceSourceReference.toString(), sourceReferenceUuid.toString(), Reference.class);

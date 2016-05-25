@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,25 +32,26 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
-	
+
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
 	private boolean doFacts = true;
 	private boolean doTypes = true;
 
-	
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-	
+
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
 
 
 	private String originalSourceTaxonNamespace = "TaxonConcept";
 	private String originalSourceId;
-	
-	protected void makeIoClassList(){
+
+	@Override
+    protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				TaxonXModsImport.class,
 				TaxonXDescriptionImport.class
@@ -59,7 +60,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
 		};
 	}
-	
+
 	/**
 	 * @param uri
 	 * @param destination
@@ -79,16 +80,17 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		setSource(uri);
 		setDestination(destination);
 	}
-	
+
 
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public TaxonXImportState getNewState() {
+	@Override
+    public TaxonXImportState getNewState() {
 		return new TaxonXImportState(this);
 	}
-	
+
 	public Element getSourceRoot(){
 		URI source = getSource();
 		try {
@@ -112,16 +114,17 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public Reference getSourceReference() {
 		//TODO
 		logger.warn("getSource Reference not yet implemented");
-		Reference<?> result = ReferenceFactory.newDatabase();
+		Reference result = ReferenceFactory.newDatabase();
 		result.setTitleCache("XXX", true);
 		return result;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
@@ -144,8 +147,8 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public void setOriginalSourceId(String originalSourceId) {
 		this.originalSourceId = originalSourceId;
 	}
-	
-	
+
+
 	/**
 	 * @return the doMods
 	 */
@@ -159,8 +162,8 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public void setDoMods(boolean doMods) {
 		this.doMods = doMods;
 	}
-	
-	
+
+
 	public boolean isDoFacts() {
 		return doFacts;
 	}
@@ -168,7 +171,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		this.doFacts = doFacts;
 	}
 
-	
+
 
 	public boolean isDoTypes() {
 		return doTypes;
@@ -177,7 +180,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		this.doTypes = doTypes;
 	}
 
-	
+
 	/**
 	 * @return the isPublishReferences
 	 */
@@ -191,7 +194,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public void setPublishReferences(boolean isPublishReferences) {
 		this.isPublishReferences = isPublishReferences;
 	}
-	
 
-	
+
+
 }

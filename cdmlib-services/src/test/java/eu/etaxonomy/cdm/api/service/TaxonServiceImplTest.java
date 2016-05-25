@@ -268,7 +268,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testMoveSynonymToAnotherTaxon_OLD() {
         SynonymRelationshipType heteroTypicSynonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
-        Reference<?> reference = ReferenceFactory.newGeneric();
+        Reference reference = ReferenceFactory.newGeneric();
         String referenceDetail = "test";
 
         NonViralName<?> t1n = NonViralName.NewInstance(null);
@@ -325,7 +325,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean moveHomotypicGroup = true;
         SynonymRelationshipType newSynonymRelationshipType = null;
         boolean keepReference = true;
-        Reference<?> newReference = null;
+        Reference newReference = null;
         String newReferenceDetail = null;
 
         Taxon newTaxon = (Taxon)service.load(uuidNewTaxon);
@@ -427,7 +427,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //+ new detail
         newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn3);
-        Reference<?> ref1 = referenceService.load(uuidRef1);
+        Reference ref1 = referenceService.load(uuidRef1);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
         Assert.assertEquals("Synonym should have 1 relation", 1, heterotypicSynonym.getSynonymRelations().size());
         rel = heterotypicSynonym.getSynonymRelations().iterator().next();
@@ -477,7 +477,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //test single heterotypic synonym to homotypic synonym of new taxon
         //+ new reference
         newTaxon = (Taxon)service.load(uuidNewTaxon);
-        Reference<?> ref2 = referenceService.load(uuidRef2);
+        Reference ref2 = referenceService.load(uuidRef2);
         heterotypicSynonym = (Synonym)service.load(uuidSyn6);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
         Assert.assertEquals("Synonym should have 1 relation", 1, heterotypicSynonym.getSynonymRelations().size());
@@ -515,7 +515,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testGetHeterotypicSynonymyGroups(){
         Rank rank = Rank.SPECIES();
-        Reference<?> ref1 = ReferenceFactory.newGeneric();
+        Reference ref1 = ReferenceFactory.newGeneric();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
         Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         Synonym synonym0 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
@@ -549,7 +549,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     public final void testGetHomotypicSynonymsByHomotypicGroup(){
         Rank rank = Rank.SPECIES();
-        Reference<?> ref1 = ReferenceFactory.newGeneric();
+        Reference ref1 = ReferenceFactory.newGeneric();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
         Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         Synonym synonym0 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
@@ -1634,7 +1634,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(value="BlankDataSet.xml")
     public final void testLlistIncludedTaxa(){
-    	Reference<?> citation = null;
+    	Reference citation = null;
     	String microcitation = null;
 
     	//Data

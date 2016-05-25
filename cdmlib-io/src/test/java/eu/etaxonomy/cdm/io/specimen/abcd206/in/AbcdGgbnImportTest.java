@@ -299,7 +299,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(sequence.getContigFile());
         assertEquals(URI.create("http://ww2.biocase.org/websvn/filedetails.php?repname=campanula&path=%2FCAM385_Campa_drabifolia.pde"), MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile()).getUri());
         assertEquals(1, sequence.getCitations().size());
-        Reference<?> reference = sequence.getCitations().iterator().next();
+        Reference reference = sequence.getCitations().iterator().next();
         assertEquals("Gemeinholzer,B., Bachmann,K. (2005): Examining morphological "
                 + "and molecular diagnostic character states in "
                 + "Cichorium intybus L. (Asteraceae) and Cichorium spinosum L."

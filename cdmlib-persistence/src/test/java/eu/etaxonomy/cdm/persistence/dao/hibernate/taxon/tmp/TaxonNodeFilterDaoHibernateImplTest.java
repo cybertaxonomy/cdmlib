@@ -55,7 +55,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 	@Before
 	public void setUp() throws Exception {
 		classification1 = Classification.NewInstance("TestClassification");
-		Reference<?> citation = null;
+		Reference citation = null;
 		String microCitation = null;
 		Taxon taxon1 = Taxon.NewInstance(null, null);
 		Taxon taxon2 = Taxon.NewInstance(null, null);

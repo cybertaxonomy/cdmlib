@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -94,43 +94,43 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	private static final String LATITUDE_COLUMN = "(?i)(Latitude)";
 	private static final String REFERENCE_SYSTEM_COLUMN = "(?i)(ReferenceSystem)";
 	private static final String ERROR_RADIUS_COLUMN = "(?i)(ErrorRadius)";
-	
-	
+
+
 	private static final String COLLECTORS_NUMBER_COLUMN = "(?i)((Collectors|Field)Number)";
 	private static final String ECOLOGY_COLUMN = "(?i)(Ecology|Habitat)";
 	private static final String PLANT_DESCRIPTION_COLUMN = "(?i)(PlantDescription)";
 	private static final String FIELD_NOTES_COLUMN = "(?i)(FieldNotes)";
 	private static final String SEX_COLUMN = "(?i)(Sex)";
-	
-	
+
+
 	private static final String ACCESSION_NUMBER_COLUMN = "(?i)(AccessionNumber)";
 	private static final String BARCODE_COLUMN = "(?i)(Barcode)";
 	private static final String COLLECTION_CODE_COLUMN = "(?i)(CollectionCode)";
 	private static final String COLLECTION_COLUMN = "(?i)(Collection)";
 	private static final String UNIT_NOTES_COLUMN = "(?i)((Unit)?Notes)";
-	
-	
+
+
 	private static final String TYPE_CATEGORY_COLUMN = "(?i)(TypeCategory)";
 	private static final String TYPIFIED_NAME_COLUMN = "(?i)(TypifiedName|TypeOf)";
-	
-	
+
+
 	private static final String SOURCE_COLUMN = "(?i)(Source)";
 	private static final String ID_IN_SOURCE_COLUMN = "(?i)(IdInSource)";
-	
-	
+
+
 	private static final String DETERMINATION_AUTHOR_COLUMN = "(?i)(Author)";
 	private static final String DETERMINATION_MODIFIER_COLUMN = "(?i)(DeterminationModifier)";
 	private static final String DETERMINED_BY_COLUMN = "(?i)(DeterminationBy)";
 	private static final String DETERMINED_WHEN_COLUMN = "(?i)(Det(ermination)?When)";
 	private static final String DETERMINATION_NOTES_COLUMN = "(?i)(DeterminationNote)";
 	private static final String EXTENSION_COLUMN = "(?i)(Ext(ension)?)";
-	
+
 
 	public SpecimenCdmExcelImport() {
 		super();
 	}
 
-	
+
 
 
 	@Override
@@ -148,102 +148,102 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		} else if(keyValue.key.matches(FIELD_NOTES_COLUMN)) {
 			row.setLocality(value);
 		} else if(keyValue.key.matches(ALTITUDE_COLUMN)) {
-			row.setAltitude(value);		
+			row.setAltitude(value);
 		} else if(keyValue.key.matches(ALTITUDE_MAX_COLUMN)) {
-			row.setAltitudeMax(value);		
+			row.setAltitudeMax(value);
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
-			row.putCollector(keyValue.index, value);		
+			row.putCollector(keyValue.index, value);
 		} else if(keyValue.key.matches(PRIMARY_COLLECTOR_COLUMN)) {
-			row.setPrimaryCollector(value);		
+			row.setPrimaryCollector(value);
 		} else if(keyValue.key.matches(ECOLOGY_COLUMN)) {
 			row.setEcology(value);
 		} else if(keyValue.key.matches(PLANT_DESCRIPTION_COLUMN)) {
-			row.setPlantDescription(value);		
+			row.setPlantDescription(value);
 		} else if(keyValue.key.matches(SEX_COLUMN)) {
 			row.setSex(value);
 		} else if(keyValue.key.matches(COLLECTION_DATE_COLUMN)) {
-			row.setCollectingDate(value);		
+			row.setCollectingDate(value);
 		} else if(keyValue.key.matches(COLLECTION_DATE_END_COLUMN)) {
-			row.setCollectingDateEnd(value);		
+			row.setCollectingDateEnd(value);
 		} else if(keyValue.key.matches(COLLECTORS_COLUMN)) {
-			row.setCollectors(value);	
+			row.setCollectors(value);
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
-			row.putCollector(keyValue.index, value);	
+			row.putCollector(keyValue.index, value);
 		} else if(keyValue.key.matches(COLLECTORS_NUMBER_COLUMN)) {
-			row.setCollectorsNumber(value);		
+			row.setCollectorsNumber(value);
 		} else if(keyValue.key.matches(LONGITUDE_COLUMN)) {
-			row.setLongitude(value);		
+			row.setLongitude(value);
 		} else if(keyValue.key.matches(LATITUDE_COLUMN)) {
-			row.setLatitude(value);		
+			row.setLatitude(value);
 		} else if(keyValue.key.matches(REFERENCE_SYSTEM_COLUMN)) {
-			row.setReferenceSystem(value);		
+			row.setReferenceSystem(value);
 		} else if(keyValue.key.matches(ERROR_RADIUS_COLUMN)) {
-			row.setErrorRadius(value);		
+			row.setErrorRadius(value);
 		} else if(keyValue.key.matches(AREA_COLUMN)) {
 			if (keyValue.postfix != null){
-				row.addLeveledArea(keyValue.postfix, value);		
+				row.addLeveledArea(keyValue.postfix, value);
 			}else{
 				logger.warn("Not yet implemented");
 			}
 		} else if(keyValue.key.matches(LANGUAGE)) {
-			row.setLanguage(value);		
-			
-			
+			row.setLanguage(value);
+
+
 		} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
-			row.setAccessionNumber(value);		
+			row.setAccessionNumber(value);
 		} else if(keyValue.key.matches(BARCODE_COLUMN)) {
-			row.setBarcode(value);		
+			row.setBarcode(value);
 		} else if(keyValue.key.matches(UNIT_NOTES_COLUMN)) {
-			row.putUnitNote(keyValue.index, value);		
-		
-			
+			row.putUnitNote(keyValue.index, value);
+
+
 		} else if(keyValue.key.matches(FAMILY_COLUMN)) {
-			row.putDeterminationFamily(keyValue.index, value);		
+			row.putDeterminationFamily(keyValue.index, value);
 		} else if(keyValue.key.matches(GENUS_COLUMN)) {
-			row.putDeterminationGenus(keyValue.index, value);		
+			row.putDeterminationGenus(keyValue.index, value);
 		} else if(keyValue.key.matches(SPECIFIC_EPITHET_COLUMN)) {
-			row.putDeterminationSpeciesEpi(keyValue.index, value);			
+			row.putDeterminationSpeciesEpi(keyValue.index, value);
 		} else if(keyValue.key.matches(INFRASPECIFIC_EPITHET_COLUMN)) {
-			row.putDeterminationInfraSpeciesEpi(keyValue.index, value);			
+			row.putDeterminationInfraSpeciesEpi(keyValue.index, value);
 		} else if(keyValue.key.matches(RANK_COLUMN)) {
-			row.putDeterminationRank(keyValue.index, value);			
+			row.putDeterminationRank(keyValue.index, value);
 		} else if(keyValue.key.matches(TAXON_UUID_COLUMN)) {
-			row.putDeterminationTaxonUuid(keyValue.index, value);			
+			row.putDeterminationTaxonUuid(keyValue.index, value);
 		} else if(keyValue.key.matches(FULL_NAME_COLUMN)) {
-			row.putDeterminationFullName(keyValue.index, value);			
+			row.putDeterminationFullName(keyValue.index, value);
 		} else if(keyValue.key.matches(DETERMINATION_AUTHOR_COLUMN)) {
-			row.putDeterminationAuthor(keyValue.index, value);			
+			row.putDeterminationAuthor(keyValue.index, value);
 		} else if(keyValue.key.matches(DETERMINATION_MODIFIER_COLUMN)) {
-			row.putDeterminationDeterminationModifier(keyValue.index, value);			
+			row.putDeterminationDeterminationModifier(keyValue.index, value);
 		} else if(keyValue.key.matches(DETERMINATION_NOTES_COLUMN)) {
-			row.putDeterminationDeterminationNotes(keyValue.index, value);			
+			row.putDeterminationDeterminationNotes(keyValue.index, value);
 		} else if(keyValue.key.matches(DETERMINED_BY_COLUMN)) {
-			row.putDeterminationDeterminedBy(keyValue.index, value);			
+			row.putDeterminationDeterminedBy(keyValue.index, value);
 		} else if(keyValue.key.matches(DETERMINED_WHEN_COLUMN)) {
-			row.putDeterminationDeterminedWhen(keyValue.index, value);			
-		
+			row.putDeterminationDeterminedWhen(keyValue.index, value);
+
 		} else if(keyValue.key.matches(COLLECTION_CODE_COLUMN)) {
-			row.setCollectionCode(value);		
+			row.setCollectionCode(value);
 		} else if(keyValue.key.matches(COLLECTION_COLUMN)) {
-			row.setCollection(value);		
-		
+			row.setCollection(value);
+
 		} else if(keyValue.key.matches(TYPE_CATEGORY_COLUMN)) {
-			row.putTypeCategory(keyValue.index, getSpecimenTypeStatus(state, value));	
+			row.putTypeCategory(keyValue.index, getSpecimenTypeStatus(state, value));
 		} else if(keyValue.key.matches(TYPIFIED_NAME_COLUMN)) {
-			row.putTypifiedName(keyValue.index, getTaxonName(state, value));		
-		
-		
+			row.putTypifiedName(keyValue.index, getTaxonName(state, value));
+
+
 		} else if(keyValue.key.matches(SOURCE_COLUMN)) {
-			row.putSourceReference(keyValue.index, getOrMakeReference(state, value) );	
+			row.putSourceReference(keyValue.index, getOrMakeReference(state, value) );
 		} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
-			row.putIdInSource(keyValue.index, value);		
+			row.putIdInSource(keyValue.index, value);
 		} else if(keyValue.key.matches(EXTENSION_COLUMN)) {
 			if (keyValue.postfix != null){
-				row.addExtension(keyValue.postfix, value);		
+				row.addExtension(keyValue.postfix, value);
 			}else{
 				logger.warn("Extension without postfix not yet implemented");
 			}
-			
+
 		}else {
 			state.setUnsuccessfull();
 			logger.error("Unexpected column header " + keyValue.originalKey);
@@ -256,7 +256,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
 		SpecimenRow row = state.getCurrentRow();
-		
+
 		//basis of record
 		SpecimenOrObservationType type = SpecimenOrObservationType.valueOf2(row.getBasisOfRecord());
 		if (type == null){
@@ -266,8 +266,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			type = SpecimenOrObservationType.DerivedUnit;
 		}
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(type);
-		
-		
+
+
 		Language lang = Language.DEFAULT();
 		if (StringUtils.isNotBlank(row.getLanguage())){
 			Language langIso = getTermService().getLanguageByIso(row.getLanguage());
@@ -278,11 +278,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				lang = langIso;
 			}
 		}
-		
+
 		//country
 		handleCountry(facade, row, state);
 		handleAreas(facade,row, state);
-		
+
 		facade.setGatheringPeriod(getTimePeriod(row.getCollectingDate(), row.getCollectingDateEnd()));
 		facade.setLocality(row.getLocality());
 		facade.setFieldNotes(row.getFieldNotes());
@@ -294,7 +294,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
 		facade.setPrimaryCollector(getOrMakePrimaryCollector(facade, row.getPrimaryCollector(), state));
 		handleAbsoluteElevation(facade, row, state);
-		
+
 		//derivedUnit
 		facade.setBarcode(row.getBarcode());
 		facade.setAccessionNumber(row.getAccessionNumber());
@@ -312,7 +312,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			Annotation annotation = Annotation.NewInstance(note, AnnotationType.EDITORIAL(), Language.DEFAULT());
 			facade.addAnnotation(annotation);
 		}
-		
+
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return;
@@ -320,7 +320,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 	private void handleAbsoluteElevation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		//altitude
-		
+
 		try {
 			String altitude = row.getAltitude();
 			if (StringUtils.isBlank(altitude)){
@@ -337,9 +337,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			logger.warn(message);
 			return;
 		}
-		
+
 		//max
-		
+
 		try {
 			String max = row.getAltitudeMax();
 			if (StringUtils.isBlank(max)){
@@ -368,15 +368,15 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			message = String.format(message, row.getAltitudeMax(), state.getCurrentLine());
 			logger.warn(message);
 			return;
-			
+
 		}
-		
-		
+
+
 	}
 
 	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		List<PostfixTerm> areas = row.getLeveledAreas();
-		
+
 		for (PostfixTerm lArea : areas){
 			String description = lArea.term;
 			String abbrev = lArea.term;
@@ -384,11 +384,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			String key = lArea.postfix + "_" + lArea.term;
 			UUID areaUuid = state.getArea(key);
 			NamedAreaLevel level = state.getPostfixLevel(lArea.postfix);
-			
+
 			TermMatchMode matchMode = state.getConfig().getAreaMatchMode();
 			NamedArea area = getNamedArea(state, areaUuid, lArea.term, description, abbrev, type, level, null, matchMode);
 			facade.addCollectingArea(area);
-			if (areaUuid == null){ 
+			if (areaUuid == null){
 				state.putArea(key, area.getUuid());
 			}
 		}
@@ -405,7 +405,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		DeterminationLight commonDetermination = row.getCommonDetermination();
 		Taxon commonTaxon = null;
 		TaxonNameBase<?,?> commonName = null;
-		
+
 		boolean hasCommonTaxonInfo = (commonDetermination == null) ? false : commonDetermination.hasTaxonInformation();
 		if (hasCommonTaxonInfo && commonDetermination != null){
 			TaxonBase<?> taxonBase = null;
@@ -428,8 +428,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				commonName = commonTaxon.getName();
 			}
 		}
-		
-		
+
+
 		for (DeterminationLight determinationLight : row.getDetermination()){
 			Taxon taxon;
 			if (! hasCommonTaxonInfo){
@@ -453,7 +453,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 					if (state.getConfig().isUseMaterialsExaminedForIndividualsAssociations()){
 						feature = Feature.MATERIALS_EXAMINED();
 					}
-					
+
 					indivAssociciation.setFeature(feature);
 				}
 				if (state.getConfig().isDeterminationsAreDeterminationEvent()){
@@ -462,10 +462,10 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 					facade.addDetermination(detEvent);
 				}
 			}
-			
+
 			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
 				TaxonNameBase<?,?> name;
-				
+
 				if (!hasCommonTaxonInfo){
 					name = findBestMatchingName(state, determinationLight);
 				}else{
@@ -483,7 +483,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 	private Taxon createTaxonFromDetermination( SpecimenCdmExcelImportState state, DeterminationLight commonDetermination) {
-		
+
 		//rank
 		Rank rank;
 		try {
@@ -528,25 +528,25 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				}else if (name.getInfraSpecificEpithet() != null){
 					name.setRank(Rank.INFRASPECIFICTAXON());
 				}
-				
+
 			}
-			
+
 		}
 		//sec
-		Reference<?> sec = null;
+		Reference sec = null;
 		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
 			sec = ReferenceFactory.newGeneric();
 			TeamOrPersonBase<?> determinedBy;
 			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
-				determinedBy = (TeamOrPersonBase<?>)dummyName.getCombinationAuthorship();
+				determinedBy = dummyName.getCombinationAuthorship();
 			} catch (StringNotParsableException e) {
 				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
 			}
 			sec.setAuthorship(determinedBy);
 		}
-		
+
 		//taxon
 		Taxon taxon = Taxon.NewInstance(name, sec);
 
@@ -555,10 +555,10 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				logger.warn("Family taxon could not be created");
 			}
 		}
-		
+
 		//return
 		return taxon;
-		
+
 	}
 
 
@@ -570,11 +570,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				parser.parseAuthors(name, author);
 			} catch (StringNotParsableException e) {
 				name.setAuthorshipCache(author);
-			}		
+			}
 		}else{
 			name.setAuthorshipCache(author);
 		}
-		
+
 	}
 
 
@@ -583,8 +583,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	/**
 	 * This method tries to find the best matching taxon depending on the import configuration,
 	 * the taxon name information and the concept information available.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param state
 	 * @param determinationLight
 	 * @param createIfNotExists
@@ -592,19 +592,19 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 */
 	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
 		NonViralName<?> name = makeTaxonName(state, determinationLight);
-		
+
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
-		
+
 		if (! StringUtils.isBlank(titleCache)){
 			MatchingTaxonConfigurator matchConfigurator = MatchingTaxonConfigurator.NewInstance();
 			matchConfigurator.setTaxonNameTitle(titleCache);
 			matchConfigurator.setIncludeSynonyms(false);
 			Taxon taxon = getTaxonService().findBestMatchingTaxon(matchConfigurator);
-		
+
 			if(taxon == null && createIfNotExists){
 				logger.info("creating new Taxon from TaxonName '" + titleCache+"'");
 				UUID secUuid = null; //TODO
-				Reference<?> sec = null;
+				Reference sec = null;
 				if (secUuid != null){
 					sec = getReferenceService().find(secUuid);
 				}
@@ -626,7 +626,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @param name
 	 * @return
 	 */
-	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, 
+	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight,
 				NonViralName<?> name) {
 		String titleCache = determinationLight.fullName;
 		if (! state.getConfig().isPreferNameCache() || StringUtils.isBlank(titleCache) ){
@@ -634,7 +634,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			if (StringUtils.isNotBlank(computedTitleCache)){
 				titleCache = computedTitleCache;
 			}
-			
+
 		}
 		return titleCache;
 	}
@@ -653,15 +653,15 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		name.setGenusOrUninomial(determinationLight.genus);
 		name.setSpecificEpithet(determinationLight.speciesEpi);
 		name.setInfraSpecificEpithet(determinationLight.infraSpeciesEpi);
-		
+
 		//FIXME bracketAuthors and teams not yet implemented!!!
 		List<String> authors = new ArrayList<String>();
 		if (StringUtils.isNotBlank(determinationLight.author)){
 			authors.add(determinationLight.author);
 		}
-		TeamOrPersonBase<?> agent = (TeamOrPersonBase)getOrMakeAgent(state, authors);
+		TeamOrPersonBase<?> agent = getOrMakeAgent(state, authors);
 		name.setCombinationAuthorship(agent);
-		
+
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){
 				name.setRank(Rank.getRankByNameOrIdInVoc(determinationLight.rank, nc, true));
@@ -685,10 +685,10 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		
+
 		NonViralName<?> name = makeTaxonName(state, determinationLight);
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
-		
+
 		//TODO
 		List<TaxonNameBase> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
 		if (matchingNames.size() > 0){
@@ -697,17 +697,17 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			logger.warn("Get best matching taxon name not yet fully implemeted for specimen import");
 			return matchingNames.get(0);
 		}else{
-			return null;	
+			return null;
 		}
-		
+
 	}
 
-	
+
 	private DeterminationEvent makeDeterminationEvent(SpecimenCdmExcelImportState state, DeterminationLight determination, Taxon taxon) {
 		DeterminationEvent event = DeterminationEvent.NewInstance();
 		//taxon
 		event.setTaxon(taxon);
-		
+
 		//date
 		TimePeriod date = TimePeriodParser.parseString(determination.determinedWhen);
 		event.setTimeperiod(date);
@@ -722,9 +722,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (actor != null && secAuthor != null && secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
 			actor = secAuthor;
 		}
-		
+
 		event.setActor(actor);
-		
+
 		//TODO
 		if (StringUtils.isNotBlank(determination.modifier)){
 			logger.warn("DeterminationModifiers not yet implemented for specimen import");
@@ -754,7 +754,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			return getOrMakeTeam(state, agents);
 		}
 	}
-	
+
 	private Person getOrMakePrimaryCollector(DerivedUnitFacade facade, String primaryCollector, SpecimenCdmExcelImportState state) {
 		if (StringUtils.isBlank(primaryCollector)){
 			return null;
@@ -785,7 +785,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 	private Team getOrMakeTeam(SpecimenCdmExcelImportState state, List<String> agents) {
 		String key = CdmUtils.concat("_", agents.toArray(new String[0]));
-		
+
 		Team result = state.getTeam(key);
 		if (result == null){
 			result = Team.NewInstance();
@@ -808,8 +808,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		return result;
 	}
 
-	private Reference<?> getOrMakeReference(SpecimenCdmExcelImportState state, String value) {
-		Reference<?> result = state.getReference(value);
+	private Reference getOrMakeReference(SpecimenCdmExcelImportState state, String value) {
+		Reference result = state.getReference(value);
 		if (result == null){
 			result = ReferenceFactory.newGeneric();
 			result.setTitleCache(value, true);
@@ -830,7 +830,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 		return result;
 	}
-	
+
 
 	private TaxonNameBase<?, ?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
 		TaxonNameBase<?,?> result = null;
@@ -847,7 +847,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
 			result = parser.parseFullName(name, code, null);
-			
+
 		}
 		if (result != null){
 			state.putName(name, result);
@@ -868,13 +868,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		} catch (UndefinedTransformerMethodException e) {
 			throw new RuntimeException("getSpecimenTypeDesignationStatusByKey not yet implemented");
 		}
-		
-		
+
+
 	}
 
 
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-			
+
 		//reference system
 		ReferenceSystem refSys = null;
 		if (StringUtils.isNotBlank(row.getReferenceSystem())){
@@ -892,14 +892,14 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 					}
 					refSys = getReferenceSystem(state, refUuid, strRefSys, strRefSys, strRefSys, null);
 				}
-				
+
 			} catch (UndefinedTransformerMethodException e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		
-		
+
+
 		// lat/ long /error
 		try {
 			String longitude = row.getLongitude();
@@ -920,11 +920,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			String message = "Problems when parsing exact location for line %d";
 			message = String.format(message, state.getCurrentLine());
 			logger.warn(message);
-			
+
 		}
-		
-		
-		
+
+
+
 	}
 
 
@@ -938,7 +938,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @param app: the CDM application controller
 	 */
 	private void handleCountry(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-		
+
 		if (StringUtils.isNotBlank(row.getIsoCountry())){
 			NamedArea country = getOccurrenceService().getCountryByIso(row.getIsoCountry());
 			if (country != null){
@@ -974,13 +974,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	protected String getWorksheetName() {
 		return WORKSHEET_NAME;
 	}
-	
+
 	@Override
 	protected boolean needsNomenclaturalCode() {
 		return false;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
 	 */
@@ -990,8 +990,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */

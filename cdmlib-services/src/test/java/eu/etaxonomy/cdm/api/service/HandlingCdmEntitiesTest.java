@@ -387,7 +387,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Test  //testing of bidirectionality of supplemental data #5743
     public final void testReferenceWithAnnotationMerge() {
 
-        Reference<?> ref = ReferenceFactory.newBook();
+        Reference ref = ReferenceFactory.newBook();
 
         ref.addAnnotation(Annotation.NewDefaultLanguageInstance("ref"));
 
@@ -397,7 +397,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Test //testing of bidirectionality of supplemental data #5743
     public final void testAnnotationMerge() {
 
-        Reference<?> ref = ReferenceFactory.newBook();
+        Reference ref = ReferenceFactory.newBook();
 
         Annotation annotation = Annotation.NewDefaultLanguageInstance("anno");
         ref.addAnnotation(annotation);

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -39,7 +39,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaEmlExport.class);
 
 	private static final String fileName = "eml.xml";
-	
+
 	String emlNamespace = "eml://ecoinformatics.org/eml-2.1.1";
 	String mdNamespace="eml://ecoinformatics.org/methods-2.1.0";
 	String projNamespace="eml://ecoinformatics.org/project-2.1.0";
@@ -70,24 +70,24 @@ public class DwcaEmlExport extends DwcaExportBase {
 		metaRecord.setMetaData(true);
 		state.addMetaRecord(metaRecord);
 
-		
+
 		DwcaEmlRecord emlRecord = config.getEmlRecord();
 		if (emlRecord == null){
 			return;
 		}
-		
+
 		XMLStreamWriter writer = null;
 		try {
 			writer = createXmlStreamWriter(state, fileName);
-			
+
 			String rootName = "eml";
-			
-			// create header 
+
+			// create header
 			//TODO encoding
-			writer.writeStartDocument(); 
+			writer.writeStartDocument();
 //			writer.setDefaultNamespace(rootNamespace);
-			
-				// create root element 
+
+				// create root element
 //				writer.setPrefix("eml",emlNamespace);
 				writer.writeStartElement("eml", rootName, emlNamespace);
 				writer.writeNamespace("eml", emlNamespace);
@@ -97,21 +97,21 @@ public class DwcaEmlExport extends DwcaExportBase {
 				writer.writeNamespace("res", resNamespace);
 				writer.writeNamespace("dc", dcNamespace);
 				writer.writeNamespace("xsi", xsiNamespace);
-				
+
 				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", schemaLocation);
 				writer.writeAttribute("packageId", emlRecord.getIdentifier());
 				writer.writeAttribute("system", "CDM Library Darwin Core Archive Exporter");
 				writer.writeAttribute("scope", "system");
-				
+
 				if (emlRecord.getMetaDataLanguage() != null ){
 					writer.writeAttribute("xml", "lang", emlRecord.getMetaDataLanguage().getIso639_2()); //TODO needed ?
 				}
-				
+
 				writeDataSet(writer, config, emlRecord);
 				writeAdditionalMetadata(writer, config, emlRecord);
 				writer.flush();
-				writer.writeEndElement(); 
-			writer.writeEndDocument(); 
+				writer.writeEndElement();
+			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
@@ -127,7 +127,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 		}  finally{
 			closeWriter(writer, state);
 		}
-		
+
 		return;
 	}
 
@@ -136,75 +136,75 @@ public class DwcaEmlExport extends DwcaExportBase {
 		writer.writeStartElement("additionalMetadata");
 		writer.writeStartElement("metadata");
 		writer.writeStartElement("gbif");
-		
+
 			String elementName;
 			String text;
-			
+
 			elementName = "dateStamp";
 			text = new DateTime().toString();
 			writeTextElement(writer, elementName, text);
-			
+
 			elementName = "citation";
 			text = emlRecord.getExpectedCitation();
 			writeTextElement(writer, elementName, text);
-			
+
 			writer.writeStartElement("bibliography");
-			for (Reference<?> ref: emlRecord.getReferences()){
+			for (Reference ref: emlRecord.getReferences()){
 				elementName = "citation";
 				text = ref.getTitleCache();
 				writeTextElement(writer, elementName, text);
 			}
 			writer.writeEndElement();
-			
-			
-		writer.writeEndElement();	//gbif	
+
+
+		writer.writeEndElement();	//gbif
 		writer.writeEndElement();	//metadata
 		writer.writeEndElement();	//additionalMetadata
-		
+
 	}
 
 	private void writeDataSet(XMLStreamWriter writer,
 			DwcaTaxExportConfigurator config, DwcaEmlRecord emlRecord) throws XMLStreamException {
-		
-		
+
+
 		writer.writeStartElement("dataset");
-			
+
 			String elementName;
 			String text;
-			
+
 			elementName = "alternateIdentifier";
 			text = null;
 			writeTextElement(writer, elementName, text);
 
-		
+
 			elementName = "title";
 			text = emlRecord.getTitle();
 			//TODO language attribute
 			writeTextElement(writer, elementName, text);
-			
+
 			//creator
 			writer.writeStartElement("creator");
 				writePerson(writer, emlRecord.getResourceCreator());
 			writer.writeEndElement();
-			
+
 			//metadataProvider
 			writer.writeStartElement("metadataProvider");
 				writePerson(writer, emlRecord.getResourceCreator());
 			writer.writeEndElement();
-			
+
 			//associatedParty
 			for (InstitutionalMembership author : emlRecord.getAuthors()){
 				writer.writeStartElement("associatedParty");
 					writePerson(writer, author);
 				writer.writeEndElement();
-				
+
 			}
-			
+
 			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd");
 			elementName = "pubDate";
 			text = emlRecord.getPublicationDate().toString(dateFormatter);
 			writeTextElement(writer, elementName, text);
-			
+
 			elementName = "language";
 			//TODO
 			text = emlRecord.getResourceLanguage()== null? null:emlRecord.getResourceLanguage().getLabel() ;
@@ -225,19 +225,19 @@ public class DwcaEmlExport extends DwcaExportBase {
 				text = emlRecord.getKeywordThesaurus();
 				writeTextElement(writer, elementName, text);
 			writer.writeEndElement();
-			
+
 			//TODO taxonomic keywords
-			
+
 			//additional Info //TODO para ?
 			elementName = "additionalInfo";
 			text = emlRecord.getAdditionalInformation();
 			writeTextElement(writer, elementName, text);
-			
+
 			//TODO intellectualRights
 //			elementName = "intellectualRights";
 //			text = emlRecord.getRights(rights);
 //			writeParaTextElement
-			
+
 			//TODO distribution //TODO online
 			writer.writeStartElement("distribution");
 				writer.writeAttribute("scope", "document");
@@ -248,10 +248,10 @@ public class DwcaEmlExport extends DwcaExportBase {
 					writer.writeEndElement();
 				writer.writeEndElement(); //online
 			writer.writeEndElement(); //distribution
-			
+
 			//TODO coverage
 			writeCoverage(writer, emlRecord);
-			
+
 			//contact
 			writer.writeStartElement("contact");
 				writePerson(writer, emlRecord.getContact());
@@ -274,26 +274,26 @@ public class DwcaEmlExport extends DwcaExportBase {
 					elementName = "role";
 					text = "Distributor";
 					writeTextElement(writer, elementName, text);
-				
+
 				writer.writeEndElement();
 
-				
+
 				writer.writeStartElement("funding");
 				writer.writeEndElement();
-				
+
 				writer.writeStartElement("studyAreaDescription");
 					writer.writeStartElement("descriptor");
-					
+
 					elementName = "descriptorValue";
 					text = emlRecord.getProjectDescription();
 					writeTextElement(writer, elementName, text);
-					
+
 					writer.writeEndElement();
 				writer.writeEndElement();
-				
+
 				writer.writeStartElement("designDescription");
 				writer.writeEndElement();
-			
+
 		writer.writeEndElement();
 	}
 
@@ -322,12 +322,12 @@ public class DwcaEmlExport extends DwcaExportBase {
 		String elementName;
 		String text;
 		writer.writeStartElement("geographicCoverage");
-		
+
 			//geographic description
 			elementName = "geographicDescription";
 			text = emlRecord.getRegionalScope();
 			writeTextElement(writer, elementName, text);
-			
+
 			//boundingCoordinates
 			writer.writeStartElement("boundingCoordinates");
 				if (emlRecord.getUpperLeftCorner() != null){
@@ -336,14 +336,14 @@ public class DwcaEmlExport extends DwcaExportBase {
 					text = emlRecord.getUpperLeftCorner().getLatitude().toString();
 					writeTextElement(writer, elementName, text);
 				}
-				
+
 				if (emlRecord.getLowerRightCorner() != null){
 					//east
 					elementName = "eastBoundingCoordinate";
 					text = emlRecord.getLowerRightCorner().getLatitude().toString();
 					writeTextElement(writer, elementName, text);
 				}
-				
+
 				if (emlRecord.getUpperLeftCorner() != null){
 					//north
 					elementName = "northBoundingCoordinate";
@@ -357,7 +357,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 					writeTextElement(writer, elementName, text);
 				}
 			writer.writeEndElement(); //boundingCoordinates
-		
+
 		writer.writeEndElement(); //geographicCoverage
 	}
 
@@ -368,12 +368,12 @@ public class DwcaEmlExport extends DwcaExportBase {
 	 */
 	private void handleTermporalCoverage(XMLStreamWriter writer,
 			DwcaEmlRecord emlRecord) throws XMLStreamException {
-		
+
 		TimePeriod timePeriod = emlRecord.getDate();
 		if (timePeriod == null){
 			return;
 		}
-		
+
 		writer.writeStartElement("termporalCoverage");
 			if (! timePeriod.isPeriod()){
 				//singleDateTime
@@ -391,20 +391,20 @@ public class DwcaEmlExport extends DwcaExportBase {
 					writer.writeEndElement();
 				writer.writeEndElement();
 			}
-		
-			
-			
+
+
+
 		writer.writeEndElement(); //termporalCoverage
 	}
 
-	
+
 	private void writeCalendarDate(XMLStreamWriter writer, Partial partial) throws XMLStreamException {
 		//calendarDate
 		String elementName = "calendarDate";
 		//FIXME must be something like 37723
 		String text = partial.toDateTime(new DateTime()).toString();
 		writeTextElement(writer, elementName, text);
-		
+
 	}
 
 	private String nullSafe(Object object) {
@@ -417,11 +417,11 @@ public class DwcaEmlExport extends DwcaExportBase {
 		if (member == null){
 			return ;
 		}
-		
+
 		writer.writeStartElement("individualName");
 		if (member.getPerson() != null){
 			Person person = member.getPerson();
-			
+
 			elementName = "givenName";
 			text = person.getFirstname();
 			writeTextElement(writer, elementName, text);
@@ -429,7 +429,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 			elementName = "surName";
 			text = person.getLastname();
 			writeTextElement(writer, elementName, text);
-			
+
 		}
 		writer.writeEndElement();
 
@@ -437,52 +437,52 @@ public class DwcaEmlExport extends DwcaExportBase {
 		text = member.getInstitute()== null? null: member.getInstitute().getTitleCache();
 		writeTextElement(writer, elementName, text);
 
-		
+
 		if (member.getPerson() != null && member.getPerson().getContact()!= null){
 			Contact contact = member.getPerson().getContact();
-			
+
 			if (contact.getAddresses().size() > 0){
 				writer.writeStartElement("address");
-			
+
 				//TODO empty
 				Address address = contact.getAddresses().iterator().next();
-				
+
 				elementName = "deliveryPoint";
 				text = address.getStreet();
 				writeTextElement(writer, elementName, text);
-	
+
 				elementName = "city";
 				text = address.getLocality();
 				writeTextElement(writer, elementName, text);
-	
+
 				elementName = "administrativeArea";
 				text = address.getRegion();
 				writeTextElement(writer, elementName, text);
-	
+
 				elementName = "postalCode";
 				text = address.getPostcode();
 				writeTextElement(writer, elementName, text);
-				
+
 				elementName = "country";
 				text = address.getCountry()== null? null: address.getCountry().getLabel();
 				writeTextElement(writer, elementName, text);
-				
+
 				writer.writeEndElement();   //address
 			}
 
 			elementName = "phone";
-			text = firstOfList(contact.getPhoneNumbers()); 
+			text = firstOfList(contact.getPhoneNumbers());
 			writeTextElement(writer, elementName, text);
-			
+
 			elementName = "electronicMailAddress";
 			text = firstOfList(contact.getEmailAddresses());
 			writeTextElement(writer, elementName, text);
 
 			elementName = "onlineUrl";
-			text = firstOfList(contact.getPhoneNumbers()); 
+			text = firstOfList(contact.getPhoneNumbers());
 			writeTextElement(writer, elementName, text);
 
-			
+
 		}
 	}
 
@@ -522,5 +522,5 @@ public class DwcaEmlExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoEml();
 	}
-	
+
 }

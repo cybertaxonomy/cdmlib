@@ -546,7 +546,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
 			Class<Reference> clazz = Reference.class;
-			Reference<?> ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
+			Reference ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref instanceof Reference){
 				name.setNomenclaturalReference(ref);
 			}else if (ref == null){

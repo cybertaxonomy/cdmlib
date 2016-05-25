@@ -62,7 +62,7 @@ public class MarkupModsImport extends MarkupImportBase {
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
-		Reference<?> modsRef = ReferenceFactory.newGeneric();
+		Reference modsRef = ReferenceFactory.newGeneric();
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
@@ -90,7 +90,7 @@ public class MarkupModsImport extends MarkupImportBase {
 		return;
 	}
 
-	private void handleOriginInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
+	private void handleOriginInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference modsRef) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -129,7 +129,7 @@ public class MarkupModsImport extends MarkupImportBase {
 		return;
 	}
 
-	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
+	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference modsRef) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 
@@ -149,7 +149,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	 * Reads all titleInfo information.
 	 * ! Preliminary implementation !
 	 */
-	private void handleTitleInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference<?> modsRef)
+	private void handleTitleInfo(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Reference modsRef)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
@@ -189,7 +189,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	 * Reads all titleInfo information.
 	 * ! Preliminary implementation !
 	 */
-	private void handleName(MarkupImportState state, XMLEventReader reader, XMLEvent parent, Reference<?> modsRef)
+	private void handleName(MarkupImportState state, XMLEventReader reader, XMLEvent parent, Reference modsRef)
 			throws XMLStreamException {
 		String type = getOnlyAttribute(parent, "type", true);
 

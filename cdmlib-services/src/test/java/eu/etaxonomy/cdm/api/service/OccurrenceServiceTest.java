@@ -116,7 +116,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         collection.setInstitute(institution);
 
         // Source
-        Reference<?> article = ReferenceFactory.newArticle(getReference(), Person.NewInstance(), "title", "pages",
+        Reference article = ReferenceFactory.newArticle(getReference(), Person.NewInstance(), "title", "pages",
                 "series", "volume", TimePeriod.NewInstance(2014));
         IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(article, "microCitation");
 
@@ -163,7 +163,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         determinationEvent.setModifier(DefinedTerm.NewModifierInstance("modifierDescription", "modifierLabel",
                 "mofifierLabelAbbrev"));
         determinationEvent.setPreferredFlag(true);
-        Reference<?> reference = getReference();
+        Reference reference = getReference();
         determinationEvent.addReference(reference);
 
         /*
@@ -180,14 +180,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    private Reference<?> getReference() {
-        Reference<?> result = ReferenceFactory.newGeneric();
+    private Reference getReference() {
+        Reference result = ReferenceFactory.newGeneric();
         result.setTitle("some generic reference");
         return result;
     }
 
     private Taxon getTaxon() {
-        Reference<?> sec = getReference();
+        Reference sec = getReference();
         TaxonNameBase<?, ?> name = BotanicalName.NewInstance(Rank.GENUS());
         Taxon taxon = Taxon.NewInstance(name, sec);
         return taxon;

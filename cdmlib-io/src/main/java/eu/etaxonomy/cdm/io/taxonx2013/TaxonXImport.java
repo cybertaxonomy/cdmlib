@@ -54,11 +54,11 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
     private static final Logger logger = Logger.getLogger(TaxonXImport.class);
     private static String prefix = "";
-    
+
     public static String LOG_FOLDER = "C:\\Users\\pesiimport\\.cdmLibrary\\log\\taxonX\\";
 
     private Classification classification = null;
-    private Reference<?> ref = null;
+    private Reference ref = null;
 
     private TaxonXImportState taxonXstate;
     private TaxonXDataHolder dataHolder;
@@ -91,7 +91,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         logger.info("SET CLASSIFICATION "+classification);
         String classificationName = taxonXstate.getConfig().getClassificationName();
         String defaultClassificatioName = taxonXstate.getConfig().getImportClassificationName();
-        
+
         List<Classification> classifList = getClassificationService().list(Classification.class, null, null, null, null);
         Map<String,Classification> classificationMap = new HashMap<String,Classification>();
         ArrayList<String> nodeList = new ArrayList<String>();
@@ -145,8 +145,8 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         ref=getReferenceService().find(ref.getUuid());
         if (!classificationMap.containsKey(s)){
             //System.out.println("Classif inconnue ?? "+s+", "+classifDic);
-        	Reference<?> classificationReference = null;
-        	        
+        	Reference classificationReference = null;
+
         	if (s.equalsIgnoreCase(other)){
                 classificationName = askForValue("classification name ?", classificationName);
             	classificationReference = ReferenceFactory.newDatabase();
@@ -216,10 +216,10 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
 
 
 
-        Reference<?> secundum = taxonXstate.getConfig().getSecundum();
+        Reference secundum = taxonXstate.getConfig().getSecundum();
         List<Reference> references = this.getReferenceService().list(Reference.class, null, null, null, null);
         boolean refFound = false;
-        for (Reference<?> re:references){
+        for (Reference re:references){
             if (re.getCitation().equalsIgnoreCase(secundum.getCitation())){
                 refFound = true;
                 secundum = re;
@@ -234,8 +234,8 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         }
 
 
-        Reference<?> urlRef = taxonXstate.getConfig().getOriginalSourceURL();
-        for (Reference<?> re:references){
+        Reference urlRef = taxonXstate.getConfig().getOriginalSourceURL();
+        for (Reference re:references){
             if (re.getCitation().equalsIgnoreCase(urlRef.getCitation())){
                 urlRef=re;
             }
@@ -359,7 +359,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         }
         return cR;
     }
-    
+
 
     @Override
     protected boolean isIgnore(TaxonXImportState state) {

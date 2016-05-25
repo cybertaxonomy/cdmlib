@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -52,12 +52,13 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 	public TaxonXDescriptionImport(){
 		super();
 	}
-	
-	public boolean doCheck(TaxonXImportState state){
+
+	@Override
+    public boolean doCheck(TaxonXImportState state){
 		boolean result = true;
 		logger.warn("Checking for Facts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		
+
 		return result;
 	}
 
@@ -70,10 +71,10 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 //		Object source = config.getSource();
 		return featureMap;
 	}
-	
+
 	private String getDescriptionTitle(TaxonXImportState state){
 		String result = "Untitled";
-		Reference<?> ref = state.getModsReference();
+		Reference ref = state.getModsReference();
 		if (ref != null){
 			result = ref.getTitle();
 			if ( CdmUtils.isEmpty(result)){
@@ -82,38 +83,39 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		return result;
 	}
-	
-	public void doInvoke(TaxonXImportState state){
+
+	@Override
+    public void doInvoke(TaxonXImportState state){
 		logger.debug("not yet fully implemented");
-		
+
 		TaxonXImportConfigurator txConfig = state.getConfig();
 		Element root = txConfig.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
-		
+
 		//Object source = config.getSource();
-		
+
 		logger.info("start make Descriptions ...");
-		
-		
+
+
 		//for testing only
 		Taxon taxon = getTaxon(txConfig);
 		if (taxon == null){
 			logger.warn("Taxon could not be found");
 			state.setUnsuccessfull();
 		}
-		
+
 		Reference modsReference = state.getModsReference();
 		if (modsReference == null){
 			modsReference = state.getConfig().getSourceReference();
 		}
-		
+
 		//unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
 		description.setTitleCache(getDescriptionTitle(state), true);
 		if (modsReference != null){
 			description.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, modsReference, null);
 		}
-		
+
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
 		List<Element> elDivs = elTreatment.getChildren("div", nsTaxonx);
@@ -134,11 +136,11 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 					text = text.substring(0, 65500) + "... [text truncated]";
 					logger.warn("Truncation of text: description for taxon " + taxon.getTitleCache() + " was longer than 65500 characters.");
 				}
-				
+
 				DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
 				descriptionElement.setFeature(feature);
 				description.addElement(descriptionElement);
-				
+
 				//add reference
 				if (modsReference != null){
 					descriptionElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, modsReference, null, null, null);
@@ -152,7 +154,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		return;
 	}
-	
+
 	private Feature handleFeatureException(String strType, UnknownCdmTypeException e, TaxonXImportConfigurator txConfig){
 		Feature feature = null;
 		TermVocabulary<Feature> featureVoc = Feature.BIOLOGY_ECOLOGY().getVocabulary();
@@ -161,7 +163,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				feature = oneFeature;
 			}
 		}
-		
+
 		if (feature == null){
 			feature = Feature.NewInstance(strType, strType, null);
 			featureVoc.addTerm(feature);
@@ -170,25 +172,25 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		return feature;
 	}
-	
-	
+
+
 	private String getText(Element div){
 		String result = "";
-		Iterator<Content> it =div.getDescendants(); 
+		Iterator<Content> it =div.getDescendants();
 		while (it.hasNext()){
-			Content next = (Content)it.next();
+			Content next = it.next();
 			if (next instanceof Text){
 				result += ((Text)next).getText();
 			}
 		}
 		return result;
 	}
-	
+
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		ICommonService commonService = getCommonService();
-		
+
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
 		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
@@ -197,7 +199,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		return result;
 	}
-	
+
 	private void unlazyDescription(TaxonXImportConfigurator config, Taxon taxon){
 //		logger.warn("Preliminary commented");  //used single Transaction for all import instead !
 //		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
@@ -206,14 +208,15 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 //		taxon.getDescriptions().size();
 //		config.getCdmAppController().commitTransaction(txStatus);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TaxonXImportState state){
+	@Override
+    protected boolean isIgnore(TaxonXImportState state){
 		return ! state.getConfig().isDoFacts();
 	}
-	
+
 	private String getBracketSourceName(TaxonXImportConfigurator config){
 		return "(" + config.getSourceNameString() + ")";
 	}

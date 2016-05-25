@@ -68,7 +68,7 @@ public class TestService {
 
 		logger.info("Create reference objects...");
 
-		Reference<?> sec = ReferenceFactory.newJournal();
+		Reference sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 
 		logger.info("Create taxon objects...");
@@ -145,7 +145,7 @@ public class TestService {
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference<?> ref = ReferenceFactory.newJournal();
+		Reference ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
@@ -189,7 +189,7 @@ public class TestService {
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference<?> ref = ReferenceFactory.newJournal();
+		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -213,7 +213,7 @@ public class TestService {
 	public void testTransientRank(){
 		ITaxonService taxonService = appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(transientRank);
-		Reference<?> ref =  ReferenceFactory.newJournal();
+		Reference ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 
 		logger.info("Save taxon ...");

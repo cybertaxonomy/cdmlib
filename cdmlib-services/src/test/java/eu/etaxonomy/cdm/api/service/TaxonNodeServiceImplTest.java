@@ -99,7 +99,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Taxon t4;
 //	private Synonym s1;
 	private SynonymRelationshipType synonymRelationshipType;
-	private Reference<?> reference;
+	private Reference reference;
 	private String referenceDetail;
 	private Classification classification;
 	private TaxonNode node1;

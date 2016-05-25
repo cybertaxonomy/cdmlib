@@ -290,7 +290,7 @@ public abstract class MarkupImportBase  {
 		}else if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
 			docImport.getDescriptionService().saveDescriptionElement((DescriptionElementBase)cdmBase);
 		}else if (cdmBase.isInstanceOf(Reference.class)){
-			docImport.getReferenceService().saveOrUpdate((Reference<?>)cdmBase);
+			docImport.getReferenceService().saveOrUpdate((Reference)cdmBase);
 		}else{
 			String message = "Unknown cdmBase type to save: " + cdmBase.getClass();
 			fireWarningEvent(message, "Unknown location", 8);
@@ -1002,7 +1002,7 @@ public abstract class MarkupImportBase  {
 		return StringUtils.isBlank(str);
 	}
 
-	protected TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	protected TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);
 	}
 
@@ -1665,7 +1665,7 @@ public abstract class MarkupImportBase  {
 				if (StringUtils.isNotBlank(numString)) {
 					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
 					// vol.13)
-					Reference<?> citation = state.getConfig().getSourceReference();
+					Reference citation = state.getConfig().getSourceReference();
 					media.addSource(OriginalSourceType.Import, numString, "num", citation, null);
 					// TODO name used in source if available
 				}
@@ -1834,7 +1834,7 @@ public abstract class MarkupImportBase  {
 	}
 
 	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport)throws XMLStreamException {
-		Reference<?> reference = nomenclatureImport.handleReference(state, reader, parentEvent);
+		Reference reference = nomenclatureImport.handleReference(state, reader, parentEvent);
 		String result = "<cdm:ref uuid='%s'>%s</ref>";
 		result = String.format(result, reference.getUuid(), reference.getTitleCache());
 		save(reference, state);
@@ -2027,7 +2027,7 @@ public abstract class MarkupImportBase  {
 
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
-		Reference<?> ref = state.getConfig().getSourceReference();
+		Reference ref = state.getConfig().getSourceReference();
 
 		String text = "";
 		while (reader.hasNext()) {

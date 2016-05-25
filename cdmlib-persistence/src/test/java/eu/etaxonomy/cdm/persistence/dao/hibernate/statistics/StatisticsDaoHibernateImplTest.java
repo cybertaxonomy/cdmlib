@@ -208,7 +208,7 @@ public class StatisticsDaoHibernateImplTest
 
 		// variables: flags
 		int remainder = NO_OF_ACCEPTED_TAXA;
-		Reference<?> sec = ReferenceFactory.newBook();
+		Reference sec = ReferenceFactory.newBook();
 		boolean secondClassificationForTaxonFlag = false;
 		boolean synonymFlag = false;
 		boolean tNomRefFlag = false;
@@ -252,7 +252,7 @@ public class StatisticsDaoHibernateImplTest
 				if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 					// we remember this taxon has a nomenclatural reference:
 					tNomRefFlag = true;
-					Reference<?> nomRef = ReferenceFactory.newBook();
+					Reference nomRef = ReferenceFactory.newBook();
 					name.setNomenclaturalReference(nomRef);
 					referenceDao.save(nomRef);
 					nomRefCounter++;
@@ -278,8 +278,8 @@ public class StatisticsDaoHibernateImplTest
 					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
 							"Veilchen" + taxonCounter, Language.GERMAN());
 					TextData textElement = new TextData();
-					Reference<?> nameElementRef = ReferenceFactory.newArticle();
-					Reference<?> textElementRef = ReferenceFactory
+					Reference nameElementRef = ReferenceFactory.newArticle();
+					Reference textElementRef = ReferenceFactory
 							.newBookSection();
 					nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
 					textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
@@ -299,7 +299,7 @@ public class StatisticsDaoHibernateImplTest
 						DescriptionElementBase descriptionElement = new TextData();
 						DescriptionElementSource descriptionElementSource = DescriptionElementSource
 								.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
-						Reference<?> article = ReferenceFactory.newArticle();
+						Reference article = ReferenceFactory.newArticle();
 
 						descriptionElementSource.setCitation(article);
 						descriptionElement.addSource(descriptionElementSource);
@@ -344,7 +344,7 @@ public class StatisticsDaoHibernateImplTest
 					// create nomenclatural reference for synonym name (if left)
 					if (nomRefCounter < NO_OF_NOMENCLATURAL_REFERENCES) {
 						sNomRefFlag = true;
-						Reference<?> nomRef = ReferenceFactory.newBook();
+						Reference nomRef = ReferenceFactory.newBook();
 						name.setNomenclaturalReference(nomRef);
 						referenceDao.save(nomRef);
 						nomRefCounter++;
@@ -360,8 +360,8 @@ public class StatisticsDaoHibernateImplTest
 								.NewInstance("anderes Veilchen" + taxonCounter,
 										Language.GERMAN());
 						TextData textElement = new TextData();
-						Reference<?> nameElementRef = ReferenceFactory.newArticle();
-						Reference<?> textElementRef = ReferenceFactory.newBookSection();
+						Reference nameElementRef = ReferenceFactory.newArticle();
+						Reference textElementRef = ReferenceFactory.newBookSection();
 						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef,"name: ");
 						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef,"text: ");
 						nameDescr.addElement(nameElement);
@@ -475,8 +475,8 @@ public class StatisticsDaoHibernateImplTest
 	 * @param taxonCounter
 	 * @return
 	 */
-	private Reference<?> createSecReference(int classiCounter, int taxonCounter) {
-		Reference<?> sec;
+	private Reference createSecReference(int classiCounter, int taxonCounter) {
+		Reference sec;
 		sec = ReferenceFactory.newBook();
 		sec.setTitle("book " + classiCounter + "." + taxonCounter);
 		referenceDao.save(sec);

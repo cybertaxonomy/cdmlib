@@ -170,9 +170,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetRootTaxa() {
-        Reference<?> sec1 = referenceDao.findById(1);
+        Reference sec1 = referenceDao.findById(1);
         assert sec1 != null : "sec1 must exist";
-        Reference<?> sec2 = referenceDao.findById(2);
+        Reference sec2 = referenceDao.findById(2);
         assert sec2 != null : "sec2 must exist";
 
         List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
@@ -225,7 +225,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxaByName() {
-        Reference<?> sec = referenceDao.findById(1);
+        Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
         List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
@@ -322,7 +322,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxaByNameForEditor() {
-        Reference<?> sec = referenceDao.findById(1);
+        Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
         List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false,"Mand", null, MatchMode.BEGINNING, null);
@@ -1159,7 +1159,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void createTestDataSet() throws FileNotFoundException {
 //        Classification classification  = Classification.NewInstance("Test");
 //        BotanicalName taxonNameBase = null;
-//        Reference<?> sec = null;
+//        Reference sec = null;
 //        Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
 //        classification.addChildTaxon(taxon, sec, null);
 //

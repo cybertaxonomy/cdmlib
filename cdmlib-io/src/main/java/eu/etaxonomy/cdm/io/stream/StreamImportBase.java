@@ -47,7 +47,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 
 	protected void makeSourceRef(STATE state) {
-		Reference<?> sourceRef = state.getConfig().getSourceReference();
+		Reference sourceRef = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sourceRef);
 	}
 

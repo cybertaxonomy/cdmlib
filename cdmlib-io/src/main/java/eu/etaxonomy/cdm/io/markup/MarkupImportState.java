@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -43,59 +43,59 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
-	
+
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
 	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
-	
+
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
-	
+
 	private PolytomousKey currentKey;
-	
+
 	private TeamOrPersonBase<?> currentCollector;
-	
+
 	private Set<NamedArea> currentAreas = new HashSet<NamedArea>();
-	
+
 	private Language defaultLanguage;
-	
+
 	private Taxon currentTaxon;
 	private String currentTaxonNum;
-	
+
 	private boolean taxonInClassification = true;
-	
+
 	private String latestGenusEpithet = null;
-	
+
 	private TeamOrPersonBase<?> latestAuthorInHomotype = null;
-	private Reference<?> latestReferenceInHomotype = null;
-	
+	private Reference latestReferenceInHomotype = null;
+
 	private boolean isCitation = false;
 	private boolean isNameType = false;
 	private boolean isProParte = false;
-	
+
 	private boolean isSpecimenType = false;
 
-	
+
 	private String baseMediaUrl = null;
-	
+
 	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<String, FootnoteDataHolder>();
-	
+
 	private Map<String, Media> figureRegister = new HashMap<String, Media>();
-	
+
 	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
-	
+
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
-	
+
 	private Map<String,UUID> unknownFeaturesUuids = new HashMap<String, UUID>();
-	
+
 	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
 	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
-	
-	
+
+
 	/**
 	 * This method resets all those variables that should not be reused from one import to another.
 	 * @see MarkupImportConfigurator#isReuseExistingState()
@@ -113,13 +113,13 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		currentAreas = new HashSet<NamedArea>();
-		
+
 		this.resetUuidTermMaps();
 	}
-	
-		
+
+
 //**************************** CONSTRUCTOR ******************************************/
-	
+
 	public MarkupImportState(MarkupImportConfigurator config) {
 		super(config);
 		if (getTransformer() == null){
@@ -131,8 +131,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		}
 	}
 
-// ********************************** GETTER / SETTER *************************************/	
-	
+// ********************************** GETTER / SETTER *************************************/
+
 	public UnmatchedLeads getUnmatchedLeads() {
 		return unmatchedLeads;
 	}
@@ -152,11 +152,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public Set<PolytomousKeyNode> getPolytomousKeyNodesToSave() {
 		return polytomousKeyNodesToSave;
 	}
-	
+
 	public void setPolytomousKeyNodesToSave(Set<PolytomousKeyNode> polytomousKeyNodesToSave) {
 		this.polytomousKeyNodesToSave = polytomousKeyNodesToSave;
 	}
-	
+
 	public Language getDefaultLanguage() {
 		return this.defaultLanguage;
 	}
@@ -165,7 +165,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		this.defaultLanguage = defaultLanguage;
 	}
 
-	
+
 	public void setCurrentTaxon(Taxon currentTaxon) {
 		this.currentTaxon = currentTaxon;
 	}
@@ -173,7 +173,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public Taxon getCurrentTaxon() {
 		return currentTaxon;
 	}
-	
+
 	public void setCurrentTaxonNum(String currentTaxonNum) {
 		this.currentTaxonNum = currentTaxonNum;
 	}
@@ -191,7 +191,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public boolean isCitation() {
 		return isCitation;
 	}
-	
+
 	public void setCitation(boolean isCitation) {
 		this.isCitation = isCitation;
 	}
@@ -200,7 +200,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public boolean isNameType() {
 		return isNameType;
 	}
-	
+
 	public void setNameType(boolean isNameType) {
 		this.isNameType = isNameType;
 	}
@@ -221,8 +221,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		return baseMediaUrl;
 	}
 
-	
-	
+
+
 	public void registerFootnote(FootnoteDataHolder footnote) {
 		footnoteRegister.put(footnote.id, footnote);
 	}
@@ -230,8 +230,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public FootnoteDataHolder getFootnote(String key) {
 		return footnoteRegister.get(key);
 	}
-	
-	
+
+
 	public void registerFigure(String key, Media figure) {
 		figureRegister.put(key, figure);
 	}
@@ -243,16 +243,16 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public Set<AnnotatableEntity> getFootnoteDemands(String footnoteId){
 		return footnoteRefRegister.get(footnoteId);
 	}
-	
+
 	public void putFootnoteDemands(String footnoteId, Set<AnnotatableEntity> demands){
 		footnoteRefRegister.put(footnoteId, demands);
 	}
-	
+
 
 	public Set<AnnotatableEntity> getFigureDemands(String figureId){
 		return figureRefRegister.get(figureId);
 	}
-	
+
 	public void putFigureDemands(String figureId, Set<AnnotatableEntity> demands){
 		figureRefRegister.put(figureId, demands);
 	}
@@ -263,7 +263,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void setCurrentKey(PolytomousKey key) {
 		this.currentKey = key;
 	}
-	
+
 	/**
 	 * @return the currentKey
 	 */
@@ -308,11 +308,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public Map<String,List<FeatureSorterInfo>> getCharFeatureSorterListMap() {
 		return charFeatureSorterListMap;
 	}
-	
+
 	public UUID getUnknownFeatureUuid(String featureLabel){
 		return this.unknownFeaturesUuids.get(featureLabel);
 	}
-	
+
 
 	/**
 	 * Adds new lists to the feature sorter list maps using the given key.
@@ -325,17 +325,17 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		List<FeatureSorterInfo> generalList = new ArrayList<FeatureSorterInfo>();
 		List<FeatureSorterInfo> previous1 = this.generalFeatureSorterListMap.put(key, generalList);
 		currentGeneralFeatureSorterList = generalList;
-		
+
 		//character feature sorter list
 		List<FeatureSorterInfo> charList = new ArrayList<FeatureSorterInfo>();
 		List<FeatureSorterInfo> previous2 = this.charFeatureSorterListMap.put(key, charList);
 		currentCharFeatureSorterList = charList;
-		
+
 		return (previous1 != null || previous2 != null);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param feature
 	 */
 	public FeatureSorterInfo putFeatureToCharSorterList(Feature feature) {
@@ -343,19 +343,19 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		currentCharFeatureSorterList.add(featureSorterInfo);
 		return featureSorterInfo;
 	}
-	
+
 	public FeatureSorterInfo getLatestCharFeatureSorterInfo() {
 		return currentCharFeatureSorterList.get(currentCharFeatureSorterList.size() - 1);
 	}
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param feature
 	 */
 	public void putFeatureToGeneralSorterList(Feature feature) {
-		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature)); 
-		
+		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature));
+
 	}
 
 	public String getLatestGenusEpithet() {
@@ -388,14 +388,14 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 
 	public void addCurrentArea(NamedArea area) {
-		currentAreas.add(area);	
+		currentAreas.add(area);
 	}
 
 
 	public Set<NamedArea> getCurrentAreas() {
 		return currentAreas;
 	}
-	
+
 	public void removeCurrentAreas(){
 		currentAreas.clear();
 	}
@@ -411,12 +411,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	}
 
 
-	public Reference<?> getLatestReferenceInHomotype() {
+	public Reference getLatestReferenceInHomotype() {
 		return latestReferenceInHomotype;
 	}
 
 
-	public void setLatestReferenceInHomotype(Reference<?> latestReferenceInHomotype) {
+	public void setLatestReferenceInHomotype(Reference latestReferenceInHomotype) {
 		this.latestReferenceInHomotype = latestReferenceInHomotype;
 	}
 
@@ -446,11 +446,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	}
 	public String getCollectionAndType() {
 		return collectionAndType;
-	}	
+	}
 	public void resetCollectionAndType() {
 		collectionAndType = "";
-	}	
-	
+	}
+
 
 
 }

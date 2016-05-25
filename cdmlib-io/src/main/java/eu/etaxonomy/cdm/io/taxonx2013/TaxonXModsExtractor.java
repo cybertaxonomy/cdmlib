@@ -28,7 +28,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     private final Map<String,UUID> personMap = new HashMap<String, UUID>();
 
     private final Logger logger = Logger.getLogger(getClass());
-    
+
 
 	private final String AUTHOR = "author";
     private final String EDITOR = "editor";
@@ -40,25 +40,25 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         this.importer = importer;
     }
 
-    public Reference<?> extractMods(Node node){
-    	
+    public Reference extractMods(Node node){
+
     	//TODO needed? currently only filled but never read
         Map<String, String> modsMap = new HashMap<String, String>();
         NodeList children = node.getChildNodes();
         List<String> roleList = new ArrayList<String>();
         String content="";
 
-        Reference<?> ref = tryMakeReferenceByClassification(children);
+        Reference ref = tryMakeReferenceByClassification(children);
 
         if (ref == null){
 	        //        int reftype = askQuestion("What kind of reference is it?\n 1: Generic\n 2: Book\n 3: Article\n" +
 	        //                " 4 : BookSection\n 5 : Journal\n 6 : Printseries\n 7: Thesis ");
 	        int reftype=1;
-	        
+
 	        ref = getReferenceWithType(reftype);
         }
         handleModsNames(children, ref);
-        
+
         for (int i=0; i<children.getLength();i++){
         	Node modsChildNode = children.item(i);
         	String modsChildNodeName = modsChildNode.getNodeName();
@@ -136,7 +136,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         modsMap.put("people",StringUtils.join(roleList.toArray(),SPLITTER));
 
         List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
-        for(Reference<?> refe:references){
+        for(Reference refe:references){
             if (refe.getCitation().equalsIgnoreCase(ref.getCitation())) {
                 ref=refe;
             }
@@ -149,14 +149,14 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         return ref;
     }
 
-    private void handleModsNames(NodeList children, Reference<?> ref) {
-    	 
+    private void handleModsNames(NodeList children, Reference ref) {
+
         List<String> roleList = new ArrayList<String>();
-        
+
         List<Person> persons = new ArrayList<Person>();
         List<String> editors= new ArrayList<String>();
 
-    	
+
     	//handle all mods:name
         for ( int i = 0; i<children.getLength(); i++){
     		if (children.item(i).getNodeName().equalsIgnoreCase("mods:name")){
@@ -166,7 +166,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     			} else if (attributeMap.getNamedItem("type") == null){
     				logger.warn("mods:name attribute 'type' is missing. Name not handled");
     			}else {
-    				logger.warn("mods:name 'type' " + attributeMap.getNamedItem("type").getNodeValue() + " not yet supported"); 
+    				logger.warn("mods:name 'type' " + attributeMap.getNamedItem("type").getNodeValue() + " not yet supported");
     			}
     		}
     	}
@@ -208,7 +208,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
      * @return
      */
     //http://www.loc.gov/standards/mods/userguide/classification.html
-    private Reference<?> tryMakeReferenceByClassification(NodeList children) {
+    private Reference tryMakeReferenceByClassification(NodeList children) {
         for (int i=0; i<children.getLength();i++){
             if (children.item(i).getNodeName().equalsIgnoreCase("mods:classification")){
             	Node classificationNode = children.item(i);
@@ -225,7 +225,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             		}
             	}
             }
-        }    
+        }
 		return null;
 	}
 
@@ -234,9 +234,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     	boolean newRole=false;
         String content="";
         String role =null;
-        
+
         List<String> nameParts = new ArrayList<String>();
-        
+
     	NodeList tmp = node.getChildNodes();
         for (int j=0;j<tmp.getLength();j++){
 
@@ -263,16 +263,16 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                     }
                 }
-            }                    
+            }
 
         }
-        
+
         Person p=null;
         if (! nameParts.isEmpty()){
             p = Person.NewInstance();
             p.setTitleCache(StringUtils.join(nameParts.toArray(), " "), true);
         }
-        
+
         if (newRole){
             if ((p!=null) && role.equals(AUTHOR)) {
                 UUID uuid = null;
@@ -290,14 +290,14 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             else if ((p!=null) && role.equals(EDITOR)) {
                 editors.add(p.getTitleCache());
             }
-        }		
+        }
 	}
 
 	/**
      * @param item
      * @param modsMap
      */
-    private void addRelatedMods(Node node, Map<String, String> modsMap, Reference<?> ref) {
+    private void addRelatedMods(Node node, Map<String, String> modsMap, Reference ref) {
         NodeList tmp =node.getChildNodes();
         NodeList partNodes = null;
         NodeList children = null;
@@ -320,8 +320,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
         relatedInfoMap.put("type",node.getAttributes().getNamedItem("type").getNodeValue());
 
-        
-        Reference<?> inRef = null;
+
+        Reference inRef = null;
         for (int j=0;j<tmp.getLength();j++){
         	Node childNode = tmp.item(j);
         	String childNodeName = childNode.getNodeName();
@@ -334,7 +334,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (node.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("host")){
                         List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
                         boolean refFound = false;
-                        for (Reference<?> tmpRef:references){
+                        for (Reference tmpRef:references){
                             if(tmpRef.getTitleCache().equalsIgnoreCase(content)){
                                 refFound = true;
                                 inRef= tmpRef;
@@ -345,7 +345,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             if (inRef == null){
                             	inRef = ReferenceFactory.newGeneric();
                             }
-                            
+
                             //book.setTitleCache(content,true);
                             inRef.setTitle(content);
                         }
@@ -451,22 +451,22 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             	logger.warn("relatedItem child not yet supported: " + childNodeName);
             }
         }
-        
-        
+
+
         handleModsNames(children, inRef);
-        
+
         relatedInfoMap.put("relatedRoles", StringUtils.join(roleList.toArray(),SPLITTER));
         modsMap.put("relatedInfo",relatedInfoMap.toString());
     }
 
-    
+
 	/**
 	 * Returns empty reference which best fits to the given ref as in-reference.
 	 * TODO move to {@link ReferenceType} or {@link ReferenceFactory}
 	 * @param ref
 	 * @return
 	 */
-	private Reference<?> getBestInreference(Reference<?> ref) {
+	private Reference getBestInreference(Reference ref) {
 		if (ref.getType().equals(ReferenceType.Article)){
 			return ReferenceFactory.newJournal();
 		}else if (ref.getType().equals(ReferenceType.BookSection)){
@@ -474,7 +474,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 		}else{
 			//TODO support more types
 			logger.warn("In-Reference type not yet supported for :" + ref.getType());
-			
+
 		}
 		return null;
 	}

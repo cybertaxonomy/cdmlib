@@ -105,7 +105,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     protected String gatheringNotes;
 
     private DerivedUnit derivedUnitBase;
-    private Reference<?> ref = null;
+    private Reference ref = null;
     private TransactionStatus tx;
     private Classification classification = null;
 
@@ -620,7 +620,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             derivedUnitFacade.setAccessionNumber(accessionNumber);
 
             if (!originalsource.isEmpty()){
-                Reference<?> reference = ReferenceFactory.newGeneric();
+                Reference reference = ReferenceFactory.newGeneric();
                 reference.setTitleCache(originalsource, true);
                 derivedUnitBase.addSource(OriginalSourceType.Import, originalsource, "", reference, "");
             }else{
@@ -828,7 +828,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
         indAssociation.setFeature(feature);
 
-        for (Reference<?> citation : determinationEvent.getReferences()) {
+        for (Reference citation : determinationEvent.getReferences()) {
             indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
         }
         indAssociation.addSource(OriginalSourceType.Import, null,null,config.getDataReference(),null);

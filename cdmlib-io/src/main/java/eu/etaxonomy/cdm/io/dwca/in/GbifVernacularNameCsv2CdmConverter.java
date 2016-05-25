@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
+public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 					implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
@@ -45,13 +45,14 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 	}
 
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = csv.get(CORE_ID);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
@@ -59,7 +60,7 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
 			//TODO language, area,
 			TaxonDescription desc = getTaxonDescription(taxon, false);
-			
+
 			//TODO
 			Language language = null;
 			CommonTaxonName commonName = CommonTaxonName.NewInstance(vernacular, language);
@@ -69,13 +70,13 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 			String message = "Can't retrieve taxon from database for id '%s'";
 			fireWarningEvent(String.format(message, id), item, 12);
 		}
-		
+
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
-		
+
 	}
-	
-	
+
+
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
@@ -94,15 +95,15 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 			keySet.add(value);
 		}
 	}
-	
-	
+
+
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
-	}	
-	
+	}
+
 //************************ STRING ************************************************/
 
 
