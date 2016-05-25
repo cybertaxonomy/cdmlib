@@ -40,7 +40,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
@@ -65,6 +64,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import sun.security.provider.PolicyParser.ParsingException;
 
 
 @DataSet
@@ -269,6 +269,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
     @Test
+    @Ignore
     public final void testReuseNameAllow() {
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
