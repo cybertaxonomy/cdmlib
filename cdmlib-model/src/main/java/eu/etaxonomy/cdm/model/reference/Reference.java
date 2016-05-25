@@ -122,7 +122,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
-        <S extends IReferenceBaseCacheStrategy>
+//        <S extends IReferenceBaseCacheStrategy>
         extends IdentifiableMediaEntity<IReferenceBaseCacheStrategy>
         implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 
