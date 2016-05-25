@@ -71,9 +71,9 @@ public class ClassificationTest {
 	private static TaxonNameBase<?,?> taxonName3;
 	private static TaxonNameBase<?,?> taxonName12;
 	private static TaxonNameBase<?,?> taxonName121;
-	private static Reference<?> ref1;
-	private static Reference<?> ref2;
-	private static Reference<?> ref3;
+	private static Reference ref1;
+	private static Reference ref2;
+	private static Reference ref3;
 	//private ReferenceFactory refFactory;
 
 
@@ -351,7 +351,7 @@ public class ClassificationTest {
 		BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
 		name.setTitleCache("A dummy name", true);
 		result.add(name);
-		Reference<?> ref = ReferenceFactory.newBook();
+		Reference ref = ReferenceFactory.newBook();
 		ref.setTitleCache("A dummy book", true);
 		result.add(ref);
 

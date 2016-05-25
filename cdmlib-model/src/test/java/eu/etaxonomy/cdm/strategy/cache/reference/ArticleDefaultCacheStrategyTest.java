@@ -1,18 +1,17 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -33,14 +32,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class ArticleDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategyTest.class);
-	
+
 	private static IArticle article1;
 	private static IJournal journal1;
 	private static Team team1;
 	private static Team team2;
 	private static ArticleDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -64,10 +63,10 @@ public class ArticleDefaultCacheStrategyTest {
 		team2.setTitleCache("Team2", true);
 		team2.setNomenclaturalTitle("TT.", true);
 	}
-	
+
 //**************************** TESTS ***********************************
 
-	
+
 	@Test
 	public void testGetTitleCache(){
 		journal1.setTitle("My journal");
@@ -81,9 +80,9 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
+		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
-	
+
 	@Ignore
 	@Test
 	//This test is just to show that there is still the title cache bug which is not
@@ -98,12 +97,12 @@ public class ArticleDefaultCacheStrategyTest {
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
-		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
+		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
-	
+
 	@Test
 	public void testGetAbbrevTitleCache(){
-		
+
 		journal1.setTitle("My journal");
 		journal1.setTitle("M. Journ.");
 		journal1.setAuthorship(team2);
@@ -117,7 +116,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
+		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test
@@ -130,7 +129,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setAuthorship(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("in M. J.: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		
+
 		article1.setVolume("22");
 		Assert.assertEquals("in M. J. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		article1.setSeriesPart("ser. 11");
@@ -138,7 +137,7 @@ public class ArticleDefaultCacheStrategyTest {
 	}
 
 	/**
-	 * After ser. , sect. , abt. we want to have a comma, if there is not yet one following anyway 
+	 * After ser. , sect. , abt. we want to have a comma, if there is not yet one following anyway
 	 */
 	@Test
 	public void testGetNomenclaturalCitationSerSectAbt(){
@@ -170,7 +169,7 @@ public class ArticleDefaultCacheStrategyTest {
 		Assert.assertEquals("in J. Pl. Eur., Abt. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		journal1.setAbbrevTitle("J. Pl. Eur., abt. 3, no comma");
 		Assert.assertEquals("in J. Pl. Eur., abt. 3, no comma 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		
+
 		journal1.setAbbrevTitle("J. Pl. Eur., sect. 3");
 		article1.setSeriesPart("1");
 		Assert.assertEquals("in J. Pl. Eur., sect. 3, ser. 1, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
@@ -179,8 +178,8 @@ public class ArticleDefaultCacheStrategyTest {
 	}
 
 
-	
-	@Test 
+
+	@Test
 	public void testGetTitleWithoutYearAndAuthor(){
 		journal1.setTitle("My journal");
 		journal1.setAuthorship(team2);
@@ -190,21 +189,21 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setVolume("34");
 		article1.setSeriesPart("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal, ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference<?>)article1, false));
+		Assert.assertEquals("in My journal, ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference)article1, false));
 	}
-	
-	@Test 
+
+	@Test
 	public void testOldExistingBugs(){
 		journal1.setTitle("Univ. Calif. Publ. Bot.");
 		journal1.setAuthorship(null);
-		
+
 		Team articleAuthor = Team.NewTitledInstance("Babc. & Stebbins", "Babc. & Stebbins");
 		article1.setTitle("");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleAuthor);
 		article1.setVolume("18");
 		article1.setDatePublished(TimePeriod.NewInstance(1943));
-		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference<?>)article1));
+		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference)article1));
 	}
-	
+
 }

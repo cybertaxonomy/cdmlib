@@ -496,7 +496,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
     @Override
-    public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+    public IdentifiableSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }

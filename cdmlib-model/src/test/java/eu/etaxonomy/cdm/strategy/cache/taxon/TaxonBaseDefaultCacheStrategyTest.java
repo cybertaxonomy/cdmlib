@@ -44,7 +44,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
 	private BotanicalName name;
-	private Reference<?> sec;
+	private Reference sec;
 
 	/**
 	 * @throws java.lang.Exception

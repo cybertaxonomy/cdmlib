@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,16 +22,16 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	private static final Logger logger = Logger.getLogger(SectionDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("a7150cd3-107b-4169-ac84-71ffe3219152");
-	
+
 	private static final String inRefTypeStr = "in reference";
 
 	private static final boolean inRefIsObligatory = true;
-	
+
 	@Override
 	protected UUID getUuid() {
-		return uuid; 
+		return uuid;
 	}
-	
+
 	@Override
 	protected String getInRefType() {
 		return inRefTypeStr;
@@ -44,7 +44,7 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	public static SectionDefaultCacheStrategy NewInstance(){
 		return new SectionDefaultCacheStrategy();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -65,15 +65,15 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 		if (section == null /* || generic.getInReference() == null */){
 			return null;
 		}
-		Reference<?> inRef = CdmBase.deproxy(section.getInReference(), Reference.class);
+		Reference inRef = CdmBase.deproxy(section.getInReference(), Reference.class);
 		if (inRef != null && inRef.getInReference() == null){
 			//this is a simple inRef (not an in-in-Ref) which can be handled by InRefDefaultCacheStrategy
 			return super.getTokenizedNomenclaturalTitel(section, inRefIsObligatory);
 		}
-		
-		Reference<?> inInRef = CdmBase.deproxy(inRef.getInReference(), Reference.class);
+
+		Reference inInRef = CdmBase.deproxy(inRef.getInReference(), Reference.class);
 		String result;
-		
+
 		IReferenceBaseCacheStrategy inRefStrategy = inInRef.getCacheStrategy();
 		if (! (inRefStrategy instanceof NomRefDefaultCacheStrategyBase)){
 			inRefStrategy= inRef.getCacheStrategy();
@@ -89,11 +89,11 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			result = ((NomRefDefaultCacheStrategyBase)inRefStrategy).getTitleWithoutYearAndAuthor(inInRef, true);
 		}
 		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-		
-		Reference<?> dataReference = (section.hasDatePublished() ? section : inRef.hasDatePublished() ? inRef : inInRef);
-		
+
+		Reference dataReference = (section.hasDatePublished() ? section : inRef.hasDatePublished() ? inRef : inInRef);
+
 		result = addYear(result, dataReference, true);
-		
+
 		result = getInRefAuthorPart(inInRef, afterInRefAuthor) + result;
 		if (! result.startsWith("in ")){
 			result = "in " +  result;
@@ -105,12 +105,12 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	public String getTitleCache(Reference thisRef) {
 		return super.getTitleCache(thisRef, inRefIsObligatory, false);
 	}
-	
+
 	@Override
 	public String getAbbrevTitleCache(Reference thisRef) {
 		return super.getTitleCache(thisRef, inRefIsObligatory, true);
 	}
-	
+
 	@Override  //only for testing
 	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference){
 		return super.getNomenclaturalCitation(nomenclaturalReference, microReference);

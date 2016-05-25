@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,30 +21,30 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
-	
-	
+
+
 	private static final String inRefTypeStr = "generic reference";
-	
+
 	@Override
 	protected String getInRefType() {
 		return inRefTypeStr;
 	}
-	
+
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
 //	private String prefixVolume = "vol.";
 	private String blank = " ";
 	private String comma = ",";
 //	private String dot =".";
-	
+
 	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
-	
+
 	@Override
 	protected UUID getUuid() {
-		return uuid; 
+		return uuid;
 	}
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -52,17 +52,17 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	public static GenericDefaultCacheStrategy NewInstance(){
 		return new GenericDefaultCacheStrategy();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	private GenericDefaultCacheStrategy(){
 		super();
 	}
-	
+
 
 	@Override
-	protected String getTitleWithoutYearAndAuthor(Reference<?> genericReference, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference genericReference, boolean isAbbrev){
 		if (genericReference == null){
 			return null;
 		}
@@ -87,12 +87,12 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 //			titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
 //		}
 
-		
+
 		boolean needsComma = false;
 		//titelAbbrev
 		if (titel.length() > 0 ){
-			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
-			result = titel + postfix; 
+			String postfix = StringUtils.isNotBlank(edition) ? "" : blank;
+			result = titel + postfix;
 		}
 		//edition
 		String editionPart = "";
@@ -104,7 +104,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			needsComma = true;
 		}
 		result = CdmUtils.concat(", ", result, editionPart);
-		
+
 		//inSeries
 		String seriesPart = "";
 		if (isNotBlank(series)){
@@ -118,8 +118,8 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			needsComma = true;
 		}
 		result += seriesPart;
-		
-		
+
+
 		//volume Part
 		String volumePart = "";
 		if (!"".equals(volume)){
@@ -130,14 +130,14 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 			//needsComma = false;
 		}
 		result += volumePart;
-		
+
 		//delete .
 		while (result.endsWith(".")){
 			result = result.substring(0, result.length()-1);
 		}
-		
 
-		
+
+
 		//	--Edition and series are null or numeric
 
 //		if (isNumeric(edition) ){
@@ -146,8 +146,8 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 //			}
 //		}
 
-		
-//  FROM BERLIN MODEL TRIGGER:		
+
+//  FROM BERLIN MODEL TRIGGER:
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma +  @blank + @Refyear + @dot
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @dot
@@ -215,7 +215,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 
 		return result.trim();
 	}
-	
+
 	private boolean isNumeric(String string){
 		if (string == null){
 			return false;
@@ -226,7 +226,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		
+
 	}
 
 

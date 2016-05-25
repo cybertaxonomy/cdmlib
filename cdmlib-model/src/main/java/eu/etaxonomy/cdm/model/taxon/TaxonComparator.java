@@ -198,12 +198,12 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
             if (name instanceof ZoologicalName){
                 result = (((ZoologicalName)name).getPublicationYear());
             }else{
-                Reference<?> ref = (Reference<?>) name.getNomenclaturalReference();
+                Reference ref = (Reference) name.getNomenclaturalReference();
                 if (ref == null){
                     result = null;
                 }else{
                     if (ref.getDatePublished() == null){
-                    	Reference<?> inRef = ref.getInReference();
+                    	Reference inRef = ref.getInReference();
                     	if (inRef == null){
                             result = null;
                         }else{

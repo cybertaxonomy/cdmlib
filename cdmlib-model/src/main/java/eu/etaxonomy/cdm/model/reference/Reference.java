@@ -121,8 +121,8 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @ReferenceCheck(groups=Level2.class)
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
-public class Reference<S extends IReferenceBaseCacheStrategy>
-        extends IdentifiableMediaEntity<S>
+public class Reference  <S extends IReferenceBaseCacheStrategy>
+        extends IdentifiableMediaEntity<IReferenceBaseCacheStrategy>
         implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 
     private static final long serialVersionUID = -2034764545042691295L;
@@ -275,7 +275,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 //    @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
    // @InReference(groups=Level2.class)
-   	protected Reference<?> inReference;
+   	protected Reference inReference;
 
 //********************************************************/
 
@@ -975,7 +975,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInJournal(IJournal journal) {
-		this.inReference = (Reference<JournalDefaultCacheStrategy>) journal;
+		this.inReference = (Reference)journal;
 
 	}
 
@@ -988,7 +988,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (Reference<IReferenceBaseCacheStrategy>) inSeries;
+		this.inReference = (Reference) inSeries;
 	}
 
 	@Override
@@ -1002,7 +1002,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInBook(IBook book) {
-		this.inReference = (Reference<BookDefaultCacheStrategy>) book;
+		this.inReference = (Reference) book;
 	}
 
 	@Override
@@ -1014,13 +1014,13 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInProceedings(IProceedings proceeding) {
-		this.inReference = (Reference<BookDefaultCacheStrategy>) proceeding;
+		this.inReference = (Reference) proceeding;
 	}
 
 //*************************** CACHE STRATEGIES ******************************/
 
     @Override
-    public S getCacheStrategy() {
+    public IReferenceBaseCacheStrategy getCacheStrategy() {
     	rectifyCacheStrategy();
     	return this.cacheStrategy;
     }
@@ -1042,37 +1042,37 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setCacheStrategy(IReferenceBaseCacheStrategy iReferenceBaseCacheStrategy) {
-		this.cacheStrategy = (S) iReferenceBaseCacheStrategy;
+		this.cacheStrategy = iReferenceBaseCacheStrategy;
 
 	}
 
 	@Override
     public void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 	}
 
 	@Override
     public void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 	}
 
 	@Override
     public void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 	}
 
 	@Override
     public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 	}
 
 	@Override
     public void setCacheStrategy(GenericDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 	}
 
 	public void setCacheStrategy(ReferenceDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S)cacheStrategy;
+		this.cacheStrategy = cacheStrategy;
 
 	}
 
@@ -1128,7 +1128,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	@Override
 	public Object clone() {
 		try {
-			Reference<?> result = (Reference<?>)super.clone();
+			Reference result = (Reference)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;

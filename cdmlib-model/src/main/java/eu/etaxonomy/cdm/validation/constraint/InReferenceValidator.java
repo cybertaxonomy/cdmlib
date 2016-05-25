@@ -7,13 +7,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.validation.annotation.InReference;
 
-public class InReferenceValidator implements ConstraintValidator<InReference, Reference<?>> {
+public class InReferenceValidator implements ConstraintValidator<InReference, Reference> {
 
 	@Override
     public void initialize(InReference constraintAnnotation) {}
 
 	@Override
-    public boolean isValid(Reference<?> value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Reference value, ConstraintValidatorContext constraintValidatorContext) {
 		boolean isValid = true;
 		try {
     		if (value.getInReference() != null){

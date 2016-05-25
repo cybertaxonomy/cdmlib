@@ -41,8 +41,8 @@ public class TaxonTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonTest.class);
 
 
-	private Reference<?> sec;
-	private Reference<?> misSec;
+	private Reference sec;
+	private Reference misSec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;

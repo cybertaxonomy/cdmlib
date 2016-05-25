@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
 
@@ -98,11 +97,11 @@ public class ReferenceValidationTest extends ValidationTestBase {
         IBookSection bookSection = ReferenceFactory.newBookSection();
         bookSection.setTitleCache("test", true);
         bookSection.setTitle("");
-        bookSection.setInReference((Reference<?>)book);
+        bookSection.setInReference((Reference)book);
         Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(bookSection, Level3.class);
         assertTrue("There should be one constraint violation as this book has a valid Ref",constraintViolations.size() == 0);
 
-        Reference<?> article = ReferenceFactory.newArticle();
+        Reference article = ReferenceFactory.newArticle();
         article.setTitleCache("article", true);
         bookSection.setInReference(article);
         constraintViolations  = validator.validate(bookSection, Level3.class);
@@ -113,14 +112,14 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
 	@Test
 	public final void testValidationAfterCasting(){
-		((Reference<?>)book).castReferenceToArticle();
+		((Reference)book).castReferenceToArticle();
 		Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be one constraint violations as this article is not valid at level 2 (has an isbn)", constraintViolations.isEmpty());
 	}
 
 	@Test
-	public final <T extends IReferenceBaseCacheStrategy >void testNoRecursiveInReference(){
-	    Reference<T> myRef = ReferenceFactory.newBookSection();
+	public final void testNoRecursiveInReference(){
+	    Reference myRef = ReferenceFactory.newBookSection();
         myRef.setInReference(myRef);
         myRef.setTitle("My book section");
         assertHasConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);

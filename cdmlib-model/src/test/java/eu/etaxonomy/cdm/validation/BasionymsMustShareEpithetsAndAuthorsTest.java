@@ -153,8 +153,8 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 
     @Test
     public void testZoologicalReference() {
-       Reference<?> nomRef = ReferenceFactory.newBook();
-       Reference<?> nomRef2 = ReferenceFactory.newBook();
+       Reference nomRef = ReferenceFactory.newBook();
+       Reference nomRef2 = ReferenceFactory.newBook();
 
        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
        zooName.setGenusOrUninomial("Aus");

@@ -77,7 +77,7 @@ public class Primer extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Reference<?> publishedIn;
+	private Reference publishedIn;
 
 
 

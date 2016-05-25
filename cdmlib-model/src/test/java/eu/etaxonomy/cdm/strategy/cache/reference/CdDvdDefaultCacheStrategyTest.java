@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
@@ -27,13 +27,13 @@ public class CdDvdDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdDvdDefaultCacheStrategyTest.class);
 
-	Reference<?> cdDvd;
+	Reference cdDvd;
 	String title;
 	String publisher;
 	String place;
 	TimePeriod publicationDate;
 	CdDvdDefaultCacheStrategy instance;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -48,7 +48,7 @@ public class CdDvdDefaultCacheStrategyTest {
 		title = "A nice CD title";
 		cdDvd.setTitle(title);
 		publisher = "An ugly publisher";
-		place = "A beutiful place"; 
+		place = "A beutiful place";
 		publicationDate = TimePeriod.NewInstance(1999, 2001);
 		cdDvd.setDatePublished(publicationDate);
 		this.instance = CdDvdDefaultCacheStrategy.NewInstance();
@@ -62,7 +62,7 @@ public class CdDvdDefaultCacheStrategyTest {
 	public void testNewInstance() {
 		assertNotNull(instance);
 	}
-	
+
 	@Test
 	public void testGetTitleWithoutYearAndAuthor() {
 		String result = instance.getTitleWithoutYearAndAuthor(cdDvd, false);
@@ -75,6 +75,6 @@ public class CdDvdDefaultCacheStrategyTest {
 		String result = instance.getTitleCache(cdDvd);
 		assertEquals(title + ". 1999-2001", result);
 	}
-	
+
 
 }

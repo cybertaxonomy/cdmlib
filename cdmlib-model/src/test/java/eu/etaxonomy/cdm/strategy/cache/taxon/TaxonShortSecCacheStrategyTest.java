@@ -43,7 +43,7 @@ public class TaxonShortSecCacheStrategyTest {
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
 	private BotanicalName name;
-	private Reference<?> sec;
+	private Reference sec;
 	private static ITaxonCacheStrategy shortStrategy;
 
 	/**

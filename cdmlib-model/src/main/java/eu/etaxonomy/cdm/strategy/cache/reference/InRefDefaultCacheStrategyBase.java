@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,47 +25,47 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 
 	private static final long serialVersionUID = -8418443677312335864L;
 	private static final Logger logger = Logger.getLogger(InRefDefaultCacheStrategyBase.class);
-	
+
 	private String inSeparator = "in ";
 	private String afterSectionAuthor = " - ";
 	private String blank = " ";
-	
-	
-	
+
+
+
 	protected abstract String getInRefType();
-	
+
 	protected String afterInRefAuthor = ", ";
 
 	@Override
 	public String getTokenizedNomenclaturalTitel(Reference generic) {
 		return getTokenizedNomenclaturalTitel(generic, false);
 	}
-	
+
 	protected String getTokenizedNomenclaturalTitel(Reference thisRef, boolean inRefIsObligatory) {
 		//generic == null
 		if (thisRef == null /* || generic.getInReference() == null */){
 			return null;
 		}
 
-		Reference<?> inRef = thisRef.getInReference();
-		
+		Reference inRef = thisRef.getInReference();
+
 		//inRef == null
 		if (! inRefIsObligatory && inRef == null){
 			return super.getTokenizedNomenclaturalTitel(thisRef);
 		}
-		
+
 		String result;
 		//use generics's publication date if it exists
 		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
 			GenericDefaultCacheStrategy inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getTitleWithoutYearAndAuthor(inRef, true);
 			//added //TODO unify with non-inRef references formatting
-			
+
 			if (isNotBlank(thisRef.getVolume())){
 				result = result + " " + thisRef.getVolume();
 			}
 			//TODO series / edition
-			
+
 			//end added
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, thisRef, true);
@@ -77,14 +77,14 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 			}
 		}
 		//FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862
-		
+
 		result = getInRefAuthorPart(thisRef.getInReference(), afterInRefAuthor) + result;
 		result = "in " +  result;
 		return result;
 	}
-	
 
-	
+
+
 	protected String getInRefAuthorPart(Reference book, String seperator){
 		if (book == null){
 			return "";
@@ -92,27 +92,27 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		TeamOrPersonBase<?> team = book.getAuthorship();
 		String result = Nz( team == null ? "" : team.getNomenclaturalTitle());
 		if (! result.trim().equals("")){
-			result = result + seperator;	
+			result = result + seperator;
 		}
 		return result;
 	}
-	
+
 
 	@Override
 	public String getTitleCache(Reference thisRef) {
 		return getTitleCache(thisRef, false, false);
 	}
-	
+
 	@Override
 	public String getAbbrevTitleCache(Reference thisRef) {
 		return getTitleCache(thisRef, false, true);
 	}
-	
-	
+
+
 	protected String getTitleCache(Reference thisRef, boolean inRefIsObligatory, boolean isAbbrev) {
 		String result;
-		
-		Reference<?> inRef = thisRef.getInReference();
+
+		Reference inRef = thisRef.getInReference();
 		boolean hasInRef = (inRef != null);
 		// get inRef part
 		if (hasInRef){
@@ -124,17 +124,17 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 				result = String.format("- undefined %s -", getInRefType());
 			}
 		}
-		
+
 		//in
 		result = inSeparator +  result;
-		
+
 		//section title
 		String title = CdmUtils.getPreferredNonEmptyString(
 				thisRef.getTitle(), thisRef.getAbbrevTitle(), isAbbrev, true);
 		if (title.length() > 0){
 			result = title + blank + result;
 		}
-		
+
 		//section author
 		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorship();
 		String thisRefAuthor = "";
@@ -142,7 +142,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 			thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(), thisRefTeam.getNomenclaturalTitle(), isAbbrev, true);
 		}
 		result = CdmUtils.concat(afterSectionAuthor, thisRefAuthor, result);
-		
+
 		//date
 		if (thisRef.getDatePublished() != null && ! thisRef.getDatePublished().isEmpty()){
 			String thisRefDate = thisRef.getDatePublished().toString();

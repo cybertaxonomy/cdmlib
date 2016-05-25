@@ -41,10 +41,10 @@ public class HomotypicGroupTaxonComparatorTest {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparatorTest.class);
 
-    private Reference<?> sec;
-    private Reference<?> ref1;
-    private Reference<?> ref2;
-    private Reference<?> ref3;
+    private Reference sec;
+    private Reference ref1;
+    private Reference ref2;
+    private Reference ref3;
     private Calendar cal1;
     private Calendar cal2;
     private Calendar cal3;

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class GenericDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategyTest.class);
-	
+
 	private static IGeneric generic1;
 	private static Team team1;
 	private static GenericDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -54,24 +54,24 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setCacheStrategy(defaultStrategy);
 		team1 = Team.NewTitledInstance("Authorteam", "AT.");
 	}
-	
+
 //**************************** TESTS ***********************************
 
-	
+
 	@Test
 	public void testGetTitleCache(){
 		generic1.setTitle("auct.");
 		Assert.assertEquals("Unexpected title cache.", "auct.", generic1.getTitleCache());
 	}
-	
-	
+
+
 	@Test
 	public void testGetInRef(){
 		generic1.setTitle("auct.");
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setTitle("My book title");
 		book1.setAuthorship(team1);
-		Reference<?> inRef = (Reference<?>)book1;
+		Reference inRef = (Reference)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		//TODO author still unclear
@@ -86,20 +86,20 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "My generic title: 2", generic1.getNomenclaturalCitation("2"));
 	}
-	
+
 	@Test
 	public void testGetTitleCache2(){
 		generic1.setTitle("Part Title");
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setTitle("My book title");
 		book1.setAuthorship(team1);
-		Reference<?> inRef = (Reference<?>)book1;
+		Reference inRef = (Reference)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Part Title in Authorteam, My book title", generic1.getTitleCache());
 	}
 
-	
+
 	@Test
 	public void testGetAbbrevTitleCache(){
 		generic1.setTitle("Part Title");
@@ -109,7 +109,7 @@ public class GenericDefaultCacheStrategyTest {
 		book1.setTitle("My book title");
 		book1.setAbbrevTitle("My bk. tit.");
 		book1.setAuthorship(team1);  //TODO handling not yet defined
-		Reference<?> inRef = (Reference<?>)book1;
+		Reference inRef = (Reference)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
@@ -124,20 +124,20 @@ public class GenericDefaultCacheStrategyTest {
 		//TODO
 //		Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit., ser. 11, 23: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
 
-		
+
 		//protected
 		generic1.setAbbrevTitleCache("My prot. abb. tit. in a bk.", true);
 		Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", generic1.getAbbrevTitleCache());
 		Assert.assertEquals("Unexpected title cache.", "Part Title in Authorteam, My book title. 1987", generic1.getTitleCache());
-		
+
 		generic1.setDatePublished(null);
 		Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(null));
 		Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(""));
 		Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44", generic1.getNomenclaturalCitation("pp. 44"));
-		
+
 		generic1.setDatePublished(TimePeriodParser.parseString("1893"));
 		Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44. 1893", generic1.getNomenclaturalCitation("pp. 44"));
-		
+
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam, My generic title", generic1.getTitleCache());
 	}
-	
+
 	@Test
 	public void testAuthorOnly(){
 		generic1.setAuthorship(team1);
@@ -155,16 +155,16 @@ public class GenericDefaultCacheStrategyTest {
 		Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
 		Assert.assertEquals("", generic1.getNomenclaturalCitation(null));
 	}
-	
+
 	@Test
 	public void testYearAndAuthorOnly(){
 		generic1.setAuthorship(team1);
 		generic1.setDatePublished(TimePeriodParser.parseString("1792"));
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());	
+		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
 		Assert.assertEquals("1792", generic1.getNomenclaturalCitation(null));
 	}
-	
+
 	@Test
 	public void testDoubleDotBeforeYear(){
 		generic1.setAuthorship(team1);
@@ -176,5 +176,5 @@ public class GenericDefaultCacheStrategyTest {
 	}
 
 
-	
+
 }

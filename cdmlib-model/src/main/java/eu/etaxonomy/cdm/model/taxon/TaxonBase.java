@@ -136,7 +136,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     @IndexedEmbedded
-    private Reference<?> sec;
+    private Reference sec;
 
     @XmlElement(name = "secMicroReference")
     @CacheUpdate(noUpdate ="titleCache")

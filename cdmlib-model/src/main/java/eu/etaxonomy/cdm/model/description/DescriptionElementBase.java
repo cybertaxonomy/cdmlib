@@ -420,7 +420,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     @Override
-    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }

@@ -81,7 +81,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 		return result;
 	}
 
-	protected abstract String getTitleWithoutYearAndAuthor(Reference<?> reference, boolean isAbbrev);
+	protected abstract String getTitleWithoutYearAndAuthor(Reference reference, boolean isAbbrev);
 
 
 	@Override
@@ -184,7 +184,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 	 * @param microRef
 	 * @return
 	 */
-	private String handleDetailAndYearForPreliminary(Reference<?> nomenclaturalReference, String cache, String microReference) {
+	private String handleDetailAndYearForPreliminary(Reference nomenclaturalReference, String cache, String microReference) {
 		String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
 		if (cache == null){
 			logger.warn("Cache is null. This should never be the case.");

@@ -376,8 +376,8 @@ public class NonViralNameParserImplTest {
         assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorship() instanceof Person);
         assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitle());
         INomenclaturalReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
-        Assert.assertNotNull("nomRef must have inRef", ((Reference<?>)nomRef).getInReference());
-        Reference<?> inRef = ((Reference<?>)nomRef).getInReference();
+        Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
+        Reference inRef = ((Reference)nomRef).getInReference();
         String title = inRef.getTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
         assertTrue(inRef.getAuthorship() instanceof Team);
@@ -402,8 +402,8 @@ public class NonViralNameParserImplTest {
 	    assertEquals(3, team.getTeamMembers().size());
 	    assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
 	    nomRef = multipleAuthorName.getNomenclaturalReference();
-        Assert.assertNotNull("nomRef must have inRef", ((Reference<?>)nomRef).getInReference());
-        inRef = ((Reference<?>)nomRef).getInReference();
+        Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
+        inRef = ((Reference)nomRef).getInReference();
         title = inRef.getTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
         assertTrue(inRef.getAuthorship() instanceof Person);
@@ -419,7 +419,7 @@ public class NonViralNameParserImplTest {
 	    assertEquals(3, team.getTeamMembers().size());
 	    assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
 	    nomRef = multipleAuthorName.getNomenclaturalReference();
-        Assert.assertNull("nomRef must not have inRef as it is a book itself", ((Reference<?>)nomRef).getInReference());
+        Assert.assertNull("nomRef must not have inRef as it is a book itself", ((Reference)nomRef).getInReference());
         title = nomRef.getTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
         assertTrue(nomRef.getAuthorship() instanceof Team);
@@ -929,16 +929,16 @@ public class NonViralNameParserImplTest {
 		String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
 		NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
 		assertFullRefStandard(namefullWhiteSpcaceAndDot);
-		assertTrue(((Reference<?>)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+		assertTrue(((Reference)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
 		assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
 
 		//Book
 		String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
 		NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFullRefStandard(name1);
-		assertTrue(((Reference<?>)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+		assertTrue(((Reference)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
 		assertEquals(fullReference, name1.getFullTitleCache());
-		assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorship() == ((Reference<?>)name1.getNomenclaturalReference()).getAuthorship());
+		assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorship() == ((Reference)name1.getNomenclaturalReference()).getAuthorship());
 
 		//Book Section
 		fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
@@ -947,7 +947,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(fullReference, name2.getFullTitleCache());
 		assertFalse(name2.hasProblem());
 		INomenclaturalReference ref = name2.getNomenclaturalReference();
-		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.BookSection, ((Reference<?>)ref).getType());
+		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.BookSection, ((Reference)ref).getType());
 		IBookSection bookSection = (IBookSection) ref;
 		IBook inBook = bookSection.getInBook();
 		assertNotNull(inBook);
@@ -956,7 +956,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
 		assertEquals("Sp. Pl.", inBook.getTitle());
 		assertEquals("4(6)", inBook.getVolume());
-		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == ((Reference<?>)name2.getNomenclaturalReference()).getAuthorship());
+		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == ((Reference)name2.getNomenclaturalReference()).getAuthorship());
 
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -971,7 +971,7 @@ public class NonViralNameParserImplTest {
 		IJournal journal = ((IArticle)ref).getInJournal();
 		assertNotNull(journal);
 		//assertEquals("Sp. Pl. 4(6)", inBook.getTitleCache());
-		assertEquals("Sp. Pl.",((Reference<?>) journal).getTitleCache());
+		assertEquals("Sp. Pl.",((Reference) journal).getTitleCache());
 		assertEquals("Sp. Pl.", journal.getTitle());
 		assertEquals("4(6)",((IArticle)ref).getVolume());
 		assertTrue("Name author and reference author should be the same", name3.getCombinationAuthorship() == name3.getNomenclaturalReference().getAuthorship());
@@ -1003,7 +1003,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(parsedYear, ref.getYear());
 		journal = ((IArticle)ref).getInJournal();
 		assertNotNull(journal);
-		assertEquals(journalTitle, ((Reference<?>) journal).getTitleCache());
+		assertEquals(journalTitle, ((Reference) journal).getTitleCache());
 		assertEquals(journalTitle, journal.getTitle());
 		assertEquals("4(6)", ((IArticle)ref).getVolume());
 

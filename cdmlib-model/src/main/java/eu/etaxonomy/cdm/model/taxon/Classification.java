@@ -99,7 +99,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference<?> reference;
+    private Reference reference;
 
     @XmlElement(name = "microReference")
     private String microReference;

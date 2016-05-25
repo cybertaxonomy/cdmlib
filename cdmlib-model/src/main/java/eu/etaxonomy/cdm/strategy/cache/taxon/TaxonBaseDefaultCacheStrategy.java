@@ -113,7 +113,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     private List<TaggedText> getSecundumTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
-        Reference<?> ref = taxonBase.getSec();
+        Reference ref = taxonBase.getSec();
         ref = HibernateProxyHelper.deproxy(ref, Reference.class);
         String secRef;
         if (ref == null){

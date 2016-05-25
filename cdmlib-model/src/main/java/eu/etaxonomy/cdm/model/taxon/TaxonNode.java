@@ -138,7 +138,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference<?> referenceForParentChildRelation;
+    private Reference referenceForParentChildRelation;
 
     @XmlElement(name = "microReference")
     private String microReferenceForParentChildRelation;

@@ -1,12 +1,12 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model;
 
 import org.apache.log4j.Logger;
@@ -40,7 +40,7 @@ public class DatabaseInitialiser {
 		logger.info("Populate database with a taxon");
 		IJournal sec = ReferenceFactory.newJournal();
 		NonViralName<?> nvName = BotanicalName.NewInstance(Rank.SPECIES());
-		Taxon tax = Taxon.NewInstance(nvName, (Reference<?>)sec);
+		Taxon tax = Taxon.NewInstance(nvName, (Reference)sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname, true);
@@ -53,7 +53,7 @@ public class DatabaseInitialiser {
 		Transaction tx = s.beginTransaction();
 		s.saveOrUpdate(obj);
 		tx.commit();
-		s.close();		
+		s.close();
 	}
 
 	public static void main(String[] args) {
