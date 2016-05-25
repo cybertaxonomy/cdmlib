@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -213,6 +214,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         if (titleCache == null){
             this.titleCache = generateTitle();
             this.titleCache = getTruncatedCache(this.titleCache) ;
+        }
+        if(StringUtils.isBlank(titleCache)){
+            titleCache = this.toString();
         }
         return titleCache;
     }
@@ -512,7 +516,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public String toString() {
         String result;
-        if (titleCache == null){
+        if (StringUtils.isBlank(titleCache)){
             result = super.toString();
         }else{
             result = this.titleCache;
