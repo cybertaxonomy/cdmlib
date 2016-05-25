@@ -108,6 +108,14 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache();
 
 
+	/**
+     * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+     * with their respective NomenclaturalTitleCache
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     */
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache();
+
     /**
      * @param teamUuid
      * @return
