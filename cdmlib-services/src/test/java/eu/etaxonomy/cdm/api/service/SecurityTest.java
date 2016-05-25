@@ -269,7 +269,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
     @Test
-    @Ignore
+    @Ignore  //#5829  should be fixed as soon as possible
     public final void testReuseNameAllow() {
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
