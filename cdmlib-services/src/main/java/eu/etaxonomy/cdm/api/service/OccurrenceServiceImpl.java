@@ -528,6 +528,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
+        //preferred stable URI
+        preservedSpecimenDTO.setPreferredStableUri(derivedUnit.getPreferredStableUri());
+
         // citation
         Collection<FieldUnit> fieldUnits = getFieldUnits(derivedUnit);
         if (fieldUnits.size() == 1) {
