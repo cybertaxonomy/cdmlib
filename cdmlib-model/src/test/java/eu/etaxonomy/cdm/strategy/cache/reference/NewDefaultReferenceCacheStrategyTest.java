@@ -90,9 +90,7 @@ public class NewDefaultReferenceCacheStrategyTest {
 	public void setUp() throws Exception {
 	    //article
 		article1 = ReferenceFactory.newArticle();
-		article1.setCacheStrategy(defaultStrategy);
 		journal1 = ReferenceFactory.newJournal();
-		journal1.setCacheStrategy(defaultStrategy);
 		articleTeam1 = Team.NewInstance();
 		articleTeam2 = Team.NewInstance();
 		articleTeam1.setTitleCache("Team1", true);
@@ -102,7 +100,6 @@ public class NewDefaultReferenceCacheStrategyTest {
 
 		//book / section
 		book1 = ReferenceFactory.newBook();
-		book1.setCacheStrategy(defaultStrategy);
         bookTeam1 = Team.NewTitledInstance("Book Author", "TT.");
         bookSection1 = ReferenceFactory.newBookSection();
         bookSection1.setCacheStrategy(defaultStrategy);

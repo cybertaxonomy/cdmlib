@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 
 public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase {
@@ -80,9 +79,9 @@ public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase {
 			inRefStrategy= inRef.getCacheStrategy();
 			if (! (inRefStrategy instanceof NomRefDefaultCacheStrategyBase)){
 				logger.warn("Neither inReference nor inInReference is a nomenclatural reference. This is not correct or not handled yet. Generic Cache Strategy used instead");
-				inRefStrategy = ReferenceType.Generic.getCacheStrategy();
+				inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 				result = ((NomRefDefaultCacheStrategyBase)inRefStrategy).getTitleWithoutYearAndAuthor(inInRef, true);
-				//FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
+				//FIXME: vol. etc., #5833  (comment taken from super.getTokenizedNomenclaturalTitel())
 			}else{
 				result = ((NomRefDefaultCacheStrategyBase)inRefStrategy).getTitleWithoutYearAndAuthor(inRef, true);
 			}

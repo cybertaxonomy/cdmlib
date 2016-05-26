@@ -55,7 +55,6 @@ public class ArticleDefaultCacheStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		article1 = ReferenceFactory.newArticle();
-		article1.setCacheStrategy(defaultStrategy);
 		journal1 = ReferenceFactory.newJournal();
 		team1 = Team.NewInstance();
 		team2 = Team.NewInstance();

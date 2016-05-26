@@ -568,7 +568,6 @@ public class Reference
 		} else{
 			this.type = type;
 		}
-		this.setCacheStrategy(type.getCacheStrategy());
 	}
 	@Override
     public ReferenceType getType() {
@@ -719,7 +718,6 @@ public class Reference
 	// TODO implement
 	@Transient
 	public String getCitation(){
-		rectifyCacheStrategy();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
@@ -731,12 +729,10 @@ public class Reference
 
 	@Override
     public String generateTitle() {
-		rectifyCacheStrategy();
 		return super.generateTitle();
 	}
 
     public String generateAbbrevTitle() {
-		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
 		return getCacheStrategy().getFullAbbrevTitleString(this);
 	}
 
@@ -836,7 +832,6 @@ public class Reference
 	@Override
     @Transient
     public String getNomenclaturalCitation(String microReference) {
-		rectifyCacheStrategy();
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
@@ -1019,69 +1014,14 @@ public class Reference
 
     @Override
     public IReferenceCacheStrategy getCacheStrategy() {
-    	rectifyCacheStrategy();
     	return this.cacheStrategy;
     }
 
-	/**
-	 * The type property of this class is mapped on the field level to the data base column, so
-	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor}
-	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so
-	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to
-	 * validate the CacheStrategy before it is to be used.
-	 */
-	private void rectifyCacheStrategy() {
-		if(!cacheStrategyRectified ){
-			setType(getType());
-			cacheStrategyRectified = true;
-		}
-	}
-
-
 	@Override
-    public void setCacheStrategy(IReferenceCacheStrategy iReferenceBaseCacheStrategy) {
-		this.cacheStrategy = iReferenceBaseCacheStrategy;
-
+    public void setCacheStrategy(IReferenceCacheStrategy referenceCacheStrategy) {
+		this.cacheStrategy = referenceCacheStrategy;
 	}
 
-
-
-
-//    @Override
-//    protected void initListener(){
-//        PropertyChangeListener listener = new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent e) {
-//                boolean protectedByLowerCache = false;
-//                //authorship cache
-//                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
-//                    if (protectedAuthorshipCache){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        authorshipCache = null;
-//                    }
-//                }
-//
-//                //title cache
-//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
-//                    if (isProtectedTitleCache()|| protectedByLowerCache == true ){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        titleCache = null;
-//                    }
-//                }
-//                //full title cache
-//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
-//                    if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        fullTitleCache = null;
-//                    }
-//                }
-//            }
-//        };
-//        addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
-//    }
 
 
 //*********************** CLONE ********************************************************/

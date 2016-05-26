@@ -337,8 +337,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         String referenceCache = null;
         if (ref != null){
             Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
-            //FIXME #5833 not needed anymore
-            reference.setCacheStrategy(reference.getType().getCacheStrategy());
             referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags

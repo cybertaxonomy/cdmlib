@@ -51,7 +51,6 @@ public class GenericDefaultCacheStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		generic1 = ReferenceFactory.newGeneric();
-		generic1.setCacheStrategy(defaultStrategy);
 		team1 = Team.NewTitledInstance("Authorteam", "AT.");
 	}
 

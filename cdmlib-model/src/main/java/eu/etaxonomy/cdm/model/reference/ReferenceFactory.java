@@ -18,113 +18,71 @@ public class ReferenceFactory {
 	private static final Logger logger = Logger.getLogger(ReferenceFactory.class);
 
 	public static Reference newArticle(){
-		Reference article = new Reference(ReferenceType.Article);
-		article.setCacheStrategy(ReferenceType.Article.getCacheStrategy());
-		return article;
+		return new Reference(ReferenceType.Article);
 	}
 
 	public static Reference newJournal(){
-		Reference journal = new Reference(ReferenceType.Journal);
-		journal.setCacheStrategy(ReferenceType.Journal.getCacheStrategy());
-		return journal;
+	    return new Reference(ReferenceType.Journal);
 	}
 
 	public static Reference newBook(){
-		Reference book = new Reference(ReferenceType.Book);
-		book.setCacheStrategy(ReferenceType.Book.getCacheStrategy());
-		return book;
+	    return new Reference(ReferenceType.Book);
 	}
 
 	public static Reference newThesis(){
-		Reference thesis = new Reference(ReferenceType.Thesis);
-		thesis.setCacheStrategy(ReferenceType.Thesis.getCacheStrategy());
-		return thesis;
+	    return new Reference(ReferenceType.Thesis);
 	}
 
 	public static Reference newInProceedings(){
-		Reference inProceedings = new Reference(ReferenceType.InProceedings);
-		inProceedings.setCacheStrategy(ReferenceType.InProceedings.getCacheStrategy());
-		return inProceedings;
+	    return new Reference(ReferenceType.InProceedings);
 	}
 
 	public static Reference newProceedings(){
-		Reference proceedings = new Reference(ReferenceType.Proceedings);
-		proceedings.setCacheStrategy(ReferenceType.Proceedings.getCacheStrategy());
-		return proceedings;
+	    return new Reference(ReferenceType.Proceedings);
 	}
 
 	public static Reference newBookSection(){
-		Reference bookSection = new Reference(ReferenceType.BookSection);
-		bookSection.setCacheStrategy(ReferenceType.BookSection.getCacheStrategy());
-		return bookSection;
+	    return new Reference(ReferenceType.BookSection);
 	}
 
-
 	public static Reference newSection(){
-		Reference section = new Reference(ReferenceType.Section);
-		section.setCacheStrategy(ReferenceType.Section.getCacheStrategy());
-		return section;
+	    return new Reference(ReferenceType.Section);
 	}
 
 	public static Reference newCdDvd(){
-		Reference cdDvd= new Reference(ReferenceType.CdDvd);
-		cdDvd.setCacheStrategy(ReferenceType.CdDvd.getCacheStrategy());
-		return cdDvd;
+	    return new Reference(ReferenceType.CdDvd);
 	}
 
 	public static Reference newGeneric(){
-		Reference generic = new Reference(ReferenceType.Generic);
-		generic.setCacheStrategy(ReferenceType.Generic.getCacheStrategy());
-		return generic;
+	    return new Reference(ReferenceType.Generic);
 	}
 
 	public static Reference newMap(){
-		Reference map = new Reference(ReferenceType.Map);
-		map.setCacheStrategy(ReferenceType.Map.getCacheStrategy());
-		return map;
-
+	    return new Reference(ReferenceType.Map);
 	}
 
 	public static Reference newReport(){
-		Reference report = new Reference(ReferenceType.Report);
-		report.setCacheStrategy(ReferenceType.Report.getCacheStrategy());
-		return report;
-
+	    return new Reference(ReferenceType.Report);
 	}
 
 	public static Reference newWebPage(){
-		Reference webPage = new Reference(ReferenceType.WebPage);
-		webPage.setCacheStrategy(ReferenceType.WebPage.getCacheStrategy());
-		return webPage;
+	    return new Reference(ReferenceType.WebPage);
 	}
 
 	public static Reference newDatabase(){
-		Reference db = new Reference(ReferenceType.Database);
-		db.setCacheStrategy(ReferenceType.Database.getCacheStrategy());
-		return db;
+	    return new Reference(ReferenceType.Database);
 	}
 
-
-	/**
-	 * Creates a new empty print series instance.
-	 */
 	public static Reference newPrintSeries() {
-		Reference refBase = new Reference(ReferenceType.PrintSeries);
-		refBase.setCacheStrategy(ReferenceType.PrintSeries.getCacheStrategy());
-		return refBase;
+	    return new Reference(ReferenceType.PrintSeries);
 	}
-
 
     public static Reference newPersonalCommunication() {
-        Reference personalCommunication = new Reference(ReferenceType.PersonalCommunication);
-        personalCommunication.setCacheStrategy(ReferenceType.PersonalCommunication.getCacheStrategy());
-        return personalCommunication;
+        return new Reference(ReferenceType.PersonalCommunication);
     }
 
     public static Reference newPatent() {
-        Reference patent = new Reference(ReferenceType.Patent);
-        patent.setCacheStrategy(ReferenceType.Patent.getCacheStrategy());
-        return patent;
+        return new Reference(ReferenceType.Patent);
     }
 
 // ******************** Short cuts **********************************************/
@@ -135,7 +93,6 @@ public class ReferenceFactory {
 	public static Reference newPrintSeries(String series) {
 		Reference refBase = newPrintSeries();
 		refBase.setTitle(series);
-		refBase.setCacheStrategy(ReferenceType.PrintSeries.getCacheStrategy());
 		return refBase;
 	}
 

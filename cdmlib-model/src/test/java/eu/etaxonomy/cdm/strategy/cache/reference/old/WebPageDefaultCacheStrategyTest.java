@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -27,19 +27,19 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @date 16.06.2010
- * 
+ *
  * UNDER CONSTRUCTION
  *
  */
 public class WebPageDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WebPageDefaultCacheStrategyTest.class);
-	
+
 	private static IWebPage webPage1;
 	private static Team team1;
 	private static WebPageDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -54,13 +54,12 @@ public class WebPageDefaultCacheStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		webPage1 = ReferenceFactory.newWebPage();
-		webPage1.setCacheStrategy(defaultStrategy);
 		team1 = Team.NewTitledInstance("Authorteam, D.", "AT.");
 	}
-	
+
 //**************************** TESTS ***********************************
 
-	
+
 	@Test
 	@Ignore //under development
 	public void testGetTitleCache(){
@@ -71,7 +70,7 @@ public class WebPageDefaultCacheStrategyTest {
 		//taken from Berlin Model, may be modified in future
 		Assert.assertEquals("Unexpected title cache.", "Authorteam, D. - Flora of Israel Online - http://flora.huji.ac.il [accessed in 2011]", webPage1.getTitleCache());
 	}
-	
+
 //	@Test
 //	//WebPages should usually not be used as nomencl.reference, therefore this is less important
 //	public void testGetAbbrevTitleCache(){
