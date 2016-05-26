@@ -149,6 +149,10 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         ReferenceType type = reference.getType();
         boolean isAbbrev = true;
 
+        if (reference.isProtectedAbbrevTitleCache()){
+            return reference.getAbbrevTitleCache();
+        }
+
         if (type == ReferenceType.Article){
             result =  getTitleWithoutYearAndAuthor(reference, isAbbrev);
             boolean useFullDatePublished = false;
@@ -221,11 +225,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
 
     @Override
     public String getNomenclaturalCache(Reference reference) {
-        //TODO maybe not needed as getNomenclaturalCitation also handles protected
-        if (reference.isProtectedAbbrevTitleCache()){
-            return reference.getAbbrevTitleCache();
-        }
-
         return this.getNomenclaturalCitation(reference, null);
     }
 
@@ -247,7 +246,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         //copy from InRefDefaultCacheStrategyBase
         if (inRef != null){
             result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(),
-                    inRef.fullAbbrevTitleString(), isAbbrev, trim)  ;
+                    inRef.getAbbrevTitleCache(), isAbbrev, trim)  ;
         }else{
             result = String.format("- undefined %s -", getUndefinedLabel(type));
         }
@@ -471,16 +470,16 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     public String getNomenclaturalCitation(Reference reference, String microReference) {
         if (reference.isProtectedAbbrevTitleCache()){
             String cache = reference.getAbbrevTitleCache();
-            return handleDetailAndYearForProtected(reference, cache, microReference);
-        }
+            return handleDetailAndYearForPreliminary(reference, cache, microReference);
 
+        }
         String result = getTokenizedNomenclaturalTitel(reference);
         //if no data is available and only titleCache is protected take the protected title
         //this is to avoid empty cache if someone forgets to set also the abbrevTitleCache
         //we need to think about handling protected not separate for abbrevTitleCache  and titleCache
         if (result.equals(INomenclaturalReference.MICRO_REFERENCE_TOKEN) && reference.isProtectedTitleCache() ){
             String cache = reference.getTitleCache();
-            return handleDetailAndYearForProtected(reference, cache, microReference);
+            return handleDetailAndYearForPreliminary(reference, cache, microReference);
         }
 
         microReference = Nz(microReference);
@@ -502,7 +501,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
      * @param microRef
      * @return
      */
-    private String handleDetailAndYearForProtected(Reference nomenclaturalReference, String cache, String microReference) {
+    private String handleDetailAndYearForPreliminary(Reference nomenclaturalReference, String cache, String microReference) {
         String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
         if (cache == null){
             logger.warn("Cache is null. This should never be the case.");
