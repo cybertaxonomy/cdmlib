@@ -53,8 +53,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -374,7 +374,7 @@ public class Reference
         }
         // is reference dirty, i.e. equal NULL?
         if (abbrevTitleCache == null){
-            this.abbrevTitleCache = generateAbbrevTitle();
+            this.abbrevTitleCache = generateAbbrevTitleCache();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
         }
         return abbrevTitleCache;
@@ -731,9 +731,13 @@ public class Reference
 		return super.generateTitle();
 	}
 
-    public String generateAbbrevTitle() {
-		return getCacheStrategy().getFullAbbrevTitleString(this);
+    public String generateAbbrevTitleCache() {
+		return getCacheStrategy().getNomenclaturalCache(this);
 	}
+
+    public String fullAbbrevTitleString() {
+        return getCacheStrategy().getFullAbbrevTitleString(this);
+    }
 
 	/**
 	 * Returns a string representation for the year of publication / creation
@@ -967,20 +971,18 @@ public class Reference
 
 	@Override
     public void setInJournal(IJournal journal) {
-		this.inReference = (Reference)journal;
-
+		setInReference((Reference)journal);  //user setter to invoke aspect #1815
 	}
 
 	@Override
     @Transient // prevent from being serialized by webservice
 	public IPrintSeries getInSeries() {
-		IPrintSeries printSeries = this.inReference;
-		return printSeries;
+		return this.inReference;
 	}
 
 	@Override
     public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (Reference) inSeries;
+	    setInReference((Reference)inSeries);  //user setter to invoke aspect  #1815
 	}
 
 	@Override
@@ -994,7 +996,7 @@ public class Reference
 
 	@Override
     public void setInBook(IBook book) {
-		this.inReference = (Reference) book;
+	    setInReference((Reference)book);  //user setter to invoke aspect #1815
 	}
 
 	@Override
@@ -1006,7 +1008,7 @@ public class Reference
 
 	@Override
     public void setInProceedings(IProceedings proceeding) {
-		this.inReference = (Reference) proceeding;
+        setInReference((Reference)proceeding);  //user setter to invoke aspect #1815
 	}
 
 //*************************** CACHE STRATEGIES ******************************/

@@ -413,24 +413,25 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 
 		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
-		System.out.println("############## RESULT ###################");
+		String debug = "############## RESULT ###################";
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object1: " + obj.getClass().getSimpleName() + " - " + obj);
+			debug += "Object1: " + obj.getClass().getSimpleName() + " - " + obj;
 		}
 		//was 3 before bidirectionality was removed for supplemental data
 		assertEquals(2, referencedObjects.size());
-		System.out.println("############## ENDE ###################");
+		debug += "############## ENDE ###################";
 
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
 //		AgentBase author = agentService.findByUuid(uuidAuthor);
 
 		referencedObjects = cdmGenericDao.getReferencingObjects(author);
-		System.out.println("############## RESULT ###################");
+		debug += "############## RESULT ###################";
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object2: " + obj.getClass().getSimpleName() + " - " + obj);
+			debug += "Object2: " + obj.getClass().getSimpleName() + " - " + obj;
 		}
 		assertEquals(2, referencedObjects.size());
-		System.out.println("############## ENDE ###################");
+		debug += "############## ENDE ###################";
+		logger.info(debug);
 	}
 
 	/**

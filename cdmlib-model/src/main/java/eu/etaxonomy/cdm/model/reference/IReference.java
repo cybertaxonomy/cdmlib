@@ -129,7 +129,9 @@ public interface IReference
      */
     public void setCacheStrategy(INomenclaturalReferenceCacheStrategy defaultStrategy);
 
-	/**
+    public INomenclaturalReferenceCacheStrategy getCacheStrategy();
+
+    /**
 	 * @see Cloneable
 	 * @return
 	 */
