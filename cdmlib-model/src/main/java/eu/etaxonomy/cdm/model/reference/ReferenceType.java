@@ -22,17 +22,16 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.CdDvdDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.SectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.WebPageDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.NewDefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.CdDvdDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.GenericDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.JournalDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ReferenceDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ThesisDefaultCacheStrategy;
 
 
 /**
@@ -127,37 +126,40 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceType.class);
 
-	private Class<? extends IReferenceBaseCacheStrategy> cacheStrategy;
+	private Class<? extends IReferenceCacheStrategy> cacheStrategy;
 
-	private ReferenceType(UUID uuid, String defaultString, String key, ReferenceType parent, Class<? extends IReferenceBaseCacheStrategy> cacheStrategy){
+	private ReferenceType(UUID uuid, String defaultString, String key, ReferenceType parent, Class<? extends IReferenceCacheStrategy> cacheStrategy){
 		this.cacheStrategy = cacheStrategy;
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
 
-	public IReferenceBaseCacheStrategy getCacheStrategy(){
-		switch(this){
-		case Article:
-			return ArticleDefaultCacheStrategy.NewInstance();
-		case Book:
-			return BookDefaultCacheStrategy.NewInstance();
-		case BookSection:
-			return BookSectionDefaultCacheStrategy.NewInstance();
-		case CdDvd:
-			return CdDvdDefaultCacheStrategy.NewInstance();
-		case Generic:
-			return GenericDefaultCacheStrategy.NewInstance();
-		case Journal:
-			return JournalDefaultCacheStrategy.NewInstance();
-		case Thesis:
-			return ThesisDefaultCacheStrategy.NewInstance();
-		case Section:
-			return SectionDefaultCacheStrategy.NewInstance();
-		case WebPage:
-			return WebPageDefaultCacheStrategy.NewInstance();
-        default:
-            return ReferenceDefaultCacheStrategy.NewInstance();
-		}
+	public IReferenceCacheStrategy getCacheStrategy(){
+//		if (true){
+		    return NewDefaultReferenceCacheStrategy.NewInstance();
+//		}
+//	    switch(this){
+//		case Article:
+//			return ArticleDefaultCacheStrategy.NewInstance();
+//		case Book:
+//			return BookDefaultCacheStrategy.NewInstance();
+//		case BookSection:
+//			return BookSectionDefaultCacheStrategy.NewInstance();
+//		case CdDvd:
+//			return CdDvdDefaultCacheStrategy.NewInstance();
+//		case Generic:
+//			return GenericDefaultCacheStrategy.NewInstance();
+//		case Journal:
+//			return JournalDefaultCacheStrategy.NewInstance();
+//		case Thesis:
+//			return ThesisDefaultCacheStrategy.NewInstance();
+//		case Section:
+//			return SectionDefaultCacheStrategy.NewInstance();
+//		case WebPage:
+//			return WebPageDefaultCacheStrategy.NewInstance();
+//        default:
+//            return ReferenceDefaultCacheStrategy.NewInstance();
+//		}
 	}
 
 	/**

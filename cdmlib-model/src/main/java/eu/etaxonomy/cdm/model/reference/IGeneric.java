@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.GenericDefaultCacheStrategy;
 
 /**
  * This interface represents all references which cannot be clearly assigned to a

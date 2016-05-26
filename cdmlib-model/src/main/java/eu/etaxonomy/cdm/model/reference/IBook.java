@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookDefaultCacheStrategy;
 
 /**
  * This interface represents books. A book is a  {@link IPrintedUnitBase printed unit} 

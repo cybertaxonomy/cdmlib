@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategy;
 
 /**
  * This interface represents articles in a {@link IJournal journal}. An article is an independent

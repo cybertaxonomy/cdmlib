@@ -114,6 +114,21 @@ public class ReferenceFactory {
 		return refBase;
 	}
 
+
+    public static Reference newPersonalCommunication() {
+        Reference personalCommunication = new Reference(ReferenceType.PersonalCommunication);
+        personalCommunication.setCacheStrategy(ReferenceType.PersonalCommunication.getCacheStrategy());
+        return personalCommunication;
+    }
+
+    public static Reference newPatent() {
+        Reference patent = new Reference(ReferenceType.Patent);
+        patent.setCacheStrategy(ReferenceType.Patent.getCacheStrategy());
+        return patent;
+    }
+
+// ******************** Short cuts **********************************************/
+
 	/**
 	 * Creates a new print series instance with a given title string.
 	 */
@@ -146,6 +161,8 @@ public class ReferenceFactory {
 		article.setDatePublished(datePublished);
 		return (Reference)article;
 	}
+
+//****************************** by Type **************************************/
 
 	/**
 	 * Returns a new reference for the according reference type. If reference type is <code>null</code>,
@@ -197,19 +214,5 @@ public class ReferenceFactory {
 				return newGeneric();
 		}
 	}
-
-	public static Reference newPersonalCommunication() {
-		Reference personalCommunication = new Reference(ReferenceType.PersonalCommunication);
-		personalCommunication.setCacheStrategy(ReferenceType.PersonalCommunication.getCacheStrategy());
-		return personalCommunication;
-	}
-
-	public static Reference newPatent() {
-		Reference patent = new Reference(ReferenceType.Patent);
-		patent.setCacheStrategy(ReferenceType.Patent.getCacheStrategy());
-		return patent;
-	}
-
-
 
 }

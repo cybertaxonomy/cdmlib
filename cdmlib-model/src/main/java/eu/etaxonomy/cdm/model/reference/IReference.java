@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
@@ -132,7 +132,7 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	 * Sets the cache strategy for this reference
 	 * @param cacheStrategy
 	 */
-	void setCacheStrategy(IReferenceBaseCacheStrategy cacheStrategy);
+	void setCacheStrategy(IReferenceCacheStrategy cacheStrategy);
 	
 	/**
 	 * @see Cloneable

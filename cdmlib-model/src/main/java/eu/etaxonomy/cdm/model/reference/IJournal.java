@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.JournalDefaultCacheStrategy;
 
 /**
  * This interface represents journals. A journal is a periodical 

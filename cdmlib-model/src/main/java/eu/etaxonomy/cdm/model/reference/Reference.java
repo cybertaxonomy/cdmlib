@@ -53,14 +53,15 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.NewDefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.GenericDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.JournalDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -123,7 +124,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
 //        <S extends IReferenceBaseCacheStrategy>
-        extends IdentifiableMediaEntity<IReferenceBaseCacheStrategy>
+        extends IdentifiableMediaEntity<IReferenceCacheStrategy>
         implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 
     private static final long serialVersionUID = -2034764545042691295L;
@@ -337,11 +338,13 @@ public class Reference
 	}
 
 	protected Reference(ReferenceType type) {
-		if (type == null){
+		super();
+	    if (type == null){
 			this.type = ReferenceType.Generic;
 		} else{
 			this.type = type;
 		}
+		this.setCacheStrategy(NewDefaultReferenceCacheStrategy.NewInstance());
 	}
 
 	@Override
@@ -567,12 +570,7 @@ public class Reference
 			this.type = type;
 		}
 		this.setCacheStrategy(type.getCacheStrategy());
-
 	}
-
-	/**
-	 * @return the type
-	 */
 	@Override
     public ReferenceType getType() {
 		return type;
@@ -740,7 +738,7 @@ public class Reference
 
     public String generateAbbrevTitle() {
 		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
-		return getCacheStrategy().getAbbrevTitleCache(this);
+		return getCacheStrategy().getFullAbbrevTitleString(this);
 	}
 
 	/**
@@ -1021,7 +1019,7 @@ public class Reference
 //*************************** CACHE STRATEGIES ******************************/
 
     @Override
-    public IReferenceBaseCacheStrategy getCacheStrategy() {
+    public IReferenceCacheStrategy getCacheStrategy() {
     	rectifyCacheStrategy();
     	return this.cacheStrategy;
     }
@@ -1042,7 +1040,7 @@ public class Reference
 
 
 	@Override
-    public void setCacheStrategy(IReferenceBaseCacheStrategy iReferenceBaseCacheStrategy) {
+    public void setCacheStrategy(IReferenceCacheStrategy iReferenceBaseCacheStrategy) {
 		this.cacheStrategy = iReferenceBaseCacheStrategy;
 
 	}

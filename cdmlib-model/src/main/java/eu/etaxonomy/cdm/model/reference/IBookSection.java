@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.old.BookSectionDefaultCacheStrategy;
 
 /**
  * This interface represents isolated sections (parts or chapters) within a 
