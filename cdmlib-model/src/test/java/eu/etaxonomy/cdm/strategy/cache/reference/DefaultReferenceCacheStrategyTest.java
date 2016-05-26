@@ -146,10 +146,8 @@ public class DefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
-	@Ignore
 	@Test
-	//This test is just to show that there is still the title cache bug which is not
-	//set to null by setInJournal(null)
+	//This test is just to show that setInJournal(null) now resets caches  #1815
 	public void testArticleGetTitleCache2(){
 		journal1.setTitle("My journal");
 		journal1.setAuthorship(articleTeam2);
@@ -359,10 +357,8 @@ public class DefaultReferenceCacheStrategyTest {
 
     }
 
-    @Ignore
     @Test
-    //This test is just to show that there is still the title cache bug which is not
-    //set to null by setInBook(null) and others
+    //This test is just to show that setInBook(null) now resets caches  #1815
     public void testBookSectionGetTitleCache2(){
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
