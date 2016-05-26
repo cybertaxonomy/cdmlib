@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategyTest;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**

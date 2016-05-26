@@ -22,9 +22,6 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.InRefDefaultCacheStrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.NomRefDefaultCacheStrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.ReferenceDefaultCacheStrategy;
 
 /**
  * #5833
