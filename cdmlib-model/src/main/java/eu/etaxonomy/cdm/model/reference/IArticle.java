@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  * <li> "MagazineArticle"
  * </ul>
  */
-public interface IArticle extends ISection, IVolumeReference, INomenclaturalReference{
+public interface IArticle extends ISection, IVolumeReference{
 
 	/**
 	 * Returns the series information for this article

@@ -46,10 +46,10 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @date 25.05.2016
  *
  */
-public class NewDefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
+public class DefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
     private static final long serialVersionUID = 6773742298840407263L;
 
-    private static final Logger logger = Logger.getLogger(NewDefaultReferenceCacheStrategy.class);
+    private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategy.class);
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
 
@@ -82,8 +82,8 @@ public class NewDefaultReferenceCacheStrategy extends StrategyBase implements IN
      * Factory method
      * @return
      */
-    public static NewDefaultReferenceCacheStrategy NewInstance(){
-        return new NewDefaultReferenceCacheStrategy();
+    public static DefaultReferenceCacheStrategy NewInstance(){
+        return new DefaultReferenceCacheStrategy();
     }
 
 

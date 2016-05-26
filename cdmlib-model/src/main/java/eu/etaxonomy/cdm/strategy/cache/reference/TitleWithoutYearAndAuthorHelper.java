@@ -46,7 +46,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
     public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
         ReferenceType type = ref.getType();
-        if (! NewDefaultReferenceCacheStrategy.isNomRef(type)){
+        if (! DefaultReferenceCacheStrategy.isNomRef(type)){
             throw new RuntimeException("getTitleWithoutYearAndAuthor should not be required"
                     + " for reference type " + type.getMessage());
         }else if (type == ReferenceType.Article){
@@ -82,7 +82,7 @@ public class TitleWithoutYearAndAuthorHelper {
         if (journal != null){
             journalTitel = CdmUtils.getPreferredNonEmptyString(journal.getTitle(), journal.getAbbrevTitle(), isAbbrev, true);
         }else{
-            journalTitel = NewDefaultReferenceCacheStrategy.UNDEFINED_JOURNAL;
+            journalTitel = DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL;
         }
 
         String series = Nz(article.getSeriesPart()).trim();

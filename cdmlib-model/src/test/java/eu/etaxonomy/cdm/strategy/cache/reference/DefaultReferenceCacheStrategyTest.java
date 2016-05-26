@@ -34,15 +34,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
- * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link NewDefaultReferenceCacheStrategy}.
+ * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link DefaultReferenceCacheStrategy}.
  *
  * @author a.mueller
  * @date 25.05.2016
  *
  */
-public class NewDefaultReferenceCacheStrategyTest {
+public class DefaultReferenceCacheStrategyTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NewDefaultReferenceCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategyTest.class);
 
 	//article
 	private static IArticle article1;
@@ -71,7 +71,7 @@ public class NewDefaultReferenceCacheStrategyTest {
     private static Team webPageTeam1;
 
 	//common
-	private static NewDefaultReferenceCacheStrategy defaultStrategy;
+	private static DefaultReferenceCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
 
 	/**
@@ -79,7 +79,7 @@ public class NewDefaultReferenceCacheStrategyTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		defaultStrategy = NewDefaultReferenceCacheStrategy.NewInstance();
+		defaultStrategy = DefaultReferenceCacheStrategy.NewInstance();
 	}
 
 	/**
@@ -89,8 +89,10 @@ public class NewDefaultReferenceCacheStrategyTest {
 	public void setUp() throws Exception {
 	    //article
 		article1 = ReferenceFactory.newArticle();
+		article1.setCacheStrategy(defaultStrategy);
 		journal1 = ReferenceFactory.newJournal();
-		articleTeam1 = Team.NewInstance();
+		journal1.setCacheStrategy(defaultStrategy);
+        articleTeam1 = Team.NewInstance();
 		articleTeam2 = Team.NewInstance();
 		articleTeam1.setTitleCache("Team1", true);
 		articleTeam1.setNomenclaturalTitle("T.", true);
@@ -99,13 +101,14 @@ public class NewDefaultReferenceCacheStrategyTest {
 
 		//book / section
 		book1 = ReferenceFactory.newBook();
+		book1.setCacheStrategy(defaultStrategy);
         bookTeam1 = Team.NewTitledInstance("Book Author", "TT.");
         bookSection1 = ReferenceFactory.newBookSection();
-        bookSection1.setCacheStrategy(defaultStrategy);
         sectionTeam1 = Team.NewTitledInstance("Section Author", "T.");
 
         //CdDvd
         cdDvd = ReferenceFactory.newCdDvd();
+        cdDvd.setCacheStrategy(defaultStrategy);
         cdDvdTitle = "A nice CD title";
         cdDvd.setTitle(cdDvdTitle);
         String publisher = "An ugly publisher";  //not yet implemented
@@ -140,7 +143,7 @@ public class NewDefaultReferenceCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article in " + NewDefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Ignore
@@ -157,7 +160,7 @@ public class NewDefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
-		Assert.assertEquals("Team1, My article in " + NewDefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test
@@ -176,7 +179,7 @@ public class NewDefaultReferenceCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article in " + NewDefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article in " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test

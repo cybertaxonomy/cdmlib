@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.reference;
 
@@ -14,21 +14,22 @@ package eu.etaxonomy.cdm.model.reference;
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "WebPage".
- */ 
- public interface IWebPage extends IPublicationBase {
+ */
+public interface IWebPage extends IPublicationBase {
 
-	 
-		/**
-		 * Returns this websites inReference (e.g. the underlying database).
-		 * @return the inReference
-		 */
-		public Reference getInReference();
-		
-		
-		/**
-		 * Sets this websites inreference (e.g. the underlying database) 
-		 * @param inReference The inReference.
-		 */
-		public void setInReference(Reference inReference);
- 
+
+	/**
+	 * Returns this websites inReference (e.g. the underlying database).
+	 * @return the inReference
+	 */
+	public Reference getInReference();
+
+
+	/**
+	 * Sets this websites inreference (e.g. the underlying database)
+	 * @param inReference The inReference.
+	 */
+	public void setInReference(Reference inReference);
+
+
 }
