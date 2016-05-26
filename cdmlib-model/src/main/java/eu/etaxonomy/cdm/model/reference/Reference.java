@@ -56,12 +56,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.NewDefaultReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.GenericDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.old.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -75,7 +69,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 /**
- * The upmost (abstract) class for references (information sources).
+ * The class for references (information sources). Originally
+ * an abstract class with many subclasses. Not it is only
+ * one class implementing many interfaces for safe use.
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
@@ -123,9 +119,12 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
-//        <S extends IReferenceBaseCacheStrategy>
         extends IdentifiableMediaEntity<IReferenceCacheStrategy>
-        implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
+        implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
+                   IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
+                   IThesis,IWebPage, IPersonalCommunication,
+                   INomenclaturalReference, IReference,
+                   Cloneable {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
@@ -374,7 +373,7 @@ public class Reference
 		if (protectedAbbrevTitleCache){
             return this.abbrevTitleCache;
         }
-        // is title dirty, i.e. equal NULL?
+        // is reference dirty, i.e. equal NULL?
         if (abbrevTitleCache == null){
             this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
@@ -836,14 +835,14 @@ public class Reference
 
 	@Override
     @Transient
-	public String getNomenclaturalCitation(String microReference) {
+    public String getNomenclaturalCitation(String microReference) {
 		rectifyCacheStrategy();
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
-			if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
+		    if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
 				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this, microReference);
 			}else {
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
@@ -1045,35 +1044,6 @@ public class Reference
 
 	}
 
-	@Override
-    public void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(GenericDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-
-	public void setCacheStrategy(ReferenceDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-
-	}
 
 
 

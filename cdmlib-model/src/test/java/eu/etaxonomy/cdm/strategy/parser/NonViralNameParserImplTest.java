@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -375,7 +376,7 @@ public class NonViralNameParserImplTest {
         assertFalse(multipleAuthorRefName.hasProblem());
         assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorship() instanceof Person);
         assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitle());
-        INomenclaturalReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
+        IReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
         Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
         Reference inRef = ((Reference)nomRef).getInReference();
         String title = inRef.getTitle();

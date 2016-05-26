@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.NewDefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.old.ArticleDefaultCacheStrategy;
@@ -134,7 +135,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	}
 
 
-	public IReferenceCacheStrategy getCacheStrategy(){
+	public INomenclaturalReferenceCacheStrategy getCacheStrategy(){
 //		if (true){
 		    return NewDefaultReferenceCacheStrategy.NewInstance();
 //		}
