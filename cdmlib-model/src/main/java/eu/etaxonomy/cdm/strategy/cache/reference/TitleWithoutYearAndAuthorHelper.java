@@ -47,8 +47,10 @@ public class TitleWithoutYearAndAuthorHelper {
     public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
         ReferenceType type = ref.getType();
         if (! DefaultReferenceCacheStrategy.isNomRef(type)){
-            throw new RuntimeException("getTitleWithoutYearAndAuthor should not be required"
-                    + " for reference type " + type.getMessage());
+            logger.warn("getTitleWithoutYearAndAuthor should not be required"
+                    + " for reference type " + type.getMessage() +
+                    " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
+            return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
         }else if (type == ReferenceType.Article){
             return getTitleWithoutYearAndAuthorArticle(ref, isAbbrev);
         }else if(type == ReferenceType.Book){
