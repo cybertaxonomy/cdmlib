@@ -232,6 +232,25 @@ public class CdmUtils {
     }
 
     /**
+     * Returns str if str is not the empty String (''). Returns null if str is empty.
+     * @param str
+     * @return
+     */
+    static public String Ne(String str){
+        return ("".equals(str)? null : str);
+    }
+
+    /**
+     * Returns str if str.trim() is not empty. Returns null otherwise.
+     * @param str
+     * @return
+     */
+    static public String Nb(String str){
+        return (str == null || str.trim().equals("")? null : str);
+    }
+
+
+    /**
      * Concatenates an array of strings using the defined seperator.<BR>
      * <code>Null</code> values are interpreted as empty strings.<BR>
      * If all strings are <code>null</code> then <code>null</code> is returned.
@@ -273,11 +292,11 @@ public class CdmUtils {
         String[] strings = {string1, string2};
         return concat(separator, strings);
     }
-    
-	
+
+
 	/**
 	 * Returns <code>preferred</code> if not blank, else returns <code>alternative</code>.
-	 * If reverse is <code>true</code> computation is 
+	 * If reverse is <code>true</code> computation is
 	 * the other way round (<code>alternative</code> if not blank, otherwise <code>preferred</code>).
 	 * @param preferred first string
 	 * @param alternative second string

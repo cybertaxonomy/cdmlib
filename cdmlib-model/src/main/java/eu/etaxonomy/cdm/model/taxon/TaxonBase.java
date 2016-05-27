@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -314,7 +315,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
      * @see #getSec()
      */
     public void setSecMicroReference(String secMicroReference) {
-        this.secMicroReference = secMicroReference;
+        this.secMicroReference = CdmUtils.Nb(secMicroReference);
     }
 
 
