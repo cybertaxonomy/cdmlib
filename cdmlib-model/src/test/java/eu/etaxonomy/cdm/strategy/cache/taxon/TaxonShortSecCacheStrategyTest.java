@@ -94,9 +94,14 @@ public class TaxonShortSecCacheStrategyTest {
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
-
-
 	}
+
+   @Test
+    public void testGetTitleCacheWithoutName() {
+        TaxonBase taxonBase = Taxon.NewInstance(null, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
+        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
+   }
 
 	//test missing "&" in title cache  #3822
 	@Test
@@ -113,7 +118,6 @@ public class TaxonShortSecCacheStrategyTest {
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
-
 	}
 
     @Test

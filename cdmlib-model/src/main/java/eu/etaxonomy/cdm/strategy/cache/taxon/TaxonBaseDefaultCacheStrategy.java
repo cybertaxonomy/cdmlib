@@ -106,6 +106,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
                 tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
             }
+        }else{
+            tags.add(new TaggedText(TagEnum.name, "???"));
         }
         return tags;
     }

@@ -44,22 +44,17 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		return uuid;
 	}
 
-//	@Override
-//    public String getTitleCache(T taxonBase) {
-//	    return getTitleCache(taxonBase, null);
-//    }
 
 	@Override
     public String getTitleCache(T taxonBase) {
 		String title;
 		if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
-			String namePart = getNamePart(taxonBase);
-
-			title = namePart + " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
-			title += getSecundumPart(taxonBase);
+			title = getNamePart(taxonBase);
 		}else{
-			title = taxonBase.toString();
+		    title = "???";
 		}
+		title += " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
+		title += getSecundumPart(taxonBase);
 		if (taxonBase.isDoubtful()){
 			title = "?" + title;
 		}

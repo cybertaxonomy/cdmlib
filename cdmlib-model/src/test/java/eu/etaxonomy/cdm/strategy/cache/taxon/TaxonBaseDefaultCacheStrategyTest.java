@@ -122,6 +122,12 @@ public class TaxonBaseDefaultCacheStrategyTest {
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxonBase.getTitleCache());
 	}
 
+   @Test
+    public void testGetTitleCacheWithoutName() {
+        TaxonBase<?> taxonBase = Taxon.NewInstance(null, sec);
+        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
+    }
+
 	//test missing "&" in title cache  #3822
 	@Test
 	public void testAndInTitleCache() {
@@ -154,7 +160,5 @@ public class TaxonBaseDefaultCacheStrategyTest {
         taxonBase.setSecMicroReference(secMicroRef);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
                 taxonBase.getTitleCache());
-
-
     }
 }
