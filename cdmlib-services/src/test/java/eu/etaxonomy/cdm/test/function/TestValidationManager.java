@@ -44,7 +44,7 @@ public class TestValidationManager {
         ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
         valMan.registerValidationListeners();
 
-        Reference<?> ref = ReferenceFactory.newDatabase();
+        Reference ref = ReferenceFactory.newDatabase();
         ref.setIsbn("1234");
         appCtr.getReferenceService().save(ref);
 

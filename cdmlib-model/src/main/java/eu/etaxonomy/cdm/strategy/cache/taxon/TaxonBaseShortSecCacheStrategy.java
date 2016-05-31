@@ -44,22 +44,17 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		return uuid;
 	}
 
-//	@Override
-//    public String getTitleCache(T taxonBase) {
-//	    return getTitleCache(taxonBase, null);
-//    }
 
 	@Override
     public String getTitleCache(T taxonBase) {
 		String title;
 		if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
-			String namePart = getNamePart(taxonBase);
-
-			title = namePart + " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
-			title += getSecundumPart(taxonBase);
+			title = getNamePart(taxonBase);
 		}else{
-			title = taxonBase.toString();
+		    title = "???";
 		}
+		title += " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
+		title += getSecundumPart(taxonBase);
 		if (taxonBase.isDoubtful()){
 			title = "?" + title;
 		}
@@ -73,7 +68,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 	 */
 	private String getSecundumPart(T taxonBase) {
 		String result = "???";
-		Reference<?> sec = taxonBase.getSec();
+		Reference sec = taxonBase.getSec();
 		sec = HibernateProxyHelper.deproxy(sec, Reference.class);
 		if (sec != null){
 			if (sec.isProtectedTitleCache()){
@@ -174,7 +169,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 
             //ref.
             List<TaggedText> secTags;
-            Reference<?> ref = taxonBase.getSec();
+            Reference ref = taxonBase.getSec();
             ref = HibernateProxyHelper.deproxy(ref, Reference.class);
             if (ref != null){
                 secTags = getSecReferenceTags(ref);
@@ -196,7 +191,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
     /**
      * @param ref
      */
-    private List<TaggedText> getSecReferenceTags(Reference<?> sec) {
+    private List<TaggedText> getSecReferenceTags(Reference sec) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
         if (sec.isProtectedTitleCache()){
@@ -231,7 +226,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText>  handlePerson(Reference<?> sec) {
+    private List<TaggedText>  handlePerson(Reference sec) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
         Person author = HibernateProxyHelper.deproxy(sec.getAuthorship(), Person.class);
@@ -245,7 +240,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText> handleTeam(Reference<?> sec) {
+    private List<TaggedText> handleTeam(Reference sec) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
 
         Team authorTeam = HibernateProxyHelper.deproxy(sec.getAuthorship(), Team.class);

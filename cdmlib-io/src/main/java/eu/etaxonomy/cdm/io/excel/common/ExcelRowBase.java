@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * Base class for data holder classes for excel or similar imports.
- * 
+ *
  * @author a.mueller
  * @date 13.07.2011
  */
@@ -37,7 +37,7 @@ public abstract class ExcelRowBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelRowBase.class);
 
-	private UUID cdmUuid = null; 
+	private UUID cdmUuid = null;
 
 	private String ecology;
 	private String plantDescription;
@@ -46,32 +46,32 @@ public abstract class ExcelRowBase {
 //	private String family;
 //	private String genus;
 //	private String specificEpithet;
-	
-	
+
+
 	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
-	private List<PostfixTerm> extensions  = new ArrayList<PostfixTerm>(); 
-	
+	private List<PostfixTerm> extensions  = new ArrayList<PostfixTerm>();
+
 	//features
 	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
 	private Map<UUID, TreeMap<Integer, String>> featureLanguages = new HashMap<UUID, TreeMap<Integer, String>>();
 	//feature sources
 	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<UUID, TreeMap<Integer, SourceDataHolder>>();
 
-	
+
 	public ExcelRowBase() {
 	}
-	
+
 	public class PostfixTerm{
 		public PostfixTerm(){}
 		public String term;
 		public String postfix;
 	}
-	
-	
+
+
 	public class SourceDataHolder{
 		private TreeMap<Integer, Map<SourceType, String>> sources = new TreeMap<Integer, Map<SourceType, String>>();
-	
+
 		public void putSource(int index, SourceType type, String value){
 			Map<SourceType, String> map = sources.get(index);
 			if (map == null){
@@ -85,11 +85,11 @@ public abstract class ExcelRowBase {
 			return getOrdered(sources);
 		}
 	}
-	
 
-	
-// **************************** GETTER / SETTER *********************************/	
-	
+
+
+// **************************** GETTER / SETTER *********************************/
+
 
 	public void setCdmUuid(UUID cdmUuid) {
 		this.cdmUuid = cdmUuid;
@@ -100,7 +100,7 @@ public abstract class ExcelRowBase {
 		return cdmUuid;
 	}
 
-//	
+//
 //	/**
 //	 * @return the author
 //	 */
@@ -153,7 +153,7 @@ public abstract class ExcelRowBase {
 		IdentifiableSource source = getOrMakeSource(key);
 		source.setIdInSource(id);
 	}
-	public void putSourceReference(int key, Reference<?> reference){
+	public void putSourceReference(int key, Reference reference){
 		IdentifiableSource source = getOrMakeSource(key);
 		source.setCitation(reference);
 	}
@@ -161,8 +161,8 @@ public abstract class ExcelRowBase {
 	public List<IdentifiableSource> getSources() {
 		return getOrdered(sources);
 	}
-	
-	
+
+
 	/**
 	 * @param key
 	 * @return
@@ -175,7 +175,7 @@ public abstract class ExcelRowBase {
 		}
 		return source;
 	}
-	
+
 
 	public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
 		SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
@@ -216,13 +216,13 @@ public abstract class ExcelRowBase {
 		term.postfix = levelPostfix;
 		this.extensions.add(term);
 	}
-	
+
 	public List<PostfixTerm> getExtensions(){
 		return extensions;
 	}
-	
+
 //***************** FEATURES ***************************************************/
-	
+
 	public void putFeature(UUID featureUuid, int index, String value) {
 		TreeMap<Integer, String> featureMap = featureTexts.get(featureUuid);
 		if (featureMap == null){
@@ -231,7 +231,7 @@ public abstract class ExcelRowBase {
 		}
 		featureMap.put(index, value);
 	}
-	
+
 	public void putFeatureLanguage(UUID featureUuid, int index, String value) {
 		TreeMap<Integer, String> featureLanguageMap = featureLanguages.get(featureUuid);
 		if (featureLanguageMap == null){
@@ -244,7 +244,7 @@ public abstract class ExcelRowBase {
 	public Set<UUID> getFeatures() {
 		return featureTexts.keySet();
 	}
-	
+
 	public List<String> getFeatureTexts(UUID featureUuid) {
 		TreeMap<Integer, String> map = featureTexts.get(featureUuid);
 		if (map != null){
@@ -253,7 +253,7 @@ public abstract class ExcelRowBase {
 			return null;
 		}
 	}
-	
+
 	public List<String> getFeatureLanguages(UUID featureUuid) {
 		TreeMap<Integer, String> map = featureLanguages.get(featureUuid);
 		if (map != null){
@@ -262,7 +262,7 @@ public abstract class ExcelRowBase {
 			return null;
 		}
 	}
-	
+
 
 	public void putFeatureSource(UUID featureUuid,	int featureIndex, SourceType refType, String value, int refIndex) {
 		//feature Map
@@ -280,7 +280,7 @@ public abstract class ExcelRowBase {
 		//
 		sourceDataHolder.putSource(refIndex, refType, value);
 	}
-	
+
 
 	public SourceDataHolder getFeatureTextReferences(UUID featureUuid, int index) {
 		TreeMap<Integer, SourceDataHolder> textMap = textSources.get(featureUuid);
@@ -290,9 +290,9 @@ public abstract class ExcelRowBase {
 			SourceDataHolder sourceMap = textMap.get(index);
 			return sourceMap;
 		}
-		
+
 	}
 
 
-	
+
 }

@@ -601,7 +601,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 		//citations  //TODO do we really want to copy these ??
 		result.citations = new HashSet<Reference>();
-		for (Reference<?> ref: this.citations){
+		for (Reference ref: this.citations){
 			result.citations.add(ref);
 		}
 

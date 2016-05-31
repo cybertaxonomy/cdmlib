@@ -120,7 +120,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
 
 		//TODO what if not transactional?
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferenceDetail = null;
 
 		//taxon
@@ -253,7 +253,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
 		String reference = item.get(TermUri.CDM_SOURCE_REFERENCE);
 		if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(idNamespace) && StringUtils.isNotBlank(reference)){
-			Reference<?> ref = ReferenceFactory.newGeneric();
+			Reference ref = ReferenceFactory.newGeneric();
 			ref.setTitle(reference);
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
@@ -394,7 +394,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	}
 
 
-	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
+	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference sourceReference, String sourceReferecenDetail) {
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
 
@@ -436,7 +436,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}else if (config.isDatasetsAsSecundumReference() || config.isDatasetsAsOriginalSource()){
 			MappedCdmBase<Reference> mappedCitation = getReference(item, resultList, idTerm, strTerm, true);
 			if (mappedCitation != null){
-				Reference<?> ref = mappedCitation.getCdmBase();
+				Reference ref = mappedCitation.getCdmBase();
 				if (config.isDatasetsAsSecundumReference()){
 					//dataset as secundum reference
 					taxonBase.setSec(ref);
@@ -573,8 +573,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @return
 	 */
 	private MappedCdmBase<Reference> getReference(StreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
-		Reference<?> newRef = null;
-		Reference<?> sourceCitation = null;
+		Reference newRef = null;
+		Reference sourceCitation = null;
 
 		MappedCdmBase<Reference> result = null;
 		if (exists(idTerm, item) || exists(strTerm, item)){
@@ -692,7 +692,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 */
 	private TaxonBase<?> getTaxonBase(StreamItem item) {
 		TaxonNameBase<?,?> name = null;
-		Reference<?> sec = null;
+		Reference sec = null;
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";

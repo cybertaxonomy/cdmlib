@@ -273,7 +273,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Unexpected description text", expectedText, text);
 		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
 		DescriptionElementSource source = textData.getSources().iterator().next();
-		Reference<?> ref = source.getCitation();
+		Reference ref = source.getCitation();
 		assertNotNull("Citation should not be null", ref);
 		assertNotNull("Authorship should not be null", ref.getAuthorship());
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());

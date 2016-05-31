@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
-	
+
 	private static final String familyNameString = "Familia";
 	private static final String genusNameString = "Genus";
 	private static final String speciesNameString = "Abies alba";
@@ -61,9 +61,9 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private TeamOrPersonBase<?> exAuthor;
 	private TeamOrPersonBase<?> basAuthor;
 	private TeamOrPersonBase<?> exBasAuthor;
-	private Reference<?> citationRef;
+	private Reference citationRef;
 	ReferenceFactory refFactory;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -81,11 +81,11 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
-		
+
 		subGenusName = BotanicalName.NewInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
-		
+
 		speciesName = BotanicalName.PARSED_NAME(speciesNameString);
 		subSpeciesName = BotanicalName.PARSED_NAME(subSpeciesNameString);
 
@@ -97,7 +97,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		basAuthor.setNomenclaturalTitle(basAuthorString);
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
-		
+
 		citationRef = refFactory.newBook();
 		// Gard. Dict. ed. 8, no. 1. 1768.
 		citationRef.setTitle("Gard. Dict.");
@@ -106,23 +106,23 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		citationRef.setEdition("ed. 8");
 		GregorianCalendar testDate = new GregorianCalendar();
 		testDate.set(1968, 3, 2);
-		
+
 		TimePeriod period = TimePeriod.NewInstance(testDate);
-		
+
 		citationRef.setDatePublished(period);
-		
+
 		//speciesName.setNomenclaturalMicroReference("89");
 		NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
 		speciesName.addStatus(nomStatus);
-		
+
 		speciesName.setNomenclaturalReference(citationRef);
 		speciesName.setAppendedPhrase("app phrase");
-		
+
 //		subSpeciesName.setNomenclaturalReference(citationRef);
 //		subSpeciesName.setAppendedPhrase("app phrase");
 	}
 
-	
+
 
 /********* TEST *******************************************/
 
@@ -156,14 +156,14 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getTitleCache(subSpeciesName));
-		
+
 		subSpeciesName.setExCombinationAuthorship(null);
 		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
-				
+
 		subSpeciesName.setExBasionymAuthorship(null);
 		assertEquals(subSpeciesNameString + " (" + basAuthorString + ")" +  " " + authorString , strategy.getTitleCache(subSpeciesName));
-			
-		
+
+
 		//Autonym
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorship(author);
@@ -173,9 +173,9 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		//changed 2009-09-04
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
-		
-		
-		
+
+
+
 		}
 
 	/**
@@ -186,7 +186,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		assertNull("Full title cache of null object should return null", strategy.getFullTitleCache(null));
 		//NOTE: Unclear if the date part should contain the full date or only the year. Undefined Behaviour.
 		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2.4.1968, nom. illeg.", strategy.getFullTitleCache(speciesName));
-		
+
 //		assertNull(subSpeciesNameString, strategy.getFullTitleCache(null));
 //		assertEquals("Abies alba app phrase L. Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
 	}
@@ -201,16 +201,16 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 
 		subSpeciesName.setExCombinationAuthorship(exAuthor);
 		assertEquals(exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
-		
+
 		subSpeciesName.setBasionymAuthorship(basAuthor);
 		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals("(" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
-		
+
 		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
@@ -246,7 +246,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	public final void testGetInfraSpeciesNameCache() {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 	}
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
@@ -259,8 +259,9 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
-	
-	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
+
+	@Override
+    protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
 		try {
 			method = clazz.getDeclaredMethod(methodName, paramClazzes);

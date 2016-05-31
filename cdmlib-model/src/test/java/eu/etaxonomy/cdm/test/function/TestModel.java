@@ -6,7 +6,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.function;
 
@@ -34,19 +34,19 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestModel {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestModel.class);
-	
+
 	public void testSomething(){
-		
+
 		logger.info("Create name objects...");
 		logger.info(NomenclaturalStatusType.NUDUM().getRepresentation(Language.LATIN()).getAbbreviatedLabel());
 		NonViralName<?> tn = NonViralName.NewInstance(Rank.SPECIES());
 		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
-		
+
 		logger.info("Create reference objects...");
-		Reference<?> sec = ReferenceFactory.newJournal();
+		Reference sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
-		
+
 		logger.info("Create taxon objects...");
 		Taxon childTaxon = Taxon.NewInstance(tn, sec);
 		Synonym syn = Synonym.NewInstance(tn3, sec);
@@ -54,7 +54,7 @@ public class TestModel {
 		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
 		parentTaxon.setUuid(TEST_TAXON_UUID);
 		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
-		
+
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
 		tn.addPropertyChangeListener(listener);
@@ -64,17 +64,17 @@ public class TestModel {
 		tn.setGenusOrUninomial("tn1-Genus1");
 		tn3.setGenusOrUninomial("tn3-genus");
 		tn3.getGenusOrUninomial();
-		
+
 		logger.info("Create new Author agent...");
 		Person team= Person.NewInstance();
 		team.addPropertyChangeListener(listener);
 		team.setTitleCache("AuthorAgent1", true);
 		tn.setCombinationAuthorship(team);
 	}
-	
+
 	public void testParentRelation(){
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference<?> ref = ReferenceFactory.newJournal();
+		Reference ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -82,9 +82,9 @@ public class TestModel {
 			logger.warn("Error");
 		}
 	}
-	
+
 	public void testDescription(){
-		Reference<?> ref = ReferenceFactory.newJournal();
+		Reference ref = ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(null, ref);
 		TaxonDescription desc = TaxonDescription.NewInstance();
 		taxon.addDescription(desc);
@@ -97,7 +97,7 @@ public class TestModel {
 //		System.out.println(tdwgArea.getLabel());
 //		System.out.println(tdwgArea2.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
 	}
-	
+
 	private void test(){
 		System.out.println("Start ...");
 		TestModel sc = new TestModel();
@@ -107,7 +107,7 @@ public class TestModel {
 		sc.testTDWG();
 		System.out.println("\nEnd ...");
 	}
-	
+
 	/**
 	 * @param args
 	 */

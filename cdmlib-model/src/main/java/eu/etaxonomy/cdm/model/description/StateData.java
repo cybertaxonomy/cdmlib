@@ -94,7 +94,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})   remove cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();

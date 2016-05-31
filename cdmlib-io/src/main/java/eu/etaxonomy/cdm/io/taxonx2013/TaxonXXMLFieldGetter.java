@@ -36,7 +36,7 @@ public class TaxonXXMLFieldGetter {
         logger.info("CLASSIFICATION "+classification);
         this.taxonXstate=taxonXstate;
         modsextractor = new TaxonXModsExtractor(importer);
-        Reference<?> originalSourceUrl =taxonXstate.getConfig().getOriginalSourceURL();
+        Reference originalSourceUrl =taxonXstate.getConfig().getOriginalSourceURL();
         treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate,featuresMap,originalSourceUrl );
     }
 
@@ -46,7 +46,7 @@ public class TaxonXXMLFieldGetter {
      *
      *@return the created Reference object
      **/
-    public Reference<?> parseMods(){
+    public Reference parseMods(){
         //        System.out.println("PARSEMODS");
         //taxonx
         Node root = doc.getFirstChild();
@@ -54,7 +54,7 @@ public class TaxonXXMLFieldGetter {
 
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
-        Reference<?> ref = null;
+        Reference ref = null;
         for (int i=0; i< nodes.getLength();i++) {
             //            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxheader")){
@@ -82,7 +82,7 @@ public class TaxonXXMLFieldGetter {
      * @param ref : the current reference, extracted from the mods
      * @param sourcename: the URI of the TaxonX document
      */
-    public void parseTreatment(Reference<?> ref, URI sourceName){
+    public void parseTreatment(Reference ref, URI sourceName){
         System.out.println("PARSETREATMENT "+ref);
         //taxonx
         Node root = doc.getFirstChild();

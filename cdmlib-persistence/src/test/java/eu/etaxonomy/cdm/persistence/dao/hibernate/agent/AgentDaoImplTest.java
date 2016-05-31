@@ -259,6 +259,17 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
     }
 
+    @Test
+    @ExpectedDataSet
+    public void testPersonTitleCache(){
+        Person person = Person.NewTitledInstance("");
+        person.setNomenclaturalTitle("Abbrev. tit.");
+
+        person.setUuid(UUID.fromString("ee7c3b99-bf23-43dc-a64b-d37d3c6ea414"));
+        agentDao.save(person);
+        commitAndStartNewTransaction(null);
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

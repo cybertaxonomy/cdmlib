@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -58,33 +58,35 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	public TaxonXNomenclatureImport(){
 		super();
 	}
-	
-	public boolean doCheck(TaxonXImportState state){
+
+	@Override
+    public boolean doCheck(TaxonXImportState state){
 		boolean result = true;
 		logger.warn("Checking for Types not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		
+
 		return result;
 	}
 
-	public void doInvoke(TaxonXImportState state){		
+	@Override
+    public void doInvoke(TaxonXImportState state){
 		logger.info("start make Nomenclature ...");
 		TransactionStatus tx = startTransaction();
 		TaxonXImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
-		
+
 		//for testing only
 		Taxon taxon = getTaxon(config);
 		boolean isChanged = false;
-		
+
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
 		Element elNomenclature = elTreatment.getChild("nomenclature", nsTaxonx);
-		
+
 		//isChanged |= doCollectionEvent(txConfig, elNomenclature, nsTaxonx, taxon);
-		
+
 		if (taxon != null && taxon.getName() != null && elNomenclature != null){
 			isChanged |= doNomenclaturalType(config, elNomenclature, nsTaxonx, taxon.getName());
 			List<Element> elSynonymyList = new ArrayList<Element>();
@@ -100,15 +102,15 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 				}
 			}
 		}
-		
-		
+
+
 		if (isChanged){
 			getTaxonService().save(taxon);
 		}
 		commitTransaction(tx);
 		return;
 	}
-	
+
 	private Synonym getSynonym(TaxonXImportConfigurator config, Taxon taxon, String synName){
 		Synonym result = null;
 		unlazySynonym(config, taxon);
@@ -127,7 +129,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache() + getBracketSourceName(config));
 		return result;
 	}
-	
+
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
@@ -141,16 +143,17 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 		return result;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TaxonXImportState state){
+	@Override
+    protected boolean isIgnore(TaxonXImportState state){
 		return ! state.getConfig().isDoTypes();
 	}
 
 	/**
-	 * 
+	 *
 	 * Reads the collection_event tag, creates the according data and stores it.
 	 * TODO under work
 	 * @param elNomenclature
@@ -168,42 +171,42 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			logger.warn("elNomenclature is null");
 			return false;
 		}
-		
-		
+
+
 		Element elType = elNomenclature.getChild("type", nsTaxonx);
 		Element elTypeLoc = elNomenclature.getChild("type_loc", nsTaxonx);
 
 		if (elType != null || elTypeLoc != null){
 			unlazyTypeDesignation(config, taxonName);
-	
+
 			if (taxonName.isInfraGeneric() || taxonName.isSupraGeneric() || taxonName.isGenus()){
 				success &= doNameType(elType, taxonName, config);
 			}else{
 				success &= doSpecimenType(config, elType, elTypeLoc, taxonName);
-				
-			
+
+
 			}
 			return success;
 		}
 		return false;
 	}
 
-	
+
 	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonNameBase taxonName){
 		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
 		boolean isNotDesignated = true;
 		boolean addToAllHomotypicNames = true;
-		
+
 		SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
 		//elType
 		if (elType != null){
 			doElType(elType, simpleSpecimen, config);
 		}//elType
-		
+
 		//typeLoc
-		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> typeLocMap = null; 
+		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> typeLocMap = null;
 		if (elTypeLoc != null){
 			typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
 		}
@@ -238,24 +241,24 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			if (! "".equals(strLocality)){
 //				simpleSpecimen.setLocality(strLocality);
 			}
-			
+
 			String strCollector = type[1].trim();
 			if (! "".equals(strCollector)){
 				AgentBase collector = Person.NewTitledInstance(strCollector);
 //				simpleSpecimen.setCollector(collector);
 			}
-			
+
 			String strCollectorNumber = type[2].trim();
 			if (! "".equals(strCollectorNumber)){
 //				simpleSpecimen.setCollectorsNumber(strCollectorNumber);
 			}
-	
+
 			String title = CdmUtils.concat(" ", new String[]{strLocality, strCollector, strCollectorNumber});
 			simpleSpecimen.setTitleCache(title);
 		}
 		return true;
 	}
-	
+
 	private boolean doNameType(Element elType, TaxonNameBase taxonName, TaxonXImportConfigurator config){
 		boolean success = true;
 		//type
@@ -278,7 +281,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			String authorStr = type[2].trim();
 			NameTypeDesignationStatus status = getNameTypeStatus(statusStr);
 			/*boolean isLectoType = getIsLectoType(statusStr);*/
-			
+
 //			if (status == null){
 //				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
 //				success = false;
@@ -290,9 +293,9 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					String[] epis = taxonNameStr.split(" ");
 					String uninomial = epis[0].trim();
 					String specEpi = epis[1].trim();
-					
+
 					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null, null, null);
-					
+
 					List<NonViralName> result = new ArrayList<NonViralName>();
 					for (TaxonNameBase nt : nameTypes.getRecords()){
 						NonViralName nameType = CdmBase.deproxy(nt, NonViralName.class);
@@ -315,8 +318,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 		return success;
 	}
-	
-	
+
+
 	private TaxonNameBase getChildrenNameType(TaxonNameBase name, String typeStr, String authorStr){
 		TaxonNameBase result = null;
 		Set<TaxonBase> list = name.getTaxonBases();
@@ -340,7 +343,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 		return result;
 	}
-	
+
 	private boolean compareAuthorship(NonViralName typeName, String authorStr){
 		 boolean result = false;
 		 authorStr = authorStr.replaceAll("\\s+and\\s+", "&");
@@ -355,7 +358,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		 }
 		 return result;
 	}
-	
+
 	private NameTypeDesignationStatus getNameTypeStatus(String statusString){
 		//FIXME some types (not further defined types) do not exist yet
 		if (true){
@@ -387,18 +390,18 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 	}
 
-	
+
 	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status/*, boolean isLectoType*/){
 		Reference citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
 		boolean addToAllHomotypicNames = true;
-		
+
 //		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, status, addToAllHomotypicNames);
 		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString,status, false, false, /*isLectoType, */false, addToAllHomotypicNames);
 		return true;
 	}
-	
+
 	/**
 	 * Reads the typeLoc element split in parts for eacht type (holo, iso,...)
 	 * @param elTypeLoc
@@ -407,20 +410,20 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	 * @param config
 	 * @return
 	 */
-	private HashMap<DerivedUnit, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
-			SimpleSpecimen simpleSpecimen, 
+	private HashMap<DerivedUnit, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc,
+			SimpleSpecimen simpleSpecimen,
 			TaxonNameBase<?,?> taxonName,
 			TaxonXImportConfigurator config){
-		
+
 		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> result = new HashMap<DerivedUnit, SpecimenTypeDesignationStatus>();
 
 		String typeLocFullString = elTypeLoc.getTextTrim();
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
 		String[] typeLocStatusList = typeLocFullString.split(";");
-		
+
 		DerivedUnit originalSpecimen = simpleSpecimen.getSpecimen();
-		
-		
+
+
 		for (String typeLocStatus : typeLocStatusList){
 			typeLocStatus = typeLocStatus.trim();
 			int pos = typeLocStatus.indexOf(" ");
@@ -428,7 +431,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 				logger.warn("Unknown format or empty type_loc : '" +typeLocStatus + "'" + getBracketSourceName(config));
 				result.put(originalSpecimen, null);
 			}else{
-				String statusString = typeLocStatus.substring(0,pos); 
+				String statusString = typeLocStatus.substring(0,pos);
 				SpecimenTypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				//TODO
 				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
@@ -446,12 +449,12 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 				//}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Reads the collection_event tag, creates the according data and stores it.
 	 * TODO under work
 	 * @param elNomenclature
@@ -471,14 +474,14 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		Element elLocality = elCollectionEvent.getChild("locality", nsTaxonx);
 		Element elType = elCollectionEvent.getChild("type", nsTaxonx);
 		Element elTypeLoc = elCollectionEvent.getChild("type_loc", nsTaxonx);
-		
+
 		//locality
 		SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
 		String locality = elLocality.getTextNormalize();
 		if (! "".equals(locality)){
 			simpleSpecimen.setLocality(locality);
 		}
-		
+
 		//type
 		String[] type = elType.getTextNormalize().split(" ");
 		if (type.length != 2 ){
@@ -486,7 +489,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}else{
 			AgentBase collector = Person.NewTitledInstance(type[0]);
 			simpleSpecimen.setCollector(collector);
-			
+
 			String collectorNumber = type[1];
 			simpleSpecimen.setCollectorsNumber(collectorNumber);
 		}
@@ -495,25 +498,25 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		String typeLocFullString = elTypeLoc.getTextTrim();
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
 		String[] typeLocStatusList = typeLocFullString.split(";");
-		
+
 		DerivedUnit originalSpecimen = simpleSpecimen.getSpecimen();
-		
-		//TODO special character ?, �, ! 
-		
+
+		//TODO special character ?, �, !
+
 		for (String typeLocStatus : typeLocStatusList){
 			typeLocStatus = typeLocStatus.trim();
 			int pos = typeLocStatus.indexOf(" ");
 			if (pos == -1){
 				logger.warn("Unknown format: " + typeLocStatus);
 			}else{
-				String statusString = typeLocStatus.substring(0,pos); 
+				String statusString = typeLocStatus.substring(0,pos);
 				SpecimenTypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
 						TaxonNameBase<?, ?> taxonName = taxonBase.getName();
 						if (taxonName != null){
-							Reference<?> citation = null;
+							Reference citation = null;
 							String citationMicroReference = null;
 							String originalNameString = null;
 							boolean isNotDesignated = true;
@@ -529,8 +532,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 		return result;
 	}
-	
-	
+
+
 	private static Map<String, SpecimenTypeDesignationStatus> statusMap;
 	private static void fillTypeStatusMap(){
 		statusMap = new HashMap<String, SpecimenTypeDesignationStatus>();
@@ -554,8 +557,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		statusMap.put("secondstepneotype", SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE());
 		statusMap.put("type", null);
 	}
-	
-	
+
+
 	//TODO move to TypeDesignation class
 	/**
 	 * Returns the typeDesignationStatus according to a type designation status string
@@ -572,7 +575,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		statusString = statusString.replace("typus", "type");
 		statusString = statusString.replace("types", "type");
 		statusString = statusString.toLowerCase();
-		
+
 		if (statusMap == null){
 			fillTypeStatusMap();
 		}
@@ -584,8 +587,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * TODO Preliminary to avoid laizy loading errors
 	 */
@@ -593,16 +596,16 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		TransactionStatus txStatus = startTransaction();
 		//INameService taxonNameService = config.getCdmAppController().getNameService();
 		INameService taxonNameService = getNameService();
-		
+
 		taxonNameService.save(taxonNameBase);
 		Set<TaxonNameBase> typifiedNames = taxonNameBase.getHomotypicalGroup().getTypifiedNames();
 		for(TaxonNameBase typifiedName: typifiedNames){
-			typifiedName.getTypeDesignations().size();	
+			typifiedName.getTypeDesignations().size();
 		}
 		//taxonNameService.saveTaxonName(taxonNameBase);
 		commitTransaction(txStatus);
 	}
-	
+
 	/**
 	 * TODO Preliminary to avoid laizy loading errors
 	 */
@@ -615,10 +618,10 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		//taxonService.saveTaxon(taxon);
 		commitTransaction(txStatus);
 	}
-	
+
 	private static String getBracketSourceName(TaxonXImportConfigurator config){
 		return "(" + config.getSourceNameString() + ")";
 	}
 
-	
+
 }

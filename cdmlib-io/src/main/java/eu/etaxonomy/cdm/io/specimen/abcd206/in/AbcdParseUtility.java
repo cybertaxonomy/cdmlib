@@ -122,7 +122,7 @@ public class AbcdParseUtility {
         String referenceCitation = AbcdParseUtility.parseFirstTextContent(referenceNodeList);
         //check if reference already exists
         List<Reference> matchingReferences = cdmAppController.getReferenceService().findByTitle(Reference.class, referenceCitation, MatchMode.EXACT, null, null, null, null, null).getRecords();
-        Reference<?> reference;
+        Reference reference;
         if(matchingReferences.size()==1){
             reference = matchingReferences.iterator().next();
         }

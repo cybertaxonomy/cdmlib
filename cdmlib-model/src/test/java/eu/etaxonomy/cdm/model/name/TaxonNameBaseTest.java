@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,7 +47,7 @@ public class TaxonNameBaseTest {
 
 	private TaxonNameBaseTestClass nameBase1;
 	private TaxonNameBaseTestClass nameBase2;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -62,7 +63,7 @@ public class TaxonNameBaseTest {
 		nameBase2 = new TaxonNameBaseTestClass(Rank.GENUS());
 	}
 
-	
+
 	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
 		public TaxonNameBaseTestClass(){super();};
 		public TaxonNameBaseTestClass(Rank rank){super(rank);};
@@ -86,18 +87,18 @@ public class TaxonNameBaseTest {
 		protected Map<String, java.lang.reflect.Field> getAllFields() {
 			return null;
 		}
-		
+
 	}
 
-	
+
 /** *************************  TESTS ******************************************************/
-	
+
 
 	@Test
 	public void testGenerateFullTitle() {
 		//abstract
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#TaxonNameBase()}.
 	 */
@@ -115,7 +116,7 @@ public class TaxonNameBaseTest {
 		assertEquals(Rank.GENUS(), nameBase2.getRank());
 		Rank rank = null;
 		TaxonNameBase testName = new TaxonNameBaseTestClass(rank);
-		assertNull(testName.getRank());		
+		assertNull(testName.getRank());
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class TaxonNameBaseTest {
 		TaxonNameBase testHG = new TaxonNameBaseTestClass(rank, hg);
 		assertSame(rank, testHG.getRank());
 		assertSame(hg, testHG.getHomotypicalGroup());
-		
+
 		Rank rankNull = null;
 		HomotypicalGroup hgNull = null;
 		TaxonNameBase testHGNull = new TaxonNameBaseTestClass(rankNull, hgNull);
@@ -250,8 +251,8 @@ public class TaxonNameBaseTest {
 		nameBase1.removeStatus(nomStatus2);
 		assertEquals(0, nameBase1.getStatus().size());
 		assertFalse(nameBase1.getStatus().contains(nomStatus2));
-		
-		
+
+
 	}
 
 	/**
@@ -270,15 +271,15 @@ public class TaxonNameBaseTest {
 		TaxonNameBase name1 = BotanicalName.NewInstance(null);
 		TaxonNameBase basionym1 = BotanicalName.NewInstance(null);
 		TaxonNameBase basionym2 = BotanicalName.NewInstance(null);
-		
-		assertEquals(null, name1.getBasionym());	
+
+		assertEquals(null, name1.getBasionym());
 		name1.addBasionym(basionym1);
 		assertEquals(basionym1, name1.getBasionym());
 		name1.addBasionym(basionym2);
 		TaxonNameBase oneOfThebasionyms = name1.getBasionym();
 		assertTrue(oneOfThebasionyms == basionym1 || oneOfThebasionyms == basionym2 );
 		name1.removeBasionyms();
-		assertEquals(null, name1.getBasionym());	
+		assertEquals(null, name1.getBasionym());
 	}
 
 	/**
@@ -330,7 +331,7 @@ public class TaxonNameBaseTest {
 		assertNotNull("Rank shall not be null", name1.getRank());
 		name1.setRank(null);
 		assertNull("Rank shall be null", name1.getRank());
-		
+
 	}
 
 	/**
@@ -338,10 +339,10 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetNomenclaturalReference() {
-		INomenclaturalReference nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
+		INomenclaturalReference nr = nameBase1.getNomenclaturalReference();
 		assertNull("Nomenclatural Reference shall be null", nr);
 		nameBase1.setNomenclaturalReference(ReferenceFactory.newGeneric());
-		nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
+		nr = nameBase1.getNomenclaturalReference();
 		assertNotNull("Nomenclatural Reference shall not be null", nr);
 	}
 
@@ -520,7 +521,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testAddTaxonBase() {
-		Taxon taxon = Taxon.NewInstance(null, null);  
+		Taxon taxon = Taxon.NewInstance(null, null);
 		nameBase2.addTaxonBase(taxon);  //test if reflection method addTaxonBase() works
 		assertTrue("The taxon has not properly been added to the taxonName", nameBase2.getTaxonBases().contains(taxon));
 		assertEquals("The taxon name has not properly been added to the taxon", nameBase2, taxon.getName());
@@ -528,8 +529,8 @@ public class TaxonNameBaseTest {
 		assertFalse("The taxon has not properly been removed from the taxon name", nameBase2.getTaxonBases().contains(taxon));
 		assertEquals("The taxon name has not properly been removed from the taxon", null, taxon.getName());
 	}
-	
-	
+
+
 	@Test
 	public void testAddAndRemoveDescriptionTaxonNameDescription() {
 		TaxonNameDescription description = TaxonNameDescription.NewInstance();
@@ -556,18 +557,18 @@ public class TaxonNameBaseTest {
 	public void testGetSynonyms() {
 		logger.warn("not yet implemented");
 	}
-	
+
 	@Test
 	public void testMergeHomotypicGroups() {
 		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
-		
+
 		assertFalse(name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup()));
 		int numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
 		assertEquals(1, numberOfTypifiedNames);
-		
+
 		name1.mergeHomotypicGroups(name2);
 		assertEquals(name1.getHomotypicalGroup(), name2.getHomotypicalGroup());
 		assertSame(name1.getHomotypicalGroup(), name2.getHomotypicalGroup());
@@ -594,17 +595,17 @@ public class TaxonNameBaseTest {
 		assertTrue(name2.getHomotypicalGroup().getTypifiedNames().contains(name3));
 		assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name2));
 
-		
+
 	}
-	
-	
+
+
 	@Test
 	public void testIsBasionymFor() {
 		TaxonNameBase name1 = BotanicalName.NewInstance(null);
 		TaxonNameBase name2 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
-		
+
 		assertFalse(name2.isBasionymFor(name1));
 		assertFalse(name1.isBasionymFor(name2));
 		name1.addBasionym(name2);
@@ -623,13 +624,13 @@ public class TaxonNameBaseTest {
 		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
 		name1.mergeHomotypicGroups(name2);
 		name2.mergeHomotypicGroups(name4);
-		
+
 		assertTrue(name1.isHomotypic(name4));
 		assertTrue(name4.isHomotypic(name1));
 		assertFalse(name1.isHomotypic(name3));
 		assertFalse(name3.isHomotypic(name1));
 		assertTrue(name2.isHomotypic(name1));
-		
+
 	}
 
 	@Test
@@ -638,54 +639,54 @@ public class TaxonNameBaseTest {
 		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
-		
+
 		name1.mergeHomotypicGroups(name2);
 		name1.mergeHomotypicGroups(name3);
 		name2.mergeHomotypicGroups(name4);
-		
+
 		name1.makeGroupsBasionym();
-		
+
 		assertEquals(1, name2.getBasionyms().size());
 		assertEquals(1, name3.getBasionyms().size());
 		assertEquals(1, name4.getBasionyms().size());
 		assertEquals(name1, name4.getBasionym());
-		
+
 	}
-	
+
 	@Test
 	public void testIsGroupsBasionym(){
 		TaxonNameBase<?,?> name1 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name2 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name3 = BotanicalName.NewInstance(null);
 		TaxonNameBase<?,?> name4 = BotanicalName.NewInstance(null);
-		
+
 		assertFalse(name1.isGroupsBasionym());
-		
+
 		name1.mergeHomotypicGroups(name2);
 		name2.mergeHomotypicGroups(name4);
-		
+
 		name1.makeGroupsBasionym();
-		
+
 		assertTrue(name1.isGroupsBasionym());
 		assertFalse(name2.isGroupsBasionym());
 		name1.mergeHomotypicGroups(name3);
-		assertFalse(name1.isGroupsBasionym());	
+		assertFalse(name1.isGroupsBasionym());
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void testRemoveBasionyms(){
 		TaxonNameBase name1 = BotanicalName.NewInstance(null);
 		TaxonNameBase basionym = BotanicalName.NewInstance(null);
 		TaxonNameBase name3 = BotanicalName.NewInstance(null);
-		
+
 		name1.addBasionym(basionym);
 		assertEquals(1, name1.getBasionyms().size());
 		name1.addBasionym(name3);
 		assertEquals(2, name1.getBasionyms().size());
 		name1.removeBasionyms();
-		assertEquals(0, name1.getBasionyms().size());	
+		assertEquals(0, name1.getBasionyms().size());
 	}
 
 	/**
@@ -702,17 +703,17 @@ public class TaxonNameBaseTest {
 		nameBase1.setRank(null);
 		assertFalse(nameBase1.isSupraGeneric());
 	}
-	
+
 	@Test
 	public void testRemoveTaxonBases(){
-		
+
 		Taxon newTaxon = new Taxon(nameBase1, null);
 		assertEquals(1, nameBase1.getTaxonBases().size());
-		
-		
+
+
 		nameBase1.removeTaxonBase(newTaxon);
 		assertEquals(0, nameBase1.getTaxonBases().size());
-		
+
 	}
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#isGenus()}.
@@ -797,33 +798,33 @@ public class TaxonNameBaseTest {
 	public void testGetNomenclaturalCode() {
 		//is abstract
 	}
-	
-	
+
+
 	//descriptions, fullTitleCache, homotypicalGroup,
 
-	//no changes to: appendedPharse, nomenclaturalReference, 
+	//no changes to: appendedPharse, nomenclaturalReference,
 	//nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
 	//protectedFullTitleCache
-	
+
 	@Test
 	public void testClone(){
 		NonViralName taxonNameBase1 = NonViralName.NewInstance(Rank.SPECIES());
 		NonViralName<?> genusName = NonViralName.NewInstance(Rank.GENUS());
 		Taxon taxonBase = Taxon.NewInstance(taxonNameBase1, null);
-		
+
 		//basionym & homonym
 		NonViralName<?> basionym = NonViralName.NewInstance(Rank.SPECIES());
 		NonViralName<?> earlierHomonym = NonViralName.NewInstance(Rank.SPECIES());
 		taxonNameBase1.addBasionym(basionym);
 		taxonNameBase1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule");
 		//status
-		Reference<?> statusReference = ReferenceFactory.newArticle();
+		Reference statusReference = ReferenceFactory.newArticle();
 		NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), statusReference, "55");
 		taxonNameBase1.addStatus(nomStatus);
 		//typeDesignation
 		DerivedUnit typeSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
-		Reference<?> specimenTypeCitation = ReferenceFactory.newArticle();
-		Reference<?> nameTypeCitation = ReferenceFactory.newArticle();
+		Reference specimenTypeCitation = ReferenceFactory.newArticle();
+		Reference nameTypeCitation = ReferenceFactory.newArticle();
 		SpecimenTypeDesignation specimenTypeDesignationOriginal = taxonNameBase1.addSpecimenTypeDesignation(typeSpecimen, SpecimenTypeDesignationStatus.HOLOTYPE(), specimenTypeCitation, null, null, false, false);
 		NameTypeDesignation nameTypeDesignationOriginal = genusName.addNameTypeDesignation(taxonNameBase1, nameTypeCitation, null, null, NameTypeDesignationStatus.LECTOTYPE(), true, false, false, false);
 
@@ -834,7 +835,7 @@ public class TaxonNameBaseTest {
 		Media media = Media.NewInstance();
 		textData.addMedia(media);
 		description.addElement(textData);
-		
+
 		//CLONE
 		TaxonNameBase<?,?> clone = (TaxonNameBase)taxonNameBase1.clone();
 		TaxonNameBase<?,?> genusClone = (TaxonNameBase)genusName.clone();
@@ -845,10 +846,10 @@ public class TaxonNameBaseTest {
 		//TODO still needs to be discussed
 //		assertSame("The clone must have the same homotypical group as the original", taxonNameBase1.getHomotypicalGroup(), clone.getHomotypicalGroup());
 //		assertSame("The genusClone must have the same homotypical group as the original genus", genusName.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
-		
+
 		//description
 		assertEquals("There should be exactly 1 name description", 1, clone.getDescriptions().size());
-		TaxonNameDescription descriptionClone = (TaxonNameDescription)clone.getDescriptions().iterator().next();
+		TaxonNameDescription descriptionClone = clone.getDescriptions().iterator().next();
 		assertEquals("There should be exactly 1 description element", 1, descriptionClone.getElements().size());
 		TextData textDataClone = (TextData)descriptionClone.getElements().iterator().next();
 		String text = textDataClone.getText(Language.DEFAULT());
@@ -856,7 +857,7 @@ public class TaxonNameBaseTest {
 		assertEquals("There should be exactly 1 media attached", 1, textDataClone.getMedia().size());
 		Media mediaClone = textDataClone.getMedia().get(0);
 		assertSame("Media must be the same", media, mediaClone);
-		
+
 		//type designation
 		assertEquals("There should be exactly 1 specimen type designation", 1, clone.getTypeDesignations().size());
 		assertNotSame("type designation sets should not be the same", taxonNameBase1.getTypeDesignations(), clone.getTypeDesignations());
@@ -867,7 +868,7 @@ public class TaxonNameBaseTest {
 		assertEquals("The specimen type designation must have exactly 1 typified name which is 'clone'", 1, specimenTypeDesignationClone.getTypifiedNames().size());
 		assertTrue("The specimen type designation must have 'clone' as typified name", specimenTypeDesignationClone.getTypifiedNames().contains(clone));
 //		assertSame("The specimen type designation must have the same homotypical group as the typified name", specimenTypeDesignationClone.getHomotypicalGroup(), clone.getHomotypicalGroup());
-		
+
 		assertEquals("There should be exactly 1 name type designation", 1, genusClone.getTypeDesignations().size());
 		assertNotSame("type designation sets should not be the same", genusName.getTypeDesignations(), genusClone.getTypeDesignations());
 		NameTypeDesignation nameTypeDesignationClone = (NameTypeDesignation)genusClone.getTypeDesignations().iterator().next();
@@ -877,19 +878,19 @@ public class TaxonNameBaseTest {
 		assertEquals("The name type designation must have exactly 1 typified name which is 'genusClone'", 1, nameTypeDesignationClone.getTypifiedNames().size());
 		assertTrue("The name type designation must have 'genusClone' as typified name", nameTypeDesignationClone.getTypifiedNames().contains(genusClone));
 //		assertSame("The name type designation must have the same homotypical group as the typified name", nameTypeDesignationClone.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
-		
+
 		//status
 		assertEquals("There should be exactly 1 status", 1, clone.getStatus().size());
 		assertNotSame("Status sets should not be the same", taxonNameBase1.getStatus(), clone.getStatus());
-		NomenclaturalStatus cloneStatus = (NomenclaturalStatus)clone.getStatus().iterator().next();
+		NomenclaturalStatus cloneStatus = clone.getStatus().iterator().next();
 		assertSame("The type of the nomStatus needs to be the same", nomStatus.getType(), cloneStatus.getType());
 		assertSame("The citation of the nomStatus needs to be the same", nomStatus.getCitation(), cloneStatus.getCitation());
 		assertSame("The rule considered of the nomStatus needs to be the same", nomStatus.getRuleConsidered(), cloneStatus.getRuleConsidered());
 		//DISCUSS: do we want to reuse the status
 //		assertSame("The nomStatus needs to be the same", nomStatus, cloneStatus);
-		
-		
-//		//hybrid parents of clone 
+
+
+//		//hybrid parents of clone
 //		assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
 //		Set<NonViralName> parentSet = new HashSet<NonViralName>();
 //		Set<NonViralName> childSet = new HashSet<NonViralName>();
@@ -903,23 +904,23 @@ public class TaxonNameBaseTest {
 //		assertTrue("Parent set should contain parent1", parentSet.contains(parent));
 //		assertTrue("Parent set should contain parent2", parentSet.contains(parent2));
 //		assertTrue("Child set should contain clone", childSet.contains(clone));
-		
+
 		//basionym of clone
 		assertEquals("There should be exactly 1 relationship in which the clone takes the to role", 1, clone.getRelationsToThisName().size());
-		NameRelationship nameRelation = (NameRelationship)clone.getRelationsToThisName().iterator().next();
+		NameRelationship nameRelation = clone.getRelationsToThisName().iterator().next();
 		assertSame("Basionym should be from-object in relationship", basionym, nameRelation.getRelatedFrom());
 		assertSame("Clone should be to-object in relationship", clone, nameRelation.getRelatedTo());
 		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), nameRelation.getType());
 //		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
 
-		
+
 		//homonym of clone
 		assertEquals("There should be exactly 1 relationship in which the clone takes the from role", 1, clone.getRelationsFromThisName().size());
-		nameRelation = (NameRelationship)clone.getRelationsFromThisName().iterator().next();
+		nameRelation = clone.getRelationsFromThisName().iterator().next();
 		assertSame("Clone should be from-object in relationship", clone, nameRelation.getRelatedFrom());
 		assertSame("Homonym should be to-object in relationship", earlierHomonym, nameRelation.getRelatedTo());
 		assertSame("Relationship type should be cloned correctly", NameRelationshipType.LATER_HOMONYM(), nameRelation.getType());
 		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
 	}
-	
+
 }

@@ -1,12 +1,12 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -36,15 +36,15 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TaxonBaseTest extends EntityTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
-	
-	private Reference<?> sec;
+
+	private Reference sec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
 	private Taxon taxon1;
 	private Synonym synonym1;
 	private Taxon freeT;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -73,7 +73,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 /**************** TESTS **************************************/
 
 	/**
@@ -104,7 +104,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	@Test
 	public final void testIsDoubtful() {
 		boolean oldValue;
-		oldValue = taxon1.isDoubtful(); 
+		oldValue = taxon1.isDoubtful();
 		taxon1.setDoubtful(!oldValue);
 		assertEquals(! oldValue, taxon1.isDoubtful());
 		taxon1.setDoubtful(oldValue);
@@ -138,17 +138,17 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertNotNull(freeT.getSec());
 		assertSame(freeT.getSec(), sec);
 	}
-	
+
 	@Test
-	
+
 	public final void testClone(){
-		
+
 		BotanicalName test = BotanicalName.NewInstance(Rank.SPECIES());
 		String genus = "test";
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);
 		test.setInfraGenericEpithet(infraGenericEpithet);
-		Reference<?> secRef = ReferenceFactory.newArticle();
+		Reference secRef = ReferenceFactory.newArticle();
 		secRef.setTitle("Test ...");
 		freeT.setSec(secRef);
 		freeT.setName(test);

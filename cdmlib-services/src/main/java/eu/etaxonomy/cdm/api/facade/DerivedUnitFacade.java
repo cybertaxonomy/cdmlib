@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1794,6 +1795,7 @@ public class DerivedUnitFacade {
 
 	// ****************** Specimen *******************************************
 
+
 	// Definition
 	public void addDerivedUnitDefinition(String text, Language language) {
 		innerDerivedUnit().putDefinition(language, text);
@@ -2067,6 +2069,16 @@ public class DerivedUnitFacade {
 			}
 		}
 	}
+
+	//preferred stable URI  #5606
+	@Transient
+    public URI getPreferredStableUri(){
+        return baseUnit().getPreferredStableUri();
+    }
+    public void setPreferredStableUri(URI stableUri){
+        baseUnit().setPreferredStableUri(stableUri);
+    }
+
 
 	// Stored under name
 	@Transient

@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @date 23.11.2011
- *
  */
 public class DwcTaxonCsv2CdmTaxonRelationConverter
         extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
@@ -70,7 +69,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
 
 		Map<String, String> csvRecord = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 
 		String id = csvRecord.get(ID);
@@ -186,7 +185,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 					fireWarningEvent(message, item, 4);
 				}else{
 					Classification classification = getClassification(item, resultList);
-					Reference<?> citationForParentChild = null;
+					Reference citationForParentChild = null;
 					if (classification == null){
 						String warning = "Classification not found. Can't create parent-child relationship";
 						fireWarningEvent(warning, item, 12);

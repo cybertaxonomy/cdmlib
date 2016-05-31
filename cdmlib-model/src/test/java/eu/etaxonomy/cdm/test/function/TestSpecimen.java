@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,9 +23,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -50,14 +50,14 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 public class TestSpecimen {
 	private static final Logger logger = Logger.getLogger(TestSpecimen.class);
-	
+
 	public void testSpecimen(){
 		logger.info("Create test taxon ...");
-		Reference<?> sec = ReferenceFactory.newDatabase();
+		Reference sec = ReferenceFactory.newDatabase();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
 		BotanicalName botanicalName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
-		
+
 		Collection collection = Collection.NewInstance();
 		String collectionCode = "ABCDE";
 		collection.setCode(collectionCode);
@@ -65,14 +65,14 @@ public class TestSpecimen {
 		String institutionCode = "Inst444";
 		institution.setCode(institutionCode);
 		collection.setInstitute(institution);
-		
-		
+
+
 		logger.info("Create determination event");
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
 		determinationEvent.setTaxon(taxon);
 		Person actor = Person.NewTitledInstance("J. M�ller (JE)");
 		determinationEvent.setActor(actor);
-		
+
 		logger.info("Create gathering event");
 		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 		AgentBase<?> gatherer = Person.NewTitledInstance("Lorentz,P.G. s.n.");
@@ -82,22 +82,22 @@ public class TestSpecimen {
 		int month = 10;
 		int date = 05;
 		gatheringDate.set(year, month, date);
-		
+
 		gatheringEvent.setGatheringDate(gatheringDate);
-		
+
 		logger.info("Create locality");
 		NamedArea namedArea = NamedArea.NewInstance();
 		Country country = Country.ARGENTINAARGENTINEREPUBLIC();
 		namedArea.addCountry(country);
 		namedArea.setType(NamedAreaType.ADMINISTRATION_AREA());
 		// XX
-		
+
 		gatheringEvent.addCollectingArea(namedArea);
 		String localityString = "Sierras Pampeanas, Sauce Chico";
 		LanguageString locality = LanguageString.NewInstance(localityString, Language.DEFAULT());
 		gatheringEvent.setLocality(locality);
-		
-		
+
+
 		logger.info("Create new specimen ...");
 		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setCatalogNumber("JE 00004506");
@@ -105,8 +105,8 @@ public class TestSpecimen {
 		specimen.setCollection(collection);
 		String annotation = "originally designated as type specimen 2000, but corrected 2005-11";
 		specimen.addAnnotation(Annotation.NewDefaultLanguageInstance(annotation));
-		
-		
+
+
 		Media media = Media.NewInstance();
 		URI uri = null;
 		try {
@@ -118,7 +118,7 @@ public class TestSpecimen {
 		Integer size = null;
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(mimeType, "jpg");
 		media.addRepresentation(mediaRepresentation);
-		
+
 		MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(uri, size);
 		mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
 //		specimen.addMedia(media);    #3597
@@ -127,18 +127,18 @@ public class TestSpecimen {
 		String id = "22";
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id);
 		specimen.addSource(source);
-		
+
 		FieldUnit fieldUnit = FieldUnit.NewInstance();
 		DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.GATHERING_IN_SITU());
 		derivationEvent.addDerivative(specimen);
 		fieldUnit.addDerivationEvent(derivationEvent);
 		fieldUnit.setGatheringEvent(gatheringEvent);
-		
-		
+
+
 		//type information
 		//typified by
-		
-		
+
+
 		logger.warn("Specimen: " + specimen);
 		DerivationEvent dEvent = specimen.getDerivedFrom();
 		logger.warn("DerivationEvent: " + dEvent);
@@ -155,13 +155,13 @@ public class TestSpecimen {
 			}
 		}
 	}
-	
+
 	private void test(){
 		System.out.println("Start ...");
 		this.testSpecimen();
 		System.out.println("\nEnd ...");
 	}
-	
+
 	/**
 	 * @param args
 	 */

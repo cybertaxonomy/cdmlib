@@ -44,7 +44,7 @@ public class CdmCacherTest extends CdmIntegrationTest {
 
 		// Following test is just to make sure no exception is raised when saving a taxon corresponding
 		// to a taxon name with no name cache to begin with
-		Reference<?> sec = ReferenceFactory.newDatabase();
+		Reference sec = ReferenceFactory.newDatabase();
         referenceService.save(sec);
 		Taxon taxon = Taxon.NewInstance(NonViralName.NewInstance(Rank.SERIES()), sec);
         taxon.setTitleCache("Tax" + "CdmCacher", true);

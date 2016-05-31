@@ -120,7 +120,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public Reference<?> askForReference(Map<String, Reference> refMap) {
+    public Reference askForReference(Map<String, Reference> refMap) {
         List<String>  possibilities = new ArrayList<String> (refMap.keySet());
         Collections.sort(possibilities);
         if (refMap.keySet().size()>0) {
@@ -245,7 +245,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                 dess.add(refMap.get(src));
             }
             else{
-                Reference<?> re = null;
+                Reference re = null;
                 String titlecache="";
                 String micro="";
                 if (src.indexOf("---")>-1){
@@ -257,7 +257,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                 }
 
                 List<Reference> references = iReferenceService.list(Reference.class, null, null, null, null);
-                for (Reference<?> reference:references){
+                for (Reference reference:references){
                     if (reference.getTitleCache().equalsIgnoreCase(titlecache)) {
                         re=reference;
                     }

@@ -12,12 +12,11 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -135,7 +134,11 @@ public class MediaTest {
             Assert.assertEquals("Number of media representations must be 2", 2, mediaClone.getRepresentations().size());
             Assert.assertNotSame("Only media representation must not be mediaRepresentation1", mediaRepresentation1, mediaClone.getRepresentations().iterator().next());
             Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
-            Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
+
+//            #5762
+//            Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
+            Assert.assertTrue("Rights must contain 1 rights object", mediaClone.getRights().size() == 1);
+            Assert.assertFalse("Rights must be coloned", mediaClone.getRights().iterator().next().equals(rights1));
 
             Assert.assertTrue("Clone must have a default language title", mediaClone.getAllTitles().containsKey(Language.DEFAULT()));
             Assert.assertSame("Title must be the same", languageString2, mediaClone.getAllTitles().get(Language.DEFAULT()) );

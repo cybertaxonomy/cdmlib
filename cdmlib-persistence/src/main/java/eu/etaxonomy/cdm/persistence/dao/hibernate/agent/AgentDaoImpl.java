@@ -164,4 +164,23 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
+
+	@Override
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern){
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
+    }
+
+
 }

@@ -284,9 +284,9 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     public void createTestDataSet() throws FileNotFoundException {
 
         // --- References --- //
-        Reference<?> sec = ReferenceFactory.newDatabase();
+        Reference sec = ReferenceFactory.newDatabase();
         sec.setTitleCache("Test", true);
-        Reference<?> nomRef = ReferenceFactory.newBook();
+        Reference nomRef = ReferenceFactory.newBook();
         sec.setTitleCache("Sp.Pl.", true);
 
         referenceService.save(sec);

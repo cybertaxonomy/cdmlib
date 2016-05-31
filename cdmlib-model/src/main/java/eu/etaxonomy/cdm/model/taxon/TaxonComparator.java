@@ -148,12 +148,20 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		}
 		Set<NomenclaturalStatus> status1 = taxonNameBase.getStatus();
         for (NomenclaturalStatus nomStatus1 : status1){
-            if (nomStatus1.getType() != null){
-            	if (nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
-            		result += 1;
-            	}else if(nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM())){
+            NomenclaturalStatusType type = nomStatus1.getType();
+            if (type != null && type.isInvalidType()){
+                if(type.equals(NomenclaturalStatusType.PROVISIONAL())){
+                    result += 1;
+                }else if (type.equals(NomenclaturalStatusType.INVALID())){
             		result += 2;
+            	}else if(type.equals(NomenclaturalStatusType.COMBINATION_INVALID())){
+                    result += 2;
+            	}else if (type.equals(NomenclaturalStatusType.OPUS_UTIQUE_OPPR())){
+                    result += 2;
+                }else if(type.equals(NomenclaturalStatusType.NUDUM())){
+            		result += 3;
                 }
+                result += 1;
             }
         }
 		return result;
@@ -190,12 +198,12 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
             if (name instanceof ZoologicalName){
                 result = (((ZoologicalName)name).getPublicationYear());
             }else{
-                Reference<?> ref = (Reference<?>) name.getNomenclaturalReference();
+                Reference ref = (Reference) name.getNomenclaturalReference();
                 if (ref == null){
                     result = null;
                 }else{
                     if (ref.getDatePublished() == null){
-                    	Reference<?> inRef = ref.getInReference();
+                    	Reference inRef = ref.getInReference();
                     	if (inRef == null){
                             result = null;
                         }else{

@@ -80,7 +80,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 				logger.warn("There is more than 1 accepted source for description element " + el.getUuid() + ". Arbitrary first source is used.");
 			}
 			DescriptionElementSource source = filteredSources.iterator().next();
-			Reference<?> ref = source.getCitation();
+			Reference ref = source.getCitation();
 			if (ref == null){
 				logger.warn("Citation is missing for description element (" + el.getUuid() + ") source.");
 				return null;

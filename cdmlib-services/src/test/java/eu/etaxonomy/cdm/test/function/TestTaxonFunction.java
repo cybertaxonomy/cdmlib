@@ -64,7 +64,7 @@ public class TestTaxonFunction {
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 
 		INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
-		Reference<?> sec = ReferenceFactory.newBook();
+		Reference sec = ReferenceFactory.newBook();
 		sec.setTitleCache("ConceptRef", true);
 
 		//root
@@ -110,7 +110,7 @@ public class TestTaxonFunction {
 			initDatabase();
 		}
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
-		Reference<?> sec = cdmApp.getReferenceService().find(getRefUuid());
+		Reference sec = cdmApp.getReferenceService().find(getRefUuid());
 		List<Taxon> rootList = cdmApp.getTaxonService().getRootTaxa(sec, CdmFetch.NO_FETCH(), false);
 		for (Taxon taxon:rootList){
 			System.out.println(taxon);

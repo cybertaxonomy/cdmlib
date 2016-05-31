@@ -5,14 +5,12 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-
 /**
- * This interface represents books. A book is a  {@link IPrintedUnitBase printed unit} 
+ * This interface represents books. A book is a  {@link IPrintedUnitBase printed unit}
  * usually published by a publishing company.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
@@ -22,7 +20,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
  * </ul>
  */
 public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
-	
+
 	/**
 	 * Returns this books edition
 	 */
@@ -33,23 +31,18 @@ public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
 	 * @param edition
 	 */
 	public void setEdition(String edition);
-	
-	
+
+
 	/**
 	 * Returns this books isbn (international standard book number)
 	 */
 	public String getIsbn();
-	
+
 	/**
 	 * Sets this books isbn (international standard book number)
 	 * @param isbn
 	 */
 	public void setIsbn(String isbn);
-	
-	
-	void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy);
-	
-	
 
 
 }

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
+    private URI preferredStableUri;
     private String uuid;
     private List<Pair<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
@@ -46,9 +48,6 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         this.uuid = uuid;
     }
 
-    /**
-     * @return the types
-     */
     public Map<String, List<String>> getTypes() {
         return types;
     }
@@ -67,6 +66,14 @@ public class PreservedSpecimenDTO extends DerivateDTO{
             associatedTaxa = new ArrayList<Pair<UUID, String>>();
         }
         associatedTaxa.add(new Pair<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
+    }
+
+    public void setPreferredStableUri(URI preferredStableUri) {
+        this.preferredStableUri = preferredStableUri;
+    }
+
+    public URI getPreferredStableUri() {
+        return preferredStableUri;
     }
 
 }

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 22.11.2011
  *
  */
-public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
+public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 				implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EolAgent2CdmConverter.class);
@@ -45,24 +45,25 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 	}
 
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		//TODO is taxon needed here here?
 //		String id = csv.get(CORE_ID);
 //		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
-		
+
 		String id = item.get(TermUri.DC_IDENTIFIER);
 		String firstName = item.get(TermUri.FOAF_FIRST_NAME);
 		String familyName = item.get(TermUri.FOAF_FAMILY_NAME);
 		String name = item.get(TermUri.FOAF_NAME);
 		String organization = item.get(TermUri.EOL_ORGANIZATION);
 		String accountName = item.get(TermUri.FOAF_ACCOUNT_NAME);
-		
+
 		Institution institution = null;
 		User user = null;
 		if (isNotBlank(organization)){
@@ -76,7 +77,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 			MappedCdmBase<User>  mcb = new MappedCdmBase<User>(TermUri.FOAF_ACCOUNT_NAME, id, user);
 			resultList.add(mcb);
 		}
-		
+
 		if (isPerson(item)){
 			Person person = Person.NewInstance();
 			person.setFirstname(firstName);
@@ -89,27 +90,27 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 				person.addInstitutionalMembership(institution, null, null, null);
 			}
 			if (isNotBlank(accountName)){
-				
+
 			}
-			
+
 			MappedCdmBase<Person>  mcb = new MappedCdmBase<Person>(item.term, id, person);
 			resultList.add(mcb);
-			
+
 		}else{
 			//still unclear, what does Agent all include? Teams, organizations, ...?
 			String message = "Agent type unclear. Agent not handled.";
 			fireWarningEvent(message, item, 8);
 		}
-		
+
 //		resultList.add(mcb);
 
-		
+
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
-		
+
 	}
-	
-	
+
+
 	private boolean isPerson(StreamItem item) {
 		String firstName = item.get(TermUri.FOAF_FIRST_NAME);
 		String familyName = item.get(TermUri.FOAF_FAMILY_NAME);
@@ -119,7 +120,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 		}else{
 			return false;
 		}
-			
+
 	}
 
 
@@ -141,15 +142,15 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 			keySet.add(value);
 		}
 	}
-	
-	
+
+
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
-	}	
-	
+	}
+
 //************************ STRING ************************************************/
 
 

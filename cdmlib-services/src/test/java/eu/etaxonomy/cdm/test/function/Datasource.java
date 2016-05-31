@@ -348,7 +348,7 @@ public class Datasource {
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
-			Reference<?> ref = ReferenceFactory.newGeneric();
+			Reference ref = ReferenceFactory.newGeneric();
 			ref.setTitleCache("mySec", true);
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();

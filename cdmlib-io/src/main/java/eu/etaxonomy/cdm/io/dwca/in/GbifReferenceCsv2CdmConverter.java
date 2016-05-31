@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -47,13 +47,13 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @date 22.11.2011
  *
  */
-public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	
+
 	private static final Logger logger = Logger.getLogger(GbifReferenceCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
-	
+
 	/**
 	 * @param state
 	 */
@@ -61,13 +61,14 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = getSourceId(item);
 		TaxonBase<?> taxon = getTaxonBase(id, item, TaxonBase.class, state);
 		if (isNotBlank(id) && taxon == null){
@@ -75,15 +76,15 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			message = String.format(message, id);
 			fireWarningEvent(message, item, 8);
 		}
-		
+
 		String strCreator = getValue(item, TermUri.DC_CREATOR);
 		String strDate = getValue(item, TermUri.DC_DATE);
 		String strTitle = getValue(item, TermUri.DC_TITLE);
 		String strSource = getValue(item, TermUri.DC_SOURCE);
 		String strIdentifier = getValue(item, TermUri.DC_IDENTIFIER);
 		String strType = getValue(item, TermUri.DC_TYPE);
-		
-		Reference<?> reference = ReferenceFactory.newGeneric();
+
+		Reference reference = ReferenceFactory.newGeneric();
 		resultList.add(new MappedCdmBase<CdmBase>(reference));
 
 		//author
@@ -95,7 +96,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		//title
 		reference.setTitle(strTitle);
 		//inreference
-		Reference<?> inRef = handleInRef(strSource);
+		Reference inRef = handleInRef(strSource);
 		if (inRef != null){
 			reference.setInReference(inRef);
 			resultList.add(new MappedCdmBase<CdmBase>(inRef));
@@ -103,18 +104,18 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 		//URI
 		handleIdentifier(strIdentifier, reference);
-		
+
 		//type
 		handleType(reference, strType, taxon, resultList, item);
-		
-		
+
+
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
-	
-	private void handleType(Reference<?> reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, StreamItem item) {
+
+	private void handleType(Reference reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, StreamItem item) {
 		// TODO handleType not yet implemented
-		
+
 		if (taxon == null){
 			String message = "Taxon is null. Reference not imported.";
 			fireWarningEvent(message,item, 4);
@@ -132,7 +133,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 					}
 				}
 			}
-			
+
 			//guess a nom ref
 			if (isNomRef == false && config.isGuessNomenclaturalReferences()){
 				//if reference equals in author and year we assume that it is the nom ref
@@ -149,7 +150,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 						origYear = zooName.getOriginalPublicationYear();
 					}
 					String refYear = reference.getYear();
-					
+
 					//combination compare
 					if (taxonAuthor != null && taxonAuthor.equals(refAuthor)){
 						if (combYear != null && String.valueOf(combYear).equals(refYear)){
@@ -160,7 +161,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 							//TODO not yet handled by CDM
 						}
 					}
-	
+
 				}
 			}
 			if (config.isHandleAllRefsAsCitation()){
@@ -176,12 +177,12 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 						resultList.add(new MappedCdmBase<CdmBase>(desc));
 					}
 				}
-				
+
 			}
-		
-		}		
-		
-		
+
+		}
+
+
 	}
 
 	private void createCitation(TaxonDescription desc, Reference ref, TaxonNameBase nameUsedInSource) {
@@ -212,18 +213,18 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			logger.debug("Reference is not an URI");
 		}
 		//TODO further identifier types
-		
+
 	}
 
-	private Reference<?> handleInRef(String strSource) {
+	private Reference handleInRef(String strSource) {
 		if (StringUtils.isBlank(strSource)){
 			return null;
 		}else{
-			Reference<?> inRef = ReferenceFactory.newGeneric();
+			Reference inRef = ReferenceFactory.newGeneric();
 			return inRef;
 		}
 	}
-	
+
 
 	private TimePeriod handleDate(String strDate) {
 		TimePeriod tp = TimePeriodParser.parseString(strDate);
@@ -241,7 +242,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		return id;
 	}
 
-	
+
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -254,17 +255,17 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			keySet.add(value);
 		}
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
 	}
-	
+
 //******************* TO STRING ******************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

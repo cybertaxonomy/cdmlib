@@ -1548,7 +1548,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Set<SynonymRelationship> synRelations = syn.getSynonymRelations();
             for (SynonymRelationship synRelation : synRelations){
                 if (fromTaxon.equals(synRelation.getAcceptedTaxon())){
-                    Reference<?> newReference = reference;
+                    Reference newReference = reference;
                     if (newReference == null && keepReference){
                         newReference = synRelation.getCitation();
                     }
@@ -2766,7 +2766,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String idInSourceSyn = getIdInSource(syn);
         String idInSourceTaxon =  getIdInSource(taxon);
         // Determine the sourceReference
-        Reference<?> sourceReference = syn.getSec();
+        Reference sourceReference = syn.getSec();
 
         if (sourceReference == null){
              logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());

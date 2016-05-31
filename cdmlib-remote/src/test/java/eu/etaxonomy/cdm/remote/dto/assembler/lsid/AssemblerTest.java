@@ -17,10 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
 import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.hibernate.Hibernate;
@@ -72,6 +68,9 @@ import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
@@ -84,7 +83,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private Taxon taxon;
     private IBook sec;
     private IBook book;
-    private Reference<?> bookSection;
+    private Reference bookSection;
     private TeamOrPersonBase<?> authorship;
     private NonViralName<?> name;
     private LSID lsid;
@@ -170,7 +169,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/1"));
 
         bookSection = ReferenceFactory.newBookSection();
-        bookSection.setInReference((Reference<?>)book);
+        bookSection.setInReference((Reference)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorship(authorship);
@@ -187,7 +186,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testDeepMapping() {
         for(int i = 0; i < 3; i++) {
-            Synonym synonym = Synonym.NewInstance(name,(Reference<?>)sec);
+            Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
             taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
         }
 
@@ -226,7 +225,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference<?>)sec);
+        IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference)sec);
         assert !Hibernate.isInitialized(proxy);
         Field secField = TaxonBase.class.getDeclaredField("sec");
         secField.setAccessible(true);

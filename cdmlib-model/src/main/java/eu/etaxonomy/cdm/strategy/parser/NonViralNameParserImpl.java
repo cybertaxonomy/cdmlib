@@ -375,8 +375,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    	nameToBeFilled.addParsingProblems(ref.getParsingProblem());
 	    }
 
-	    Reference<?> nomRef;
-		if ( (nomRef = (Reference<?>)nameToBeFilled.getNomenclaturalReference()) != null ){
+	    Reference nomRef;
+		if ( (nomRef = (Reference)nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorship(nameToBeFilled.getCombinationAuthorship());
 		}
 	}
@@ -666,19 +666,19 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 
-	private Reference<?> parseArticle(String reference){
+	private Reference parseArticle(String reference){
 		//if (articlePatter)
 		//(type, author, title, volume, editor, series;
-		Reference<?> result = ReferenceFactory.newArticle();
+		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
-		Reference<?> inJournal = ReferenceFactory.newJournal();
+		Reference inJournal = ReferenceFactory.newJournal();
 		inJournal.setTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}
 
-	private Reference<?> parseBookSection(String reference){
-		Reference<?> result = ReferenceFactory.newBookSection();
+	private Reference parseBookSection(String reference){
+		Reference result = ReferenceFactory.newBookSection();
 
 		Pattern authorPattern = Pattern.compile("^" + authorTeam + referenceAuthorSeparator);
 		Matcher authorMatcher = authorPattern.matcher(reference);

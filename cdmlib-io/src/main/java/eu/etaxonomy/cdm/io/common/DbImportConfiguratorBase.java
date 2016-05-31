@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,14 +22,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase> extends ImportConfiguratorBase<STATE, Source> implements IImportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
-	
+
 	private Method userTransformationMethod;
-	
+
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
 
@@ -40,24 +39,24 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase> 
 	 */
 	protected DbImportConfiguratorBase(Source source, ICdmDataSource destination, NomenclaturalCode code, IInputTransformer defaultTransformer) {
 	   super(defaultTransformer);
-	   setNomenclaturalCode(code); 
+	   setNomenclaturalCode(code);
 	   setSource(source);
 	   setDestination(destination);
 	}
-	
-	
-	public Source getSource() {
-		return (Source)super.getSource();
+
+
+	@Override
+    public Source getSource() {
+		return super.getSource();
 	}
-	public void setSource(Source berlinModelSource) {
+	@Override
+    public void setSource(Source berlinModelSource) {
 		super.setSource(berlinModelSource);
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
-	public Reference getSourceReference() {
+	@Override
+    public Reference getSourceReference() {
 		if (sourceReference == null){
 			sourceReference =  ReferenceFactory.newDatabase();
 			if (getSource() != null){
@@ -70,11 +69,8 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase> 
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
@@ -95,7 +91,7 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase> 
 	public void setRecordsPerTransaction(int recordsPerTransaction) {
 		this.recordsPerTransaction = recordsPerTransaction;
 	}
-	
+
 
 	/**
 	 * @return the userTransformationMethod

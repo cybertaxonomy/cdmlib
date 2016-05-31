@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -32,10 +34,10 @@ public class ReferenceTest {
 
             assertNotSame("Reference list should not be empty", 0, dataSet.getReferences().size());
 
-            IArticle article = (IArticle)dataSet.getReferences().get(0);
+            IArticle article = dataSet.getReferences().get(0);
             assertNotNull("Article must not be null",article);
 
-            IJournal journal = (IJournal)dataSet.getReferences().get(1);
+            IJournal journal = dataSet.getReferences().get(1);
             assertNotNull("Journal must not be null", journal);
             assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
         }
@@ -46,13 +48,13 @@ public class ReferenceTest {
             URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
             DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-            IArticle article = (IArticle)dataSet.getReferences().get(0);
+            IArticle article = dataSet.getReferences().get(0);
             assertNotNull("Article must not be null",article);
 
-            IJournal journal = ((Reference<?>)article).castReferenceToJournal();
+            IJournal journal = ((Reference)article).castReferenceToJournal();
             assertEquals("Journal", journal.getType().name());
 
-            IGeneric generic = ((Reference<?>)journal).castReferenceToGeneric();
+            IGeneric generic = ((Reference)journal).castReferenceToGeneric();
             assertEquals("Generic", generic.getType().name());
 
 

@@ -108,7 +108,7 @@ public class SDDDocumentBuilder {
 	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<TaxonDescription, String>();
 	private final Map<Media, String> medias = new HashMap<Media, String>();
 	private final Map<State, String> states = new HashMap<State, String>();
-	private final Map<Reference<?>, String> articles = new HashMap<Reference<?>, String>();
+	private final Map<Reference, String> articles = new HashMap<Reference, String>();
 	private final Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
 	private final Map<DefinedTerm, String> modifiers = new HashMap<DefinedTerm, String>();
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
@@ -304,7 +304,7 @@ public class SDDDocumentBuilder {
 		Iterator<Reference> iterator = references.iterator();
 		IDatabase d = ReferenceFactory.newDatabase();
 		while (iterator.hasNext()) {
-			Reference<?> reference = iterator.next();
+			Reference reference = iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				buildDataset(baselement, reference);
 			}
@@ -330,7 +330,7 @@ public class SDDDocumentBuilder {
 		boolean database = false;
 		IDatabase d = ReferenceFactory.newDatabase();
 		while ((iterator.hasNext()) && (!database)) {
-			Reference<?> reference = iterator.next();
+			Reference reference = iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				d = reference;
 			}
@@ -1393,7 +1393,7 @@ public class SDDDocumentBuilder {
 			for (int i = 0; i < cdmSource.getReferences().size(); i++) {
 				ElementImpl elPublication = new ElementImpl(document,
 						"Publication");
-				Reference<?> publication = cdmSource.getReferences().get(i);
+				Reference publication = cdmSource.getReferences().get(i);
 				Set<Annotation> annotations = publication.getAnnotations();
 				for (Iterator<Annotation> a = annotations.iterator(); a
 						.hasNext();) {

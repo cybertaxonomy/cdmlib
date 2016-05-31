@@ -99,7 +99,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		List<Reference> proceedings_subordinateReferences = referenceDao.getSubordinateReferences(proceedings);
 		assertEquals("expecting one subordinate reference",2 ,proceedings_subordinateReferences.size());
 		sub_1 = proceedings_subordinateReferences.get(0);
-		Reference<?> sub_2 = proceedings_subordinateReferences.get(1);
+		Reference sub_2 = proceedings_subordinateReferences.get(1);
 		assertEquals("expecting BookSection as first subordinateReferences", "Proceedings of Testing Vol. 1", sub_1.getTitleCache());
 		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_2.getTitleCache());
 		assertEquals("first subordinateReferences matches uuid", firstBookUuid, sub_1.getUuid());
@@ -109,7 +109,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	@Test
 	public void testListCoveredTaxa() {
 
-		Reference<?> book = referenceDao.findByUuid(firstBookUuid);
+		Reference book = referenceDao.findByUuid(firstBookUuid);
 		List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", OrderHint.SortOrder.DESCENDING)});
 
 		List<TaxonBase> coveredTaxa = referenceDao.listCoveredTaxa(book, false, orderHints, null);

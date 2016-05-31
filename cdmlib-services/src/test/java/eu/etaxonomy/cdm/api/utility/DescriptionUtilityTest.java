@@ -147,15 +147,19 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * Marked area filter: Skip distributions where the area has a Marker
          * with one of the specified MarkerTypes
          */
-        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
-        Distribution distFrance = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), PresenceAbsenceTerm.NATIVE());
-        Distribution distBelgium = Distribution.NewInstance(Country.BELGIUMKINGDOMOF(), PresenceAbsenceTerm.NATIVE());
+        NamedArea germany = NamedArea.NewInstance("Germany", "Germany", "GER");
+        NamedArea france = NamedArea.NewInstance("France", "France", "FRA");
+        NamedArea belgium = NamedArea.NewInstance("Belgium", "Belgium", "BEL");
+
+        Distribution distGermany = Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE());
+        Distribution distFrance = Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE());
+        Distribution distBelgium = Distribution.NewInstance(belgium, PresenceAbsenceTerm.NATIVE());
         distributions.add(distGermany);
         distributions.add(distFrance);
         distributions.add(distBelgium);
 
-        Country.BELGIUMKINGDOMOF().addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
-        Country.FRANCEFRENCHREPUBLIC().addMarker(Marker.NewInstance(MarkerType.IMPORTED(), true));
+        belgium.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+        france.addMarker(Marker.NewInstance(MarkerType.IMPORTED(), true));
 
         hideMarkedAreas = new HashSet<MarkerType>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
@@ -163,7 +167,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
 
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
+        Assert.assertEquals(germany, filteredDistributions.iterator().next().getArea());
     }
 
     @Test

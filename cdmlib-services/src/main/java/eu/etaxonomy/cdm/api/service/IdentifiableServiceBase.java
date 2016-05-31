@@ -315,7 +315,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 		//exclude recursive inreferences
 		if (entity.isInstanceOf(Reference.class)){
-			Reference<?> ref = CdmBase.deproxy(entity, Reference.class);
+			Reference ref = CdmBase.deproxy(entity, Reference.class);
 			if (ref.getInReference() != null && ref.getInReference().equals(ref)){
 				return;
 			}
@@ -328,15 +328,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			entityCacheStrategy = entity.getCacheStrategy();
 			//FIXME find out why the wrong cache strategy is loaded here, see #1876
 			if (entity instanceof Reference){
-				entityCacheStrategy = ReferenceFactory.newReference(((Reference<?>)entity).getType()).getCacheStrategy();
+				entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
 			}
 		}
-		
+
 
 
 		//old titleCache
 		entity.setProtectedTitleCache(true);
-		
+
 		String oldTitleCache = entity.getTitleCache();
 		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
 		entity.setCacheStrategy(entityCacheStrategy);
@@ -363,7 +363,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}
 
 		}else if (entity instanceof Reference){
-			Reference<?> ref = (Reference<?>) entity;
+			Reference ref = (Reference) entity;
 			if (!ref.isProtectedAbbrevTitleCache()){
 				ref.setProtectedAbbrevTitleCache(true);
 				oldAbbrevTitleCache = ref.getAbbrevTitleCache();
@@ -389,7 +389,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		if ( oldTitleCache == null   || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
-			
+
 			if (newCache == null){
 				logger.warn("newCache should never be null");
 			}
@@ -402,7 +402,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				nvn.getFullTitleCache();
 			}
 			if (entity instanceof Reference){
-				Reference<?> ref = (Reference<?>) entity;
+				Reference ref = (Reference) entity;
 				ref.getAbbrevTitleCache();
 			}
 			entitiesToUpdate.add(entity);
@@ -416,7 +416,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				entitiesToUpdate.add(entity);
 			}
 		}else if (entity instanceof Reference){
-			Reference<?> ref = (Reference<?>) entity;
+			Reference ref = (Reference) entity;
 			String newAbbrevTitleCache = ref.getAbbrevTitleCache();
 			if ( (oldAbbrevTitleCache == null && !ref.isProtectedAbbrevTitleCache() ) || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
 				entitiesToUpdate.add(entity);

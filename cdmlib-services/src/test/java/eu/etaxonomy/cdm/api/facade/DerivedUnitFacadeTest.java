@@ -77,7 +77,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
-	
+
     @SpringBeanByType
     private IOccurrenceService service;
 
@@ -122,6 +122,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     Collection collection = Collection.NewInstance();
     PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
     String originalLabelInfo = "original label info";
+    URI stableUri = URI.create("http://www.abc.de");
 
 
     DerivedUnitFacade specimenFacade;
@@ -133,8 +134,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     Media media1 = Media.NewInstance();
 
     DerivedUnitFacade emptyFacade;
-
-    NamedArea country = Country.GERMANY();
 
     // ****************************** SET UP **********************************/
 
@@ -162,7 +161,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent.setDistanceToWaterSurfaceMax(distanceToSurfaceMax);
         gatheringEvent.setExactLocation(exactLocation);
         gatheringEvent.setDescription(gatheringEventDescription);
-        gatheringEvent.setCountry(country);
+        gatheringEvent.setCountry(Country.GERMANY());
 
         gatheringEvent.setTimeperiod(gatheringPeriod);
         gatheringEvent.setLocality(locality);
@@ -179,6 +178,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimen.setCollection(collection);
         specimen.setPreservation(preservationMethod);
         specimen.setOriginalLabelInfo(originalLabelInfo);
+        specimen.setPreferredStableUri(stableUri);
 
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
@@ -370,9 +370,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
          Assert.assertNotNull("The gathering event should have been created",
         		 specimenFacade.innerGatheringEvent());
     }
-    
 
-    
+
+
 
     /**
      * Test method for
@@ -390,25 +390,25 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
     }
-    
+
     @Test
     public void testNewInstanceSpecimenWithoutFieldUnit() {
         DerivedUnit parent = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnit child = DerivedUnit.NewPreservedSpecimenInstance();
         DerivationEvent.NewSimpleInstance(parent, child, DerivationEventType.ACCESSIONING());
-        
+
         DerivedUnitFacade facade;
 		try {
 			facade = DerivedUnitFacade.NewInstance(child);
 		       	Assert.assertTrue(facade.innerDerivedUnit().getDerivedFrom().getOriginals().size() == 1);
 		       	Assert.assertNull(facade.getFieldUnit(false));
 		       	DerivationEvent.NewSimpleInstance(FieldUnit.NewInstance(), parent, DerivationEventType.ACCESSIONING());
-		        
+
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 			Assert.fail();
 		}
-        
+
     }
 
     @Test
@@ -470,7 +470,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testGetSetCountry() {
-        Assert.assertEquals("Country must be same", country, specimenFacade.getCountry());
+        Assert.assertEquals("Country must be same", Country.GERMANY(), specimenFacade.getCountry());
         specimenFacade.setCountry(Country.FRANCEFRENCHREPUBLIC());
         Assert.assertEquals("New country must be France", Country.FRANCEFRENCHREPUBLIC(), specimenFacade.getCountry());
     }
@@ -1365,13 +1365,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetSetAccessionNumber() {
         Assert.assertEquals("Accession number must be same", accessionNumber,
-                specimenFacade.getAccessionNumber());  
+                specimenFacade.getAccessionNumber());
         specimenFacade.setAccessionNumber("A12345693");
 		Assert.assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
-    
-    
+
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
@@ -1428,7 +1428,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New accession number must be 'OrigLabel Info xxx'",
                 "OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo());
     }
-    
+
+    @Test
+    public void testGetSetStableUri() {
+        Assert.assertEquals("Preferred stable URI must be same", stableUri,
+                specimenFacade.getPreferredStableUri());
+        URI newURI = URI.create("http://www.fgh.ij");
+        specimenFacade.setPreferredStableUri(newURI);
+        Assert.assertEquals("New preferred stable must be '" + newURI.toString() + "'",
+                newURI, specimenFacade.getPreferredStableUri());
+    }
+
+
+
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
@@ -1520,7 +1532,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testAddGetRemoveSource() {
         Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
 
-        Reference<?> reference = ReferenceFactory.newBook();
+        Reference reference = ReferenceFactory.newBook();
         IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
         IdentifiableSource source2 = IdentifiableSource.NewDataImportInstance("1", "myTable");
@@ -1528,7 +1540,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
         specimenFacade.removeSource(source1);
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
-        Reference<?> reference2 = ReferenceFactory.newJournal();
+        Reference reference2 = ReferenceFactory.newJournal();
         IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
         Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());
@@ -1700,7 +1712,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -584,7 +584,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
-				Reference<?> reference = createReference(state, refMap, next);
+				Reference reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
 				doCitation(state, name, classValue, reference, microReference, parentEvent);
 				state.setCitation(false);
@@ -633,7 +633,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void doCitation(MarkupImportState state, NonViralName<?> name,
-			String classValue, Reference<?> reference, String microCitation,
+			String classValue, Reference reference, String microCitation,
 			XMLEvent parentEvent) {
 		if (PUBLICATION.equalsIgnoreCase(classValue)) {
 			name.setNomenclaturalReference(reference);
@@ -688,10 +688,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
-	private Reference<?> createReference(MarkupImportState state,
+	private Reference createReference(MarkupImportState state,
 			Map<String, String> refMap, XMLEvent parentEvent) {
 		// TODO
-		Reference<?> reference;
+		Reference reference;
 
 		String type = getAndRemoveMapKey(refMap, PUBTYPE);
 		String authorStr = getAndRemoveMapKey(refMap, AUTHOR);
@@ -724,7 +724,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		reference.setDatePublished(timeperiod);
 
 		//Quickfix for these 2 attributes used in feature.references
-		Reference<?> inRef = reference.getInReference() == null ? reference : reference.getInReference();
+		Reference inRef = reference.getInReference() == null ? reference : reference.getInReference();
 		//publocation
 		if (StringUtils.isNotEmpty(publisher)){
 			inRef.setPublisher(publisher);
@@ -759,7 +759,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param appendix
 	 * @see #handleNonCitationSpecific(String, String, String, String, String, String, String, String)
 	 */
-	private Reference<?> handleCitationSpecific(MarkupImportState state,
+	private Reference handleCitationSpecific(MarkupImportState state,
 			String type, String authorStr, String titleStr, String titleCache,
 			String volume, String edition, String editors, String pubName,
 			String pages, String appendix, Map<String, String> refMap, XMLEvent parentEvent) {
@@ -770,7 +770,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 
 		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
-		Reference<?> reference;
+		Reference reference;
 
 		if (isNotBlank(appendix)){
 		    pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
@@ -788,7 +788,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					fireWarningEvent(message, parentEvent, 4);
 				}
 			}
-			reference = (Reference<?>) article;
+			reference = (Reference) article;
 		} else if (refType == RefType.BookSection) {
 			//Book Section
 			reference = ReferenceFactory.newBookSection();
@@ -819,20 +819,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 			//volume indicates an in-reference
 			if (isNotBlank(volume)){
-				Reference<?> partOf = ReferenceFactory.newGeneric();
+				Reference partOf = ReferenceFactory.newGeneric();
 				partOf.setVolume(volume);
 				partOf.setInReference(reference);
 				reference = partOf;
 			}
 		}else if (refType == RefType.LatestUsed){
-			Reference<?> latestReference = state.getLatestReferenceInHomotype();
+			Reference latestReference = state.getLatestReferenceInHomotype();
 			if (latestReference == null){
 				String message = "No former reference available for incomplete citation";
 				fireWarningEvent(message, parentEvent, 6);
 				reference = ReferenceFactory.newGeneric();
 			}else{
 				if (latestReference.getInReference() != null){
-					reference = (Reference<?>)latestReference.clone();
+					reference = (Reference)latestReference.clone();
 				}else{
 					String message = "Latest reference is not an in-reference. This is not yet handled.";
 					fireWarningEvent(message, parentEvent, 6);
@@ -880,7 +880,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		return reference;
 	}
 
-	private void handleEditorsInCitation(String edition, String editors, Reference<?> reference, XMLEvent parentEvent) {
+	private void handleEditorsInCitation(String edition, String editors, Reference reference, XMLEvent parentEvent) {
 		//editor
 		reference.setEditor(editors);
 		if ( editors != null){
@@ -890,7 +890,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void handleTitlesInCitation(String titleStr, String titleCache,
-			XMLEvent parentEvent, Reference<?> reference) {
+			XMLEvent parentEvent, Reference reference) {
 		if (isNotBlank(titleStr)){
 			reference.setTitle(titleStr);
 		}
@@ -957,11 +957,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param appendix
 	 * @return
 	 */
-	private Reference<?> handleNonCitationSpecific(String type, String authorStr,
+	private Reference handleNonCitationSpecific(String type, String authorStr,
 			String titleStr, String titleCache, String volume, String edition,
 			String editors, String pubName, String appendix) {
 
-	    Reference<?> reference;
+	    Reference reference;
 
 	    if (isNotBlank(appendix)){
 	        pubName = pubName == null ?  appendix : (pubName + " " + appendix).replaceAll("  ", " ");
@@ -974,10 +974,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				journal.setTitle(pubName);
 				article.setInJournal(journal);
 			}
-			reference = (Reference<?>) article;
+			reference = (Reference) article;
 
 		} else {
-			Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
+			Reference bookOrPartOf = ReferenceFactory.newGeneric();
 			reference = bookOrPartOf;
 		}
 
@@ -997,7 +997,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 		//pubName
 		if (pubName != null) {
-			Reference<?> inReference;
+			Reference inReference;
 			if (reference.getType().equals(ReferenceType.Article)) {
 				inReference = ReferenceFactory.newJournal();
 			} else {
@@ -1014,7 +1014,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	private void handlePages(MarkupImportState state,
 			Map<String, String> refMap, XMLEvent parentEvent,
-			Reference<?> reference, String pages) {
+			Reference reference, String pages) {
 		// TODO check if this is handled correctly in FM markup
 		boolean switchPages = state.getConfig().isHandlePagesAsDetailWhereNeeded();
 		if (switchPages){
@@ -1040,7 +1040,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
-	public Reference<?> handleReference(MarkupImportState state,
+	public Reference handleReference(MarkupImportState state,
 			XMLEventReader reader, XMLEvent parentEvent)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -1051,7 +1051,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
-				Reference<?> reference = createReference(state, refMap, next);
+				Reference reference = createReference(state, refMap, next);
 				return reference;
 			} else if (isStartingElement(next, REF_PART)) {
 				handleRefPart(state, reader, next, refMap);

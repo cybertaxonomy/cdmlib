@@ -34,7 +34,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 	private final Map<String, User> usernameMap = new HashMap<String, User>();
 
 
-	private Reference<?> partitionSourceReference;
+	private Reference partitionSourceReference;
 
 	private final RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();
 	//holds the classifications needed for this partition, the key is a value that differentiate classifications
@@ -76,7 +76,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 	 * @return
 	 */
 	@Override
-    public Reference<?> getTransactionalSourceReference() {
+    public Reference getTransactionalSourceReference() {
 		return partitionSourceReference;
 	}
 

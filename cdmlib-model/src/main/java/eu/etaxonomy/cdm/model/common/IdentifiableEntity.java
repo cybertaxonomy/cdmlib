@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -92,7 +93,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
-    private static final long serialVersionUID = -5610995424730659058L;
+    private static final long serialVersionUID = 7912083412108359559L;
+
     private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
     @XmlTransient
@@ -213,6 +215,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             this.titleCache = generateTitle();
             this.titleCache = getTruncatedCache(this.titleCache) ;
         }
+        if(StringUtils.isBlank(titleCache)){
+            titleCache = this.toString();
+        }
         return titleCache;
     }
 
@@ -253,6 +258,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public void setProtectedTitleCache(boolean protectedTitleCache) {
         this.protectedTitleCache = protectedTitleCache;
+    }
+
+    /**
+     *
+     * @return true, if the current state of the titleCache (without generating it new)
+     * is the empty string. This is primarily meant for internal use.
+     */
+    public boolean hasEmptyTitleCache(){
+        return "".equals(this.titleCache);
     }
 
 //**************************************************************************************
@@ -482,7 +496,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 
     @Override
-    public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+    public IdentifiableSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
@@ -502,7 +516,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public String toString() {
         String result;
-        if (titleCache == null){
+        if (StringUtils.isBlank(titleCache)){
             result = super.toString();
         }else{
             result = this.titleCache;
@@ -694,14 +708,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         //Rights
         result.rights = new HashSet<Rights>();
         for(Rights rights : getRights()) {
-            result.addRights(rights);
+            Rights newRights = (Rights)rights.clone();
+            result.addRights(newRights);
         }
 
 
         //Credits
         result.credits = new ArrayList<Credit>();
         for(Credit credit : getCredits()) {
-            result.addCredit(credit);
+            Credit newCredit = (Credit)credit.clone();
+            result.addCredit(newCredit);
         }
 
         //no changes to: lsid, titleCache, protectedTitleCache

@@ -52,9 +52,9 @@ public class TaxonNodeTest {
 	private static TaxonNameBase<?,?> taxonName1;
 	private static TaxonNameBase<?,?> taxonName2;
 	private static TaxonNameBase<?,?> taxonName3;
-	private static Reference<?> ref1;
-	private static Reference<?> ref2;
-	private static Reference<?> ref3;
+	private static Reference ref1;
+	private static Reference ref2;
+	private static Reference ref3;
 	private static Synonym syn1;
 	/**
 	 * @throws java.lang.Exception

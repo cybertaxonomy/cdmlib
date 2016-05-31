@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 
 /**
  * @author a.mueller
@@ -55,7 +55,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	public void rebuildIndex() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-		for(Reference<?> reference : list(null,null)) { // re-index all agents
+		for(Reference reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorship());
 
 			if(reference.getType().equals(ReferenceType.Article)) {
@@ -109,7 +109,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 			if(referenceTitle != null){
 				String teamTitle = (String) object[3];
-				referenceTitle = ReferenceDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
+				referenceTitle = DefaultReferenceCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
 
 				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0],(Integer)object[1], referenceTitle));
 			}else{
@@ -145,11 +145,12 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		return resultRefernces;
 	}
 
-	// the result list held doubles therefore i put a "distinct" in the query string
+	// the result list held doubles therefore I put a "distinct" in the query string
 	@Override
     public List<Reference> getAllNomenclaturalReferences() {
-		List<Reference> references = getSession().createQuery(
-				"select distinct t.nomenclaturalReference from TaxonNameBase t").list();
+		@SuppressWarnings("unchecked")
+        List<Reference> references = getSession().createQuery(
+				"SELECT DISTINCT t.nomenclaturalReference FROM TaxonNameBase t").list();
 		return references;
 	}
 
@@ -164,9 +165,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		query.setParameter("reference", reference);
 
 		@SuppressWarnings("unchecked")
-	    List<Reference<?>> list = query.list();
+	    List<Reference> list = query.list();
 	    references.addAll(list);
-		for(Reference<?> ref : references){
+		for(Reference ref : references){
 			subordinateReferences.addAll(getSubordinateReferences(ref));
 		}
 		references.addAll(subordinateReferences);

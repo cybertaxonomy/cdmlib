@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -55,7 +55,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Reference<?> citation;
+	private Reference citation;
 
     @XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
@@ -63,14 +63,14 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlElement(name = "OriginalNameString")
 	private String originalNameString;
 
-// ************ CONSTRUCTOR ********************************************/    
-    
+// ************ CONSTRUCTOR ********************************************/
+
 	//for hibernate use only
     protected ReferencedEntityBase() {
 		super();
 	}
 
-	
+
 
 	public ReferencedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
@@ -79,17 +79,17 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 		this.citation = citation;
 	}
-	
-//********************* GETTER / SETTER *******************************/	
-	
+
+//********************* GETTER / SETTER *******************************/
+
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
 	}
 	public void setCitationMicroReference(String citationMicroReference){
 		this.citationMicroReference = citationMicroReference;
 	}
-	
-	
+
+
 	public String getOriginalNameString(){
 		return this.originalNameString;
 	}
@@ -97,13 +97,14 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 	}
 
-	public Reference getCitation(){
+	@Override
+    public Reference getCitation(){
 		return this.citation;
 	}
 	public void setCitation(Reference citation) {
 		this.citation = citation;
 	}
-	
+
 //****************** CLONE ************************************************/
 
 	/* (non-Javadoc)
@@ -112,7 +113,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		ReferencedEntityBase result = (ReferencedEntityBase)super.clone();
-		
+
 		//no changes to: citation, citationMicroReference, originalNameString
 		return result;
 	}

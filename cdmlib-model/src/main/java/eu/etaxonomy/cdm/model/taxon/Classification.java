@@ -99,7 +99,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference<?> reference;
+    private Reference reference;
 
     @XmlElement(name = "microReference")
     private String microReference;
@@ -113,7 +113,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="Classification_GeoScope")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
     private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 
 	@XmlElement(name = "Description")

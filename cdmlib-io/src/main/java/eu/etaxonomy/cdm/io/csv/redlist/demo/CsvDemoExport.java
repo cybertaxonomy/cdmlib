@@ -496,7 +496,7 @@ public class CsvDemoExport extends CsvDemoBase {
 		if(config.isExternalID()){
 			Set<IdentifiableSource> sources = taxonBase.getSources();
 			for(IdentifiableSource source:sources){
-				Reference<?> citation = source.getCitation();
+				Reference citation = source.getCitation();
 				/*
 				 * TODO: handle this more generic.
 				 * see ticket #4040

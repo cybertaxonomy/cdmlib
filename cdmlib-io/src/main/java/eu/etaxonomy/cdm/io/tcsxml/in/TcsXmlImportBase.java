@@ -469,8 +469,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 
-	protected static final Reference<?> unknownSec(){
-		Reference<?> result = ReferenceFactory.newGeneric();
+	protected static final Reference unknownSec(){
+		Reference result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}

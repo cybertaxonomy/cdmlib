@@ -138,7 +138,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference<?> referenceForParentChildRelation;
+    private Reference referenceForParentChildRelation;
 
     @XmlElement(name = "microReference")
     private String microReferenceForParentChildRelation;
@@ -229,7 +229,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public List<TaxonNode> getChildNodes() {
-
         return childNodes;
     }
 	protected void setChildNodes(List<TaxonNode> childNodes) {
@@ -664,19 +663,19 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 * @param index
 	 */
 	private void updateSortIndex(int index) {
-	    List<TaxonNode> children = this.getChildNodes();
-
-
-	    for(int i = index; i < children.size(); i++){
-        	TaxonNode child = children.get(i);
-        	if (child != null){
-//        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
-        		child.setSortIndex(i);
-        	}else{
-        		String message = "A node in a taxon tree must never be null but is (ParentId: %d; sort index: %d; index: %d; i: %d)";
-        		throw new IllegalStateException(String.format(message, getId(), sortIndex, index, i));
-        	}
-        }
+	    if (this.hasChildNodes()){
+    	    List<TaxonNode> children = this.getChildNodes();
+    	    for(int i = index; i < children.size(); i++){
+                	TaxonNode child = children.get(i);
+                	if (child != null){
+        //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
+                		child.setSortIndex(i);
+                	}else{
+                		String message = "A node in a taxon tree must never be null but is (ParentId: %d; sort index: %d; index: %d; i: %d)";
+                		throw new IllegalStateException(String.format(message, getId(), sortIndex, index, i));
+                	}
+            }
+	    }
 	}
 
 
@@ -738,13 +737,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public TaxonNode getAncestorOfRank(Rank rank){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
        // nodeSet.add(this);
-        TaxonBase taxon = CdmBase.deproxy(this.getTaxon(), Taxon.class);
-        TaxonNameBase name = CdmBase.deproxy(taxon.getName(), TaxonNameBase.class);
-        if (name.getRank().isHigher(rank)){
-        	return null;
-        }
-        if (name.getRank().equals(rank)){
-        	return this;
+        TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
+        try{
+            TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+            if (name.getRank().isHigher(rank)){
+            	return null;
+            }
+            if (name.getRank().equals(rank)){
+            	return this;
+            }
+        }catch (NullPointerException e){
+            System.err.println(taxon.getTitleCache() +  " " + e.getMessage());
         }
         if(this.getParent() != null ){
         	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
@@ -859,7 +862,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
 
-    private void removeNullValueFromChildren(){
+    public void removeNullValueFromChildren(){
         try {
             if (childNodes.contains(null)){
                 while(childNodes.contains(null)){

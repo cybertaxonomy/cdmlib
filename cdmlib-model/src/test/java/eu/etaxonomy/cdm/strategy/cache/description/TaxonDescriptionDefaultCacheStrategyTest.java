@@ -44,7 +44,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		botName.setGenusOrUninomial("Genus");
 		botName.setSpecificEpithet("species");
 
-		Reference<?> sec = ReferenceFactory.newGeneric();
+		Reference sec = ReferenceFactory.newGeneric();
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);

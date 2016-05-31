@@ -5,11 +5,9 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.reference;
-
-import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 
 /**
  * This interface represents all references which cannot be clearly assigned to a
@@ -33,31 +31,31 @@ public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVo
 	 * Returns the editor of this generic reference
 	 */
 	public String getEditor();
-	
+
 	/**
 	 * Sets the editor for this generic reference
 	 * @param editor
 	 */
 	public void setEditor(String editor);
-	
+
 	/**
 	 * Returns the series of this generic reference
 	 */
 	public String getSeriesPart();
-	
+
 	/**
 	 * Sets the series for this generic reference
 	 * @param series
 	 */
 	public void setSeriesPart(String series);
-	
+
 	/**
-	 * Returns the pages (page span this reference covers in its in-reference) 
+	 * Returns the pages (page span this reference covers in its in-reference)
 	 */
 	public String getPages();
-	
+
 	/**
-	 * Sets the pages (page span this reference covers in its in-reference) 
+	 * Sets the pages (page span this reference covers in its in-reference)
 	 * @param pages
 	 */
 	public void setPages(String pages);
@@ -66,13 +64,11 @@ public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVo
 	 * Returns the inreference of this generic reference
 	 */
 	public IGeneric getInReference();
-	
+
 	/**
 	 * Sets the inreference.
 	 * @param inReference
 	 */
 	public void setInReference(Reference inReference);
 
-	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
-	
 }

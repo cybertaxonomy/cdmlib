@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
@@ -333,19 +334,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName<?>>
         //reference
         String microReference = nonViralName.getNomenclaturalMicroReference();
         INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
-        String referenceBaseCache = null;
+        String referenceCache = null;
         if (ref != null){
-            INomenclaturalReference nomenclaturalReference = HibernateProxyHelper.deproxy(ref, INomenclaturalReference.class);
-            nomenclaturalReference.setCacheStrategy(nomenclaturalReference.getType().getCacheStrategy());
-            referenceBaseCache = nomenclaturalReference.getNomenclaturalCitation(microReference);
+            Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
+            referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags
-        if (StringUtils.isNotBlank(referenceBaseCache)){
-            if (! referenceBaseCache.trim().startsWith("in ")){
+        if (StringUtils.isNotBlank(referenceCache)){
+            if (! referenceCache.trim().startsWith("in ")){
                 String refConcat = ", ";
                 tags.add(new TaggedText(TagEnum.separator, refConcat));
             }
-            tags.add(new TaggedText(TagEnum.reference, referenceBaseCache));
+            tags.add(new TaggedText(TagEnum.reference, referenceCache));
         }
 
         //nomenclatural status

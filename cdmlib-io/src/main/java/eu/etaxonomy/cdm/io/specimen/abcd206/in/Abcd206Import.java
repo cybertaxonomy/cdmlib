@@ -432,7 +432,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     citationDetail+=", "+citationURL;
                 }
 
-                Reference<?> reference;
+                Reference reference;
                 if(strReference.equals(state.getRef().getTitleCache())){
                     reference = state.getRef();
                 }
@@ -701,7 +701,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     //  * it does not make sense to search for existing sources and then clone them
     //    we need to search for existing references instead and use them (if exist)
     //    for our new source.
-    private IdentifiableSource getIdentifiableSource(Reference<?> reference, String citationDetail) {
+    private IdentifiableSource getIdentifiableSource(Reference reference, String citationDetail) {
 
         List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
 
@@ -734,7 +734,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     //     * @param citationDetail
     //     * @return
     //     */
-    //    private DescriptionElementSource getDescriptionSource(Reference<?> reference, String citationDetail) {
+    //    private DescriptionElementSource getDescriptionSource(Reference reference, String citationDetail) {
     //
     //        List<OriginalSourceBase> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
     //
@@ -1055,8 +1055,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String citationURL = fullReference[2];
 
             if (isNotBlank(strReference)){
-                Reference<?> reference = null;
-                for (Reference<?> refe: references) {
+                Reference reference = null;
+                for (Reference refe: references) {
                     if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
                         reference =refe;
                         break;
@@ -1248,7 +1248,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getRef(),null)) {
                 state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
             }
-            for (Reference<?> citation : determinationEvent.getReferences()) {
+            for (Reference citation : determinationEvent.getReferences()) {
                 if(sourceNotLinkedToElement(indAssociation,citation,null))
                 {
                     indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
@@ -1273,10 +1273,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param object
      * @return
      */
-    private boolean sourceNotLinkedToElement(DerivedUnit derivedUnitBase2, Reference<?> b, String d) {
+    private boolean sourceNotLinkedToElement(DerivedUnit derivedUnitBase2, Reference b, String d) {
         Set<IdentifiableSource> linkedSources = derivedUnitBase2.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference<?> a = is.getCitation();
+            Reference a = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1323,8 +1323,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(SpecimenOrObservationBase<?> specimen, OriginalSourceBase<?> source) {
         Set<IdentifiableSource> linkedSources = specimen.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference<?> a = is.getCitation();
-            Reference<?> b = source.getCitation();
+            Reference a = is.getCitation();
+            Reference b = source.getCitation();
             String c = is.getCitationMicroReference();
             String d = source.getCitationMicroReference();
 
@@ -1370,10 +1370,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param object
      * @return
      */
-    private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, Reference<?> a, String d) {
+    private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, Reference a, String d) {
         Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
         for (DescriptionElementSource is:linkedSources){
-            Reference<?> b = is.getCitation();
+            Reference b = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1416,10 +1416,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param object
      * @return
      */
-    private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, Reference<?> a, String d) {
+    private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, Reference a, String d) {
         Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference<?> b = is.getCitation();
+            Reference b = is.getCitation();
             String c = is.getCitationMicroReference();
 
             boolean refMatch=false;
@@ -1464,8 +1464,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(IndividualsAssociation indAssociation, OriginalSourceBase<?> source) {
         Set<DescriptionElementSource> linkedSources = indAssociation.getSources();
         for (DescriptionElementSource is:linkedSources){
-            Reference<?> a = is.getCitation();
-            Reference<?> b = source.getCitation();
+            Reference a = is.getCitation();
+            Reference b = source.getCitation();
             String c = is.getCitationMicroReference();
             String d = source.getCitationMicroReference();
 
@@ -1511,8 +1511,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(TaxonDescription taxonDescription, OriginalSourceBase<?> sour) {
         Set<IdentifiableSource> linkedSources = taxonDescription.getSources();
         for (IdentifiableSource is:linkedSources){
-            Reference<?> a = is.getCitation();
-            Reference<?> b = sour.getCitation();
+            Reference a = is.getCitation();
+            Reference b = sour.getCitation();
             String c = is.getCitationMicroReference();
             String d = sour.getCitationMicroReference();
 

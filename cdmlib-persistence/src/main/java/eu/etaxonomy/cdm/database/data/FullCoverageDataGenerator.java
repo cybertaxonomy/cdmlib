@@ -183,7 +183,7 @@ public class FullCoverageDataGenerator {
 
 	private void createSupplemental(List<CdmBase> cdmBases)  {
 
-		Reference<?> ref = ReferenceFactory.newBook();
+		Reference ref = ReferenceFactory.newBook();
 
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		ref.addAnnotation(annotation);
@@ -387,7 +387,7 @@ public class FullCoverageDataGenerator {
 		textData.addModifier(DefinedTerm.SEX_HERMAPHRODITE());
 		textData.putModifyingText(Language.ENGLISH(), "no modification");
 		textData.setTimeperiod(TimePeriodParser.parseString("1970-1980"));
-		Reference<?> ref = ReferenceFactory.newArticle();
+		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(BotanicalName.NewInstance(Rank.GENUS()));
 		handleAnnotatableEntity(source);
@@ -596,7 +596,7 @@ public class FullCoverageDataGenerator {
 		sequence.setGeneticAccessionNumber("GenNO12345");
 		sequence.setBoldProcessId("boldId");
 		sequence.setHaplotype("haplotype");
-		Reference<?> sequenceCitation = getReference();
+		Reference sequenceCitation = getReference();
 		sequence.addCitation(sequenceCitation);
 		handleAnnotatableEntity(sequence);
 
@@ -626,7 +626,7 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxon(List<CdmBase> cdmBases) {
-		Reference<?> sec = getReference();
+		Reference sec = getReference();
 		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		handleIdentifiableEntity(taxon);
@@ -676,7 +676,7 @@ public class FullCoverageDataGenerator {
 
 
 	private void createReference(List<CdmBase> cdmBases) {
-		Reference<?> reference = ReferenceFactory.newArticle();
+		Reference reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
 		reference.setAuthorship(author);
 		reference.setTitle("ref title");
@@ -701,7 +701,7 @@ public class FullCoverageDataGenerator {
 		reference.setVolume("vol. 3");
 		reference.setUri(URI.create("http://rer.abc.de"));
 
-		Reference<?> journal = ReferenceFactory.newJournal();
+		Reference journal = ReferenceFactory.newJournal();
 		reference.setInJournal(journal);
 
 		handleIdentifiableEntity(reference);
@@ -938,8 +938,8 @@ public class FullCoverageDataGenerator {
 	}
 
 
-	private Reference<?> getReference() {
-		 Reference<?> result = ReferenceFactory.newGeneric();
+	private Reference getReference() {
+		 Reference result = ReferenceFactory.newGeneric();
 		 result.setTitle("some generic reference");
 		 return result;
 	}
@@ -953,7 +953,7 @@ public class FullCoverageDataGenerator {
 
 
 	private Taxon getTaxon() {
-		Reference<?> sec = getReference();
+		Reference sec = getReference();
 		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		return taxon;

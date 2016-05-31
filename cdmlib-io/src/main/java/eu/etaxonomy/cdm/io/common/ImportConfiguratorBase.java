@@ -71,7 +71,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private Object sourceSecId = -1;
 
 	private SOURCE source;
-	protected Reference<?> sourceReference;
+	protected Reference sourceReference;
 	private UUID sourceRefUuid;
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");

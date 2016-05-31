@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  */
 public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistributionComposer {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EuroPlusMedCondensedDistributionComposer.class);
 
     private final CondensedDistribution condensedDistribution;

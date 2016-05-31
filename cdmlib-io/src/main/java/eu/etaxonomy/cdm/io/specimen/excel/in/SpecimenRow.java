@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -55,7 +55,7 @@ public class SpecimenRow extends ExcelRowBase{
 
 	private String accessionNumber;
 	private String barcode;
-	
+
 	//	private String author;
 
 //	private String family;
@@ -63,22 +63,22 @@ public class SpecimenRow extends ExcelRowBase{
 //	private String specificEpithet;
 	private String collectionCode;
 	private String collection;
-	
-	
+
+
 	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
 	private TreeMap<Integer, String> unitNotes = new TreeMap<Integer, String>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
 	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
-	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>(); 
-	
+	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>();
 
-	
+
+
 	public SpecimenRow() {
 	}
-	
 
-	
+
+
 	//	may be public if necessary
 	protected class DeterminationLight{
 		String taxonUuid;
@@ -93,10 +93,10 @@ public class SpecimenRow extends ExcelRowBase{
 		String determinedBy;
 		String determinedWhen;
 		String notes;
-		
+
 		public boolean hasTaxonInformation() {
-			boolean result = StringUtils.isNotBlank(taxonUuid) 
-			 	|| StringUtils.isNotBlank(family) 	
+			boolean result = StringUtils.isNotBlank(taxonUuid)
+			 	|| StringUtils.isNotBlank(family)
 			 	|| StringUtils.isNotBlank(genus)
 			 	|| StringUtils.isNotBlank(rank)
 			 	|| StringUtils.isNotBlank(fullName)
@@ -107,10 +107,10 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 
 	}
-	
-	
-// **************************** GETTER / SETTER *********************************/	
-	
+
+
+// **************************** GETTER / SETTER *********************************/
+
 	public void setBasisOfRecord(String basisOfRecord) {
 		this.basisOfRecord = basisOfRecord;
 	}
@@ -174,7 +174,7 @@ public class SpecimenRow extends ExcelRowBase{
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-//	
+//
 //	/**
 //	 * @return the author
 //	 */
@@ -311,16 +311,19 @@ public class SpecimenRow extends ExcelRowBase{
 	}
 
 
-	public void putIdInSource(int key, String id){
+	@Override
+    public void putIdInSource(int key, String id){
 		IdentifiableSource source = getOrMakeSource(key, OriginalSourceType.Import);
 		source.setIdInSource(id);
 	}
-	public void putSourceReference(int key, Reference<?> reference){
+	@Override
+    public void putSourceReference(int key, Reference reference){
 		IdentifiableSource source = getOrMakeSource(key, OriginalSourceType.Unknown);
 		source.setCitation(reference);
 	}
 
-	public List<IdentifiableSource> getSources() {
+	@Override
+    public List<IdentifiableSource> getSources() {
 		return getOrdered(sources);
 	}
 
@@ -347,7 +350,7 @@ public class SpecimenRow extends ExcelRowBase{
 			}
 		}
 	}
-	
+
 	public void putCollector(int key, String collector){
 		this.collectors.put(key, collector);
 	}
@@ -355,7 +358,7 @@ public class SpecimenRow extends ExcelRowBase{
 	public List<String> getCollectors() {
 		return getOrdered(collectors);
 	}
-	
+
 	public void putUnitNote(int key, String unitNote){
 		this.unitNotes.put(key, unitNote);
 	}
@@ -363,9 +366,9 @@ public class SpecimenRow extends ExcelRowBase{
 	public List<String> getUnitNotes() {
 		return getOrdered(unitNotes);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @param key
 	 * @return
@@ -378,20 +381,23 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return source;
 	}
-	
 
-	public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
+
+	@Override
+    public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
 		SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
 		designation.setTypeStatus(status);
 	}
-	public void putTypifiedName(int key, TaxonNameBase<?,?> name){
+	@Override
+    public void putTypifiedName(int key, TaxonNameBase<?,?> name){
 		if (name != null){
 			SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
 			name.addTypeDesignation(designation, false);
 		}
 	}
 
-	public List<SpecimenTypeDesignation> getTypeDesignations() {
+	@Override
+    public List<SpecimenTypeDesignation> getTypeDesignations() {
 		return getOrdered(types);
 	}
 
@@ -404,7 +410,7 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return designation;
 	}
-	
+
 	public void putDeterminationFamily(int key, String family){
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.family = family;
@@ -414,7 +420,7 @@ public class SpecimenRow extends ExcelRowBase{
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.fullName = fullName;
 	}
-	
+
 	public void putDeterminationTaxonUuid(int key, String taxonUuid){
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.taxonUuid = taxonUuid;
@@ -429,7 +435,7 @@ public class SpecimenRow extends ExcelRowBase{
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.genus = genus;
 	}
-	
+
 	public void putDeterminationSpeciesEpi(int key, String speciesEpi){
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.speciesEpi = speciesEpi;
@@ -459,13 +465,13 @@ public class SpecimenRow extends ExcelRowBase{
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.notes = notes;
 	}
-	
+
 	public void putDeterminationDeterminationModifier(int key, String modifier){
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.modifier = modifier;
 	}
-	
-	
+
+
 	public List<DeterminationLight> getDetermination() {
 		List<DeterminationLight> result = getOrdered(determinations);
 		if (determinations.size() > 1 && getCommonDetermination()!= null ){
@@ -473,7 +479,7 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns the determination with key "0".
 	 * @return
@@ -484,9 +490,9 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return null;
 	}
-	
-	
-	
+
+
+
 	private DeterminationLight getOrMakeDetermination(int key) {
 		DeterminationLight determination = this.determinations.get(key);
 		if (determination == null){
@@ -495,7 +501,7 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return determination;
 	}
-	
+
 
 	private<T extends Object> List<T> getOrdered(TreeMap<?, T> tree) {
 		List<T> result = new ArrayList<T>();
@@ -504,7 +510,7 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return result;
 	}
-	
+
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
@@ -563,11 +569,11 @@ public class SpecimenRow extends ExcelRowBase{
 		area.postfix = levelPostfix;
 		this.levels.add(area);
 	}
-	
+
 	public List<PostfixTerm> getLeveledAreas(){
 		return levels;
 	}
-	
+
 	public void setAltitudeMax(String altitudeMax) {
 		this.altitudeMax = altitudeMax;
 	}
@@ -602,5 +608,5 @@ public class SpecimenRow extends ExcelRowBase{
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-	
+
 }

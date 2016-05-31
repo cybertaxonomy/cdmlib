@@ -50,11 +50,11 @@ public class TaxonComparatorTest {
     @Test
     public void testCompare() {
 
-        Reference<?> sec = ReferenceFactory.newBook();
+        Reference sec = ReferenceFactory.newBook();
 
-        Reference<?> ref1 = ReferenceFactory.newBook();
-        Reference<?> ref2 = ReferenceFactory.newBook();
-        Reference<?> ref3 = ReferenceFactory.newBook();
+        Reference ref1 = ReferenceFactory.newBook();
+        Reference ref2 = ReferenceFactory.newBook();
+        Reference ref3 = ReferenceFactory.newBook();
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         Calendar cal3 = Calendar.getInstance();

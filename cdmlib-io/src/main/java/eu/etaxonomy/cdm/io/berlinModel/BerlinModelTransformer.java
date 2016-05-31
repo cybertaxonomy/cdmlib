@@ -1006,7 +1006,7 @@ public class BerlinModelTransformer {
 //		public static int T_STATUS_ORPHANED = 6;
 	}
 
-	public static Integer ref2refCategoryId (Reference<?> ref){
+	public static Integer ref2refCategoryId (Reference ref){
 		if (ref == null){
 			return null;
 		}

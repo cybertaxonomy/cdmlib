@@ -82,7 +82,7 @@ public class IntextReference extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private Reference<?> reference;
+	private Reference reference;
 
     @XmlElement(name = "Media")
     @XmlIDREF
@@ -126,7 +126,7 @@ public class IntextReference extends VersionableEntity {
 		return new IntextReference(null, null, null, agent, null, null, languageString, start, end);
 	}
 
-	public static IntextReference NewReferenceInstance(Reference<?> reference, LanguageStringBase languageString, int start, int end){
+	public static IntextReference NewReferenceInstance(Reference reference, LanguageStringBase languageString, int start, int end){
 		return new IntextReference(null, null, null, null, reference, null, languageString, start, end);
 	}
 
@@ -144,7 +144,7 @@ public class IntextReference extends VersionableEntity {
 
 	private IntextReference(TaxonNameBase<?, ?> taxonName, TaxonBase<?> taxon,
 				SpecimenOrObservationBase<?> occurrence, AgentBase<?> agent,
-				Reference<?> reference, Media media, LanguageStringBase languageString, int start, int end) {
+				Reference reference, Media media, LanguageStringBase languageString, int start, int end) {
 			super();
 			this.taxonName = taxonName;
 			this.taxon = taxon;
@@ -194,10 +194,10 @@ public class IntextReference extends VersionableEntity {
 		this.agent = agent;
 	}
 
-	public Reference<?> getReference() {
+	public Reference getReference() {
 		return reference;
 	}
-	public void setReference(Reference<?> reference) {
+	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
 

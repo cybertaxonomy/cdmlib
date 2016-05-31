@@ -250,7 +250,12 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> implements 
 	@Override
     @Transient
 	public boolean isOrphaned() {
-		return false;
+	    for (SynonymRelationship synonymRelationship : getSynonymRelations()) {
+            if(!synonymRelationship.getAcceptedTaxon().isOrphaned()){
+                return false;
+            }
+        }
+		return true;
 	}
 	/**
 	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the

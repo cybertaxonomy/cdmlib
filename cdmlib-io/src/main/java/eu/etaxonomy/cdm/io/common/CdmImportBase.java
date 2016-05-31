@@ -149,7 +149,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	}
 
-	protected Classification makeTree(STATE state, Reference<?> reference){
+	protected Classification makeTree(STATE state, Reference reference){
 		String treeName = "Classification (Import)";
 		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
 			treeName = reference.getTitleCache();
@@ -1004,7 +1004,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase name, boolean isImageGallery, boolean createNewIfNotExists) {
-		Reference<?> ref = null;
+		Reference ref = null;
 		return getTaxonNameDescription(name, ref, isImageGallery, createNewIfNotExists);
 	}
 
@@ -1047,7 +1047,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
-		Reference<?> ref = null;
+		Reference ref = null;
 		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
 	}
 
@@ -1058,7 +1058,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 *
 	 * @see #getTaxonDescription(Taxon, boolean, boolean)
 	 */
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
@@ -1177,7 +1177,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param ref
 	 * @param description
 	 */
-	private boolean hasCorrespondingSource(Reference<?> ref, DescriptionBase<?> description) {
+	private boolean hasCorrespondingSource(Reference ref, DescriptionBase<?> description) {
 		if (ref != null){
 			for (IdentifiableSource source : description.getSources()){
 				if (ref.equals(source.getCitation())){
@@ -1214,7 +1214,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}else if (acceptedTaxa.size() == 1){
 				return acceptedTaxa.iterator().next();
 			}else{
-				Reference<?> sec = synonym.getSec();
+				Reference sec = synonym.getSec();
 				if (sec != null){
 					Set<Taxon> taxaWithSameSec = new HashSet<Taxon>();
 					for (Taxon taxon: acceptedTaxa){

@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
 public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase> extends IoStateBase<CONFIG, IO> {
 	@SuppressWarnings("unused")
@@ -56,7 +55,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
 
-	private Map<Reference<?>,UUID> treeUuidMap = new HashMap<Reference<?>,UUID>();
+	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
 
 	private Map<String,UUID> classificationKeyUuidMap = new HashMap<String,UUID>();
 

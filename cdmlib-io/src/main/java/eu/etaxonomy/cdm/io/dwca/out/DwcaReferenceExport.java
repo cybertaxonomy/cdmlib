@@ -1,8 +1,8 @@
 /**
 d* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -48,7 +48,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -69,24 +69,24 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				//sec
 				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Reference<?> sec = taxon.getSec();
+				Reference sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
 					record.write(writer);
 					addExistingRecord(sec);
 				}
-				
+
 				//nomRef
 				record = new DwcaReferenceRecord(metaRecord, config);
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
 				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
-					handleReference(record, (Reference<?>)nomRef, taxon);
+					handleReference(record, (Reference)nomRef, taxon);
 					record.write(writer);
-					addExistingRecord((Reference<?>)nomRef);
+					addExistingRecord((Reference)nomRef);
 				}
-				
+
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -103,10 +103,10 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		return;
 	}
 
-	private void handleReference(DwcaReferenceRecord record, Reference<?> reference, Taxon taxon) {
+	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
-		
+
 		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
 		record.setUri(reference.getUri());
 		//TODO implementation, DOI is extension type
@@ -118,12 +118,12 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		record.setCreator(reference.getAuthorship());
 		record.setDate(reference.getDatePublished());
 		record.setSource(reference.getInReference()==null?null:reference.getInReference().getTitleCache());
-		
+
 		//FIXME abstracts, remarks, notes
 		record.setDescription(reference.getReferenceAbstract());
 		//FIXME
 		record.setSubject(null);
-		
+
 		//TODO missing, why ISO639-1 better 639-3
 		record.setLanguage(null);
 		record.setRights(reference.getRights());
@@ -132,7 +132,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 		//TODO
 		record.setType(null);
 	}
-	
+
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
@@ -145,5 +145,5 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoReferences();
 	}
-	
+
 }

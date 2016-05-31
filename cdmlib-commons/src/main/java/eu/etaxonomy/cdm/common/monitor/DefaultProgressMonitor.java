@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
  *
  */
 public class DefaultProgressMonitor implements IProgressMonitor {
+    private static final long serialVersionUID = 8782649283568146667L;
+
     private static final Logger logger = Logger.getLogger(DefaultProgressMonitor.class);
 
     public static final DefaultProgressMonitor NewInstance(){

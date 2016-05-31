@@ -43,7 +43,7 @@ public class TaxonShortSecCacheStrategyTest {
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
 	private BotanicalName name;
-	private Reference<?> sec;
+	private Reference sec;
 	private static ITaxonCacheStrategy shortStrategy;
 
 	/**
@@ -84,9 +84,6 @@ public class TaxonShortSecCacheStrategyTest {
 
 //******************************* TESTS ********************************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
-	 */
 	@Test
 	public void testGetTitleCache() {
 		TaxonBase taxonBase = Taxon.NewInstance(name, sec);
@@ -97,9 +94,14 @@ public class TaxonShortSecCacheStrategyTest {
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
-
-
 	}
+
+   @Test
+    public void testGetTitleCacheWithoutName() {
+        TaxonBase taxonBase = Taxon.NewInstance(null, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
+        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
+   }
 
 	//test missing "&" in title cache  #3822
 	@Test
@@ -116,14 +118,21 @@ public class TaxonShortSecCacheStrategyTest {
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
-
 	}
+
+    @Test
+    public void testMicroReference(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        String secMicroRef = "p. 553";
+        taxonBase.setSecMicroReference(secMicroRef);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+                taxonBase.getTitleCache());
+    }
 
 	@Test
 	public void testProtectedTitleCache(){
 	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-        taxonBase.setProtectedTitleCache(true);
-        taxonBase.setTitleCache("abc");
+        taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}

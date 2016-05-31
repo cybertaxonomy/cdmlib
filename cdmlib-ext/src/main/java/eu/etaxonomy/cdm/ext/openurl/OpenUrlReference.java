@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,31 +16,30 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper.ReferenceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
  * @author a.kohlbecker
  * @date 16.12.2010
  *
  */
-public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Reference<S> {
-	
+public class OpenUrlReference extends Reference {
+
 
 	private static final String PAGETHUMB_BASE_URI = "http://www.biodiversitylibrary.org/pagethumb/";
 
 	public static final Logger logger = Logger.getLogger(OpenUrlReference.class);
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private URI itemUri;
-	
+
 	private URI titleUri;
-	
+
 	private ReferenceType referenceType = null;
 
 	/**
 	 * Links to the specific book or journal, that is to the front page
-	 * 
+	 *
 	 * @param itemUri the itemUri to set
 	 */
 	public void setItemUri(URI itemUri) {
@@ -49,7 +48,7 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 
 	/**
 	 * Links to the according entry in the bibliography.
-	 * 
+	 *
 	 * @return the itemUri
 	 */
 	public URI getItemUri() {
@@ -70,8 +69,8 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	public URI getTitleUri() {
 		return titleUri;
 	}
-	
-	
+
+
 	/**
 	 * Splits the id from the base ulr of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
 	 * <ol>
@@ -105,8 +104,8 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	 */
 	public ReferenceType getReferenceType() {
 		return referenceType;
-	}	
-	
+	}
+
 	/**
 	 * This method will construct an URI pointing to a service which creates an
 	 * jpeg image. This may take a while. For more information please refer to
@@ -116,7 +115,7 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	 * This is usually much faster than requesting for a custom imge
 	 * size.
 	 * <p>
-	 * 
+	 *
 	 * @param width
 	 *            width of the image, may be null or 0
 	 * @param height
@@ -124,7 +123,7 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 	 * @return
 	 */
 	public URI getJpegImage(Integer width, Integer height){
-		
+
 		URI imageURI = null;
 		try {
 			String sizeStr = "";
@@ -133,7 +132,7 @@ public class OpenUrlReference<S extends IReferenceBaseCacheStrategy> extends Ref
 			}
 			String[] tokens = splitPathAndId(getUri());
 			if(tokens.length == 2){
-				imageURI = new URI(PAGETHUMB_BASE_URI + tokens[1] + sizeStr);				
+				imageURI = new URI(PAGETHUMB_BASE_URI + tokens[1] + sizeStr);
 			}
 		} catch (URISyntaxException e) {
 			// should never happen, but let's report it anyway

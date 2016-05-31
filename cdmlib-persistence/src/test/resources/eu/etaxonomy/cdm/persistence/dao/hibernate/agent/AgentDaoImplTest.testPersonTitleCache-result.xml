@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+  <AGENTBASE DTYPE="Person"  UUID="ee7c3b99-bf23-43dc-a64b-d37d3c6ea414" PROTECTEDTITLECACHE="false" TITLECACHE="Abbrev. tit." NOMENCLATURALTITLE="Abbrev. tit."/>
+</dataset>

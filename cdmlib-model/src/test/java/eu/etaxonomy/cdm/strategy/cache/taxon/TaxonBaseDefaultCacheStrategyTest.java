@@ -44,7 +44,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
 	private BotanicalName name;
-	private Reference<?> sec;
+	private Reference sec;
 
 	/**
 	 * @throws java.lang.Exception
@@ -122,6 +122,12 @@ public class TaxonBaseDefaultCacheStrategyTest {
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxonBase.getTitleCache());
 	}
 
+   @Test
+    public void testGetTitleCacheWithoutName() {
+        TaxonBase<?> taxonBase = Taxon.NewInstance(null, sec);
+        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
+    }
+
 	//test missing "&" in title cache  #3822
 	@Test
 	public void testAndInTitleCache() {
@@ -139,13 +145,20 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
 	}
 
-	@SuppressWarnings("deprecation")
     @Test
 	public void testProtectedTitleCache(){
 	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-        taxonBase.setProtectedTitleCache(true);
-        taxonBase.setTitleCache("abc");
+        taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}
+
+    @Test
+    public void testMicroReference(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        String secMicroRef = "p. 553";
+        taxonBase.setSecMicroReference(secMicroRef);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+                taxonBase.getTitleCache());
+    }
 }

@@ -53,14 +53,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -74,7 +68,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 /**
- * The upmost (abstract) class for references (information sources).
+ * The class for references (information sources). Originally
+ * an abstract class with many subclasses. Not it is only
+ * one class implementing many interfaces for safe use.
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
@@ -121,9 +117,13 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @ReferenceCheck(groups=Level2.class)
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
-public class Reference<S extends IReferenceBaseCacheStrategy>
-        extends IdentifiableMediaEntity<S>
-        implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
+public class Reference
+        extends IdentifiableMediaEntity<INomenclaturalReferenceCacheStrategy>
+        implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
+                   IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
+                   IThesis,IWebPage, IPersonalCommunication,
+                   INomenclaturalReference, IReference,
+                   Cloneable {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
@@ -275,25 +275,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 //    @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
    // @InReference(groups=Level2.class)
-
-   	protected Reference<?> inReference;
-
-//    @XmlElement(name = "FullReference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-////    @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//    protected Reference fullReference;
-//
-//    @XmlElement(name = "AbbreviatedReference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @ManyToOne(fetch = FetchType.LAZY)
-////    @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//    protected Reference abbreviatedReference;
-
+   	protected Reference inReference;
 
 //********************************************************/
 
@@ -332,16 +314,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
 
-
-//	@XmlElement(name = "ReferenceIdentity")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	//@IndexedEmbedded
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//	@Transient
-//	private ReferenceIdentity referenceIdentity;
-
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
 	private int parsingProblem = 0;
@@ -364,11 +336,13 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	}
 
 	protected Reference(ReferenceType type) {
-		if (type == null){
+		super();
+	    if (type == null){
 			this.type = ReferenceType.Generic;
 		} else{
 			this.type = type;
 		}
+		this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
 	}
 
 	@Override
@@ -398,7 +372,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 		if (protectedAbbrevTitleCache){
             return this.abbrevTitleCache;
         }
-        // is title dirty, i.e. equal NULL?
+        // is reference dirty, i.e. equal NULL?
         if (abbrevTitleCache == null){
             this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
@@ -449,16 +423,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
     public void setEditor(String editor) {
 		this.editor = StringUtils.isBlank(editor)? null : editor;
 	}
-
-//	@Override
-//    public String getSeries() {
-//		return series;
-//	}
-//
-//	@Override
-//    public void setSeries(String series) {
-//		this.series = series;
-//	}
 
 	@Override
     public String getVolume() {
@@ -598,18 +562,12 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setType(ReferenceType type) {
-		this.setCacheStrategy(type.getCacheStrategy());
 		if (type == null){
 			this.type = ReferenceType.Generic;
 		} else{
 			this.type = type;
 		}
-
 	}
-
-	/**
-	 * @return the type
-	 */
 	@Override
     public ReferenceType getType() {
 		return type;
@@ -723,8 +681,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	}
 
 
-
-
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This
 	 * indicates that a {@link TaxonNameBase taxon name} has been originally
@@ -749,137 +705,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	}
 
 
-//	/**
-//	 * Returns the full reference that belongs to this abbreviated reference. If this
-//	 * reference is not abbreviated the full reference should be <code>null</code>.<BR>
-//	 * A full reference should be added to a reference
-//	 * which represents the abbreviated form of a reference. The full reference can be used
-//	 * by publication tools to link to the unabbreviated and therefore more complete version
-//	 * of the reference.
-//	 *
-//	 * @see #getAbbreviatedReference()
-//	 * @return the full reference
-//	 */
-//	public Reference getFullReference() {
-//		return fullReference;
-//	}
-//
-//	/**
-//	 * @see #getFullReference()
-//	 * @param fullReference
-//	 */
-//	public void setFullReference(Reference fullReference) {
-//		this.fullReference = fullReference;
-//	}
-//
-//	/**
-//	 * Returns the abbreviated reference that belongs to this full reference. If this
-//	 * reference is not a full reference the abbeviated referece must be <code>null</code>.<BR>
-//	 * An abbreviated reference should be added to a reference which represents the long (full)
-//	 * form of a reference.
-//	 * In future this may become a set or handled differently as there are multiple
-//	 *
-//	 * @see #getFullReference()
-//	 * @return the full reference
-//	 */
-//	public Reference getAbbreviatedReference() {
-//		return abbreviatedReference;
-//	}
-//
-//	/**
-//	 * @see #getAbbreviatedReference()
-//	 * @param abbreviatedReference
-//	 *
-//	 */
-//	public void setAbbreviatedReference(Reference abbreviatedReference) {
-//		this.abbreviatedReference = abbreviatedReference;
-//	}
-
 //****************************************************  /
-
-//	/**
-//	 * Returns the string representing the name of the editor of <i>this</i>
-//	 * generic reference. An editor is mostly a person (team) who assumed the
-//	 * responsibility for the content of the publication as a whole without
-//	 * being the author of this content.<BR>
-//	 * If there is an editor then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit}.
-//	 *
-//	 * @return  the string identifying the editor of <i>this</i>
-//	 * 			generic reference
-//	 * @see 	#getPublisher()
-//	 */
-//	protected String getEditor(){
-//		return this.editor;
-//	}
-//
-//	/**
-//	 * @see #getEditor()
-//	 */
-//	protected void setEditor(String editor){
-//		this.editor = editor;
-//	}
-//
-//	/**
-//	 * Returns the string representing the series (for instance for books or
-//	 * within journals) - and series part - in which <i>this</i> generic reference
-//	 * was published.<BR>
-//	 * If there is a series then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string identifying the series for <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getSeries(){
-//		return this.series;
-//	}
-//
-//	/**
-//	 * @see #getSeries()
-//	 */
-//	protected void setSeries(String series){
-//		this.series = series;
-//	}
-//
-//	/**
-//	 * Returns the string representing the volume (for instance for books or
-//	 * within journals) in which <i>this</i> generic reference was published.<BR>
-//	 * If there is a volume then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string identifying the volume for <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getVolume(){
-//		return this.volume;
-//	}
-//
-//	/**
-//	 * @see #getVolume()
-//	 */
-//	protected void setVolume(String volume){
-//		this.volume = volume;
-//	}
-//
-//	/**
-//	 * Returns the string representing the page(s) where the content of
-//	 * <i>this</i> generic reference is located.<BR>
-//	 * If there is a pages information then the generic reference must be some
-//	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
-//	 *
-//	 * @return  the string containing the pages corresponding to <i>this</i>
-//	 * 			generic reference
-//	 */
-//	protected String getPages(){
-//		return this.pages;
-//	}
-//
-//	/**
-//	 * @see #getPages()
-//	 */
-//	protected void setPages(String pages){
-//		this.pages = pages;
-//	}
 
 
 	/**
@@ -891,7 +717,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	// TODO implement
 	@Transient
 	public String getCitation(){
-		rectifyCacheStrategy();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
@@ -903,13 +728,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public String generateTitle() {
-		rectifyCacheStrategy();
 		return super.generateTitle();
 	}
 
     public String generateAbbrevTitle() {
-		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
-		return getCacheStrategy().getAbbrevTitleCache(this);
+		return getCacheStrategy().getFullAbbrevTitleString(this);
 	}
 
 	/**
@@ -1007,15 +830,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     @Transient
-	public String getNomenclaturalCitation(String microReference) {
-		rectifyCacheStrategy();
+    public String getNomenclaturalCitation(String microReference) {
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
-			if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
-				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this, microReference);
+		    if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
+				return cacheStrategy.getNomenclaturalCitation(this, microReference);
 			}else {
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
 				return null;
@@ -1048,31 +870,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 //		}
 //	}
 
-
-
-//	/**
-//	 * Returns the reference identity object
-//	 * @return the referenceIdentity
-//	 */
-//	public ReferenceIdentity getReferenceIdentity() {
-//		return referenceIdentity;
-//	}
-//
-//	/**
-//	 * For bidirectional use only
-//	 * @param referenceIdentity the referenceIdentity to set
-//	 */
-//	protected void setReferenceIdentity(ReferenceIdentity referenceIdentity) {
-//		this.referenceIdentity = referenceIdentity;
-//	}
-//
-//	/**
-//	 * Returns the set of all identical references. Same as getReferenceIdentity().getReferences()
-//	 * @return
-//	 */
-//	public Set<Reference> identicalReferences(){
-//		return referenceIdentity.getReferences();
-//	}
 
 
 //********** Casting methods ***********************************/
@@ -1170,20 +967,18 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInJournal(IJournal journal) {
-		this.inReference = (Reference<JournalDefaultCacheStrategy>) journal;
-
+		setInReference((Reference)journal);  //user setter to invoke aspect #1815
 	}
 
 	@Override
     @Transient // prevent from being serialized by webservice
 	public IPrintSeries getInSeries() {
-		IPrintSeries printSeries = this.inReference;
-		return printSeries;
+		return this.inReference;
 	}
 
 	@Override
     public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (Reference<IReferenceBaseCacheStrategy>) inSeries;
+	    setInReference((Reference)inSeries);  //user setter to invoke aspect  #1815
 	}
 
 	@Override
@@ -1197,7 +992,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInBook(IBook book) {
-		this.inReference = (Reference<BookDefaultCacheStrategy>) book;
+	    setInReference((Reference)book);  //user setter to invoke aspect #1815
 	}
 
 	@Override
@@ -1209,109 +1004,21 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 
 	@Override
     public void setInProceedings(IProceedings proceeding) {
-		this.inReference = (Reference<BookDefaultCacheStrategy>) proceeding;
+        setInReference((Reference)proceeding);  //user setter to invoke aspect #1815
 	}
 
 //*************************** CACHE STRATEGIES ******************************/
 
     @Override
-    public S getCacheStrategy() {
-    	rectifyCacheStrategy();
+    public INomenclaturalReferenceCacheStrategy getCacheStrategy() {
     	return this.cacheStrategy;
     }
 
-	/**
-	 * The type property of this class is mapped on the field level to the data base column, so
-	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor}
-	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so
-	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to
-	 * validate the CacheStrategy before it is to be used.
-	 */
-	private void rectifyCacheStrategy() {
-		if(!cacheStrategyRectified ){
-			setType(getType());
-			cacheStrategyRectified = true;
-		}
-	}
-
-
-	//public void setCacheStrategy(S cacheStrategy){
-	//	this.cacheStrategy = cacheStrategy;
-	//}
-
 	@Override
-    public void setCacheStrategy(IReferenceBaseCacheStrategy iReferenceBaseCacheStrategy) {
-		this.cacheStrategy = (S) iReferenceBaseCacheStrategy;
-
+    public void setCacheStrategy(INomenclaturalReferenceCacheStrategy referenceCacheStrategy) {
+		this.cacheStrategy = referenceCacheStrategy;
 	}
 
-	@Override
-    public void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	@Override
-    public void setCacheStrategy(GenericDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	public void setCacheStrategy(ReferenceDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S)cacheStrategy;
-
-	}
-
-
-
-//    @Override
-//    protected void initListener(){
-//        PropertyChangeListener listener = new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent e) {
-//                boolean protectedByLowerCache = false;
-//                //authorship cache
-//                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
-//                    if (protectedAuthorshipCache){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        authorshipCache = null;
-//                    }
-//                }
-//
-//                //title cache
-//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
-//                    if (isProtectedTitleCache()|| protectedByLowerCache == true ){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        titleCache = null;
-//                    }
-//                }
-//                //full title cache
-//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
-//                    if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
-//                        protectedByLowerCache = true;
-//                    }else{
-//                        fullTitleCache = null;
-//                    }
-//                }
-//            }
-//        };
-//        addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
-//    }
 
 
 //*********************** CLONE ********************************************************/
@@ -1327,7 +1034,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy>
 	@Override
 	public Object clone() {
 		try {
-			Reference<?> result = (Reference<?>)super.clone();
+			Reference result = (Reference)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;

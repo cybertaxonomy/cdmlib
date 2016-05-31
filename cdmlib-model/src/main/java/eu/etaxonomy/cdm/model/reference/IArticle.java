@@ -5,12 +5,11 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 
 /**
  * This interface represents articles in a {@link IJournal journal}. An article is an independent
@@ -24,8 +23,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
  * <li> "MagazineArticle"
  * </ul>
  */
-public interface IArticle extends ISection, IVolumeReference, INomenclaturalReference{
-	
+public interface IArticle extends ISection, IVolumeReference{
+
 	/**
 	 * Returns the series information for this article
 	 */
@@ -36,22 +35,20 @@ public interface IArticle extends ISection, IVolumeReference, INomenclaturalRefe
 	 * @param series
 	 */
 	public void setSeriesPart(String series);
-	
-	
-	
+
+
+
 	/**
 	 * Returns this articles journal.
 	 * @return
 	 */
 	public IJournal getInJournal();
-	
-	
+
+
 	/**
-	 * Sets this articles journal 
+	 * Sets this articles journal
 	 * @param journal
 	 */
 	public void setInJournal(IJournal journal);
 
-	
-	void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy);
 }

@@ -47,8 +47,8 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
     private Taxon taxon1;
     private Taxon taxon2;
     private Synonym synonym;
-    private Reference<?> sec1;
-    private Reference<?> sec2;
+    private Reference sec1;
+    private Reference sec2;
 
 	@Before
 	public void setUp() {

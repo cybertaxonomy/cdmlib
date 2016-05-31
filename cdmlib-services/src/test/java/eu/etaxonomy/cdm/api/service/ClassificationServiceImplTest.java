@@ -370,7 +370,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         classification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
         classificationDao.save(classification);
 
-        Reference<?> sec = ReferenceFactory.newBook();
+        Reference sec = ReferenceFactory.newBook();
         sec.setTitleCache("Sp. Pl.", true);
         referenceDao.save(sec);
 

@@ -391,7 +391,7 @@ public class DeduplicationHelper {
 	 * @param cdmBase2
 	 * @param session
 	 */
-	//TODO Why do we not handle credits (credits are reusable), rights and sources here
+	//TODO Why do we not handle credits, rights and sources here
 	private <T> void copyIdentifiableExtensions(T cdmBase1, T cdmBase2,
 			Session session) {
 		IdentifiableEntity identifiableEntity1 = (IdentifiableEntity)cdmBase1;

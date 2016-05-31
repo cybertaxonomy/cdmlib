@@ -53,9 +53,9 @@ public class TaxonGenerator {
 		int descrIndex = 6000;
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.", true);
-		Reference<?> sec = ReferenceFactory.newDatabase();
+		Reference sec = ReferenceFactory.newDatabase();
 		sec.setTitleCache("Flora lunaea", true);
-		Reference<?> citationRef = ReferenceFactory.newBook();
+		Reference citationRef = ReferenceFactory.newBook();
 		citationRef.setTitleCache("Sp. lunarum", true);
 
         //genus taxon with Name, combinationAuthor,

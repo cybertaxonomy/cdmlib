@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -136,7 +137,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     @IndexedEmbedded
-    private Reference<?> sec;
+    private Reference sec;
 
     @XmlElement(name = "secMicroReference")
     @CacheUpdate(noUpdate ="titleCache")
@@ -293,12 +294,28 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     public Reference getSec() {
         return sec;
     }
-
     /**
      * @see  #getSec()
      */
     public void setSec(Reference sec) {
         this.sec = sec;
+    }
+
+    /**
+     * @return the micro reference (detail) for the sec(undum)
+     * reference
+     * @see #getSec()
+     */
+    public String getSecMicroReference() {
+        return secMicroReference;
+    }
+
+    /**
+     * @see #getSecMicroReference()
+     * @see #getSec()
+     */
+    public void setSecMicroReference(String secMicroReference) {
+        this.secMicroReference = CdmUtils.Nb(secMicroReference);
     }
 
 

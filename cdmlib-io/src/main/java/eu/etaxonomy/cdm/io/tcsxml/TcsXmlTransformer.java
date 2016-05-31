@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.io.tcsxml;
 
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class TcsXmlTransformer {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlTransformer.class);
- 
+
 
 	//TypeDesignation
 	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
@@ -58,10 +58,10 @@ public final class TcsXmlTransformer {
 			}
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/** Creates an cdm-Rank by the tcs rank
 	 */
 	public static Rank rankCode2Rank (String strRank) throws UnknownCdmTypeException{
@@ -71,7 +71,7 @@ public final class TcsXmlTransformer {
 		}else if (strRank.equals("subgen")){return Rank.SUBGENUS();
 		}else if (strRank.equals("gen")){return Rank.GENUS();
 		//genus subdivision
-		//TODO 
+		//TODO
 		}else if (strRank.equals("aggr")){return Rank.SPECIESAGGREGATE();
 		}else if (strRank.equals("taxinfragen")){return Rank.INFRAGENERICTAXON();
 		}else if (strRank.equals("subser")){return Rank.SUBSERIES();
@@ -124,16 +124,16 @@ public final class TcsXmlTransformer {
 		}else if (strRank.equals("subtrib")){return Rank.SUBTRIBE();
 		}else if (strRank.equals("trib")){return Rank.TRIBE();
 		}else if (strRank.equals("supertrib")){return Rank.SUPERTRIBE();
-		}	
+		}
 		else {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
 		}
-		
-		
+
+
 	}
-	
+
 	public static Rank rankString2Rank (String strRank) throws UnknownCdmTypeException{
-		
+
 		String tcsFamily = "family";
 		String tcsSubFamily = "subfamily";
 		String tcsTribe =  "tribe";
@@ -146,7 +146,7 @@ public final class TcsXmlTransformer {
 		String tcsSubVariety =  "subvariety";
 		String tcsForm =  "form";
 
-		
+
 		String tcsAbbFamily = "fam.";
 		String tcsAbbrSubFamily =  "subfam.";
 		String tcsAbbrTribe =  "trib.";
@@ -166,7 +166,7 @@ public final class TcsXmlTransformer {
 		String tcsAbbrInfraspecUnranked ="[infrasp.unranked]";
 		String tcsAbbrInfragenUnranked ="[infragen.unranked]";
 		String tcsAbbrNothoSubSpecies = "nothosubsp.";
-		
+
 		if (strRank == null){return null;
 		}else{
 			strRank = strRank.toLowerCase();
@@ -203,7 +203,7 @@ public final class TcsXmlTransformer {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
 		}
 	}
-	
+
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static NomenclaturalCode nomCodeString2NomCode (String nomCode) throws UnknownCdmTypeException{
@@ -218,28 +218,28 @@ public final class TcsXmlTransformer {
 		}else if (nomCode.equals("CultivatedPlant")){return NomenclaturalCode.ICNCP;
 		//TODO code Indeterminate
 //		}else if (nomCode.equals("Indeterminate")){return NomenclaturalCode.XXX();
-		}	
+		}
 		else {
 			throw new UnknownCdmTypeException("Unknown Nomenclatural Code " + nomCode);
 		}
 	}
-	
+
 	public static boolean isReverseRelationshipCategory (String tcsRelationshipCategory){
 		String str = tcsRelationshipCategory.replace("http://rs.tdwg.org/ontology/voc/TaxonConcept#", "");
-		if ("HasSynonym".equalsIgnoreCase(str) 
-				|| "IsParentTaxonOf".equalsIgnoreCase(str) 
-				|| "IsIncludedIn".equalsIgnoreCase(str) 
-				|| "DoesNotInclude".equalsIgnoreCase(str) 
+		if ("HasSynonym".equalsIgnoreCase(str)
+				|| "IsParentTaxonOf".equalsIgnoreCase(str)
+				|| "IsIncludedIn".equalsIgnoreCase(str)
+				|| "DoesNotInclude".equalsIgnoreCase(str)
 									){
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	/** Creates an cdm-Rank by the tcs rank
 	 */
-	public static Reference<?> pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
+	public static Reference pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";
 		String tcsBook = tcsRoot + "Book";
 		String tcsJournal = tcsRoot + "Journal";
@@ -248,8 +248,8 @@ public final class TcsXmlTransformer {
 		String tcsBookSeries = tcsRoot + "BookSeries";
 		String tcsArticle = tcsRoot + "JournalArticle";
 		String tcsBookSection = tcsRoot + "BookSection";
-		
-		
+
+
 //		Artwork	An Artwork type publication.
 //		AudiovisualMaterial	A Audiovisual Material type publication.
 //		BookSeries	A Book Series type publication.
@@ -277,120 +277,120 @@ public final class TcsXmlTransformer {
 		}else if (tcsWebPage.equals(strPubType)){return ReferenceFactory.newWebPage();
 		}else if (tcsCommunication.equals(strPubType)){return ReferenceFactory.newPersonalCommunication();
 		}else if (tcsBookSeries.equals(strPubType)){return ReferenceFactory.newPrintSeries();
-		}	
+		}
 		else {
 			throw new UnknownCdmTypeException("Unknown publication type " + strPubType);
 		}
 	}
-	
+
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
 	public static RelationshipTermBase<?> tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
 		if (tcsRelationshipType == null){ return null;
-		
+
 		//Synonym relationships
-//		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymRelationshipType.SYNONYM_OF(); 
-		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymRelationshipType.SYNONYM_OF(); 
-		
+//		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymRelationshipType.SYNONYM_OF();
+		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymRelationshipType.SYNONYM_OF();
+
 		//Taxon relationships
-		}else if (tcsRelationshipType.equals("is child taxon of")){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
-		}else if (tcsRelationshipType.equals("is parent taxon of")){inverse.setValue(true);  return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
-		
+		}else if (tcsRelationshipType.equals("is child taxon of")){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+		}else if (tcsRelationshipType.equals("is parent taxon of")){inverse.setValue(true);  return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+
 		//concept relationships
-		}else if (tcsRelationshipType.equals("does not overlap")){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
-		}else if (tcsRelationshipType.equals("excludes")){return TaxonRelationshipType.EXCLUDES(); 
-		}else if (tcsRelationshipType.equals("includes")){return TaxonRelationshipType.INCLUDES(); 
-		}else if (tcsRelationshipType.equals("is congruent to")){return TaxonRelationshipType.CONGRUENT_TO(); 
-		}else if (tcsRelationshipType.equals("is not congruent to")){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
-		}else if (tcsRelationshipType.equals("is not included in")){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
-		}else if (tcsRelationshipType.equals("overlaps")){return TaxonRelationshipType.OVERLAPS(); 
+		}else if (tcsRelationshipType.equals("does not overlap")){return TaxonRelationshipType.DOES_NOT_OVERLAP();
+		}else if (tcsRelationshipType.equals("excludes")){return TaxonRelationshipType.EXCLUDES();
+		}else if (tcsRelationshipType.equals("includes")){return TaxonRelationshipType.INCLUDES();
+		}else if (tcsRelationshipType.equals("is congruent to")){return TaxonRelationshipType.CONGRUENT_TO();
+		}else if (tcsRelationshipType.equals("is not congruent to")){return TaxonRelationshipType.NOT_CONGRUENT_TO();
+		}else if (tcsRelationshipType.equals("is not included in")){return TaxonRelationshipType.NOT_INCLUDED_IN();
+		}else if (tcsRelationshipType.equals("overlaps")){return TaxonRelationshipType.OVERLAPS();
 		//reverse concept relationships
 		}else if (tcsRelationshipType.equals("is included in")){inverse.setValue(true); return TaxonRelationshipType.INCLUDES();
-		}else if (tcsRelationshipType.equals("does not include")){inverse.setValue(true); return TaxonRelationshipType.NOT_INCLUDED_IN(); 
-		
+		}else if (tcsRelationshipType.equals("does not include")){inverse.setValue(true); return TaxonRelationshipType.NOT_INCLUDED_IN();
+
 	//TODO
-		
-//		}else if (tcsRelationshipType.equals("has vernacular")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is vernacular for")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is ambiregnal of")){return TaxonRelationshipType.X; 
+
+//		}else if (tcsRelationshipType.equals("has vernacular")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is vernacular for")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is ambiregnal of")){return TaxonRelationshipType.X;
 		}else if (tcsRelationshipType.equals("is hybrid child of")){return HybridRelationshipType.FIRST_PARENT();
-//		}else if (tcsRelationshipType.equals("is hybrid parent of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is male parent of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is first parent of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is female parent of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is second parent of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is teleomorph of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is anamorph of")){return TaxonRelationshipType.X; 
-		
+//		}else if (tcsRelationshipType.equals("is hybrid parent of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is male parent of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is first parent of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is female parent of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is second parent of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is teleomorph of")){return TaxonRelationshipType.X;
+//		}else if (tcsRelationshipType.equals("is anamorph of")){return TaxonRelationshipType.X;
+
 		}else {
 			throw new UnknownCdmTypeException("Unknown RelationshipCategory " + tcsRelationshipType);
 		}
 	}
-	
-	
+
+
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static NomenclaturalStatusType nomStatusString2NomStatus (String nomStatus) throws UnknownCdmTypeException{
-	
+
 		if (nomStatus == null){ return null;
 		}else if ("Valid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.VALID();
-		
+
 		}else if ("Alternative".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();
 		}else if ("nom. altern.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();
-		
+
 		}else if ("Ambiguous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.AMBIGUOUS();
-		
+
 		}else if ("Doubtful".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.DOUBTFUL();
-		
+
 		}else if ("Confusum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONFUSUM();
-		
+
 		}else if ("Illegitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();
 		}else if ("nom. illeg.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();
-		
+
 		}else if ("Superfluous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();
 		}else if ("nom. superfl.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();
-		
+
 		}else if ("Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();
 		}else if ("nom. rej.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();
-		
+
 		}else if ("Utique Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED();
-		
+
 		}else if ("Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED_PROP();
-		
+
 		}else if ("Orthography Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-		
+
 		}else if ("Legitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.LEGITIMATE();
-		
+
 		}else if ("Novum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();
 		}else if ("nom. nov.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();
-		
+
 		}else if ("Utique Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-		
+
 		}else if ("Orthography Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-		
+
 		}else if ("Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED_PROP();
-		
+
 		}else if ("Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();
 		}else if ("nom. cons.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();
-		
+
 		}else if ("Sanctioned".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SANCTIONED();
-		
+
 		}else if ("Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();
 		}else if ("nom. inval.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();
-		
+
 		}else if ("Nudum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();
 		}else if ("nom. nud.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();
-		
+
 		}else if ("Combination Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.COMBINATION_INVALID();
-		
+
 		}else if ("Provisional".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}else if ("nom. provis.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}
-		
+
 		else {
 			throw new UnknownCdmTypeException("Unknown Nomenclatural status type " + nomStatus);
 		}
 	}
-	
-	
+
+
 }

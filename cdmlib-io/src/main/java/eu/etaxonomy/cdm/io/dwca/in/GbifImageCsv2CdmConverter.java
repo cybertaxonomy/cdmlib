@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,14 +28,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifImageCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
-	
+
 	/**
 	 * @param state
 	 */
@@ -43,30 +43,31 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
-			
+
 //			xxx;
 
 		}else{
 			String message = "Can't retrieve taxon from database for id '%s'";
 			fireWarningEvent(String.format(message, id), item, 12);
 		}
-		
+
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 
-	
+
 
 	@Override
 	public String getSourceId(StreamItem item) {
@@ -74,7 +75,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 		return id;
 	}
 
-	
+
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -87,19 +88,19 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
 	}
-	
+
 //******************* TO STRING ******************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

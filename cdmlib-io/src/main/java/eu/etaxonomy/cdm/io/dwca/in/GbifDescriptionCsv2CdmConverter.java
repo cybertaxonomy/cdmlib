@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,14 +36,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
-	
+
 	/**
 	 * @param state
 	 */
@@ -51,46 +51,47 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
-			
+
 			String description = item.get(TermUri.DC_DESCRIPTION);
 			//String license = item.get(TermUri.DC_LICENSE);//lorna check - often empty in SP dwca
-					
+
 			//TODO: Create the Language from the TermUri.DC_LANGUAGE in the dwca
-			Language language = getLanguage(item); 
-									
-			
+			Language language = getLanguage(item);
+
+
 			if (StringUtils.isNotBlank(description)){
 				Feature feature = getFeatureByDcType(item, resultList);
 
 				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
-								
+
 				//deduplicate - if this taxonDescription already got these Rights attached
 				boolean addRights = true;
 				String rights = item.get(TermUri.DC_RIGHTS);
-				Set<Rights> allRights = taxonDescription.getRights();				
-				for (Rights r : allRights) {					
+				Set<Rights> allRights = taxonDescription.getRights();
+				for (Rights r : allRights) {
 					if (r.getText() == rights) {
 						addRights = false;
 					}
 				}
-				
+
 				if (addRights && (rights != null || rights != "")) {
 					Rights copyright = Rights.NewInstance(rights, language);
 					taxonDescription.addRights(copyright);
 				}
-				
+
 				TextData descElement = TextData.NewInstance(feature);
-				
+
 				//Language language = getLanguage(item);  //TODO
 				descElement.putText(language,description);
 				taxonDescription.addElement(descElement);
@@ -98,7 +99,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				String message = "Description is empty. Description item will not be imported.";
 				fireWarningEvent(message, item, 4);
 			}
-			
+
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
 		}else{
@@ -106,17 +107,17 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			message = String.format(message, id);
 			fireWarningEvent(message, item, 12);
 		}
-		
+
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
-	
+
 	private Language getLanguage(StreamItem item) {
 		//TODO
-		
+
 		Language language = Language.DEFAULT();
-		String langString = item.get(TermUri.DC_LANGUAGE);	
-		
+		String langString = item.get(TermUri.DC_LANGUAGE);
+
 		/*if (langString != null) {
 			if (!langString.equals("")) {
 				language = getTermService().getLanguageByIso(langString.substring(0, 2));
@@ -130,13 +131,13 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
 	 * features.
 	 * @param item
-	 * @param resultList 
+	 * @param resultList
 	 * @return
 	 */
 	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase> resultList) {
 		String descriptionType = item.get(TermUri.DC_TYPE);
 		item.remove(TermUri.DC_TYPE);
-		
+
 		try {
 			Feature feature = state.getTransformer().getFeatureByKey(descriptionType);
 			if (feature != null){
@@ -148,7 +149,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 				String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
 				fireWarningEvent(String.format(message, item), item, 4);
 				return features.iterator().next();
-			}	
+			}
 			UUID featureUuid = state.getTransformer().getFeatureUuid(descriptionType);
 			feature = state.getCurrentIO().getFeature(state, featureUuid, descriptionType, descriptionType, null, null);
 			if (feature == null){
@@ -165,7 +166,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 8);
 			return null;
 		}
-		
+
 	}
 
 	@Override
@@ -174,7 +175,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		return id;
 	}
 
-	
+
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -187,17 +188,17 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			keySet.add(value);
 		}
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
 	}
-	
+
 //******************* TO STRING ******************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

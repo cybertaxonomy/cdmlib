@@ -158,12 +158,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascading #5754
     protected TermVocabulary<T> vocabulary;
 
-  //the unique iedentifier/name this term uses in its given vocabulary #3479
-   //open issues: is null allowed? If not, implement unique constraint
-
+    //the unique iedentifier/name this term uses in its given vocabulary #3479
     @XmlElement(name = "idInVocabulary")
     @Column(length=255)
     //TODO Val #3379, #4245

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,14 +33,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifDistributionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
-	
+
 	/**
 	 * @param state
 	 */
@@ -48,17 +48,18 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(StreamItem item ){
-		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
-		
+	@Override
+    public IReader<MappedCdmBase> map(StreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();
+
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = state.getTransactionalSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
-		
+
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
-			
+
 			String locationId = item.get(TermUri.DWC_LOCATION_ID);
 			NamedArea area = getAreaByLocationId(item, locationId);
 			if (area != null){
@@ -70,17 +71,17 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(TermUri.DWC_LOCALITY), area);
 				resultList.add(mcb);
 			}
-			
+
 			if (area != null){
-				
+
 				//TODO language, area,
 				TaxonDescription desc = getTaxonDescription(taxon, false);
-				
+
 				//TODO
 				PresenceAbsenceTerm status = null;
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);
-				
+
 				//save taxon
 				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 				resultList.add(mcb);
@@ -90,13 +91,13 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			String message = "Can't retrieve taxon from database for id '%s'";
 			fireWarningEvent(String.format(message, id), item, 12);
 		}
-		
+
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 
-	
+
 	private NamedArea getAreaByLocality(StreamItem item, String locality) {
 		String namespace = TermUri.DWC_LOCALITY.toString();
 		List<NamedArea> result = state.get(namespace, locality, NamedArea.class);
@@ -109,7 +110,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			String message = "There is more than 1 cdm entity matching given locality '%s'. I take an arbitrary one.";
 			fireWarningEvent(String.format(message, locality), item, 4);
 		}
-		return (NamedArea)result.iterator().next();
+		return result.iterator().next();
 	}
 
 	private NamedArea getAreaByLocationId(StreamItem item, String locationId) {
@@ -124,14 +125,14 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			if (newArea == null){
 				newArea = NamedArea.NewInstance(locationId, locationId, locationId);
 			}
-			
+
 			return newArea;
 		}
 		if (result.size() > 1){
 			String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
 			fireWarningEvent(String.format(message, locationId), item, 4);
 		}
-		return (NamedArea)result.iterator().next();
+		return result.iterator().next();
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		return id;
 	}
 
-	
+
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -153,19 +154,19 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 		//areaId
-		
+
 		String locationId = item.get(TermUri.DWC_LOCATION_ID);
 		if ( hasValue(value = locationId)){
 			key = TermUri.DWC_LOCATION_ID.toString();
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<String>();
@@ -173,9 +174,9 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
  		result.add(TermUri.DWC_LOCATION_ID.toString());
  		return result;
 	}
-	
+
 //******************* TO STRING ******************************************/
-	
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

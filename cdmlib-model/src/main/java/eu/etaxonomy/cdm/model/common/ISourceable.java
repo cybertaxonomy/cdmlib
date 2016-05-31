@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
- 
+
 public interface ISourceable<T extends IOriginalSource> {
 
 	/**
@@ -32,20 +32,20 @@ public interface ISourceable<T extends IOriginalSource> {
 	 * @param source
 	 */
 	public void addSource(T source);
-	
-	
+
+
 	/**
-	 * Adds a source that is newly created by its components. If all components except for the 
+	 * Adds a source that is newly created by its components. If all components except for the
 	 * type are <code>null</null>
 	 * no source is added.
      * @param type the {@link OriginalSourceType type} of the source
-     * @param idInSource the id used in the source 
+     * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
      * @param citation the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
 	 */
 	public T addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation);
-		
+
 
 	/**
 	 * Removes a source from this object
@@ -55,12 +55,12 @@ public interface ISourceable<T extends IOriginalSource> {
 
     /**
      * Adds a {@link IOriginalSource source} of {@link OriginalSourceType type} Import to this description element.
-     * 
-     * @param idInSource the id used in the source 
+     *
+     * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
      * @param citation the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      */
-	public T addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation);
+	public T addImportSource(String id, String idNamespace, Reference citation, String microCitation);
 
 }

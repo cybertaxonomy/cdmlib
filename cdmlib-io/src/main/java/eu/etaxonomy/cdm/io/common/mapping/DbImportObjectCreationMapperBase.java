@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,19 +29,18 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
 public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
 	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
-	
-	
+
+
 //******************************* ATTRIBUTES ***************************************/
 	protected String dbIdAttribute;
 	//TODO get standard namespace from mappingImport
 	protected String objectToCreateNamespace;
-	
-	
+
+
 //********************************* CONSTRUCTOR ****************************************/
 	/**
 	 * @param mappingImport
@@ -58,7 +57,8 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	public CREATE invoke(ResultSet rs, CREATE noObject) throws SQLException {
+	@Override
+    public CREATE invoke(ResultSet rs, CREATE noObject) throws SQLException {
 		CREATE result = createObject(rs);
 		result = doInvoke(rs, result);
 		addOriginalSource(rs, result);
@@ -68,7 +68,7 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	/**
 	 * @param rs
 	 * @param result
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	protected abstract CREATE doInvoke(ResultSet rs, CREATE createdObject) throws SQLException;
 
@@ -78,13 +78,13 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	 * createObject by creating an empty taxon name.
 	 * @param rs The result set
 	 * @return The object to be created
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	protected abstract CREATE createObject(ResultSet rs) throws SQLException;
 
 	/**
 	 * TODO also implemented in CdmImportBase (reduce redundance)
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public void addOriginalSource(ResultSet rs, CREATE cdmBase) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
@@ -96,9 +96,9 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
-			
-			Reference<?> citation = getState().getTransactionalSourceReference();
-			
+
+			Reference citation = getState().getTransactionalSourceReference();
+
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){
 				source = IdentifiableSource.NewDataImportInstance(strId, idNamespace, citation);
@@ -111,10 +111,10 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			sourceable.addSource(source);
 		}
 	}
-	
 
-	
-	
+
+
+
 	/**
 	 * Returns the transformer from the configuration
 	 * @return
@@ -122,5 +122,5 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	protected IInputTransformer getTransformer(){
 		return getState().getTransformer();
 	}
-	
+
 }

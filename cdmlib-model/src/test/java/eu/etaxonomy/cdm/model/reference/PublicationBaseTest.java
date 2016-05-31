@@ -23,7 +23,6 @@ import org.springframework.beans.BeanUtils;
 /**
  * @author a.mueller
  * @created 23.03.2009
- * @version 1.0
  */
 //@Ignore
 public class PublicationBaseTest {
@@ -109,7 +108,7 @@ public class PublicationBaseTest {
 	public void testClone() {
 		reference.setPublisher(publisher1, place1);
 //		publicationBase.addPublisher(publisher2, place2);
-		Reference<?> clone = (Reference<?>)reference.clone();
+		Reference clone = (Reference)reference.clone();
 		assertEquals("Publisher place must be equal in original publication and cloned publication", place1, clone.getPlacePublished());
 		Assert.assertSame(place1, reference.getPublisher(), clone.getPublisher());
 	}

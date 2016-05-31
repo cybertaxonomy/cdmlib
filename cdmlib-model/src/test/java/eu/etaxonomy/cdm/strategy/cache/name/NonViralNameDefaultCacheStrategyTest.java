@@ -69,7 +69,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     private TeamOrPersonBase<?> exAuthor;
     private TeamOrPersonBase<?> basAuthor;
     private TeamOrPersonBase<?> exBasAuthor;
-    private Reference<?> citationRef;
+    private Reference citationRef;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -312,7 +312,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     @Test
     public void testCacheListener() {
-        Reference<?> ref = ReferenceFactory.newGeneric();
+        Reference ref = ReferenceFactory.newGeneric();
         ref.setTitleCache("GenericRef",true);
         this.subSpeciesName.setNomenclaturalReference(ref);
         Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());

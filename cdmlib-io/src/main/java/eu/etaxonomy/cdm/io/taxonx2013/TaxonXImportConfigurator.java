@@ -48,7 +48,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     //I created this switch for old
     //for Spiders the new version is preferred
     private boolean isUseOldUnparsedSynonymExtraction = true;
-    
+
     //if false references in this rdf file are not published in the bibliography list
     private boolean isPublishReferences = true;
 
@@ -57,16 +57,16 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
     private Map<String, Person> titleCachePerson;
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
-    
 
 
-    private static Reference<?> sourceRef = null;
 
-    private Reference<?> secundum;
+    private static Reference sourceRef = null;
+
+    private Reference secundum;
     private boolean keepOriginalSecundum;
     private Rank maxRank;
     private boolean askedForHRank =false;
-    private Reference<?> sourceURL;
+    private Reference sourceURL;
     private boolean lastImport=false;
 
 
@@ -219,7 +219,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     /**
      * @param reference
      */
-    public static void setSourceRef(Reference<?> reference) {
+    public static void setSourceRef(Reference reference) {
         sourceRef = reference;
 
     }
@@ -269,7 +269,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     /**
      * @return
      */
-    public Reference<?> getSecundum() {
+    public Reference getSecundum() {
         if(secundum == null){
             secundum = ReferenceFactory.newGeneric();
             secundum.setTitle("default secundum");
@@ -279,7 +279,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     }
 
 
-    public void setSecundum(Reference<?> reference){
+    public void setSecundum(Reference reference){
         this.secundum=reference;
     }
 
@@ -314,7 +314,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     /**
      * @param referenceUrl
      */
-    public void addOriginalSource(Reference<?> referenceUrl) {
+    public void addOriginalSource(Reference referenceUrl) {
        this.sourceURL = referenceUrl;
 
     }
@@ -322,7 +322,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     /**
      * @return the sourceURL
      */
-    public Reference<?> getOriginalSourceURL() {
+    public Reference getOriginalSourceURL() {
         return sourceURL;
     }
 
@@ -354,7 +354,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public void setUseOldUnparsedSynonymExtraction(boolean isUseOldUnparsedSynonymExtraction) {
 		this.isUseOldUnparsedSynonymExtraction = isUseOldUnparsedSynonymExtraction;
 	}
-	
-	
+
+
 
 }

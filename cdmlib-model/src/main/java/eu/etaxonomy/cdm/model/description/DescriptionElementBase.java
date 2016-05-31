@@ -105,8 +105,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    //@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @Cascade(CascadeType.MERGE)
+//    @Cascade(CascadeType.MERGE)   remove cascade #5755
     @IndexedEmbedded // no depth for terms
     private Feature feature;
 
@@ -421,7 +420,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     @Override
-    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }

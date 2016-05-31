@@ -123,7 +123,7 @@ public class TaxonXExtractor {
          * @param refMods
          */
         public void builReference(String mref, String treatmentMainName, NomenclaturalCode nomenclaturalCode,
-                Taxon acceptedTaxon, Reference<?> refMods) {
+                Taxon acceptedTaxon, Reference refMods) {
             // System.out.println("builReference "+mref);
             this.setFoundBibref(true);
 
@@ -140,7 +140,7 @@ public class TaxonXExtractor {
             }
 
             //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
-            Reference<?> reference = ReferenceFactory.newGeneric();
+            Reference reference = ReferenceFactory.newGeneric();
             reference.setTitleCache(ref, true);
 
             //only add the first one if there is no nomenclatural reference yet
@@ -517,22 +517,22 @@ public class TaxonXExtractor {
      * @param reftype
      * @return
      */
-    protected Reference<?> getReferenceWithType(int reftype) {
-        Reference<?> ref = null;
+    protected Reference getReferenceWithType(int reftype) {
+        Reference ref = null;
         switch (reftype) {
         case 1:
             ref = ReferenceFactory.newGeneric();
             break;
         case 2:
             IBook tmp= ReferenceFactory.newBook();
-            ref = (Reference<?>)tmp;
+            ref = (Reference)tmp;
             break;
         case 3:
             ref = ReferenceFactory.newArticle();
             break;
         case 4:
             IBookSection tmp2 = ReferenceFactory.newBookSection();
-            ref = (Reference<?>)tmp2;
+            ref = (Reference)tmp2;
             break;
         case 5:
             ref = ReferenceFactory.newJournal();
@@ -771,7 +771,7 @@ public class TaxonXExtractor {
      * @param similarityAuthor
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods, double similarityScore, double similarityAuthor) {
+    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
 

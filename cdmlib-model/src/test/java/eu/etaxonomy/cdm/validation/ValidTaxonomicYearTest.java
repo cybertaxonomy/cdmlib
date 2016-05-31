@@ -44,8 +44,8 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 
 	private BotanicalName name;
 
-	private Reference<?> beforeLineeRef;
-    private Reference<?> afterLineeRef;
+	private Reference beforeLineeRef;
+    private Reference afterLineeRef;
 
 
 	@Before

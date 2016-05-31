@@ -43,7 +43,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     private String defaultAuthor="";
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
-    private Reference<?> dataReference;
+    private Reference dataReference;
     private boolean debugInstitutionOnly = false;
 
 
@@ -240,12 +240,12 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     /**
      * @param ref
      */
-    public void setDataReference(Reference<?> ref) {
+    public void setDataReference(Reference ref) {
         this.dataReference=ref;
 
     }
 
-    public Reference<?> getDataReference() {
+    public Reference getDataReference() {
         return dataReference;
     }
 
