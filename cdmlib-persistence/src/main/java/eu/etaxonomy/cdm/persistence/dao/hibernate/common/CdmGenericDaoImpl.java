@@ -140,7 +140,10 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 						result.add((Class)clazz);
 					}
 				} catch (ClassNotFoundException e) {
-					throw new RuntimeException("Persisted CDM class not found:",e);
+				    String message = "Persisted CDM class not found: " + strKey;
+				    logger.warn(message);
+				    //TODO better throw exception, but currently some keys are really not found yet
+//					throw new RuntimeException("Persisted CDM class not found: " + strKey,e);
 				}
 			}
 		}
