@@ -73,6 +73,15 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         return  genericDao.find(clazz, id, propertyPaths);
     }
 
+    @Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid) {
+        return uuid == null ? null : genericDao.find(clazz, uuid);
+    }
+
+    @Override
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths) {
+        return uuid == null ? null : genericDao.find(clazz, uuid, propertyPaths);
+    }
 
     @Override
     public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {

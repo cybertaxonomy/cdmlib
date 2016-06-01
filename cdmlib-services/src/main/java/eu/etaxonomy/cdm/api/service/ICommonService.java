@@ -172,17 +172,36 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param clazz the CdmBase class
 	 * @param id the cdmBase identifier
 	 * @return the CdmBase object defined by clazz and id
+	 * @see #find(Class, int, List)
 	 */
 	public CdmBase find(Class<? extends CdmBase> clazz, int id);
 
     /**
-     * @param clazz
+     * @param clazz the Class of the obejct to find
      * @param id
-     * @param propertyPaths
+     * @param propertyPaths the property path for bean initialization
      * @return
+     * @see #find(Class, int)
      */
     public CdmBase find(Class<? extends CdmBase> clazz, int id, List<String> propertyPaths);
 
+    /**
+     * A generic method to retrieve any CdmBase object by its uuid and class.<BR>
+     * @param clazz the Class of the obejct to find
+     * @param uuid the UUID of the object to find
+     * @return
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid);
+
+    /**
+     * A generic method to retrieve any CdmBase object by its UUID and class,
+     * including initialization via property path.<BR>
+     * @param clazz the Class of the obejct to find
+     * @param uuid the UUID of the object to find
+     * @param propertyPaths the property path for bean initialization
+     * @return
+     */
+    public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths);
 
 	public List getHqlResult(String hqlQuery);
 
@@ -327,5 +346,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @throws MergeException
      */
     public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
+
 
 }
