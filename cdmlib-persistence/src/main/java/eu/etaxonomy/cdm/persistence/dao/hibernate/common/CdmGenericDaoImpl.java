@@ -129,24 +129,19 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Set<Class<? extends CdmBase>> result = new HashSet<Class<? extends CdmBase>>();
 
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-		Map<?,?> allClassMetadata = sessionFactory.getAllClassMetadata();
-		Collection<?> keys = allClassMetadata.keySet();
-		for (Object oKey : keys){
-			if (oKey instanceof String){
-				String strKey = (String)oKey;
-				if (! strKey.endsWith("_AUD")){
-					try {
-                        Class<?> clazz = Class.forName(strKey);
-						boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
-						if (! isAbstractClass || includeAbstractClasses){
-							result.add((Class)clazz);
-						}
-					} catch (ClassNotFoundException e) {
-						logger.warn("Class not found: " + strKey);
+		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
+		Collection<String> keys = allClassMetadata.keySet();
+		for (String strKey : keys){
+			if (! strKey.endsWith("_AUD")){
+				try {
+                    Class<?> clazz = Class.forName(strKey);
+					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
+					if (! isAbstractClass || includeAbstractClasses){
+						result.add((Class)clazz);
 					}
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException("Persisted CDM class not found:",e);
 				}
-			}else{
-				logger.warn("key is not of type String: " +  oKey);
 			}
 		}
 		return result;
