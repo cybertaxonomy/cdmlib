@@ -147,6 +147,9 @@ public class CsvNameExport extends CsvNameExportBase {
         rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
         Set<UUID> childrenUuids = new HashSet<UUID>();
 
+
+        rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
+        rootNode.removeNullValueFromChildren();
         for (TaxonNode child: rootNode.getChildNodes()){
             child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
             childrenUuids.add(child.getUuid());
@@ -165,9 +168,9 @@ public class CsvNameExport extends CsvNameExportBase {
 
         childrenNodes = getTaxonNodeService().find(childrenUuids);
         for(TaxonNode genusNode : childrenNodes)   {
-
-            nameRecords.add(createNewRecord(genusNode, state));
-
+            if (!genusNode.isTopmostNode()){
+                nameRecords.add(createNewRecord(genusNode, state));
+            }
             refreshTransaction();
 
         }
@@ -188,16 +191,15 @@ public class CsvNameExport extends CsvNameExportBase {
         parentsNodesUUID =new HashSet<UUID>();
         for (TaxonNode familyNode: familyNodes){
             familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
+            familyNode.removeNullValueFromChildren();
             for (TaxonNode child: familyNode.getChildNodes()){
                 child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
                 name = HibernateProxyHelper.deproxy(child.getTaxon().getName(), TaxonNameBase.class);
-                if (child.getTaxon().getName().getRank().isLower(Rank.GENUS())) {
+                if (name.isGenus()) {
                     childrenUuids.add(child.getUuid());
                     if (child.hasChildNodes()){
                         parentsNodesUUID.add(child.getUuid());
                     }
-                }else{
-                    parentsNodesUUID.add(child.getUuid());
                 }
             }
             //refreshTransaction();
@@ -265,8 +267,10 @@ public class CsvNameExport extends CsvNameExportBase {
 
     private TaxonNode getHigherNode(TaxonNode node, Rank rank){
 
+        node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+        TaxonNameBase name = HibernateProxyHelper.deproxy( node.getTaxon().getName(), TaxonNameBase.class);
         Rank nodeRank = node.getTaxon().getName().getRank();
-        if (nodeRank.isKindOf(rank)){
+        if (nodeRank.equals(rank)){
             return node;
 
         }else if (nodeRank.isHigher(rank)){
@@ -323,8 +327,9 @@ public class CsvNameExport extends CsvNameExportBase {
                 descriptionsString.append(distribution.getArea().getIdInVocabulary());
 
             }
-            nameRecord.put(columnName, descriptionsString.toString());
+
         }
+        nameRecord.put(columnName, descriptionsString.toString());
 
     }
 
@@ -352,22 +357,30 @@ public class CsvNameExport extends CsvNameExportBase {
         HashMap<String, String> nameRecord = new HashMap<String,String>();
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());
-        familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
-        familyNode.getTaxon().setProtectedTitleCache(true);
-        nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
+        Taxon taxon;
+        BotanicalName name;
+        if (familyNode != null){
+            familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
+            familyNode.getTaxon().setProtectedTitleCache(true);
+
+            nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
 
 
 
 
-        Taxon taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
-        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-        //if publish flag is set
+            taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
+            taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+            //if publish flag is set
 
-        //  if (taxon.isPublish()){
-        BotanicalName name = HibernateProxyHelper.deproxy(taxon.getName(), BotanicalName.class);
-        nameRecord.put("familyName", name.getNameCache());
-        extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
-
+            //  if (taxon.isPublish()){
+            name = HibernateProxyHelper.deproxy(taxon.getName(), BotanicalName.class);
+            nameRecord.put("familyName", name.getNameCache());
+            extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
+        } else{
+            nameRecord.put("familyTaxon", null);
+            nameRecord.put("familyName", null);
+            nameRecord.put("descriptionsFam", null);
+        }
         TaxonNode genusNode = getHigherNode(childNode, Rank.GENUS());
         if (genusNode!= null){
             genusNode = HibernateProxyHelper.deproxy(genusNode, TaxonNode.class);
@@ -385,7 +398,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }else{
                 nameRecord.put("genusName", name.getGenusOrUninomial());
             }
-            extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsGen", state);
+            extractDescriptions(nameRecord, taxon, getNotesFeature(state), "descriptionsGen", state);
         }
         taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
