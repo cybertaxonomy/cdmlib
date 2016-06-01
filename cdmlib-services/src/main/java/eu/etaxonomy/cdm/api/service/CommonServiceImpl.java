@@ -82,7 +82,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
 
     @Override
     public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
-        ISourceable result = null;
+        ISourceable<?> result = null;
         List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
         if (! list.isEmpty()){
             result = list.get(0);
