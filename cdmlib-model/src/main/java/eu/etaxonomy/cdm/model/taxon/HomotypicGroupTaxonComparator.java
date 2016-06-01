@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 public class HomotypicGroupTaxonComparator extends TaxonComparator {
     private static final long serialVersionUID = -5088210641256430878L;
-    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparator.class);
 
     private final TaxonBase<?> firstTaxonInGroup;
@@ -80,7 +79,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         TaxonNameBase<?,?> name1 = taxonBase1.getName();
         TaxonNameBase<?,?> name2 = taxonBase2.getName();
-//      System.out.println(name1.getTitleCache() +" : "+ name2.getTitleCache());
+        if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
 
 
         int compareStatus = compareStatus(name1, name2);
@@ -132,30 +131,15 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
 
         if (compareResult != 0){
-//          System.out.println(": " + compareResult);
+//            if (logger.isDebugEnabled()){logger.debug(": " + compareResult);}
             return compareResult;
         }else{
             //names are uncomparable on name level (except for uuid, id, etc.)
             int result = super.compare(taxonBase1, taxonBase2);
-//          System.out.println(": = " + result);
+            if (logger.isDebugEnabled()){logger.debug(": = " + result);}
             return result;
         }
     }
-
-//    /**
-//     * @param homotypicalGroup
-//     * @return
-//     */
-//    private TaxonBase<?> getFirstInHomotypicalGroup(HomotypicalGroup homotypicalGroup, Collection<TaxonBase<?>> existing) {
-//        List<TaxonBase<?>> candidates =  new ArrayList<TaxonBase<?>>();
-//        for (TaxonBase<?> candidate : existing){
-//            if (homotypicalGroup.getTypifiedNames().contains(candidate.getName())){
-//                candidates.add(candidate);
-//            }
-//        }
-//        Collections.sort(candidates, this);
-//        return candidates.isEmpty() ? null : candidates.get(0);
-//    }
 
 
     /**
@@ -304,5 +288,21 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return false;
         }
     }
+
+
+//  /**
+//   * @param homotypicalGroup
+//   * @return
+//   */
+//  private TaxonBase<?> getFirstInHomotypicalGroup(HomotypicalGroup homotypicalGroup, Collection<TaxonBase<?>> existing) {
+//      List<TaxonBase<?>> candidates =  new ArrayList<TaxonBase<?>>();
+//      for (TaxonBase<?> candidate : existing){
+//          if (homotypicalGroup.getTypifiedNames().contains(candidate.getName())){
+//              candidates.add(candidate);
+//          }
+//      }
+//      Collections.sort(candidates, this);
+//      return candidates.isEmpty() ? null : candidates.get(0);
+//  }
 
 }
