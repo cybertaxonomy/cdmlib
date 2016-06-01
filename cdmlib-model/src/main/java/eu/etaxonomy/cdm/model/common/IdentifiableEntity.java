@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.validation.Level2;
  * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -215,9 +214,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             this.titleCache = generateTitle();
             this.titleCache = getTruncatedCache(this.titleCache) ;
         }
-        if(StringUtils.isBlank(titleCache)){
-            titleCache = this.toString();
-        }
+        //removed due to #5849
+//        if(StringUtils.isBlank(titleCache)){
+//            titleCache = this.toString();
+//        }
         return titleCache;
     }
 
@@ -263,10 +263,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /**
      *
      * @return true, if the current state of the titleCache (without generating it new)
-     * is the empty string. This is primarily meant for internal use.
+     * is <code>null</code> or the empty string. This is primarily meant for internal use.
      */
     public boolean hasEmptyTitleCache(){
-        return "".equals(this.titleCache);
+        return this.titleCache == null || "".equals(this.titleCache);
     }
 
 //**************************************************************************************
