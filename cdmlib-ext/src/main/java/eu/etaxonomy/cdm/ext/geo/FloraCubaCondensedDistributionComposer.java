@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -36,12 +34,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @date Apr 05, 2016
  *
  */
-public class FloraCubaCondensedDistributionComposer implements ICondensedDistributionComposer {
+public class FloraCubaCondensedDistributionComposer extends CondensedDistributionComposerBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FloraCubaCondensedDistributionComposer.class);
-
-    private static Map<UUID, String> statusSymbols;
 
     private static Set<UUID> foreignStatusUuids;
 
@@ -66,6 +62,7 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
     @Override
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> langs) {
+
         CondensedDistribution condensedDistribution = new CondensedDistribution();
 
         //empty
@@ -137,33 +134,6 @@ public class FloraCubaCondensedDistributionComposer implements ICondensedDistrib
         return null;
     }
 
-    /**
-     * @param status
-     * @return
-     */
-    private String statusSymbol(PresenceAbsenceTerm status) {
-        if(status == null) {
-            return "";
-        }
-        String symbol = statusSymbols.get(status.getUuid());
-        if(symbol != null) {
-            return symbol;
-        }else if (status.getSymbol() != null){
-            return status.getSymbol();
-        }else if (status.getIdInVocabulary() != null){
-            return status.getIdInVocabulary();
-        }else {
-            Representation r = status.getPreferredRepresentation((Language)null);
-            if (r != null){
-                String abbrevLabel = r.getAbbreviatedLabel();
-                if (abbrevLabel != null){
-                    return abbrevLabel;
-                }
-            }
-        }
-
-        return "n.a.";
-    }
 
 //    private boolean isForeignStatus(PresenceAbsenceTerm status) {
 //        return foreignStatusUuids.contains(status.getUuid());

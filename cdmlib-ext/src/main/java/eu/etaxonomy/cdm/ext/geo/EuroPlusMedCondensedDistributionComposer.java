@@ -33,14 +33,12 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @date Jun 24, 2015
  *
  */
-public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistributionComposer {
+public class EuroPlusMedCondensedDistributionComposer extends CondensedDistributionComposerBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EuroPlusMedCondensedDistributionComposer.class);
 
     private final CondensedDistribution condensedDistribution;
-
-    private static Map<UUID, String> statusSymbols;
 
     private static Set<UUID> foreignStatusUuids;
 
@@ -196,20 +194,6 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
         return condensedDistribution;
     }
 
-    /**
-     * @param status
-     * @return
-     */
-    private String statusSymbol(PresenceAbsenceTerm status) {
-        if(status == null) {
-            return "";
-        }
-        String symbol = statusSymbols.get(status.getUuid());
-        if(symbol == null) {
-            symbol = "";
-        }
-        return symbol;
-    }
 
     private boolean isForeignStatus(PresenceAbsenceTerm status) {
         return foreignStatusUuids.contains(status.getUuid());
