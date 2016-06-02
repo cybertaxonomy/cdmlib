@@ -633,10 +633,20 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
     @Override
     public String generateTitle() {
-        return name.getText();
+        //TODO implement as cache strategy
+        if (protectedTitleCache){
+            return this.titleCache;
+        }else if (name != null){
+            return name.getText();
+        }else if (reference != null){
+            return this.reference.getTitleCache();
+        }else{
+            return this.toString();
+        }
     }
 
     public int compareTo(Object o) {
+        //TODO needs to be implemented
         return 0;
     }
 
@@ -691,11 +701,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             return null;
         }
 
-
-
-
-
     }
-
 
 }
