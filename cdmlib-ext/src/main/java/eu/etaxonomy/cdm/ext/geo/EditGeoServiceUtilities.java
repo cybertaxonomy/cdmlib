@@ -70,8 +70,6 @@ public class EditGeoServiceUtilities {
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
-    private static PresenceAbsenceTerm defaultStatus = PresenceAbsenceTerm.PRESENT();
-
     private static IDefinedTermDao termDao;
 
 
@@ -229,11 +227,7 @@ public class EditGeoServiceUtilities {
             if (statusColor != null){
                 fillColorRgb = Integer.toHexString(statusColor.getRGB()).substring(2);
             }else{
-                if(status != null){
-                    fillColorRgb = status.getDefaultColor(); //TODO
-                } else {
-                    fillColorRgb = defaultStatus.getDefaultColor();
-                }
+                fillColorRgb = status.getDefaultColor(); //TODO
             }
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
@@ -362,7 +356,7 @@ public class EditGeoServiceUtilities {
             //collect status
             PresenceAbsenceTerm status = distribution.getStatus();
             if(status == null){
-                status = defaultStatus;
+                continue;
             }
             status = HibernateProxyHelper.deproxy(status, PresenceAbsenceTerm.class);
             if (! statusList.contains(status)){
@@ -569,16 +563,15 @@ public class EditGeoServiceUtilities {
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTerm> statusList) {
         PresenceAbsenceTerm status = distribution.getStatus();
-        if (status == null) {
-            status = defaultStatus;
+        if (status != null) {
+            int style = statusList.indexOf(status);
+            Set<Distribution> distributionSet = styleMap.get(style);
+            if (distributionSet == null) {
+                distributionSet = new HashSet<Distribution>();
+                styleMap.put(style, distributionSet);
+            }
+            distributionSet.add(distribution);
         }
-        int style = statusList.indexOf(status);
-        Set<Distribution> distributionSet = styleMap.get(style);
-        if (distributionSet == null) {
-            distributionSet = new HashSet<Distribution>();
-            styleMap.put(style, distributionSet);
-        }
-        distributionSet.add(distribution);
     }
 
     /**
