@@ -46,7 +46,7 @@ public class OccurrenceController extends BaseController<SpecimenOrObservationBa
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "sequences.$",
+            "sequences.$"
     });
 
     private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
