@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -40,6 +41,11 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
     private static final Logger logger = Logger.getLogger(FloraCubaCondensedDistributionComposer.class);
 
     private static Set<UUID> foreignStatusUuids;
+
+    private UUID uuidInternalArea = UUID.fromString("d0144a6e-0e17-4a1d-bce5-d464a2aa7229");  //Cuba
+
+    private String internalAreaSeparator = UTF8.EN_DASH.toString() + " ";
+
 
     // these status uuids are special for EuroPlusMed and might also be used
     private final static UUID REPORTED_IN_ERROR_UUID =  UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
@@ -78,15 +84,28 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
             areaList.add(0, (NamedArea)CdmBase.deproxy(dtb));
         }
 
+
+        boolean isFirstAfterInternalArea = false;
         for (NamedArea area : areaList){
 
             if (area.getPartOf() != null){
                 continue;  //subarea are handled later
             }
+
             StringBuilder areaStatusString = new StringBuilder();
+
+
+
             Distribution distribution = getDistribution(area, filteredDistributions);
             if (distribution == null){
                 continue;
+            }
+
+            if (area.getUuid().equals(uuidInternalArea)){
+                isFirstAfterInternalArea = true;
+            }else if(isFirstAfterInternalArea && !area.getUuid().equals(uuidInternalArea)){
+                areaStatusString.append(internalAreaSeparator);
+                isFirstAfterInternalArea = false;
             }
 
             PresenceAbsenceTerm status = distribution.getStatus();
@@ -102,6 +121,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
                 subAreaLabels(langs, area.getIncludes(), areaStatusString, statusSymbol, areaLabel, filteredDistributions);
 //                areaStatusString.append(')');
             }
+
 
 //            if(isForeignStatus(status)) {
 //                condensedDistribution.addForeignDistributionItem(status, areaStatusString.toString(), areaLabel);
@@ -199,7 +219,18 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
      * @return
      */
     private String makeAreaLabel(List<Language> langs, NamedArea area) {
-        return area.getIdInVocabulary() != null ? area.getIdInVocabulary() :area.getPreferredRepresentation(langs).getAbbreviatedLabel();
+        String result = area.getIdInVocabulary() != null ? area.getIdInVocabulary() :area.getPreferredRepresentation(langs).getAbbreviatedLabel();
+        return areaPreTag + result + areaPostTag;
+    }
+
+
+
+    public String getInternalAreaSeparator() {
+        return internalAreaSeparator;
+    }
+
+    public void setInternalAreaSeparator(String internalAreaSeparator) {
+        this.internalAreaSeparator = internalAreaSeparator;
     }
 
     /**
@@ -256,5 +287,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
             return areas;
         }
     }
+
+
 
 }

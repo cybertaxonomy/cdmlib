@@ -26,6 +26,14 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
 
     protected static Map<UUID, String> statusSymbols;
 
+
+
+    protected String areaPreTag = "<b>";
+
+    protected String areaPostTag = "</b>";
+
+
+
     /**
      * @param status
      * @return
@@ -68,5 +76,24 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
         }
         return symbol;
     }
+
+
+    public String getAreaPreTag() {
+        return areaPreTag;
+    }
+
+    public void setAreaPreTag(String areaPreTag) {
+        this.areaPreTag = areaPreTag;
+    }
+
+    public String getAreaPostTag() {
+        return areaPostTag;
+    }
+
+    public void setAreaPostTag(String areaPostTag) {
+        this.areaPostTag = areaPostTag;
+    }
+
+
 
 }

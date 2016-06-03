@@ -130,6 +130,8 @@ public class FloraCubaCondensedDistributionComposerTest {
     @Test
     public void testCreateCondensedDistribution() {
         FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
+        composer.setAreaPreTag("");
+        composer.setAreaPostTag("");
 
         Set<Distribution> filteredDistributions = new HashSet<Distribution>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
@@ -142,7 +144,7 @@ public class FloraCubaCondensedDistributionComposerTest {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
         String condensedString = condensedDistribution.toString();
 
-        Assert.assertEquals("Condensed string for Cuba differs", "nCu((c)CuE(nHo)) Bah ?VM ", condensedString);
+        Assert.assertEquals("Condensed string for Cuba differs", "nCu((c)CuE(nHo)) "+composer.getInternalAreaSeparator() +"Bah ?VM ", condensedString);
 
 
         //TODO work in progress
@@ -162,7 +164,7 @@ public class FloraCubaCondensedDistributionComposerTest {
         //Cuba
         label = "Cuba";
         abbrev = "Cu";
-        UUID uuid = UUID.randomUUID();
+        UUID uuid = UUID.fromString("d0144a6e-0e17-4a1d-bce5-d464a2aa7229");
         cuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
 
         //Western Cuba
