@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.Comparator;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 /**
  * @author k.luther
  * @date 08.06.2016
@@ -23,9 +25,9 @@ public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implemen
      */
     @Override
     public int compare(T term1, T term2) {
-        String label1 = term1.getIdInVocabulary();
-        String label2 = term2.getIdInVocabulary();
-        return label1.compareTo(label2);
+        String label1 = CdmUtils.Nz(term1.getIdInVocabulary());
+        String label2 = CdmUtils.Nz(term2.getIdInVocabulary());
+        return  label1.compareTo(label2);
     }
 
 
