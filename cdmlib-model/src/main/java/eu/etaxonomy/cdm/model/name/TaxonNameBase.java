@@ -888,33 +888,21 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
-     */
     @Override
     public int getParsingProblem(){
         return this.parsingProblem;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(int)
-     */
     @Override
     public void setParsingProblem(int parsingProblem){
         this.parsingProblem = parsingProblem;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
-     */
     @Override
     public void addParsingProblem(ParserProblem problem){
         parsingProblem = ParserProblem.addProblem(parsingProblem, problem);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-     */
     @Override
     public void removeParsingProblem(ParserProblem problem) {
         parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
@@ -927,52 +915,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         parsingProblem = ParserProblem.addProblems(parsingProblem, problems);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
-     */
     @Override
     public boolean hasProblem(){
         return parsingProblem != 0;
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-     */
     @Override
     public boolean hasProblem(ParserProblem problem) {
         return getParsingProblems().contains(problem);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
-     */
     @Override
     public int getProblemStarts(){
         return this.problemStarts;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
-     */
     @Override
     public void setProblemStarts(int start) {
         this.problemStarts = start;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
-     */
     @Override
     public int getProblemEnds(){
         return this.problemEnds;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
-     */
     @Override
     public void setProblemEnds(int end) {
         this.problemEnds = end;
@@ -1232,7 +1199,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     	return homotypicalGroup;
     }
 
-    /*
+    /**
      * @see #getHomotypicalGroup()
      */
     public void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
@@ -1523,10 +1490,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * group.
      *
      * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
-
-     */
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.name.HomotypicalGroup#setGroupBasionym(TaxonNameBase)
      */
     @Transient
     public void makeGroupsBasionym() {
@@ -1677,9 +1640,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     abstract public NomenclaturalCode getNomenclaturalCode();
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-     */
+
     /**
      * Generates and returns the string with the scientific name of <i>this</i>
      * taxon name (only non viral taxon names can be generated from their
