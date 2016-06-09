@@ -818,13 +818,21 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
-			 //species
+		     //species
 			 else if (speciesPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.SPECIES());
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length());
 			}
+		    //species with infra generic epithet
+			 else if (speciesWithInfraGenPattern.matcher(fullNameString).matches()){
+			     nameToBeFilled.setRank(Rank.SPECIES());
+	             nameToBeFilled.setGenusOrUninomial(epi[0]);
+                 nameToBeFilled.setInfraGenericEpithet(epi[2]);
+	             nameToBeFilled.setSpecificEpithet(epi[4]);
+	             authorString = fullNameString.substring(epi[0].length() + 2 + epi[2].length() + 2 + epi[4].length() + 1);
+			 }
 			 //autonym
 			 else if (autonymPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[epi.length - 2]));
