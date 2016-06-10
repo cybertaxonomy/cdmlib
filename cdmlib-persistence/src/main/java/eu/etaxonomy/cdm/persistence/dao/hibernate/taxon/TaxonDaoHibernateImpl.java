@@ -1564,7 +1564,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
          @SuppressWarnings("unchecked")
          List<Object[]> result;
          if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-             queryString = queryString + " AND taxa.uuid NOT IN (:excludeUuid)" ;
+             queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
          }
          if (pattern != null){
              queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
