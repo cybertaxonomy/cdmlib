@@ -195,17 +195,39 @@ public class NonViralNameParserImplTest {
 	@Test
 	public final void testParseSubGenericFullName() {
 		String zooSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube, 1843)";
-		ZoologicalName zooName = (ZoologicalName)parser.parseFullName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
+		//zoo as fullName
+		ZoologicalName zooName = (ZoologicalName)parser.parseReferencedName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
 		Assert.assertTrue(zooName.getParsingProblems().isEmpty());
 		Assert.assertEquals("Mullerister", zooName.getInfraGenericEpithet());
 		Assert.assertEquals(Integer.valueOf(1843), zooName.getOriginalPublicationYear());
+		//zoo as referenced name
+		zooName = (ZoologicalName)parser.parseFullName(zooSpeciesWithSubgenus, NomenclaturalCode.ICZN, Rank.SPECIES());
+        Assert.assertTrue(zooName.getParsingProblems().isEmpty());
+        Assert.assertEquals("Mullerister", zooName.getInfraGenericEpithet());
+        Assert.assertEquals(Integer.valueOf(1843), zooName.getOriginalPublicationYear());
 
-		String botSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube) Mill.";
-        BotanicalName botName = (BotanicalName)parser.parseFullName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        //bot as full Name
+        String botSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube) Mill.";
+        BotanicalName botName = (BotanicalName)parser.parseFullName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
         Assert.assertTrue(botName.getParsingProblems().isEmpty());
         Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
         Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
         Assert.assertEquals("Aube", botName.getBasionymAuthorship().getTitleCache());
+
+		//bot as referenced Name
+		botName = (BotanicalName)parser.parseReferencedName(botSpeciesWithSubgenus, NomenclaturalCode.ICNAFP, Rank.GENUS());
+        Assert.assertTrue(botName.getParsingProblems().isEmpty());
+        Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
+        Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
+        Assert.assertEquals("Aube", botName.getBasionymAuthorship().getTitleCache());
+
+        //bot without author
+        String botSpeciesWithSubgenusWithoutAuthor = "Bacanius (Mullerister) rombophorus";
+        botName = (BotanicalName)parser.parseReferencedName(botSpeciesWithSubgenusWithoutAuthor, NomenclaturalCode.ICNAFP, Rank.GENUS());
+        Assert.assertTrue(botName.getParsingProblems().isEmpty());
+        Assert.assertEquals("Mullerister", botName.getInfraGenericEpithet());
+        Assert.assertEquals("rombophorus", botName.getSpecificEpithet());
+        Assert.assertEquals("", botName.getAuthorshipCache());
 	}
 
 	/**
