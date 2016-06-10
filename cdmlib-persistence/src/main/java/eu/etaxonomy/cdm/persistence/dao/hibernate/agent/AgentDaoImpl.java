@@ -166,19 +166,35 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
 
 	@Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern){
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz){
         Session session = getSession();
+        String clazzString = "";
+        if (clazz == null){
+            clazzString = "";
+        }else if (clazz.equals(Team.class)){
+            clazzString = "dtype = 'Team'";
+        } else if (clazz.equals(Person.class)){
+            clazzString = "dtype = 'Person'";
+        }  else if (clazz.equals(Institution.class)){
+            clazzString = "dtype = 'Institution'";
+        }
+
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern");
+            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() );
+            if (clazzString != ""){
+                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where " + clazzString);
+            } else{
+                query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName());
+            }
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
+
         return getUuidAndTitleCache(query);
     }
 

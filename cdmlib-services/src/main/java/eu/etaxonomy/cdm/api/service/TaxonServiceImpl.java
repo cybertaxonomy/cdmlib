@@ -796,8 +796,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
     }
 
-    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(){
-        return dao.getUuidAndTitleCache();
+    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(Integer limit, String pattern){
+        return dao.getUuidAndTitleCache(limit, pattern);
     }
 
     @Override
@@ -1166,6 +1166,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }else {
                 taxon.setName(null);
             }
+
 
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
             	try{
@@ -1586,13 +1587,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        return dao.getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheTaxon(limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
-        return dao.getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheSynonym(limit, pattern);
     }
 
     @Override

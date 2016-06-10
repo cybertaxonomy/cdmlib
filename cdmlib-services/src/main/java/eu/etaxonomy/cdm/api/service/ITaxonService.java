@@ -893,9 +893,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public Synonym findBestMatchingSynonym(String taxonName);
 
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern);
 
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 

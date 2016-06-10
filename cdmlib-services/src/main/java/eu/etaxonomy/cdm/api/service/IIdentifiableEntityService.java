@@ -105,7 +105,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
 
     /**
      * Return a Pager of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode

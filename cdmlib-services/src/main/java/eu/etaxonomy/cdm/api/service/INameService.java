@@ -452,7 +452,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 * 			a <code>Map</code> containing uuid and titleCache of names
 	 */
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	/**
 	 * Return a Pager of names matching the given query string, optionally filtered by class, optionally with a particular MatchMode

@@ -94,12 +94,15 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	}
 
 	@Override
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache() {
+	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern) {
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
 
 		Query query = session.createQuery("SELECT " +
 				"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
+		if (limit != null){
+		    query.setMaxResults(limit);
+		}
 
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
