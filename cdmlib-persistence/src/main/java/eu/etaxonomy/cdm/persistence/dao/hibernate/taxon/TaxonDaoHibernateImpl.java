@@ -1559,7 +1559,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         int classificationId = classification.getId();
         // StringBuffer excludeUuids = new StringBuffer();
 
-
          String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
          if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
              queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
@@ -1601,17 +1600,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
              return list;
          }
-
-
-    }
-
-
-
-
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid) {
-
-      return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUuid, null,null);
     }
 
 
@@ -2269,13 +2257,4 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return results;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(eu.etaxonomy.cdm.model.taxon.Classification)
-     */
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification) {
-
-        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,null);
-    }
 }

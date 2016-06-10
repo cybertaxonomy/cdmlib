@@ -416,12 +416,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<SynonymRelationship> getSynonyms(Synonym synoynm, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     *
-     * @return
-     */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
-
 
     /**
      * Creates all inferred synonyms for the species in the tree and insert it to the database
@@ -499,14 +493,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
 	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
-
-    /**
-     * @param classification
-     * @param excludeUuid
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, List<UUID> excludeUuid);
 
     /**
      * @param classification
