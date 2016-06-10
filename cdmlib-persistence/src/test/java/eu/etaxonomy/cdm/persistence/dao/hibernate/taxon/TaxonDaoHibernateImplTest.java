@@ -1059,11 +1059,25 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null, null);
         assertNotNull(result);
         assertEquals(5, result.size());
+
+        //test exclude
         UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         List<UUID> excludeUUids = new ArrayList<UUID>();
         excludeUUids.add(excludeUUID);
         result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids, null, null);
         assertEquals(4, result.size());
+
+        //test limit
+        int limit = 2;
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, limit, null);
+        assertEquals(2, result.size());
+
+        //test pattern
+        String pattern = "*Rothschi*";
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, 2, pattern);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
 
     }
 

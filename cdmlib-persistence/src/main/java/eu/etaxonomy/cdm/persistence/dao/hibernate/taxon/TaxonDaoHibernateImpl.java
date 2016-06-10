@@ -138,6 +138,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
 
         List<Taxon> results = new ArrayList<Taxon>();
+        @SuppressWarnings("unchecked")
         List<Taxon> taxa = crit.list();
         for(Taxon taxon : taxa){
 
@@ -1564,6 +1565,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
              queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
          }
          if (pattern != null){
+             pattern = pattern.replace("*", "%");
              queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
          }
 
