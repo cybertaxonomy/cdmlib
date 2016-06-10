@@ -1561,8 +1561,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
          String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
-         @SuppressWarnings("unchecked")
-         List<Object[]> result;
          if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
              queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
          }
@@ -1582,7 +1580,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
          if (pattern != null){
              query.setParameter("pattern", pattern);
          }
-         result = getSession().createQuery(queryString).list();
+         @SuppressWarnings("unchecked")
+         List<Object[]> result = query.list();
 
          if(result.size() == 0){
              return null;
