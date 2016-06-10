@@ -44,11 +44,9 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -92,14 +90,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
         if (sortMode != null){
-            Comparator<TaxonNode> comparator = null;
-            if (sortMode.equals(NodeSortMode.NaturalOrder)){
-                comparator = new TaxonNaturalComparator();
-            } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
-            	comparator = new TaxonNodeByNameComparator();
-            } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
-            	comparator = new TaxonNodeByRankAndNameComparator();
-            }
+            Comparator<TaxonNode> comparator = sortMode.newComparator();
         	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
