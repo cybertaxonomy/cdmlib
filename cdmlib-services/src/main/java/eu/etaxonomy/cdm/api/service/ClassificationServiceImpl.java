@@ -294,6 +294,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa, limit, pattern);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa, limit, pattern);
+    }
+
+    @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa) {
         return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa);
     }
@@ -304,8 +314,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<Classification>> getUuidAndTitleCache() {
-        return dao.getUuidAndTitleCache();
+    public List<UuidAndTitleCache<Classification>> getUuidAndTitleCache(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(limit, pattern);
     }
 
     @Override

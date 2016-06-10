@@ -1554,48 +1554,65 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         hql = hqlSelect + hqlWhere + orderByClause(orderHints, "taxon");
         return hql;
     }
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid, Integer limit, String pattern) {
+        int classificationId = classification.getId();
+        // StringBuffer excludeUuids = new StringBuffer();
+
+
+         String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
+         @SuppressWarnings("unchecked")
+         List<Object[]> result;
+         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
+             queryString = queryString + " AND taxa.uuid NOT IN (:excludeUuid)" ;
+         }
+         if (pattern != null){
+             queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
+         }
+
+         Query query = getSession().createQuery(queryString);
+
+
+         if (limit != null){
+             query.setMaxResults(limit);
+         }
+         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
+             query.setParameterList("excludeUuid", excludeUuid);
+         }
+         if (pattern != null){
+             query.setParameter("pattern", pattern);
+         }
+         result = getSession().createQuery(queryString).list();
+
+         if(result.size() == 0){
+             return null;
+         }else{
+             List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
+
+             for (Object object : result){
+
+                 Object[] objectArray = (Object[]) object;
+
+                 UUID uuid = (UUID)objectArray[0];
+                 Integer id = (Integer) objectArray[1];
+                 String titleCache = (String) objectArray[2];
+
+                 list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
+             }
+
+             return list;
+         }
+
+
+    }
+
+
 
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid) {
 
-        int classificationId = classification.getId();
-       // StringBuffer excludeUuids = new StringBuffer();
-
-
-        String queryString = "SELECT nodes.uuid, nodes.id, taxa.titleCache FROM TaxonNode AS nodes, Taxon AS taxa WHERE nodes.taxon = taxa AND nodes.classification.id = " + classificationId ;
-        @SuppressWarnings("unchecked")
-        List<Object[]> result;
-        if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-            queryString = queryString + " AND taxa.uuid NOT IN (:excludeUuid)" ;
-
-            result = getSession().createQuery(queryString).setParameterList("excludeUuid", excludeUuid).list();
-        }else{
-
-            result = getSession().createQuery(queryString).list();
-        }
-
-
-
-
-        if(result.size() == 0){
-            return null;
-        }else{
-            List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
-
-            for (Object object : result){
-
-                Object[] objectArray = (Object[]) object;
-
-                UUID uuid = (UUID)objectArray[0];
-                Integer id = (Integer) objectArray[1];
-                String titleCache = (String) objectArray[2];
-
-                list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
-            }
-
-            return list;
-        }
+      return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUuid, null,null);
     }
 
 
@@ -1957,15 +1974,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             return result;
         }
     }
-/*
 
-    @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
-        return getUuidAndTitleCache(limit, pattern, true);
-    }
-*/
 
-  /*  public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean isTaxon) {
         String className;
         if (isTaxon){
             className = Taxon.class.getSimpleName();
@@ -1997,26 +2008,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return getUuidAndTitleCache(limit, pattern, false);
     }
-*/
-    @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Taxon.class.getSimpleName());
-        Query query = getSession().createQuery(queryString);
-
-        List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
-
-        return result;
-    }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
-        String queryString = String.format("select uuid, id, titleCache from %s where DTYPE = '%s'", type.getSimpleName(), Synonym.class.getSimpleName());
-        Query query = getSession().createQuery(queryString);
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern){
 
-        List<UuidAndTitleCache<TaxonBase>> result = getUuidAndTitleCache(query);
-
-        return result;
+        return getUuidAndTitleCache(limit, pattern, true);
     }
+
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
            boolean doAreaRestriction = areasExpanded.size() > 0;

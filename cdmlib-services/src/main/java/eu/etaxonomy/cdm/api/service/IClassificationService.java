@@ -260,5 +260,25 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
 
+    /**
+     * @param classificationUuid
+     * @param excludeTaxa
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern);
+
+    /**
+     * @param classification
+     * @param excludeTaxa
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern);
+
 
 }

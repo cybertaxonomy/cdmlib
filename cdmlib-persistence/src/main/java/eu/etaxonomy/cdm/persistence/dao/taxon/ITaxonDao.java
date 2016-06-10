@@ -472,12 +472,12 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     /**
      * @return
      */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern);
 
     /**
      * @return
      */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
@@ -507,5 +507,15 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, List<UUID> excludeUuid);
+
+    /**
+     * @param classification
+     * @param excludeUuid
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, List<UUID> excludeUuid, Integer limit, String pattern);
 
 }
