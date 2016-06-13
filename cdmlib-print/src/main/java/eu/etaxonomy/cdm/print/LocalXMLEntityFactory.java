@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.sf.json.JsonConfig;
+
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -34,13 +36,11 @@ import eu.etaxonomy.cdm.remote.controller.FeatureNodeController;
 import eu.etaxonomy.cdm.remote.controller.FeatureTreeController;
 import eu.etaxonomy.cdm.remote.controller.FeatureTreeListController;
 import eu.etaxonomy.cdm.remote.controller.NameController;
-import eu.etaxonomy.cdm.remote.controller.TaxonNodeController;
-import eu.etaxonomy.cdm.remote.controller.TaxonNodeListController;
+import eu.etaxonomy.cdm.remote.controller.TaxonNodePrintAppController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.controller.dto.PolytomousKeyNodeDtoController;
 import eu.etaxonomy.cdm.remote.view.JsonView;
 import eu.etaxonomy.cdm.remote.view.JsonView.Type;
-import net.sf.json.JsonConfig;
 
 /**
  * The local entity factory assumes that an application context is available and
@@ -70,9 +70,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     @Autowired
     private ClassificationController classificationController;
     @Autowired
-    private TaxonNodeListController taxonNodeListController;
-    @Autowired
-    private TaxonNodeController taxonNodeController;
+    private TaxonNodePrintAppController taxonNodePrintAppController;
     @Autowired
     private NameController nameController;
     @Autowired
@@ -116,10 +114,8 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     			.getBean("classificationListController");
     	classificationController = (ClassificationController) applicationConfiguration
     			.getBean("classificationController");
-    	taxonNodeListController = (TaxonNodeListController) applicationConfiguration
-    			.getBean("taxonNodeListController");
-    	taxonNodeController = (TaxonNodeController) applicationConfiguration
-    			.getBean("taxonNodeController");
+    	taxonNodePrintAppController = (TaxonNodePrintAppController) applicationConfiguration
+    			.getBean("taxonNodePrintAppController");
 
     	nameController = (NameController) applicationConfiguration
     			.getBean("nameController");
@@ -182,7 +178,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
                 resultObject = classificationController.getChildNodes(uuid,
                         null);
             } else if (EntityType.TAXON_NODE.equals(entityType)) {
-                resultObject = taxonNodeListController
+                resultObject = taxonNodePrintAppController
                         .getChildNodes(uuid, null);
             }
         } catch (IOException e) {
@@ -207,7 +203,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         xmlView.setJsonConfig(jsonConfig);
         Object resultObject = null;
         try {
-            resultObject = taxonNodeController.doGet(taxonNodeUuid, null, null);
+            resultObject = taxonNodePrintAppController.doGet(taxonNodeUuid, null, null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
@@ -312,8 +308,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
         Object resultObject = null;
         try {
-            resultObject = taxonNodeController.getCdmBaseProperty(uuid,
-                    "taxon", null);
+            resultObject = taxonNodePrintAppController.doGetTaxon(uuid);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
