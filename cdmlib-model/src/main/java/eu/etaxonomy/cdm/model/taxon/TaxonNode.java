@@ -42,6 +42,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -864,11 +865,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     public void removeNullValueFromChildren(){
         try {
-            if (childNodes.contains(null)){
-                while(childNodes.contains(null)){
-                    childNodes.remove(null);
-                }
-            }
+            HHH_9751_Util.removeAllNull(childNodes);
             this.updateSortIndex(0);
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");
