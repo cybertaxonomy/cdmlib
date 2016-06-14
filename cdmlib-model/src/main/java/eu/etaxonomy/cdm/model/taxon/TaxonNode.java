@@ -626,9 +626,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
-        while (parentChildren.contains(null)){
-            parentChildren.remove(null);
-        }
+        HHH_9751_Util.removeAllNull(parentChildren);
         parent.updateSortIndex(0);
         if (index > parent.getChildNodes().size()){
             index = parent.getChildNodes().size();
@@ -739,18 +737,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
        // nodeSet.add(this);
         TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
-        try{
-            TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
-            if (name.getRank().isHigher(rank)){
-            	return null;
-            }
-            if (name.getRank().equals(rank)){
-            	return this;
-            }
-        }catch (NullPointerException e){
-            System.err.println(taxon.getTitleCache() +  " " + e.getMessage());
+        if (taxon == null){
+            return null;
         }
-        if(this.getParent() != null ){
+        TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+        if (name.getRank().isHigher(rank)){
+        	return null;
+        }
+        if (name.getRank().equals(rank)){
+        	return this;
+        }
+
+        if(this.getParent() != null){
         	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
             return parent.getAncestorOfRank(rank);
         }

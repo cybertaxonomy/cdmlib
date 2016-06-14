@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -221,7 +222,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see    	   		#getDescriptionSources()
      */
     public void addElement(DescriptionElementBase element) {
-        removeNullValue();
+        HHH_9751_Util.removeAllNull(this.descriptionElements);
         if (element.getInDescription() != null){
             element.getInDescription().removeElement(element);
         }
@@ -234,7 +235,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @param elements
      */
     public void addElements(DescriptionElementBase ... elements) {
-        removeNullValue();
+        HHH_9751_Util.removeAllNull(this.descriptionElements);
         for (DescriptionElementBase element : elements){
     		addElement(element);
     	}
@@ -249,16 +250,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see     		#addElement(DescriptionElementBase)
      */
     public void removeElement(DescriptionElementBase element) {
-        removeNullValue();
+        HHH_9751_Util.removeAllNull(this.descriptionElements);
         this.descriptionElements.remove(element);
         element.setInDescription(null);
     }
 
-    private void removeNullValue(){
-        while(this.descriptionElements.contains(null)){
-            this.descriptionElements.remove(null);
-        }
-    }
+
 
     /**
      * Returns the number of {@link DescriptionElementBase elementary description data} which constitute
