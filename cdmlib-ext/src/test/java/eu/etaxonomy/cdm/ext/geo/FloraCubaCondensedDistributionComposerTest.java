@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
- * Tests for {@link FloraCubaCondensedDistributionComposer}
+ * Tests for {@link FloraCubaCondensedDistributionComposerOld}
  * @author a.mueller
  * @date 07.04.2016
  *
@@ -125,17 +125,18 @@ public class FloraCubaCondensedDistributionComposerTest {
 // ********************* TESTS ******************************/
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposer#createCondensedDistribution(java.util.Collection, java.util.List)}.
+     * Test method for {@link eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposerOld#createCondensedDistribution(java.util.Collection, java.util.List)}.
      */
     @Test
     public void testCreateCondensedDistribution() {
         FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
-        composer.setAreaPreTag("");
-        composer.setAreaPostTag("");
+        composer.setAreaPreTag("<b>");
+        composer.setAreaPostTag("</b>");
 
         Set<Distribution> filteredDistributions = new HashSet<Distribution>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
         filteredDistributions.add(Distribution.NewInstance(eastCuba, statusVoc.findTermByUuid(uuidStatusOccasionallyCultivated)));
+        filteredDistributions.add(Distribution.NewInstance(westernCuba, statusVoc.findTermByUuid(uuidStatusDoubtfullyNativeError)));
         filteredDistributions.add(Distribution.NewInstance(pinarDelRio, PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR()));
         filteredDistributions.add(Distribution.NewInstance(holguin, PresenceAbsenceTerm.NATURALISED()));
         filteredDistributions.add(Distribution.NewInstance(bahamas, PresenceAbsenceTerm.NATIVE()));
@@ -144,7 +145,7 @@ public class FloraCubaCondensedDistributionComposerTest {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
         String condensedString = condensedDistribution.toString();
 
-        Assert.assertEquals("Condensed string for Cuba differs", "nCu((c)CuE(nHo)) "+composer.getInternalAreaSeparator() +"Bah ?VM ", condensedString);
+        Assert.assertEquals("Condensed string for Cuba differs", "n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
 
 
         //TODO work in progress
@@ -172,7 +173,7 @@ public class FloraCubaCondensedDistributionComposerTest {
         abbrev = "CuW";
         uuid = UUID.randomUUID();
         westernCuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        cuba.addIncludes(westernCuba);
+//        cuba.addIncludes(westernCuba);
 
         //Central Cuba
         label = "Central Cuba";
@@ -187,6 +188,9 @@ public class FloraCubaCondensedDistributionComposerTest {
         uuid = UUID.randomUUID();
         eastCuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
         cuba.addIncludes(eastCuba);
+
+        cuba.addIncludes(westernCuba);
+
 
         //Pinar del Río PR
         label = "Pinar del Río";
