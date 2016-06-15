@@ -16,14 +16,14 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
+import junit.framework.TestCase;
 
 /**
  * @author pplitzner
@@ -126,6 +126,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
     }
 
     @Test
+    @Ignore
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
