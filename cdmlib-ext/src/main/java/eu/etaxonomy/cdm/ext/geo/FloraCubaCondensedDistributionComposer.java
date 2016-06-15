@@ -88,12 +88,13 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
         //1. compute all areas and their status
         for(Distribution d : filteredDistributions) {
             PresenceAbsenceTerm status = d.getStatus();
+            NamedArea area = d.getArea();
+
             //TODO needed? Do we only want to have areas with status?
-            if(status == null) {
+            if(status == null || area == null) {
                 continue;
             }
 
-            NamedArea area = d.getArea();
             areaToStatusMap.put(area, status);
         }
 
