@@ -65,5 +65,23 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public abstract Long countChildrenOf(Taxon taxon, Classification classification);
 
+    /**
+     * @param taxon
+     * @param classification
+     * @param pageSize
+     * @param pageIndex
+     * @param propertyPaths
+     * @return
+     */
+    List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+    /**
+     * @param taxon
+     * @param classification
+     * @return
+     */
+    Long countSiblingsOf(Taxon taxon, Classification classification);
+
 
 }

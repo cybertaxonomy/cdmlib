@@ -280,5 +280,27 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern);
 
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param pageSize
+     * @param pageIndex
+     * @param propertyPaths
+     * @return
+     */
+    List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param pageSize
+     * @param pageIndex
+     * @param propertyPaths
+     * @return
+     */
+    Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
 
 }

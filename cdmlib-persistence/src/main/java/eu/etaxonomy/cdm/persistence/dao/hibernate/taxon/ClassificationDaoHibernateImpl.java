@@ -175,6 +175,22 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
          return result;
     }
 
+    @Override
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+         Query query = prepareListSiblingsOf(taxon, classification, false);
+
+         setPagingParameter(query, pageSize, pageIndex);
+
+         @SuppressWarnings("unchecked")
+         List<TaxonNode> result = query.list();
+         //check if array is "empty" (not containing null objects)
+         if(!result.isEmpty() && result.iterator().next()==null){
+            return java.util.Collections.emptyList();
+         }
+         defaultBeanInitializer.initializeAll(result, propertyPaths);
+         return result;
+    }
+
 
 
     @Override
@@ -184,12 +200,32 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return count;
     }
 
+    @Override
+    public Long countSiblingsOf(Taxon taxon, Classification classification){
+        Query query = prepareListSiblingsOf(taxon, classification, true);
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
     private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
 
     	String selectWhat = doCount ? "count(cn)" : "cn";
 
-         String hql = "select " + selectWhat + " from TaxonNode as tn left join tn.classification as c left join tn.taxon as t  left join tn.childNodes as cn "
+         String hql = "select " + selectWhat + " from TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t JOIN tn.childNodes as cn "
                  + "where t = :taxon and c = :classification";
+         Query query = getSession().createQuery(hql);
+         query.setParameter("taxon", taxon);
+         query.setParameter("classification", classification);
+         return query;
+    }
+
+    private Query prepareListSiblingsOf(Taxon taxon, Classification classification, boolean doCount){
+
+        String selectWhat = doCount ? "count(tn)" : "tn";
+
+         String subSelect = "SELECT tn.parent FROM TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t "
+                 + "WHERE t = :taxon AND c = :classification";
+         String hql = "SELECT " + selectWhat + " FROM TaxonNode as tn WHERE tn.parent IN ( " + subSelect + ")";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
