@@ -19,18 +19,18 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
-import junit.framework.TestCase;
 
 /**
  * @author pplitzner
  * @date 20.05.2014
  *
  */
-public class GbifQueryServiceWrapperTest extends TestCase{
+public class GbifQueryServiceWrapperTest {
 
     private static final String LOCALITY_STRING = "Saddington Reservoir, Saddington Reservoir";
 
@@ -97,18 +97,18 @@ public class GbifQueryServiceWrapperTest extends TestCase{
     @Test
     public void testJsonToCdmObject() throws URISyntaxException{
         Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJsonRecords);
-        assertEquals("number of records found is incorrect", 1, records.size());
+        Assert.assertEquals("number of records found is incorrect", 1, records.size());
         GbifResponse gbifResponse = records.iterator().next();
-        assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
-        assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
-        assertEquals("protocol is wrong", new URI("http://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
+        Assert.assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
+        Assert.assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
+        Assert.assertEquals("protocol is wrong", new URI("http://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
     }
 
     @Test
     public void testJsonOriginalDataSetUriParsing(){
         DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(dummyJsonDataset);
-        assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
-        assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
+        Assert.assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
+        Assert.assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "T. Henning", "1234", "ACC-2", "BGBM", "DE", "pollen herbarium", new GregorianCalendar(2014, 05, 27), new GregorianCalendar(2014,05,28));
         List<NameValuePair> queryParams = new GbifQueryGenerator().generateQueryParams(query);
         NameValuePair pair = new BasicNameValuePair("scientificName", "Campanula persicifolia");
-        assertTrue("query parameter is missing", queryParams.contains(pair));
+        Assert.assertTrue("query parameter is missing", queryParams.contains(pair));
         //FIXME this will currently always fail because eventDate is still not supported by GBIF
         //"basisOfRecord" and "limit" is always set
         // + 8 from query (collectorsNumber will be represented in the two parameters "recordNumber" and "fieldNumber";
@@ -132,15 +132,15 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
         try {
             Collection<GbifResponse> gbifResponse = service.query(query);
-            assertEquals("Usually this query retrieves at least two units. " +
+            Assert.assertEquals("Usually this query retrieves at least two units. " +
             		"Test failure may also be due to GBIF!" +
             		"Check http://api.gbif.org/v1/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
         } catch (ClientProtocolException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         } catch (IOException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         } catch (URISyntaxException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
 
     }
