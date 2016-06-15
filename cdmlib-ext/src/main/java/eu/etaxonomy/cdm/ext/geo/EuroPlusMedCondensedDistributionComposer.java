@@ -100,6 +100,8 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     }
 
     public EuroPlusMedCondensedDistributionComposer() {
+        super();
+        replaceCommonAreaLabelStart = true;
         condensedDistribution = new CondensedDistribution();
     }
 
