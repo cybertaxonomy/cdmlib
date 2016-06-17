@@ -97,13 +97,20 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern) {
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
+		 Query query;
+		if (pattern != null){
+		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab where r.titleCache like :pattern");
+		}else{
+		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
+		}
 
-		Query query = session.createQuery("SELECT " +
-				"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
 		if (limit != null){
 		    query.setMaxResults(limit);
 		}
-
+		if (pattern != null){
+	          pattern = pattern + "%";
+	          query.setParameter("pattern", pattern);
+	    }
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
