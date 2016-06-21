@@ -72,8 +72,6 @@ public class EditGeoServiceUtilities {
 
     private static IDefinedTermDao termDao;
 
-
-
     /**
      * @param termDao
      */
@@ -174,15 +172,6 @@ public class EditGeoServiceUtilities {
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        /*
-         * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
-         * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
-         *
-         * a.kohlbecker 2014-07-02 :This bug in the map service has been
-         * fixed now so reusing styles is now possible setting this flag to false.
-         */
-        boolean doNotReuseStyles = false;
-
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendSortList = new ArrayList<String>();
@@ -258,26 +247,7 @@ public class EditGeoServiceUtilities {
             Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
             for (int style: styleMap.keySet()){
                 // stylesPerLayer
-                if(doNotReuseStyles) {
-                    if(!styleUsage.containsKey(style)){
-                        styleUsage.put(style, 0);
-                    } else {
-                        // increment by 1
-                        styleUsage.put(style, styleUsage.get(style) + 1);
-                    }
-                    Integer styleIncrement = styleUsage.get(style);
-                    if(styleIncrement > 0){
-                        // style code has been used before!
-                        styleChar = getStyleAbbrev(style + styleIncrement + styleCounter);
-                        //for debugging sometimes failing test  #3831
-                        logger.warn("style: " + style + ", styleIncrement: " +  styleIncrement + ", styleCounter: " + styleCounter);
-                        areaStyles.put(style + styleIncrement + styleCounter, areaStyles.get(style));
-                    } else {
-                        styleChar = getStyleAbbrev(style);
-                    }
-                } else {
-                    styleChar = getStyleAbbrev(style);
-                }
+                styleChar = getStyleAbbrev(style);
                 Set<Distribution> distributionSet = styleMap.get(style);
                 areasPerStyle = new ArrayList<String>();
                 for (Distribution distribution: distributionSet){
