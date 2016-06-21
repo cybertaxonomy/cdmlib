@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -66,7 +67,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             if (nameTags.size() > 0){
                 tags.addAll(nameTags);
 
-                String secSeparator =  " sec. ";
+                boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+                String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
                 //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
