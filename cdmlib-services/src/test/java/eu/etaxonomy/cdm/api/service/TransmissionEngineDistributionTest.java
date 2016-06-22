@@ -109,7 +109,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         superAreas = Arrays.asList(new NamedArea[]{
         		termService.getAreaByTdwgAbbreviation("YUG")
         });
-        lowerRank = Rank.SPECIES();
+        lowerRank = Rank.SUBSPECIES();
         upperRank = Rank.GENUS();
 
         classification = classificationService.load(CLASSIFICATION_UUID);
@@ -279,7 +279,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     }
 
 
-//    @Test //  uncomment to create test data file//
+    //@Test //  uncomment to create test data file//
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 

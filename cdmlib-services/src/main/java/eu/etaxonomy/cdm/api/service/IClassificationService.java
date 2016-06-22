@@ -303,5 +303,11 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
+    /**
+     * @param classification
+     * @return
+     */
+    ClassificationLookupDTO classificationLookup(Classification classification);
+
 
 }
