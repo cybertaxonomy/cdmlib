@@ -928,6 +928,15 @@ public class NonViralNameParserImplTest {
         assertTrue(nameTestStatus.getStatus().size()== 1);
         assertEquals( NomenclaturalStatusType.ORTHOGRAPHY_REJECTED(), nameTestStatus.getStatus().iterator().next().getType());
 
+        //ined.
+        strTestStatus = "Houstonia macvaughii (Terrell) Aber, ined.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertEquals("Houstonia", nameTestStatus.getGenusOrUninomial());
+        assertEquals("macvaughii", nameTestStatus.getSpecificEpithet());
+        assertEquals("(Terrell) Aber", nameTestStatus.getAuthorshipCache());
+        assertEquals(1, nameTestStatus.getStatus().size());
+        assertEquals( NomenclaturalStatusType.INED(), nameTestStatus.getStatus().iterator().next().getType());
+
         //not yet parsed "not avail."
 	}
 
