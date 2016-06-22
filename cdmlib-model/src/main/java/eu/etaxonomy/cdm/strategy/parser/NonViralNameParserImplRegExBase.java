@@ -195,6 +195,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord +
     			anySepChar + referenceTitleWithSepCharactersAndBrackets ;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
+    protected static String referenceTitleWithPlaceBracket = referenceTitle + "(" + oWs + "\\(" + capitalWord + "(" + oWs + capitalWord + ")?" + "\\))?" ;
 
     protected static String editionSeparator = "(" + oWs + "|," + fWs + ")ed\\.?" + oWs;  //
     protected static String pEdition = nr2;
@@ -204,7 +205,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator +  volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
 
-    protected static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
+//    protected static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
+    protected static String pVolRefTitle = referenceTitleWithPlaceBracket + "(" + pVolPart + ")?";
     protected static String softEditionVolRefTitle = referenceTitleWithSepCharactersAndBrackets + pEditionVolAlternative;
     protected static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
 
