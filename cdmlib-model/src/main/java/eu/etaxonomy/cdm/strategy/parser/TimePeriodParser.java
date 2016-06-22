@@ -22,6 +22,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 /**
@@ -31,11 +32,11 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  */
 public class TimePeriodParser {
 	private static final Logger logger = Logger.getLogger(TimePeriodParser.class);
-	
+
 	//patter for first year in string;
 	private static final Pattern firstYearPattern =  Pattern.compile("\\d{4}");
 	//case "1806"[1807];
-	private static final Pattern uncorrectYearPatter =  Pattern.compile("\"\\d{4}\"\\s*\\[\\d{4}\\]");
+	private static final Pattern uncorrectYearPatter =  Pattern.compile("[\""+UTF8.ENGLISH_QUOT_START+"]\\d{4}[\""+UTF8.ENGLISH_QUOT_END+"]\\s*\\[\\d{4}\\]");
 	//case fl. 1806 or c. 1806 or fl. 1806?
 	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
 	//standard
@@ -181,14 +182,14 @@ public class TimePeriodParser {
 			}
 		}
 	}
-	
+
 	private static void parseLifeSpanPattern(String periodString, TimePeriod result) {
-		
+
 		try{
 			String[] years = periodString.split("--");
 			String start = years[0];
 			String end = years[1];
-			
+
 			result.setStartYear(Integer.valueOf(start));
 			result.setEndYear(Integer.valueOf(end));
 		} catch (Exception e) {

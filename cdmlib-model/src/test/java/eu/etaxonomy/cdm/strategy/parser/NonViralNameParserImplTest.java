@@ -1694,4 +1694,128 @@ public class NonViralNameParserImplTest {
 
 	}
 
+    @Test
+    public final void testExistingProblems(){
+        //Canabio, issue with space
+        NonViralName<?> name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
+                + " in Acta Bot. Hung. 46 (1-2): 30. 2004");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
+        Reference nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("46 (1-2)", nomRef.getVolume());
+
+        //Canabio, detail with fig.
+        name = parser.parseReferencedName("Didymaea floribunda Rzed."
+                + " in Bol. Soc. Bot. Méx. 44: 72, fig. 1. 1983");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Rzed.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("44", nomRef.getVolume());
+        assertEquals("72, fig. 1", name.getNomenclaturalMicroReference());
+
+        //fig with a-c and without dot
+        name = parser.parseReferencedName("Deppea guerrerensis Dwyer & Lorence"
+                + " in Allertonia 4: 428. fig 4a-c. 1988");  //
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Dwyer & Lorence", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("4", nomRef.getVolume());
+        assertEquals("428. fig 4a-c", name.getNomenclaturalMicroReference());
+
+        //issue with EN_DASH (3–4)
+        name = parser.parseReferencedName("Arachnothryx tacanensis (Lundell) Borhidi"
+              + " in Acta Bot. Hung. 33 (3–4): 303. 1987");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("33 (3–4)", nomRef.getVolume());
+        assertEquals("303", name.getNomenclaturalMicroReference());
+
+        //fig with f.
+        name = parser.parseReferencedName("Stenotis Terrell"
+                + " in Sida 19(4): 901–911, f. 1–2. 2001");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Terrell", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("19(4)", nomRef.getVolume());
+        assertEquals("901–911, f. 1–2", name.getNomenclaturalMicroReference());
+
+        //pl
+        name = parser.parseReferencedName("Carapichea  Aubl."
+                + " in Hist. Pl. Guiane 1: 167, pl. 64. 1775");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Aubl.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("1", nomRef.getVolume());
+        assertEquals("167, pl. 64", name.getNomenclaturalMicroReference());
+
+        //fig with ,
+        name = parser.parseReferencedName("Hoffmannia ixtlanensis Lorence"
+                + " in Novon 4: 121. fig. 2a, b. 1994");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("4", nomRef.getVolume());
+        assertEquals("121. fig. 2a, b", name.getNomenclaturalMicroReference());
+
+        //(Suppl.)
+        name = parser.parseReferencedName("Manettia costaricensis  Wernham"
+                + " in J. Bot. 57(Suppl.): 38. 1919");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Wernham", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("57(Suppl.)", nomRef.getVolume());
+        assertEquals("38", name.getNomenclaturalMicroReference());
+
+        //NY.
+        name = parser.parseReferencedName("Crusea psyllioides (Kunth) W.R. Anderson"
+                + " in Mem. NY. Bot. Gard. 22: 75. 1972");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "W.R. Anderson", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("22", nomRef.getVolume());
+        assertEquals("75", name.getNomenclaturalMicroReference());
+
+        //apostroph word in title
+        name = parser.parseReferencedName("Sabicea glabrescens Benth."
+                + " in Hooker's J. Bot. Kew Gard. Misc. 3: 219. 1841");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Benth.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("3", nomRef.getVolume());
+        assertEquals("219", name.getNomenclaturalMicroReference());
+
+        //
+//      //(Hannover) place published
+//      name = parser.parseReferencedName("Pittoniotis trichantha Griseb."
+//              + " in Bonplandia (Hannover) 6 (1): 8. 1858");
+//      Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//      combinationAuthor = name.getCombinationAuthorship();
+//      assertEquals( "Griseb.", combinationAuthor.getNomenclaturalTitle());
+//      nomRef = (Reference)name.getNomenclaturalReference();
+//      assertEquals(ReferenceType.Article, nomRef.getType());
+//      assertEquals("6 (1)", nomRef.getVolume());
+//      assertEquals("8", name.getNomenclaturalMicroReference());
+ }
+
 }

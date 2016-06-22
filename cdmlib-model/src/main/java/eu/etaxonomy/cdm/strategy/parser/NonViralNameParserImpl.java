@@ -535,7 +535,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			if (bookMatcher.matches() ){
 				result = parseBook(strReference);
 			}else{
-				logger.warn("Non-InRef must be book but does not match book");
+				logger.warn("Non-InRef must be book but does not match book: "+ strReference);
 				result = ReferenceFactory.newBook();
 				makeUnparsableRefTitle(result, strReference);
 			}
