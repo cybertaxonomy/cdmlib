@@ -99,7 +99,13 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 
     /**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
-     * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
+     * @see #getUuidAndTitleCache(Integer, String)
+     */
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+
+    /**
+     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+     * Retrieving this list is considered to be significantly faster than initializing the fully fledged business
      * objects. To be used in cases where you want to present large amount of data and provide details after
      * a selection has been made.
      *

@@ -661,7 +661,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		IBook result = ReferenceFactory.newBook();
 		reference = makeEdition(result, reference);
 		reference = makeVolume(result, reference);
-		result.setTitle(reference);
+		result.setAbbrevTitle(reference);
 		return result;
 	}
 
@@ -672,7 +672,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
 		Reference inJournal = ReferenceFactory.newJournal();
-		inJournal.setTitle(reference);
+		inJournal.setAbbrevTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}

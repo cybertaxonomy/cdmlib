@@ -1913,14 +1913,14 @@ public class NonViralNameParserImplTest {
 
         //f
         name = parser.parseReferencedName("Coussarea imitans L.O. Williams"
-                + " in Phytologia 26 (6): 488–489, f. 1973");
+                + " in Phytologia 26 (6): 488-489, f. 1973");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitle());
         nomRef = (Reference)name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("26 (6)", nomRef.getVolume());
-        assertEquals("488–489, f", name.getNomenclaturalMicroReference());
+        assertEquals("488-489, f", name.getNomenclaturalMicroReference());
 
         //Phys.-Med.
         name = parser.parseReferencedName("Coccocypselum cordifolium Nees & Mart."
