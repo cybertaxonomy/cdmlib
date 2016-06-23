@@ -134,11 +134,11 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		return result;
 	}
-
-	@Override
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
-	    return getUuidAndTitleCache(null, null);
-	}
+//
+//	@Override
+//    public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
+//	    return getUuidAndTitleCache(null, null);
+//	}
 
 
 	@Transactional(readOnly = true)

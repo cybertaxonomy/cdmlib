@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
@@ -158,6 +159,7 @@ public class FloraCubaCondensedDistributionComposerTest {
     }
 
     @Test
+    @Ignore
     public void testCreateCondensedDistributionOrderSubAreas() {
         FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
         composer.setAreaPreTag("");

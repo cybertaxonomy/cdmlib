@@ -97,11 +97,11 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
-     * @see #getUuidAndTitleCache(Integer, String)
-     */
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+//    /**
+//     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+//     * @see #getUuidAndTitleCache(Integer, String)
+//     */
+//    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
 
     /**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
