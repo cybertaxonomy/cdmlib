@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.hibernate;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
+
+
 /**
  * Helper class to remove null values from collections which are left over artifacts due to
  * https://hibernate.atlassian.net/browse/HHH-9751
@@ -21,18 +25,25 @@ import java.util.Collection;
  */
 public class HHH_9751_Util {
 
+    private static final Logger logger = Logger.getLogger(HHH_9751_Util.class);
+
     /**
      *
      * @param collection
      * @return the number of null values removed from the collection
      */
     static public int removeAllNull(Collection collection) {
+
         int cnt = 0;
-        if (collection.contains(null)){
-            while(collection.contains(null)){
-                cnt++;
-                collection.remove(null);
+        try {
+           if (collection.contains(null)){
+                while(collection.contains(null)){
+                    cnt++;
+                    collection.remove(null);
+                }
             }
+        } catch (LazyInitializationException e) {
+            logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
         return cnt;
     }

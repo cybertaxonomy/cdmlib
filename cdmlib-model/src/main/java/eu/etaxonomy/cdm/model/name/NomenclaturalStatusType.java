@@ -100,6 +100,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
 	private static final UUID uuidConservedDesig = UUID.fromString("4e9c9702-a74d-4033-9d47-792ad123712c");
+	private static final UUID uuidIned = UUID.fromString("51429574-c6f9-4aa1-bab9-0bbc5b160ba1");
 
 	//zoological uuids
 	public static final UUID uuidIcznNomStatusVocabulary = UUID.fromString("5e3c08e9-13a9-498e-861e-b9b5656ab6ac");
@@ -211,6 +212,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		if (this.equals(INVALID())
 			|| this.equals(NUDUM())
 			|| 	this.equals(PROVISIONAL())
+			||  this.equals(INED())
 			|| 	this.equals(COMBINATION_INVALID())
 			|| 	this.equals(OPUS_UTIQUE_OPPR())
 			||  this.equals(ZOO_NOT_AVAILABLE())
@@ -559,6 +561,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getTermByUuid(uuidOrthographyConserved);
 	}
 
+
+
+
     /**
      * Returns the nomenclatural status type "orthography rejected". <BR>
      * TBC.
@@ -690,15 +695,30 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "provisional". A {@link TaxonNameBase taxon name} is
-	 * "provisional" if it has not been yet effectively published.<BR>
-	 * A "provisional" taxon name is therefore also "invalid"
-	 * ("not available" for {@link ZoologicalName zoological names}).
+	 * "provisional" if it is not validly published, because not finally accepted by the author<BR>
+	 * Some people use it in the same way as {@link #INED() ined.}
 	 *
+	 * @see #INED()
 	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getTermByUuid(uuidProvisional);
 	}
+
+    /**
+     * Returns the nomenclatural status type "ined.". A {@link TaxonNameBase taxon name} is
+     * "inedited" if it it has not yet been published.<BR>
+     * An inedited taxon name is therefore also "invalid" (bot.) / "not available (zool.)
+     *<BR>
+     * see also http://dev.e-taxonomy.eu/trac/ticket/5896
+     *
+     * @see #PROVISIONAL()
+     * @see  #isInvalidType()
+     * @return
+     */
+    public static final NomenclaturalStatusType INED(){
+        return getTermByUuid(uuidIned);
+    }
 
 	/**
 	 * Returns the nomenclatural status type "valid" (this corresponds to
@@ -830,41 +850,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			}
 			throw new UnknownCdmTypeException("Unknown nom. status abbreviation: " + statusAbbreviation);
 		}
-
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. dub.")) { return NomenclaturalStatusType.DOUBTFUL();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. confus.")) { return NomenclaturalStatusType.CONFUSUM();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. illeg.")){return NomenclaturalStatusType.ILLEGITIMATE();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej.")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons. prop.")) { return NomenclaturalStatusType.CONSERVED_PROP();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons. prop.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. legit.")) { return NomenclaturalStatusType.LEGITIMATE();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
-
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
-
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. nov.")) { return NomenclaturalStatusType.NOVUM();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej. prop.")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. sanct.")) { return NomenclaturalStatusType.SANCTIONED();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
-//		}else if (statusAbbreviation.equalsIgnoreCase("comb. inval.")){ return NomenclaturalStatusType.COMBINATION_INVALID();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. valid")) { return NomenclaturalStatusType.VALID();
-//		}else if (statusAbbreviation.equalsIgnoreCase("opus. utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-//		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
-//		//TODO make generic, use labels for map
-//		}else {
-//			if (statusAbbreviation == null){
-//				statusAbbreviation = "(null)";
-//			}
-//			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusAbbreviation);
-//		}
 	}
 
 	/**
@@ -895,38 +880,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			}
 			throw new UnknownCdmTypeException("Unknown nom. status label: " + statusLabel);
 		}
-
-//		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
-//		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();
-//		}else if (statusLabel.equalsIgnoreCase("Doubtful")) { return NomenclaturalStatusType.DOUBTFUL();
-//		}else if (statusLabel.equalsIgnoreCase("Confusum")) { return NomenclaturalStatusType.CONFUSUM();
-//		}else if (statusLabel.equalsIgnoreCase("Illegitimate")){return NomenclaturalStatusType.ILLEGITIMATE();
-//		}else if (statusLabel.equalsIgnoreCase("Superfluous")){ return NomenclaturalStatusType.SUPERFLUOUS();
-//		}else if (statusLabel.equalsIgnoreCase("Rejected")) { return NomenclaturalStatusType.REJECTED();
-//		}else if (statusLabel.equalsIgnoreCase("Utique Rejected")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
-//		}else if (statusLabel.equalsIgnoreCase("Conserved Prop")) { return NomenclaturalStatusType.CONSERVED_PROP();
-//		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved Prop")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-//		}else if (statusLabel.equalsIgnoreCase("Legitimate")) { return NomenclaturalStatusType.LEGITIMATE();
-//		}else if (statusLabel.equalsIgnoreCase("Alternative")) { return NomenclaturalStatusType.ALTERNATIVE();
-//		}else if (statusLabel.equalsIgnoreCase("Novum")) { return NomenclaturalStatusType.NOVUM();
-//		}else if (statusLabel.equalsIgnoreCase("Utique Rejected Prop")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-//		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-//		}else if (statusLabel.equalsIgnoreCase("Rejected Prop")) { return NomenclaturalStatusType.REJECTED_PROP();
-//		}else if (statusLabel.equalsIgnoreCase("Conserved")) { return NomenclaturalStatusType.CONSERVED();
-//		}else if (statusLabel.equalsIgnoreCase("Sanctioned")) { return NomenclaturalStatusType.SANCTIONED();
-//		}else if (statusLabel.equalsIgnoreCase("Invalid")) { return NomenclaturalStatusType.INVALID();
-//		}else if (statusLabel.equalsIgnoreCase("Nudum")){ return NomenclaturalStatusType.NUDUM();
-//		}else if (statusLabel.equalsIgnoreCase("Combination Invalid")){ return NomenclaturalStatusType.COMBINATION_INVALID();
-//		}else if (statusLabel.equalsIgnoreCase("Provisional")) { return NomenclaturalStatusType.PROVISIONAL();
-//		}else if (statusLabel.equalsIgnoreCase("Valid")) { return NomenclaturalStatusType.VALID();
-//		}else if (statusLabel.equalsIgnoreCase("Opus Utique Oppr")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-//		}else if (statusLabel.equalsIgnoreCase("Subnudum")) { return NomenclaturalStatusType.SUBNUDUM();
-//		}else {
-//			if (statusLabel == null){
-//				statusLabel = "(null)";
-//			}
-//			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusLabel);
-//		}
 	}
 
 

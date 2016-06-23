@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @Entity
 @Audited
-public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends DefinedTermBase<T> implements Comparable<T> {
+public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends DefinedTermBase<T> {
     private static final long serialVersionUID = 8000797926720467399L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
@@ -149,13 +149,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
         }
     }
 
-//	public int compareTo(IdentifiableEntity o) {
-//		if (o instanceof OrderedTermBase){
-//			return compareTo((OrderedTermBase)o);
-//		}else{
-//			return super.compareTo(o);
-//		}
-//	}
 
     /**
      * If this term is lower than the parameter term, true is returned, else false.
@@ -222,23 +215,23 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Transient
     public T getNextHigherTerm(){  //#3327
         if (getVocabulary() == null){
             return null;
         }else{
-            @SuppressWarnings("unchecked")
             OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextHigherTerm(this);
             return (T)result;
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Transient
     public T getNextLowerTerm(){ //#3327
         if (getVocabulary() == null){
             return null;
         }else{
-            @SuppressWarnings("unchecked")
             OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextLowerTerm(this);
             return (T)result;
         }

@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.strategy.parser;
 
@@ -13,19 +13,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -33,13 +33,13 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class TimePeriodParserTest {
 	private static final Logger logger = Logger.getLogger(TimePeriodParserTest.class);
-	
+
 	private TimePeriod onlyStartYear;
 	private TimePeriod onlyEndYear;
 	private TimePeriod startAndEndYear;
 	private TimePeriod noStartAndEndYear;
-	
-	
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -60,11 +60,11 @@ public class TimePeriodParserTest {
 	@Before
 	public void setUp() throws Exception {
 		onlyStartYear = TimePeriod.NewInstance(1922);
-		onlyEndYear = TimePeriod.NewInstance(null, 1857);;
+		onlyEndYear = TimePeriod.NewInstance(null, 1857);
 		startAndEndYear = TimePeriod.NewInstance(1931, 1957);
 		Integer start = null;
 		Integer end = null;
-		noStartAndEndYear = TimePeriod.NewInstance(start, end);;
+		noStartAndEndYear = TimePeriod.NewInstance(start, end);
 	}
 
 	/**
@@ -74,9 +74,9 @@ public class TimePeriodParserTest {
 	public void tearDown() throws Exception {
 	}
 
-	
-//************************ TESTS ******************************************		
-	
+
+//************************ TESTS ******************************************
+
 
 	@Test
 	public void testParseSingleDateString() {
@@ -98,8 +98,8 @@ public class TimePeriodParserTest {
 		}
 		//to be continued
 	}
-	
-	
+
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#parseString(java.lang.String)}.
 	 */
@@ -125,22 +125,29 @@ public class TimePeriodParserTest {
 		TimePeriod tpUnparsable = TimePeriodParser.parseString(strUnparsablePeriod);
 		assertNotNull(tpUnparsable);
 		Assert.assertEquals(strUnparsablePeriod, tpUnparsable.getFreeText());
-		
+
 		//"1806"[1807]
 		String strCorrectedPeriod = "\"1806\"[1807]";
 		TimePeriod tpcorrected = TimePeriodParser.parseString(strCorrectedPeriod);
 		assertNotNull(tpcorrected);
 		Assert.assertEquals(strCorrectedPeriod, tpcorrected.getFreeText());
 		Assert.assertEquals("1807", tpcorrected.getYear());
-		
-		
+
+	      //„1806‟[1807]
+        String strCorrectedEnPeriod = UTF8.ENGLISH_QUOT_START + "1806"+UTF8.ENGLISH_QUOT_END+"[1807]";
+        TimePeriod tpcorrectedEn = TimePeriodParser.parseString(strCorrectedEnPeriod);
+        assertNotNull(tpcorrectedEn);
+        Assert.assertEquals(strCorrectedEnPeriod, tpcorrectedEn.getFreeText());
+        Assert.assertEquals("1807", tpcorrectedEn.getYear());
+
+
 		//fl. 1806
 		String strFlPeriod = "fl.  1806?";
 		TimePeriod tpFl = TimePeriodParser.parseString(strFlPeriod);
 		assertNotNull(tpFl);
 		Assert.assertEquals(strFlPeriod, tpFl.getFreeText());
 		Assert.assertEquals("1806", tpFl.getYear());
-		
+
 		String strCPeriod = "c.  1806-1810";
 		TimePeriod tpC = TimePeriodParser.parseString(strCPeriod);
 		assertNotNull(tpC);
@@ -148,7 +155,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals(Integer.valueOf(1806), tpC.getStartYear());
 		Assert.assertEquals(Integer.valueOf(1810), tpC.getEndYear());
 		Assert.assertEquals("1806-1810", tpC.getYear());
-		
+
 		//1.1.2011
 		String strDotDate = "1.2.2011";
 		TimePeriod tp = TimePeriodParser.parseString(strDotDate);
@@ -157,7 +164,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals("2011", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
-		
+
 		strDotDate = "31.03.2012";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
@@ -165,7 +172,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals("2012", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(3), tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
-		
+
 		strDotDate = "00.04.2013";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
@@ -173,7 +180,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals("2013", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(4), tp.getStartMonth());
 		Assert.assertEquals(null, tp.getStartDay());
-		
+
 		strDotDate = "13.00.2014";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
@@ -181,7 +188,7 @@ public class TimePeriodParserTest {
 		Assert.assertEquals("2014", tp.getYear());
 		Assert.assertEquals(null, tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(13), tp.getStartDay());
-		
+
 		strDotDate = "31.12.2015 - 02.01.2016";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
@@ -192,8 +199,8 @@ public class TimePeriodParserTest {
 		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
 		Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
 		Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
-		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());		
+		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
 	}
-	
-	
+
+
 }

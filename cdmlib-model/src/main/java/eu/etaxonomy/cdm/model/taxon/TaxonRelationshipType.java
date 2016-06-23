@@ -95,6 +95,13 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	private static final UUID uuidAllRelationships = UUID.fromString("831fcd88-e5c9-49e0-b06e-bbb67d1c05c9");
 
+	private static final UUID uuidUnclear = UUID.fromString("4c48ba25-c1d0-4bdd-9260-c1fa2e42a5d3");
+    private static final UUID uuidNotYetWorkedOn = UUID.fromString("8d47e59a-790d-428f-8060-01d443519166");
+
+
+
+
+
 	public static TaxonRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		return new TaxonRelationshipType(term, label, labelAbbrev, symmetric, transitive);
 	}
@@ -414,6 +421,15 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		return getTermByUuid(uuidIncludedInOrIncludesOrExcludes);
 	}
 
+	public static final TaxonRelationshipType UNCLEAR(){
+	    return getTermByUuid(uuidUnclear);
+	}
+
+    public static final TaxonRelationshipType NOT_YET_WORKED_ON(){
+        return getTermByUuid(uuidNotYetWorkedOn);
+    }
+
+
 	@Override
     protected void setDefaultTerms(TermVocabulary<TaxonRelationshipType> termVocabulary) {
 		termMap = new HashMap<UUID, TaxonRelationshipType>();
@@ -432,8 +448,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
     public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 
-        String inverseLabelAbbrev = csvLine.get(7).trim();
         newInstance.setSymbol(newInstance.getIdInVocabulary());
+        String inverseLabelAbbrev = csvLine.get(7).trim();
         newInstance.setInverseSymbol(inverseLabelAbbrev);
         return newInstance;
     }
