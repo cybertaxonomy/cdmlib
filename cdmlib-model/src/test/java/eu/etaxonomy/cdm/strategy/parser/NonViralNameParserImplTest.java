@@ -1750,6 +1750,29 @@ public class NonViralNameParserImplTest {
         assertEquals("19(4)", nomRef.getVolume());
         assertEquals("901" + UTF8.EN_DASH + "911, f. 1" + UTF8.EN_DASH + "2", name.getNomenclaturalMicroReference());
 
+        //detail with figs
+        name = parser.parseReferencedName("Randia sonorensis Wiggins"
+                + " in Contr. Dudley Herb. 3: 75, figs 4-6. 1940");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("3", nomRef.getVolume());
+        assertEquals("75, figs 4-6", name.getNomenclaturalMicroReference());
+
+        //detail with pl. and figs
+        name = parser.parseReferencedName("Randia sonorensis Wiggins"
+                + " in Contr. Dudley Herb. 3: 75, pl. 19, figs 4-6. 1940");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("3", nomRef.getVolume());
+        assertEquals("75, pl. 19, figs 4-6", name.getNomenclaturalMicroReference());
+
+
         //pl
         name = parser.parseReferencedName("Carapichea  Aubl."
                 + " in Hist. Pl. Guiane 1: 167, pl. 64. 1775");
@@ -1771,6 +1794,17 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
         assertEquals("121. fig. 2a, b", name.getNomenclaturalMicroReference());
+
+        //detail with , to number
+        name = parser.parseReferencedName("Deppea martinez-calderonii Lorence"
+                + " in Allertonia 4: 399. figs 1e, 2. 1988");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("4", nomRef.getVolume());
+        assertEquals("399. figs 1e, 2", name.getNomenclaturalMicroReference());
 
         //(Suppl.)
         name = parser.parseReferencedName("Manettia costaricensis  Wernham"
@@ -1805,8 +1839,7 @@ public class NonViralNameParserImplTest {
         assertEquals("3", nomRef.getVolume());
         assertEquals("219", name.getNomenclaturalMicroReference());
 
-        //
-        //(Hannover) place published
+        // place published e.g. (Hannover)
         name = parser.parseReferencedName("Pittoniotis trichantha Griseb."
                   + " in Bonplandia (Hannover) 6 (1): 8. 1858");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
@@ -1816,6 +1849,106 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("6 (1)", nomRef.getVolume());
         assertEquals("8", name.getNomenclaturalMicroReference());
+
+        //komplex / incorrect year without quotation marks
+        name = parser.parseReferencedName("Javorkaea Borhidi & Jarai-Koml."
+                + " in Acta Bot. Hung. 29(1\u20134): 16, f. 1\u20132, t. 1-8. 1983 [1984]");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("29(1\u20134)", nomRef.getVolume());
+        assertEquals("16, f. 1\u20132, t. 1-8", name.getNomenclaturalMicroReference());
+        assertEquals("1983 [1984]", nomRef.getDatePublishedString());
+        assertEquals("1984", nomRef.getYear());
+
+        //incorrect year with \u201e \u201f  (s. eu.etaxonomy.cdm.common.UTF8.ENGLISH_QUOT_START
+        name = parser.parseReferencedName("Javorkaea Borhidi & Jarai-Koml."
+                + " in Acta Bot. Hung. 29(1-4): 16, f. 1-2. \u201e1983\u201f [1984]");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("29(1-4)", nomRef.getVolume());
+        assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
+        assertEquals("\u201e1983\u201f [1984]", nomRef.getDatePublishedString());
+        assertEquals("1984", nomRef.getYear());
+
+        //incorrect year with "
+        name = parser.parseReferencedName("Javorkaea Borhidi & Jarai-Koml."
+                + " in Acta Bot. Hung. 29(1-4): 16, f. 1-2. \"1983\" [1984]");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("29(1-4)", nomRef.getVolume());
+        assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
+        assertEquals("\"1983\" [1984]", nomRef.getDatePublishedString());
+        assertEquals("1984", nomRef.getYear());
+
+        //fig. a
+        name = parser.parseReferencedName("Psychotria capitata  Ruiz & Pav."
+                + " in Fl. Peruv. 2: 59, pl. 206, fig. a. 1799");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Ruiz & Pav.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("2", nomRef.getVolume());
+        assertEquals("59, pl. 206, fig. a", name.getNomenclaturalMicroReference());
+
+        //442A.
+        name = parser.parseReferencedName("Rogiera elegans Planch."
+                + " in Fl. Serres Jard. Eur. 5: 442A. 1849");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Planch.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("5", nomRef.getVolume());
+        assertEquals("442A", name.getNomenclaturalMicroReference());
+
+        //f
+        name = parser.parseReferencedName("Coussarea imitans L.O. Williams"
+                + " in Phytologia 26 (6): 488–489, f. 1973");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("26 (6)", nomRef.getVolume());
+        assertEquals("488–489, f", name.getNomenclaturalMicroReference());
+
+        //Phys.-Med.
+        name = parser.parseReferencedName("Coccocypselum cordifolium Nees & Mart."
+                + " in Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur. 12: 14. 1824");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Nees & Mart.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur.", nomRef.getInReference().getTitle());
+        assertEquals("12", nomRef.getVolume());
+        assertEquals("14", name.getNomenclaturalMicroReference());
+        assertEquals("1824", nomRef.getYear());
+
+        //(ed. 10)  wanted?
+//        Syst. Nat. (ed. 10) 2: 930. 1759
+//        name = parser.parseReferencedName("Erithalis fruticosa L."
+//                + ", Syst. Nat. ed. 10, 2: 930. 1759");
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        combinationAuthor = name.getCombinationAuthorship();
+//        assertEquals( "L.", combinationAuthor.getNomenclaturalTitle());
+//        nomRef = (Reference)name.getNomenclaturalReference();
+//        assertEquals(ReferenceType.Book, nomRef.getType());
+//        assertEquals("2", nomRef.getVolume());
+//        assertEquals("10", nomRef.getEdition());
+//        assertEquals("930", name.getNomenclaturalMicroReference());
+//        assertEquals("1759", nomRef.getYear());
+
  }
 
 }

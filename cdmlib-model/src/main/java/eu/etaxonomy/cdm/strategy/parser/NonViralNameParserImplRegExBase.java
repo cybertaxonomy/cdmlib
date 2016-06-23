@@ -63,8 +63,13 @@ public abstract class NonViralNameParserImplRegExBase  {
    //years
     protected static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
     protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
-    protected static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
+    protected static String correctYearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
     								//+ "(" + month + ")?)" ;                 // optional month
+    //!! also used by TimePeriodParser
+    public static String incorrectYearPhrase = "(\"" + correctYearPhrase + "\"|" + correctYearPhrase + "|"
+            + UTF8.ENGLISH_QUOT_START + correctYearPhrase + UTF8.ENGLISH_QUOT_END + ")"
+			+ fWs + "\\[" + singleYear + "\\]"  ;
+    protected static String yearPhrase = "(" + correctYearPhrase + "|" + incorrectYearPhrase + ")";
 
     protected static String yearSeperator = "\\." + oWs;
     protected static String detailSeparator = ":" + oWs;
@@ -116,35 +121,37 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String fullAuthorString = "(" + fullBotanicAuthorString + "|" + fullZooAuthorString+ ")";
 
     //details
-    //TODO still very simple
-
+    //TODO still not all parsed
 
     protected static String nr2 = "\\d{1,2}";
     protected static String nr4 = "\\d{1,4}";
     protected static String nr5 = "\\d{1,5}";
 
 
-    protected static String pPage = nr5 + "[a-z]?";
+    protected static String pPage = nr5 + "[a-zA-Z]?";
     protected static String pStrNo = "n\u00B0" + fWs + "(" + nr4 + ")";
 
     protected static String pBracketNr = "\\[" + nr4 + "\\]";
-    protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
-
-    protected static String pStrTab = "[tT]((ab)?\\.|ab\\s)" + fWs + nr4 + "(" + fWs + "(B|\u00DF|\\(\\d{1,3}\\)))?";
-    protected static String pFig = "[fF]((ig)?\\.|ig\\s)" + fWs + nr4 + "([a-zA-Z]([-\u2013,]\\s*[a-zA-Z])?)?";
-    protected static String pFigs = pFig + "([-\u2013]" + nr4 + ")?";
-    protected static String pPlate = "[pP]((l)?\\.|l\\s)" + fWs + nr4 + "([a-zA-Z]([-\u2013,]\\s*[a-zA-Z])?)?";
+    protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";  //maybe merge with pTabFigPlate (see below)
 
 
-    //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
-    protected static String pTabFigPl = "(" + pStrTab + "|" + pFigs + "|" +  pPlate + ")";
+    protected static String pRangeSep = "[-\u2013]";
+    protected static String pRangeSepCo = "[-\u2013,]";
+
+    protected static String pTabFigPlateStart = "([tT](abs?)?|[fF](igs?)?|[pP]l?s?)(\\.|\\s|$)";   //$ for only 'f'
+    protected static String pAbcNr = "[a-zA-Z\u00DF]";
+    protected static String pTabFigPlateNumber = "(" + nr4 + "|" + pAbcNr + "|" + nr4 + fWs + pAbcNr + ")" + "("+ pRangeSepCo + fWs + pAbcNr + ")?";
+    protected static String pTabFigPlateNumbers = "(" + pTabFigPlateNumber + "(" + pRangeSepCo + fWs + pTabFigPlateNumber + ")?)";
+
+    protected static String pTabFigPlate = pTabFigPlateStart + fWs + pTabFigPlateNumbers + "?";
+    protected static String pTabFigPl = pTabFigPlate;
 
     //e.g.: p455; p.455; pp455-456; pp.455-456; pp.455,456; 455, 456; pages 456-457; pages 456,567
-    protected static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFigPl +")?";
-    protected static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + "[-\u2013,]" +fWs + pPage ;
+    protected static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFigPl +"){0,2}";
+    protected static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + pRangeSepCo +fWs + pPage ;
     //static String pPages = pPage + "(," + fWs + "(" + pPage + "|" + pTabFig + ")" + ")?";
     protected static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
-    protected static String pPagesTabFig = pPages +"[,\\.]" + fWs + pTabFigPl;
+    protected static String pPagesTabFig = pPages +"([,\\.]" + fWs + pTabFigPl + "){1,2}";
 
 
 
@@ -171,20 +178,21 @@ public abstract class NonViralNameParserImplRegExBase  {
 //    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
     protected static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
 
+//    "(,\\s*" + pTabFigPl + ")?" +
     protected static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
-    			"|" + pTabFigPl + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
+    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
     			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + ")";
 
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\((Suppl|Beibl)\\.\\))?";
+    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\((Suppl|Beibl|App|Beil|Misc)\\.\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
 
     protected static int authorSeparatorMaxPosition = 4;  //Author may have a maximum of 4 words
-    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";
+    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
     protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
 
     protected static String referenceTitleFirstPart = "(" + apostrophWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
