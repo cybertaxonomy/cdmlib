@@ -19,7 +19,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -33,20 +35,24 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroupComparator;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
@@ -168,9 +174,9 @@ public class CsvNameExport extends CsvNameExportBase {
 
         childrenNodes = getTaxonNodeService().find(childrenUuids);
         for(TaxonNode genusNode : childrenNodes)   {
-            if (!genusNode.isTopmostNode()){
-                nameRecords.add(createNewRecord(genusNode, state));
-            }
+
+            nameRecords.add(createNewRecord(genusNode, state));
+
             refreshTransaction();
 
         }
@@ -195,11 +201,13 @@ public class CsvNameExport extends CsvNameExportBase {
             for (TaxonNode child: familyNode.getChildNodes()){
                 child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
                 name = HibernateProxyHelper.deproxy(child.getTaxon().getName(), TaxonNameBase.class);
-                if (name.isGenus()) {
+                if (child.getTaxon().getName().getRank().isLower(Rank.GENUS()) || child.getTaxon().getName().isGenus()) {
                     childrenUuids.add(child.getUuid());
                     if (child.hasChildNodes()){
                         parentsNodesUUID.add(child.getUuid());
                     }
+                }else{
+                    parentsNodesUUID.add(child.getUuid());
                 }
             }
             //refreshTransaction();
@@ -213,29 +221,129 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
 
-    private String createSynonymNameString(BotanicalName synonymName) {
+    private String createSynonymNameString(BotanicalName synonymName, boolean isInvalid) {
         String synonymString = null;
 
-        synonymString = synonymName.generateFullTitle();
-        if (synonymName.getNameCache() != null){
-        synonymString = synonymString.replaceAll(synonymName.getNameCache(), "<i>"+ synonymName.getNameCache() + "</i>");
-        } else{
-            if (synonymName.getGenusOrUninomial() != null){
-                synonymString = synonymString.replaceAll(synonymName.getGenusOrUninomial(), "<i>"+ synonymName.getGenusOrUninomial() + "</i>");
+        synonymString= createTaggedNameString(synonymName, isInvalid);
+        Set<NameRelationship> nameRelations = synonymName.getNameRelations();
+
+        NonViralName relatedName = null;
+        String nameRelType = null;
+        boolean first = true;
+        boolean isInvalidRel = false;
+        for (NameRelationship nameRel: nameRelations){
+           // NameRelationship nameRel = nameRelations.iterator().next();
+            BotanicalName fromName = HibernateProxyHelper.deproxy(nameRel.getFromName(), BotanicalName.class);
+
+            nameRel = HibernateProxyHelper.deproxy(nameRel, NameRelationship.class);
+            nameRelType = nameRel.getType().getTitleCache();
+            String relatedNameString = "";
+            if (fromName.equals(synonymName)){
+                relatedName = HibernateProxyHelper.deproxy(nameRel.getToName(), NonViralName.class);
+
+            }else{
+                relatedName = HibernateProxyHelper.deproxy(nameRel.getFromName(), NonViralName.class);
             }
-            if (synonymName.getInfraGenericEpithet() != null){
-                synonymString = synonymString.replaceAll(synonymName.getInfraGenericEpithet(),  "<i>"+ synonymName.getInfraGenericEpithet() + "</i>");
+            if (!nameRel.getType().equals(NameRelationshipType.BASIONYM())){
+                isInvalidRel = getStatus(relatedName);
+                relatedNameString = createTaggedNameString(relatedName, isInvalidRel);
+
+                if (nameRel.getType().equals(NameRelationshipType.LATER_HOMONYM())){
+                    if (synonymName.equals(nameRel.getFromName())){
+                        if (first){
+                            synonymString = synonymString + " [non " + relatedNameString ;
+                            first = false;
+                        } else{
+                            synonymString = synonymString + " nec " + relatedNameString ;
+                        }
+                    }
+                } else if (nameRel.getType().equals(NameRelationshipType.REPLACED_SYNONYM())){
+                    //synonymString = synonymString + " [non " + relatedNameString + "]";
+                } else if (nameRel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR())){
+                    if (synonymName.equals(nameRel.getToName())){
+                        if (first){
+                            synonymString = synonymString + " [non " + relatedNameString ;
+                            first = false;
+                        } else{
+                            synonymString = synonymString + " nec " + relatedNameString ;
+                        }
+
+                    }
+                } else if (nameRel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())){
+                    if (first){
+                        synonymString = synonymString + " [non " + relatedNameString ;
+                        first = false;
+                    } else{
+                        synonymString = synonymString + " nec " + relatedNameString ;
+                    }
+                } else if (nameRel.getType().equals(NameRelationshipType.ALTERNATIVE_NAME())){
+                    if (first){
+                        synonymString = synonymString + " [non " + relatedNameString ;
+                        first = false;
+                    } else{
+                        synonymString = synonymString + " nec " + relatedNameString ;
+                    }
+                } else if (nameRel.getType().equals(NameRelationshipType.CONSERVED_AGAINST())) {
+
+                }else if (nameRel.getType().equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())){
+
+                }
+
+
             }
-            if (synonymName.getSpecificEpithet() != null){
-                synonymString = synonymString.replaceAll(synonymName.getSpecificEpithet(),  "<i>"+ synonymName.getSpecificEpithet() + "</i>");
-            }
-            if (synonymName.getInfraSpecificEpithet() != null){
-                synonymString = synonymString.replaceAll(synonymName.getInfraSpecificEpithet(),  "<i>"+ synonymName.getInfraSpecificEpithet() + "</i>");
-            }
+        }
+        if (!first){
+            synonymString = synonymString + "]";
         }
 
 
+
         return synonymString;
+    }
+
+    /**
+     * @param relatedName
+     * @return
+     */
+    private boolean getStatus(NonViralName relatedName) {
+        boolean result;
+        if (!relatedName.getStatus().isEmpty()){
+            NomenclaturalStatus status = HibernateProxyHelper.deproxy(relatedName.getStatus().iterator().next(),NomenclaturalStatus.class);
+            if (status.getType().isInvalidType()){
+                result = true;
+            }else{
+                result = false;
+            }
+        }else{
+            result = false;
+        }
+        return result;
+    }
+
+    private String createTaggedNameString(NonViralName name, boolean isInvalid){
+        String nameString = null;
+        if (name == null){
+            return nameString;
+        }
+
+        nameString = name.generateFullTitle();
+        if (isInvalid){
+            nameString = nameString.replace(name.getTitleCache(), "\""+name.getTitleCache()+"\"");
+        }
+        if (name.getGenusOrUninomial() != null){
+            nameString = nameString.replaceAll(name.getGenusOrUninomial(), "<i>"+ name.getGenusOrUninomial() + "</i>");
+        }
+        if (name.getInfraGenericEpithet() != null){
+            nameString = nameString.replaceAll(name.getInfraGenericEpithet(),  "<i>"+ name.getInfraGenericEpithet() + "</i>");
+        }
+        if (name.getSpecificEpithet() != null){
+            nameString = nameString.replaceAll(name.getSpecificEpithet(),  "<i>"+ name.getSpecificEpithet() + "</i>");
+        }
+        if (name.getInfraSpecificEpithet() != null && !name.isAutonym()){
+            nameString = nameString.replaceAll(name.getInfraSpecificEpithet(),  "<i>"+ name.getInfraSpecificEpithet() + "</i>");
+        }
+
+        return nameString;
     }
 
 
@@ -267,10 +375,8 @@ public class CsvNameExport extends CsvNameExportBase {
 
     private TaxonNode getHigherNode(TaxonNode node, Rank rank){
 
-        node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
-        TaxonNameBase name = HibernateProxyHelper.deproxy( node.getTaxon().getName(), TaxonNameBase.class);
         Rank nodeRank = node.getTaxon().getName().getRank();
-        if (nodeRank.equals(rank)){
+        if (nodeRank.isKindOf(rank)){
             return node;
 
         }else if (nodeRank.isHigher(rank)){
@@ -284,6 +390,10 @@ public class CsvNameExport extends CsvNameExportBase {
         StringBuffer descriptionsString = new StringBuffer();
         TextData textElement;
         Set<Distribution> distributions = new HashSet<Distribution>();
+        if (taxon.getDescriptions().isEmpty()){
+            nameRecord.put(columnName, null);
+                return;
+        }
         for (DescriptionBase<?> descriptionBase: taxon.getDescriptions()){
 
             Set<DescriptionElementBase> elements = descriptionBase.getElements();
@@ -307,16 +417,14 @@ public class CsvNameExport extends CsvNameExportBase {
 
 
         }
-     //   Collections.sort(distributions, new DistributionNodeByAreaLabelComparator());
-
         if (state.getConfig().isCondensedDistribution()){
             List<Language> langs = new ArrayList<Language>();
             langs.add(Language.ENGLISH());
 
 
-//            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );
-//
-//            nameRecord.put(columnName, conDis.toString());
+            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );
+
+            nameRecord.put(columnName, conDis.toString());
 
         } else{
             for (Distribution distribution:distributions){
@@ -327,9 +435,8 @@ public class CsvNameExport extends CsvNameExportBase {
                 descriptionsString.append(distribution.getArea().getIdInVocabulary());
 
             }
-
+            nameRecord.put(columnName, descriptionsString.toString());
         }
-        nameRecord.put(columnName, descriptionsString.toString());
 
     }
 
@@ -358,15 +465,16 @@ public class CsvNameExport extends CsvNameExportBase {
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());
         Taxon taxon;
+        String nameString;
         BotanicalName name;
-        if (familyNode != null){
+        if (familyNode == null){
+            nameRecord.put("familyTaxon", null);
+            nameRecord.put("familyName", null);
+            nameRecord.put("descriptionsFam", null);
+        }else{
             familyNode = HibernateProxyHelper.deproxy(familyNode, TaxonNode.class);
             familyNode.getTaxon().setProtectedTitleCache(true);
-
             nameRecord.put("familyTaxon", familyNode.getTaxon().getTitleCache());
-
-
-
 
             taxon = (Taxon)getTaxonService().load(familyNode.getTaxon().getUuid());
             taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
@@ -376,10 +484,6 @@ public class CsvNameExport extends CsvNameExportBase {
             name = HibernateProxyHelper.deproxy(taxon.getName(), BotanicalName.class);
             nameRecord.put("familyName", name.getNameCache());
             extractDescriptions(nameRecord, taxon, Feature.INTRODUCTION(), "descriptionsFam", state);
-        } else{
-            nameRecord.put("familyTaxon", null);
-            nameRecord.put("familyName", null);
-            nameRecord.put("descriptionsFam", null);
         }
         TaxonNode genusNode = getHigherNode(childNode, Rank.GENUS());
         if (genusNode!= null){
@@ -398,11 +502,19 @@ public class CsvNameExport extends CsvNameExportBase {
             }else{
                 nameRecord.put("genusName", name.getGenusOrUninomial());
             }
-            extractDescriptions(nameRecord, taxon, getNotesFeature(state), "descriptionsGen", state);
+            extractDescriptions(nameRecord, taxon,getNotesFeature(state), "descriptionsGen", state);
+        }else{
+            nameRecord.put("genusTaxon", null);
+            nameRecord.put("genusName", null);
+            nameRecord.put("descriptionsGen", null);
         }
         taxon = (Taxon) getTaxonService().load(childNode.getTaxon().getUuid());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         //  if (taxon.isPublish()){
+
+        NonViralName nonViralName = HibernateProxyHelper.deproxy(taxon.getName(), NonViralName.class);
+
+        nameString = createTaggedNameString(nonViralName, false);
         nameRecord.put("childTaxon", taxon.getTitleCache());
         if (taxon.getSec()!= null){
             nameRecord.put("secRef", taxon.getSec().getTitleCache());
@@ -410,8 +522,10 @@ public class CsvNameExport extends CsvNameExportBase {
             nameRecord.put("secRef", null);
         }
 
+        getTaxonRelations(nameRecord, taxon);
+
         name = HibernateProxyHelper.deproxy(getNameService().load(taxon.getName().getUuid()), BotanicalName.class);
-        nameRecord.put("childName",name.getTitleCache());
+        nameRecord.put("childName",nameString);
         nameRecord.put("nameId", String.valueOf(name.getId()));
         nameRecord.put("nameCache", name.getNameCache());
         nameRecord.put("titleName", name.getTitleCache());
@@ -444,6 +558,7 @@ public class CsvNameExport extends CsvNameExportBase {
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();
         TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<HomotypicalGroup,List<Synonym>>(new HomotypicalGroupComparator());
+
         List<Synonym> homotypicSynonymsList = new ArrayList<Synonym>();
         StringBuffer heterotypicalSynonyms = new StringBuffer();
         List<Synonym> homotypicSynonyms;
@@ -453,13 +568,16 @@ public class CsvNameExport extends CsvNameExportBase {
         String doubtfulTitleCache;
         for (SynonymRelationship synRel: taxon.getSynonymRelations()){
             synonymName = HibernateProxyHelper.deproxy(synRel.getSynonym().getName(), BotanicalName.class);
-            if (synRel.getType().equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
-                group = HibernateProxyHelper.deproxy(synonymName.getHomotypicalGroup(), HomotypicalGroup.class);
-                synonymName.generateFullTitle();
-                if (synRel.getSynonym().isDoubtful()){
+            group = HibernateProxyHelper.deproxy(synonymName.getHomotypicalGroup(), HomotypicalGroup.class);
+            synonymName.generateFullTitle();
+            if (synRel.getSynonym().isDoubtful()){
+                if (!synonymName.getFullTitleCache().startsWith("?")){
                     doubtfulTitleCache = "?" + synonymName.getFullTitleCache();
+                    synonymName = (BotanicalName) synonymName.clone();
                     synonymName.setFullTitleCache(doubtfulTitleCache, true);
                 }
+            }
+            if (!group.equals(name.getHomotypicalGroup())){
                 if (heterotypicSynonymsList.containsKey(group)){
                     heterotypicSynonymsList.get(group).add(synRel.getSynonym());
                 }else{
@@ -483,6 +601,18 @@ public class CsvNameExport extends CsvNameExportBase {
             Collections.sort(list, new HomotypicGroupTaxonComparator(null));
             first = true;
             for (TaxonBase<?> synonym : list){
+                NomenclaturalStatus status = null;
+                if (!synonym.getName().getStatus().isEmpty()){
+                    status = HibernateProxyHelper.deproxy(synonym.getName().getStatus().iterator().next(),NomenclaturalStatus.class);
+                    if (status.getType().isInvalidType()){
+                        heterotypicalSynonyms.append(" <invalid> ");
+                        synonymName = HibernateProxyHelper.deproxy(synonym.getName(), BotanicalName.class);
+
+                        synonymString = createSynonymNameString(synonymName, state.getConfig().isInvalidNamesQuoted()) ;
+                        heterotypicalSynonyms.append(synonymString);
+                        continue;
+                    }
+                }
                 if (first){
                     heterotypicalSynonyms.append(" <heterotypic> ");
                 }else{
@@ -490,20 +620,35 @@ public class CsvNameExport extends CsvNameExportBase {
                 }
                 first = false;
                 synonymName = HibernateProxyHelper.deproxy(synonym.getName(), BotanicalName.class);
-                synonymString = createSynonymNameString(synonymName);
+                synonymString = createSynonymNameString(synonymName, false);
                 heterotypicalSynonyms.append(synonymString);
             }
         }
 
         first = true;
-        Collections.sort(homotypicSynonymsList, new TaxonComparator());
+        Collections.sort(homotypicSynonymsList, new HomotypicGroupTaxonComparator(null)  );
+        NomenclaturalStatus status = null;
         for (TaxonBase<?> synonym : homotypicSynonymsList){
-            if (!first){
+
+            if (!synonym.getName().getStatus().isEmpty()){
+                status = HibernateProxyHelper.deproxy(synonym.getName().getStatus().iterator().next(),NomenclaturalStatus.class);
+                if (status.getType().isInvalidType()){
+                    homotypicalSynonyms.append(" <invalid> ");
+                    synonymName = HibernateProxyHelper.deproxy(synonym.getName(), BotanicalName.class);
+                    synonymString = createSynonymNameString(synonymName, true);
+                    homotypicalSynonyms.append(synonymString);
+                    continue;
+                }else if (!first){
+                    homotypicalSynonyms.append(" <homonym> ");
+                }
+
+            }else if (!first){
                 homotypicalSynonyms.append(" <homonym> ");
             }
             first = false;
             synonymName = HibernateProxyHelper.deproxy(synonym.getName(), BotanicalName.class);
-            synonymString = createSynonymNameString(synonymName);
+
+            synonymString = createSynonymNameString(synonymName, false);
 
             homotypicalSynonyms.append(synonymString);
 
@@ -515,27 +660,64 @@ public class CsvNameExport extends CsvNameExportBase {
 
         Set<NameRelationship> nameRelations = name.getNameRelations();
 
-        String relatedName = null;
+        NonViralName relatedName = null;
         String nameRelType = null;
+        String relNameString = null;
         if (nameRelations.size()>0){
             NameRelationship nameRel = nameRelations.iterator().next();
             BotanicalName fromName = HibernateProxyHelper.deproxy(nameRel.getFromName(), BotanicalName.class);
             if (fromName.equals(taxon.getName())){
-                relatedName = nameRel.getToName().getTitleCache();
+                relatedName = HibernateProxyHelper.deproxy(nameRel.getToName(), NonViralName.class);
 
             }else{
-                relatedName = nameRel.getFromName().getTitleCache();
+                relatedName = HibernateProxyHelper.deproxy(nameRel.getFromName(), NonViralName.class);
             }
             nameRel = HibernateProxyHelper.deproxy(nameRel, NameRelationship.class);
             nameRelType = nameRel.getType().getTitleCache();
+            relNameString  = createTaggedNameString(relatedName, getStatus(relatedName));
         }
 
 
-        nameRecord.put("relatedName", relatedName);
+        nameRecord.put("relatedName", relNameString);
         nameRecord.put("nameRelType", nameRelType);
 
-        extractDescriptions(nameRecord, taxon, Feature.DISTRIBUTION(), "description", state);
+        extractDescriptions(nameRecord, taxon, Feature.DISTRIBUTION(), "descriptions", state);
         return nameRecord;
+    }
+
+    /**
+     * @param nameRecord
+     * @param taxon
+     */
+    private void getTaxonRelations(HashMap<String, String> nameRecord, Taxon taxon) {
+        Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
+        relations =taxon.getTaxonRelations();
+        if (relations.isEmpty()){
+            nameRecord.put("missappliedNames", null);
+        }else{
+            Taxon relatedTaxon = null;
+            StringBuffer nameString = new StringBuffer();
+            for (TaxonRelationship rel : relations){
+                if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+                    relatedTaxon = rel.getFromTaxon();
+                    Reference secRef = relatedTaxon.getSec();
+                    String appendedPhrase = "";
+                    if (relatedTaxon.getAppendedPhrase() != null){
+                        appendedPhrase = relatedTaxon.getAppendedPhrase();
+                    }
+                    if (secRef == null){
+                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase);
+                    } else if (secRef.getAuthorship() == null){
+                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase + " sensu " + secRef.getTitleCache());
+                    } else {
+                        nameString.append("<misapplied>\"" + createTaggedNameString(HibernateProxyHelper.deproxy(relatedTaxon.getName(), NonViralName.class), false) + "\" " + appendedPhrase + " sensu " + secRef.getAuthorship().getNomenclaturalTitle());
+                    }
+
+                }
+            }
+            nameRecord.put("missappliedNames", nameString.toString());
+        }
+
     }
 
 
