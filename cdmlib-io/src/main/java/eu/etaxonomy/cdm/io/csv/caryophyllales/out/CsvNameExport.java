@@ -246,7 +246,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }
             if (!nameRel.getType().equals(NameRelationshipType.BASIONYM())){
                 isInvalidRel = getStatus(relatedName);
-                relatedNameString = createTaggedNameString(relatedName, isInvalidRel);
+                relatedNameString = createTaggedNameString(relatedName, isInvalidRel&&isInvalid);
 
                 if (nameRel.getType().equals(NameRelationshipType.LATER_HOMONYM())){
                     if (synonymName.equals(nameRel.getFromName())){
