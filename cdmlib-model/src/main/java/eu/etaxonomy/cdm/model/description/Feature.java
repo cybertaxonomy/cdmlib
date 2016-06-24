@@ -189,6 +189,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
     private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
     private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
+    private static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
 
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -929,6 +930,13 @@ public class Feature extends DefinedTermBase<Feature> {
 		return getTermByUuid(uuidUseRecord);
 	}
 
+    /**
+     * Returns the "notes" feature. Used for
+     * taxonomic notes.
+     */
+    public static final Feature NOTES(){
+        return getTermByUuid(uuidNotes);
+    }
 
 	/**
 	 * Returns the "conservation" feature. This feature only applies
