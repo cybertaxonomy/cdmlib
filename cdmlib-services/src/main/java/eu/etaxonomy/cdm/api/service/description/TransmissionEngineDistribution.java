@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -232,10 +233,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     }
 
     /**
-     * Compares the PresenceAbsenceTermBase terms <code>a</code> and <code>b</code> after
-     * the priority as stored in the statusPriorityMap. The PresenceAbsenceTermBase with
-     * the higher priority is returned. a well be returned if a == b,
-     * If either a or b are null b or a is returned.
+     * Compares the PresenceAbsenceTermBase terms contained in <code>a.status</code> and <code>b.status</code> after
+     * the priority as stored in the statusPriorityMap. The StatusAndSources object with
+     * the higher priority is returned. In the case of <code>a == b</code> the sources of b will be added to the sources
+     * of a.
+     *
+     * If either a or b or the status are null b or a is returned.
      *
      * @see initializeStatusPriorityMap()
      *
@@ -243,29 +246,32 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      * @param b
      * @return
      */
-    private PresenceAbsenceTerm choosePreferred(PresenceAbsenceTerm a, PresenceAbsenceTerm b){
+    private StatusAndSources choosePreferred(StatusAndSources a, StatusAndSources b){
 
         if (statusPriorityMap == null) {
             initializeStatusPriorityMap();
         }
 
-        if (b == null) {
+        if (b == null || b.status == null) {
             return a;
         }
-        if (a == null) {
+        if (a == null || a.status == null) {
             return b;
         }
 
-        if (statusPriorityMap.get(a) == null) {
-            logger.warn("No priority found in map for " + a.getLabel());
+        if (statusPriorityMap.get(a.status) == null) {
+            logger.warn("No priority found in map for " + a.status.getLabel());
             return b;
         }
-        if (statusPriorityMap.get(b) == null) {
-            logger.warn("No priority found in map for " + b.getLabel());
+        if (statusPriorityMap.get(b.status) == null) {
+            logger.warn("No priority found in map for " + b.status.getLabel());
             return a;
         }
-        if(statusPriorityMap.get(a) < statusPriorityMap.get(b)){
+        if(statusPriorityMap.get(a.status) < statusPriorityMap.get(b.status)){
             return b;
+        } else if (statusPriorityMap.get(a.status) == statusPriorityMap.get(b.status)){
+            a.sources.addAll(b.sources);
+            return a;
         } else {
             return a;
         }
@@ -456,7 +462,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 for (NamedArea superArea : superAreaList){
 
                     // accumulate all sub area status
-                    PresenceAbsenceTerm accumulatedStatus = null;
+                    StatusAndSources accumulatedStatusAndSources = null;
                     // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
                     Set<NamedArea> subAreas = getSubAreasFor(superArea);
                     for(NamedArea subArea : subAreas){
@@ -474,16 +480,17 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                                 if (getByAreaIgnoreStatusList().contains(status)){
                                     continue;
                                 }
-                                accumulatedStatus = choosePreferred(accumulatedStatus, status);
+                                StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
+                                accumulatedStatusAndSources = choosePreferred(accumulatedStatusAndSources, subStatusAndSources);
                             }
                         }
                     } // next sub area
-                    if (accumulatedStatus != null) {
+                    if (accumulatedStatusAndSources != null) {
                         if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByArea() - \t >> " + termToString(superArea) + ": " + termToString(accumulatedStatus));
+                            logger.debug("accumulateByArea() - \t >> " + termToString(superArea) + ": " + termToString(accumulatedStatusAndSources.status));
                         }
                         // store new distribution element for superArea in taxon description
-                        Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
+                        Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatusAndSources.status);
                         newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                         description.addElement(newDistribitionElement);
                     }
@@ -595,7 +602,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     }
 
                     // Step through direct taxonomic children for accumulation
-                    Map<NamedArea, PresenceAbsenceTerm> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTerm>();
+                    Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<NamedArea, StatusAndSources>();
 
                     Set<Integer> childTaxonIds = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
                     if(childTaxonIds != null && !childTaxonIds.isEmpty()) {
@@ -615,7 +622,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                                 if (status == null || getByRankIgnoreStatusList().contains(status)){
                                   continue;
                                 }
-                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), status));
+
+                                StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
+                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources));
                              }
                         }
 
@@ -623,7 +632,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                             TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                             for (NamedArea area : accumulatedStatusMap.keySet()) {
                                 // store new distribution element in new Description
-                                Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
+                                Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
                                 newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                                 description.addElement(newDistribitionElement);
                             }
@@ -923,5 +932,17 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         byRanks,
         byAreasAndRanks
 
+    }
+
+    private class StatusAndSources {
+
+        PresenceAbsenceTerm status;
+
+        Set<DescriptionElementSource> sources = new HashSet<>();
+
+        public StatusAndSources(PresenceAbsenceTerm status, Set<DescriptionElementSource> sources) {
+            this.status = status;
+            this.sources = sources;
+        }
     }
 }
