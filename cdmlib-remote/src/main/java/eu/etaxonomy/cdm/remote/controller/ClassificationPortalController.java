@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
 /**
@@ -86,14 +86,12 @@ public class ClassificationPortalController extends BaseController<Classificatio
     }
 
     @RequestMapping(value = { "classificationRootNode" }, method = RequestMethod.GET)
-    public TaxonNode getClassificationRootNode(@PathVariable("uuid") UUID uuid, HttpServletRequest request,
+    public ModelAndView getClassificationRootNode(@PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        Classification classification = doGet(uuid, request, response);
-        if(classification!=null){
-            return classification.getRootNode();
-        }
-        return null;
+        ModelAndView mv = new ModelAndView();
+        mv.addObject(service.getRootNode(uuid));
+        return mv;
     }
 
 
