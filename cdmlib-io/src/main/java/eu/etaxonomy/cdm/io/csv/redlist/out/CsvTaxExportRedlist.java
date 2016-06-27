@@ -133,11 +133,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	
 	
 	//TODO: Exception handling
-	/**
-	 * 
-	 * @param config
-	 * @return
-	 */
 	protected Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
 		if(config != null){
 			Set<UUID> taxonNodeUuidSet = config.getTaxonNodeUuids();
@@ -149,19 +144,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		return null;
 	}
 
-//	
-//	private Collections sort(List<Classification> classificationList, new Comparator<TaxonNode>() {
-//		public int compare(TaxonNode tn1, TaxonNode tn2){
-//			int i = 0;
-//			return i;
-//		}
-//	});
 	//TODO: Exception handling
-	/**
-	 * 
-	 * @param state
-	 * @return
-	 */
 	private CsvTaxRecordRedlist assembleRecord(CsvTaxExportStateRedlist state) {
 		if(state!=null){
 			CsvTaxExportConfiguratorRedlist config = state.getConfig();
@@ -289,13 +272,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		return;
 	}
 
-	/**
-	 * @param record
-	 * @param name
-	 * @param type
-	 * @param isPartial 
-	 * @param isProParte 
-	 */
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
 			NonViralName<?> name, 
@@ -325,11 +301,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		}
 	}
 
-	/**
-	 * 
-	 * @param record
-	 * @param taxon
-	 */
 	private void handleSynonyms(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
@@ -346,11 +317,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		record.setSynonyms(synonyms);
 	}
 
-	/**
-	 * 
-	 * @param record
-	 * @param taxon
-	 */
 	private void handleDiscriptionData(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -367,13 +333,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		}
 		record.setCountryCode(distributions);
 	}
-	/**
-	 * 
-	 * @param record
-	 * @param taxon
-	 * @param featureCells
-	 * @param features 
-	 */
+
 	private void handleRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, List<List<String>> featureCells, List<Feature> features){
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
@@ -411,14 +371,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		record.setFeatures(featureCells);
 	}
 
-	/**
-	 * 
-	 * @param record
-	 * @param taxon
-	 * @param relationFrom
-	 * @param featureCells
-	 * @param features 
-	 */
+
 	private void handleRelatedRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells, List<Feature> features) {
 
 		if (relationFrom)handleRedlistStatus(record, taxon, featureCells, features);
