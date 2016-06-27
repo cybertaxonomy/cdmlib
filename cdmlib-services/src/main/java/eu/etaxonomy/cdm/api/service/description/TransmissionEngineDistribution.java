@@ -232,8 +232,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     }
 
     /**
-     * Compares the PresenceAbsenceTermBase terms <code>a</code> and <code>b</code>  and
-     * returns the PresenceAbsenceTermBase with the higher priority as stored in the statusPriorityMap.
+     * Compares the PresenceAbsenceTermBase terms <code>a</code> and <code>b</code> after
+     * the priority as stored in the statusPriorityMap. The PresenceAbsenceTermBase with
+     * the higher priority is returned. a well be returned if a == b,
      * If either a or b are null b or a is returned.
      *
      * @see initializeStatusPriorityMap()
@@ -263,10 +264,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             logger.warn("No priority found in map for " + b.getLabel());
             return a;
         }
-        if(statusPriorityMap.get(a) > statusPriorityMap.get(b)){
-            return a;
-        } else {
+        if(statusPriorityMap.get(a) < statusPriorityMap.get(b)){
             return b;
+        } else {
+            return a;
         }
     }
 
