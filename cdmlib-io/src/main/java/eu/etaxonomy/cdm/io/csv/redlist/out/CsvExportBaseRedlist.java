@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -17,7 +17,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,9 +36,7 @@ import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller, a.oppermann
@@ -48,58 +45,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist, IExportTransformer> implements ICdmExport<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist>{
 	private static final Logger logger = Logger.getLogger(CsvExportBaseRedlist.class);
-	
+
 	protected static final boolean IS_CORE = true;
-	
-	
+
+
 	protected Set<Integer> existingRecordIds = new HashSet<Integer>();
 	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
-	
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#countSteps()
-	 */
-	@Override
-	public int countSteps() {
-		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-		return allNodes.size();
-	}
-
-	
-	
-	/**
-	 * Returns all children of the given taxon node and the node itself if the node has
-	 *  a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
-	 * @return
-	 */
-	protected Set<TaxonNode> getAllNodes(Set<TaxonNode> taxonNodes) {
-		//handle empty list as no filter defined
-		if (taxonNodes != null && taxonNodes.isEmpty()){
-			taxonNodes = null;
-		}
-		
-		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-		Set<TaxonNode> result = new HashSet<TaxonNode>();
-		for (TaxonNode node : allNodes){
-			if (node.getClassification() == null ){
-				continue;
-			}else if (taxonNodes != null && ! taxonNodes.contains(node.getClassification())){
-				continue;
-			}else{
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				if (taxon == null){
-					String message = "There is a taxon node without taxon: " + node.getId();
-					logger.warn(message);
-					continue;
-				}
-				result.add(node);
-			}
-		}
-		return result;
-	}
-	
-	
 	/**
 	 * Creates the locationId, locality, countryCode triple
 	 * @param record
@@ -125,7 +77,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	protected String getTaxonLogString(TaxonBase<?> taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
-	
+
 
 	/**
 	 * @param el
@@ -134,7 +86,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	protected boolean recordExists(CdmBase el) {
 		return existingRecordIds.contains(el.getId());
 	}
-	
+
 
 	/**
 	 * @param sec
@@ -142,7 +94,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	protected void addExistingRecord(CdmBase cdmBase) {
 		existingRecordIds.add(cdmBase.getId());
 	}
-	
+
 	/**
 	 * @param el
 	 * @return
@@ -150,14 +102,14 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	protected boolean recordExistsUuid(CdmBase el) {
 		return existingRecordUuids.contains(el.getUuid());
 	}
-	
+
 	/**
 	 * @param sec
 	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
 	}
-	
+
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
@@ -171,7 +123,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * @param config
@@ -189,7 +141,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 		FileOutputStream fos = new FileOutputStream(f);
 		return fos;
 	}
-	
+
 
 	/**
 	 * @param config
@@ -201,7 +153,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	 */
 	protected XMLStreamWriter createXmlStreamWriter(CsvTaxExportStateRedlist state, String fileName)
 			throws IOException, FileNotFoundException, XMLStreamException {
-		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		OutputStream os;
 		boolean useZip = state.isZip();
 		if (useZip){
@@ -212,7 +164,7 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 		XMLStreamWriter  writer = factory.createXMLStreamWriter(os);
 		return writer;
 	}
-	
+
 
 	/**
 	 * @param coreTaxFileName
@@ -222,9 +174,9 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state) 
+	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state)
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
-		
+
 		OutputStream os;
 		boolean useZip = state.isZip();
 		if (useZip){
@@ -233,13 +185,13 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 			os = createFileOutputStream(state.getConfig(), fileName);
 		}
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
-		
+
 		return writer;
 	}
-	
 
 
-	
+
+
 	/**
 	 * Closes the writer
 	 * @param writer
@@ -250,9 +202,9 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 			writer.close();
 		}
 	}
-	
 
-	
+
+
 	/**
 	 * Closes the writer.
 	 * Note: XMLStreamWriter does not close the underlying stream.

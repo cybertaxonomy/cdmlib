@@ -48,7 +48,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	private String defaultBibliographicCitation = null;
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	//filter on the classifications to be exported
-	private Set<UUID> classificationUuids = new HashSet<UUID>();   
+	private Set<UUID> taxonNodeUuids = new HashSet<UUID>();   
 	private boolean withHigherClassification = false;
 	private String setSeparator = ";";
 
@@ -250,11 +250,11 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	}
 
 	public Set<UUID> getTaxonNodeUuids() {
-		return classificationUuids;
+		return taxonNodeUuids;
 	}
 
-	public void setTaxonNodeUuids(Set<UUID> classificationUuids) {
-		this.classificationUuids = classificationUuids;
+	public void setTaxonNodeUuids(Set<UUID> taxonNodeUuids) {
+		this.taxonNodeUuids = taxonNodeUuids;
 	}
 
 	public ByteArrayOutputStream getByteArrayOutputStream() {

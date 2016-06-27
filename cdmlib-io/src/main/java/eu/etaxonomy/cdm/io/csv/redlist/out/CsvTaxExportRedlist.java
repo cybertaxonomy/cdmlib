@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -62,14 +62,14 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
-	
+
 
 	/** Retrieves data from a CDM DB and serializes them CDM to CSV.
-	 * Starts with root taxa and traverses the classification to retrieve 
-	 * children taxa, synonyms, relationships, descriptive data, red list 
-	 * status (features). 
+	 * Starts with root taxa and traverses the classification to retrieve
+	 * children taxa, synonyms, relationships, descriptive data, red list
+	 * status (features).
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -80,15 +80,15 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		TransactionStatus txStatus = startTransaction(true);
 		List<NamedArea> selectedAreas = config.getNamedAreas();
 		Set<TaxonNode> taxonNodes = assembleTaxonNodeSet(config);
-		
+
 		PrintWriter writer = null;
 		ByteArrayOutputStream byteArrayOutputStream;
 		try {
 			byteArrayOutputStream = config.getByteArrayOutputStream();
-			writer = new PrintWriter(byteArrayOutputStream); 
+			writer = new PrintWriter(byteArrayOutputStream);
 			//geographical Filter
 			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, taxonNodes);
-			
+
 			//sorting List
 			Collections.sort(filteredNodes, new Comparator<TaxonNode>() {
 
@@ -109,7 +109,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 				CsvTaxRecordRedlist record = assembleRecord(state);
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
-				config.setClassificationTitleCache(classification.getTitleCache());	
+				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
 					handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config);
 					record.write(writer);
@@ -123,15 +123,17 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			e.printStackTrace();
 		}
 		finally{
-			writer.close();
+		    if(writer!=null){
+		        writer.close();
+		    }
 			this.clearExistingRecordIds();
 		}
 		commitTransaction(txStatus);
 		return;
 
 	}
-	
-	
+
+
 	//TODO: Exception handling
 	protected Set<TaxonNode> assembleTaxonNodeSet(CsvTaxExportConfiguratorRedlist config){
 		Set<TaxonNode> taxonNodes = new HashSet<>();
@@ -155,51 +157,48 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	/**
-	 * Takes positive List of areas and iterates over a given taxon node 
-	 * and their {@link Taxon} to return all {@link Taxon} with the desired 
+	 * Takes positive List of areas and iterates over a given taxon node
+	 * and their {@link Taxon} to return all {@link Taxon} with the desired
 	 * geographical attribute.
-	 * 
+	 *
 	 * <p><p>
 	 *
 	 * If selectedAreas is null all child {@link TaxonNode}s of the given taxon node will be returned.
-	 * 
-	 * @param selectedAreas 
+	 *
+	 * @param selectedAreas
 	 * @param taxonNodes
 	 * @return
 	 */
 	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
-			Set<TaxonNode> taxonNodes) {
-		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-		List<TaxonNode> allNodes =  new ArrayList(getAllNodes(taxonNodes));
-		//Geographical filter
-		logger.info(selectedAreas.size());
-		if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
-//				if(selectedAreas.size() == 16){
-//					//Germany TDWG Level 3
-//					String germany="uu7b7c2db5-aa44-4302-bdec-6556fd74b0b9id";
-//					selectedAreas.add((NamedArea) getTermService().find(UUID.fromString(germany)));
-//				}
-			for (TaxonNode node : allNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-				for (TaxonDescription description : descriptions){
-					for (DescriptionElementBase el : description.getElements()){
-						if (el.isInstanceOf(Distribution.class) ){
-							Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-							NamedArea area = distribution.getArea();
-							for(NamedArea selectedArea:selectedAreas){
-								if(selectedArea.getUuid().equals(area.getUuid())){
-									filteredNodes.add(node);
-								}
-							}
-						}
-					}
-				}
-			}
-		}else{
-			filteredNodes = allNodes;
-		}
-		return filteredNodes;
+	        Set<TaxonNode> taxonNodes) {
+	    List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
+	    List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
+	    for (TaxonNode node : taxonNodes){
+	        allNodes.addAll(getTaxonNodeService().loadChildNodesOfTaxonNode(node, null, true, null));
+	    }
+	    //Geographical filter
+	    if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
+	        for (TaxonNode node : allNodes){
+	            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+	            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+	            for (TaxonDescription description : descriptions){
+	                for (DescriptionElementBase el : description.getElements()){
+	                    if (el.isInstanceOf(Distribution.class) ){
+	                        Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+	                        NamedArea area = distribution.getArea();
+	                        for(NamedArea selectedArea:selectedAreas){
+	                            if(selectedArea.getUuid().equals(area.getUuid())){
+	                                filteredNodes.add(node);
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }else{
+	        filteredNodes = allNodes;
+	    }
+	    return filteredNodes;
 	}
 
 	/**
@@ -216,37 +215,39 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 //			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
 			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
-		
+
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
-		}	
+		}
 	}
 
 	/**
 	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,
-	 * Taxon Status, Synonyms, {@link Feature features} data 
+	 * Taxon Status, Synonyms, {@link Feature features} data
 	 * @param record the concrete information record
 	 * @param taxonBase {@link Taxon}
 	 * @param name
 	 * @param acceptedTaxon
 	 * @param parent
 	 * @param basionym
-	 * @param isPartial 
-	 * @param isProParte 
-	 * @param config 
+	 * @param isPartial
+	 * @param isProParte
+	 * @param config
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
-			NonViralName<?> name, Taxon acceptedTaxon, Classification classification, 
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, 
+			NonViralName<?> name, Taxon acceptedTaxon, Classification classification,
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {
-		
+
 		List<Feature> features = config.getFeatures();
 		record.setHeadLinePrinted(config.isHasHeaderLines());
-		if(features != null)record.setPrintFeatures(features);
+		if(features != null) {
+            record.setPrintFeatures(features);
+        }
 		config.setHasHeaderLines(false);
 
 		record.setDatasetName(classification.getTitleCache());
@@ -258,7 +259,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		//distribution
 		handleDiscriptionData(record, (Taxon) taxonBase);
 		if(features!= null) {
-			
+
 			List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
 			for(int i = 0; i < features.size(); i++) {
 				featureCells.add(new ArrayList<String>());
@@ -272,7 +273,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
-			NonViralName<?> name, 
+			NonViralName<?> name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -294,15 +295,15 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 				logger.warn(message);
 				status = "partialSynonym";
 			}
-			
+
 			record.setTaxonomicStatus(status);
 		}
 	}
 
 	private void handleSynonyms(CsvTaxRecordRedlist record, Taxon taxon) {
-		
+
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-		ArrayList<String> synonyms = new ArrayList<String>(); 
+		ArrayList<String> synonyms = new ArrayList<String>();
 		for (SynonymRelationship synRel :synRels ){
 			Synonym synonym = synRel.getSynonym();
 			SynonymRelationshipType type = synRel.getType();
@@ -316,7 +317,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	private void handleDiscriptionData(CsvTaxRecordRedlist record, Taxon taxon) {
-		
+
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		ArrayList<String> distributions = new ArrayList<String>();
 		for (TaxonDescription description : descriptions){
@@ -360,7 +361,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 							text = text.replaceAll(System.getProperty("line.separator"), "");
 							text = text.replaceAll("                            ", " ");
 							cell.add(text);
-							
+
 						}
 					}
 				}
@@ -372,9 +373,11 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 
 	private void handleRelatedRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells, List<Feature> features) {
 
-		if (relationFrom)handleRedlistStatus(record, taxon, featureCells, features);
-		
-		
+		if (relationFrom) {
+            handleRedlistStatus(record, taxon, featureCells, features);
+        }
+
+
 		Set<TaxonRelationship> taxRels;
 		if(relationFrom){
 			taxRels = taxon.getRelationsFromThisTaxon();
@@ -405,5 +408,5 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	protected boolean isIgnore(CsvTaxExportStateRedlist state) {
 		return ! state.getConfig().isDoTaxa();
 	}
-	
+
 }
