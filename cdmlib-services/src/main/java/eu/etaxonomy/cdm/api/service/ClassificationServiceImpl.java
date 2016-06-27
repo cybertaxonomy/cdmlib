@@ -278,6 +278,11 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
+    public TaxonNode getRootNode(UUID classificationUuid){
+        return dao.getRootNode(classificationUuid);
+    }
+
+    @Override
     public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(limit, start, orderHints, propertyPaths);
     }

@@ -176,6 +176,21 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @Override
+    public TaxonNode getRootNode(UUID classificationUuid){
+        String queryString = "select tn from TaxonNode tn, Classification c where tn = c.rootNode and c.uuid = :classificationUuid";
+
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("classificationUuid", classificationUuid);
+
+
+        List results = query.list();
+        if(results.size()!=1){
+            return null;
+        }
+        return taxonNodeDao.load(((TaxonNode) results.iterator().next()).getUuid());
+    }
+
+    @Override
     public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
          Query query = prepareListSiblingsOf(taxon, classification, false);
 

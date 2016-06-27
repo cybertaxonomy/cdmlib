@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -62,6 +63,7 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
+    public TaxonNode getRootNode(UUID classificationUuid);
 
     public abstract Long countChildrenOf(Taxon taxon, Classification classification);
 
