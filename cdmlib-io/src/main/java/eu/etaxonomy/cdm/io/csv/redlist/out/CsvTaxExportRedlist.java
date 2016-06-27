@@ -140,8 +140,8 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 */
 	protected Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
 		if(config != null){
-			Set<UUID> classificationUuidSet = config.getClassificationUuids();
-			List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
+			Set<UUID> taxonNodeUuidSet = config.getTaxonNodeUuids();
+			List<Classification> classificationList = getClassificationService().find(taxonNodeUuidSet);
 			Set<Classification> classificationSet = new HashSet<Classification>();
 			classificationSet.addAll(classificationList);
 			return classificationSet;

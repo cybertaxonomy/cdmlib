@@ -249,11 +249,11 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		return fieldsTerminatedBy;
 	}
 
-	public Set<UUID> getClassificationUuids() {
+	public Set<UUID> getTaxonNodeUuids() {
 		return classificationUuids;
 	}
 
-	public void setClassificationUuids(Set<UUID> classificationUuids) {
+	public void setTaxonNodeUuids(Set<UUID> classificationUuids) {
 		this.classificationUuids = classificationUuids;
 	}
 
