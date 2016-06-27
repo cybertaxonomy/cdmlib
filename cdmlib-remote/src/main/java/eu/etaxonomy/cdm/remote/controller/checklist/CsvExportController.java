@@ -91,7 +91,7 @@ public class CsvExportController extends AbstractController{
 	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
 	public void doExportRedlist(
 			@RequestParam(value = "features", required = false) UuidList featureUuids,
-			@RequestParam(value = "classification", required = false) String taxonNodeUuid,
+			@RequestParam(value = "taxonNode", required = false) String taxonNodeUuid,
             @RequestParam(value = "area", required = false) UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
