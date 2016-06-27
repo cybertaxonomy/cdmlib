@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -146,7 +147,7 @@ public class CsvExportController extends AbstractController{
 	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<UUID> taxonNodeUuids = java.util.Collections.singleton(UUID.fromString(taxonNodeUuid)); 
+		Set<UUID> taxonNodeUuids = Collections.singleton(UUID.fromString(taxonNodeUuid)); 
 		String destination = System.getProperty("java.io.tmpdir");
 		List<Feature> features = new ArrayList<Feature>();
 		if(featureUuids != null){

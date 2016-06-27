@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,14 +32,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
-import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportStateRedlist;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -73,25 +69,22 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 	
 	
 	/**
-	 * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications} 
-	 * and do have a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
-	 * If <code>classificationList</code> is <code>null</code> or empty then all {@link TaxonNode taxon nodes} of all 
-	 * {@link Classification classifications} are returned.<BR>
-	 * Preliminary implementation. Better implement API method for this.
+	 * Returns all children of the given taxon node and the node itself if the node has
+	 *  a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
 	 * @return
 	 */
-	protected List<TaxonNode> getAllNodes(Set<Classification> classificationList) {
+	protected Set<TaxonNode> getAllNodes(Set<TaxonNode> taxonNodes) {
 		//handle empty list as no filter defined
-		if (classificationList != null && classificationList.isEmpty()){
-			classificationList = null;
+		if (taxonNodes != null && taxonNodes.isEmpty()){
+			taxonNodes = null;
 		}
 		
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
-		List<TaxonNode> result = new ArrayList<TaxonNode>();
+		Set<TaxonNode> result = new HashSet<TaxonNode>();
 		for (TaxonNode node : allNodes){
 			if (node.getClassification() == null ){
 				continue;
-			}else if (classificationList != null && ! classificationList.contains(node.getClassification())){
+			}else if (taxonNodes != null && ! taxonNodes.contains(node.getClassification())){
 				continue;
 			}else{
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);

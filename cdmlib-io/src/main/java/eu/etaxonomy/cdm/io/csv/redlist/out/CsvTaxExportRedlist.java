@@ -79,7 +79,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		CsvTaxExportConfiguratorRedlist config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 		List<NamedArea> selectedAreas = config.getNamedAreas();
-		Set<Classification> classificationSet = assembleClassificationSet(config);
+		Set<TaxonNode> taxonNodes = assembleTaxonNodeSet(config);
 		
 		PrintWriter writer = null;
 		ByteArrayOutputStream byteArrayOutputStream;
@@ -87,7 +87,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			byteArrayOutputStream = config.getByteArrayOutputStream();
 			writer = new PrintWriter(byteArrayOutputStream); 
 			//geographical Filter
-			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, classificationSet);
+			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, taxonNodes);
 			
 			//sorting List
 			Collections.sort(filteredNodes, new Comparator<TaxonNode>() {
@@ -133,15 +133,13 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	
 	
 	//TODO: Exception handling
-	protected Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
+	protected Set<TaxonNode> assembleTaxonNodeSet(CsvTaxExportConfiguratorRedlist config){
+		Set<TaxonNode> taxonNodes = new HashSet<>();
 		if(config != null){
 			Set<UUID> taxonNodeUuidSet = config.getTaxonNodeUuids();
-			List<Classification> classificationList = getClassificationService().find(taxonNodeUuidSet);
-			Set<Classification> classificationSet = new HashSet<Classification>();
-			classificationSet.addAll(classificationList);
-			return classificationSet;
+			taxonNodes.addAll(getTaxonNodeService().find(taxonNodeUuidSet));
 		}
-		return null;
+		return taxonNodes;
 	}
 
 	//TODO: Exception handling
@@ -157,22 +155,22 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	/**
-	 * Takes positive List of areas and iterates over a given classification 
+	 * Takes positive List of areas and iterates over a given taxon node 
 	 * and their {@link Taxon} to return all {@link Taxon} with the desired 
 	 * geographical attribute.
 	 * 
 	 * <p><p>
 	 *
-	 * If selectedAreas is null all {@link TaxonNode}s of the given {@link Classification} will be returned.
+	 * If selectedAreas is null all child {@link TaxonNode}s of the given taxon node will be returned.
 	 * 
 	 * @param selectedAreas 
-	 * @param classificationSet
+	 * @param taxonNodes
 	 * @return
 	 */
 	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
-			Set<Classification> classificationSet) {
+			Set<TaxonNode> taxonNodes) {
 		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-		List<TaxonNode> allNodes =  getAllNodes(classificationSet);
+		List<TaxonNode> allNodes =  new ArrayList(getAllNodes(taxonNodes));
 		//Geographical filter
 		logger.info(selectedAreas.size());
 		if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
