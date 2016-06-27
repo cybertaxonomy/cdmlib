@@ -452,7 +452,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                 List<Distribution> distributions = distributionsFor(taxon);
 
-
                 // Step through superAreas for accumulation of subAreas
                 for (NamedArea superArea : superAreaList){
 

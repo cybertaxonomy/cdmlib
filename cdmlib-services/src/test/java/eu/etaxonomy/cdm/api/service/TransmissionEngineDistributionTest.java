@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -28,7 +29,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -183,13 +186,31 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     })
     public void testArea_area() {
 
+        Distribution[] distributions = new Distribution[4];
+
+        Reference book_LCA_yug_mn = ReferenceFactory.newBook();
+        book_LCA_yug_mn.setTitle("LCA_yug_mn");
+        DescriptionElementSource.NewPrimarySourceInstance(book_LCA_yug_mn, "1");
+        distributions[0] = Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED());
+
+        Reference book_LCA_yug_ko = ReferenceFactory.newBook();
+        book_LCA_yug_mn.setTitle("LCA_yug_ko");
+        DescriptionElementSource.NewPrimarySourceInstance(book_LCA_yug_ko, "2");
+        distributions[1] = Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()); // NATIVE should succeed
+
+        Reference book_LCA_yug_bh = ReferenceFactory.newBook();
+        book_LCA_yug_mn.setTitle("LCA_yug_bh");
+        DescriptionElementSource.NewPrimarySourceInstance(book_LCA_yug_bh, "3");
+        distributions[2] = Distribution.NewInstance(yug_bh, PresenceAbsenceTerm.INTRODUCED());
+
+        Reference book_LCA_yug_ma = ReferenceFactory.newBook();
+        book_LCA_yug_mn.setTitle("LCA_yug_ma");
+        DescriptionElementSource.NewPrimarySourceInstance(book_LCA_yug_ma, "4");
+        distributions[3] = Distribution.NewInstance(yug_ma, PresenceAbsenceTerm.NATIVE()); // NATIVE should succeed
+
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
-                new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED()),
-                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()), // should succeed
-                        Distribution.NewInstance(yug_bh, PresenceAbsenceTerm.INTRODUCED())
-               }
+                distributions
             );
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -200,15 +221,20 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
 
-        boolean expectedAreaFound = false;
+        Distribution accumulatedDistribution = null;
         for (TaxonDescription description : lapsana_communis_alpina.getDescriptions()) {
-            Distribution distribution = (Distribution) description.getElements().iterator().next(); // only one aggregated area expected
-            if(distribution.getArea().equals(yug)) {
-                expectedAreaFound = true;
-                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+                assertNull("only one computed Distribution should exists", accumulatedDistribution);
+                assertEquals("the computed Decription should have only one element", 1, description.getElements().size());
+                accumulatedDistribution = (Distribution) description.getElements().iterator().next();
+                assertEquals("Expecting area to be YUG", yug, accumulatedDistribution.getArea());
+                assertEquals("Expecting status to be NATIVE", PresenceAbsenceTerm.NATIVE().getLabel(), accumulatedDistribution.getStatus().getLabel());
             }
         }
-        assertTrue("The areae YUG should have been found", expectedAreaFound);
+        assertNotNull("The area YUG should have been found", accumulatedDistribution);
+//        assertEquals("Expecting two source references", accumulatedDistribution.getSources().size());
+//        assertTrue(accumulatedDistribution.getSources().contains(book_LCA_yug_ko));
+//        assertTrue(accumulatedDistribution.getSources().contains(book_LCA_yug_ma));
     }
 
     @Test
