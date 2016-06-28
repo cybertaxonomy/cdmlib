@@ -1981,6 +1981,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
        }
         Query query = getSession().createQuery(queryString);
         if (pattern != null){
+            pattern.replace("*", "%");
           pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         }

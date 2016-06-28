@@ -108,6 +108,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		    query.setMaxResults(limit);
 		}
 		if (pattern != null){
+		      pattern.replace("*", "%");
 	          pattern = pattern + "%";
 	          query.setParameter("pattern", pattern);
 	    }
