@@ -130,8 +130,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      *            internally always is appended to the query string, a search
      *            always compares the query string with the beginning of a name.
      *            - <i>required parameter</i>
-     * @param treeUuid
-     *            the {@link UUID} of a {@link Classification} to which the
+     * @param classificationNodeUuid
+     *            the {@link UUID} of the root node of a {@link Classification} to which the
      *            search is to be restricted. - <i>optional parameter</i>
      * @param areas
      *            restrict the search to a set of geographic {@link NamedArea}s.
@@ -158,7 +158,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     @RequestMapping(method = RequestMethod.GET, value={"search"})
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "classificationNodeUuid", required = false) UUID classificationNodeUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) Set<PresenceAbsenceTerm> status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -201,8 +201,11 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         }
 
         Classification classification = null;
-        if(treeUuid != null){
-            classification = classificationService.find(treeUuid);
+        if(classificationNodeUuid != null){
+            TaxonNode rootNode = taxonNodeService.load(classificationNodeUuid);
+            if(rootNode!=null){
+                classification = rootNode.getClassification();
+            }
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,
