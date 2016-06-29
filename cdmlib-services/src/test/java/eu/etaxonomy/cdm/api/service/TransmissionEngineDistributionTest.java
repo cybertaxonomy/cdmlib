@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -236,7 +237,11 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
     public void testArea_rank_and_area_1() {
 
         Set<Distribution> distributions_LCA = new HashSet<>();
@@ -311,7 +316,11 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      * an makes assertions only on the alternative source references
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
     public void testArea_rank_and_area_2() {
 
         Set<Distribution> distributions_LCA = new HashSet<Distribution>();
@@ -322,7 +331,6 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
                 distributions_LCA
             );
-
 
         engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
 
@@ -375,8 +383,6 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
         distributions_LC.add(newDistribution(book_b, yug_ko, PresenceAbsenceTerm.NATIVE(), "2"));
 
-        commitAndStartNewTransaction(null);
-
         addDistributions(
                 T_LAPSANA_COMMUNIS_UUID,
                 distributions_LC
@@ -413,6 +419,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      * an makes assertions only on the alternative source references
      */
     @Test
+    @Ignore
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
@@ -430,8 +437,6 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
         Set<Distribution> distributions_LC = new HashSet<>();
         distributions_LC.add(newDistribution(book_a, yug, PresenceAbsenceTerm.NATIVE(), "2")); //  should succeed
-
-        commitAndStartNewTransaction(null);
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_UUID,
