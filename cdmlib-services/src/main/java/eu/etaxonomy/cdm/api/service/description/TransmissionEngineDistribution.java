@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -244,9 +243,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *
      * @param a
      * @param b
+     * @param sourcesForWinnerB
+     *  In the case when <code>b</code> is preferred over <code>a</code> these Set of sources will be added to the sources of <code>b</code>
      * @return
      */
-    private StatusAndSources choosePreferred(StatusAndSources a, StatusAndSources b){
+    private StatusAndSources choosePreferred(StatusAndSources a, StatusAndSources b, Set<DescriptionElementSource> sourcesForWinnerB){
 
         if (statusPriorityMap == null) {
             initializeStatusPriorityMap();
@@ -268,9 +269,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             return a;
         }
         if(statusPriorityMap.get(a.status) < statusPriorityMap.get(b.status)){
+            if(sourcesForWinnerB != null) {
+                b.addSources(sourcesForWinnerB);
+            }
             return b;
         } else if (statusPriorityMap.get(a.status) == statusPriorityMap.get(b.status)){
-            a.sources.addAll(b.sources);
+            a.addSources(b.sources);
             return a;
         } else {
             return a;
@@ -335,7 +339,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
 
         // only for debugging:
-        logger.setLevel(Level.DEBUG); // TRACE will slow down a lot since it forces loading all term representations
+        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
 
         logger.info("Hibernate JDBC Batch size: "
@@ -481,7 +485,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                                     continue;
                                 }
                                 StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                                accumulatedStatusAndSources = choosePreferred(accumulatedStatusAndSources, subStatusAndSources);
+                                accumulatedStatusAndSources = choosePreferred(accumulatedStatusAndSources, subStatusAndSources, null);
                             }
                         }
                     } // next sub area
@@ -491,6 +495,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                         }
                         // store new distribution element for superArea in taxon description
                         Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatusAndSources.status);
+                        newDistribitionElement.getSources().addAll(accumulatedStatusAndSources.sources);
                         newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                         description.addElement(newDistribitionElement);
                     }
@@ -520,7 +525,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     }
 
    /**
-    * Step 2: Accumulate by ranks staring from lower rank to upper rank, the status of all children
+    * Step 2: Accumulate by ranks starting from lower rank to upper rank, the status of all children
     * are accumulated on each rank starting from lower rank to upper rank.
     * <ul>
     * <li>aggregate distribution of included taxa of the next lower rank for any rank level starting from the lower rank (e.g. sub species)
@@ -566,7 +571,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             while (taxonIdIterator.hasNext()) {
 
                 if(txStatus == null) {
-                    // transaction has been comitted at the end of this batch, start a new one
+                    // transaction has been committed at the end of this batch, start a new one
                     txStatus = startTransaction(false);
                 }
 
@@ -624,17 +629,22 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                                 }
 
                                 StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources));
+                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources, null));
                              }
                         }
 
                         if(accumulatedStatusMap.size() > 0) {
                             TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                             for (NamedArea area : accumulatedStatusMap.keySet()) {
-                                // store new distribution element in new Description
-                                Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                                newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                                description.addElement(newDistribitionElement);
+                                Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
+                                if(distribition == null) {
+                                    // create a new distribution element
+                                    distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
+                                    distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+                                }
+                                addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
+
+                                description.addElement(distribition);
                             }
                             taxonService.saveOrUpdate(taxon);
                             descriptionService.saveOrUpdate(description);
@@ -669,6 +679,25 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
         subMonitor.done();
     }
+
+/**
+ * @param description
+ * @param area
+ * @param status
+ * @return
+ */
+private Distribution findDistribution(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
+    for(DescriptionElementBase item : description.getElements()) {
+        if(!(item instanceof Distribution)) {
+            continue;
+        }
+        Distribution distribution = ((Distribution)item);
+        if(distribution.getArea().equals(area) && distribution.getStatus().equals(status)) {
+            return distribution;
+        }
+    }
+    return null;
+}
 
 /**
  * @param lowerRank
@@ -927,6 +956,26 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         commitTransaction(txStatus);
     }
 
+    public static void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {
+        for(DescriptionElementSource source : sources) {
+            boolean contained = false;
+            for(DescriptionElementSource existingSource: target) {
+                if(existingSource.equalsByShallowCompare(source)) {
+                    contained = true;
+                    break;
+                }
+            }
+            if(!contained) {
+                try {
+                    target.add((DescriptionElementSource)source.clone());
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
     public enum AggregationMode {
         byAreas,
         byRanks,
@@ -936,13 +985,21 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
 
     private class StatusAndSources {
 
-        PresenceAbsenceTerm status;
+        private final PresenceAbsenceTerm status;
 
-        Set<DescriptionElementSource> sources = new HashSet<>();
+        private final Set<DescriptionElementSource> sources = new HashSet<>();
 
         public StatusAndSources(PresenceAbsenceTerm status, Set<DescriptionElementSource> sources) {
             this.status = status;
-            this.sources = sources;
+            addSourcesDeduplicated(this.sources, sources);
         }
+
+        /**
+         * @param sources
+         */
+        public void addSources(Set<DescriptionElementSource> sources) {
+            addSourcesDeduplicated(this.sources, sources);
+        }
+
     }
 }

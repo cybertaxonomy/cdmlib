@@ -150,4 +150,24 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		}
 	}
 
+//*********************************** EQUALS *********************************************************/
+
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+
+        if(!super.equalsByShallowCompare(other)) {
+            return false;
+        }
+        OriginalSourceBase<T> theOther = (OriginalSourceBase<T>)other;
+        if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
+                || !StringUtils.equals(this.getIdNamespace(), theOther.getIdNamespace())) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

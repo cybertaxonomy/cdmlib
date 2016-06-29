@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -117,5 +118,29 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		//no changes to: citation, citationMicroReference, originalNameString
 		return result;
 	}
+
+//*********************************** EQUALS *********************************************************/
+
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 *
+	 * Uses a content based compare strategy which avoids bean initialization. This is achieved by
+	 * comparing the cdm entity ids.
+	 *
+	 * @param other
+	 * @return
+	 */
+	public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+
+        if(this.getCitation().getId() != other.getCitation().getId()
+                || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
+                || !StringUtils.equals(this.getOriginalNameString(), other.getOriginalNameString())
+                        ){
+            return false;
+        }
+
+        return true;
+    }
+
 
 }
