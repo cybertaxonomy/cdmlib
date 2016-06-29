@@ -1984,6 +1984,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
+            pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         }
         if (limit  != null){

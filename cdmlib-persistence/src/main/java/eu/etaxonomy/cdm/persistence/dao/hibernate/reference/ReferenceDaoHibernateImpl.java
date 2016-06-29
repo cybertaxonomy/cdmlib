@@ -110,7 +110,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		if (pattern != null){
 		      pattern = pattern.replace("*", "%");
 		      pattern = pattern.replace("?", "_");
-	          pattern = pattern + "%";
+		      pattern = pattern + "%";
 	          query.setParameter("pattern", pattern);
 	    }
 		@SuppressWarnings("unchecked")
