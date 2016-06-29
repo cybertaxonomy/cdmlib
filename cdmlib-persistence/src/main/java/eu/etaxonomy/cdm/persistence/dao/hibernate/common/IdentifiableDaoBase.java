@@ -287,7 +287,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         Query query = null;
         if (pattern != null){
             query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where titleCache like :pattern");
-            pattern.replace("*", "%");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
