@@ -66,26 +66,26 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
             if (nameTags.size() > 0){
                 tags.addAll(nameTags);
+            }else{
+                tags.add(new TaggedText(TagEnum.fullName, "???"));
+            }
 
-                boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-                String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
-                //not used: we currently use a post-separator in the name tags
+            boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+            String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
+            //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
 //                }
 
-                //ref.
-                List<TaggedText> secTags = getSecundumTags(taxonBase);
+            //ref.
+            List<TaggedText> secTags = getSecundumTags(taxonBase);
 
-                //sec.
-                if (!secTags.isEmpty()){
-                    tags.add(new TaggedText(TagEnum.separator, secSeparator));
-                    tags.addAll(secTags);
-                }
-
-            }else{
-                tags.add(new TaggedText(TagEnum.fullName, taxonBase.toString()));
+            //sec.
+            if (!secTags.isEmpty()){
+                tags.add(new TaggedText(TagEnum.separator, secSeparator));
+                tags.addAll(secTags);
             }
+
         }
         return tags;
     }
@@ -108,9 +108,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
                 tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
             }
-        }else{
-            tags.add(new TaggedText(TagEnum.name, "???"));
         }
+
         return tags;
     }
 
