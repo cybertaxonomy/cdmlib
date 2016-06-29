@@ -129,7 +129,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
         else{
             //existing sec
-            if (ref.getCacheStrategy() != null &&
+            if (ref.isProtectedTitleCache() == false &&
+                    ref.getCacheStrategy() != null &&
                     ref.getAuthorship() != null &&
                     isNotBlank(ref.getAuthorship().getTitleCache()) &&
                     isNotBlank(ref.getYear())){

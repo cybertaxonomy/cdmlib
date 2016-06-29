@@ -183,6 +183,15 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	}
 
     @Test
+    public void testProtectedSecTitleCache(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        sec.setTitleCache("My protected sec ref", true);
+        taxonBase.setDoubtful(true);
+        taxonBase.setSecMicroReference("123");
+        Assert.assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxonBase.getTitleCache());
+    }
+
+    @Test
     public void testMicroReference(){
         TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
         String secMicroRef = "p. 553";
