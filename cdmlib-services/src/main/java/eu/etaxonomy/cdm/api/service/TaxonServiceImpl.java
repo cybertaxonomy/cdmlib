@@ -944,7 +944,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
-        return this.dao.listByIds(listOfIDs, null, null, null, null);
+        return this.dao.loadList(listOfIDs, null);
     }
 
     @Override

@@ -161,7 +161,7 @@ public interface IService<T extends ICdmBase>{
      *
      * @param idSet
      * @return
-     * @deprecated use {@link #listByIds(Set, Integer, Integer, List, List)} instead
+     * @deprecated use {@link #loadByIds(Set, List)} instead
      */
     @Deprecated
     public List<T> findById(Set<Integer> idSet);  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
@@ -380,15 +380,13 @@ public interface IService<T extends ICdmBase>{
     public List<T> merge(List<T> detachedObjects);
 
     /**
+     * Loads a batch of entities referenced by their ids.
+     *
      * @param idSet
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
      * @param propertyPaths
      * @return
      */
-    List<T> listByIds(Set<Integer> idSet, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths);
+    List<T> loadByIds(List<Integer> idSet, List<String> propertyPaths);
 
     /**
      * This method allows for the possibility of returning the input transient

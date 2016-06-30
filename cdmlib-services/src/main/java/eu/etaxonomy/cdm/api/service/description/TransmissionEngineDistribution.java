@@ -443,14 +443,14 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
             // load taxa for this batch
             List<TaxonBase> taxa = null;
-            Set<Integer> taxonIds = new HashSet<Integer>(batchSize);
+            List<Integer> taxonIds = new ArrayList<Integer>(batchSize);
             while(taxonIdIterator.hasNext() && taxonIds.size() < batchSize ) {
                 taxonIds.add(taxonIdIterator.next());
             }
 
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 
-            taxa = taxonService.listByIds(taxonIds, null, null, emptyOrderHints, TAXONDESCRIPTION_INIT_STRATEGY);
+            taxa = taxonService.loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
             for(TaxonBase taxonBase : taxa) {
@@ -576,12 +576,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
 
                 // load taxa for this batch
-                Set<Integer> taxonIds = new HashSet<Integer>(batchSize);
+                List<Integer> taxonIds = new ArrayList<Integer>(batchSize);
                 while(taxonIdIterator.hasNext() && taxonIds.size() < batchSize ) {
                     taxonIds.add(taxonIdIterator.next());
                 }
 
-                taxa = taxonService.listByIds(taxonIds, null, null, emptyOrderHints, null);
+                taxa = taxonService.loadByIds(taxonIds, null);
 
                 if(taxonSubMonitor == null) {
                     taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
@@ -609,9 +609,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     // Step through direct taxonomic children for accumulation
                     Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<NamedArea, StatusAndSources>();
 
-                    Set<Integer> childTaxonIds = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
-                    if(childTaxonIds != null && !childTaxonIds.isEmpty()) {
-                        childTaxa = taxonService.listByIds(childTaxonIds, null, null, emptyOrderHints, TAXONDESCRIPTION_INIT_STRATEGY);
+                    List<Integer> childTaxonIds = new ArrayList<>();
+                    Set<Integer> childSet = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
+                    if(childSet != null) {
+                        childTaxonIds.addAll(childSet);
+                    }
+                    if(!childTaxonIds.isEmpty()) {
+                        childTaxa = taxonService.loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
 
                         for (TaxonBase childTaxonBase : childTaxa){
 
