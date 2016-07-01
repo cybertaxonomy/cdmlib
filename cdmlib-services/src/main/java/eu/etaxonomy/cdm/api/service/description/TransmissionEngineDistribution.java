@@ -145,6 +145,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     private final List<OrderHint> emptyOrderHints = new ArrayList<OrderHint>(0);
 
+    int byRankTicks = 300;
+    int byAreasTicks = 100;
+
 
     /**
      * byAreaIgnoreStatusList contains by default:
@@ -352,17 +355,34 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             classifications.add(classification);
         }
 
-        int aggregationWorkTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
+        int aggregationWorkTicks;
+        switch(mode){
+        case byAreasAndRanks:
+            aggregationWorkTicks = byAreasTicks + byRankTicks;
+            break;
+        case byAreas:
+            aggregationWorkTicks = byAreasTicks;
+            break;
+        case byRanks:
+            aggregationWorkTicks = byRankTicks;
+            break;
+        default:
+            aggregationWorkTicks = 0;
+            break;
+        }
 
         // take start time for performance testing
         // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
         double start = System.currentTimeMillis();
 
         monitor.beginTask("Accumulating distributions", (classifications.size() * aggregationWorkTicks) + 1 );
+
         updatePriorities();
-        monitor.worked(1);
 
         List<Rank> ranks = rankInterval(lowerRank, upperRank);
+
+        monitor.worked(1);
+
 
         for(Classification _classification : classifications) {
 
@@ -375,7 +395,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
             monitor.subTask("Accumulating distributions to super areas for " + _classification.getTitleCache());
             if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, 200), true);
+                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, byAreasTicks), true);
             }
             monitor.subTask("Accumulating distributions to higher ranks for " + _classification.getTitleCache());
 
@@ -384,7 +404,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
             double start3 = System.currentTimeMillis();
             if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByRank(ranks, classificationLookupDao, new SubProgressMonitor(monitor, 200), mode.equals(AggregationMode.byRanks));
+                accumulateByRank(ranks, classificationLookupDao, new SubProgressMonitor(monitor, byRankTicks), mode.equals(AggregationMode.byRanks));
             }
 
             double end3 = System.currentTimeMillis();
@@ -396,6 +416,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 break;
             }
         }
+        monitor.done();
     }
 
 
@@ -540,6 +561,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     protected void accumulateByRank(List<Rank> rankInterval, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 500;
+        int ticksPerRank = 100;
 
         TransactionStatus txStatus = startTransaction(false);
 
@@ -553,7 +575,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
         List<Rank> ranks = rankInterval;
 
-        int ticksPerRank = 100;
         subMonitor.beginTask("Accumulating by rank", ranks.size() * ticksPerRank);
 
         for (Rank rank : ranks) {
@@ -562,11 +583,19 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 logger.debug("accumulateByRank() - at Rank '" + termToString(rank) + "'");
             }
 
-            SubProgressMonitor taxonSubMonitor = null;
             Set<Integer> taxonIdsPerRank = classificationLookupDao.getTaxonIdByRank().get(rank);
-            if(taxonIdsPerRank == null || taxonIdsPerRank.isEmpty()) {
+
+            int taxonCountperRank = taxonIdsPerRank != null ? taxonIdsPerRank.size() : 0;
+
+            SubProgressMonitor taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
+            taxonSubMonitor.beginTask("Accumulating by rank " + termToString(rank), taxonCountperRank);
+
+            if(taxonCountperRank == 0) {
+                taxonSubMonitor.done();
                 continue;
             }
+
+
             Iterator<Integer> taxonIdIterator = taxonIdsPerRank.iterator();
             while (taxonIdIterator.hasNext()) {
 
@@ -582,11 +611,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
 
                 taxa = taxonService.loadByIds(taxonIds, null);
-
-                if(taxonSubMonitor == null) {
-                    taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
-                    taxonSubMonitor.beginTask("Accumulating by rank " + termToString(rank), taxa.size());
-                }
 
 //                if(logger.isDebugEnabled()){
 //                           logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
@@ -671,9 +695,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
             } // next batch
 
-            if(taxonSubMonitor != null) { // TODO taxonSubpager, this check should not be needed
-                taxonSubMonitor.done();
-            }
+            taxonSubMonitor.done();
             subMonitor.worked(1);
 
             if(ONLY_FISRT_BATCH) {
@@ -681,6 +703,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             }
         } // next Rank
 
+        logger.info("accumulateByRank() - done");
         subMonitor.done();
     }
 

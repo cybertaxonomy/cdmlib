@@ -132,7 +132,16 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	 */
 	public boolean equalsByShallowCompare(ReferencedEntityBase other) {
 
-        if(this.getCitation().getId() != other.getCitation().getId()
+	    int thisCitationId = -1;
+	    int otherCitationId = -1;
+	    if(this.getCitation() != null) {
+	        thisCitationId = this.getCitation().getId();
+	    }
+	    if(other.getCitation() != null) {
+	        otherCitationId = other.getCitation().getId();
+        }
+
+        if(thisCitationId != otherCitationId
                 || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
                 || !StringUtils.equals(this.getOriginalNameString(), other.getOriginalNameString())
                         ){
