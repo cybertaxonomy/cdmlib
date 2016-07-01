@@ -101,8 +101,8 @@ public class ExcelSpecimenImportExampleTest extends
 	 @Test
 //	 @Ignore  //does not run together with testResultSet or others
 	 @DataSets({
-	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
-	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
+	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
 	 })
 	 public void testDoInvoke() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();
@@ -118,8 +118,8 @@ public class ExcelSpecimenImportExampleTest extends
 	 @Test
 //	 @Ignore //does not run together with testResultSet or others
 	 @DataSets({
-	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
-	     @DataSet("../../../TermsDataSet-with_auditing_info.xml")
+	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
 	 })
 	 public void testDoInvokeXslx() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();

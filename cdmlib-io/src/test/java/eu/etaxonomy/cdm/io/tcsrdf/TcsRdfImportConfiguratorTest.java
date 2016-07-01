@@ -65,7 +65,7 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-	@DataSet(value="../BlankDataSet.xml")
+	@DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);

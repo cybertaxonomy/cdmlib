@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import static org.junit.Assert.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -63,8 +64,8 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 /*
 	@Test
     @DataSets({
-            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
-            @DataSet("../../../TermsDataSet-with_auditing_info.xml")
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
@@ -76,13 +77,8 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 
 	}
 */
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
 
-    }
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
