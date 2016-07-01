@@ -741,9 +741,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         @SuppressWarnings("unchecked")
 		List<S> results = criteria.list();
+
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
+
 
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);

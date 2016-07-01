@@ -73,8 +73,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
-			// TODO initialize bits
-			return (T)query.getSingleResult();
+			@SuppressWarnings("unchecked")
+            T result = (T)query.getSingleResult();
+			return result;
 		}
 	}
 
@@ -92,7 +93,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
-			T t = (T)query.getSingleResult();
+			@SuppressWarnings("unchecked")
+            T t = (T)query.getSingleResult();
 			defaultBeanInitializer.load(t);
 			return t;
 		}
@@ -106,7 +108,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
-			T t = (T)query.getSingleResult();
+			@SuppressWarnings("unchecked")
+            T t = (T)query.getSingleResult();
 			defaultBeanInitializer.initialize(t, propertyPaths);
 			return t;
 		}
@@ -121,7 +124,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
-			return null != (T)query.getSingleResult();
+			return null != query.getSingleResult();
 		}
 	}
 
@@ -195,7 +198,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			  query.setFirstResult(start);
 			}
 
-			List<S> result = query.getResultList();
+			@SuppressWarnings("unchecked")
+            List<S> result = query.getResultList();
 			defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		}
@@ -243,6 +247,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         /**
          * At the moment we need to transform the data manually
          */
+        @SuppressWarnings("unchecked")
         List<Object[]> objs = query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
 
@@ -372,6 +377,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		/**
          * At the moment we need to transform the data manually
          */
+        @SuppressWarnings("unchecked")
         List<Object[]> objs = query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
 
