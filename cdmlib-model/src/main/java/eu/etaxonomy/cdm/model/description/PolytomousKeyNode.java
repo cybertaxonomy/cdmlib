@@ -426,6 +426,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public List<PolytomousKeyNode> getChildren() {
 	    HHH_9751_Util.removeAllNull(children);
+	    updateSortIndex();
 		return children;
 	}
 
@@ -466,6 +467,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
 		HHH_9751_Util.removeAllNull(children);
+		updateSortIndex();
 
 		if(nodeNumber == null) {
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
@@ -475,10 +477,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		children.add(index, child);
 		child.setKey(this.getKey());
 
-		// TODO workaround (see sortIndex doc)
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).setSortIndex(i);
-		}
+		updateSortIndex();
 		child.setSortIndex(index);
 		child.setParent(this);
 	}
@@ -498,6 +497,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public void removeChild(PolytomousKeyNode child) {
 		HHH_9751_Util.removeAllNull(children);
+		updateSortIndex();
 		int index = children.indexOf(child);
 		if (index >= 0) {
 			removeChild(index);
@@ -592,6 +592,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			newNodeN++;
 			List<PolytomousKeyNode> children = node.getChildren();
 			HHH_9751_Util.removeAllNull(children);
+			updateSortIndex();
 			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
@@ -885,6 +886,13 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     public void removeTaxon() {
         this.taxon = null;
 
+    }
+
+    private void updateSortIndex(){
+        // TODO workaround (see sortIndex doc)
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).setSortIndex(i);
+        }
     }
 
 

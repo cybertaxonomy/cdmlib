@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -585,5 +587,27 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
    public ClassificationLookupDTO classificationLookup(Classification classification) {
        return dao.classificationLookup(classification);
    }
+
+
+    public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config){
+        DeleteResult result = new DeleteResult();
+        Classification classification = dao.findByUuid(classificationUuid);
+        if (classification == null){
+            result.addException(new IllegalArgumentException("The classification does not exist in database."));
+            result.setAbort();
+            return result;
+        }
+        if (!classification.hasChildNodes()){
+            dao.delete(classification);
+        }
+        if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE) ){
+            TaxonNode root = classification.getRootNode();
+            taxonNodeDao.delete(root, true);
+            dao.delete(classification);
+        }
+
+
+        return result;
+    }
 
 }
