@@ -72,13 +72,8 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		assertEquals("Number of TaxonNames should be 5", 5, nameService.count(null));
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
 
-    }
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
