@@ -580,15 +580,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 		return childNodes;
 	}
 
-   /**
+    /**
      * {@inheritDoc}
      */
     @Override
-   public ClassificationLookupDTO classificationLookup(Classification classification) {
-       return dao.classificationLookup(classification);
-   }
+    public ClassificationLookupDTO classificationLookup(Classification classification) {
+        return dao.classificationLookup(classification);
+    }
 
 
+    @Override
     public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config){
         DeleteResult result = new DeleteResult();
         Classification classification = dao.findByUuid(classificationUuid);
