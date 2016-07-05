@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -32,7 +34,6 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 /**
  * @author a.mueller
  * @created 16.06.2009
- * @version 1.0
  */
 @Repository
 @Qualifier("classificationDaoHibernateImpl")
@@ -280,7 +281,27 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return classificationLookupDTO ;
     }
 
+    @Override
+    public Map<UUID, String> treeIndexForTaxonUuids(UUID classificationUuid,
+            List<UUID> taxonUuids) {
+        String hql = " SELECT t.uuid, tn.treeIndex "
+                + " FROM Taxon t JOIN t.taxonNodes tn "
+                + " WHERE (1=1)"
+                + "     AND tn.classification.uuid = :classificationUuid "
+                + "     AND t.uuid IN (:taxonUuids) "
+                ;
+        Query query =  getSession().createQuery(hql);
+        query.setParameter("classificationUuid", classificationUuid);
+        query.setParameterList("taxonUuids", taxonUuids);
 
+        Map<UUID, String> result = new HashMap<>();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        for (Object[] o : list){
+            result.put((UUID)o[0], (String)o[1]);
+        }
+        return result;
+    }
 
 
 }

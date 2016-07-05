@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +24,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -38,7 +40,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author n.hoffmann
  * @created Sep 22, 2009
- * @version 1.0
  */
 public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTest{
 
@@ -64,7 +65,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             "taxon.name.*"
             });
 
-    private static final String CLASSIFICATION_UUID = "6c2bc8d9-ee62-4222-be89-4a8e31770878";
+    private static final UUID CLASSIFICATION_UUID = UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878");
 
     private Comparator<? super TaxonNode> taxonNodeComparator;
 
@@ -145,7 +146,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
      */
     @Test
     @DataSet
-    public final void testlistRankSpecificRootNodes(){
+    public final void testListRankSpecificRootNodes(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
         // classification, see  createTestDataSet()
@@ -337,13 +338,26 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertNotNull(service);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#generateTitleCache()}.
-     */
-//    @Test
-    public final void testGenerateTitleCache() {
-//		fail("Not yet implemented");
+
+    @Test
+    @DataSet
+    public final void testGroupTaxaByHigherTaxon(){
+
+        Rank minRank = Rank.GENUS();
+        Rank maxRank = Rank.KINGDOM();
+        List<UUID> taxonUuids = new ArrayList<>();
+        taxonUuids.add(acacia_acicularis_uuid);
+        taxonUuids.add(acacia_cuspidifolia_uuid);
+        taxonUuids.add(acacia_sect_botrycephalae_uuid);
+
+        List<GroupedTaxonDTO> result = this.service.groupTaxaByHigherTaxon(taxonUuids, CLASSIFICATION_UUID, minRank, maxRank);
+        Assert.assertFalse("", result.isEmpty());
     }
+
+
+    private UUID acacia_acicularis_uuid  = UUID.fromString("90ad2d8f-19a9-4a10-bab3-7d1de5ce1968");
+    private UUID acacia_cuspidifolia_uuid = UUID.fromString("94123e4d-da49-4ed0-9d59-f52a9f7a3618");
+    private UUID acacia_sect_botrycephalae_uuid = UUID.fromString("2c73a166-35d1-483d-b8e8-209214cb6193");
 
 
     /**
@@ -367,7 +381,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
         // 1. create the entities   and save them
         Classification classification = Classification.NewInstance("Acacia Classification");
-        classification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+        classification.setUuid(CLASSIFICATION_UUID);
         classificationDao.save(classification);
 
         Reference sec = ReferenceFactory.newBook();
@@ -377,40 +391,48 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         BotanicalName acacia_n = BotanicalName.NewInstance(Rank.GENUS(), "Acacia", null, null, null, null, sec, null, null);
         acacia_n.setAuthorshipCache("N.Jacobsen, Bastm. & Yuji Sasaki", true);
         Taxon acacia_t = Taxon.NewInstance(acacia_n, sec);
+        acacia_t.setUuid(UUID.fromString("2fc779ee-7a9d-4586-92ba-1cd774ac77f0"));
 
         BotanicalName acacia_subg_aculeiferum_n = BotanicalName.NewInstance(Rank.SUBGENUS(), "Acacia", "Aculeiferum", null, null, null, sec, null, null);
         acacia_subg_aculeiferum_n.setAuthorshipCache("Pedley", true);
         Taxon acacia_subg_aculeiferum_t = Taxon.NewInstance(acacia_subg_aculeiferum_n, sec);
+        acacia_subg_aculeiferum_t.setUuid(UUID.fromString("169fea08-6b7a-4315-b111-a774c7fafe30"));
 
         BotanicalName acacia_subg_phyllodineae_n = BotanicalName.NewInstance(Rank.SUBGENUS(), "Acacia", "Phyllodineae", null, null, null, sec, null, null);
         acacia_subg_phyllodineae_n.setAuthorshipCache("N.Jacobsen, Bastm. & Yuji Sasaki", true);
         Taxon acacia_subg_phyllodineae_t = Taxon.NewInstance(acacia_subg_phyllodineae_n, sec);
+        acacia_subg_phyllodineae_t.setUuid(UUID.fromString("a9da5d43-517e-4ca5-a490-b6a5cd637e9e"));
 
         BotanicalName acacia_setc_botrycephalae_n = BotanicalName.NewInstance(Rank.SECTION_BOTANY(), "Acacia", "Botrycephalae", null, null, null, sec, null, null);
         acacia_setc_botrycephalae_n.setAuthorshipCache("Yuji Sasaki", true);
-        Taxon acacia_setc_botrycephalae_t = Taxon.NewInstance(acacia_setc_botrycephalae_n, sec);
+        Taxon acacia_sect_botrycephalae_t = Taxon.NewInstance(acacia_setc_botrycephalae_n, sec);
+        acacia_sect_botrycephalae_t.setUuid(acacia_sect_botrycephalae_uuid);
 
         BotanicalName acacia_cuspidifolia_n = BotanicalName.NewInstance(Rank.SPECIES(), "Acacia", null,"cuspidifolia", null, null, sec, null, null);
         acacia_cuspidifolia_n.setAuthorshipCache("Maslin", true);
         Taxon acacia_cuspidifolia_t = Taxon.NewInstance(acacia_cuspidifolia_n, sec);
+        acacia_cuspidifolia_t.setUuid(acacia_cuspidifolia_uuid);
 
         BotanicalName acacia_mearnsii_n = BotanicalName.NewInstance(Rank.SPECIES(), "Acacia", null,"mearnsii", null, null, sec, null, null);
         acacia_mearnsii_n.setAuthorshipCache("Benth", true);
         Taxon acacia_mearnsii_t = Taxon.NewInstance(acacia_mearnsii_n, sec);
+        acacia_mearnsii_t.setUuid(UUID.fromString("2e55dc01-71f5-4d42-9bb0-a2448e46dd18"));
 
         BotanicalName acacia_acicularis_n = BotanicalName.NewInstance(Rank.SPECIES(), "Acacia", null,"acicularis", null, null, sec, null, null);
         acacia_acicularis_n.setAuthorshipCache("Willd.", true);
         Taxon acacia_acicularis_t = Taxon.NewInstance(acacia_acicularis_n, sec);
+        acacia_acicularis_t.setUuid(acacia_acicularis_uuid);
 
         BotanicalName xacacia_acicularis_n = BotanicalName.NewInstance(Rank.SUBSPECIES(), "Acacia", null,"acicularis", "acicularis", null, sec, null, null);
         xacacia_acicularis_n.setAuthorshipCache("Willd.", true);
         xacacia_acicularis_n.setMonomHybrid(true);
         System.out.println(xacacia_acicularis_n.getTitleCache());
         Taxon xacacia_acicularis_t = Taxon.NewInstance(xacacia_acicularis_n, sec);
+        xacacia_acicularis_t.setUuid(UUID.fromString("04d125a6-6adf-4900-97ff-82729618086a"));
 
         TaxonNode acacia_tn = classification.addChildTaxon(acacia_t, sec, null);
         TaxonNode acacia_subg_phyllodineae_tn = acacia_tn.addChildTaxon(acacia_subg_phyllodineae_t, sec, null);
-        acacia_subg_phyllodineae_tn.addChildTaxon(acacia_setc_botrycephalae_t, sec, null);
+        acacia_subg_phyllodineae_tn.addChildTaxon(acacia_sect_botrycephalae_t, sec, null);
         acacia_tn.addChildTaxon(acacia_subg_aculeiferum_t, sec, null);
         acacia_tn.addChildTaxon(acacia_mearnsii_t, sec, null).addChildTaxon(xacacia_acicularis_t, sec, null);
         acacia_tn.addChildTaxon(acacia_cuspidifolia_t, sec, null);

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -311,6 +312,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     ClassificationLookupDTO classificationLookup(Classification classification);
 
     DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
+
+    /**
+     * Returns the higher taxon id for each taxon in taxonUuids.
+     * The highter taxon is defined by rank where the lowest rank equal or above minRank
+     * is taken. If maxRank <> null and no taxon exists with minRank <= rank <= maxRank
+     * no higher taxon is returned for this taxon.
+     *
+     * @param taxonUuids
+     * @param minRank
+     * @param maxRank
+     * @return
+     */
+    List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
 
 }
