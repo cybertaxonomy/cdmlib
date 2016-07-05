@@ -21,6 +21,10 @@ import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author cmathew
@@ -46,6 +50,7 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
+        Object entity = event.getEntity();
 
     }
 
@@ -57,6 +62,7 @@ public class PostMergeEntityListener implements MergeEventListener {
                 event.getResult() != null && CdmBase.class.isAssignableFrom(event.getResult().getClass())) {
             CdmBase original = (CdmBase) event.getOriginal();
             CdmBase result = (CdmBase) event.getResult();
+            removeNullFromCollections(result);
             if(original != null && Hibernate.isInitialized(original) && original.getId() == 0 &&
                     result != null && Hibernate.isInitialized(result) && result.getId() > 0) {
                 original.setId(result.getId());
@@ -67,6 +73,40 @@ public class PostMergeEntityListener implements MergeEventListener {
             }
         }
 
+
+    }
+
+    /**
+     * @param entity
+     */
+    private static void removeNullFromCollections(Object entity) {
+        if (entity != null){
+            Class<?> entityClazz = entity.getClass();
+
+            if (TaxonNode.class.isAssignableFrom(entityClazz)){
+                TaxonNode node = (TaxonNode)entity;
+                node.removeNullValueFromChildren();
+            }else if(PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
+                PolytomousKeyNode node = (PolytomousKeyNode)entity;
+                node.removeNullValueFromChildren();
+            }else if(FeatureTree.class.isAssignableFrom(entityClazz)){
+
+                FeatureTree tree = (FeatureTree)entity;
+                for (FeatureNode node:tree.getRootChildren()){
+                    node.removeNullValueFromChildren();
+                    if (node.getChildNodes() != null){
+                        for (FeatureNode childNode: node.getChildNodes()){
+                            removeNullFromCollections(childNode);
+                        }
+                    }
+
+                }
+            } else if (FeatureNode.class.isAssignableFrom(entityClazz)){
+                FeatureNode node = (FeatureNode)entity;
+                node.removeNullValueFromChildren();
+            }
+
+        }
 
     }
 
