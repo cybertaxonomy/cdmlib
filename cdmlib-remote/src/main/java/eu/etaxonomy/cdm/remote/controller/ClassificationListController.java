@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,17 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import io.swagger.annotations.Api;
 
 /**
  * @author n.hoffmann
  * @created Apr 8, 2010
- * @version 1.0
  */
 @Controller
 @Api("classification")
 @RequestMapping(value = {"/classification"})
 public class ClassificationListController extends IdentifiableListController<Classification,IClassificationService> {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger
             .getLogger(ClassificationListController.class);
 
@@ -42,9 +41,6 @@ public class ClassificationListController extends IdentifiableListController<Cla
     });
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IClassificationService service) {
