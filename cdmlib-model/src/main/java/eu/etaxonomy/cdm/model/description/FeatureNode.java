@@ -237,9 +237,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 */
 	@Override
     public List<FeatureNode> getChildNodes() {
-	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
-		return children;
+	    return children;
 	}
 
 	/**
@@ -301,9 +299,8 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see				#removeChild(int)
 	 */
 	public void removeChild(FeatureNode child){
-	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
-		int index = children.indexOf(child);
+
+	    int index = children.indexOf(child);
 		if (index >= 0){
 			removeChild(index);
 		}
@@ -321,10 +318,8 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see				#removeChild(FeatureNode)
 	 */
 	public void removeChild(int index){
-	    HHH_9751_Util.removeAllNull(children);
-    	updateSortIndex();
-		FeatureNode child = children.get(index);
-		if (child != null){
+	   FeatureNode child = children.get(index);
+	   if (child != null){
 			children.remove(index);
 			child.setParent(null);
 			child.setFeatureTree(null);
@@ -348,9 +343,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see					#removeChild(int)
 	 */
 	public FeatureNode getChildAt(int childIndex) {
-	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
-		return children.get(childIndex);
+	    return children.get(childIndex);
 	}
 
 	/**
@@ -373,10 +366,7 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	 * @see			#removeChild(int)
 	 */
 	public int getIndex(FeatureNode node) {
-	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
-
-		if (! children.contains(node)){
+	    if (! children.contains(node)){
 			return -1;
 		}else{
 			return children.indexOf(node);
@@ -620,6 +610,11 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setSortIndex(i);
         }
+	}
+
+	public void removeNullValueFromChildren(){
+	    HHH_9751_Util.removeAllNull(children);
+	    updateSortIndex();
 	}
 
 

@@ -197,10 +197,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Transient
     public Integer getSortIndex() {
-        TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
-        parent.removeNullValueFromChildren();
-
-		return sortIndex;
+        return sortIndex;
 	}
     /**
      * SortIndex shall be handled only internally, therefore not public.
@@ -492,7 +489,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected boolean removeChildNode(TaxonNode childNode){
         boolean result = true;
-        removeNullValueFromChildren();
+        //removeNullValueFromChildren();
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }

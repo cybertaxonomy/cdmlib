@@ -425,8 +425,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * <i>this</i> feature node.
 	 */
 	public List<PolytomousKeyNode> getChildren() {
-	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
+
 		return children;
 	}
 
@@ -466,9 +465,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-		HHH_9751_Util.removeAllNull(children);
-		updateSortIndex();
-
 		if(nodeNumber == null) {
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
@@ -496,9 +492,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * @see #removeChild(int)
 	 */
 	public void removeChild(PolytomousKeyNode child) {
-		HHH_9751_Util.removeAllNull(children);
-		updateSortIndex();
-		int index = children.indexOf(child);
+	    int index = children.indexOf(child);
 		if (index >= 0) {
 			removeChild(index);
 		}
@@ -893,6 +887,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setSortIndex(i);
         }
+    }
+
+    public void removeNullValueFromChildren(){
+        HHH_9751_Util.removeAllNull(children);
+        updateSortIndex();
     }
 
 
