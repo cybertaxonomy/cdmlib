@@ -137,6 +137,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         book_b = ReferenceFactory.newBook();
         book_b.setTitle("book_a");
 
+        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         engine.updatePriorities();
     }
 

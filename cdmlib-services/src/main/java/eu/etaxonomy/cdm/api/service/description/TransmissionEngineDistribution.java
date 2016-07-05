@@ -161,6 +161,8 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     private static final int BATCH_SIZE_BY_AREA = 1000;
     private static final int BATCH_SIZE_BY_RANK = 500;
 
+    private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
+
 
 
     /**
@@ -452,7 +454,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      */
     protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
-        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, BATCH_MIN_FREE_HEAP);
+        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
 
         TransactionStatus txStatus = startTransaction(false);
@@ -577,7 +579,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     */
     protected void accumulateByRank(List<Rank> rankInterval, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
-        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, BATCH_MIN_FREE_HEAP);
+        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
         batch.setMaxAllowedGcIncreases(10);
 
@@ -1070,6 +1072,20 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
                 }
             }
         }
+    }
+
+    /**
+     * @return the batchMinFreeHeap
+     */
+    public long getBatchMinFreeHeap() {
+        return batchMinFreeHeap;
+    }
+
+    /**
+     * @param batchMinFreeHeap the batchMinFreeHeap to set
+     */
+    public void setBatchMinFreeHeap(long batchMinFreeHeap) {
+        this.batchMinFreeHeap = batchMinFreeHeap;
     }
 
     public enum AggregationMode {
