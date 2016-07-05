@@ -637,8 +637,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
 
         //get rank sortindex for all parent taxa with sortindex <= minRank and sortIndex >= maxRank (if available)
-        int minRankOrderIndex = minRank.getOrderIndex();
-        int maxRankOrderIndex = maxRank.getOrderIndex();
+        Integer minRankOrderIndex = minRank == null ? null : minRank.getOrderIndex();
+        Integer maxRankOrderIndex = maxRank == null ? null : maxRank.getOrderIndex();
         Map<String, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
 
         //remove all treeindex with "exists child in above map(and child.sortindex > xxx)
