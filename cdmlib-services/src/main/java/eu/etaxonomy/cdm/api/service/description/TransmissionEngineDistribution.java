@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -942,15 +943,29 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
     private List<Distribution> distributionsFor(Taxon taxon) {
         List<Distribution> distributions = new ArrayList<Distribution>();
         for(TaxonDescription description: taxon.getDescriptions()) {
-            getSession().setReadOnly(description, true);
+            readOnlyIfInSession(description);
             for(DescriptionElementBase deb : description.getElements()) {
                 if(deb instanceof Distribution) {
-                    getSession().setReadOnly(deb, true);
+                    readOnlyIfInSession(deb);
                     distributions.add((Distribution)deb);
                 }
             }
         }
         return distributions;
+    }
+
+    /**
+     * This method avoids problems when running the TransmissionEngineDistribution test.
+     * For some unknown reason entities are not in the PersitenceContext even if they are
+     * loaded by a service method. Setting these entities to readonly would raise a
+     * TransientObjectException("Instance was not associated with this persistence context")
+     *
+     * @param entity
+     */
+    private void readOnlyIfInSession(CdmBase entity) {
+        if(getSession().contains(entity)) {
+            getSession().setReadOnly(entity, true);
+        }
     }
 
     /**
