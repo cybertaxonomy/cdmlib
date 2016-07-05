@@ -33,6 +33,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -154,7 +155,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
 //  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./BlankDataSet.xml")
-    public void test_ignore() {
+    public void test_ignore() throws JvmLimitsException {
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
@@ -196,7 +197,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_area() {
+    public void testArea_area() throws JvmLimitsException {
 
         Set<Distribution> distributions_LCA = new HashSet<>();
 
@@ -242,7 +243,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_rank_and_area_1() {
+    public void testArea_rank_and_area_1() throws JvmLimitsException {
 
         Set<Distribution> distributions_LCA = new HashSet<>();
         distributions_LCA.add(newDistribution(book_a, yug_mn, PresenceAbsenceTerm.CULTIVATED(), "1"));
@@ -314,6 +315,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      *
      * This test relies on {@link #testArea_rank_and_area_1()}
      * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
      */
     @Test
     @DataSets({
@@ -321,7 +323,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_rank_and_area_2() {
+    public void testArea_rank_and_area_2() throws JvmLimitsException {
 
         Set<Distribution> distributions_LCA = new HashSet<Distribution>();
         distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
@@ -361,6 +363,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      *
      * This test relies on {@link #testArea_rank_and_area_1()}
      * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
      */
     @Test
     @DataSets({
@@ -368,7 +371,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_rank_and_area_3() {
+    public void testArea_rank_and_area_3() throws JvmLimitsException {
 
         Set<Distribution> distributions_LCA = new HashSet<Distribution>();
         distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
@@ -417,6 +420,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      *
      * This test relies on {@link #testArea_rank_and_area_1()}
      * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
      */
     @Test
     @Ignore
@@ -425,7 +429,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_rank_and_area_4() {
+    public void testArea_rank_and_area_4() throws JvmLimitsException {
 
         Set<Distribution> distributions_LCA = new HashSet<>();
         distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));

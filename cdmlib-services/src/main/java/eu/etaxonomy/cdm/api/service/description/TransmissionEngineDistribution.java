@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,8 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.DynamicBatch;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
@@ -57,7 +60,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  *
@@ -90,6 +92,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 public class TransmissionEngineDistribution { //TODO extends IoBase?
+
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
@@ -143,10 +146,20 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
 
-    private final List<OrderHint> emptyOrderHints = new ArrayList<OrderHint>(0);
-
     int byRankTicks = 300;
     int byAreasTicks = 100;
+
+
+    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;
+    /**
+     * ratio of the initially free heap which should not be used
+     * during the batch processing. This amount of the heap is reserved
+     * for the flushing of the session and to the index
+     */
+    private static final double BATCH_FREE_HEAP_RATIO = 0.9;
+    private static final int BATCH_SIZE_BY_AREA = 1000;
+    private static final int BATCH_SIZE_BY_RANK = 500;
+
 
 
     /**
@@ -334,12 +347,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *            should be reported and that the operation cannot be cancelled.
      */
     public void accumulate(AggregationMode mode, List<NamedArea> superAreas, Rank lowerRank, Rank upperRank,
-            Classification classification, IProgressMonitor monitor) {
+            Classification classification, IProgressMonitor monitor) throws JvmLimitsException {
 
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-
 
         // only for debugging:
         //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
@@ -434,11 +446,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      * @param superAreas
      *      the areas to which the subordinate areas should be projected
      * @param classificationLookupDao
+     * @throws JvmLimitsException
      *
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
+    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
-        int batchSize = 1000;
+        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, BATCH_MIN_FREE_HEAP);
+        batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
 
         TransactionStatus txStatus = startTransaction(false);
 
@@ -452,7 +466,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         subMonitor.beginTask("Accumulating by area ",  classificationLookupDao.getTaxonIds().size());
         Iterator<Integer> taxonIdIterator = classificationLookupDao.getTaxonIds().iterator();
 
-        while (taxonIdIterator.hasNext()) {
+        while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
             if(txStatus == null) {
                 // transaction has been comitted at the end of this batch, start a new one
@@ -463,21 +477,19 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             List<NamedArea> superAreaList = (List)termService.find(superAreaUuids);
 
             // load taxa for this batch
-            List<TaxonBase> taxa = null;
-            List<Integer> taxonIds = new ArrayList<Integer>(batchSize);
-            while(taxonIdIterator.hasNext() && taxonIds.size() < batchSize ) {
-                taxonIds.add(taxonIdIterator.next());
-            }
-
+            List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
-
-            taxa = taxonService.loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+            List<TaxonBase> taxa = taxonService.loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
+            // start processing the new batch
+
             for(TaxonBase taxonBase : taxa) {
                 if(logger.isDebugEnabled()){
                     logger.debug("accumulateByArea() - taxon :" + taxonToString(taxonBase));
                 }
+
+                batch.incementCounter();
 
                 Taxon taxon = (Taxon)taxonBase;
                 TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
@@ -526,6 +538,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 descriptionService.saveOrUpdate(description);
                 taxonService.saveOrUpdate(taxon);
                 subMonitor.worked(1);
+                if(!batch.isWithinJvmLimits()) {
+                    break; // flushAndClear and start with new batch
+                }
 
             } // next taxon
 
@@ -557,10 +572,14 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     *  <li>the source reference of the accumulated distributions are also accumulated into the new distribution,
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
+ * @throws JvmLimitsException
     */
-    protected void accumulateByRank(List<Rank> rankInterval, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
+    protected void accumulateByRank(List<Rank> rankInterval, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
-        int batchSize = 500;
+        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, BATCH_MIN_FREE_HEAP);
+        batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
+        batch.setMaxAllowedGcIncreases(10);
+
         int ticksPerRank = 100;
 
         TransactionStatus txStatus = startTransaction(false);
@@ -597,7 +616,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
 
             Iterator<Integer> taxonIdIterator = taxonIdsPerRank.iterator();
-            while (taxonIdIterator.hasNext()) {
+            while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
                 if(txStatus == null) {
                     // transaction has been committed at the end of this batch, start a new one
@@ -605,10 +624,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
 
                 // load taxa for this batch
-                List<Integer> taxonIds = new ArrayList<Integer>(batchSize);
-                while(taxonIdIterator.hasNext() && taxonIds.size() < batchSize ) {
-                    taxonIds.add(taxonIdIterator.next());
-                }
+                List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 
                 taxa = taxonService.loadByIds(taxonIds, null);
 
@@ -617,6 +633,8 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 //                }
 
                 for(TaxonBase taxonBase : taxa) {
+
+                    batch.incementCounter();
 
                     Taxon taxon = (Taxon)taxonBase;
                     if (taxaProcessedIds.contains(taxon.getId())) {
@@ -640,8 +658,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     }
                     if(!childTaxonIds.isEmpty()) {
                         childTaxa = taxonService.loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+                        LinkedList<TaxonBase> childStack = new LinkedList<TaxonBase>(childTaxa);
+                        childTaxa = null; // allow to be garbage collected
 
-                        for (TaxonBase childTaxonBase : childTaxa){
+                        while(childStack.size() > 0){
+
+                            TaxonBase childTaxonBase = childStack.pop();
+                            getSession().setReadOnly(childTaxonBase, true);
 
                             Taxon childTaxon = (Taxon) childTaxonBase;
                             getSession().setReadOnly(childTaxon, true);
@@ -659,6 +682,16 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                                 StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
                                 accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources, null));
                              }
+
+                            // evict all initialized entities of the childTaxon
+                            // TODO consider using cascade="evict" in the model classes
+//                            for( TaxonDescription description : ((Taxon)childTaxonBase).getDescriptions()) {
+//                                for (DescriptionElementBase deb : description.getElements()) {
+//                                    getSession().evict(deb);
+//                                }
+//                                getSession().evict(description); // this causes in some cases the taxon object to be detached from the session
+//                            }
+                            getSession().evict(childTaxonBase); // no longer needed, save heap
                         }
 
                         if(accumulatedStatusMap.size() > 0) {
@@ -680,6 +713,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
                     }
                     taxonSubMonitor.worked(1); // one taxon worked
+                    if(!batch.isWithinJvmLimits()) {
+                        break; // flushAndClear and start with new batch
+                    }
 
                 } // next taxon ....
 
@@ -689,6 +725,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 // may grow too much and eats up all the heap
                 commitTransaction(txStatus);
                 txStatus = null;
+
+                // flushing the session and to the index (flushAndClear() ) can impose a
+                // massive heap consumption. therefore we explicitly do a check after the
+                // flush to detect these situations and to reduce the batch size.
+                if(batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
+                    batch.reduceSize(0.5);
+                }
 
                 if(ONLY_FISRT_BATCH) {
                     break;
@@ -756,10 +799,11 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
     /**
      *
      */
-    private void flushAndClear() {
-        logger.debug("flushing and clearing session ...");
+    private void flush() {
+        logger.debug("flushing session ...");
         getSession().flush();
         try {
+            logger.debug("flushing to indexes ...");
             Search.getFullTextSession(getSession()).flushToIndexes();
         } catch (HibernateException e) {
             /* IGNORE - Hibernate Search Event listeners not configured ... */
@@ -767,8 +811,16 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
                 throw e;
             }
         }
-        getSession().clear();
     }
+
+    /**
+    *
+    */
+   private void flushAndClear() {
+       flush();
+       logger.debug("clearing session ...");
+       getSession().clear();
+   }
 
 
     // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
@@ -835,7 +887,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             if (description.hasMarker(MarkerType.COMPUTED(), true)) {
-                logger.debug("reusing description for " + taxon.getTitleCache());
+                logger.debug("reusing computed description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;
                     Set<DescriptionElementBase> deleteCandidates = new HashSet<DescriptionElementBase>();
@@ -890,8 +942,10 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
     private List<Distribution> distributionsFor(Taxon taxon) {
         List<Distribution> distributions = new ArrayList<Distribution>();
         for(TaxonDescription description: taxon.getDescriptions()) {
+            getSession().setReadOnly(description, true);
             for(DescriptionElementBase deb : description.getElements()) {
                 if(deb instanceof Distribution) {
+                    getSession().setReadOnly(deb, true);
                     distributions.add((Distribution)deb);
                 }
             }
