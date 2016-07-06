@@ -9,11 +9,14 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import io.swagger.annotations.Api;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +38,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
-import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -80,16 +82,18 @@ public class ClassificationController extends BaseController<Classification,ICla
      * @param response
      * @return
      * @throws IOException
+     *
      */
     @RequestMapping(
             value = {"childNodes"},
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        return getChildNodesAtRank(classificationUuid, null, response);
+        return getChildNodesAtRank(classificationUuid, null, request, response);
     }
 
     @RequestMapping(
@@ -98,25 +102,22 @@ public class ClassificationController extends BaseController<Classification,ICla
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        logger.info("getChildNodesAtRank()");
-        Classification tree = null;
-        Rank rank = null;
-        if(classificationUuid != null){ // FIXME this never should happen!!!!
-            // get view and rank
-            tree = service.find(classificationUuid);
+        logger.info("getChildNodesAtRank() - " + request.getRequestURI());
 
-            if(tree == null) {
-                response.sendError(404 , "Classification not found using " + classificationUuid );
-                return null;
-            }
+        Classification classification = service.find(classificationUuid);
+
+        if(classification == null) {
+            response.sendError(404 , "Classification not found using " + classificationUuid );
+            return null;
         }
-        rank = findRank(rankUuid);
+        Rank rank = findRank(rankUuid);
 
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, rank, null, null, NODE_INIT_STRATEGY());
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return rootNodes;
@@ -149,21 +150,18 @@ public class ClassificationController extends BaseController<Classification,ICla
             @RequestParam(value = "taxonUuids", required = true) UuidList taxonUuids,
             @RequestParam(value = "minRankUuid", required = false) UUID minRankUuid,
             @RequestParam(value = "maxRankUuid", required = false) UUID maxRankUuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        logger.info("getGroupedTaxaByHigherTaxon()");
-        Classification classification = null;
+        logger.info("getGroupedTaxaByHigherTaxon() - " + request.getRequestURI());
 
-        if(classificationUuid != null){ // FIXME this never should happen!!!!
-            // get view and rank
-            classification = service.find(classificationUuid);
-
-            if(classification == null) {
-                response.sendError(404 , "Classification not found using " + classificationUuid );
-                return null;
-            }
+        Classification classification = service.find(classificationUuid);
+        if(classification == null) {
+            response.sendError(404 , "Classification not found using " + classificationUuid );
+            return null;
         }
+
 
         Rank minRank = findRank(minRankUuid);
         Rank maxRank = findRank(maxRankUuid);
