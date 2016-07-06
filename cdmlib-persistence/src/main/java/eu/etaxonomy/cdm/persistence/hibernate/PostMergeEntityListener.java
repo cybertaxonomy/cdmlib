@@ -86,32 +86,7 @@ public class PostMergeEntityListener implements MergeEventListener {
             if (TaxonNode.class.isAssignableFrom(entityClazz)){
                 TaxonNode node = (TaxonNode)entity;
                 node.removeNullValueFromChildren();
-            }/*else if(PolytomousKey.class.isAssignableFrom(entityClazz)){
-                PolytomousKey key = (PolytomousKey)entity;
-                PolytomousKeyNode rootNode = key.getRoot();
-                if (rootNode != null){
-                    if (rootNode.getChildren() != null && Hibernate.isInitialized(rootNode.getChildren())){
-                        if (Hibernate.isInitialized(rootNode.getChildren())){
-                            rootNode.removeNullValueFromChildren();
-                            for (PolytomousKeyNode node:rootNode.getChildren()){
-                                node.removeNullValueFromChildren();
-                                if (node.getChildren() != null){
-                                    if (Hibernate.isInitialized(node.getChildren())){
-                                        for (PolytomousKeyNode childNode: node.getChildren()){
-                                            if (Hibernate.isInitialized(childNode.getChildren())){
-                                                removeNullFromCollections(childNode);
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-
-            }*/else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
+            } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
                 PolytomousKeyNode node = (PolytomousKeyNode) entity;
                 if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
                     node.removeNullValueFromChildren();
