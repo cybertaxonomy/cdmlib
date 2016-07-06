@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 
 /**
@@ -42,6 +43,21 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return List<TaxonNode>
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
+
+	/**
+     *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
+     *
+     * @param taxonNode
+     * @param recursive
+     * @param sortMode
+     * @param pageSize
+     * @param pageIndex
+     *
+     * @return List<TaxonNodeDto>
+     */
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, NodeSortMode sortMode, Integer pageSize, Integer pageIndex);
+
+    public TaxonNodeDto parentDto(UUID taxonNodeUuid);
 
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.

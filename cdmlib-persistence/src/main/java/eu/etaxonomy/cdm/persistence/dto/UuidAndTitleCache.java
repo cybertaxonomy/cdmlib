@@ -83,4 +83,13 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 		return this.isOrphaned;
 	}
 
+//************************** toString **********************************/
+
+    @Override
+    public String toString() {
+        return "UuidAndTitleCache [type=" + type + ", uuid=" + uuid + ", id=" + id + ", titleCache=" + titleCache
+                + ", isOrphaned=" + isOrphaned + "]";
+    }
+
+
 }

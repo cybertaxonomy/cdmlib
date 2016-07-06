@@ -144,7 +144,7 @@ public interface ICdmGenericDao {
 	/**
      * A generic method to retrieve any CdmBase object by its id and class.<BR>
      * Return the persistent instance of the given entity class with the given identifier,
-     * or null if there is no such persistent instance. (If the instance is already
+     * or <code>null</code> if there is no such persistent instance. (If the instance is already
      * associated with the session, return that instance. This method never returns
      * an uninitialized instance.)
      * @see Session#get(Class, java.io.Serializable)

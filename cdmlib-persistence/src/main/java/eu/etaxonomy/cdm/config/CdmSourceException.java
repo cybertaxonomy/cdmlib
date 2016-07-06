@@ -10,23 +10,34 @@
 package eu.etaxonomy.cdm.config;
 
 /**
- * Exception class which wraps around exceptions related to 
- * Cdm Source functionality 
- * 
+ * Exception class which wraps around exceptions related to
+ * Cdm Source functionality
+ *
  * @author cmathew
  *
  */
 public class CdmSourceException extends Exception {
-	
+
 	private static final long serialVersionUID = -4665522033493039582L;
+
+	private final String sourceName;
 
 	/**
 	 * Constructor which simply uses the error message
-	 * 
+	 *
 	 * @param message , representing the error
 	 */
 	public CdmSourceException(String message) {
-		super(message);
+	    this(null, message);
 	}
+
+	public CdmSourceException(String sourceName, String message) {
+		super(message);
+		this.sourceName = sourceName;
+	}
+
+    public String getSourceName() {
+        return sourceName;
+    }
 
 }

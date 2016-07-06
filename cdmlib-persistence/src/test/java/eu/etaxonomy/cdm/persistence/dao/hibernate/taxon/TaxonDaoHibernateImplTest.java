@@ -699,7 +699,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingUninomial() {
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*","*",null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return two Taxa",2,result.size());
@@ -709,7 +709,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingSpeciesBinomial() {
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Smerinthus", null, "kindermannii", null,null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii", null,"*",null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -719,7 +719,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingTrinomial() {
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis","*",null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -729,7 +729,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testNegativeMatch() {
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertTrue("findTaxaByName should return an empty List",result.isEmpty());
@@ -1056,14 +1056,28 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
         Classification classification = classificationDao.findByUuid(classificationUuid);
-        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
+        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null, null);
         assertNotNull(result);
         assertEquals(5, result.size());
+
+        //test exclude
         UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         List<UUID> excludeUUids = new ArrayList<UUID>();
         excludeUUids.add(excludeUUID);
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids);
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeUUids, null, null);
         assertEquals(4, result.size());
+
+        //test limit
+        int limit = 2;
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, limit, null);
+        assertEquals(2, result.size());
+
+        //test pattern
+        String pattern = "*Rothschi*";
+        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, 2, pattern);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
 
     }
 

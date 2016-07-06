@@ -70,11 +70,7 @@ public class EditGeoServiceUtilities {
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
-    private static PresenceAbsenceTerm defaultStatus = PresenceAbsenceTerm.PRESENT();
-
     private static IDefinedTermDao termDao;
-
-
 
     /**
      * @param termDao
@@ -176,15 +172,6 @@ public class EditGeoServiceUtilities {
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        /*
-         * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
-         * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
-         *
-         * a.kohlbecker 2014-07-02 :This bug in the map service has been
-         * fixed now so reusing styles is now possible setting this flag to false.
-         */
-        boolean doNotReuseStyles = false;
-
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendSortList = new ArrayList<String>();
@@ -229,11 +216,7 @@ public class EditGeoServiceUtilities {
             if (statusColor != null){
                 fillColorRgb = Integer.toHexString(statusColor.getRGB()).substring(2);
             }else{
-                if(status != null){
-                    fillColorRgb = status.getDefaultColor(); //TODO
-                } else {
-                    fillColorRgb = defaultStatus.getDefaultColor();
-                }
+                fillColorRgb = status.getDefaultColor(); //TODO
             }
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
@@ -264,26 +247,7 @@ public class EditGeoServiceUtilities {
             Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
             for (int style: styleMap.keySet()){
                 // stylesPerLayer
-                if(doNotReuseStyles) {
-                    if(!styleUsage.containsKey(style)){
-                        styleUsage.put(style, 0);
-                    } else {
-                        // increment by 1
-                        styleUsage.put(style, styleUsage.get(style) + 1);
-                    }
-                    Integer styleIncrement = styleUsage.get(style);
-                    if(styleIncrement > 0){
-                        // style code has been used before!
-                        styleChar = getStyleAbbrev(style + styleIncrement + styleCounter);
-                        //for debugging sometimes failing test  #3831
-                        logger.warn("style: " + style + ", styleIncrement: " +  styleIncrement + ", styleCounter: " + styleCounter);
-                        areaStyles.put(style + styleIncrement + styleCounter, areaStyles.get(style));
-                    } else {
-                        styleChar = getStyleAbbrev(style);
-                    }
-                } else {
-                    styleChar = getStyleAbbrev(style);
-                }
+                styleChar = getStyleAbbrev(style);
                 Set<Distribution> distributionSet = styleMap.get(style);
                 areasPerStyle = new ArrayList<String>();
                 for (Distribution distribution: distributionSet){
@@ -362,7 +326,7 @@ public class EditGeoServiceUtilities {
             //collect status
             PresenceAbsenceTerm status = distribution.getStatus();
             if(status == null){
-                status = defaultStatus;
+                continue;
             }
             status = HibernateProxyHelper.deproxy(status, PresenceAbsenceTerm.class);
             if (! statusList.contains(status)){
@@ -569,16 +533,15 @@ public class EditGeoServiceUtilities {
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTerm> statusList) {
         PresenceAbsenceTerm status = distribution.getStatus();
-        if (status == null) {
-            status = defaultStatus;
+        if (status != null) {
+            int style = statusList.indexOf(status);
+            Set<Distribution> distributionSet = styleMap.get(style);
+            if (distributionSet == null) {
+                distributionSet = new HashSet<Distribution>();
+                styleMap.put(style, distributionSet);
+            }
+            distributionSet.add(distribution);
         }
-        int style = statusList.indexOf(status);
-        Set<Distribution> distributionSet = styleMap.get(style);
-        if (distributionSet == null) {
-            distributionSet = new HashSet<Distribution>();
-            styleMap.put(style, distributionSet);
-        }
-        distributionSet.add(distribution);
     }
 
     /**

@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 //@Ignore // we ignore this test at the moment because it does not run with maven
 //org.hibernate.PropertyAccessException: Null value was assigned to a property of primitive type setter of eu.etaxonomy.cdm.model.common.Language.protectedTitleCache
-//...at eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl.getLanguageByIso(DefinedTermDaoImpl.java:286) 
+//...at eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl.getLanguageByIso(DefinedTermDaoImpl.java:286)
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
@@ -61,24 +62,18 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="../../BlankDataSet.xml")
+    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
 	public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
         this.setComplete();
         logger.warn("Name service count: " + (nameService.count(null)));
-        
+
         this.endTransaction();
         assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

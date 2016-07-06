@@ -109,12 +109,12 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 		try {
 			return testConnection();
 		} catch (ClassNotFoundException e) {
-			throw new CdmSourceException(e.getMessage());			
+			throw new CdmSourceException(e.getMessage());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());	
+			throw new CdmSourceException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public String getConnectionMessage() {
 		String message = "";
@@ -129,7 +129,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
 		return message;
 	}
-	
+
     @Override
     public Object getSingleValue(String query) throws SQLException{
         String queryString = query == null? "(null)": query;
@@ -151,19 +151,19 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     }
 
 	@Override
-	public  String getDbSchemaVersion() throws CdmSourceException  {		
+	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
 			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {
-			throw new CdmSourceException(e.getMessage());	
+			throw new CdmSourceException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public boolean isDbEmpty() throws CdmSourceException {
 		// Any CDM DB should have a schema version
-		String dbSchemaVersion = (String) getDbSchemaVersion();
-		
+		String dbSchemaVersion = getDbSchemaVersion();
+
 		return (dbSchemaVersion == null || dbSchemaVersion.equals(""));
 	}
     /**
@@ -276,22 +276,22 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
             logger.error("Error closing the connection");
         }
     }
-    
-    
+
+
     @Override
     public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
 		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
-		
+
 		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()) {
 			String value = null;
 			try {
 				value = (String)getSingleValue(mdpn.getSqlQuery());
 			} catch (SQLException e) {
-				throw new CdmSourceException(e.getMessage());
-			}			
+				throw new CdmSourceException(this.toString(), e.getMessage());
+			}
 			if(value != null) {
 				cdmMetaDataMap.put(mdpn, value);
-			}		
+			}
 		}
 		return cdmMetaDataMap;
     }
@@ -360,10 +360,11 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     // java 1.6
     //---------------------------------------------------------------------
 
+    @Override
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     }
 
- 
+
 }

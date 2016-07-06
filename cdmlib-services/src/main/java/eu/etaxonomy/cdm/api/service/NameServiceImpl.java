@@ -808,8 +808,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
-        return dao.getUuidAndTitleCacheOfNames();
+    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheOfNames(limit, pattern);
     }
 
     @Override

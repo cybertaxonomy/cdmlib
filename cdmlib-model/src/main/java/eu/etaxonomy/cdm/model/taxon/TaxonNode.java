@@ -42,6 +42,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -196,10 +197,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Transient
     public Integer getSortIndex() {
-        TaxonNode parent = HibernateProxyHelper.deproxy(this.parent, TaxonNode.class);
-        parent.removeNullValueFromChildren();
-
-		return sortIndex;
+        return sortIndex;
 	}
     /**
      * SortIndex shall be handled only internally, therefore not public.
@@ -491,7 +489,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected boolean removeChildNode(TaxonNode childNode){
         boolean result = true;
-        removeNullValueFromChildren();
+        //removeNullValueFromChildren();
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }
@@ -625,9 +623,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         List<TaxonNode> parentChildren = parent.getChildNodes();
        //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
-        while (parentChildren.contains(null)){
-            parentChildren.remove(null);
-        }
+        HHH_9751_Util.removeAllNull(parentChildren);
         parent.updateSortIndex(0);
         if (index > parent.getChildNodes().size()){
             index = parent.getChildNodes().size();
@@ -738,18 +734,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
        // nodeSet.add(this);
         TaxonBase taxon = HibernateProxyHelper.deproxy(this.getTaxon(), Taxon.class);
-        try{
-            TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
-            if (name.getRank().isHigher(rank)){
-            	return null;
-            }
-            if (name.getRank().equals(rank)){
-            	return this;
-            }
-        }catch (NullPointerException e){
-            System.err.println(taxon.getTitleCache() +  " " + e.getMessage());
+        if (taxon == null){
+            return null;
         }
-        if(this.getParent() != null ){
+        TaxonNameBase name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonNameBase.class);
+        if (name.getRank().isHigher(rank)){
+        	return null;
+        }
+        if (name.getRank().equals(rank)){
+        	return this;
+        }
+
+        if(this.getParent() != null){
         	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
             return parent.getAncestorOfRank(rank);
         }
@@ -864,11 +860,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     public void removeNullValueFromChildren(){
         try {
-            if (childNodes.contains(null)){
-                while(childNodes.contains(null)){
-                    childNodes.remove(null);
-                }
-            }
+            HHH_9751_Util.removeAllNull(childNodes);
             this.updateSortIndex(0);
         } catch (LazyInitializationException e) {
             logger.info("Cannot clean up uninitialized children without a session, skipping.");

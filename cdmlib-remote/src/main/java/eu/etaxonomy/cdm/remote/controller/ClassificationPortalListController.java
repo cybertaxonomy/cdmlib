@@ -193,6 +193,22 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     }
 
+    @RequestMapping(
+            value = {"{treeUuid}/siblingsOf/{taxonUuid}"},
+            method = RequestMethod.GET)
+    public List<TaxonNode> getSiblingsOfTaxon(
+            @PathVariable("treeUuid") UUID treeUuid,
+            @PathVariable("taxonUuid") UUID taxonUuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("getSiblingsOfTaxon() " + request.getRequestURI());
+
+        //FIXME return pager
+        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, null, null, NODE_INIT_STRATEGY);
+        return childs;
+
+    }
+
     /**
      * Provides path of {@link TaxonNode}s from the base node to the node of the specified taxon.
      * <p>

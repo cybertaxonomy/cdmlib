@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,18 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * @author a.kohlbecker
@@ -47,9 +52,6 @@ public class ClassificationController extends BaseController<Classification,ICla
 
     private ITermService termService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IClassificationService service) {
@@ -67,6 +69,7 @@ public class ClassificationController extends BaseController<Classification,ICla
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
     private List<String> NODE_INIT_STRATEGY(){
@@ -79,16 +82,18 @@ public class ClassificationController extends BaseController<Classification,ICla
      * @param response
      * @return
      * @throws IOException
+     *
      */
     @RequestMapping(
             value = {"childNodes"},
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        return getChildNodesAtRank(classificationUuid, null, response);
+        return getChildNodesAtRank(classificationUuid, null, request, response);
     }
 
     @RequestMapping(
@@ -97,38 +102,74 @@ public class ClassificationController extends BaseController<Classification,ICla
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        logger.info("getChildNodesAtRank()");
-        Classification tree = null;
-        Rank rank = null;
-        if(classificationUuid != null){ // FIXME this never should happen!!!!
-            // get view and rank
-            tree = service.find(classificationUuid);
+        logger.info("getChildNodesAtRank() - " + request.getRequestURI());
 
-            if(tree == null) {
-                response.sendError(404 , "Classification not found using " + classificationUuid );
-                return null;
-            }
+        Classification classification = service.find(classificationUuid);
+
+        if(classification == null) {
+            response.sendError(404 , "Classification not found using " + classificationUuid );
+            return null;
         }
-        rank = findRank(rankUuid);
+        Rank rank = findRank(rankUuid);
 
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, rank, null, null, NODE_INIT_STRATEGY());
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return rootNodes;
     }
 
+
+    /**
+     * @param classificationUuid
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"groupedTaxa"},
+            method = RequestMethod.GET)
+    public List<GroupedTaxonDTO> getGroupedTaxaByHigherTaxon(
+            @PathVariable("uuid") UUID classificationUuid,
+            @RequestParam(value = "taxonUuids", required = true) UuidList taxonUuids,
+            @RequestParam(value = "minRankUuid", required = false) UUID minRankUuid,
+            @RequestParam(value = "maxRankUuid", required = false) UUID maxRankUuid,
+            HttpServletRequest request,
+            HttpServletResponse response
+            ) throws IOException {
+
+        logger.info("getGroupedTaxaByHigherTaxon() - " + request.getRequestURI());
+
+        Classification classification = service.find(classificationUuid);
+        if(classification == null) {
+            response.sendError(404 , "Classification not found using " + classificationUuid );
+            return null;
+        }
+
+
+        Rank minRank = findRank(minRankUuid);
+        Rank maxRank = findRank(maxRankUuid);
+
+//        long start = System.currentTimeMillis();
+        List<GroupedTaxonDTO> result = service.groupTaxaByHigherTaxon(taxonUuids, classificationUuid, minRank, maxRank);
+//        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
+
+        return result;
+    }
+
+
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;
         if(rankUuid != null){
-            DefinedTermBase definedTermBase =  termService.find(rankUuid);
+            DefinedTermBase<?> definedTermBase =  termService.find(rankUuid);
             if(definedTermBase instanceof Rank){
                 rank = (Rank) definedTermBase;
             } else {
-               new IllegalArgumentException("DefinedTermBase is not a Rank");
+               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
             }
         }
         return rank;

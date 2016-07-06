@@ -12,17 +12,19 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.kohlbecker
  * @date 29.07.2010
  *
+ * @deprecated use the eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto instead for all classification web service endpoints
  */
+@Deprecated
 public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
 
 

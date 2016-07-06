@@ -296,10 +296,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 		//don't parse if name can't be separated
 		nameToBeFilled.addParsingProblem(ParserProblem.NameReferenceSeparation);
-		nameToBeFilled.setTitleCache(fullReferenceString,true);
-		nameToBeFilled.setFullTitleCache(fullReferenceString,true);
+		nameToBeFilled.setTitleCache(fullReferenceString, true);
+		nameToBeFilled.setFullTitleCache(fullReferenceString, true);
 		// FIXME Quick fix, otherwise search would not deliver results for unparsable names
-		nameToBeFilled.setNameCache(fullReferenceString,true);
+		nameToBeFilled.setNameCache(fullReferenceString, true);
 		// END
 		nameToBeFilled.setProblemStarts(start);
 		nameToBeFilled.setProblemEnds(fullReferenceString.length());
@@ -484,6 +484,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		//parse title and author
 		ref = parseReferenceTitle(strReference, yearPart, isInReference);
 		if (ref.hasProblem()){
+		    //we need to protect both caches otherwise the titleCache is incorrectly build from atomized parts
 			ref.setTitleCache( (isInReference ? "in ":"") +  originalStrReference, true);
 			ref.setAbbrevTitleCache( (isInReference ? "in ":"") +  originalStrReference, true);
 		}
@@ -497,12 +498,12 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param strReference
 	 * @return
 	 */
-	private INomenclaturalReference makeDetailYearUnparsable(NonViralName<?> nameToBeFilled, String strReference) {
-		INomenclaturalReference ref;
-		//ref = Generic.NewInstance();
+	private Reference makeDetailYearUnparsable(NonViralName<?> nameToBeFilled, String strReference) {
+		Reference ref;
 
 		ref = ReferenceFactory.newGeneric();
-		ref.setTitleCache(strReference,true);
+		ref.setTitleCache(strReference, true);
+        ref.setAbbrevTitleCache(strReference, true);
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
 		nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
@@ -535,7 +536,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			if (bookMatcher.matches() ){
 				result = parseBook(strReference);
 			}else{
-				logger.warn("Non-InRef must be book but does not match book");
+				logger.warn("Non-InRef must be book but does not match book: "+ strReference);
 				result = ReferenceFactory.newBook();
 				makeUnparsableRefTitle(result, strReference);
 			}
@@ -563,8 +564,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	private void makeUnparsableRefTitle(INomenclaturalReference result, String reference){
-		result.setTitleCache(reference,true);
-		result.setAbbrevTitleCache(reference,true);
+	    //need to set both to protected otherwise titleCache is created from atomized parts
+	    result.setTitleCache(reference, true);
+		result.setAbbrevTitleCache(reference, true);
 		result.addParsingProblem(ParserProblem.UnparsableReferenceTitle);
 	}
 
@@ -661,7 +663,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		IBook result = ReferenceFactory.newBook();
 		reference = makeEdition(result, reference);
 		reference = makeVolume(result, reference);
-		result.setTitle(reference);
+		result.setAbbrevTitle(reference);
 		return result;
 	}
 
@@ -672,7 +674,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);
 		Reference inJournal = ReferenceFactory.newJournal();
-		inJournal.setTitle(reference);
+		inJournal.setAbbrevTitle(reference);
 		result.setInReference(inJournal);
 		return result;
 	}
@@ -695,7 +697,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}else{
 			logger.warn("Unexpected non matching book section author part");
 			//TODO do we want to record a 'problem' here?
-			result.setTitleCache(reference,true);
+			result.setTitleCache(reference, true);
+			result.setAbbrevTitleCache(reference, true);
 		}
 
 		return result;
@@ -818,13 +821,21 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
-			 //species
+		     //species
 			 else if (speciesPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.SPECIES());
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length());
 			}
+		    //species with infra generic epithet
+			 else if (speciesWithInfraGenPattern.matcher(fullNameString).matches()){
+			     nameToBeFilled.setRank(Rank.SPECIES());
+	             nameToBeFilled.setGenusOrUninomial(epi[0]);
+                 nameToBeFilled.setInfraGenericEpithet(epi[2]);
+	             nameToBeFilled.setSpecificEpithet(epi[4]);
+	             authorString = fullNameString.substring(epi[0].length() + 2 + epi[2].length() + 2 + epi[4].length());
+			 }
 			 //autonym
 			 else if (autonymPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[epi.length - 2]));
@@ -887,7 +898,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 					authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
 				}else{
 					nameToBeFilled.addParsingProblem(ParserProblem.OldInfraSpeciesNotSupported);
-					nameToBeFilled.setTitleCache(fullNameString,true);
+					nameToBeFilled.setTitleCache(fullNameString, true);
 					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 					nameToBeFilled.setNameCache(fullNameString,true);
 					// END
@@ -948,7 +959,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    //none
 			else{
 				nameToBeFilled.addParsingProblem(ParserProblem.UnparsableNamePart);
-				nameToBeFilled.setTitleCache(fullNameString,true);
+				nameToBeFilled.setTitleCache(fullNameString, true);
 				// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 				nameToBeFilled.setNameCache(fullNameString, true);
 				// END
@@ -972,7 +983,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    return;
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);
-			nameToBeFilled.setTitleCache(fullNameString,true);
+			nameToBeFilled.setTitleCache(fullNameString, true);
 			// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 			nameToBeFilled.setNameCache(fullNameString,true);
 			// END

@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +44,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -83,9 +82,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IDescriptionService service) {
@@ -101,7 +97,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
         ModelAndView mv = new ModelAndView();
 
-        DescriptionBase description = service.load(uuid);
+        DescriptionBase<?> description = service.load(uuid);
 
         if(!(description instanceof TaxonDescription)){
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
@@ -141,7 +137,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             HttpServletResponse response) throws IOException {
         logger.info("doGenerateNaturalLanguageDescription() - " + request.getRequestURI());
 
-        DescriptionBase description = service.load(uuid);
+        DescriptionBase<?> description = service.load(uuid);
 
         ModelAndView mv = new ModelAndView();
 

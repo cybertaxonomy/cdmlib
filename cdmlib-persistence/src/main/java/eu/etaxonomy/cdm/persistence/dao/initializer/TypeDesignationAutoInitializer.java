@@ -23,4 +23,12 @@ public class TypeDesignationAutoInitializer extends AutoPropertyInitializer<Type
        beanInitializer.initializeInstance(bean.getTypeStatus());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception {
+        return String.format(" LEFT JOIN FETCH %s.typeStatus ", beanAlias);
+    }
+
 }

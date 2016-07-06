@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,7 +104,7 @@ public class Datasource {
 //		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
 //      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
 		username = "sa";
-    	dataSource = CdmDataSource.NewH2EmbeddedInstance("upgradetest", username, "", path,   NomenclaturalCode.ICNAFP);
+    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path,   NomenclaturalCode.ICNAFP);
 
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 
@@ -128,23 +127,13 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
-		List<String> propPath = Arrays.asList(new String[]{"name"});
-//		Classification classification = appCtr.getClassificationService().list(null, null, null, null, propPath).get(0);
+		Classification classification = appCtr.getClassificationService().list(null, null, null, null, null).get(0);
 //		logger.warn(classification.getMicroReference());
 //        logger.warn(classification.getName());
 
 //		TransactionStatus tx = appCtr.startTransaction();
-//		Taxon crepisZac = (Taxon)appCtr.getTaxonService().find(UUID.fromString("4ab40ac3-2e99-4f87-9871-3e6c3bc0ef26"));
-//		List<Synonym> list = crepisZac.getHomotypicSynonymsByHomotypicGroup();
-//        list = crepisZac.getHomotypicSynonymsByHomotypicRelationship();
-//        System.out.println("DONE");
-//        appCtr.commitTransaction(tx);
+		appCtr.getCommonService().getReferencingObjects(classification);
 
-//		logger.warn("Start adding persons");
-//		for (int i= 1; i<100; i++){
-//		    addPerson(appCtr);
-//		    logger.warn("Added "+ i);
-//		}
 //		int n = appCtr.getAgentService().count(null);
 //		logger.warn("End adding " + n + " persons");
 

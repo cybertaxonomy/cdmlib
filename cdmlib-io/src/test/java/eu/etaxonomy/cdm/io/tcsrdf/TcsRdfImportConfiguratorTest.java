@@ -65,20 +65,15 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-	@DataSet(value="../BlankDataSet.xml")
+	@DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 5", 5, nameService.count(null));
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
 
-    }
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

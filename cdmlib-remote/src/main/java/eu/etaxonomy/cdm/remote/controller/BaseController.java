@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
-import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
 
 /**
  * based on org.cateproject.controller.common
@@ -285,7 +284,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         CDM_BASE cdmBaseObject = service.load(uuid, pathProperties);
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
-            throw new NoRecordsMatchException("No instance found for UUID " + uuid.toString());
         }
         return cdmBaseObject;
         }

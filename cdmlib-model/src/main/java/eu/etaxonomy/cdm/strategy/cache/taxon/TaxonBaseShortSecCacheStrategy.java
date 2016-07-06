@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -53,7 +54,9 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		}else{
 		    title = "???";
 		}
-		title += " sec. ";  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
+        boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+        String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
+		title += secSeparator;  //TODO check if separator is required before, e.g. for nom. status. see TaxonBaseDefaultCacheStrategy
 		title += getSecundumPart(taxonBase);
 		if (taxonBase.isDoubtful()){
 			title = "?" + title;
@@ -181,7 +184,9 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             }
             if(! secTags.isEmpty()){
                 //sec.
-                tags.add(new TaggedText(TagEnum.separator, "sec."));
+                boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+                String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
+                tags.add(new TaggedText(TagEnum.separator, secSeparator));
                 tags.addAll(secTags);
             }
         }

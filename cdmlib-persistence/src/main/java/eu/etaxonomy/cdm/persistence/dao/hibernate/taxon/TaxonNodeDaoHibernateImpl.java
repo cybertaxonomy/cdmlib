@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author a.mueller
@@ -99,9 +102,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
 
 	}
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao#countTaxonOfAcceptedTaxaByClassification(eu.etaxonomy.cdm.model.taxon.Classification)
-     */
+
     @Override
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification){
         int classificationId = classification.getId();
@@ -283,5 +284,65 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             query.setParameter("relTypeUuid", relTypeUuid);
         }
     }
+
+    @Override
+    public Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndexes,
+            Integer minRankOrderIndex,
+            Integer maxRankOrderIndex) {
+
+        Map<String, Integer> result = new HashMap<>();
+        if (treeIndexes == null || treeIndexes.isEmpty()){
+            return result;
+        }
+
+        String hql = " SELECT tn.treeIndex, r.orderIndex "
+                + " FROM TaxonNode tn JOIN tn.taxon t JOIN t.name n JOIN n.rank r "
+                + " WHERE tn.treeIndex IN (:treeIndexes) ";
+        if (minRankOrderIndex != null){
+            hql += " AND r.orderIndex <= :minOrderIndex";
+        }
+        if (maxRankOrderIndex != null){
+            hql += " AND r.orderIndex >= :maxOrderIndex";
+        }
+
+        Query query =  getSession().createQuery(hql);
+        query.setParameterList("treeIndexes", treeIndexes);
+        if (minRankOrderIndex != null){
+            query.setParameter("minOrderIndex", minRankOrderIndex);
+        }
+        if (maxRankOrderIndex != null){
+            query.setParameter("maxOrderIndex", maxRankOrderIndex);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        for (Object[] o : list){
+            result.put((String)o[0], (Integer)o[1]);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> treeIndexes) {
+        Map<String, UuidAndTitleCache<?>> result = new HashMap<>();
+        if (treeIndexes == null || treeIndexes.isEmpty()){
+            return result;
+        }
+
+        String hql = " SELECT tn.treeIndex, t.uuid, tnb.titleCache "
+                + " FROM TaxonNode tn JOIN tn.taxon t Join t.name tnb "
+                + " WHERE tn.treeIndex IN (:treeIndexes) ";
+        Query query =  getSession().createQuery(hql);
+        query.setParameterList("treeIndexes", treeIndexes);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        for (Object[] o : list){
+            result.put((String)o[0], new UuidAndTitleCache<>((UUID)o[1], null, (String)o[2]));
+        }
+        return result;
+    }
+
+
 
 }

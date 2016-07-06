@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -44,15 +45,14 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author n.hoffmann
@@ -84,26 +84,61 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
             List<String> propertyPaths, boolean recursive, NodeSortMode sortMode) {
-        taxonNode = dao.load(taxonNode.getUuid());
+
+        getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
         if (recursive == true){
         	childNodes  = dao.listChildrenOf(taxonNode, null, null, null, recursive);
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
+
+        HHH_9751_Util.removeAllNull(childNodes);
+
         if (sortMode != null){
-            Comparator<TaxonNode> comparator = null;
-            if (sortMode.equals(NodeSortMode.NaturalOrder)){
-                comparator = new TaxonNaturalComparator();
-            } else if (sortMode.equals(NodeSortMode.AlphabeticalOrder)){
-            	comparator = new TaxonNodeByNameComparator();
-            } else if (sortMode.equals(NodeSortMode.RankAndAlphabeticalOrder)){
-            	comparator = new TaxonNodeByRankAndNameComparator();
-            }
+            Comparator<TaxonNode> comparator = sortMode.newComparator();
         	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, NodeSortMode sortMode,
+            Integer pageSize, Integer pageIndex) {
+
+
+        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(dao.load(taxonNodeUuid), null, recursive, sortMode);
+
+        if (sortMode != null){
+            Comparator<TaxonNode> comparator = sortMode.newComparator();
+            Collections.sort(childNodes, comparator);
+        }
+
+        List<TaxonNodeDto> dtos = new ArrayList<>(pageSize);
+        int start = PagerUtils.startFor(pageSize, pageIndex);
+        int limit = PagerUtils.limitFor(pageSize);
+        Long totalCount = Long.valueOf(childNodes.size());
+        if(PagerUtils.hasResultsInRange(totalCount, pageIndex, pageSize)) {
+            for(int i = start; i < start + limit; i++) {
+                dtos.add(new TaxonNodeDto(childNodes.get(i)));
+            }
+        }
+
+
+        return new DefaultPagerImpl<TaxonNodeDto>(pageIndex, totalCount, pageSize , dtos);
+    }
+
+    @Override
+    public TaxonNodeDto parentDto(UUID taxonNodeUuid) {
+        TaxonNode taxonNode = dao.load(taxonNodeUuid);
+        if(taxonNode.getParent() != null) {
+            return new TaxonNodeDto(taxonNode.getParent());
+        }
+        return null;
     }
 
     @Override
@@ -636,5 +671,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.setCdmEntity(node);
         return result;
     }
+
 
 }

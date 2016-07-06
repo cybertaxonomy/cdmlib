@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -122,6 +123,34 @@ public class TaxonBaseDefaultCacheStrategyTest {
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxonBase.getTitleCache());
 	}
 
+	//same as for accepted taxa but with syn. sec. instead of sec.
+    @Test
+    public void testSynSec() {
+        Synonym taxonBase = Synonym.NewInstance(name, sec);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        //without sec.
+        taxonBase.setSec(null);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. ???", taxonBase.getTitleCache());
+        //appended phrase without sec.
+        String appendedPhrase = "aff. 'schippii'";
+        taxonBase.setAppendedPhrase(appendedPhrase);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxonBase.getTitleCache());
+        //appended phrase with sec.
+        taxonBase.setSec(sec);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        //use name cache
+        taxonBase.setUseNameCache(true);
+        assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        taxonBase.setDoubtful(true);
+        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        //with nom status
+        taxonBase.setAppendedPhrase(null);
+        taxonBase.setUseNameCache(false);
+        taxonBase.setDoubtful(false);
+        name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+    }
+
    @Test
     public void testGetTitleCacheWithoutName() {
         TaxonBase<?> taxonBase = Taxon.NewInstance(null, sec);
@@ -152,6 +181,15 @@ public class TaxonBaseDefaultCacheStrategyTest {
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}
+
+    @Test
+    public void testProtectedSecTitleCache(){
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        sec.setTitleCache("My protected sec ref", true);
+        taxonBase.setDoubtful(true);
+        taxonBase.setSecMicroReference("123");
+        Assert.assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxonBase.getTitleCache());
+    }
 
     @Test
     public void testMicroReference(){

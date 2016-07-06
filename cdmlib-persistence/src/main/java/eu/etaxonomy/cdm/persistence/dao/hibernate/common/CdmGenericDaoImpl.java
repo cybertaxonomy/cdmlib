@@ -93,7 +93,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Class<?> targetClass;  //new as item class is used for isCollection we have a duplicate here
 		public boolean isCollection(){return itemClass != null;}
 		@Override
-        public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
+        public String toString(){return otherClass.getSimpleName() + "." + propertyName ;}
 	}
 
 	public CdmGenericDaoImpl() {
@@ -106,7 +106,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 		Criteria criteria = session.createCriteria(clazz);
 		criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
-		return criteria.list();
+		@SuppressWarnings("unchecked")
+        List<CdmBase> result = criteria.list();
+		return result;
 	}
 
 	@Override
@@ -127,24 +129,22 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Set<Class<? extends CdmBase>> result = new HashSet<Class<? extends CdmBase>>();
 
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-		Map<?,?> allClassMetadata = sessionFactory.getAllClassMetadata();
-		Collection<?> keys = allClassMetadata.keySet();
-		for (Object oKey : keys){
-			if (oKey instanceof String){
-				String strKey = (String)oKey;
-				if (! strKey.endsWith("_AUD")){
-					try {
-						Class clazz = Class.forName(strKey);
-						boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
-						if (! isAbstractClass || includeAbstractClasses){
-							result.add(clazz);
-						}
-					} catch (ClassNotFoundException e) {
-						logger.warn("Class not found: " + strKey);
+		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
+		Collection<String> keys = allClassMetadata.keySet();
+		for (String strKey : keys){
+			if (! strKey.endsWith("_AUD")){
+				try {
+                    Class<?> clazz = Class.forName(strKey);
+					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
+					if (! isAbstractClass || includeAbstractClasses){
+						result.add((Class)clazz);
 					}
+				} catch (ClassNotFoundException e) {
+				    String message = "Persisted CDM class not found: " + strKey;
+				    logger.warn(message);
+				    //TODO better throw exception, but currently some keys are really not found yet
+//					throw new RuntimeException("Persisted CDM class not found: " + strKey,e);
 				}
-			}else{
-				logger.warn("key is not of type String: " +  oKey);
 			}
 		}
 		return result;
@@ -334,7 +334,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 	}
 
-	private boolean makeSingleProperty(Class<?> itemClass, Class<?> type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
+	private boolean makeSingleProperty(Class<?> itemClass, Class<?> type, String propertyName, Class<? extends CdmBase> cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
 //			String fieldName = StringUtils.rightPad(propertyName, 30);
 //			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 //			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
@@ -423,8 +423,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Session session;
 		session =  getSession();
 		//session = getSession().getSessionFactory().getCurrentSession();
-		Object o = session.get(clazz, id);
-		return (T)o;
+		T o = session.get(clazz, id);
+		return o;
 	}
 
 	@Override
@@ -501,7 +501,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		logger.debug(criteria);
 		//session.flush();
 		if (noMatch == false){
-			List<T> matchCandidates = criteria.list();
+			@SuppressWarnings("unchecked")
+            List<T> matchCandidates = criteria.list();
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
 				if (matchStrategy.invoke(objectToMatch, matchCandidate)){
@@ -616,9 +617,14 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 
 	private boolean matchNonComponentType(Criteria criteria,
-			FieldMatcher fieldMatcher, String propertyName, Object value,
-			List<MatchMode> matchModes, Type propertyType) throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
-		boolean noMatch = false;
+			FieldMatcher fieldMatcher,
+			String propertyName,
+			Object value,
+			List<MatchMode> matchModes,
+			Type propertyType)
+			throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
+
+	    boolean noMatch = false;
 		if (isRequired(matchModes) && value == null){
 			noMatch = true;
 			return noMatch;
@@ -756,14 +762,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		getSession().saveOrUpdate(cdmMetaData);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#getMetaData()
-	 */
+
 	@Override
     public List<CdmMetaData> getMetaData() {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(CdmMetaData.class);
-		List<CdmMetaData> results = crit.list();
+		@SuppressWarnings("unchecked")
+        List<CdmMetaData> results = crit.list();
 		return results;
 	}
 
@@ -801,9 +806,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean isEmpty(UUID ownerUuid, String fieldName) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof Collection) {
-            return ((Collection)col).isEmpty();
+            return ((Collection<?>)col).isEmpty();
         } else if(col instanceof Map){
-            return ((Map)col).isEmpty();
+            return ((Map<?,?>)col).isEmpty();
         }
 
         return false;
@@ -813,9 +818,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public int size(UUID ownerUuid, String fieldName) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof Collection) {
-            return ((Collection)col).size();
+            return ((Collection<?>)col).size();
         } else if(col instanceof Map){
-            return ((Map)col).size();
+            return ((Map<?,?>)col).size();
         }
         return 0;
     }
@@ -825,7 +830,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public Object get(UUID ownerUuid, String fieldName, int index) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof List) {
-            return ((List)col).get(index);
+            return ((List<?>)col).get(index);
         } else {
             throw new IllegalArgumentException("Field name provided does not correspond to a list");
         }
@@ -835,7 +840,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean contains(UUID ownerUuid, String fieldName, Object element) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof Collection) {
-            return ((Collection)col).contains(element);
+            return ((Collection<?>)col).contains(element);
         } else {
             throw new IllegalArgumentException("Field name provided does not correspond to a collection");
         }
@@ -845,7 +850,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean containsKey(UUID ownerUuid, String fieldName, Object key) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof Map) {
-            return ((Map)col).containsKey(key);
+            return ((Map<?,?>)col).containsKey(key);
         } else {
             throw new IllegalArgumentException("Field name provided does not correspond to a map");
         }
@@ -857,7 +862,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
         Object col = initializeCollection(ownerUuid, fieldName);
         if(col instanceof Map) {
-            return ((Map)col).containsValue(value);
+            return ((Map<?,?>)col).containsValue(value);
         } else {
             throw new IllegalArgumentException("Field name provided does not correspond to a map");
         }

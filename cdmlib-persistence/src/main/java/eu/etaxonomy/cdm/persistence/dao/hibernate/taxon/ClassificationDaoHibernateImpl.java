@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -27,11 +29,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * @author a.mueller
  * @created 16.06.2009
- * @version 1.0
  */
 @Repository
 @Qualifier("classificationDaoHibernateImpl")
@@ -175,6 +177,22 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
          return result;
     }
 
+    @Override
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+         Query query = prepareListSiblingsOf(taxon, classification, false);
+
+         setPagingParameter(query, pageSize, pageIndex);
+
+         @SuppressWarnings("unchecked")
+         List<TaxonNode> result = query.list();
+         //check if array is "empty" (not containing null objects)
+         if(!result.isEmpty() && result.iterator().next()==null){
+            return java.util.Collections.emptyList();
+         }
+         defaultBeanInitializer.initializeAll(result, propertyPaths);
+         return result;
+    }
+
 
 
     @Override
@@ -184,12 +202,32 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return count;
     }
 
+    @Override
+    public Long countSiblingsOf(Taxon taxon, Classification classification){
+        Query query = prepareListSiblingsOf(taxon, classification, true);
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
     private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
 
     	String selectWhat = doCount ? "count(cn)" : "cn";
 
-         String hql = "select " + selectWhat + " from TaxonNode as tn left join tn.classification as c left join tn.taxon as t  left join tn.childNodes as cn "
+         String hql = "select " + selectWhat + " from TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t JOIN tn.childNodes as cn "
                  + "where t = :taxon and c = :classification";
+         Query query = getSession().createQuery(hql);
+         query.setParameter("taxon", taxon);
+         query.setParameter("classification", classification);
+         return query;
+    }
+
+    private Query prepareListSiblingsOf(Taxon taxon, Classification classification, boolean doCount){
+
+        String selectWhat = doCount ? "count(tn)" : "tn";
+
+         String subSelect = "SELECT tn.parent FROM TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t "
+                 + "WHERE t = :taxon AND c = :classification";
+         String hql = "SELECT " + selectWhat + " FROM TaxonNode as tn WHERE tn.parent IN ( " + subSelect + ")";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
@@ -218,7 +256,52 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return persistentObject.getUuid();
     }
 
+    @Override
+    public ClassificationLookupDTO classificationLookup(Classification classification) {
 
+        ClassificationLookupDTO classificationLookupDTO = new ClassificationLookupDTO(classification);
+
+        // only for debugging:
+//        logger.setLevel(Level.TRACE);
+//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+
+        String hql = "select t.id, n.rank, tp.id from TaxonNode as tn join tn.classification as c join tn.taxon as t join t.name as n "
+                + " left join tn.parent as tnp left join tnp.taxon as tp "
+                + " where c = :classification";
+        Query query = getSession().createQuery(hql);
+        query.setParameter("classification", classification);
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        for(Object[] row : result) {
+            Integer parentId = null;
+            parentId = (Integer) row[2];
+            classificationLookupDTO.add((Integer)row[0], (Rank)row[1], parentId);
+        }
+
+        return classificationLookupDTO ;
+    }
+
+    @Override
+    public Map<UUID, String> treeIndexForTaxonUuids(UUID classificationUuid,
+            List<UUID> taxonUuids) {
+        String hql = " SELECT t.uuid, tn.treeIndex "
+                + " FROM Taxon t JOIN t.taxonNodes tn "
+                + " WHERE (1=1)"
+                + "     AND tn.classification.uuid = :classificationUuid "
+                + "     AND t.uuid IN (:taxonUuids) "
+                ;
+        Query query =  getSession().createQuery(hql);
+        query.setParameter("classificationUuid", classificationUuid);
+        query.setParameterList("taxonUuids", taxonUuids);
+
+        Map<UUID, String> result = new HashMap<>();
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = query.list();
+        for (Object[] o : list){
+            result.put((UUID)o[0], (String)o[1]);
+        }
+        return result;
+    }
 
 
 }

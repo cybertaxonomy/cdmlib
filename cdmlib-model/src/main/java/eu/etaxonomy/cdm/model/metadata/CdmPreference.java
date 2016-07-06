@@ -45,19 +45,37 @@ import javax.persistence.Entity;
 public final class CdmPreference implements Serializable {
 	private static final long serialVersionUID = 4307599154287181582L;
 
+    public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, String value){
+        return new CdmPreference(subject, predicate, value);
+    }
 
-	public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, String value){
-		return new CdmPreference(subject, predicate, value);
-	}
+    /**
+     * @param test
+     * @param string
+     * @return
+     */
+    public static CdmPreference NewDatabaseInstance(PreferencePredicate test, String value) {
+        return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), test, value);
+    }
 
-	public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
-		return new PrefKey(subject, predicate);
-	}
+    public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
+      return new PrefKey(subject, predicate);
+    }
+
+//	public static final CdmPreference NewInstance(PreferenceSubjectEnum subject, PreferencePredicate predicate, String value){
+//		return new CdmPreference(subject, predicate, value);
+//	}
+//
+//	public static PrefKey NewKey(PreferenceSubjectEnum subject, PreferencePredicate predicate){
+//		return new PrefKey(subject, predicate);
+//	}
 
 	@Embeddable
 	public static class PrefKey implements Serializable{
 		private static final long serialVersionUID = 9019957853773606194L;
 
+		//required syntax:  /([A-Za-z]+\[.*\])?
+		//examples /  ,  /TaxonNode[#t10#44#1456#]  for a taxon node preference
 		@Column(name="key_subject", length=100) //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
 		private String subject;
 
@@ -67,10 +85,12 @@ public final class CdmPreference implements Serializable {
 		//for hibernate use only
 		private PrefKey(){}
 
-
-		private PrefKey(PreferenceSubject subject, PreferencePredicate predicate){
-			this(subject.getKey(), predicate.getKey());
-		}
+        private PrefKey(PreferenceSubject subject, PreferencePredicate predicate){
+            this(subject.toString(), predicate.getKey());
+        }
+//		private PrefKey(PreferenceSubjectEnum subject, PreferencePredicate predicate){
+//			this(subject.getKey(), predicate.getKey());
+//		}
 
 		private PrefKey(String subject, String predicate){
 			if (subject == null) {
@@ -85,6 +105,10 @@ public final class CdmPreference implements Serializable {
 			if (predicate.length() > 255) {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
+			if (!subject.matches("/([A-Za-z]+\\[.*\\])?")){
+			    throw new IllegalArgumentException("Predicate does not follow the required syntax");
+			}
+
 
 			this.subject = subject;
 			this.predicate = predicate;
@@ -125,15 +149,9 @@ public final class CdmPreference implements Serializable {
 
 	//for hibernate use only
 	@SuppressWarnings("unused")
-	private CdmPreference(){};
+	private CdmPreference(){}
 
 
-	/**
-	 * Constructor.
-	 * @param subject must not be null and must not be longer then 255 characters.
-	 * @param predicate must not be null and must not be longer then 255 characters.
-	 * @param value must not be longer then 1023 characters.
-	 */
 	public CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
@@ -162,6 +180,11 @@ public final class CdmPreference implements Serializable {
 
 //************************ GETTER / SETTER ***************************/
 
+	public boolean isDatabasePref(){
+	    return PreferenceSubject.ROOT.equals(key.subject);
+	}
+
+
 	public String getSubject() {
 		return key.subject;
 	}
@@ -182,6 +205,8 @@ public final class CdmPreference implements Serializable {
 //	public void setValue(String value) {
 //		this.value = value;
 //	}
+
+
 
 
 }

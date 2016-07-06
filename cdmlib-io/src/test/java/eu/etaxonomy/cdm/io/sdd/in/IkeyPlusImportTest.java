@@ -59,10 +59,10 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="../../BlankDataSet.xml")
+    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testDoInvoke() {
     	commitAndStartNewTransaction(null);
-         
+
     	UUID newKeyUuid = null;
         try {
             ikeyPlusImport.getKey(sddUri, null);
@@ -77,13 +77,7 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
 //        assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

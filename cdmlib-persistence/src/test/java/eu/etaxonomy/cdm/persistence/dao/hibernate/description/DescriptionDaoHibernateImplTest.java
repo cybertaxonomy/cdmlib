@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 @DataSet
 public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
@@ -79,6 +81,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     private UUID taxonSphingidaeUuid;
 
+    @SuppressWarnings("unused")
     private static final String[] TABLE_NAMES = new String[] {"DESCRIPTIONBASE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING", "HOMOTYPICALGROUP","LANGUAGESTRING"
             , "ORIGINALSOURCEBASE", "REFERENCE", "TAXONBASE", "TAXONNAMEBASE", "HIBERNATE_SEQUENCES" };
 
@@ -617,12 +620,17 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+//    @DataSet
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="DescriptionDaoHibernateImplTest.xml")
+    })
     public void testListNamedAreasInUse(){
 
         Collection<TermDto> list = null;
 
-        DefinedTermBase antarctica = definedTermDao.load(antarcticaUuid);
+        DefinedTermBase<?> antarctica = definedTermDao.load(antarcticaUuid);
         antarctica.getRepresentations().add(Representation.NewInstance("Antarktis", "Antarktis", "An", Language.GERMAN()));
         definedTermDao.saveOrUpdate(antarctica);
         commitAndStartNewTransaction(null);
@@ -645,14 +653,8 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

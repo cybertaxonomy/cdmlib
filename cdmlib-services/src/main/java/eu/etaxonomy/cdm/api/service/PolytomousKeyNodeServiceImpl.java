@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
@@ -70,9 +71,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         if (parent!= null){
             if (parent.getChildren().contains(null)){
                 List<PolytomousKeyNode> parentChildren = parent.getChildren();
-                while (parent.getChildren().contains(null)){
-                    parentChildren.remove(null);
-                }
+                HHH_9751_Util.removeAllNull(parentChildren);
             }
             parent.removeChild(node);
             dao.saveOrUpdate(parent);

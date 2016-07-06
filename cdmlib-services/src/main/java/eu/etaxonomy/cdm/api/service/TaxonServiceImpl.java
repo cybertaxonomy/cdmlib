@@ -451,24 +451,30 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
+        if (clazz == null){
+            clazz = TaxonBase.class;
+        }
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<TaxonBase>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber);
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
 
         return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
+        if (clazz == null){
+            clazz = TaxonBase.class;
+        }
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<TaxonBase>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber);
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
 
         return results;
@@ -796,8 +802,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
     }
 
-    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(){
-        return dao.getUuidAndTitleCache();
+    public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(Integer limit, String pattern){
+        return dao.getUuidAndTitleCache(limit, pattern);
     }
 
     @Override
@@ -944,7 +950,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Override
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
-        return this.dao.listByIds(listOfIDs, null, null, null, null);
+        return this.dao.loadList(listOfIDs, null);
     }
 
     @Override
@@ -1166,6 +1172,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }else {
                 taxon.setName(null);
             }
+
 
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
             	try{
@@ -1586,13 +1593,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon() {
-        return dao.getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheTaxon(limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym() {
-        return dao.getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheSynonym(limit, pattern);
     }
 
     @Override
@@ -1947,7 +1954,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 /*
                  * Here i was facing wired and nasty bug which took me bugging be really for hours until I found this solution.
-                 * Maybe this is a but in java itself java.
+                 * Maybe this is a bug in java itself java.
                  *
                  * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
                  * directly:

@@ -45,9 +45,12 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
     protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
+    protected static String apostrophWord = word + "('\\p{javaLowerCase}*)?";
 
     protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
     protected static String capital2charDotWord = "(" + capital2LetterWord + "\\.?|\\p{javaUpperCase}\\.)"; //capitalWord with facultativ '.' but minimum 2 characters (single capital word like 'L' is not allowed
+    protected static String twoCapitalDotWord = "\\p{javaUpperCase}{2}\\.";   //e.g. NY.
+
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultativ '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
@@ -60,8 +63,13 @@ public abstract class NonViralNameParserImplRegExBase  {
    //years
     protected static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
     protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
-    protected static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
+    protected static String correctYearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
     								//+ "(" + month + ")?)" ;                 // optional month
+    //!! also used by TimePeriodParser
+    public static String incorrectYearPhrase = "(\"" + correctYearPhrase + "\"|" + correctYearPhrase + "|"
+            + UTF8.ENGLISH_QUOT_START + correctYearPhrase + UTF8.ENGLISH_QUOT_END + ")"
+			+ fWs + "\\[" + singleYear + "\\]"  ;
+    protected static String yearPhrase = "(" + correctYearPhrase + "|" + incorrectYearPhrase + ")";
 
     protected static String yearSeperator = "\\." + oWs;
     protected static String detailSeparator = ":" + oWs;
@@ -113,31 +121,38 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String fullAuthorString = "(" + fullBotanicAuthorString + "|" + fullZooAuthorString+ ")";
 
     //details
-    //TODO still very simple
-
+    //TODO still not all parsed
 
     protected static String nr2 = "\\d{1,2}";
     protected static String nr4 = "\\d{1,4}";
     protected static String nr5 = "\\d{1,5}";
 
 
-    protected static String pPage = nr5 + "[a-z]?";
+    protected static String pPage = nr5 + "[a-zA-Z]?";
     protected static String pStrNo = "n\u00B0" + fWs + "(" + nr4 + ")";
 
     protected static String pBracketNr = "\\[" + nr4 + "\\]";
-    protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
+    protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";  //maybe merge with pTabFigPlate (see below)
 
-    protected static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|\u00DF|\\(\\d{1,3}\\)))?";
-    protected static String pFig = "fig\\." + fWs + nr4 + "[a-z]?";
-    protected static String pFigs = pFig + "(-" + nr4 + ")?";
-    //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
-    protected static String pTabFig = "(" + pStrTab + "|" + pFigs + ")";
+
+    protected static String pRangeSep = "[-\u2013]";
+    protected static String pRangeSepCo = "[-\u2013,]";
+
+    protected static String pTabFigPlateStart = "([tT](abs?)?|[fF](igs?)?|[pP]l?s?)(\\.|\\s|$)";   //$ for only 'f'
+    protected static String pAbcNr = "[a-zA-Z\u00DF]";
+    protected static String pTabFigPlateNumber = "(" + nr4 + "|" + pAbcNr + "|" + nr4 + fWs + pAbcNr + ")" + "("+ pRangeSepCo + fWs + pAbcNr + ")?";
+    protected static String pTabFigPlateNumbers = "(" + pTabFigPlateNumber + "(" + pRangeSepCo + fWs + pTabFigPlateNumber + ")?)";
+
+    protected static String pTabFigPlate = pTabFigPlateStart + fWs + pTabFigPlateNumbers + "?";
+    protected static String pTabFigPl = pTabFigPlate;
 
     //e.g.: p455; p.455; pp455-456; pp.455-456; pp.455,456; 455, 456; pages 456-457; pages 456,567
-    protected static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFig +")?";
-    protected static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + "(-|,)" +fWs + pPage ;
+    protected static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFigPl +"){0,2}";
+    protected static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + pRangeSepCo +fWs + pPage ;
     //static String pPages = pPage + "(," + fWs + "(" + pPage + "|" + pTabFig + ")" + ")?";
     protected static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
+    protected static String pPagesTabFig = pPages +"([,\\.]" + fWs + pTabFigPl + "){1,2}";
+
 
 
     protected static String pCouv = "couv\\." + fWs + "\\d{1,3}";
@@ -163,22 +178,24 @@ public abstract class NonViralNameParserImplRegExBase  {
 //    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
     protected static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
 
+//    "(,\\s*" + pTabFigPl + ")?" +
     protected static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
-    			"|" + pTabFig + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
-    			pSpecialGardDict + "|" + pSpecialDetail + ")";
+    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
+    			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + ")";
 
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[a-z]?" + "(\\("+ nr4  + "(-"+nr4+")?\\))?";
+    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\((Suppl|Beibl|App|Beil|Misc)\\.\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
 
     protected static int authorSeparatorMaxPosition = 4;  //Author may have a maximum of 4 words
-    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";
+    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
     protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
-    protected static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
+
+    protected static String referenceTitleFirstPart = "(" + apostrophWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
     protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
     protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
@@ -186,6 +203,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord +
     			anySepChar + referenceTitleWithSepCharactersAndBrackets ;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
+    protected static String referenceTitleWithPlaceBracket = referenceTitle + "(" + oWs + "\\(" + capitalWord + "(" + oWs + capitalWord + ")?" + "\\))?" ;
 
     protected static String editionSeparator = "(" + oWs + "|," + fWs + ")ed\\.?" + oWs;  //
     protected static String pEdition = nr2;
@@ -195,7 +213,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator +  volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
 
-    protected static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
+//    protected static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
+    protected static String pVolRefTitle = referenceTitleWithPlaceBracket + "(" + pVolPart + ")?";
     protected static String softEditionVolRefTitle = referenceTitleWithSepCharactersAndBrackets + pEditionVolAlternative;
     protected static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
 
@@ -220,8 +239,10 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pNomStatusOrthVar = "orth\\." + fWs + "(var\\.|rej\\.)";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";
     protected static String pNomStatusOpus = "opus\\." + fWs + "utique" + fWs + "oppr\\.";
+    protected static String pNomStatusIned = "ined\\.";
 
-    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + ")";
+
+    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar + "|" +pNomStatusComb + "|" + pNomStatusOpus + "|" + pNomStatusIned + ")";
     protected static String pNomStatusPhrase1 = "," + fWs + pNomStatus;
     protected static String pNomStatusPhrase2 = "\\[" + fWs + pNomStatus + "\\]";
 
@@ -249,6 +270,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String infraGenus = capitalEpiWord + oWs + InfraGenusMarker + oWs + capitalEpiWord;
     protected static String aggrOrGroup = capitalEpiWord + oWs + nonCapitalEpiWord + oWs + aggrOrGroupMarker;
     protected static String species = genusOrSupraGenus + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
+    protected static String speciesWithInfraGen = genusOrSupraGenus + oWs + "\\(" + capitalEpiWord + "\\)" + oWs + nonCapitalEpiWord;
+
     protected static String infraSpecies = species + oWs + infraSpeciesMarker + oWs + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String zooInfraSpecies = species + oWs + "(" + infraSpeciesMarker + oWs +")?" + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
@@ -258,9 +281,9 @@ public abstract class NonViralNameParserImplRegExBase  {
 
 
     protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
-					infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
+                    speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
-    				zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
+                    speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
@@ -276,6 +299,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
     protected static Pattern aggrOrGroupPattern = Pattern.compile(pStart + aggrOrGroup + fWs + end); //aggr. or group has no author string
     protected static Pattern speciesPattern = Pattern.compile(pStart + species + facultFullAuthorString2 + end);
+    protected static Pattern speciesWithInfraGenPattern = Pattern.compile(pStart + speciesWithInfraGen + facultFullAuthorString2 + end);
     protected static Pattern infraSpeciesPattern = Pattern.compile(pStart + infraSpecies + facultFullAuthorString2 + end);
     protected static Pattern zooInfraSpeciesPattern = Pattern.compile(pStart + zooInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);

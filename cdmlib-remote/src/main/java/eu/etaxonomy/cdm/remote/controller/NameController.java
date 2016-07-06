@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +31,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -65,9 +64,6 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO still needed????
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(INameService service) {
@@ -97,7 +93,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         if (request != null) {
             logger.info("doGetTypeDesignations()" + request.getRequestURI());
         }
-        TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
+        TaxonNameBase<?,?> tnb = getCdmBaseInstance(uuid, response,
                 (List<String>) null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
@@ -111,10 +107,10 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetNameCache()" + request.getRequestURI());
-        TaxonNameBase tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
-        NonViralName nvn = (NonViralName) tnb;
+        TaxonNameBase<?,?> tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
+        NonViralName<?> nvn = (NonViralName<?>) tnb;
         String nameCacheString = nvn.getNameCache();
-        List result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         result.add(nameCacheString);
         return result;
 

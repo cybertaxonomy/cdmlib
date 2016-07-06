@@ -1,15 +1,14 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,14 +29,14 @@ import eu.etaxonomy.cdm.model.common.Language;
  * <P>
  * The standard set of nomenclature code instances will be automatically created
  * as the project starts. But this class allows to extend this standard set by
- * creating new instances of additional nomenclature codes if unlikely needed. 
+ * creating new instances of additional nomenclature codes if unlikely needed.
  * <P>
  * This class corresponds to: <ul>
  * <li> NomenclaturalCodeTerm according to the TDWG ontology
  * <li> NomenclaturalCodesEnum according to the TCS
  * <li> CodeOfNomenclatureEnum according to the ABCD schema
  * </ul>
- * 
+ *
  * @author a.mueller
  * @created 19.05.2008
  * @version 2.0
@@ -45,54 +44,54 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
-public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializable {
+public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	//0
 	/**
 	 * International Code of Nomenclature of Bacteria
 	*/
-	@XmlEnumValue("ICNB") 
-	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
-	
+	@XmlEnumValue("ICNB")
+	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"),
+
 	//1
 	/**
 	 * International Code of Nomenclature for algae, fungi, and plants
 	 * Former International Code of Botanical Nomenclature
 	 */
-	@XmlEnumValue("ICNAFP") 
-	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"), 
-	
+	@XmlEnumValue("ICNAFP")
+	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"),
+
 	//2
 	/**
 	 * International Code of Cultivated Plants
 	 */
-	@XmlEnumValue("ICNCP") 
-	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"), 
-	
+	@XmlEnumValue("ICNCP")
+	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"),
+
 	//3
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
-	@XmlEnumValue("ICZN") 
-	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"), 
-	
+	@XmlEnumValue("ICZN")
+	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"),
+
 	//4
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
-	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN");	
+	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN");
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
-	
+
 	public String getTitleCache() {
 		return getMessage();
 	}
-	
+
 	private NomenclaturalCode(UUID uuid, String titleCache){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Enum#toString()
 	 */
@@ -117,7 +116,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
 	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
 	 * nomenclature code only containing the given {@link Rank rank}.
-	 * 
+	 *
 	 * @param	rank	the rank of the new taxon name instance
 	 * @see 			BotanicalName#NewInstance(Rank)
 	 * @see 			ZoologicalName#NewInstance(Rank)
@@ -127,7 +126,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	 */
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
-		
+
 		switch (this){
 		case ICNAFP:
 			result = BotanicalName.NewInstance(rank);
@@ -150,12 +149,12 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
 	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
 	 * nomenclature code only containing the given {@link Rank rank}.
-	 * 
+	 *
 	 * @param	rank	the rank of the new taxon name instance
 	 * @see 			BotanicalName#NewInstance(Rank)
 	 * @see 			ZoologicalName#NewInstance(Rank)
@@ -187,8 +186,8 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 			result = null;
 		}
 		return result;
-	}	
-	
+	}
+
 	/**
 	 * Returns the recommended value for the accepted taxon status according to
 	 * http://code.google.com/p/darwincore/wiki/Taxon#taxonomicStatus
@@ -204,7 +203,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 			return "accepted";
 		}
 	}
-	
+
 	/**
 	 * Returns the recommended value for the accepted taxon status according to
 	 * http://code.google.com/p/darwincore/wiki/Taxon#taxonomicStatus
@@ -221,31 +220,31 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 		}
 	}
 
-// *************************** DELEGATE **************************************/	
-	
+// *************************** DELEGATE **************************************/
+
 	private static EnumeratedTermVoc<NomenclaturalCode> delegateVoc;
 	private IEnumTerm<NomenclaturalCode> delegateVocTerm;
 
 	static {
 		delegateVoc = EnumeratedTermVoc.getVoc(NomenclaturalCode.class);
 	}
-	
+
 	@Override
 	public String getKey(){return delegateVocTerm.getKey();}
-	
+
 	@Override
     public String getMessage(){return delegateVocTerm.getMessage();}
 
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
-		
+
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 	@Override
     public NomenclaturalCode getKindOf() {return delegateVocTerm.getKindOf();}
-	
+
 	@Override
     public Set<NomenclaturalCode> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
@@ -255,9 +254,9 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	@Override
     public Set<NomenclaturalCode> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
-	
+
 	public static NomenclaturalCode getByKey(String key){return delegateVoc.getByKey(key);}
     public static NomenclaturalCode getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-	
-	
+
+
 }

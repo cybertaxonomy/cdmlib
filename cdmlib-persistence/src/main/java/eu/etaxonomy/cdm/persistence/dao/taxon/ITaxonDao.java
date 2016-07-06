@@ -166,7 +166,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the
@@ -416,12 +416,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<SynonymRelationship> getSynonyms(Synonym synoynm, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     *
-     * @return
-     */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
-
 
     /**
      * Creates all inferred synonyms for the species in the tree and insert it to the database
@@ -472,12 +466,12 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     /**
      * @return
      */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheTaxon(Integer limit, String pattern);
 
     /**
      * @return
      */
-    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
+    public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym(Integer limit, String pattern);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
@@ -503,9 +497,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     /**
      * @param classification
      * @param excludeUuid
+     * @param limit
+     * @param pattern
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, List<UUID> excludeUuid);
+            Classification classification, List<UUID> excludeUuid, Integer limit, String pattern);
 
 }

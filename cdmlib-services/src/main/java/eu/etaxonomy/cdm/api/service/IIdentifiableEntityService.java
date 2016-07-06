@@ -97,15 +97,21 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+//    /**
+//     * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+//     * @see #getUuidAndTitleCache(Integer, String)
+//     */
+//    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+
     /**
      * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
-     * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
+     * Retrieving this list is considered to be significantly faster than initializing the fully fledged business
      * objects. To be used in cases where you want to present large amount of data and provide details after
      * a selection has been made.
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
 
     /**
      * Return a Pager of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode

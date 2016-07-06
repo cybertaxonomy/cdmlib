@@ -282,10 +282,28 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     }
 
     @Override
-    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern){
         Session session = getSession();
-        Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName());
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where titleCache like :pattern");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
         return getUuidAndTitleCache(query);
+    }
+
+
+    @Override
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
+        return getUuidAndTitleCache(null, null);
     }
 
     protected <E extends IIdentifiableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
@@ -296,7 +314,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
-
         return list;
     }
 

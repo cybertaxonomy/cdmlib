@@ -694,8 +694,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
-        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase";
+    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
+        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonNameBase LIMIT " + limit;
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = getSession().createSQLQuery(queryString).list();
@@ -748,8 +748,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
+
         if (homotypicalGroup != null){
-        	if (homotypicalGroup.getTypifiedNames().isEmpty()){
+            if (homotypicalGroup.getTypifiedNames().contains(persistentObject)){
+                homotypicalGroup.getTypifiedNames().remove(persistentObject);
+                homotypicalGroupDao.saveOrUpdate(homotypicalGroup);
+            }
+            if (homotypicalGroup.getTypifiedNames().isEmpty()){
         		homotypicalGroupDao.delete(homotypicalGroup);
         	}
         }

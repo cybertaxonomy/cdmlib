@@ -91,8 +91,11 @@ public class CdmPreDataChangeListener implements PreInsertEventListener, PreUpda
         if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
             cacheDeterminationNames(entity);
             generateCaches(entity);
+
         }
     }
+
+
 
     private static void cacheDeterminationNames(Object entity) {
         if (entity instanceof DeterminationEvent) {

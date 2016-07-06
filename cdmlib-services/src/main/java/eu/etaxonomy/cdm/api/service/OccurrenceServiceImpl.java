@@ -373,7 +373,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
         //dao.listByIds() does the paging of the field units. Passing the field units directly to the Pager would not work
-        List<SpecimenOrObservationBase> fieldUnits = dao.listByIds(fieldUnitIds, pageSize, pageNumber, orderHints, propertyPaths);
+        List<SpecimenOrObservationBase> fieldUnits = dao.loadList(fieldUnitIds, propertyPaths);
         return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitIds.size(), pageSize, fieldUnits);
     }
 
@@ -743,7 +743,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 occurrenceIds.add(o.getId());
             }
         }
-        occurrences = (List<T>) dao.listByIds(occurrenceIds, pageSize, pageNumber, orderHints, propertyPaths);
+        occurrences = (List<T>) dao.loadList(occurrenceIds, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
 

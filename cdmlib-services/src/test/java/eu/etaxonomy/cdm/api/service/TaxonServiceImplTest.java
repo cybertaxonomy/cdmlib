@@ -775,9 +775,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        TaxonNameBase name2 = nameService.load(uuidSynonymName2);
+        TaxonNameBase<?,?> name2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
-        TaxonNameBase name3 = nameService.load(name3Uuid);
+        TaxonNameBase<?,?> name3 = nameService.load(name3Uuid);
         name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
 
         service.saveOrUpdate(synonym1);
@@ -811,6 +811,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         this.endTransaction();
 
     }
+
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameDeleteAllNameRelations(){
@@ -830,9 +831,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        TaxonNameBase name2 = nameService.load(uuidSynonymName2);
+        TaxonNameBase<?,?> name2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
-        TaxonNameBase name3 = nameService.load(name3Uuid);
+        TaxonNameBase<?,?> name3 = nameService.load(name3Uuid);
         name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
 
         service.saveOrUpdate(synonym1);
@@ -879,9 +880,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        TaxonNameBase synName2 = nameService.load(uuidSynonymName2);
+        TaxonNameBase<?,?> synName2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
-        TaxonNameBase synName1 = nameService.load(name3Uuid);
+        TaxonNameBase<?,?> synName1 = nameService.load(name3Uuid);
         synName1.addRelationshipFromName(synName2, NameRelationshipType.BASIONYM(), null);
 
         service.saveOrUpdate(synonym1);
@@ -938,7 +939,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        TaxonNameBase name2 = nameService.load(uuidSynonymName2);
+        TaxonNameBase<?,?> name2 = nameService.load(uuidSynonymName2);
         synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
 
         service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
@@ -976,7 +977,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        TaxonNameBase name2 = nameService.load(uuidSynonymName2);
+        TaxonNameBase<?,?> name2 = nameService.load(uuidSynonymName2);
         synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
 
         service.saveOrUpdate(synonym1);
@@ -1019,15 +1020,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //assertEquals("Number of synonyms should be 2",2,synonyms.size());
         List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus lachesis sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
 
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "Acherontia ciprosus sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "Acherontia ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
 
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus ciprosus sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", "SynGenus ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
         //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
     }
 
@@ -1086,7 +1087,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         child1.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Import));
 
         SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
-        DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(child1, identifiedUnit);
+        DeterminationEvent.NewInstance(child1, identifiedUnit);
         //UUID eventUUID = eventService.save(determinationEvent);
         UUID identifiedUnitUUID = occurenceService.save(identifiedUnit).getUuid();
 
@@ -1156,7 +1157,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon).getUuid();
+        service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
@@ -1211,7 +1212,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon).getUuid();
+        service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         Taxon speciesTaxon2 = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
@@ -1279,14 +1280,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon).getUuid();
+        service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
 
         SynonymRelationship synRel = speciesTaxon.getSynonymRelations().iterator().next();
         UUID synonymRelationUuid = synRel.getUuid();
         UUID synonymUuid = synRel.getSynonym().getUuid();
-        int i = service.getAllRelationships(1000, 0).size();
+        service.getAllRelationships(1000, 0).size();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteSynonymsIfPossible(false);
@@ -1303,7 +1304,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         assertNotNull("The synonym should still exist since DeleteSynonymsIfPossible was false", service.find(synonymUuid));
 
-        for(RelationshipBase rel : service.getAllRelationships(1000, 0)){
+        for(RelationshipBase<?,?,?> rel : service.getAllRelationships(1000, 0)){
             if(rel instanceof SynonymRelationship && rel.getUuid().equals(synonymRelationUuid)){
                 Assert.fail("The SynonymRelationship should no longer exist");
             }
@@ -1318,7 +1319,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
-        UUID uuid = service.save(testTaxon).getUuid();
+        service.save(testTaxon).getUuid();
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
 

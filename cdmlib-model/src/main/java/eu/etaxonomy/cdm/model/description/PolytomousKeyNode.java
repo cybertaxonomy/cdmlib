@@ -34,11 +34,11 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -425,7 +425,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * <i>this</i> feature node.
 	 */
 	public List<PolytomousKeyNode> getChildren() {
-	    removeNullValueFromChildren();
+
 		return children;
 	}
 
@@ -465,8 +465,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-		removeNullValueFromChildren();
-
 		if(nodeNumber == null) {
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
@@ -475,10 +473,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		children.add(index, child);
 		child.setKey(this.getKey());
 
-		// TODO workaround (see sortIndex doc)
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).setSortIndex(i);
-		}
+		updateSortIndex();
 		child.setSortIndex(index);
 		child.setParent(this);
 	}
@@ -497,25 +492,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * @see #removeChild(int)
 	 */
 	public void removeChild(PolytomousKeyNode child) {
-		int index = children.indexOf(child);
-		removeNullValueFromChildren();
+	    int index = children.indexOf(child);
 		if (index >= 0) {
 			removeChild(index);
 		}
 	}
 
 
-	private void removeNullValueFromChildren(){
-	    try {
-    	    if (children.contains(null)){
-                while(children.contains(null)){
-                    children.remove(null);
-                }
-            }
-	    } catch (LazyInitializationException e) {
-	        logger.info("Cannot clean up uninitialized children without a session, skipping.");
-	    }
-	}
+
 	/**
 	 * Removes the feature node placed at the given (index + 1) position from
 	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
@@ -601,10 +585,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			node.setNodeNumber(nodeN);
 			newNodeN++;
 			List<PolytomousKeyNode> children = node.getChildren();
-			 while (children.contains(null)){
-			     children.remove(null);
-		       }
-
+			HHH_9751_Util.removeAllNull(children);
+			updateSortIndex();
 			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
@@ -898,6 +880,18 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     public void removeTaxon() {
         this.taxon = null;
 
+    }
+
+    private void updateSortIndex(){
+        // TODO workaround (see sortIndex doc)
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).setSortIndex(i);
+        }
+    }
+
+    public void removeNullValueFromChildren(){
+        HHH_9751_Util.removeAllNull(children);
+        updateSortIndex();
     }
 
 

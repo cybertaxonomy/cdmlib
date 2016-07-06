@@ -10,12 +10,15 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author a.mueller
@@ -55,7 +58,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+    List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths);
 
     /**
@@ -69,7 +72,21 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
+    long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
 
+    /**
+     * @param treeIndexClosure
+     * @param minRankOrderIndex
+     * @param maxRankOrderIndex
+     * @return
+     */
+    Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndexClosure, Integer minRankOrderIndex,
+            Integer maxRankOrderIndex);
+
+    /**
+     * @param keySet
+     * @return
+     */
+    Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> keySet);
 
 }

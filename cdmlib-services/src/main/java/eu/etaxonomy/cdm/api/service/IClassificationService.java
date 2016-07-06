@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -23,6 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -259,6 +262,69 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
+
+    /**
+     * @param classificationUuid
+     * @param excludeTaxa
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern);
+
+    /**
+     * @param classification
+     * @param excludeTaxa
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern);
+
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param pageSize
+     * @param pageIndex
+     * @param propertyPaths
+     * @return
+     */
+    List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+    /**
+     * @param taxonUuid
+     * @param classificationUuid
+     * @param pageSize
+     * @param pageIndex
+     * @param propertyPaths
+     * @return
+     */
+    Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+    /**
+     * @param classification
+     * @return
+     */
+    ClassificationLookupDTO classificationLookup(Classification classification);
+
+    DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
+
+    /**
+     * Returns the higher taxon id for each taxon in taxonUuids.
+     * The highter taxon is defined by rank where the lowest rank equal or above minRank
+     * is taken. If maxRank <> null and no taxon exists with minRank <= rank <= maxRank
+     * no higher taxon is returned for this taxon.
+     *
+     * @param taxonUuids
+     * @param minRank
+     * @param maxRank
+     * @return
+     */
+    List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
 
 }

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- * 
+ *
  */
 public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 
@@ -42,7 +42,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * Return a count of names related to or from this name, optionally filtered
 	 * by relationship type. The direction of the relationships taken in to account is depending on
 	 * the <code>direction</code> parameter.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param direction
@@ -58,7 +58,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * by relationship type. The direction of the relationships taken in to account is depending on
 	 * the <code>direction</code> parameter.
 	 * If both name and direction is null all name relationships will be returned.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param direction
@@ -78,11 +78,11 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
 			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths);
-	
+
 	/**
 	 * Return a count of hybrids related to this name, optionally filtered by
 	 * hybrid relationship type
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param type
@@ -94,7 +94,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered by
 	 * hybrid relationship type
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param type
@@ -112,7 +112,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Return a count of types related to this name, optionally filtered by type
 	 * designation status
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param status
@@ -125,7 +125,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Return a List of types related to this name, optionally filtered by type
 	 * designation status
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param type
@@ -141,15 +141,15 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths
 	 * @return a List of TypeDesignationBase instances
 	 */
-	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name, 
+	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name,
 			Class<T> type,
 			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
 			List<String> propertyPaths);
-	
+
 	/**
 	 * Return a List of types related to this name, optionally filtered by type
 	 * designation status
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 * @param status
@@ -172,7 +172,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Returns a List of TaxonNameBase instances that match the properties
 	 * passed
-	 * 
+	 *
 	 * @param uninomial
 	 * @param infraGenericEpithet
 	 * @param specificEpithet
@@ -184,8 +184,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param pageNumber
 	 *            The offset (in pageSize chunks) from the start of the result
 	 *            set (0 - based)
-	 * @param propertyPaths 
-	 * @param orderHints 
+	 * @param propertyPaths
+	 * @param orderHints
 	 * @return a List of TaxonNameBase instances
 	 */
 	public List<TaxonNameBase> searchNames(String uninomial,
@@ -196,7 +196,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Returns a count of TaxonNameBase instances that match the properties
 	 * passed
-	 * 
+	 *
 	 * @param uninomial
 	 * @param infraGenericEpithet
 	 * @param specificEpithet
@@ -209,7 +209,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 
 	/**
 	 * Returns a count of TaxonNameBase instances that match the properties passed
-	 * 
+	 *
 	 * @param queryString
 	 * @param matchMode
 	 * @param criteria
@@ -219,7 +219,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	/**
 	 * Returns a List of TaxonNameBase instances which nameCache matches the
 	 * query string
-	 * 
+	 *
 	 * @param queryString
 	 * @param pageSize
 	 *            The maximum number of names returned (can be null for all
@@ -231,13 +231,13 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public List<TaxonNameBase<?, ?>> searchNames(String queryString,
 			Integer pageSize, Integer pageNumber);
-	
-	
+
+
 
 	/**
 	 * Returns a count of TaxonNameBase instances which nameCache matches the
 	 * String queryString
-	 * 
+	 *
 	 * @param queryString
 	 * @return a count of TaxonNameBase instances
 	 */
@@ -255,7 +255,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public List<? extends TaxonNameBase<?, ?>> findByName(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
-	
+
 	/**
 	 * @param queryString
 	 * @param matchmode
@@ -268,32 +268,32 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public List<? extends TaxonNameBase<?, ?>> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
-	
+
 	/**
 	 * Returns a taxon name corresponding to the given uuid
-	 * 
-	 * @param uuid 
+	 *
+	 * @param uuid
 	 * 			The uuid of the taxon name requested
 	 * @param criteria
 	 * 			Custom criteria to be added to the default list of applied criteria.
-	 * @param propertyPaths 
-	 * 			
-	 * @return 
+	 * @param propertyPaths
+	 *
+	 * @return
 	 */
 	public TaxonNameBase<?, ?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
-	
+
 	/**
 	 * @param queryString
 	 * @param matchmode
 	 * @param criteria
 	 * @return
 	 */
-	public Integer countByName(String queryString, 
+	public Integer countByName(String queryString,
 			MatchMode matchmode, List<Criterion> criteria);
-	
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
-	
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
+
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start);
+
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	/**
 	 * @param clazz

@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,12 +45,14 @@ import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -63,8 +63,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -92,9 +94,6 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(ITaxonService service) {
@@ -117,6 +116,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         super.initBinder(binder);
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
+        binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 
     }
 
@@ -440,6 +440,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
 
+        logger.info("doFindBestMatchingTaxon : " + requestPathAndQuery(request) );
+
         Taxon bestMatchingTaxon =  service.findBestMatchingTaxon(taxonName);
 
         return bestMatchingTaxon;
@@ -495,6 +497,50 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+    }
+
+    @RequestMapping(value = "doFindByNameParts", method = RequestMethod.GET)
+    public Pager<TaxonBase> doFindByNameParts(
+            @RequestParam(value = "genusOrUninomial", required = false) String genusOrUninomial,
+            @RequestParam(value = "infragenericEpithet", required = false) String infragenericEpithet,
+            @RequestParam(value = "specificEpithet", required = false) String specificEpithet,
+            @RequestParam(value = "infraspecificEpithet", required = false) String infraspecificEpithet,
+            @RequestParam(value = "authorship", required = false) String authorship,
+            @RequestParam(value = "rankUuid", required = false) UUID rankUuid,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        logger.info("doFindByNameParts : " + requestPathAndQuery(request) );
+
+        if (genusOrUninomial == null && infragenericEpithet == null && specificEpithet == null && infraspecificEpithet == null){
+            response.sendError(404 , "At least 1 name part must be defined " );
+            return null;
+        }
+
+        Rank rank = null;
+        if (rankUuid != null){
+             rank = findRank(rankUuid);
+        }
+
+        Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
+
+        return result;
+    }
+
+
+    private Rank findRank(UUID rankUuid) {
+        Rank rank = null;
+        if(rankUuid != null){
+            DefinedTermBase<?> definedTermBase =  termService.find(rankUuid);
+            if(definedTermBase instanceof Rank){
+                rank = (Rank) definedTermBase;
+            } else {
+               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
+            }
+        }
+        return rank;
     }
 
 }

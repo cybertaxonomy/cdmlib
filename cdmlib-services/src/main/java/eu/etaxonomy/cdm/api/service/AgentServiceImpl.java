@@ -245,8 +245,8 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
      * @see eu.etaxonomy.cdm.api.service.IAgentService#getUuidAndAbbrevTitleCache()
      */
     @Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache() {
-        return dao.getUuidAndAbbrevTitleCache(null, null);
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz) {
+        return dao.getUuidAndAbbrevTitleCache(null, null, clazz);
     }
 
 }

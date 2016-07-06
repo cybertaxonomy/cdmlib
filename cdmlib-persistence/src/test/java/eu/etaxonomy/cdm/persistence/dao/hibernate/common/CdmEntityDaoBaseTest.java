@@ -345,7 +345,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#listByIds(java.util.Collection, Integer, Integer, List, List)}.
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#loadList(java.util.Collection, List)}.
      */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
@@ -353,7 +353,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new RandomOrder());
         Integer[] ids = new Integer[]{1, 2};
-        List<TaxonBase> list = cdmEntityDaoBase.listByIds(Arrays.asList(ids), 20, 0, orderHints, null);
+        List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), null);
         assertNotNull("list() should not return null",list);
         assertEquals("list() should return a list with two entities in it",list.size(),2);
     }

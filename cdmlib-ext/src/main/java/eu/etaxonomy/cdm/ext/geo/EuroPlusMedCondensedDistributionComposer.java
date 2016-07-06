@@ -33,14 +33,12 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @date Jun 24, 2015
  *
  */
-public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistributionComposer {
+public class EuroPlusMedCondensedDistributionComposer extends CondensedDistributionComposerBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EuroPlusMedCondensedDistributionComposer.class);
 
     private final CondensedDistribution condensedDistribution;
-
-    private static Map<UUID, String> statusSymbols;
 
     private static Set<UUID> foreignStatusUuids;
 
@@ -102,6 +100,8 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
     }
 
     public EuroPlusMedCondensedDistributionComposer() {
+        super();
+        replaceCommonAreaLabelStart = true;
         condensedDistribution = new CondensedDistribution();
     }
 
@@ -113,25 +113,25 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> langs) {
 
-        //1. order by PresenceAbsenceTerms
-        Map<PresenceAbsenceTerm, Collection<NamedArea>> byStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
+        //1. group by PresenceAbsenceTerms
+        Map<PresenceAbsenceTerm, Collection<NamedArea>> areasByStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
         for(Distribution d : filteredDistributions) {
             PresenceAbsenceTerm status = d.getStatus();
             if(status == null) {
                 continue;
             }
-            if(!byStatus.containsKey(status)) {
-                byStatus.put(status, new HashSet<NamedArea>());
+            if(!areasByStatus.containsKey(status)) {
+                areasByStatus.put(status, new HashSet<NamedArea>());
             }
-            byStatus.get(status).add(d.getArea());
+            areasByStatus.get(status).add(d.getArea());
         }
 
         //2. build the area hierarchy
-        for(PresenceAbsenceTerm status : byStatus.keySet()) {
+        for(PresenceAbsenceTerm status : areasByStatus.keySet()) {
 
             Map<NamedArea, AreaNode> areaNodeMap = new HashMap<NamedArea, AreaNode>();
 
-            for(NamedArea area : byStatus.get(status)) {
+            for(NamedArea area : areasByStatus.get(status)) {
                 AreaNode node;
                 if(!areaNodeMap.containsKey(area)) {
                     // putting area into hierarchy as node
@@ -142,7 +142,7 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
                     node = areaNodeMap.get(area);
                 }
 
-                NamedArea parent = findParentIn(area, byStatus.get(status));
+                NamedArea parent = findParentIn(area, areasByStatus.get(status));
                 if(parent != null) {
                     AreaNode parentNode;
                     if(!areaNodeMap.containsKey(parent)) {
@@ -164,19 +164,19 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
             }
 
             //4. replace the area by the abbreviated representation and add symbols
-            for(AreaNode node : hierarchy) {
+            for(AreaNode topLevelNode : hierarchy) {
 
                 StringBuilder areaStatusString = new StringBuilder();
 
                 String statusSymbol = statusSymbol(status);
                 areaStatusString.append(statusSymbol);
 
-                String areaLabel = node.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
+                String areaLabel = topLevelNode.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
                 areaStatusString.append(areaLabel);
 
-                if(!node.subAreas.isEmpty()) {
+                if(!topLevelNode.subAreas.isEmpty()) {
                     areaStatusString.append('(');
-                    subAreaLabels(langs, node.subAreas, areaStatusString, statusSymbol, areaLabel);
+                    subAreaLabels(langs, topLevelNode.subAreas, areaStatusString, statusSymbol, areaLabel);
                     areaStatusString.append(')');
                 }
 
@@ -196,20 +196,6 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
         return condensedDistribution;
     }
 
-    /**
-     * @param status
-     * @return
-     */
-    private String statusSymbol(PresenceAbsenceTerm status) {
-        if(status == null) {
-            return "";
-        }
-        String symbol = statusSymbols.get(status.getUuid());
-        if(symbol == null) {
-            symbol = "";
-        }
-        return symbol;
-    }
 
     private boolean isForeignStatus(PresenceAbsenceTerm status) {
         return foreignStatusUuids.contains(status.getUuid());
@@ -232,8 +218,12 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
             subAreaString.append(statusSymbol);
 
             String areaLabel = node.area.getPreferredRepresentation(langs).getAbbreviatedLabel();
-            String cleanSubAreaLabel = StringUtils.replaceEach(areaLabel, new String[] {parentLabel, "(", ")"}, new String[] {"", "", ""});
-            subAreaString.append(cleanSubAreaLabel);
+            if (replaceCommonAreaLabelStart){
+                String cleanSubAreaLabel = StringUtils.replaceEach(areaLabel, new String[] {parentLabel, "(", ")"}, new String[] {"", "", ""});
+                subAreaString.append(cleanSubAreaLabel);
+            }else{
+                subAreaString.append(areaLabel);
+            }
 
             if(!node.subAreas.isEmpty()) {
                 subAreaString.append('(');
@@ -248,59 +238,6 @@ public class EuroPlusMedCondensedDistributionComposer implements ICondensedDistr
 
     }
 
-    /**
-     * Searches for the parent are of the area given as parameter in
-     * the Collection of areas.
-     *
-     * @parent area
-     *      The area whose parent area is to be searched
-     * @param collection
-     *      The areas to search in.
-     *
-     * @return
-     *      Either the parent if it has been found or null.
-     */
-    private NamedArea findParentIn(NamedArea area, Collection<NamedArea> areas) {
-        NamedArea parent = area.getPartOf();
-        if(parent != null && areas.contains(parent)){
-            return parent;
-        }
-        return null;
-    }
 
-    class AreaNode {
-
-        private final NamedArea area;
-        private AreaNode parent = null;
-        private final Set<AreaNode> subAreas = new HashSet<AreaNode>();
-
-        /**
-         * @param area
-         */
-        public AreaNode(NamedArea area) {
-            this.area = area;
-        }
-
-        public void addSubArea(AreaNode subArea) {
-            subAreas.add(subArea);
-            subArea.parent = this;
-        }
-
-        public AreaNode getParent() {
-            return parent;
-        }
-
-        public boolean hasParent() {
-            return getParent() != null;
-        }
-
-        public Collection<NamedArea> getSubareas() {
-            Collection<NamedArea> areas = new HashSet<NamedArea>();
-            for(AreaNode node : subAreas) {
-                areas.add(node.area);
-            }
-            return areas;
-        }
-    }
 
 }

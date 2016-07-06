@@ -65,6 +65,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid3;
 
     private static final UUID ACHERONTIA_UUID = UUID.fromString("3b2b3e17-5c4a-4d1b-aa39-349f63100d6b");
+    private static final UUID ACHERONTIA_LACHESIS = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
     private static final UUID NODE_ACHERONTIA_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -155,6 +156,19 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, null, true);
         assertNotNull(children);
         assertEquals(3, children.size());
+    }
+
+    @Test
+    @DataSet
+    public void testListSiblings(){
+        Taxon t_acherontia_lachesis = (Taxon) taxonDao.load(ACHERONTIA_LACHESIS);
+
+        Classification classification =  classificationDao.load(ClassificationUuid);
+        long count = classificationDao.countSiblingsOf(t_acherontia_lachesis, classification);
+        assertEquals(2, count);
+        List<TaxonNode> siblings = classificationDao.listSiblingsOf(t_acherontia_lachesis, classification, null, null, null);
+        assertNotNull(siblings);
+        assertEquals(2, siblings.size());
     }
 
     @Test

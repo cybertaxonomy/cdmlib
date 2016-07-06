@@ -43,7 +43,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -375,46 +374,13 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         subTestWithEditMapService(result);
     }
 
-    @Test
-    public void testGetCondensedDistribution() {
-
-        NamedArea germany = NamedArea.NewInstance("Germany", "", "GER");
-        NamedArea berlin = NamedArea.NewInstance("Berlin", "", "GER(B)");
-        berlin.setPartOf(germany);
-        NamedArea bawue = NamedArea.NewInstance("Baden Württemberg", "", "GER(BW)");
-        bawue.setPartOf(germany);
-        NamedArea france = NamedArea.NewInstance("France", "", "FR");
-        NamedArea ileDeFrance = NamedArea.NewInstance("Ile-de-France", "", "FR(J)");
-        ileDeFrance.setPartOf(france);
-        NamedArea italy = NamedArea.NewInstance("Italy", "", "IT");
-        NamedArea spain = NamedArea.NewInstance("Spain", "", "S");
-
-        Set<Distribution> distributions = new HashSet<Distribution>();
-        distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
-        distributions.add(Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE()));
-        distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE()));
-        distributions.add(Distribution.NewInstance(italy, PresenceAbsenceTerm.PRESENT_DOUBTFULLY()));
-
-        distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS()));
-        distributions.add(Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED()));
-        distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
-
-        List<Language> languages = new ArrayList<Language>();
-
-        CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
-                distributions,
-                CondensedDistributionRecipe.EuroPlusMed,
-                languages);
-
-        Assert.assertEquals("GER(B BW) ?IT [aFR cFR(J) nS]", condensedDistribution.toString());
-    }
 
     @SuppressWarnings("deprecation")
 //    @Test
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    @DataSets({
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDB_with_Terms_DataSet.xml"),
-//        @DataSet("../../database/TermsDataSet-with_auditing_info.xml"),
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+//        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
 //        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    })
     public void getDistributionServiceRequestParameterString(){

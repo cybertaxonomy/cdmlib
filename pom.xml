@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>4.1.1</version>
+  <version>4.2.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -24,7 +24,7 @@
   </modules>
   <properties>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.codelevel>1.6</java.codelevel>
+    <java.codelevel>1.7</java.codelevel>
     <spring.version>4.2.4.RELEASE</spring.version>
     <spring-security.version>4.0.3.RELEASE</spring-security.version>
 	<hibernate.version>5.0.7.Final</hibernate.version>
@@ -1097,7 +1097,12 @@
       <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
-        <version>2.0.2</version>
+        <!-- 
+            WARNING: do not upgrade to later versions 2.0.x of xml-apis
+            since these are effectivly reloated to the early beta version
+            1.0.b2
+        -->
+        <version>1.4.01</version>
       </dependency>
       <dependency>
         <groupId>xerces</groupId>

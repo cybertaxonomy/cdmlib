@@ -10,16 +10,22 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -27,8 +33,11 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -50,7 +59,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrationTest {
 
-    @SuppressWarnings("unused")
     private static Logger logger = Logger.getLogger(TransmissionEngineDistributionTest.class);
 
     private static final UUID T_LAPSANA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
@@ -102,6 +110,9 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     private Classification classification;
 
+    private Reference book_a = null;
+    private Reference book_b = null;
+
 
     @Before
     public void setUp() {
@@ -109,7 +120,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         superAreas = Arrays.asList(new NamedArea[]{
         		termService.getAreaByTdwgAbbreviation("YUG")
         });
-        lowerRank = Rank.SPECIES();
+        lowerRank = Rank.SUBSPECIES();
         upperRank = Rank.GENUS();
 
         classification = classificationService.load(CLASSIFICATION_UUID);
@@ -121,6 +132,12 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         yug_ma = termService.getAreaByTdwgAbbreviation("YUG-MA");
         yug_mn = termService.getAreaByTdwgAbbreviation("YUG-MN");
 
+        book_a = ReferenceFactory.newBook();
+        book_a.setTitle("book_a");
+        book_b = ReferenceFactory.newBook();
+        book_b.setTitle("book_a");
+
+        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         engine.updatePriorities();
     }
 
@@ -139,11 +156,11 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
 //  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./BlankDataSet.xml")
-    public void test_ignore() {
+    public void test_ignore() throws JvmLimitsException {
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
-                new Distribution[] {
+                Arrays.asList(new Distribution[] {
                         // should succeed during area aggregation be ignored by rank aggregation
                         // => yug will get status ENDEMIC_FOR_THE_RELEVANT_AREA
                         //    but only for LAPSANA_COMMUNIS_ALPINA
@@ -151,7 +168,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                         // should be ignored by area aggregation
                         // => LAPSANA_COMMUNIS will wave distribution with yug_ko and INTRODUCED_FORMERLY_INTRODUCED
                         Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED()),
-               }
+               })
             );
 
         engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
@@ -181,15 +198,18 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-    public void testArea_area() {
+    public void testArea_area() throws JvmLimitsException {
+
+        Set<Distribution> distributions_LCA = new HashSet<>();
+
+        distributions_LCA.add(newDistribution(book_a, yug_mn, PresenceAbsenceTerm.CULTIVATED(), "1"));
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "2")); // NATIVE should succeed
+        distributions_LCA.add(newDistribution(book_a, yug_bh, PresenceAbsenceTerm.INTRODUCED(), "3"));
+        distributions_LCA.add(newDistribution(book_a, yug_ma, PresenceAbsenceTerm.NATIVE(), "4")); // NATIVE should succeed
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
-                new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED()),
-                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()), // should succeed
-                        Distribution.NewInstance(yug_bh, PresenceAbsenceTerm.INTRODUCED())
-               }
+                distributions_LCA
             );
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -200,44 +220,61 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
 
-        boolean expectedAreaFound = false;
+        Distribution accumulatedDistribution = null;
         for (TaxonDescription description : lapsana_communis_alpina.getDescriptions()) {
-            Distribution distribution = (Distribution) description.getElements().iterator().next(); // only one aggregated area expected
-            if(distribution.getArea().equals(yug)) {
-                expectedAreaFound = true;
-                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+                assertNull("only one computed Distribution should exists", accumulatedDistribution);
+                assertEquals("the computed Decsription should have only one element", 1, description.getElements().size());
+                accumulatedDistribution = (Distribution) description.getElements().iterator().next();
+                assertEquals("Expecting area to be YUG", yug, accumulatedDistribution.getArea());
+                assertEquals("Expecting status to be NATIVE", PresenceAbsenceTerm.NATIVE().getLabel(), accumulatedDistribution.getStatus().getLabel());
             }
         }
-        assertTrue("The areae YUG should have been found", expectedAreaFound);
+        assertNotNull("The area YUG should have been found", accumulatedDistribution);
+        assertEquals("Expecting two source references", 2, accumulatedDistribution.getSources().size());
+        Iterator<DescriptionElementSource> sourceIt = accumulatedDistribution.getSources().iterator();
+        // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
+        assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
+        assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testArea_rank_and_area() {
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
+    public void testArea_rank_and_area_1() throws JvmLimitsException {
+
+        Set<Distribution> distributions_LCA = new HashSet<>();
+        distributions_LCA.add(newDistribution(book_a, yug_mn, PresenceAbsenceTerm.CULTIVATED(), "1"));
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "2")); // NATIVE should succeed
 
         addDistributions(
                 T_LAPSANA_COMMUNIS_ALPINA_UUID,
-                new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.CULTIVATED()),
-                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.NATIVE()), // should succeed
-               }
+                distributions_LCA
             );
+
+        Set<Distribution> distributions_LC = new HashSet<>();
+        distributions_LC.add(newDistribution(book_a, yug_mn, PresenceAbsenceTerm.CULTIVATED(), "3"));
+        distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "4")); // NATIVE should succeed
+
+        commitAndStartNewTransaction(null);
+
         addDistributions(
                 T_LAPSANA_COMMUNIS_UUID,
-                new Distribution[] {
-                        Distribution.NewInstance(yug_mn, PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION()),
-                        Distribution.NewInstance(yug_ko, PresenceAbsenceTerm.CULTIVATED()),
-               }
+                distributions_LC
             );
 
         engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
 
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
-        assertEquals(2, lapsana_communis.getDescriptions().size());
+        assertEquals("Lapsana communis alpina must only have 2 Descriptions", 2, lapsana_communis.getDescriptions().size());
 
         Taxon lapsana = (Taxon) taxonService.load(T_LAPSANA_UUID);
-        assertEquals(1, lapsana.getDescriptions().size());
+        assertEquals("Lapsana communis must only have 1 Description", 1, lapsana.getDescriptions().size());
         TaxonDescription description = lapsana.getDescriptions().iterator().next();
+        assertTrue(description.hasMarker(MarkerType.COMPUTED(), true));
         assertEquals(3, description.getElements().size());
         int numExpectedFound = 0;
         for (DescriptionElementBase element : description.getElements()){
@@ -245,17 +282,204 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
             if(distribution.getArea().equals(yug)){
                 numExpectedFound++;
                 assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals(2, distribution.getSources().size());
+                Iterator<DescriptionElementSource> sourceIt = distribution.getSources().iterator();
+                // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
+                assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
+                assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
             }
             if(distribution.getArea().equals(yug_mn)){
                 numExpectedFound++;
                 assertEquals("aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.CULTIVATED().getLabel(), distribution.getStatus().getLabel());
+                assertEquals(2, distribution.getSources().size());
+                Iterator<DescriptionElementSource> sourceIt = distribution.getSources().iterator();
+                // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
+                assertTrue(" 1  3 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
+                assertTrue(" 1  3 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
             }
             if(distribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
                 assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals(2, distribution.getSources().size());
+                Iterator<DescriptionElementSource> sourceIt = distribution.getSources().iterator();
+                // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
+                assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
+                assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
             }
         }
         assertEquals("All three expected areas should have been found before", numExpectedFound, 3);
+    }
+
+    /**
+     * Variant of {@link #testArea_rank_and_area_1()} with alternate source references to check the
+     * suppression of duplicates.
+     *
+     * This test relies on {@link #testArea_rank_and_area_1()}
+     * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
+    public void testArea_rank_and_area_2() throws JvmLimitsException {
+
+        Set<Distribution> distributions_LCA = new HashSet<Distribution>();
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
+        distributions_LCA.add(newDistribution(book_b, yug_ko, PresenceAbsenceTerm.NATIVE(), "2"));
+
+        addDistributions(
+                T_LAPSANA_COMMUNIS_ALPINA_UUID,
+                distributions_LCA
+            );
+
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+
+        Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
+        int computedDescriptionsCnt = 0;
+        for(TaxonDescription description : lapsana_communis.getDescriptions()) {
+            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+                computedDescriptionsCnt++;
+                assertEquals(2, description.getElements().size()); // yug, yug_ko
+                for(DescriptionElementBase distribution : description.getElements()) {
+                    logger.debug(((Distribution)distribution).getArea() + " " + sourcesToString(distribution));
+                    if(((Distribution)distribution).getArea().equals(yug_ko)){
+                        assertEquals(2, distribution.getSources().size());
+                    }
+                    if(((Distribution)distribution).getArea().equals(yug)){
+                        assertEquals(2, distribution.getSources().size());
+                    }
+                }
+            }
+        }
+        assertEquals(1, computedDescriptionsCnt);
+    }
+
+
+    /**
+     * Variant of {@link #testArea_rank_and_area_1()} with alternate source references to check the
+     * suppression of duplicates.
+     *
+     * This test relies on {@link #testArea_rank_and_area_1()}
+     * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
+    public void testArea_rank_and_area_3() throws JvmLimitsException {
+
+        Set<Distribution> distributions_LCA = new HashSet<Distribution>();
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "3"));
+
+        addDistributions(
+                T_LAPSANA_COMMUNIS_ALPINA_UUID,
+                distributions_LCA
+            );
+
+        Set<Distribution> distributions_LC = new HashSet<>();
+        distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
+        distributions_LC.add(newDistribution(book_b, yug_ko, PresenceAbsenceTerm.NATIVE(), "2"));
+
+        addDistributions(
+                T_LAPSANA_COMMUNIS_UUID,
+                distributions_LC
+            );
+
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+
+        Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
+        int computedDescriptionsCnt = 0;
+        for(TaxonDescription description : lapsana_communis.getDescriptions()) {
+            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+                computedDescriptionsCnt++;
+                assertEquals(2, description.getElements().size());
+                for(DescriptionElementBase distribution : description.getElements()) {
+                    logger.debug(((Distribution)distribution).getArea() + " " + sourcesToString(distribution));
+                    if(((Distribution)distribution).getArea().equals(yug_ko)){
+                        assertEquals(2, distribution.getSources().size());
+                    }
+                    if(((Distribution)distribution).getArea().equals(yug)){
+                        assertEquals(3, distribution.getSources().size());
+                    }
+                }
+            }
+        }
+        assertEquals(1, computedDescriptionsCnt);
+    }
+
+    /**
+     * Variant of {@link #testArea_rank_and_area_1()} with alternate source references to
+     * check the handling of the case where the target taxon already has the distribution which is the
+     * result of the aggregation (see http://dev.e-taxonomy.eu/trac/ticket/4366#comment:12)
+     *
+     * This test relies on {@link #testArea_rank_and_area_1()}
+     * an makes assertions only on the alternative source references
+     * @throws JvmLimitsException
+     */
+    @Test
+    @Ignore
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+    })
+    public void testArea_rank_and_area_4() throws JvmLimitsException {
+
+        Set<Distribution> distributions_LCA = new HashSet<>();
+        distributions_LCA.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "1"));
+
+        addDistributions(
+                T_LAPSANA_COMMUNIS_ALPINA_UUID,
+                distributions_LCA
+            );
+
+        Set<Distribution> distributions_LC = new HashSet<>();
+        distributions_LC.add(newDistribution(book_a, yug, PresenceAbsenceTerm.NATIVE(), "2")); //  should succeed
+
+        addDistributions(
+                T_LAPSANA_COMMUNIS_UUID,
+                distributions_LC
+            );
+
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+
+        Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
+        int computedDescriptionsCnt = 0;
+        for(TaxonDescription description : lapsana_communis.getDescriptions()) {
+            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+                computedDescriptionsCnt++;
+                assertEquals(2, description.getElements().size());
+                Distribution distribution = (Distribution)description.getElements().iterator().next();
+                if(distribution.getArea().equals(yug_ko)){
+                    assertEquals(2, distribution.getSources().size());
+                    DescriptionElementSource source = distribution.getSources().iterator().next();
+                    assertEquals("2", source.getCitationMicroReference());
+                }
+            }
+        }
+        assertEquals(1, computedDescriptionsCnt);
+    }
+
+    /**
+     * @param referenceTitle
+     * @param area
+     * @param status
+     * @param microCitation
+     * @return
+     */
+    private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
+            String microCitation) {
+        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microCitation);
+        Distribution distribution = Distribution.NewInstance(area, status);
+        distribution.getSources().add(source);
+        return distribution;
     }
 
     /**
@@ -263,7 +487,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
      * @param taxonUuid
      * @param distributions
      */
-    private void addDistributions(UUID taxonUuid, Distribution[] distributions) {
+    private void addDistributions(UUID taxonUuid, Collection<Distribution> distributions) {
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
         if(taxon == null) {
             throw new NullPointerException("No taxon found for " + taxonUuid);
@@ -278,8 +502,16 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         commitAndStartNewTransaction(null);
     }
 
+    private String sourcesToString(DescriptionElementBase deb) {
+        StringBuffer out = new StringBuffer();
+        for ( DescriptionElementSource source : deb.getSources()) {
+            out.append(source.getCitation().getTitle() + " : " + source.getCitationMicroReference() + ", ");
+        }
+        return out.toString();
+    }
 
-//    @Test //  uncomment to create test data file//
+
+    //@Test //  uncomment to create test data file//
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
@@ -367,6 +599,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                 "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
                 "AGENTBASE", "CLASSIFICATION",  "TAXONNODE",
                 "HOMOTYPICALGROUP", "LANGUAGESTRING",
+                "HIBERNATE_SEQUENCES"
          });
 
     }
