@@ -1250,7 +1250,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         }
 
         if(authorship == null) {
-            criteria.add(Restrictions.isEmpty("name.authorshipCache"));
+            criteria.add(Restrictions.eq("name.authorshipCache", ""));
         } else if(!authorship.equals("*")) {
             criteria.add(Restrictions.eq("name.authorshipCache", authorship));
         }
