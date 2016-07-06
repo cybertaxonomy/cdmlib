@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +35,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -64,6 +70,15 @@ public class CsvExportController extends AbstractController{
 	
 	@Autowired 
 	private ITermService termService;
+
+	@Autowired 
+	private IClassificationService classificationService;
+
+	@Autowired 
+	private ITaxonNodeService taxonNodeService;
+
+	@Autowired 
+	private ITaxonService taxonService;
 	
 	@Autowired
 	public ProgressMonitorController progressMonitorController;
@@ -86,18 +101,28 @@ public class CsvExportController extends AbstractController{
      * Fetches data from the application context and forwards the stream to the HttpServletResponse, which offers a file download.
      *
      * @param featureUuids List of uuids to download/select {@link Feature feature}features
-     * @param taxonNodeUuid Selected {@link Classification classification} to iterate the {@link Taxon}
+     * @param taxonUuid Selected {@link Classification classification} to iterate the {@link Taxon}
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      */
 	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
 	public void doExportRedlist(
 			@RequestParam(value = "features", required = false) UuidList featureUuids,
-			@RequestParam(value = "taxonNode", required = false) String taxonNodeUuid,
+			@RequestParam(value = "classificationUuid", required = false) String classificationUuid,
+			@RequestParam(value = "taxonUuid", required = false) String taxonUuid,
             @RequestParam(value = "area", required = false) UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		UUID taxonNodeUuid = null;
+		Classification classification = classificationService.load(UUID.fromString(classificationUuid));
+		if(CdmUtils.isNotBlank(taxonUuid)){
+			Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(UUID.fromString(taxonUuid), Arrays.asList(new String[]{"taxonNodes.classification"})), Taxon.class);
+			taxonNodeUuid = classification.getNode(taxon).getUuid();
+		}
+		else{
+			taxonNodeUuid = classification.getRootNode().getUuid();
+		}
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(taxonNodeUuid, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
@@ -144,10 +169,10 @@ public class CsvExportController extends AbstractController{
 	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
 	 * @return the CsvTaxExportConfiguratorRedlist config
 	 */
-	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
+	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(UUID taxonNodeUuid, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Set<UUID> taxonNodeUuids = Collections.singleton(UUID.fromString(taxonNodeUuid)); 
+		Set<UUID> taxonNodeUuids = Collections.singleton(taxonNodeUuid); 
 		String destination = System.getProperty("java.io.tmpdir");
 		List<Feature> features = new ArrayList<Feature>();
 		if(featureUuids != null){
