@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -101,14 +103,15 @@ public class CsvExportController extends AbstractController{
      * Fetches data from the application context and forwards the stream to the HttpServletResponse, which offers a file download.
      *
      * @param featureUuids List of uuids to download/select {@link Feature feature}features
-     * @param taxonUuid Selected {@link Classification classification} to iterate the {@link Taxon}
+     * @param taxonName the selected taxon name
+     * @param classificationUuid the uuid of the selected classification
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      */
 	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
 	public void doExportRedlist(
 			@RequestParam(value = "features", required = false) UuidList featureUuids,
 			@RequestParam(value = "classificationUuid", required = false) String classificationUuid,
-			@RequestParam(value = "taxonUuid", required = false) String taxonUuid,
+			@RequestParam(value = "taxonName", required = false) String taxonName,
             @RequestParam(value = "area", required = false) UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
@@ -116,9 +119,22 @@ public class CsvExportController extends AbstractController{
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		UUID taxonNodeUuid = null;
 		Classification classification = classificationService.load(UUID.fromString(classificationUuid));
-		if(CdmUtils.isNotBlank(taxonUuid)){
-			Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(UUID.fromString(taxonUuid), Arrays.asList(new String[]{"taxonNodes.classification"})), Taxon.class);
-			taxonNodeUuid = classification.getNode(taxon).getUuid();
+		if(CdmUtils.isNotBlank(taxonName)){
+			MatchingTaxonConfigurator config = new MatchingTaxonConfigurator();
+			config.setClassificationUuid(UUID.fromString(classificationUuid));
+			config.setTaxonNameTitle(taxonName);
+			List<TaxonBase> taxaByName = taxonService.findTaxaByName(config);
+			if(taxaByName.isEmpty()){
+				logger.warn("No taxon found with name: "+taxonName+". Using only classification.");
+			}
+			else if(taxaByName.size()>1){
+				logger.warn("More than one taxon found for name: "+taxonName+". Using the first insance.");
+			}
+			else{
+				UUID uuid = taxaByName.iterator().next().getUuid();
+				Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(uuid, Arrays.asList(new String[]{"taxonNodes.classification"})), Taxon.class);
+				taxonNodeUuid = classification.getNode(taxon).getUuid();
+			}
 		}
 		else{
 			taxonNodeUuid = classification.getRootNode().getUuid();
