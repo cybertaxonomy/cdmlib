@@ -286,9 +286,15 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndexClosure,
+    public Map<String, Integer> rankOrderIndexForTreeIndex(List<String> treeIndexes,
             Integer minRankOrderIndex,
             Integer maxRankOrderIndex) {
+
+        Map<String, Integer> result = new HashMap<>();
+        if (treeIndexes == null || treeIndexes.isEmpty()){
+            return result;
+        }
+
         String hql = " SELECT tn.treeIndex, r.orderIndex "
                 + " FROM TaxonNode tn JOIN tn.taxon t JOIN t.name n JOIN n.rank r "
                 + " WHERE tn.treeIndex IN (:treeIndexes) ";
@@ -300,7 +306,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
 
         Query query =  getSession().createQuery(hql);
-        query.setParameterList("treeIndexes", treeIndexClosure);
+        query.setParameterList("treeIndexes", treeIndexes);
         if (minRankOrderIndex != null){
             query.setParameter("minOrderIndex", minRankOrderIndex);
         }
@@ -308,7 +314,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             query.setParameter("maxOrderIndex", maxRankOrderIndex);
         }
 
-        Map<String, Integer> result = new HashMap<>();
         @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
@@ -319,13 +324,17 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public Map<String, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Set<String> treeIndexes) {
+        Map<String, UuidAndTitleCache<?>> result = new HashMap<>();
+        if (treeIndexes == null || treeIndexes.isEmpty()){
+            return result;
+        }
+
         String hql = " SELECT tn.treeIndex, t.uuid, tnb.titleCache "
                 + " FROM TaxonNode tn JOIN tn.taxon t Join t.name tnb "
                 + " WHERE tn.treeIndex IN (:treeIndexes) ";
         Query query =  getSession().createQuery(hql);
         query.setParameterList("treeIndexes", treeIndexes);
 
-        Map<String, UuidAndTitleCache<?>> result = new HashMap<>();
         @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
