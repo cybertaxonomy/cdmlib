@@ -123,18 +123,6 @@ public class ClassificationController extends BaseController<Classification,ICla
         return rootNodes;
     }
 
-    private Rank findRank(UUID rankUuid) {
-        Rank rank = null;
-        if(rankUuid != null){
-            DefinedTermBase<?> definedTermBase =  termService.find(rankUuid);
-            if(definedTermBase instanceof Rank){
-                rank = (Rank) definedTermBase;
-            } else {
-               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
-            }
-        }
-        return rank;
-    }
 
     /**
      * @param classificationUuid
@@ -171,5 +159,19 @@ public class ClassificationController extends BaseController<Classification,ICla
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return result;
+    }
+
+
+    private Rank findRank(UUID rankUuid) {
+        Rank rank = null;
+        if(rankUuid != null){
+            DefinedTermBase<?> definedTermBase =  termService.find(rankUuid);
+            if(definedTermBase instanceof Rank){
+                rank = (Rank) definedTermBase;
+            } else {
+               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
+            }
+        }
+        return rank;
     }
 }
