@@ -412,8 +412,8 @@ public class NonViralNameParserImplTest {
         IReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
         Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
         Reference inRef = ((Reference)nomRef).getInReference();
-        String title = inRef.getTitle();
-        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        String abbrevTitle = inRef.getAbbrevTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(inRef.getAuthorship() instanceof Team);
         Team team = (Team)inRef.getAuthorship();
         assertEquals(3, team.getTeamMembers().size());
@@ -438,8 +438,8 @@ public class NonViralNameParserImplTest {
 	    nomRef = multipleAuthorName.getNomenclaturalReference();
         Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
         inRef = ((Reference)nomRef).getInReference();
-        title = inRef.getTitle();
-        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        abbrevTitle = inRef.getAbbrevTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(inRef.getAuthorship() instanceof Person);
         Person person = (Person)inRef.getAuthorship();
         assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitle());
@@ -454,8 +454,8 @@ public class NonViralNameParserImplTest {
 	    assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
 	    nomRef = multipleAuthorName.getNomenclaturalReference();
         Assert.assertNull("nomRef must not have inRef as it is a book itself", ((Reference)nomRef).getInReference());
-        title = nomRef.getTitle();
-        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", title);
+        abbrevTitle = nomRef.getAbbrevTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(nomRef.getAuthorship() instanceof Team);
         team = (Team)nomRef.getAuthorship();
         assertEquals(3, team.getTeamMembers().size());
@@ -997,7 +997,7 @@ public class NonViralNameParserImplTest {
 		assertNotNull(inBook.getAuthorship());
 		assertEquals("Otto", inBook.getAuthorship().getTitleCache());
 		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
-		assertEquals("Sp. Pl.", inBook.getTitle());
+		assertEquals("Sp. Pl.", inBook.getAbbrevTitle());
 		assertEquals("4(6)", inBook.getVolume());
 		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == ((Reference)name2.getNomenclaturalReference()).getAuthorship());
 
@@ -1015,7 +1015,7 @@ public class NonViralNameParserImplTest {
 		assertNotNull(journal);
 		//assertEquals("Sp. Pl. 4(6)", inBook.getTitleCache());
 		assertEquals("Sp. Pl.",((Reference) journal).getTitleCache());
-		assertEquals("Sp. Pl.", journal.getTitle());
+		assertEquals("Sp. Pl.", journal.getAbbrevTitle());
 		assertEquals("4(6)",((IArticle)ref).getVolume());
 		assertTrue("Name author and reference author should be the same", name3.getCombinationAuthorship() == name3.getNomenclaturalReference().getAuthorship());
 
@@ -1047,7 +1047,7 @@ public class NonViralNameParserImplTest {
 		journal = ((IArticle)ref).getInJournal();
 		assertNotNull(journal);
 		assertEquals(journalTitle, ((Reference) journal).getTitleCache());
-		assertEquals(journalTitle, journal.getTitle());
+		assertEquals(journalTitle, journal.getAbbrevTitle());
 		assertEquals("4(6)", ((IArticle)ref).getVolume());
 
 		//Zoo name
@@ -1460,7 +1460,7 @@ public class NonViralNameParserImplTest {
 		assertNotNull(name.getNomenclaturalReference());
 		INomenclaturalReference ref = name.getNomenclaturalReference();
 		assertEquals("1987", ref.getYear());
-		assertEquals("Sp. Pl.", ref.getTitle());
+		assertEquals("Sp. Pl.", ref.getAbbrevTitle());
 	}
 
 
@@ -1930,7 +1930,7 @@ public class NonViralNameParserImplTest {
         assertEquals( "Nees & Mart.", combinationAuthor.getNomenclaturalTitle());
         nomRef = (Reference)name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
-        assertEquals("Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur.", nomRef.getInReference().getTitle());
+        assertEquals("Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur.", nomRef.getInReference().getAbbrevTitle());
         assertEquals("12", nomRef.getVolume());
         assertEquals("14", name.getNomenclaturalMicroReference());
         assertEquals("1824", nomRef.getYear());
