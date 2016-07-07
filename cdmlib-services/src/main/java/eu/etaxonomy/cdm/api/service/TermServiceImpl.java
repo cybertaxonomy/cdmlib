@@ -84,9 +84,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		this.dao = dao;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
 	@Override
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -141,7 +138,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
 			throw new IllegalStateException(String.format(message, list.size()));
 		}
-
 	}
 
 	@Override
@@ -244,9 +240,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return languageStringBaseDao.save(languageData).getUuid();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
+
 	/** @deprecated use {@link #delete(DefinedTermBase, TermDeletionConfigurator)} instead
 	 * to allow DeleteResult return type*/
 	@Override

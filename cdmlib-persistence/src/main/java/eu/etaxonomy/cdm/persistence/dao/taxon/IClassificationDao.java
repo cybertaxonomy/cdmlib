@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * @author a.mueller
@@ -65,7 +67,9 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public TaxonNode getRootNode(UUID classificationUuid);
 
-    public abstract Long countChildrenOf(Taxon taxon, Classification classification);
+    public Long countChildrenOf(Taxon taxon, Classification classification);
+
+    public ClassificationLookupDTO classificationLookup(Classification classification);
 
     /**
      * @param taxon
@@ -84,6 +88,14 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @return
      */
     Long countSiblingsOf(Taxon taxon, Classification classification);
+
+    /**
+     * Returns the tree indexes for a given set of taxon uuids as a map.
+     * @param classificationUuid
+     * @param originalTaxonUuids
+     * @return
+     */
+    Map<UUID, String> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
 
 
 }

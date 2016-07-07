@@ -119,7 +119,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#listTerms(java.util.UUID)}.
      */
-//	@Ignore
     @Test
     /* @DataSet
      * WARNING:
@@ -250,13 +249,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull(termBase);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

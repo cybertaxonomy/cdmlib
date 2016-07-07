@@ -23,8 +23,8 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	private String fieldsTerminatedBy=";";
 	private boolean namesOnly = false;
 	private UUID classificationUUID;
-
-	private boolean condensedDistribution = true;
+	private boolean condensedDistribution = false;
+	private boolean invalidNamesQuoted = false;
 
 
     private Rank rank = Rank.GENUS();
@@ -141,6 +141,20 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
      */
     public void setCondensedDistribution(boolean condensedDistribution) {
         this.condensedDistribution = condensedDistribution;
+    }
+
+    /**
+     * @return the invalidNamesQuoted
+     */
+    public boolean isInvalidNamesQuoted() {
+        return invalidNamesQuoted;
+    }
+
+    /**
+     * @param invalidNamesQuoted the invalidNamesQuoted to set
+     */
+    public void setInvalidNamesQuoted(boolean invalidNamesQuoted) {
+        this.invalidNamesQuoted = invalidNamesQuoted;
     }
 
 

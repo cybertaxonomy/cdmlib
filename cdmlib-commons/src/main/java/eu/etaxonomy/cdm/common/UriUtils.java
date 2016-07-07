@@ -43,16 +43,17 @@ import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
 /**
@@ -369,15 +370,23 @@ public class UriUtils {
         }
 
         //Http
-        HttpClient  client = new DefaultHttpClient();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpget = new HttpGet(serviceUri);
+
+
         if(timeout!=null){
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), timeout);
+
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setSocketTimeout(timeout)
+                    .setConnectTimeout(timeout)
+                    .setConnectionRequestTimeout(timeout)
+                    .build();
+            httpget.setConfig(requestConfig);
         }
-        HttpUriRequest request = new HttpHead(serviceUri);
 
         try {
             // Execute the request
-            HttpResponse response = client.execute(request);
+            HttpResponse response = httpclient.execute(httpget);
             // Examine the response status
             if (logger.isDebugEnabled()){
                 logger.debug(response.getStatusLine());

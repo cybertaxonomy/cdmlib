@@ -232,8 +232,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	@Test
 //	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/io/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/io/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="NormalExplicitImportTest.testUuid.xml"),
     })
 	public void testUUID(){

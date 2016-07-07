@@ -140,7 +140,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -185,7 +185,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@Ignore
-    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportSubspecies() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -213,7 +213,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportVariety() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -250,7 +250,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testMultipleIdentificationsPreferredFlag() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -293,7 +293,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportForm() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -313,7 +313,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testMapUnitIDAsBarcode() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -338,7 +338,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testMapUnitIDAsAccessionNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -363,7 +363,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testMapUnitIDAsCatalogNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -445,7 +445,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	 */
 	@Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
         @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
 	public void testImportNewTaxaToDefaultClassification(){
@@ -508,7 +508,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      */
 	@Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
         @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
     })
 	public void testIgnoreAuthorship(){
@@ -606,8 +606,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      */
     @Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../../ClearDB_with_Terms_DataSet.xml"),
-        @DataSet("../../../TermsDataSet-with_auditing_info.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
@@ -660,7 +660,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * @throws ParseException
      */
     @Test
-    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportNonParsableName() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -693,7 +693,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@Ignore
-	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testSetUnitIDAsBarcode() {
 
 	}

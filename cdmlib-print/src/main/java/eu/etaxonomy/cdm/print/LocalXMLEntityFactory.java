@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.sf.json.JsonConfig;
-
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -41,6 +39,7 @@ import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.controller.dto.PolytomousKeyNodeDtoController;
 import eu.etaxonomy.cdm.remote.view.JsonView;
 import eu.etaxonomy.cdm.remote.view.JsonView.Type;
+import net.sf.json.JsonConfig;
 
 /**
  * The local entity factory assumes that an application context is available and
@@ -48,7 +47,6 @@ import eu.etaxonomy.cdm.remote.view.JsonView.Type;
  *
  * @author n.hoffmann
  * @created Jul 16, 2010
- * @version 1.0
  */
 @Component
 public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
@@ -158,13 +156,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return processElementList(result);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getChildNodes(org.jdom.
-     * Element)
-     */
     @Override
     public List<Element> getChildNodes(Element treeNode) {
         xmlView.setJsonConfig(jsonConfig);
@@ -176,7 +167,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         try {
             if (EntityType.CLASSIFICATION.equals(entityType)) {
                 resultObject = classificationController.getChildNodes(uuid,
-                        null);
+                        null, null);
             } else if (EntityType.TAXON_NODE.equals(entityType)) {
                 resultObject = taxonNodePrintAppController
                         .getChildNodes(uuid, null);
@@ -191,13 +182,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return processElementList(result);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTaxonNodeByUuid(java
-     * .util.UUID)
-     */
     @Override
     public Element getTaxonNode(UUID taxonNodeUuid) {
         xmlView.setJsonConfig(jsonConfig);
@@ -250,13 +234,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureForFeatureNode
-     * (java.util.UUID)
-     */
     @Override
     public Element getFeatureForFeatureNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
@@ -294,13 +271,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTaxonForTaxonNode(org
-     * .jdom.Element)
-     */
     @Override
     public Element getTaxonForTaxonNode(Element taxonNodeElement) {
         xmlView.setJsonConfig(jsonConfig);
@@ -371,13 +341,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return elementList;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTypeDesignations(org
-     * .jdom.Element)
-     */
     @Override
     public List<Element> getTypeDesignations(Element nameElement) {
         xmlView.setJsonConfig(jsonConfig);
@@ -401,13 +364,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return processElementList(result);
     }
 
-    /*
-     * (non-Javadoc)n
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getDescriptions(org.jdom
-     * .Element)
-     */
     @Override
     public Element getDescriptions(Element taxonElement) {
         xmlView.setJsonConfig(jsonConfigPortal);
@@ -429,13 +385,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getPolytomousKey(org
-     * .jdom.Element)
-     */
+
     @Override
     public Element getPolytomousKey(Element taxonElement) {
     	xmlView.setJsonConfig(jsonConfigPortal);
@@ -515,27 +465,18 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return new Element("somethingWentWrong");
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getReferences(org.jdom.Element)
-	 */
-	@Override
-	public List<Element> getReferences(Element referenceElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<Element> getReferences(Element referenceElement) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getTaxonNodesByName(java.lang.String)
-	 */
 	@Override
 	public Element getTaxonNodesByName(String taxonName, String classification) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getMedia(org.jdom.Element)
-	 */
 	@Override
 	public List<Element> getMedia(Element taxonElement) {
 		// TODO Auto-generated method stub

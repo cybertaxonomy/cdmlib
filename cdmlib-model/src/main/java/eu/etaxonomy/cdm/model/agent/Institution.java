@@ -105,6 +105,15 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 		return new Institution();
 	}
 
+	   /**
+     * Creates a new empty institution instance.
+     */
+    public static Institution NewNamedInstance(String name){
+        Institution result = new Institution();
+        result.setName(name);
+        return result;
+    }
+
 
 	/**
 	 * Class constructor.

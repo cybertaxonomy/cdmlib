@@ -168,7 +168,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidCultivation = UUID.fromString("f10f34fb-53b9-43c2-bfd6-05ea475e8e0f");
 
 	public static final UUID uuidNote = UUID.fromString("b9af1489-6b68-497f-8d4b-260a9f886827");
-	public static final UUID uuidNotes = UUID.fromString("e31bb420-f39e-493d-b452-dd5e63dda443");
+//	public static final UUID uuidNotes = UUID.fromString("e31bb420-f39e-493d-b452-dd5e63dda443");
 	public static final UUID uuidTaxonomy = UUID.fromString("0c80c395-038b-4bd6-9ff4-48f4511754b6");
 	public static final UUID uuidMorphology = UUID.fromString("1b5bfe4a-d075-4e38-ab63-3c6b6bb5846a");
 	public static final UUID uuidPalynology = UUID.fromString("50ddb15e-aa25-4933-8449-c321dccad4e7");
@@ -1230,6 +1230,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("systematics")){return Feature.SYSTEMATICS();
 		}else if (key.equalsIgnoreCase("discussion")){return Feature.DISCUSSION();
 		}else if (key.equalsIgnoreCase("keys")){return Feature.KEY();
+	    }else if (key.equalsIgnoreCase("Notes")){return Feature.NOTES();
 		}else{
 			return null;
 		}
@@ -1344,7 +1345,6 @@ public class MarkupTransformer extends InputTransformerBase {
 
 
 		}else if (key.equalsIgnoreCase("Note")){return uuidNote;
-		}else if (key.equalsIgnoreCase("Notes")){return uuidNotes;
 		}else if (key.equalsIgnoreCase("Taxonomy")){return uuidTaxonomy;
 		}else if (key.equalsIgnoreCase("Morphology")){return uuidMorphology;
 		}else if (key.equalsIgnoreCase("Palynology")){return uuidPalynology;

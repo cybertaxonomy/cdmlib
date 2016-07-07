@@ -20,7 +20,10 @@ public enum UTF8 {
 	NO_BREAK_SPACE("\u00A0"),
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
-	RIGHT_SINGLE_QUOT("\u2019") // Right single quotation mark
+	RIGHT_SINGLE_QUOT("\u2019"), // Right single quotation mark
+	ENGLISH_QUOT_START("\u201e"),  //Left English quotation mark
+	ENGLISH_QUOT_END("\u201f")  //Right English quotation mark -‟-
+
 	;
 
 	private String value;
