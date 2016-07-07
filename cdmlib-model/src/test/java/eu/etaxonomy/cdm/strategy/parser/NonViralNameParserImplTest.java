@@ -1949,6 +1949,20 @@ public class NonViralNameParserImplTest {
 //        assertEquals("930", name.getNomenclaturalMicroReference());
 //        assertEquals("1759", nomRef.getYear());
 
+        //issue with letter "(1a)"
+        name = parser.parseReferencedName("Arthraerua (Kuntze) Schinz,"
+                + " Nat. Pflanzenfam. 3(1a): 109. 1893");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Schinz", combinationAuthor.getNomenclaturalTitle());
+        nomRef = (Reference)name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("Nat. Pflanzenfam.", nomRef.getAbbrevTitle());
+        assertEquals("3(1a)", nomRef.getVolume());
+        assertEquals("109", name.getNomenclaturalMicroReference());
+        assertEquals("1893", nomRef.getYear());
+
  }
 
 }
