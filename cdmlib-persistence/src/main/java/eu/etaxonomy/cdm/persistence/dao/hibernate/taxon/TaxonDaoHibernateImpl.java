@@ -1213,8 +1213,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,	Integer pageNumber) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,	Integer pageNumber)");
         Criteria criteria = null;
         if (clazz == null){
             criteria = getSession().createCriteria(TaxonBase.class);
@@ -1247,6 +1247,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
         } else if(!infraSpecificEpithet.equals("*")) {
             criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
+        }
+
+        if(authorship == null) {
+            criteria.add(Restrictions.eq("name.authorshipCache", ""));
+        } else if(!authorship.equals("*")) {
+            criteria.add(Restrictions.eq("name.authorshipCache", authorship));
         }
 
         if(rank != null) {
@@ -1981,7 +1987,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
        }
         Query query = getSession().createQuery(queryString);
         if (pattern != null){
-          pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         }
         if (limit  != null){

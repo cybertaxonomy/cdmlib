@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DistributionOrder;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
+import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
@@ -187,8 +189,14 @@ public class DescriptionListController extends IdentifiableListController<Descri
                 public void run() {
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
-                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
-                            null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                    try {
+                        transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
+                                null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                    } catch (JvmLimitsException e) {
+                        IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(transmissionEngineMonitorUuid);
+                        monitor.setIsFailed(true);
+                        monitor.setFeedback(e);
+                    }
                 }
             };
             if(priority == null) {

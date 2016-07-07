@@ -27,12 +27,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -50,6 +54,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -581,5 +586,102 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 		}
 		return childNodes;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClassificationLookupDTO classificationLookup(Classification classification) {
+        return dao.classificationLookup(classification);
+    }
+
+
+    @Override
+    public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config){
+        DeleteResult result = new DeleteResult();
+        Classification classification = dao.findByUuid(classificationUuid);
+        if (classification == null){
+            result.addException(new IllegalArgumentException("The classification does not exist in database."));
+            result.setAbort();
+            return result;
+        }
+        if (!classification.hasChildNodes()){
+            dao.delete(classification);
+        }
+        if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE) ){
+            TaxonNode root = classification.getRootNode();
+            taxonNodeDao.delete(root, true);
+            dao.delete(classification);
+        }
+
+
+        return result;
+    }
+
+    @Override
+    public List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> originalTaxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank){
+        List<GroupedTaxonDTO> result = new ArrayList<>();
+
+        //get treeindex for each taxonUUID
+        Map<UUID, String> taxonIdTreeIndexMap = dao.treeIndexForTaxonUuids(classificationUuid, originalTaxonUuids);
+
+        //build treeindex tree or list
+        List<String> treeIndexClosure = new ArrayList<>();
+        for (String treeIndex : taxonIdTreeIndexMap.values()){
+            String[] splits = treeIndex.substring(1).split(ITreeNode.separator);
+            String currentIndex = ITreeNode.separator;
+            for (String split : splits){
+                if (split.equals("")){
+                    continue;
+                }
+                currentIndex += split + ITreeNode.separator;
+                if (!treeIndexClosure.contains(currentIndex) && !split.startsWith(ITreeNode.treePrefix)){
+                    treeIndexClosure.add(currentIndex);
+                }
+            }
+        }
+
+        //get rank sortindex for all parent taxa with sortindex <= minRank and sortIndex >= maxRank (if available)
+        Integer minRankOrderIndex = minRank == null ? null : minRank.getOrderIndex();
+        Integer maxRankOrderIndex = maxRank == null ? null : maxRank.getOrderIndex();
+        Map<String, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
+
+        //remove all treeindex with "exists child in above map(and child.sortindex > xxx)
+        List<String> treeIndexList = new ArrayList<>(treeIndexSortIndexMapTmp.keySet());
+        Collections.sort(treeIndexList, new TreeIndexComparator());
+        Map<String, Integer> treeIndexSortIndexMap = new HashMap<>();
+        String lastTreeIndex = null;
+        for (String treeIndex : treeIndexList){
+            if (lastTreeIndex != null && treeIndex.startsWith(lastTreeIndex)){
+                treeIndexSortIndexMap.remove(lastTreeIndex);
+            }
+            treeIndexSortIndexMap.put(treeIndex, treeIndexSortIndexMapTmp.get(treeIndex));
+            lastTreeIndex = treeIndex;
+        }
+
+        //get taxonID for treeIndexes
+        Map<String, UuidAndTitleCache<?>> treeIndexTaxonIdMap = taxonNodeDao.taxonUuidsForTreeIndexes(treeIndexSortIndexMap.keySet());
+
+        //fill result list
+        for (UUID originalTaxonUuid : originalTaxonUuids){
+            GroupedTaxonDTO item = new GroupedTaxonDTO();
+            result.add(item);
+            item.setTaxonUuid(originalTaxonUuid);
+            String groupIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
+            while (groupIndex != null){
+                if (treeIndexTaxonIdMap.get(groupIndex) != null){
+                    UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupIndex);
+                    item.setGroupTaxonUuid(uuidAndLabel.getUuid());
+                    item.setGroupTaxonName(uuidAndLabel.getTitleCache());
+                    break;
+                }else{
+                    int index = groupIndex.substring(0, groupIndex.length()-1).lastIndexOf(ITreeNode.separator);
+                    groupIndex = index<0 ? null : groupIndex.substring(0, index+1);
+                }
+            }
+        }
+
+        return result;
+    }
 
 }

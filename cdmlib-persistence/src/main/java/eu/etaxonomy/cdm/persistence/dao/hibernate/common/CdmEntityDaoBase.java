@@ -360,7 +360,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	@Override
     public T findById(int id) throws DataAccessException {
-        return (T) getSession().get(type, id);
+        return getSession().get(type, id);
     }
 
 
@@ -412,15 +412,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> listByIds(Collection<Integer> ids,  Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+    public List<T> loadList(Collection<Integer> ids,  List<String> propertyPaths) throws DataAccessException {
 
         if (ids.isEmpty()) {
             return new ArrayList<T>(0);
         }
 
-        Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
+        Criteria criteria = prepareList(ids, null, null, null, "id");
 
-        if (logger.isDebugEnabled()){logger.debug(criteria.toString());};
+        if (logger.isDebugEnabled()){logger.debug(criteria.toString());}
 
          @SuppressWarnings("unchecked")
 		List<T> result = criteria.list();
@@ -741,9 +741,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         @SuppressWarnings("unchecked")
 		List<S> results = criteria.list();
+
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
+
 
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);

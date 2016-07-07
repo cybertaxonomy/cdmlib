@@ -25,6 +25,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -163,6 +164,29 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 
+//*********************************** EQUALS *********************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+
+	    if(!super.equalsByShallowCompare(other)) {
+	        return false;
+	    }
+
+	    int a = -1;
+	    int b = -1;
+	    if(this.getNameUsedInSource() != null) {
+	        a = this.getNameUsedInSource().getId();
+	    }
+	    DescriptionElementSource otherDescriptionElementSource = (DescriptionElementSource)other;
+        if(otherDescriptionElementSource.getNameUsedInSource() != null) {
+            b = otherDescriptionElementSource.getNameUsedInSource().getId();
+        }
+	    return a == b;
+	}
 
 
 }

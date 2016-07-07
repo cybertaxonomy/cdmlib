@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.api.utility.DistributionOrder;
@@ -203,5 +204,23 @@ public interface IEditGeoService {
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe,
             DistributionOrder distributionOrder);
+
+    /**
+    *
+    * @param distributions
+    * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param hideMarkedAreas
+    * @param fallbackAreaMarkerType
+    * @param recipe
+    * @param languages
+    * @return
+    */
+
+    public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            MarkerType fallbackAreaMarkerType,
+            CondensedDistributionRecipe recipe,
+            List<Language> langs);
 
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
@@ -42,6 +43,12 @@ public class FloraCubaCondensedDistributionComposerTest {
     private static NamedArea eastCuba;
     private static NamedArea centralCuba;
     private static NamedArea pinarDelRio;
+    private static NamedArea artemisa;
+    private static NamedArea habana;
+    private static NamedArea mayabeque;
+    private static NamedArea matanzas;
+    private static NamedArea isla_juventud;
+
     private static NamedArea holguin;
     private static NamedArea guantanamo;
 
@@ -151,6 +158,40 @@ public class FloraCubaCondensedDistributionComposerTest {
         //TODO work in progress
     }
 
+    @Test
+    @Ignore
+    public void testCreateCondensedDistributionOrderSubAreas() {
+        FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
+        composer.setAreaPreTag("");
+        composer.setAreaPostTag("");
+
+        Set<Distribution> filteredDistributions = new HashSet<Distribution>();
+        filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
+        filteredDistributions.add(Distribution.NewInstance(eastCuba, statusVoc.findTermByUuid(uuidStatusOccasionallyCultivated)));
+        filteredDistributions.add(Distribution.NewInstance(westernCuba, statusVoc.findTermByUuid(uuidStatusDoubtfullyNativeError)));
+
+        //pinarDelRio, artemisa, habana, mayabeque, matanzas, isla_juventud
+        filteredDistributions.add(Distribution.NewInstance(matanzas, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(artemisa, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(pinarDelRio, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(isla_juventud, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(mayabeque, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(habana, PresenceAbsenceTerm.NATIVE()));
+
+        filteredDistributions.add(Distribution.NewInstance(guantanamo, PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR()));
+        filteredDistributions.add(Distribution.NewInstance(holguin, PresenceAbsenceTerm.NATURALISED()));
+        filteredDistributions.add(Distribution.NewInstance(bahamas, PresenceAbsenceTerm.NATIVE()));
+        filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
+
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
+        String condensedString = condensedDistribution.toString();
+
+        Assert.assertEquals("Condensed string for Cuba differs", "nCu(-dCuW(-cPR*) (c)CuE(nHo)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
+
+
+        //TODO work in progress
+    }
+
 
 
     private static boolean makeAreas(){
@@ -191,7 +232,6 @@ public class FloraCubaCondensedDistributionComposerTest {
 
         cuba.addIncludes(westernCuba);
 
-
         //Pinar del Río PR
         label = "Pinar del Río";
         abbrev = "PR*";
@@ -203,43 +243,43 @@ public class FloraCubaCondensedDistributionComposerTest {
         label = "Artemisa";
         abbrev = "Art";
         uuid = UUID.randomUUID();
-        NamedArea area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(area);
+        artemisa = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        westernCuba.addIncludes(artemisa);
 
         //Ciudad de la Habana
         label = "Ciudad de la Habana";
         abbrev = "Hab*";
         uuid = UUID.randomUUID();
-        area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(area);
+        habana = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        westernCuba.addIncludes(habana);
 
         //Ciudad de la Habana
         label = "Mayabeque";
         abbrev = "May";
         uuid = UUID.randomUUID();
-        area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(area);
+        mayabeque = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        westernCuba.addIncludes(mayabeque);
 
         //Matanzas Mat
         label = "Matanzas";
         abbrev = "Mat";
         uuid = UUID.randomUUID();
-        area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(area);
+        matanzas = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        westernCuba.addIncludes(matanzas);
 
         //Isla de la Juventud IJ
         label = "Isla de la Juventud";
         abbrev = "IJ";
         uuid = UUID.randomUUID();
-        area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(area);
+        isla_juventud = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        westernCuba.addIncludes(isla_juventud);
 
         //Provinces - Central
         //Villa Clara VC
         label = "Villa Clara";
         abbrev = "VC";
         uuid = UUID.randomUUID();
-        area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        NamedArea area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
         centralCuba.addIncludes(area);
 
         //Cienfuegos Ci VC

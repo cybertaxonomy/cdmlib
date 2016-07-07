@@ -379,8 +379,8 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 //    @Test
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    @DataSets({
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDB_with_Terms_DataSet.xml"),
-//        @DataSet("../../database/TermsDataSet-with_auditing_info.xml"),
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+//        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
 //        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    })
     public void getDistributionServiceRequestParameterString(){

@@ -15,5 +15,32 @@ package eu.etaxonomy.cdm.api.service.config;
  *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
+    private boolean deleteIfUsedInTaxonDescription = false;
+    private boolean deleteIfUsedInSpecimenDescription = false;
+    private boolean onlyRemoveFromGallery = false;
 
+    public boolean isDeleteIfUsedInSpecimenDescription() {
+        return deleteIfUsedInSpecimenDescription;
+    }
+    public void setDeleteIfUsedInSpecimenDescription(boolean deleteIfUsedInSpecimenDescription) {
+        this.deleteIfUsedInSpecimenDescription = deleteIfUsedInSpecimenDescription;
+    }
+    public boolean isDeleteIfUsedInTaxonDescription() {
+        return deleteIfUsedInTaxonDescription;
+    }
+    public void setDeleteIfUsedInTaxonDescription(boolean deleteIfUsedInTaxonDescription) {
+        this.deleteIfUsedInTaxonDescription = deleteIfUsedInTaxonDescription;
+    }
+    /**
+     * @return the onlyRemoveFromGallery
+     */
+    public boolean isOnlyRemoveFromGallery() {
+        return onlyRemoveFromGallery;
+    }
+    /**
+     * @param onlyRemoveFromGallery the onlyRemoveFromGallery to set
+     */
+    public void setOnlyRemoveFromGallery(boolean onlyRemoveFromGallery) {
+        this.onlyRemoveFromGallery = onlyRemoveFromGallery;
+    }
 }

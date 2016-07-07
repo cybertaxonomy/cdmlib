@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -649,10 +650,12 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	@Override
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
-	    Query query = getSession().createQuery("select term from DefinedTermBase term where term.termType = :termType");
+	    Query query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.termType = :termType");
 	    query.setParameter("termType", termType);
 
-	    List<T> result = query.list();
+	    @SuppressWarnings("unchecked")
+        List<T> result = query.list();
+
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -666,10 +669,44 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		Query query = getSession().createQuery("from " + clazz.getSimpleName());
 	    //query.setParameter("DTYPE", );
 
-	    List<TERM> result = query.list();
+	    @SuppressWarnings("unchecked")
+        List<TERM> result = query.list();
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 
 	    return result;
 	}
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> type, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPath) {
+
+        return deduplicateResult(super.list(type, limit, start, orderHints, propertyPath));
+    }
+
+    /**
+     * Workaround for http://dev.e-taxonomy.eu/trac/ticket/5871 and #5945
+     * Terms with multiple representations return identical duplicates
+     * due to eager representation loading. We expect these duplicates to appear
+     * in line wo we only compare one term with its predecessor. If it already
+     * exists we remove it from the result.
+     * @param orginals
+     * @return
+     */
+    private <S extends DefinedTermBase<?>> List<S> deduplicateResult(List<S> orginals) {
+        List<S> result = new ArrayList<>();
+        Iterator<S> it = orginals.iterator();
+        S last = null;
+        while (it.hasNext()){
+            S a = it.next();
+            if (a != last){
+                if (!result.contains(a)){
+                    result.add(a);
+                }
+            }
+            last = a;
+        }
+        return result;
+    }
+
 }

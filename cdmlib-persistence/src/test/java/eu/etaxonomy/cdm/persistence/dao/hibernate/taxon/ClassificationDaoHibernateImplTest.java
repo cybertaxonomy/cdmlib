@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -165,6 +166,15 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 //            assertEquals(Rank.SPECIES().getUuid(), t.getName().getRank().getUuid());
 //        }
 	}
+
+    @Test
+    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    public void testClassificationLookup() {
+
+        Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_FULL_UUID));
+        ClassificationLookupDTO classificationLookupDto = classificationDao.classificationLookup(classification);
+        assertEquals(4, classificationLookupDto.getTaxonIds().size());
+    }
 
 
     /**

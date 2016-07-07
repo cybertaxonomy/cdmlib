@@ -258,17 +258,14 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public T load(int id, List<String> propertyPaths);
 
-
     /**
      * @param ids
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
      * @param propertyPaths
      * @return
      * @throws DataAccessException
      */
-    public List<T> listByIds(Collection<Integer> ids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
+    public List<T> loadList(Collection<Integer> ids, List<String> propertyPaths) throws DataAccessException;
+
     /**
      * @param Uuid
      * @return

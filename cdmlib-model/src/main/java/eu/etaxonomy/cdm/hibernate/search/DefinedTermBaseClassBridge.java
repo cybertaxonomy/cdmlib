@@ -35,9 +35,6 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
     private boolean includeParentTerms = false;
 
 
-    /* (non-Javadoc)
-     * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
 
@@ -98,22 +95,22 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         allField.setBoost(luceneOptions.getBoost());
         document.add(allField);
 
-        Field langField = new TextField(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
-                text,
-                luceneOptions.getStore());
-        allField.setBoost(luceneOptions.getBoost());
-        document.add(langField);
+
+        if (representation.getLanguage() != null){
+            Field langField = new TextField(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
+                    text,
+                    luceneOptions.getStore());
+
+            allField.setBoost(luceneOptions.getBoost());
+            document.add(langField);
+        }
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.search.bridge.ParameterizedBridge#setParameterValues(java.util.Map)
-     */
     @Override
     public void setParameterValues(Map<String, String> parameters) {
         if(parameters.containsKey(INCLUDE_PARENT_TERMS_KEY)){
             includeParentTerms = Boolean.parseBoolean(parameters.get(INCLUDE_PARENT_TERMS_KEY));
         }
-
     }
 
 

@@ -183,6 +183,8 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         if (pattern != null){
             query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() +" where nomenclaturalTitle like :pattern" + clazzString);
             pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
             if (clazzString != ""){
