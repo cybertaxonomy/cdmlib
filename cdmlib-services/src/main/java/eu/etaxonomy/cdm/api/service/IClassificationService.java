@@ -49,7 +49,13 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     public ITaxonTreeNode getTreeNodeByUuid(UUID uuid);
-
+    
+    /**
+     * 
+     * Returns the root node of the the given classification (specified by its UUID)
+     * @param classificationUuid the uuid of the classification
+     * @return the root node of the classification
+     */
     public TaxonNode getRootNode(UUID classificationUuid);
 
     /**
