@@ -90,13 +90,24 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionBase", -99);
         stepList.add(simpleStep);
 
-//        //#5717
-//        //Add sec micro reference
-//        stepName = "Add secMicroReference to TaxonBase";
-//        tableName = "TaxonBase";
-//        newColumnName = "secMicroReference";
-//        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-//        stepList.add(step);
+        //#5921
+        //UPDATE congruent symbol in DefinedTermBase
+        stepName = "UPDATE congruent symbol in DefinedTermBase";
+        query = " UPDATE @@DefinedTermBase@@ "
+                + " SET idInVocabulary = Replace(idInVocabulary, '\u2245', '\u225c'), symbol = Replace(symbol, '\u2245', '\u225c'), inverseSymbol = Replace(inverseSymbol, '\u2245', '\u225c')"
+                + " WHERE DTYPE like 'TaxonRel%' "
+                + "     AND (idInVocabulary like '%\u2245%' OR symbol like '%\u2245%' OR inverseSymbol like '%\u2245%' )";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DefinedTermBase", -99);
+        stepList.add(simpleStep);
+
+        //#5921
+        //UPDATE congruent symbol in Representations
+        stepName = "UPDATE congruent symbol in Representations";
+        query = " UPDATE @@Representation@@ "
+                + " SET abbreviatedLabel = Replace(abbreviatedLabel, '\u2245', '\u225c') "
+                + " WHERE (abbreviatedLabel like '%\u2245%' )";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "Representation", -99);
+        stepList.add(simpleStep);
 
         return stepList;
 
