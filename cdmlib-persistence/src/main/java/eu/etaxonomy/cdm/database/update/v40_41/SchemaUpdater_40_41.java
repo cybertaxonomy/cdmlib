@@ -69,7 +69,15 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Add allowOverride in CdmPreference";
         tableName = "CdmPreference";
         newColumnName = "allowOverride";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, false, false);
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, ! INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+        //#5875
+        //Implement isDefault to DescriptionBase
+        stepName = "Add isDefault in DescriptionBase";
+        tableName = "DescriptionBase";
+        newColumnName = "isDefault";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
 
