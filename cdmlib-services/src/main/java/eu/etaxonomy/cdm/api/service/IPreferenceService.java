@@ -46,6 +46,15 @@ public interface IPreferenceService {
 
 
      /**
+     * Retrieve all matching values for the given preference key.
+     * @param subject
+     * @param predicate
+     * @return
+     */
+     public List<CdmPreference> list(String subject, String predicate);
+
+
+     /**
       * Retrieve the best matching value for the given preference key.
       * @param key
       * @return
@@ -79,14 +88,6 @@ public interface IPreferenceService {
 
 
      /**
-     * Retrieve all matching values for the given preference key.
-     * @param subject
-     * @param predicate
-     * @return
-     */
-    public List<Object> findAll(String subject, String predicate);
-
-     /**
       * Returns the best matching preference that matches the given
       * predicate and the taxon node filter. Only DB preferences and
       * preferences defined on a TaxonNode are considered.
@@ -100,31 +101,37 @@ public interface IPreferenceService {
 
      /**
       * Returns the best matching preference that matches the given
-      * the predicate and the filter. Only DB preferences and preferences
+      * predicate and the filter. Only DB preferences and preferences
       * defined on a TaxonNode are considered.
+      *
+      * NOTE: This is not yet implemented!
+      *
       * @param taxonNode
       * @param predicate
       * @return
       */
-     public Object find(CdmBase taxonNode, String predicate);
+     public CdmPreference find(CdmBase taxonNodeRelatedCdmBase, String predicate);
 
-     public List<Object> findAll();
+
+
 
  //******************* SETTING **********************/
 
 
-     //returns old value
-     String setCdmPrefs(CdmBase cdmBase, String predicate, String value );
+     /**
+      * Write the value for the preference's key
+      * @param preference
+      */
+     public void set(CdmPreference preference);
 
-//     String setEditorPrefs();
+
+     //we need to decide if we want to keep this method
+//     //returns old value
+//     String setCdmPrefs(CdmBase cdmBase, String predicate, String value );
+//
+////     String setEditorPrefs();
 
 
-
-	/**
-	 * Write the value for the preference's key
-	 * @param preference
-	 */
-	public void set(CdmPreference preference);
 
 
 }
