@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -61,6 +62,15 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 //		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+
+
+        //#5970
+        //Implement allowOverride in CdmPreference
+        stepName = "Add allowOverride in CdmPreference";
+        tableName = "CdmPreference";
+        newColumnName = "allowOverride";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, false, false);
+        stepList.add(step);
 
 
 //        //#5717
