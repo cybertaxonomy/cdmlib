@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
  * @created 27.06.2013
  */
 @XmlEnum
-public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservationType>, Serializable{
+public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservationType>{
 
 	//0
 	/**
@@ -197,7 +196,8 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		System.out.println("SpecimenOrObservationType hierarchie not yet fully implemented");
 	}
 
-	private SpecimenOrObservationType(UUID uuid, String defaultString, String key, SpecimenOrObservationType parent){
+	@SuppressWarnings("unchecked")
+    private SpecimenOrObservationType(UUID uuid, String defaultString, String key, SpecimenOrObservationType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
