@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v36_40.SchemaUpdater_36_40;
-import eu.etaxonomy.cdm.database.update.v36_40.TermUpdater_36_40;
+import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
+import eu.etaxonomy.cdm.database.update.v40_41.TermUpdater_40_41;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * <BR>5.) Go to the previous schema updater class and adjust {@link ISchemaUpdater#getNextUpdater()}
  * in a way that it returns an instance of the newly created updater.
  * <BR>6.) Repeat steps 2.-5. for {@link ITermUpdater}
- * <BR>7.) Adjust {@link #getCurrentSchemaUpdater()} and {@link #getCurrentTermUpdater()} to return
+ * <BR>7.) Adjust {@link CdmUpdater#getCurrentSchemaUpdater()} and {@link CdmUpdater#getCurrentTermUpdater()} to return
  * instances of the newly created updaters.
  *
  * @see ISchemaUpdater
@@ -77,7 +77,7 @@ public class CdmUpdater {
 
 
     private ITermUpdater getCurrentTermUpdater() {
-        return TermUpdater_36_40.NewInstance();
+        return TermUpdater_40_41.NewInstance();
     }
 
     /**
@@ -85,7 +85,7 @@ public class CdmUpdater {
      * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_36_40.NewInstance();
+        return SchemaUpdater_40_41.NewInstance();
     }
 
     /**
