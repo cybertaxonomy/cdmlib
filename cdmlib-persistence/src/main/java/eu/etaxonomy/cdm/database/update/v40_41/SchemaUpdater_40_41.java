@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v36_40.SchemaUpdater_36_40;
 
 /**
@@ -80,6 +81,14 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
+        //#5826
+        //Cleanup empty name descriptions
+        stepName = "Cleanup empty name descriptions";
+        query = " DELETE FROM @@DescriptionBase@@ db " +
+                 " WHERE db.DTYPE = 'TaxonNameDescription' " +
+                 " AND NOT EXISTS (SELECT * FROM @@DescriptionElementBase@@ deb WHERE deb.indescription_id = db.id )";
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionBase", -99);
+        stepList.add(simpleStep);
 
 //        //#5717
 //        //Add sec micro reference
