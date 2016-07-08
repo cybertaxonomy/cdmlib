@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
+import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
 
 /**
  * @author a.mueller
@@ -56,14 +57,9 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
-//		String columnName;
 		String query;
 		String newColumnName;
 		String oldColumnName;
-		String columnNames[];
-		String referencedTables[];
-		String columnTypes[];
-//		boolean includeCdmBaseAttributes = false;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
@@ -511,7 +507,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_40_41.NewInstance();
 	}
 
 	@Override
