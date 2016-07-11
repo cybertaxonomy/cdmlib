@@ -541,19 +541,22 @@ public class CsvNameExport extends CsvNameExportBase {
         String typeNameString = NOT_DESIGNATED;
         String statusString = null;
         if (it.hasNext()){
-            NameTypeDesignation typeDes = HibernateProxyHelper.deproxy(it.next(), NameTypeDesignation.class);
 
+            TypeDesignationBase typeDes = HibernateProxyHelper.deproxy(it.next(), TypeDesignationBase.class);
 
-            BotanicalName typeName =  HibernateProxyHelper.deproxy(typeDes.getTypeName(), BotanicalName.class);
-            if (typeName != null){
+            if (typeDes instanceof NameTypeDesignation){
+                NameTypeDesignation nameTypeDes = HibernateProxyHelper.deproxy(it.next(), NameTypeDesignation.class);
 
-                typeNameString = "<i>" + typeName.getNameCache() +"</i> "  + typeName.getAuthorshipCache();
-                if (typeDes.getTypeStatus() != null){
-                    NameTypeDesignationStatus status = HibernateProxyHelper.deproxy(typeDes.getTypeStatus(), NameTypeDesignationStatus.class);
-                    statusString = status.getTitleCache();
+                BotanicalName typeName =  HibernateProxyHelper.deproxy(nameTypeDes.getTypeName(), BotanicalName.class);
+                if (typeName != null){
+
+                    typeNameString = "<i>" + typeName.getNameCache() +"</i> "  + typeName.getAuthorshipCache();
+                    if (nameTypeDes.getTypeStatus() != null){
+                        NameTypeDesignationStatus status = HibernateProxyHelper.deproxy(nameTypeDes.getTypeStatus(), NameTypeDesignationStatus.class);
+                        statusString = status.getTitleCache();
+                    }
                 }
             }
-
         }
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();
