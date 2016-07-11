@@ -97,7 +97,7 @@ public class MobotOpenUrlServiceWrapperTest {
 	}
 
 	@Test
-	@Ignore
+	@Ignore // it seems as if oclc number are no longer supported by the api. Email send to mobot to clarify (a.kohlbecker 2016-07-11)
 	public void testDoResolveAndPage_2() {
 
 
@@ -141,7 +141,7 @@ public class MobotOpenUrlServiceWrapperTest {
         }
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
 		query.refType = MobotOpenUrlServiceWrapper.ReferenceType.book;
-		query.authorName = "Linn\u00E9";
+		query.authorName = "Linn\u00E9"; //Linné
 		query.abbreviation = "Sp. Pl.";
 		query.publicationDate = "1753";
 		query.startPage = "813";
