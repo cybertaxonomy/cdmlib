@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -273,13 +272,19 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	}
 
     /**
+     * @param dbType
      * @param jdbcUrl
      * @return
      * @throws URISyntaxException
      */
     private String getDatabaseFrom(String jdbcUrl) throws URISyntaxException {
-        URI url = new URI(jdbcUrl.substring(5));
-        return url.getPath().substring(1);
+        DatabaseTypeEnum type = DatabaseTypeEnum.byConnectionString(jdbcUrl);
+        if (type == null){
+            return null;
+        }else{
+            String dbName = type.getDatabaseType().getDatabaseNameByConnectionString(jdbcUrl);
+            return dbName;
+        }
     }
 
 	@Override
