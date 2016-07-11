@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -135,6 +136,32 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         //#5976
         // TODO?: update sortindex for PolytomousKeyNodes
 
+        //#3925
+        //excluded to TaxonNode
+        stepName = "Add excluded to TaxonNode";
+        tableName = "TaxonNode";
+        newColumnName = "excluded";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
+
+        //#3925
+        //Mode excluded from Taxon to TaxonNode
+        stepName = "Move excluded from Taxon to TaxonNode";
+        query = "UPDATE @@TaxonNode@@ tn "
+                + " SET excluded = (SELECT exluded FROM @@TaxonBase@@ tb "
+                +       " INNER JOIN @@TaxonNode@@ tn2 ON tn2.taxon_id = tb.id "
+                +       " WHERE tn.id = tn2.id ";
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonNode", -99);
+        stepList.add(simpleStep);
+
+        //#3925
+        //excluded to TaxonNode
+        stepName = "Remove excluded from TaxonBase";
+        tableName = "TaxonBase";
+        oldColumnName = "excluded";
+        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
 
         return stepList;
 
