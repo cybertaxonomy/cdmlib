@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 import eu.etaxonomy.cdm.database.update.v36_40.SchemaUpdater_36_40;
 
 /**
@@ -108,6 +109,32 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 + " WHERE (abbreviatedLabel like '%\u2245%' )";
         simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "Representation", -99);
         stepList.add(simpleStep);
+
+
+
+        //#5976
+        //update sortindex on FeatureNode children
+        stepName = "Update sort index on FeatureNode children";
+        tableName = "FeatureNode";
+        String parentIdColumn = "parent_id";
+        String sortIndexColumn = "sortIndex";
+        SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, "parent_fk", sortIndexColumn, INCLUDE_AUDIT);
+        stepList.add(updateSortIndex);
+
+        //#5976
+        // update sortindex for TaxonNodes
+        stepName = "Update sort index on TaxonNode children";
+        tableName = "TaxonNode";
+        parentIdColumn = "parent_id";
+        sortIndexColumn = "sortIndex";
+        updateSortIndex = SortIndexUpdater.NewInstance(
+                stepName, tableName, parentIdColumn, sortIndexColumn,
+                INCLUDE_AUDIT);
+        stepList.add(updateSortIndex);
+
+        //#5976
+        // TODO?: update sortindex for PolytomousKeyNodes
+
 
         return stepList;
 
