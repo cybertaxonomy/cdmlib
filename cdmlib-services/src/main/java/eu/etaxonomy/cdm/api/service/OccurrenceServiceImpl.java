@@ -365,16 +365,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
 
         // gather the IDs of all relevant field units
-        Set<Integer> fieldUnitIds = new HashSet<Integer>();
+        Set<UUID> fieldUnitUuids = new HashSet<UUID>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
             for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid())) {
-                fieldUnitIds.add(fieldUnit.getId());
+                fieldUnitUuids.add(fieldUnit.getUuid());
             }
         }
-        //dao.listByIds() does the paging of the field units. Passing the field units directly to the Pager would not work
-        List<SpecimenOrObservationBase> fieldUnits = dao.loadList(fieldUnitIds, propertyPaths);
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitIds.size(), pageSize, fieldUnits);
+        //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
+        List<SpecimenOrObservationBase> fieldUnits = dao.list(fieldUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitUuids.size(), pageSize, fieldUnits);
     }
 
     @Override
