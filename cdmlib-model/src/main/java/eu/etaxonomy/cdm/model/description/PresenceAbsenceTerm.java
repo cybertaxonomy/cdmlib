@@ -330,7 +330,6 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
         newInstance.setAbsenceTerm(isAbsence);
 
         newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
-        newInstance.setSymbol(abbreviatedLabel);
         return newInstance;
     }
 
