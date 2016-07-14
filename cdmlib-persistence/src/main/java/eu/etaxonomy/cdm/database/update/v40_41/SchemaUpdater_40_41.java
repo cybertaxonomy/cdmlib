@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -163,8 +164,68 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //5778
+        //update PresenceAbsenceTerm symbols
+        updatePresenceAbsenceTermSymbols(stepList);
+
         return stepList;
 
+    }
+
+    /**
+     * @param stepList
+     */
+    private void updatePresenceAbsenceTermSymbols(List<ISchemaUpdaterStep> stepList) {
+        String enDash = UTF8.EN_DASH.toString();
+
+        //endemic
+        updateSinglePATsymbol(stepList, "c3ee7048-15b7-4be1-b687-9ce9c1a669d6", "e", "" + UTF8.BLACK_CIRCLE);
+        //present
+        updateSinglePATsymbol(stepList, "cef81d25-501c-48d8-bbea-542ec50de2c2", "p", "");
+        //doubtfully present
+        updateSinglePATsymbol(stepList, "75a60279-a4c2-4f53-bc57-466028a4b3db", "pd", "?");
+        //native
+        updateSinglePATsymbol(stepList, "ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7", "n", "");
+        //native: doubtfully native
+        updateSinglePATsymbol(stepList, "310373bf-7df4-4d02-8cb3-bcc7448805fc", "nd", "d");
+        //introduced: naturalized
+        updateSinglePATsymbol(stepList, "e191e89a-a751-4b0c-b883-7f1de70915c9", "in", "n");
+        //introduced: adventitious (casual)
+        updateSinglePATsymbol(stepList, "42946bd6-9c22-45ad-a910-7427e8f60bfd", "ia", "a");
+        //naturalised
+        updateSinglePATsymbol(stepList, "4e04990a-66fe-4fdf-856c-f40772fbcf0a", "na", "n");
+        //native: presence questionable
+        updateSinglePATsymbol(stepList, "925662c1-bb10-459a-8c53-da5a738ac770", "nq", "?");
+        //introduced: presence questionable
+        updateSinglePATsymbol(stepList, "83eb0aa0-1a45-495a-a3ca-bf6958b74366", "iq", "?");
+        //introduced: cultivated
+        updateSinglePATsymbol(stepList, "fac8c347-8262-44a1-b0a4-db4de451c021", "ic", "c");
+        //cultivated, presence questionable
+        updateSinglePATsymbol(stepList, "4f31bfc8-3058-4d83-aea5-3a1fe9773f9f", "cq", "?c");
+        //absent
+        updateSinglePATsymbol(stepList, "59709861-f7d9-41f9-bb21-92559cedd598", "a", enDash);
+        //reported in error
+        updateSinglePATsymbol(stepList, "38604788-cf05-4607-b155-86db456f7680", "f", enDash);
+        //native: reported in error
+        updateSinglePATsymbol(stepList, "aeec2947-2700-4623-8e32-9e3a430569d1", "if", enDash);
+        //cultivated: reported in error
+        updateSinglePATsymbol(stepList, "9d4d3431-177a-4abe-8e4b-1558573169d6", "cf", enDash);
+
+    }
+
+    /**
+     * @param uuid the uuid
+     * @param oldSymbol
+     * @param newSybol
+     */
+    private void updateSinglePATsymbol(List<ISchemaUpdaterStep> stepList,
+            String uuid, String oldSymbol, String newSymbol) {
+        String stepName = "Update single symbol for PresenceAbsenceTerm " + uuid;
+        String query = "UPDATE @@DefinedTermBase@@ dtb "
+                + " SET symbol = '" + newSymbol + "'"
+                + " WHERE uuid = '" + uuid + "' AND symbol = '" + oldSymbol + "'" ;
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DefinedTermBase", -99);
+        stepList.add(simpleStep);
     }
 
     @Override
