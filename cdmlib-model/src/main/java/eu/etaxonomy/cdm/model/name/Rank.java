@@ -504,6 +504,7 @@ public class Rank extends OrderedTermBase<Rank> {
      *
      * @see  #isSupraGeneric()
      * @see  #isGenus()
+     * @see  #isInfraGenericButNotSpeciesGroup()
      * @see  #isSpeciesAggregate()
      * @see  #isSpecies()
      * @see  #isInfraSpecific()
@@ -511,6 +512,23 @@ public class Rank extends OrderedTermBase<Rank> {
     @Transient
     public boolean isInfraGeneric(){
         return this.rankClass.equals(RankClass.Infrageneric) || this.rankClass.equals(RankClass.SpeciesGroup) ; //(this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
+    }
+
+    /**
+     * Returns the boolean value indicating whether <i>this</i> rank is higher than the
+     * species aggregate/group rank and lower than the genus rank (true) or not (false).
+     * Returns false if <i>this</i> rank is null.
+     *
+     * @see  #isSupraGeneric()
+     * @see  #isGenus()
+     * @see  #isInfraGeneric()
+     * @see  #isSpeciesAggregate()
+     * @see  #isSpecies()
+     * @see  #isInfraSpecific()
+     */
+    @Transient
+    public boolean isInfraGenericButNotSpeciesGroup(){
+        return this.rankClass.equals(RankClass.Infrageneric) ;
     }
 
     /**
