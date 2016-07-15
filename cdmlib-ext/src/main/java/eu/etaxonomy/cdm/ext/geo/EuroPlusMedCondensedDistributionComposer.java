@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -52,12 +53,12 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         // ==================================================
 
         statusSymbols = new HashMap<UUID, String> ();
-        // ● endemic (U+25CF BLACK CIRCLE)
+        // â—� endemic (U+25CF BLACK CIRCLE)
         statusSymbols.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA().getUuid(), "\u25CF");
 
         // Lu native (incl. archaeophytes) TODO status archaeophytes?
         statusSymbols.put(PresenceAbsenceTerm.NATIVE().getUuid(), "");
-        statusSymbols.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE().getUuid(), "");
+        statusSymbols.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE().getUuid(), "");  //wanted? differs from default "ne"
 
         // ?Lu doubtfully present (U+3F QUESTION MARK)
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE().getUuid(), "?");
@@ -68,15 +69,15 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         statusSymbols.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE().getUuid(), "d");
 
         // -Lu absent but reported in error (U+2D HYPHEN-MINUS)
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR().getUuid(), "-");
-        statusSymbols.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR().getUuid(), "-");
+        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR().getUuid(), UTF8.EN_DASH.toString());
+        statusSymbols.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR().getUuid(), UTF8.EN_DASH.toString());
         statusSymbols.put(REPORTED_IN_ERROR_UUID, "-");
 
-        // †Lu (presumably) extinct (U+2020 DAGGER)
+        // â€ Lu (presumably) extinct (U+2020 DAGGER)
         // no such status in database!!!
 
         // [Lu] introduced (casual or naturalized) =  introduced, introduced: naturalized
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED().getUuid(), "");
+        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED().getUuid(), ""); //wanted? differs from default "i"
 
         // [aLu] casual alien = introduced: adventitious (casual)
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid(), "a");
