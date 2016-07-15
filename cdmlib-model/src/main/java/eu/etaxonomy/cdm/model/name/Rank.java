@@ -53,7 +53,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:46
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -955,7 +954,7 @@ public class Rank extends OrderedTermBase<Rank> {
         Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
         String result = this.getRepresentation(language).getAbbreviatedLabel();
         if (result== null) {
-             logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
+            logger.warn("Abbreviation for rank " + this.toString() +  " not yet implemented");
             return "no abbreviation available.";
         }else{
             return result;
