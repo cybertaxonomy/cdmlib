@@ -1056,7 +1056,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	private String removeHybridBlanks(String fullNameString) {
 		String result = fullNameString
 		        .replaceAll(oWs + "[xX]" + oWs + "(?=[A-Z])", " " + hybridSign + " ")
-		        .replaceAll(hybridFull, " "+hybridSign).trim();
+		        .replaceAll(hybridFull, " " + hybridSign).trim();
+		if (result.contains(hybridSign + " ") &&
+		        result.matches("^" + capitalEpiWord + oWs + hybridSign + oWs + ".*")){
+		    result = result.replaceFirst(hybridSign + oWs, hybridSign);
+		}
 		return result;
 	}
 
