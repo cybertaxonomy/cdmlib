@@ -268,9 +268,13 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
         Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
         subSpeciesName.setTrinomHybrid(true);
-        Assert.assertEquals("Should be 'Abies alba subsp. \u00D7beta'", "Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
+        Assert.assertEquals("Should be 'Abies alba nothosubsp. beta or nbeta'", "Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
         subSpeciesName.setMonomHybrid(true);
-        Assert.assertEquals("Should be '\u00D7Abies alba subsp. \u00D7beta'", "\u00D7Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
+        Assert.assertEquals("Should be '\u00D7Abies alba nothosubsp. beta'", "\u00D7Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
+
+        Assert.assertEquals("Should be 'Genus subg. InfraGenericPart'", "Genus subg. InfraGenericPart", subGenusName.getTitleCache());
+        subGenusName.setBinomHybrid(true);
+        Assert.assertEquals("Should be 'Genus nothosubg. InfraGenericPart'", "Genus nothosubg. InfraGenericPart", subGenusName.getTitleCache());
     }
 
     @Test
