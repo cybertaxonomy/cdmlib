@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -516,16 +517,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO();
 
-        // check identifiers in priority order accNo>barCode>catalogNumber
-        if (derivedUnit.getAccessionNumber() != null && !derivedUnit.getAccessionNumber().isEmpty()) {
-            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getAccessionNumber());
+        // check identifiers in priority order accNo>barCode>catalogNumber>collection
+        String identifier = derivedUnit.getMostSignificantIdentifier();
+        if(CdmUtils.isBlank(identifier) && derivedUnit.getCollection()!=null){
+        	identifier = derivedUnit.getCollection().toString();
         }
-        else if(derivedUnit.getBarcode()!=null && !derivedUnit.getBarcode().isEmpty()){
-            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getBarcode());
+        if(CdmUtils.isBlank(identifier)){
+        	identifier = derivedUnit.getTitleCache();
         }
-        else if(derivedUnit.getCatalogNumber()!=null && !derivedUnit.getCatalogNumber().isEmpty()){
-            preservedSpecimenDTO.setAccessionNumber(derivedUnit.getCatalogNumber());
-        }
+        preservedSpecimenDTO.setAccessionNumber(identifier);
         preservedSpecimenDTO.setUuid(derivedUnit.getUuid().toString());
 
         //preferred stable URI
