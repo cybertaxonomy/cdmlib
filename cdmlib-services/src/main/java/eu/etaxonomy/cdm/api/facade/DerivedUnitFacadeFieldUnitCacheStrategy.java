@@ -117,7 +117,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 
 		//plant description
 		result = CdmUtils.concat("; ", result, facade.getPlantDescription());
-		if (CdmUtils.isNotEmpty(result)){
+		if (CdmUtils.isNotEmpty(result) && !result.endsWith(".")){
 			result += ".";
 		}
 
