@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Jan 23, 2015
  *
  */
-public class Abcd206ImportReport {
+public class SpecimenImportReport {
 
-    static private final Logger logger = Logger.getLogger(Abcd206ImportReport.class);
+    static private final Logger logger = Logger.getLogger(SpecimenImportReport.class);
 
 
     private final List<Taxon> createdTaxa = new ArrayList<Taxon>();
@@ -68,13 +68,13 @@ public class Abcd206ImportReport {
     }
 
     public void addDerivate(DerivedUnit parent, DerivedUnit child, Abcd206ImportConfigurator config){
-        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(AbcdImportUtility.getUnitID(parent, config), parent);
+        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(SpecimenImportUtility.getUnitID(parent, config), parent);
         List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
             children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(new UnitIdSpecimen(AbcdImportUtility.getUnitID(child, config), child));
+            children.add(new UnitIdSpecimen(SpecimenImportUtility.getUnitID(child, config), child));
         }
         derivateMap.put(parentUnitIdSpecimen, children);
     }
