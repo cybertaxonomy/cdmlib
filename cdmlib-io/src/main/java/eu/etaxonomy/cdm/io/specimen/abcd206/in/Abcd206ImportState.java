@@ -11,45 +11,34 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurator, CdmImportBase<Abcd206ImportConfigurator,Abcd206ImportState>>{
+public class Abcd206ImportState extends SpecimenImportStateBase<Abcd206ImportConfigurator<Abcd206ImportState, InputStream>, Abcd206ImportState>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
 
-	private TransactionStatus tx;
-
-	private ICdmApplicationConfiguration cdmRepository;
 
 	private String prefix;
 
-    private Abcd206ImportReport report;
 
-	private Classification classification = null;
-	private Classification defaultClassification = null;
-	private Reference ref = null;
+
+
 
 	private Abcd206DataHolder dataHolder;
-	private DerivedUnit derivedUnitBase;
+
 
 	private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
 	private boolean associationSourcesSet=false;
@@ -58,72 +47,21 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 	private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
 	private boolean derivedUnitSourcesSet=false;
 	private boolean descriptionGroupSet = false;
-	private TaxonDescription descriptionGroup = null;
+
 
 //****************** CONSTRUCTOR ***************************************************/
 
 	public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);
-        report = new Abcd206ImportReport();
+        setReport(new SpecimenImportReport());
         setTransformer(new AbcdTransformer());
 	}
 
 //************************ GETTER / SETTER *****************************************/
 
-	public TransactionStatus getTx() {
-		return tx;
-	}
 
-	public void setTx(TransactionStatus tx) {
-		this.tx = tx;
-	}
 
-	public ICdmApplicationConfiguration getCdmRepository() {
-		return cdmRepository;
-	}
-
-	public void setCdmRepository(ICdmApplicationConfiguration cdmRepository) {
-		this.cdmRepository = cdmRepository;
-	}
-
-    public Classification getClassification() {
-        return classification;
-    }
-
-    public void setClassification(Classification classification) {
-        this.classification = classification;
-    }
-
-    public Classification getDefaultClassification() {
-        if(defaultClassification==null){
-            final String defaultClassificationAbcd = "Default Classification ABCD";
-            for (Classification classif : cdmRepository.getClassificationService().list(Classification.class, null, null, null, null)){
-                if (classif.getTitleCache()!=null && classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd)
-                        && classif.getCitation()!=null && classif.getCitation().equals(getRef())) {
-                    defaultClassification = classif;
-                    break;
-                }
-            }
-            if(defaultClassification==null){
-                defaultClassification = Classification.NewInstance(defaultClassificationAbcd);
-                cdmRepository.getClassificationService().save(defaultClassification);
-            }
-        }
-        return defaultClassification;
-    }
-
-    public void setDefaultClassification(Classification defaultClassification) {
-        this.defaultClassification = defaultClassification;
-    }
-
-    public Reference getRef() {
-        return ref;
-    }
-
-    public void setRef(Reference ref) {
-        this.ref = ref;
-    }
-
+    @Override
     public Abcd206DataHolder getDataHolder() {
         return dataHolder;
     }
@@ -132,13 +70,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         this.dataHolder = dataHolder;
     }
 
-    public DerivedUnit getDerivedUnitBase() {
-        return derivedUnitBase;
-    }
 
-    public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
-        this.derivedUnitBase = derivedUnitBase;
-    }
 
     public List<OriginalSourceBase<?>> getAssociationRefs() {
         return associationRefs;
@@ -196,13 +128,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         this.descriptionGroupSet = descriptionGroupSet;
     }
 
-    public TaxonDescription getDescriptionGroup() {
-        return descriptionGroup;
-    }
 
-    public void setDescriptionGroup(TaxonDescription descriptionGroup) {
-        this.descriptionGroup = descriptionGroup;
-    }
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
@@ -212,19 +138,17 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
         return prefix;
     }
 
-    public Abcd206ImportReport getReport(){
-        return report;
-    }
 
     @Override
     public byte[] getReportAsByteArray() {
         ByteArrayOutputStream importStream = new ByteArrayOutputStream();
-        report.printReport(new PrintStream(importStream));
+        getReport().printReport(new PrintStream(importStream));
         return importStream.toByteArray();
     }
 
+    @Override
     public void reset() {
         getDataHolder().reset();
-        derivedUnitBase = null;
+        setDerivedUnitBase(null);
     }
 }

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Jan 23, 2015
  *
  */
-public class Abcd206ImportReport {
+public class Abcd206ImportReport extends SpecimenImportReport{
 
     static private final Logger logger = Logger.getLogger(Abcd206ImportReport.class);
 
@@ -51,34 +51,40 @@ public class Abcd206ImportReport {
     private final List<TaxonNode> createdTaxonNodes = new ArrayList<TaxonNode>();
     private final List<String> infoMessages = new ArrayList<String>();
 
+    @Override
     public void addTaxon(Taxon taxon){
         createdTaxa.add(taxon);
     }
 
+    @Override
     public void addName(TaxonNameBase<?, ?> taxonName){
         createdNames.add(taxonName);
     }
 
+    @Override
     public void addTaxonNode(TaxonNode taxonNode){
         createdTaxonNodes.add(taxonNode);
     }
 
+    @Override
     public void addDerivate(DerivedUnit parent, Abcd206ImportConfigurator config){
         addDerivate(parent, null, config);
     }
 
+    @Override
     public void addDerivate(DerivedUnit parent, DerivedUnit child, Abcd206ImportConfigurator config){
-        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(AbcdImportUtility.getUnitID(parent, config), parent);
+        UnitIdSpecimen parentUnitIdSpecimen = new UnitIdSpecimen(SpecimenImportUtility.getUnitID(parent, config), parent);
         List<UnitIdSpecimen> children = derivateMap.get(parentUnitIdSpecimen);
         if(children==null){
             children = new ArrayList<UnitIdSpecimen>();
         }
         if(child!=null){
-            children.add(new UnitIdSpecimen(AbcdImportUtility.getUnitID(child, config), child));
+            children.add(new UnitIdSpecimen(SpecimenImportUtility.getUnitID(child, config), child));
         }
         derivateMap.put(parentUnitIdSpecimen, children);
     }
 
+    @Override
     public void addIndividualAssociation(Taxon taxon, String derivedUnitId, DerivedUnit derivedUnitBase) {
         UnitIdSpecimen derivedUnitIdSpecimen = new UnitIdSpecimen(derivedUnitId, derivedUnitBase);
         List<UnitIdSpecimen> associatedSpecimens = taxonToAssociatedSpecimens.get(taxon);
@@ -89,20 +95,24 @@ public class Abcd206ImportReport {
         taxonToAssociatedSpecimens.put(taxon, associatedSpecimens);
     }
 
+    @Override
     public void addAlreadyExistingSpecimen(String unitId, DerivedUnit derivedUnit){
         alreadyExistingSpecimens.add(new UnitIdSpecimen(unitId, derivedUnit));
     }
 
+    @Override
     public void addException(String message, Exception e) {
         StringWriter errors = new StringWriter();
         e.printStackTrace(new PrintWriter(errors));
         infoMessages.add(message+"\n"+e.getMessage()+"\n"+errors.toString());
     }
 
+    @Override
     public void addInfoMessage(String message) {
         infoMessages.add(message);
     }
 
+    @Override
     public void printReport(URI reportUri) {
         PrintStream out;
         if(reportUri != null){
@@ -120,6 +130,7 @@ public class Abcd206ImportReport {
     }
 
 
+    @Override
     public void printReport(PrintStream out) {
 
         out.println("++++++++Import Report+++++++++");
