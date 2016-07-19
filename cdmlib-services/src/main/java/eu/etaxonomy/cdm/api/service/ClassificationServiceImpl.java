@@ -332,23 +332,23 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa, limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa, limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), excludeTaxa, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid ) {
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  null, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, excludeTaxa, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification){
+        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null);
     }
 
     @Override
