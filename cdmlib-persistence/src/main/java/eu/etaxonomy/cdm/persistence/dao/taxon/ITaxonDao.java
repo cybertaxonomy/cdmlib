@@ -502,6 +502,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, List<UUID> excludeUuid, Integer limit, String pattern);
+            Classification classification, Integer limit, String pattern);
 
 }
