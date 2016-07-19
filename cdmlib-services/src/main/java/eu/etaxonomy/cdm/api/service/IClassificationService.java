@@ -49,9 +49,9 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     public ITaxonTreeNode getTreeNodeByUuid(UUID uuid);
-
+    
     /**
-     *
+     * 
      * Returns the root node of the the given classification (specified by its UUID)
      * @param classificationUuid the uuid of the classification
      * @return the root node of the classification
@@ -187,7 +187,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classification
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeTaxa);
 
     /**
      * @param taxon
@@ -269,7 +269,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param excludeTaxa
      * @return
      */
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, List<UUID> excludeTaxa);
 
     /**
      * @param classificationUuid
@@ -279,7 +279,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            UUID classificationUuid, Integer limit, String pattern);
+            UUID classificationUuid, List<UUID> excludeTaxa, Integer limit, String pattern);
 
     /**
      * @param classification
@@ -289,7 +289,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
-            Classification classification, Integer limit, String pattern);
+            Classification classification, List<UUID> excludeTaxa, Integer limit, String pattern);
 
     /**
      * @param taxonUuid
