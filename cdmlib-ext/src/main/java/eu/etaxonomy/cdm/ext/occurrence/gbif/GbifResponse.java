@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 import java.net.URI;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Wrapper class which holds a {@link DerivedUnitFacade} which was parsed from a GBIF JSON response.
@@ -26,15 +27,20 @@ public class GbifResponse {
     private final DerivedUnitFacade derivedUnitFacade;
     private final URI dataSetUri;
     private final GbifDataSetProtocol dataSetProtocol;
+    private final String[] tripleID;
+    private final TaxonNameBase scientificName;
     /**
      * @param derivedUnitFacade
      * @param dataSetUrl
      */
-    public GbifResponse(DerivedUnitFacade derivedUnitFacade, URI dataSetUrl, GbifDataSetProtocol dataSetProtocol) {
+    public GbifResponse(DerivedUnitFacade derivedUnitFacade, URI dataSetUrl, GbifDataSetProtocol dataSetProtocol, String [] tripleID, TaxonNameBase scientificName) {
         super();
         this.derivedUnitFacade = derivedUnitFacade;
         this.dataSetUri = dataSetUrl;
         this.dataSetProtocol = dataSetProtocol;
+        this.tripleID = tripleID;
+        this.scientificName = scientificName;
+
     }
 
     public DerivedUnitFacade getDerivedUnitFacade() {
@@ -50,6 +56,17 @@ public class GbifResponse {
      */
     public GbifDataSetProtocol getDataSetProtocol() {
         return dataSetProtocol;
+    }
+
+    public String[] getTripleID(){
+        return tripleID;
+    }
+
+    /**
+     * @return the scientificName
+     */
+    public TaxonNameBase getScientificName() {
+        return scientificName;
     }
 
 }

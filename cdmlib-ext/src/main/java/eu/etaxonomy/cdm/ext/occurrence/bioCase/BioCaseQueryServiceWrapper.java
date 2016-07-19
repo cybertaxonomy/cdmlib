@@ -28,6 +28,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jdom.Document;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,6 +50,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @date 13.09.2013
  *
  */
+
+@Service
+@Transactional(readOnly = true)
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
 
     private static final BasicNameValuePair SUBMIT_PARAM = new BasicNameValuePair("Submit", "Submit");
