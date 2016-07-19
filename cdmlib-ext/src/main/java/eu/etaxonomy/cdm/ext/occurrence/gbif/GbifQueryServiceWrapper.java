@@ -90,8 +90,13 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
             //the unitID is delivered in the "catalogNumber" parameter which is set as the accessionNumber of the facade
             response.setUnitId(gbifResponse.getDerivedUnitFacade().getAccessionNumber());
             return response;
+        }else{
+            DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(executeHttpGet(gbifResponse.getDataSetUri(), null));
+            //the unitID is delivered in the "catalogNumber" parameter which is set as the accessionNumber of the facade
+            response.setUnitId(gbifResponse.getDerivedUnitFacade().getAccessionNumber());
+            return response;
         }
-        return null;
+
     }
 
 }

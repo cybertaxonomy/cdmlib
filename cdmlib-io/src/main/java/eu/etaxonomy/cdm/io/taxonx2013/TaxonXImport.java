@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -364,6 +365,24 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
     @Override
     protected boolean isIgnore(TaxonXImportState state) {
     	return false;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportBase#handleSingleUnit(eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase, java.lang.Object)
+     */
+    @Override
+    protected void handleSingleUnit(TaxonXImportState state, Object item) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportBase#importAssociatedUnits(eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase, java.lang.Object, eu.etaxonomy.cdm.api.facade.DerivedUnitFacade)
+     */
+    @Override
+    protected void importAssociatedUnits(TaxonXImportState state, Object item, DerivedUnitFacade derivedUnitFacade) {
+        // TODO Auto-generated method stub
+
     }
 
 

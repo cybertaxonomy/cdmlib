@@ -12,15 +12,14 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator, CdmImportBase>{
+public class TaxonXImportState extends SpecimenImportStateBase<TaxonXImportConfigurator, TaxonXImportState>{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 
@@ -31,6 +30,17 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator,
 
     public TaxonXImportState(TaxonXImportConfigurator config) {
         super(config);
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase#reset()
+     */
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+
     }
 
 

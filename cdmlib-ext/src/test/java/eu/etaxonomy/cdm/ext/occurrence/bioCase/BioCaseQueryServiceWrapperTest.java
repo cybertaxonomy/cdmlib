@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -42,7 +44,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
-                OccurenceQuery query = new OccurenceQuery("Campanula patula*", "L. Adamovic", null, null, null, null, null, null, null);
+                OccurenceQuery query = new OccurenceQuery("Campanula patula*", null, null, null, null, null, null, null, null);
                 InputStream response = queryService.query(query, URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
                 if(response==null){
                     logger.error("SKIPPING TEST: No response from BioCase provider");
@@ -88,7 +90,11 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
             try {
-                InputStream queryForSingleUnit = service.query(new OccurenceQuery("29596"), URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"));
+                Set<String[]> unitIds = new HashSet<String[]>();
+                String[] unitIdArray ={"29596"};
+                unitIds.add(unitIdArray);
+                InputStream queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"));
+
                 if(queryForSingleUnit==null){
                     logger.error("SKIPPING TEST: No response from BioCase provider");
                     return;
@@ -116,6 +122,38 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
                             assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
                             break;
                         }
+                    }
+                    line = reader.readLine();
+                    count++;
+                } while (line!=null);
+                unitIds = new HashSet<String[]>();
+                String[] unitIdsArray = {"B -W 16385 -00 0"};
+                unitIds.add(unitIdsArray);
+                String[] unitIdsArray2 ={"B 10 0641985"};
+                unitIds.add(unitIdsArray2);
+                queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
+                if(queryForSingleUnit==null){
+                    logger.error("SKIPPING TEST: No response from BioCase provider");
+                    return;
+                }
+                reader = new BufferedReader(new InputStreamReader(queryForSingleUnit));
+                line = null;
+                count = 0;
+                do {
+                    if(count>MAX_LINES_TO_READ){
+                        fail("Service response did not include parameter to test.");
+                        break;
+                    }
+                    if(line!=null){
+                        System.out.println(line);
+                        String recordAttr = "recordCount=\"";
+                        int index = line.indexOf(recordAttr);
+                        if(index>-1){
+                            String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
+                            assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
+                        }
+
+
                     }
                     line = reader.readLine();
                     count++;
