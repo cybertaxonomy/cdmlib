@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @date 16.06.2010
  *
  */
-public class Abcd206DataHolder {
+public class Abcd206DataHolder extends SpecimenDataHolder{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Abcd206DataHolder.class);
 
@@ -36,14 +37,14 @@ public class Abcd206DataHolder {
 
     //per unit
     protected List<Identification> identificationList;
-    protected List<HashMap<String, String>> atomisedIdentificationList;
+    private List<HashMap<String, String>> atomisedIdentificationList;
     protected Map<String, String> namedAreaList;
     protected List<String[]> referenceList;
     protected List<String> multimediaObjects;
     protected List<String> docSources;
     protected List<String> associatedUnitIds;
 
-    protected String nomenclatureCode;
+    private String nomenclatureCode;
     protected String institutionCode;
     protected String collectionCode;
     protected String unitID;
@@ -74,7 +75,7 @@ public class Abcd206DataHolder {
 
     public void reset() {
 
-        nomenclatureCode = null;
+        setNomenclatureCode(null);
         institutionCode = null;
         collectionCode = null;
         unitID = null;
@@ -103,12 +104,15 @@ public class Abcd206DataHolder {
         gatheringCoordinateErrorMethod = null;
 
         identificationList = new ArrayList<Identification>();
-        atomisedIdentificationList = new ArrayList<HashMap<String, String>>();
+        setAtomisedIdentificationList(new ArrayList<HashMap<String, String>>());
         namedAreaList = new HashMap<String, String>();
         referenceList = new ArrayList<String[]>();
         multimediaObjects = new ArrayList<String>();
         docSources = new ArrayList<String>();
         associatedUnitIds = new ArrayList<String>();
     }
+
+
+
 
 }

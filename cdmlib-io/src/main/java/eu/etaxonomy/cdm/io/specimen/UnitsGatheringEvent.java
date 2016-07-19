@@ -293,7 +293,7 @@ public class UnitsGatheringEvent {
         if (DEBUG) {
             System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
         }
-        this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
+       // this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
     }
 
     /**
@@ -356,7 +356,7 @@ public class UnitsGatheringEvent {
         if (DEBUG) {
             System.out.println("getteam:"+config.getTeams().get(t.getTitleCache()));
         }
-        this.gatheringEvent.setCollector(config.getTeams().get(t.getTitleCache()));
+        //this.gatheringEvent.setCollector(config.getTeams().get(t.getTitleCache()));
     }
 
 

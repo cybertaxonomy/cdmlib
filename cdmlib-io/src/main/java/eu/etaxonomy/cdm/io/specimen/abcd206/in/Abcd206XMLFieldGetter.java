@@ -99,10 +99,10 @@ public class Abcd206XMLFieldGetter {
                             }
                         }
                     } else if (identifications.item(m).getNodeName().equals(prefix + "PreferredFlag")) {
-                        if (dataHolder.nomenclatureCode != null&& dataHolder.nomenclatureCode != "") {
+                        if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "") {
                             // logger.info("TMP NAME P" + tmpName);
 
-                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.nomenclatureCode));
+                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.getNomenclatureCode()));
                         } else {
                             dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent()));
                         }
@@ -119,7 +119,7 @@ public class Abcd206XMLFieldGetter {
         boolean hasPref = false;
         for (int j = 0; j < group.getLength(); j++) {
             if (group.item(j).getNodeName().equals(prefix + "Identification")) {
-                dataHolder.nomenclatureCode = "";
+                dataHolder.setNomenclatureCode("");
                 identifications = group.item(j).getChildNodes();
                 for (int m = 0; m < identifications.getLength(); m++) {
                     if (identifications.item(m).getNodeName().equals(prefix + "Result")) {
@@ -136,9 +136,9 @@ public class Abcd206XMLFieldGetter {
                     }
                 }
                 if (!hasPref && tmpName != null) {
-                    if (dataHolder.nomenclatureCode != null
-                            && dataHolder.nomenclatureCode != "") {
-                        dataHolder.identificationList.add(new Identification(tmpName, "0", dataHolder.nomenclatureCode));
+                    if (dataHolder.getNomenclatureCode() != null
+                            && dataHolder.getNomenclatureCode() != "") {
+                        dataHolder.identificationList.add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode()));
                     } else {
                         dataHolder.identificationList.add(new Identification(tmpName, "0"));
                     }
@@ -175,20 +175,20 @@ public class Abcd206XMLFieldGetter {
                             if (scnames.item(n).hasChildNodes()) {
                                 String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
                                 if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
-                                    dataHolder.nomenclatureCode = tmp.split(prefix)[1];
+                                    dataHolder.setNomenclatureCode(tmp.split(prefix)[1]);
                                 }
                                 else {
-                                    dataHolder.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
+                                    dataHolder.setNomenclatureCode(scnames.item(n).getChildNodes().item(1).getNodeName());
                                 }
                             }
                         } catch (Exception e) {
                             if(DEBUG) {
                                 logger.warn("PB nomenclaturecode");
                             }
-                            dataHolder.nomenclatureCode = "";
+                            dataHolder.setNomenclatureCode("");
                         }
                         atomised = scnames.item(n).getChildNodes().item(1).getChildNodes();
-                        dataHolder.atomisedIdentificationList.add(this.getAtomisedNames(dataHolder.nomenclatureCode,atomised));
+                        dataHolder.getAtomisedIdentificationList().add(this.getAtomisedNames(dataHolder.getNomenclatureCode(),atomised));
                     }
                 }
             }

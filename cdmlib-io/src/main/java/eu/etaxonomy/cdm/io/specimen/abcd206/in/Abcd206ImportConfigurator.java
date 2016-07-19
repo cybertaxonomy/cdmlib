@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 
-import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +22,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -34,8 +33,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author p.kelbert
  * @created 20.10.2008
  * @version 1.0
+ * @param <SOURCE>
  */
-public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, InputStream> implements IImportConfigurator, IMatchingImportConfigurator {
+public class Abcd206ImportConfigurator<AbcdImportState, InputStream> extends SpecimenImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
 
     private static String sourceReferenceTitle = null;
@@ -104,11 +104,11 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
      * @param object
      * @param b
      * @return
-     */
+     *//*
     public static Abcd206ImportConfigurator NewInstance(InputStream stream, ICdmDataSource destination, boolean interact) {
         return new Abcd206ImportConfigurator(stream, null, destination, interact);
     }
-
+*/
 
 
     /**
@@ -141,10 +141,10 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     @Override
     public InputStream getSource(){
         if (super.getSource() != null){
-        	return super.getSource();
+        	return (InputStream)super.getSource();
         }else if (this.sourceUri != null){
         	try {
-				InputStream is = UriUtils.getInputStream(sourceUri);
+				InputStream is = (InputStream) UriUtils.getInputStream(sourceUri);
 				setSource(is);
 				return is;
 			} catch (Exception e) {
@@ -155,11 +155,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         }
     }
 
-    @Override
-    public void setSource(InputStream is) {
-    	//this.sourceUri = null;
-    	super.setSource(is);
-    }
+
 
     public URI getSourceUri(){
     	return this.sourceUri;
@@ -255,17 +251,13 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return titleCacheTeam;
     }
 
-    public void setTeams(Map<String, Team> titleCacheTeam) {
-        this.titleCacheTeam = titleCacheTeam;
-    }
+
 
     public Map<String, Person> getPersons() {
         return titleCachePerson;
     }
 
-    public void setPersons(Map<String, Person> titleCachePerson) {
-        this.titleCachePerson = titleCachePerson;
-    }
+
 
     public void setDefaultAuthor(String string) {
         defaultAuthor=string;
@@ -339,6 +331,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.ignoreAuthorship = ignoreAuthorship;
     }
 
+    @Override
     public boolean isIgnoreAuthorship() {
         return ignoreAuthorship;
     }
@@ -371,6 +364,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.removeCountryFromLocalityText = removeCountryFromLocalityText;
     }
 
+    @Override
     public boolean isRemoveCountryFromLocalityText() {
         return removeCountryFromLocalityText;
     }
@@ -391,6 +385,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.overwriteExistingSpecimens = overwriteExistingSpecimens;
     }
 
+    @Override
     public boolean isIgnoreImportOfExistingSpecimens() {
         return ignoreImportOfExistingSpecimens;
     }
@@ -399,11 +394,16 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.ignoreImportOfExistingSpecimens = ignoreImportOfExistingSpecimens;
     }
 
+    @Override
     public OccurenceQuery getOccurenceQuery(){
         return query;
     }
 
+    @Override
     public void setOccurenceQuery(OccurenceQuery query){
         this.query = query;
     }
+
+
+
 }
