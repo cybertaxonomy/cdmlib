@@ -1562,14 +1562,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return hql;
     }
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, List<UUID> excludeUuid, Integer limit, String pattern) {
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern) {
         int classificationId = classification.getId();
         // StringBuffer excludeUuids = new StringBuffer();
 
          String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
-         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-             queryString = queryString + " AND taxon.uuid NOT IN (:excludeUuid)" ;
-         }
+
          if (pattern != null){
              pattern = pattern.replace("*", "%");
              queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
@@ -1581,9 +1579,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
          if (limit != null){
              query.setMaxResults(limit);
          }
-         if ( excludeUuid != null &&  !excludeUuid.isEmpty()){
-             query.setParameterList("excludeUuid", excludeUuid);
-         }
+
          if (pattern != null){
              query.setParameter("pattern", pattern);
          }
