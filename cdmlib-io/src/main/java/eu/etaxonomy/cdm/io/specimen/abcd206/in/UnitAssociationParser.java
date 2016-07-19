@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
@@ -32,11 +34,11 @@ public class UnitAssociationParser {
 
     private final String prefix;
 
-    private final Abcd206ImportReport report;
+    private final SpecimenImportReport report;
 
     private final ICdmApplicationConfiguration cdmAppController;
 
-    public UnitAssociationParser(String prefix, Abcd206ImportReport report, ICdmApplicationConfiguration cdmAppController) {
+    public UnitAssociationParser(String prefix, SpecimenImportReport report, ICdmApplicationConfiguration cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;
@@ -75,7 +77,10 @@ public class UnitAssociationParser {
         String unableToLoadMessage = String.format("Unable to load unit %s from %s", unitId, datasetAccessPoint);
         if(unitId!=null && datasetAccessPoint!=null){
             BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
-            OccurenceQuery query = new OccurenceQuery(unitId);
+            Set<String[]> unitIds = new HashSet<String[]>();
+            String[] unitIdArray = {unitId};
+            unitIds.add(unitIdArray);
+            OccurenceQuery query = new OccurenceQuery(unitIds);
             try {
                 InputStream inputStream = serviceWrapper.query(query, datasetAccessPoint);
                 if(inputStream!=null){

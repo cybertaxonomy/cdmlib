@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
@@ -16,14 +17,16 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * @date 16.06.2015
  *
  */
-public class AbcdImportUtility {
+public class SpecimenImportUtility {
 
-    public static String getUnitID(DerivedUnit derivedUnit, Abcd206ImportConfigurator config){
-        if(config.isMapUnitIdToAccessionNumber()){
-            return derivedUnit.getAccessionNumber();
-        }
-        if(config.isMapUnitIdToBarcode()){
-            return derivedUnit.getBarcode();
+    public static String getUnitID(DerivedUnit derivedUnit, SpecimenImportConfiguratorBase config){
+        if (config instanceof Abcd206ImportConfigurator){
+            if(((Abcd206ImportConfigurator)config).isMapUnitIdToAccessionNumber()){
+                return derivedUnit.getAccessionNumber();
+            }
+            if(((Abcd206ImportConfigurator)config).isMapUnitIdToBarcode()){
+                return derivedUnit.getBarcode();
+            }
         }
         return derivedUnit.getCatalogNumber();
     }
