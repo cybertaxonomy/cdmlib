@@ -799,20 +799,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (state.getDataHolder().recordBasis.toLowerCase().startsWith("s") || state.getDataHolder().recordBasis.toLowerCase().indexOf("specimen")>-1) {// specimen
                 type = SpecimenOrObservationType.PreservedSpecimen;
             }
-            if (state.getDataHolder().recordBasis.toLowerCase().startsWith("o") ||state.getDataHolder().recordBasis.toLowerCase().indexOf("observation")>-1 ) {
+            else if (state.getDataHolder().recordBasis.toLowerCase().startsWith("o") ||state.getDataHolder().recordBasis.toLowerCase().indexOf("observation")>-1 ) {
                 type = SpecimenOrObservationType.Observation;
             }
-            if (state.getDataHolder().recordBasis.toLowerCase().indexOf("fossil")>-1){
+            else if (state.getDataHolder().recordBasis.toLowerCase().indexOf("fossil")>-1){
                 type = SpecimenOrObservationType.Fossil;
             }
-            if (state.getDataHolder().recordBasis.toLowerCase().indexOf("living")>-1) {
+            else if (state.getDataHolder().recordBasis.toLowerCase().indexOf("living")>-1) {
                 type = SpecimenOrObservationType.LivingSpecimen;
             }
             if (type == null) {
                 logger.info("The basis of record does not seem to be known: " + state.getDataHolder().recordBasis);
                 type = SpecimenOrObservationType.DerivedUnit;
             }
-            // TODO fossils?
         } else {
             logger.info("The basis of record is null");
             type = SpecimenOrObservationType.DerivedUnit;
@@ -1077,7 +1076,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         } else {
             for (TaxonDescription description : descriptions){
-                Set<IdentifiableSource> sources =  description.getTaxon().getSources();
+                Set<IdentifiableSource> sources =  new HashSet<>();
+                sources.addAll(description.getTaxon().getSources());
                 sources.addAll(description.getSources());
                 for (IdentifiableSource source:sources){
                     if(state.getRef().equals(source.getCitation())) {
@@ -1099,8 +1099,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
 
-        List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-        List<DescriptionElementSource> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+        List<IdentifiableSource> issTmp = new ArrayList<>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
+        List<DescriptionElementSource> issTmp2 = new ArrayList<>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
 
         Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
         if(issTmp2!=null) {
