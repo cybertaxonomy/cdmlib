@@ -142,6 +142,18 @@ public class SpecimenImportReport {
             out.println(type+": "+entry.getValue());
         }
         out.println("\n");
+        
+        out.println("Imported unit ids");
+        for (UnitIdSpecimen unitIdSpecimen : allSpecimens) {
+			out.print(unitIdSpecimen.unitId+", ");
+		}
+        out.println("\n");
+
+        out.println("Ignored unit ids");
+        for (UnitIdSpecimen unitIdSpecimen : alreadyExistingSpecimens) {
+        	out.print(unitIdSpecimen.unitId+", ");
+        }
+        out.println("\n");
 
         //taxon name
         out.println("---Created Taxon Names ("+createdNames.size()+")---");
