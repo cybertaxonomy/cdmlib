@@ -70,7 +70,7 @@ public class EuroPlusMedCondensedDistributionComposerTest {
         distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(italy, PresenceAbsenceTerm.PRESENT_DOUBTFULLY()));
 
-        distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS()));
+        distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.CASUAL()));
         distributions.add(Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED()));
         distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
 

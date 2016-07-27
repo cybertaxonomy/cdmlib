@@ -207,7 +207,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
   		} else if (abbrev.equalsIgnoreCase("c"))  { return PresenceAbsenceTerm.CULTIVATED();
   		} else if (abbrev.equalsIgnoreCase("e"))  { return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
   		} else if (abbrev.equalsIgnoreCase("i"))  { return PresenceAbsenceTerm.INTRODUCED();
-  		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS();
+  		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceAbsenceTerm.CASUAL();
   		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceAbsenceTerm.INTRODUCED_CULTIVATED();
   		} else if (abbrev.equalsIgnoreCase("id")) { return PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
   		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceAbsenceTerm.NATURALISED();
@@ -324,12 +324,23 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		return getTermByUuid(uuidI);
 	}
 
+    /**
+     * Casual alien or introduced: adventive (casual)
+     *
+     * @see #INTRODUCED_ADVENTITIOUS()
+     */
+    public static final PresenceAbsenceTerm CASUAL(){
+        return getTermByUuid(uuidIA);
+    }
+
 	/**
 	 * This term is of questional value. Introduced often is handled as opposite
 	 * of adventitious/adventive and describes how the alien species came
 	 * - on purpose for cultivation (introduced) or not (adventive).
 	 * Adventitious or better adventive is often a synonym for casual which might
 	 * be the better term here.
+	 *
+	 * @deprecated better use {@link #CASUAL()}, which has the same result (same semantics, but more precise)
 	 */
 	@Deprecated
 	public static final PresenceAbsenceTerm INTRODUCED_ADVENTITIOUS(){
