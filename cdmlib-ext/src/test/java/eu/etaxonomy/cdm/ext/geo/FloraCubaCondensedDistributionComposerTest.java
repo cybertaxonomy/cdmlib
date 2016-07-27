@@ -90,7 +90,7 @@ public class FloraCubaCondensedDistributionComposerTest {
         PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE().setSymbol("d");
         PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR().setSymbol("-");
         PresenceAbsenceTerm.REPORTED_IN_ERROR().setSymbol("-");
-        PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().setSymbol("a");
+        PresenceAbsenceTerm.CASUAL().setSymbol("a");
         PresenceAbsenceTerm.CULTIVATED().setSymbol("c");
         PresenceAbsenceTerm.NATURALISED().setSymbol("n");
         PresenceAbsenceTerm.CULTIVATED_PRESENCE_QUESTIONABLE().setSymbol("?c");
