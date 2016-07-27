@@ -92,16 +92,24 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidIN=UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIC=UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
-	//was merged int uuidIN
+
 	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
-	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
+	private static final UUID uuidNI=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
+
+	private static final UUID uuidNN=UUID.fromString("1b025e8b-901a-42e8-9739-119b410c6f03");
 
 	//doubtfully present
 	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidCQ=UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
 	private static final UUID uuidEQ=UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
-//	private static final UUID uuidNDQ=UUID.fromString("7ddfd94d-01a4-496c-a6d6-18584c00af59");
+	//intr. naturalized questionable
+	private static final UUID uuidINQ=UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466");
+	//natur. invasive questionable
+	private static final UUID uuidNIQ=UUID.fromString("ac429d5f-e8ad-49ae-a41c-e4779b58b96a");
+	//natur. non-invasive questionable
+    private static final UUID uuidNNQ=UUID.fromString("11f56e2f-c16c-4b3d-a870-bb5d3b20e624");
+
 
 	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
@@ -115,6 +123,8 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidIE=UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 	private static final UUID uuidEE=UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad");
 	private static final UUID uuidNaE=UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa");
+	private static final UUID uuidIAQ=UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
+	private static final UUID uuidIAF=UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc");
 
 
 	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
@@ -327,11 +337,34 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     /**
      * Casual alien or introduced: adventive (casual)
      *
+     * @see #CASUAL_REPORTED_IN_ERROR()
+     * @see #CASUAL_PRESENCE_QUESTIONABLE()
      * @see #INTRODUCED_ADVENTITIOUS()
      */
     public static final PresenceAbsenceTerm CASUAL(){
         return getTermByUuid(uuidIA);
     }
+    /**
+     * Casual alien, presence questionable
+     *
+     * @see #CASUAL()
+     * @see #CASUAL_REPORTED_IN_ERROR()
+     * @see #PRESENT_DOUBTFULLY()
+     */
+    public static final PresenceAbsenceTerm CASUAL_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidIAQ);
+    }
+    /**
+     * Casual alien, reported in error
+     *
+     * @see #CASUAL()
+     * @see #CASUAL_PRESENCE_QUESTIONABLE()
+     * @see #REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm CASUAL_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidIAF);
+    }
+
 
 	/**
 	 * This term is of questional value. Introduced often is handled as opposite
@@ -355,13 +388,6 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		return getTermByUuid(uuidID);
 	}
 
-	/**
-	 *
-	 * @see #NATURALISED()
-	 */
-	public static final PresenceAbsenceTerm NATURALISED(){
-		return getTermByUuid(uuidIN);
-	}
 
     public static final PresenceAbsenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){
         return getTermByUuid(uuidIP);
@@ -445,19 +471,76 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
         return getTermByUuid(uuidNDE);
     }
 
+
+    /**
+     * Naturalized (or introduced: naturalized). Further distinction can be made by
+     * distinguishing invasive / non-invasive
+     * @see #NATURALISED_PRESENCE_QUESTIONABLE()
+     * @see #NATURALISED_REPORTED_IN_ERROR()
+     * @see #INVASIVE()
+     * @see #NON_INVASIVE
+     */
+    public static final PresenceAbsenceTerm NATURALISED(){
+        return getTermByUuid(uuidIN);
+    }
+
+    /**
+    *
+    * @see #NATURALISED()
+    */
+   public static final PresenceAbsenceTerm NATURALISED_PRESENCE_QUESTIONABLE(){
+       return getTermByUuid(uuidINQ);
+   }
+
     public static final PresenceAbsenceTerm NATURALISED_REPORTED_IN_ERROR(){
         return getTermByUuid(uuidNaE);
     }
 
 	/**
-	 * The taxon is present but not native in the given area.
-	 * Additionally it is dangerous for the native species.
+	 * Naturalized invasive. <BR>
+	 * The taxon is present but not native in the given area. Additionally
+	 * it is spreading fast.
 	 *
-	 * TBC
+	 * @see #INVASIVE_PRESENCE_QUESTIONABLE()
+	 * @see #NON_INVASIVE()
+	 * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
 	 */
 	public static final PresenceAbsenceTerm INVASIVE(){
-		return getTermByUuid(uuidIV);
+		return getTermByUuid(uuidNI);
 	}
+    /**
+     * Invasive, presence questionable.
+     *
+     * @see #INVASIVE()
+     * @see #NON_INVASIVE()
+     * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
+     */
+    public static final PresenceAbsenceTerm INVASIVE_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidNIQ);
+    }
+    /**
+     * The taxon is present but not native in the given area (naturalized).
+     * Additionally it is spreading not so fast.
+     *
+     * @see #INVASIVE()
+     * @see #INVASIVE_PRESENCE_QUESTIONABLE()
+     * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
+     */
+    public static final PresenceAbsenceTerm NON_INVASIVE(){
+        return getTermByUuid(uuidNN);
+    }
+    /**
+     * The taxon is questionable present and not native in the given area (naturalized).
+     * Additionally it is spreading not so fast
+     *
+     * @see #NON_INVASIVE()
+     * @see #INVASIVE()
+     * @see #INVASIVE_PRESENCE_QUESTIONABLE()
+     */
+    public static final PresenceAbsenceTerm NON_INVASIVE_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidNNQ);
+    }
+
 
 	/**
 	 * @see #PRESENT()
