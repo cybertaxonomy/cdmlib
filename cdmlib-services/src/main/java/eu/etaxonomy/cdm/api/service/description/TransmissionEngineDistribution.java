@@ -1018,7 +1018,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         priorityMap.put(PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED(), 80);
         priorityMap.put(PresenceAbsenceTerm.INTRODUCED(), 90);
         priorityMap.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS(), 100);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED(), 110);
+        priorityMap.put(PresenceAbsenceTerm.NATURALISED(), 110);
         priorityMap.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), 120); // null
         priorityMap.put(PresenceAbsenceTerm.NATIVE(), 130); // null
         priorityMap.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);

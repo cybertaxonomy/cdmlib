@@ -39,9 +39,27 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * This class represents terms describing the {@link AbsenceTerm absence}
  * (like "extinct") or the {@link PresenceTerm presence} (like "cultivated") of a
- * {@link Taxon taxon} in a {@link NamedArea named area}. These terms are only
+ * {@link Taxon taxon} in an {@link NamedArea area}. These terms are only
  * used for {@link Distribution distributions}.
-
+ *
+ * The current implementation includes multiple qualities of distribution status:<BR><BR>
+ *
+ *  1. Degree of "presence": present, presence questionable, reported in error, absent, ...<BR>
+ *  2. Nativeness/naturalization/...: native, alien (introduced), naturalized, cultivated, invasive, ... <BR>
+ *  <BR>
+ *  There might be further qualities like adventive(unwanted)<->introduced(wanted - for cultivation)
+ * <BR>
+ * For an interesting discussion of these status see Pyšek & al.: Alien plants in checklists and floras;
+ * Taxon 53(1), Feb. 2004: 131-143 <BR>
+ *
+ * Pyšek et al. distinguises<BR>
+ *  native - alien<BR>
+ *  alien => cultivated-outside cultivation<BR>
+ *  outside cultivation=>casual - naturalized<BR>
+ *  naturalized => non invasive - invasive<BR>
+ *  invasive => not harmful - transformers - weeds
+ *
+ * @see http://dev.e-taxonomy.eu/redmine/issues/6000
  *
  * @author m.doering
  * @created 08-Nov-2007 13:06:44
@@ -65,20 +83,25 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 	//presence
 	private static final UUID uuidN=UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
-	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidND=UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	private static final UUID uuidC=UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
-	private static final UUID uuidCQ=UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidI=UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
-	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
 	private static final UUID uuidID=UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
 	private static final UUID uuidIP=UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
 	private static final UUID uuidIA=UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	private static final UUID uuidIN=UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIC=UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
-	private static final UUID uuidNA=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
+	//was merged int uuidIN
+	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
+
+	//doubtfully present
+	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
+	private static final UUID uuidCQ=UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
+	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
+	private static final UUID uuidEQ=UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
+//	private static final UUID uuidNDQ=UUID.fromString("7ddfd94d-01a4-496c-a6d6-18584c00af59");
 
 	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
@@ -88,7 +111,10 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidIF=UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
 	private static final UUID uuidCF=UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
 	private static final UUID uuidNE=UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
+	private static final UUID uuidNDE=UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
 	private static final UUID uuidIE=UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
+	private static final UUID uuidEE=UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad");
+	private static final UUID uuidNaE=UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa");
 
 
 	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
@@ -184,7 +210,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
   		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS();
   		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceAbsenceTerm.INTRODUCED_CULTIVATED();
   		} else if (abbrev.equalsIgnoreCase("id")) { return PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
-  		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceAbsenceTerm.INTRODUCED_NATURALIZED();
+  		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceAbsenceTerm.NATURALISED();
   		} else if (abbrev.equalsIgnoreCase("ip")) { return PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
   		} else if (abbrev.equalsIgnoreCase("iq")) { return PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
   		} else if (abbrev.equalsIgnoreCase("n"))  { return PresenceAbsenceTerm.NATIVE();
@@ -205,26 +231,108 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		}
   	}
 
+    /**
+     * The taxon is endemic for the given area.
+     * @see #PRESENT()
+     * @see #NATIVE()
+     * @see #ENDEMIC_DOUBTFULLY_PRESENT()
+     * @see #ENDEMIC_REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
+        return getTermByUuid(uuidE);
+    }
 
+    /**
+     * The taxon is endemic for the given area but doubtfully present.
+     * @see #ENDEMIC_FOR_THE_RELEVANT_AREA()
+     * @see #ENDEMIC_REPORTED_IN_ERROR()
+     * @see #PRESENT_DOUBTFULLY()
+     * @see #NATIVE_PRESENCE_QUESTIONABLE()
+     */
+    public static final PresenceAbsenceTerm ENDEMIC_DOUBTFULLY_PRESENT(){
+        return getTermByUuid(uuidEQ);
+    }
+
+    /**
+     * The taxon if it exists is endemic for the given area but was only
+     * erroneously reported.
+     * So it either does not exist or it is unclear where it was originally found.
+     * @see #ENDEMIC_FOR_THE_RELEVANT_AREA()
+     * @see #ENDEMIC_DOUBTFULLY_PRESENT()
+     * @see #REPORTED_IN_ERROR()
+     * @see #NATIVE_REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm ENDEMIC_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidEE);
+    }
+
+
+	/**
+	 * The taxon is present in the given area. No information given about
+	 * nativeness/establishment means.
+	 *
+	 * @see #PRESENT_DOUBTFULLY()
+	 * @see #ABSENT()
+	 */
 	public static final PresenceAbsenceTerm PRESENT(){
 		return getTermByUuid(uuidP);
 	}
+
+	/**
+     * Presence of the taxon in the given area is doubtful. No information given about
+     * nativeness/establishment means.
+     *
+     * @see #PRESENT()
+     * @see #ABSENT()
+     */
 	public static final PresenceAbsenceTerm PRESENT_DOUBTFULLY(){
 		return getTermByUuid(uuidPD);
 	}
+
+	/**
+	 * The taxon is not native but cultivated.
+	 *
+	 * @see #CULTIVATED_PRESENCE_QUESTIONABLE()
+	 * @see #CULTIVATED_REPORTED_IN_ERROR()
+	 */
 	public static final PresenceAbsenceTerm CULTIVATED(){
 		return getTermByUuid(uuidC);
 	}
+
+	/**
+     * The taxon is cultivated but presence is questionable.
+     *
+     * @see #CULTIVATED()
+     * @see #CULTIVATED_REPORTED_IN_ERROR()
+     */
     public static final PresenceAbsenceTerm CULTIVATED_PRESENCE_QUESTIONABLE(){
         return getTermByUuid(uuidCQ);
     }
-	public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
-		return getTermByUuid(uuidE);
-	}
-		public static final PresenceAbsenceTerm INTRODUCED(){
+
+    /**
+     * The taxon is erroneously reported as cultivated.
+     *
+     * @see #CULTIVATED()
+     * @see #CULTIVATED_REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidCF);
+    }
+
+
+	public static final PresenceAbsenceTerm INTRODUCED(){
 		return getTermByUuid(uuidI);
 	}
-		public static final PresenceAbsenceTerm INTRODUCED_ADVENTITIOUS(){
+
+	/**
+	 * This term is of questional value. Introduced often is handled as opposite
+	 * of adventitious/adventive and describes how the alien species came
+	 * - on purpose for cultivation (introduced) or not (adventive).
+	 * Adventitious or better adventive is often a synonym for casual which might
+	 * be the better term here.
+	 */
+	@Deprecated
+	public static final PresenceAbsenceTerm INTRODUCED_ADVENTITIOUS(){
 		return getTermByUuid(uuidIA);
 	}
 
@@ -236,65 +344,129 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		return getTermByUuid(uuidID);
 	}
 
-	public static final PresenceAbsenceTerm INTRODUCED_NATURALIZED(){
+	/**
+	 *
+	 * @see #NATURALISED()
+	 */
+	public static final PresenceAbsenceTerm NATURALISED(){
 		return getTermByUuid(uuidIN);
 	}
+
+    public static final PresenceAbsenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){
+        return getTermByUuid(uuidIP);
+    }
 
 	public static final PresenceAbsenceTerm INTRODUCED_PRESENCE_QUESTIONABLE(){
 		return getTermByUuid(uuidIQ);
 	}
 
-	public static final PresenceAbsenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){
-		return getTermByUuid(uuidIP);
-	}
+    public static final PresenceAbsenceTerm INTRODUCED_FORMERLY_INTRODUCED(){
+        return getTermByUuid(uuidIE);
+    }
 
+    public static final PresenceAbsenceTerm INTRODUCED_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidIF);
+    }
+
+	/**
+	 * Use native if the taxon is native in the according area. Native and indigenous
+	 * have the same meaning. Native might be problematic because the abbreviation
+	 * N is already used for naturalised.
+	 *
+	 * @see #NATIVE_DOUBTFULLY_NATIVE()
+     * @see #NATIVE_PRESENCE_QUESTIONABLE()
+     * @see #NATIVE_REPORTED_IN_ERROR()
+	 */
 	public static final PresenceAbsenceTerm NATIVE(){
 		return getTermByUuid(uuidN);
 	}
 
+    /**
+     * Same as {@link #NATIVE()} but presence is questionable
+     * @see #NATIVE()
+     * @see #NATIVE_DOUBTFULLY_NATIVE()
+     * @see #NATIVE_REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm NATIVE_PRESENCE_QUESTIONABLE(){
+        return getTermByUuid(uuidNQ);
+    }
+
+    /**
+     * The taxon was formerly native, but is extinct now in the given area.
+     *
+     * @see #NATIVE()
+     * @see #ABSENT()
+     */
+    public static final PresenceAbsenceTerm NATIVE_FORMERLY_NATIVE(){
+        return getTermByUuid(uuidNE);
+    }
+
+    /**
+     * Same as {@link #NATIVE()} but presence was reported in error, so
+     * finally it is not native.
+     * @see #NATIVE()
+     * @see #NATIVE_PRESENCE_QUESTIONABLE()
+     * @see #NATIVE_DOUBTFULLY_NATIVE()
+     */
+    public static final PresenceAbsenceTerm NATIVE_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidNF);
+    }
+
+	/**
+	 * Same as {@link #NATIVE()} but the nativeness is doubtful, while presence
+	 * is NOT questionable
+	 * @see #NATIVE()
+	 * @see #NATIVE_PRESENCE_QUESTIONABLE()
+	 * @see #NATIVE_REPORTED_IN_ERROR()
+	 */
 	public static final PresenceAbsenceTerm NATIVE_DOUBTFULLY_NATIVE(){
 		return getTermByUuid(uuidND);
 	}
 
-	public static final PresenceAbsenceTerm NATIVE_PRESENCE_QUESTIONABLE(){
-		return getTermByUuid(uuidNQ);
-	}
+    /**
+     * Same as {@link #NATIVE()} but the nativeness is doubtful, while presence
+     * is NOT questionable
+     * @see #NATIVE_DOUBTFULLY_NATIVE()
+     * @see #NATIVE()
+     * @see #NATIVE_PRESENCE_QUESTIONABLE()
+     */
+    public static final PresenceAbsenceTerm NATIVE_DOUBTFULLY_NATIVE_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidNDE);
+    }
 
+    public static final PresenceAbsenceTerm NATURALISED_REPORTED_IN_ERROR(){
+        return getTermByUuid(uuidNaE);
+    }
+
+	/**
+	 * The taxon is present but not native in the given area.
+	 * Additionally it is dangerous for the native species.
+	 *
+	 * TBC
+	 */
 	public static final PresenceAbsenceTerm INVASIVE(){
 		return getTermByUuid(uuidIV);
 	}
 
-	public static final PresenceAbsenceTerm NATURALISED(){
-		return getTermByUuid(uuidNA);
-	}
-
+	/**
+	 * @see #PRESENT()
+	 * @see #REPORTED_IN_ERROR()
+	 */
 	public static final PresenceAbsenceTerm ABSENT(){
 		return getTermByUuid(uuidAbsence);
 	}
 
+	/**
+	 * The taxon is {@link #ABSENT() absent} in the given area
+	 * but was erroneously reported as present.
+	 *
+	 * @see #ABSENT()
+	 * @see #NATIVE_REPORTED_IN_ERROR()
+	 * @see #INTRODUCED_REPORTED_IN_ERROR()
+	 */
 	public static final PresenceAbsenceTerm REPORTED_IN_ERROR(){
         return getTermByUuid(uuidReportedInError);
     }
-
-	public static final PresenceAbsenceTerm NATIVE_REPORTED_IN_ERROR(){
-		return getTermByUuid(uuidNF);
-	}
-
-	public static final PresenceAbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
-		return getTermByUuid(uuidCF);
-	}
-
-	public static final PresenceAbsenceTerm INTRODUCED_REPORTED_IN_ERROR(){
-		return getTermByUuid(uuidIF);
-	}
-
-	public static final PresenceAbsenceTerm NATIVE_FORMERLY_NATIVE(){
-		return getTermByUuid(uuidNE);
-	}
-
-	public static final PresenceAbsenceTerm INTRODUCED_FORMERLY_INTRODUCED(){
-		return getTermByUuid(uuidIE);
-	}
 
 
 //******************************** METHODS ****************************/

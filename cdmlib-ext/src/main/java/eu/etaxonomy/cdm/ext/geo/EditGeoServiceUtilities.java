@@ -110,7 +110,7 @@ public class EditGeoServiceUtilities {
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
+            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATURALISED(), Color.decode("0xf781bf"));
         }
         return defaultPresenceAbsenceTermBaseColors;
     }

@@ -88,11 +88,11 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
 
         // [nLu] naturalized
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid(), "n");
+        statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
 
         foreignStatusUuids = new HashSet<UUID>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_NATURALIZED().getUuid());
+        foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
