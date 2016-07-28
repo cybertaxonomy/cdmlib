@@ -164,11 +164,11 @@
       <artifactId>hibernate-c3p0</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-        <artifactId>c3p0</artifactId>
-        <groupId>com.mchange</groupId>
-        <scope>test</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--         <artifactId>c3p0</artifactId> -->
+<!--         <groupId>com.mchange</groupId> -->
+<!--         <scope>test</scope> -->
+<!--     </dependency> -->
       <!-- Profiling -->
       <dependency>
       <groupId>com.yourkit</groupId>
