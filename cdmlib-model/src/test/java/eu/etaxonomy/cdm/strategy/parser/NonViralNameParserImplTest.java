@@ -549,6 +549,15 @@ public class NonViralNameParserImplTest {
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
         assertEquals(nameStr, name1.getTitleCache());  //we expect the cache strategy to create the same result
 
+        //nothovar.
+        nameStr = "Dactylorhiza incarnata nothovar. versicolor";
+        name1 = parser.parseFullName(nameStr);
+        assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
+        assertFalse("Name must have binom hybrid bit set", name1.isBinomHybrid());
+        assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
+        assertFalse("Name must not be protected", name1.isProtectedTitleCache());
+        assertEquals(nameStr, name1.getNameCache());  //we expect the cache strategy to create the same result
+
     }
 
     /**
