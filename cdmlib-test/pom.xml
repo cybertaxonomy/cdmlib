@@ -191,22 +191,17 @@
     <!-- ******* DATABASES DRIVER ******* -->
 
     <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-db</artifactId>
+      <version>${project.version}</version>
       <scope>compile</scope>
-    </dependency>
-    <!-- SQL Server and Sybase -->
-
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
     </dependency>
   
 	<!-- Profiling -->
 	<dependency>
 		<groupId>com.yourkit</groupId>
 		<artifactId>yjp-controller-api-redist</artifactId>
-    <scope>compile</scope>
+        <scope>compile</scope>
 	</dependency>
 
     <!-- required by Xerces 2.11.0 -->

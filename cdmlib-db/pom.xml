@@ -37,6 +37,23 @@
       <version>2.3.3</version>
       <scope>compile</scope>
     </dependency>
+   
+   <!-- c3p0  -->
+   <dependency>
+      <groupId>com.mchange</groupId>
+      <artifactId>c3p0</artifactId>
+<!--       <version>${c3p0.version}</version> -->
+    </dependency>
+    <!-- Probably only needed in TaxEditor -->
+    <dependency>
+        <groupId>com.mchange</groupId>
+        <artifactId>mchange-commons-java</artifactId>
+        <!-- mchange-commons-java needs to match the version as defined in the c3p0/pom.xml -->
+        <version>0.2.11</version>
+    </dependency>
+   
+   
+   
     <!-- SQL Server and Sybase -->
 
      <dependency>
