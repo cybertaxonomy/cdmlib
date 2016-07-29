@@ -221,7 +221,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.1.3.v20140225</version><!-- do not update, since later versions are no longer compatible to java 7  -->
+        <version>9.3.11.v20160721</version><!-- do not update, since versions later than 9.1.3.v20140225 are no longer compatible to java 7  -->
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
