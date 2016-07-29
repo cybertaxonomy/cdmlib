@@ -41,6 +41,7 @@
             <groupId>eu.etaxonomy</groupId>
             <artifactId>cdmlib-db</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope><!-- overwrite  -->
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
