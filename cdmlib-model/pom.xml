@@ -27,7 +27,7 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/org.springframework.aspects/${spring.version}/org.springframework.aspects-${spring.version}.jar" />
+                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
                 <path id="aspectPath">
                   <pathelement location="${spring.aspects.jar}" />
                 </path>
