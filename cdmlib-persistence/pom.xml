@@ -244,6 +244,11 @@
     </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
+      <!-- 
+            IMPORTANT:
+            Any driver dependency listed here must be excluded from the 
+            cdmlib-remote depedency in cdmlib-remote-webapp
+      -->
     <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-db</artifactId>
