@@ -66,36 +66,8 @@
             and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder
          -->
         <exclusion>
-            <groupId>net.sourceforge.jtds</groupId>
-            <artifactId>jtds</artifactId>         
-        </exclusion>
-        <exclusion>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>jdbc4</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.mchange</groupId>
-          <artifactId>c3p0</artifactId>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-db</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
