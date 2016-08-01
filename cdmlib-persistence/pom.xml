@@ -38,9 +38,9 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-db</artifactId>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -70,14 +70,9 @@
         </configuration>
          <dependencies>
           <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-          </dependency>
-          <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-db</artifactId>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
