@@ -22,8 +22,22 @@
   </build>
   <dependencies>
  
+   <dependency>
+      <groupId>com.mchange</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.5.2</version>
+    </dependency>
 
-     <!-- ******* DATABASES DRIVER ******* -->
+    <dependency>
+        <groupId>com.mchange</groupId>
+        <artifactId>mchange-commons-java</artifactId>
+        <!-- mchange-commons-java needs to match the version as defined in the c3p0/pom.xml -->
+        <version>0.2.11</version>
+    </dependency>
+    
+
+
+    <!-- ******* DATABASES DRIVER ******* -->
       <!-- 
             IMPORTANT:
             Any driver dependency listed here must be excluded from the 
@@ -37,9 +51,10 @@
       <version>2.3.3</version>
       <scope>compile</scope>
     </dependency>
-    <!-- SQL Server and Sybase -->
+    
+    <!-- Database drivers -->
 
-     <dependency>
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
 	  <version>5.1.38</version>
