@@ -248,32 +248,10 @@
 
     <!-- ******* DATABASES DRIVER ******* -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-db</artifactId>
+        <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-    </dependency>
-    <!-- SQL Server and Sybase -->
-    <dependency>
-      <groupId>net.sourceforge.jtds</groupId>
-      <artifactId>jtds</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>jdbc4</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-    </dependency>
-
   
 	<!-- Profiling -->
 <!-- 	<dependency> -->
