@@ -165,12 +165,14 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
+      <!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
+      <exclusions>
+        <exclusion>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>  
+        </exclusion>
+      </exclusions>
     </dependency>
-   	<!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
-   	<dependency>
-		<groupId>com.mchange</groupId>
-		<artifactId>c3p0</artifactId>
-	</dependency>
     <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
     <dependency>
       <groupId>javax.transaction</groupId>
