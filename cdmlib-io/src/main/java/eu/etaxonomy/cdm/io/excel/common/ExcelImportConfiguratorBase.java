@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -23,9 +23,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase<ExcelImportState, URI> implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ExcelImportConfiguratorBase.class);
-	
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
+
+	private int batchSize = 0;
 
 
 	/**
@@ -35,7 +37,7 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination) {
 		this(uri, destination, defaultTransformer);
 	}
-	
+
 	/**
 	 * @param url
 	 * @param destination
@@ -64,6 +66,14 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 		return false;
 	}
 
+	public int getBatchSize() {
+	    return batchSize;
+	}
 
-	
+	public void setBatchSize(int batchSize) {
+	    this.batchSize = batchSize;
+	}
+
+
+
 }
