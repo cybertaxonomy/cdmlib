@@ -391,7 +391,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         derivedUnitFacade.addDerivedUnitMedia(media);
                         if(((Abcd206ImportConfigurator)state.getConfig()).isAddMediaAsMediaSpecimen()){
                             //add media also as specimen scan
-                            MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
+                            MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
                             mediaSpecimen.setMediaSpecimen(media);
                             DefinedTermBase specimenScanTerm = getTermService().load(SPECIMEN_SCAN_TERM);
                             if(specimenScanTerm instanceof DefinedTerm){
