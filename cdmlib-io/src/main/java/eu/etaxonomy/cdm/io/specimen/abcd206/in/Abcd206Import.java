@@ -282,7 +282,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     @SuppressWarnings("rawtypes")
     private void handleSingleUnit(Abcd206ImportState state, Element item) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         if (DEBUG) {
             logger.info("handleSingleUnit "+state.getRef());
         }
@@ -341,19 +341,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     state.getDataHolder().gatheringElevationUnit, state.getDataHolder().gatheringDateText,
                     state.getDataHolder().gatheringNotes, state.getTransformer().getReferenceSystemByKey(
                             state.getDataHolder().gatheringSpatialDatum), state.getDataHolder().gatheringAgentList,
-                    state.getDataHolder().gatheringTeamList, (Abcd206ImportConfigurator)state.getConfig());
+                    state.getDataHolder().gatheringTeamList, state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-            unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, ((Abcd206ImportConfigurator) state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
+            unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country, (state.getConfig()), cdmAppController.getTermService(), cdmAppController.getOccurrenceService());
 
             DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
             unitsGatheringArea = new UnitsGatheringArea();
             //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-            unitsGatheringArea.setAreas(state.getDataHolder().namedAreaList,((Abcd206ImportConfigurator) state.getConfig()), cdmAppController.getTermService(), cdmAppController.getVocabularyService());
+            unitsGatheringArea.setAreas(state.getDataHolder().namedAreaList,(state.getConfig()), cdmAppController.getTermService(), cdmAppController.getVocabularyService());
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
@@ -545,7 +545,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected void importAssociatedUnits(Abcd206ImportState state, Object itemObject, DerivedUnitFacade derivedUnitFacade) {
 
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator) state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         //import associated units
         FieldUnit currentFieldUnit = derivedUnitFacade.innerFieldUnit();
         //TODO: push state (think of implementing stack architecture for state
@@ -764,7 +764,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     private void setCollectionData(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         SpecimenImportUtility.setUnitID(derivedUnitFacade.innerDerivedUnit(), state.getDataHolder().unitID, config);
         if(!config.isMapUnitIdToAccessionNumber()){
             derivedUnitFacade.setAccessionNumber(NB(state.getDataHolder().accessionNumber));
@@ -897,7 +897,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @return the Institution (existing or new)
      */
     private Institution getInstitution(String institutionCode, Abcd206ImportState state) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         Institution institution=null;
         List<Institution> institutions;
         try {
@@ -938,7 +938,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @return the Collection (existing or new)
      */
     private Collection getCollection(Institution institution, String collectionCode, Abcd206ImportState state) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         Collection collection = null;
         List<Collection> collections;
         try {
@@ -976,7 +976,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     @SuppressWarnings("rawtypes")
     private void linkDeterminationEvent(Abcd206ImportState state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         if(DEBUG){
             logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
         }
@@ -1057,7 +1057,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param determinationEvent:the determinationevent
      */
     private void makeIndividualsAssociation(Abcd206ImportState state, Taxon taxon, DeterminationEvent determinationEvent) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         SpecimenUserInteraction sui = config.getSpecimenUserInteraction();
 
         if (DEBUG) {
@@ -1553,7 +1553,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param derivedUnitFacade : the current derivedunitfacade
      */
     private void handleIdentifications(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
 
 
         String scientificName = "";
@@ -1638,7 +1638,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state : the ABCD import state
      */
     private void addTaxonNode(Taxon taxon, Abcd206ImportState state, boolean preferredFlag) {
-        Abcd206ImportConfigurator config = (Abcd206ImportConfigurator)state.getConfig();
+        Abcd206ImportConfigurator config = state.getConfig();
         logger.info("link taxon to a taxonNode "+taxon.getTitleCache());
         //only add nodes if not already existing in current classification or default classification
 
