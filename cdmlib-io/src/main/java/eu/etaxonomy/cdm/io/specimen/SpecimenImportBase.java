@@ -19,13 +19,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -87,14 +83,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
 	private static final String COLON = ":";
-	@SpringBeanByType
-	private ITaxonNodeService nodeService;
 
-	@SpringBeanByType
-    private ITaxonService taxonService;
-
-	@SpringBeanByType
-    private IClassificationService classificationService;
 
 	@Override
     protected abstract void doInvoke(STATE state);
